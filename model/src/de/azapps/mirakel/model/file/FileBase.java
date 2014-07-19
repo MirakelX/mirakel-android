@@ -1,36 +1,53 @@
-package de.azapps.mirakel.model.file;
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+package de.azapps.mirakel.model.file;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.Log;
 
-public class FileBase {
-    private int id;
+abstract class FileBase extends ModelBase {
+
+    public static final String TASK = "task_id";
+    public static final String PATH = "path";
+
+    private static final String TAG = "FileBase";
     private Task task;
-    private String name;
-    private Uri uri;
+    private Uri fileUri;
 
-    public FileBase(final int id, final Task task, final String name,
+    public FileBase(final long id, final String name, final Task task,
                     final Uri uri) {
-        super();
-        this.id = id;
+        super(id, name);
         this.task = task;
-        this.name = name;
-        this.uri = uri;
+        this.fileUri = uri;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    protected void setId(final int id) {
-        this.id = id;
-    }
 
     public Task getTask() {
         return this.task;
@@ -40,38 +57,30 @@ public class FileBase {
         this.task = task;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public Uri getUri() {
-        return this.uri;
+    public Uri getFileUri() {
+        return this.fileUri;
     }
 
     public void setUri(final Uri path) {
-        this.uri = path;
+        this.fileUri = path;
     }
 
     public FileInputStream getFileStream(final Context ctx)
     throws FileNotFoundException {
-        return FileUtils.getStreamFromUri(ctx, this.uri);
+        return FileUtils.getStreamFromUri(ctx, this.fileUri);
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
 
     public ContentValues getContentValues() {
-        final ContentValues cv = new ContentValues();
-        cv.put("_id", this.id);
+        final ContentValues cv;
+        try {
+            cv = super.getContentValues();
+        } catch (DefinitionsHelper.NoSuchListException e) {
+            Log.wtf(TAG, "How can this happen?", e);
+            return new ContentValues();
+        }
         cv.put("task_id", this.task.getId());
-        cv.put("name", this.name);
-        cv.put("path", this.uri != null ? this.uri.toString() : "");
+        cv.put("path", this.fileUri != null ? this.fileUri.toString() : "");
         return cv;
     }
 
@@ -79,12 +88,12 @@ public class FileBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.id;
+        result = prime * result + (int)this.getId();
         result = prime * result
-                 + (this.name == null ? 0 : this.name.hashCode());
+                 + (this.getName() == null ? 0 : this.getName().hashCode());
         result = prime * result
                  + (this.task == null ? 0 : this.task.hashCode());
-        result = prime * result + (this.uri == null ? 0 : this.uri.hashCode());
+        result = prime * result + (this.fileUri == null ? 0 : this.fileUri.hashCode());
         return result;
     }
 
@@ -100,14 +109,14 @@ public class FileBase {
             return false;
         }
         final FileBase other = (FileBase) obj;
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
-        if (this.name == null) {
-            if (other.name != null) {
+        if (this.getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.name.equals(other.name)) {
+        } else if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.task == null) {
@@ -117,11 +126,11 @@ public class FileBase {
         } else if (!this.task.equals(other.task)) {
             return false;
         }
-        if (this.uri == null) {
-            if (other.uri != null) {
+        if (this.fileUri == null) {
+            if (other.fileUri != null) {
                 return false;
             }
-        } else if (!this.uri.equals(other.uri)) {
+        } else if (!this.fileUri.equals(other.fileUri)) {
             return false;
         }
         return true;

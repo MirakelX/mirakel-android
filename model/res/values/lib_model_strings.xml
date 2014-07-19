@@ -198,10 +198,10 @@
     </string-array>
     
     <string-array name="demo_tasks">
-        <item>today Buy birthday present for grandpa</item>
+        <item>Buy birthday present for grandpa</item>
         <item>Music</item>
-        <item>monday Organize the party</item>
-        <item>today Finish presentation</item>
+        <item>Organize the party</item>
+        <item>Finish presentation</item>
         <item>Milk</item>
         <item>Cheese</item>
     </string-array>

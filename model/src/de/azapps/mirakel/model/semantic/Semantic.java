@@ -1,4 +1,28 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.model.semantic;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,29 +34,31 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 
 public class Semantic extends SemanticBase {
-    private static final String[] allColumns = { "_id", "condition",
-                                                 "priority", "due", "default_list_id", "weekday"
-                                               };
-    private static SQLiteDatabase database;
-    private static DatabaseHelper dbHelper;
-    private static Map<String, Semantic> semantics = new HashMap<String, Semantic>();
+
+
+    private static final String TAG = "Semantic";
+
+    private static final String[] allColumns = { ID, CONDITION, PRIORITY, DUE, LIST, WEEKDAY};
+    private static Map<String, Semantic> semantics = new HashMap<>();
     public static final String TABLE = "semantic_conditions";
+    private static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
+
+    protected Uri getUri() {
+        return URI;
+    }
 
     public static List<Semantic> all() {
-        final Cursor c = database.query(TABLE, allColumns, null, null, null,
-                                        null, null);
+        final Cursor c = query(URI, allColumns, null, null, null);
         c.moveToFirst();
         final List<Semantic> all = new ArrayList<Semantic>();
         while (!c.isAfterLast()) {
@@ -41,13 +67,6 @@ public class Semantic extends SemanticBase {
         }
         c.close();
         return all;
-    }
-
-    /**
-     * Close the Database-Connection
-     */
-    public static void close() {
-        dbHelper.close();
     }
 
     // Static
@@ -141,33 +160,30 @@ public class Semantic extends SemanticBase {
     }
 
     private static Semantic cursorToSemantic(final Cursor c) {
-        final int id = c.getInt(0);
-        // BE CAREFUL!!!! – Don't forget to change the numbers
-        final String condition = c.getString(1);
+        final int id = c.getInt(c.getColumnIndex(ID));
+        final String condition = c.getString(c.getColumnIndex(CONDITION));
         Integer priority = null;
-        if (!c.isNull(2)) {
-            priority = c.getInt(2);
+        if (!c.isNull(c.getColumnIndex(PRIORITY))) {
+            priority = c.getInt(c.getColumnIndex(PRIORITY));
         }
         Integer due = null;
-        if (!c.isNull(3)) {
-            due = c.getInt(3);
+        if (!c.isNull(c.getColumnIndex(DUE))) {
+            due = c.getInt(c.getColumnIndex(DUE));
         }
         ListMirakel list = null;
-        if (!c.isNull(4)) {
-            list = ListMirakel.get(c.getInt(4));
+        if (!c.isNull(c.getColumnIndex(LIST))) {
+            list = ListMirakel.get(c.getInt(c.getColumnIndex(LIST)));
         }
         Integer weekday = null;
-        if (!c.isNull(5)) {
-            weekday = c.getInt(5);
+        if (!c.isNull(c.getColumnIndex(WEEKDAY))) {
+            weekday = c.getInt(c.getColumnIndex(WEEKDAY));
         }
         return new Semantic(id, condition, priority, due, list, weekday);
     }
 
     public static Semantic first() {
-        final Cursor cursor = database.query(TABLE, allColumns, null, null,
-                                             null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
+        final Cursor cursor = query(URI, allColumns, null, null, null);
+        if (cursor.moveToFirst()) {
             final Semantic s = cursorToSemantic(cursor);
             cursor.close();
             return s;
@@ -182,11 +198,9 @@ public class Semantic extends SemanticBase {
      * @param id
      * @return
      */
-    public static Semantic get(final int id) {
-        final Cursor cursor = database.query(TABLE, allColumns, "_id=" + id,
-                                             null, null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
+    public static Semantic get(final long id) {
+        final Cursor cursor = query(URI, allColumns, ID + "=" + id, null, null);
+        if (cursor.moveToFirst()) {
             final Semantic s = cursorToSemantic(cursor);
             cursor.close();
             return s;
@@ -202,24 +216,12 @@ public class Semantic extends SemanticBase {
      *            The Application-Context
      */
     public static void init(final Context context) {
-        dbHelper = new DatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
-        initAll();
-    }
-
-    /**
-     * CALL THIS ONLY FROM DBHelper
-     *
-     * @param db
-     */
-    public static void setDB(final SQLiteDatabase db) {
-        database = db;
+        ModelBase.init(context);
         initAll();
     }
 
     private static void initAll() {
-        final Cursor c = database.query(TABLE, allColumns, null, null, null,
-                                        null, null);
+        final Cursor c = query(URI, allColumns, null, null, null);
         c.moveToFirst();
         while (!c.isAfterLast()) {
             final Semantic s = cursorToSemantic(c);
@@ -244,30 +246,22 @@ public class Semantic extends SemanticBase {
     }
 
     public Semantic create() {
-        database.beginTransaction();
         final ContentValues values = getContentValues();
-        values.remove("_id");
-        final int insertId = (int) database.insertOrThrow(TABLE, null, values);
-        database.setTransactionSuccessful();
-        database.endTransaction();
+        values.remove(ID);
+        final long insertId = insert(URI, values);
         initAll();
         return Semantic.get(insertId);
     }
 
+    @Override
     public void destroy() {
-        database.beginTransaction();
-        database.delete(TABLE, "_id=" + getId(), null);
-        database.setTransactionSuccessful();
-        database.endTransaction();
+        super.destroy();
         initAll();
     }
 
+    @Override
     public void save() {
-        database.beginTransaction();
-        final ContentValues values = getContentValues();
-        database.update(TABLE, values, "_id = " + getId(), null);
-        database.setTransactionSuccessful();
-        database.endTransaction();
+        super.save();
         initAll();
     }
 }

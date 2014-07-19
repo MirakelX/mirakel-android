@@ -135,10 +135,10 @@
     <item>Nákupy</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>today Buy birthday present for grandpa</item>
+    <item>Buy birthday present for grandpa</item>
     <item>Hudba</item>
-    <item>monday Organize the party</item>
-    <item>today Finish presentation</item>
+    <item>Organize the party</item>
+    <item>Finish presentation</item>
     <item>Mlieko</item>
     <item>Syr</item>
   </string-array>

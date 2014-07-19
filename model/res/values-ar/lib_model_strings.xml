@@ -19,6 +19,7 @@
   <string name="month">في الشهر</string>
   <string name="year">سنة</string>
   <string name="new_recurring">تكرار جديد</string>
+  <string name="interval">الفاصل الزمني</string>
   <string name="beginning">بداية</string>
   <string name="end">نهاية</string>
   <string name="no_begin_end">لا %s</string>
@@ -27,6 +28,7 @@
   <string name="every">كل</string>
   <string name="recurrence_end_continously">أبدا</string>
   <string name="recurrence_end_date_label">حتى تاريخ</string>
+  <string name="use_exact_recurrence">تعيين التكرار استناداً إلى تاريخ الانتهاء؟</string>
   <string name="recurrence_from_now">من الآن</string>
   <string name="recurrence_from">من</string>
   <string name="list_all">جميع القوائم</string>
@@ -52,7 +54,9 @@
   <string name="task_empty">لم يتم تحديد أي مهمة...</string>
   <string name="no_lists">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
   <string name="import_any_do_click">استيراد من Any.Do</string>
+  <string name="any_do_import_title">اختر ملف النسخة الاحتياطية لـ Any.Do</string>
   <string name="any_do_this_file">استيراد من %s?\nIf في حال تم الرفض, يرجى تحديد الملف بنفسك</string>
+  <string name="any_do_how_to">يرجى أولاً النسخ الاحتياطي لبيانات Any.Do.  لفعل هذا اذهب إلى  Any.Do → Settings → Backup → Create Backup ثم ارجع هنا واضغط OK.\n أو اختر الملف بنفسك.</string>
   <string name="select_file">حدد الملف</string>
   <string name="wait">الرجاء الانتظار&#8230;</string>
   <string name="backup_import_ok">الاستيراد على ما يرام – يرجى إعادة تشغيل Mirakel</string>
@@ -134,7 +138,19 @@
   <string name="reminder_unset">لم يتم تعيين تذكير</string>
   <string name="inverte">عكس التحديد</string>
   <string name="not_in">ليس</string>
+  <string name="where_like_contain_text">يحتوي %s</string>
+  <string name="where_like_begin_text">يبدأ ب %s</string>
+  <string name="where_like_end_text">ينتهي بـ %s</string>
   <string name="delete">حذف</string>
+  <string name="special_list_progress_equal">يساوي %d</string>
+  <string name="special_list_progress_less_than">أقل من %d</string>
+  <string name="special_list_progress_greater_than">أكبر من %d</string>
+  <string name="special_list_subtask_parent">لها مهمة فرعية</string>
+  <string name="special_list_subtask_parent_not">ليس لها مهمة فرعية</string>
+  <string name="special_list_subtask_child">هي مهمة فرعية</string>
+  <string name="special_list_subtask_child_not">ليست مهمة فرعية</string>
+  <string name="no_file">ليس لديه ملف</string>
+  <string name="has_file">يحوي ملفاً</string>
   <string-array name="due_day_year_values">
     <item>يوم</item>
     <item>في الشهر</item>
@@ -152,10 +168,10 @@
     <item>الشراء</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>اليوم شراء هدية لعيد ميلاد الجد</item>
+    <item>Buy birthday present for grandpa</item>
     <item>موسيقى</item>
-    <item>اليوم الاثنين تنظيم الحفل</item>
-    <item>اليوم إنهاء العرض التقديمي</item>
+    <item>Organize the party</item>
+    <item>إنهاء العرض التقديمي</item>
     <item>الحليب</item>
     <item>جبن</item>
   </string-array>

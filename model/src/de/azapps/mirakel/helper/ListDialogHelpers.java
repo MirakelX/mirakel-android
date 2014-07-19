@@ -16,6 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
@@ -98,15 +99,14 @@ public class ListDialogHelpers {
     /**
      * Handle the actions after clicking on a move task button
      *
-     * @param task
      */
     public static SpecialList handleDefaultList(final Context ctx,
             final SpecialList specialList, final List<ListMirakel> lists,
             final Preference res) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setTitle(R.string.special_list_def_list);
-        final List<CharSequence> items = new ArrayList<CharSequence>();
-        final List<Integer> list_ids = new ArrayList<Integer>();
+        final List<CharSequence> items = new ArrayList<>();
+        final List<Long> list_ids = new ArrayList<>();
         int currentItem = 0, i = 1;
         items.add(ctx.getString(R.string.special_list_first));
         list_ids.add(null);
@@ -130,7 +130,7 @@ public class ListDialogHelpers {
             @Override
             public void onClick(final DialogInterface dialog,
                                 final int item) {
-                final Integer lid = list_ids.get(item);
+                final Long lid = list_ids.get(item);
                 if (lid == null) {
                     specialList.setDefaultList(null);
                 } else {

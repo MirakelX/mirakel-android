@@ -16,9 +16,10 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
 
-import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.ModelBase;
 
 public class SpecialListsNameProperty extends SpecialListsStringProperty {
 
@@ -34,7 +35,7 @@ public class SpecialListsNameProperty extends SpecialListsStringProperty {
 
     @Override
     protected String propertyName() {
-        return DatabaseHelper.NAME;
+        return ModelBase.NAME;
     }
 
 }
