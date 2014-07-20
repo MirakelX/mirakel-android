@@ -78,6 +78,7 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -638,22 +639,8 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
             ErrorReporter.report (ErrorType.LIST_VANISHED);
             list = SpecialList.firstSpecialSafe (getActivity ());
         }
-        String dbQuery = list.getWhereQueryForTasks ();
-        final String sorting = Task.getSorting (list.getSortBy ());
-        String[] args = null;
-        if (dbQuery != null && !"".equals (dbQuery.trim ())
-            && dbQuery.length () > 0) {
-            dbQuery = "(" + dbQuery + ") AND ";
-        }
-        dbQuery += Task.BASIC_FILTER_DISPLAY_TASKS;
-        if (this.query != null) {
-            args = new String[] { "%" + this.query + "%" };
-            dbQuery += " AND " + ModelBase.NAME + " LIKE ?";
-        }
-        Log.w (TAG, dbQuery);
-        return new CursorLoader (getActivity (), MirakelInternalContentProvider.TASK_URI, Task.allColumns,
-                                 dbQuery,
-                                 args, sorting);
+        return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toCursorLoader(
+                   Task.URI);
     }
 
     @Override
