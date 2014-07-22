@@ -165,14 +165,14 @@
   <string-array name="demo_lists">
     <item>العمل</item>
     <item>الصفحة الرئيسية</item>
-    <item>الشراء</item>
+    <item>تسوُّق</item>
   </string-array>
   <string-array name="demo_tasks">
     <item>Buy birthday present for grandpa</item>
     <item>موسيقى</item>
     <item>Organize the party</item>
     <item>إنهاء العرض التقديمي</item>
-    <item>الحليب</item>
+    <item>حليب</item>
     <item>جبن</item>
   </string-array>
 </resources>
