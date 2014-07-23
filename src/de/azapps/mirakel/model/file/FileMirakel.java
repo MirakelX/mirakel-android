@@ -19,6 +19,12 @@
 
 package de.azapps.mirakel.model.file;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -26,25 +32,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.TypedValue;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.List;
-
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class FileMirakel extends FileBase {
-
 
     public static final String[] allColumns = { ID, NAME, TASK, PATH };
     public static final String cacheDirPath = FileUtils.getMirakelDir()
@@ -56,6 +54,7 @@ public class FileMirakel extends FileBase {
 
     // private static final String TAG = "FileMirakel";
 
+    @Override
     protected Uri getUri() {
         return URI;
     }
@@ -70,21 +69,24 @@ public class FileMirakel extends FileBase {
     }
 
     public FileMirakel(final Cursor c) {
-        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              Task.get(c.getInt(c.getColumnIndex(TASK))),
-              Uri.parse(c.getString(c.getColumnIndex(PATH))));
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c
+                .getColumnIndex(NAME)), Task.get(c.getInt(c
+                        .getColumnIndex(TASK))), Uri.parse(c.getString(c
+                                .getColumnIndex(PATH))));
     }
 
     // Static Methods
 
     public static void destroyForTask(final Task t) {
         final List<FileMirakel> files = getForTask(t);
-        MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+        MirakelInternalContentProvider
+        .withTransaction(new MirakelInternalContentProvider.DBTransaction() {
             @Override
             public void exec() {
                 for (final FileMirakel file : files) {
-                    final File destFile = new File(FileMirakel.fileCacheDir,
-                                                   file.getId() + ".png");
+                    final File destFile = new File(
+                        FileMirakel.fileCacheDir, file.getId()
+                        + ".png");
                     if (destFile.exists()) {
                         destFile.delete();
                     }
@@ -105,10 +107,9 @@ public class FileMirakel extends FileBase {
     }
 
     public static List<FileMirakel> getForTask(final Task task) {
-        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ,
-                task).getList(FileMirakel.class);
+        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task)
+               .getList(FileMirakel.class);
     }
-
 
     public static FileMirakel newFile(final Context ctx, final Task task,
                                       final Uri uri) {
@@ -169,8 +170,7 @@ public class FileMirakel extends FileBase {
         return m.create();
     }
 
-    protected FileMirakel(final int id, final String name, final Task task,
-                          final Uri uri) {
+    FileMirakel(final int id, final String name, final Task task, final Uri uri) {
         super(id, name, task, uri);
     }
 
