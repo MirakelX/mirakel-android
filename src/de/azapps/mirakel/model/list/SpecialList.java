@@ -91,6 +91,11 @@ public class SpecialList extends ListMirakel {
         return URI;
     }
 
+    @Override
+    public long getId() {
+        return -1 * super.getId();
+    }
+
     public Map<String, SpecialListsBaseProperty> getWhere() {
         return this.where;
     }
@@ -334,7 +339,7 @@ public class SpecialList extends ListMirakel {
      * @return List
      */
     public static SpecialList get(final long listId) {
-        SpecialList l = new MirakelQueryBuilder(context).get(SpecialList.class, listId);
+        SpecialList l = new MirakelQueryBuilder(context).get(SpecialList.class, Math.abs(listId));
         if (l != null) {
             return l;
         }

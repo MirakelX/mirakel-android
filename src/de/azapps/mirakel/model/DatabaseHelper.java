@@ -126,10 +126,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " INTEGER NOT NULL default 0)");
     }
 
-    public DatabaseHelper(final Context ctx) {
+    private DatabaseHelper(final Context ctx) {
         super(ctx, getDBName(ctx), null, DATABASE_VERSION);
         this.context = ctx;
     }
+
+    private static DatabaseHelper databaseHelperSingleton;
+
+    public static DatabaseHelper getDatabaseHelper(Context context) {
+        if (databaseHelperSingleton == null) {
+            databaseHelperSingleton = new DatabaseHelper(context);
+        }
+        return databaseHelperSingleton;
+    }
+
 
     /**
      * Returns the database name depending if Mirakel is in demo mode or not.

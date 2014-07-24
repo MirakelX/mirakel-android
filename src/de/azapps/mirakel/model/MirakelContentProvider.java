@@ -583,8 +583,8 @@ public class MirakelContentProvider extends ContentProvider implements
         return MirakelContentProvider.openHelper == null;
     }
 
-    public static void init(final Context ctx) {
-        openHelper = new DatabaseHelper(ctx);
+    public static void init(final Context context) {
+        openHelper = DatabaseHelper.getDatabaseHelper(context);
         openHelper.getWritableDatabase().execSQL("PRAGMA foreign_keys=ON;");
     }
 

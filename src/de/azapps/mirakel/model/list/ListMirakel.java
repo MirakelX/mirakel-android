@@ -443,6 +443,8 @@ public class ListMirakel extends ListBase {
         }
         final long id = getId();
         if (id <= 0) {
+            SpecialList slist = (SpecialList) this;
+            slist.destroy();
             return;
         }
         MirakelInternalContentProvider.withTransaction(new

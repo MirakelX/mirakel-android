@@ -293,11 +293,7 @@ abstract class RecurringBase extends ModelBase {
         } else if (!this.derivedFrom.equals(other.derivedFrom)) {
             return false;
         }
-        if (this.endDate == null) {
-            if (other.endDate != null) {
-                return false;
-            }
-        } else if (!this.endDate.equals(other.endDate)) {
+        if (!DateTimeHelper.equalsCalendar(this.endDate, other.endDate)) {
             return false;
         }
         if (this.forDue != other.forDue) {
@@ -322,11 +318,7 @@ abstract class RecurringBase extends ModelBase {
         if (this.months != other.months) {
             return false;
         }
-        if (this.startDate == null) {
-            if (other.startDate != null) {
-                return false;
-            }
-        } else if (!this.startDate.equals(other.startDate)) {
+        if (!DateTimeHelper.equalsCalendar(this.startDate, other.startDate)) {
             return false;
         }
         if (this.temporary != other.temporary) {

@@ -24,9 +24,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import android.content.ContentValues;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -684,28 +686,11 @@ abstract class TaskBase extends ModelBase {
         } else if (!this.content.equals(other.content)) {
             return false;
         }
-        if (this.createdAt == null) {
-            if (other.createdAt != null) {
-                return false;
-            }
-        } else if (!this.createdAt.equals(other.createdAt)) {
-            return false;
-        }
+        // We should ignore the created_at date
         if (this.done != other.done) {
             return false;
         }
-        if (this.due == null) {
-            if (other.due != null) {
-                return false;
-            }
-        } else if (!this.due.equals(other.due)) {
-            return false;
-        }
-        if (this.edited == null) {
-            if (other.edited != null) {
-                return false;
-            }
-        } else if (!this.edited.equals(other.edited)) {
+        if (!DateTimeHelper.equalsCalendar(this.due, other.due)) {
             return false;
         }
         if (this.getId() != other.getId()) {
@@ -722,7 +707,7 @@ abstract class TaskBase extends ModelBase {
             return false;
         }
         if (getName() == null) {
-            if (getName() != null) {
+            if (other.getName() != null) {
                 return false;
             }
         } else if (!getName().equals(other.getName())) {
@@ -734,36 +719,39 @@ abstract class TaskBase extends ModelBase {
         if (this.progress != other.progress) {
             return false;
         }
-        if (this.recurrence != other.recurrence) {
-            return false;
-        }
-        if (this.recurringReminder != other.recurringReminder) {
-            return false;
-        }
-        if (this.reminder == null) {
-            if (other.reminder != null) {
+        if (this.getRecurring() == null) {
+            if (other.getRecurring() != null) {
                 return false;
             }
-        } else if (!this.reminder.equals(other.reminder)) {
+        } else if (!this.getRecurring().equals(other.getRecurring())) {
+            return false;
+        }
+        if (this.getRecurringReminder() == null) {
+            if (other.getRecurringReminder() != null) {
+                return false;
+            }
+        } else if (!this.getRecurringReminder().equals(other.recurringReminder)) {
+            return false;
+        }
+        if (!DateTimeHelper.equalsCalendar(this.reminder, other.reminder)) {
             return false;
         }
         if (this.syncState != other.syncState) {
             return false;
         }
-        if (this.tags == null) {
-            if (other.tags != null) {
+        if (this.getTags() == null) {
+            if (other.getTags() != null) {
                 return false;
             }
-        } else if (!this.tags.equals(other.tags)) {
-            return false;
-        }
-        if (this.updatedAt == null) {
-            if (other.updatedAt != null) {
+        } else {
+            if (other.getTags() == null) {
                 return false;
             }
-        } else if (!this.updatedAt.equals(other.updatedAt)) {
-            return false;
+            if (!this.getTags().equals(other.getTags())) {
+                return false;
+            }
         }
+        // Do not compare updatedAt because it is updated
         if (this.uuid == null) {
             if (other.uuid != null) {
                 return false;

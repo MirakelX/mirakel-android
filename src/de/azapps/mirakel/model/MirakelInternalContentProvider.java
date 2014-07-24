@@ -206,7 +206,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         if (database == null) {
-            dbHelper = new DatabaseHelper(getContext());
+            dbHelper = DatabaseHelper.getDatabaseHelper(getContext());
             isPreInit = false;
         }
         final ScheduledExecutorService worker = Executors

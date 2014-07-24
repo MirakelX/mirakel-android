@@ -190,7 +190,7 @@ abstract class ListBase  extends ModelBase {
         result = prime * result + (int)this.accountID;
         result = prime
                  * result
-                 + (this.accountMirakel == null ? 0 : this.accountMirakel
+                 + (this.getAccount() == null ? 0 : this.getAccount()
                     .hashCode());
         result = prime * result + this.color;
         result = prime * result
@@ -224,11 +224,11 @@ abstract class ListBase  extends ModelBase {
         if (this.accountID != other.accountID) {
             return false;
         }
-        if (this.accountMirakel == null) {
-            if (other.accountMirakel != null) {
+        if (this.getAccount() == null) {
+            if (other.getAccount() != null) {
                 return false;
             }
-        } else if (!this.accountMirakel.equals(other.accountMirakel)) {
+        } else if (!this.getAccount().equals(other.getAccount())) {
             return false;
         }
         if (this.color != other.color) {
@@ -264,13 +264,6 @@ abstract class ListBase  extends ModelBase {
             return false;
         }
         if (this.syncState != other.syncState) {
-            return false;
-        }
-        if (this.updatedAt == null) {
-            if (other.updatedAt != null) {
-                return false;
-            }
-        } else if (!this.updatedAt.equals(other.updatedAt)) {
             return false;
         }
         return true;
