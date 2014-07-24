@@ -37,7 +37,7 @@ public class TestSync extends ActivityInstrumentationTestCase2<MainActivity> {
 		while (true) {
 			this.solo.drag(0, 100, 50, 100, 100);
 			this.solo.clickInList(5);// hardcoded list
-			final DatabaseHelper openHelper = new DatabaseHelper(getActivity());
+			final DatabaseHelper openHelper = DatabaseHelper.getDatabaseHelper(getActivity());
 			Cursor c = openHelper
 					.getReadableDatabase()
 					.rawQuery(
