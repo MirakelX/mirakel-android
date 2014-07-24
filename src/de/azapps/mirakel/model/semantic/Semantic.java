@@ -63,6 +63,17 @@ public class Semantic extends SemanticBase {
 
     // Static
 
+    public static List<Semantic> cursorToSemanticList(final Cursor c) {
+        List<Semantic> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new Semantic(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
+    }
+
     public static Task createTask(String taskName, ListMirakel currentList,
                                   final boolean useSemantic, final Context context) {
         GregorianCalendar due = null;

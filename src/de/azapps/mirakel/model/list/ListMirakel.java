@@ -109,6 +109,17 @@ public class ListMirakel extends ListBase {
         return qb;
     }
 
+    public static List<ListMirakel> cursorToList(final Cursor c) {
+        List<ListMirakel> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new ListMirakel(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
+    }
+
     /**
      * Get all Lists in the Database
      *

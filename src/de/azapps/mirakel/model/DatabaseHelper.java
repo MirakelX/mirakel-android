@@ -946,24 +946,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        " (_id,name,dark_text) SELECT _id,name,dark_text FROM tmp_tags;");
             String[] tagColumns = new String[] {"_id", "color_a", "color_r", "color_g", "color_b"};
             Cursor tagCursor = db.query("tmp_tags", tagColumns, null, null, null, null, null);
-            tagCursor.moveToFirst();
-            do {
-                int i = 0;
-                int id = tagCursor.getInt(i++);
-                int rgba = tagCursor.getInt(i++);
-                int rgbr = tagCursor.getInt(i++);
-                int rgbg = tagCursor.getInt(i++);
-                int rgbb = tagCursor.getInt(i);
-                int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
-                Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
-                                       + "=?", new String[] {id + ""}, null, null, null);
-                if (tagC.moveToFirst()) {
-                    Tag newTag = new Tag(tagC);
-                    tagC.close();
-                    newTag.setBackgroundColor(newColor);
-                    db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});
-                }
-            } while (tagCursor.moveToNext());
+            if (tagCursor.moveToFirst()) {
+                do {
+                    int i = 0;
+                    int id = tagCursor.getInt(i++);
+                    int rgba = tagCursor.getInt(i++);
+                    int rgbr = tagCursor.getInt(i++);
+                    int rgbg = tagCursor.getInt(i++);
+                    int rgbb = tagCursor.getInt(i);
+                    int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
+                    Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
+                                           + "=?", new String[] {id + ""}, null, null, null);
+                    if (tagC.moveToFirst()) {
+                        Tag newTag = new Tag(tagC);
+                        tagC.close();
+                        newTag.setBackgroundColor(newColor);
+                        db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});
+                    }
+                } while (tagCursor.moveToNext());
+            }
             db.execSQL("DROP TABLE tmp_tags;");
             db.execSQL("create unique index tag_unique ON tag (name);");
         default:

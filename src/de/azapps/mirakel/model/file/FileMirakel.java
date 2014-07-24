@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -66,6 +67,17 @@ public class FileMirakel extends FileBase {
      */
     public static List<FileMirakel> all() {
         return new MirakelQueryBuilder(context).getList(FileMirakel.class);
+    }
+
+    public static List<FileMirakel> cursorToFileList(final Cursor c) {
+        List<FileMirakel> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new FileMirakel(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
     }
 
     public FileMirakel(final Cursor c) {
