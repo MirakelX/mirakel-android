@@ -272,4 +272,15 @@ public class DateTimeHelper {
     throws ParseException {
         return parseDate(date, taskwarriorFormat);
     }
+
+    public static boolean equalsCalendar(Calendar a, Calendar b) {
+        if (a == null || b == null) {
+            if (a != b) {
+                return false;
+            }
+        } else if (Math.abs(a.getTimeInMillis() / 1000 - b.getTimeInMillis() / 1000) > 1) {
+            return false;
+        }
+        return true;
+    }
 }
