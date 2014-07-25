@@ -303,7 +303,7 @@ public class ListFragment extends MirakelFragment {
         this.adapter = new ListAdapter (getActivity (), R.layout.lists_row,
                                         values, this.enableDrag);
         this.listView.setDragEnabled (this.enableDrag);
-        this.listView.setParts (SpecialList.getSpecialListCount (true));
+        this.listView.setParts ((int)SpecialList.getSpecialListCount (true));
         this.listView.setAdapter (this.adapter);
         this.listView.requestFocus ();
         this.listView.setDropListener (new DropListener () {
