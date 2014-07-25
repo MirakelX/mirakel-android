@@ -98,6 +98,16 @@ public class Log {
         }
     }
 
+    public static void i(final String tag, final String msg, final Throwable e) {
+        if (tag == null || msg == null) {
+            return;
+        }
+        if (MirakelCommonPreferences.isDebug()) {
+            android.util.Log.i(tag, msg, e);
+        }
+        write("i", tag, msg, e);
+    }
+
     public static void v(final String tag, final String msg) {
         if (tag == null || msg == null) {
             return;
