@@ -4,3 +4,4 @@ misc/crowdin.yaml
 exploded-aar/
 dex-cache/
 sonar/
+intermediates/
