@@ -38,8 +38,9 @@ import com.google.gson.JsonSerializer;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -87,12 +88,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         final Map<String, String> additionals = task.getAdditionalEntries();
         boolean isMaster = false;
         if (task.getRecurring() != null) {
-            final Cursor c = mContext.getContentResolver()
-                             .query(MirakelInternalContentProvider.RECURRING_TW_URI, new String[] {"count(*)"},
-                                    "child=?", new String[] {task.getId() + ""},
-                                    null);
-            c.moveToFirst();
-            if (c.getLong(0) == 0) {
+            if (new MirakelQueryBuilder(mContext).and(Recurring.CHILD, Operation.EQ,
+                    task).count(MirakelInternalContentProvider.RECURRING_TW_URI) == 0) {
                 isMaster = true;
             }
         }
