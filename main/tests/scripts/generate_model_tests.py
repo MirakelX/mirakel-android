@@ -69,8 +69,6 @@ vars["ID_TYPE"]="long"
 # Exceptions
 if className=="SpecialList":
     vars["GETALL_FUNCTION"]="allSpecial()"
-if className=="Task":
-    vars["ID_TYPE"]="long"
 
 loader = CachingFileLoader(".")
 template = loader.load_template(os.path.dirname(__file__) + "/model/base.java")

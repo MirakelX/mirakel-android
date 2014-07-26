@@ -11,6 +11,5 @@ public class TestHelper {
 	}
 
 	public static void terminate() {
-
 	}
 }
