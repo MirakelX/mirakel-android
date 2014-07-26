@@ -178,7 +178,7 @@ public class SpecialListSettings extends PreferencesHelper {
                 findPreference("special_lists_where"));
         } else {
             findPreference("special_lists_where").setSummary(
-                this.specialList.getWhereQueryForTasks());
+                this.specialList.getWhereQueryForTasks().select("*").getQuery(Task.URI));
         }
         final List<ListMirakel> lists = ListMirakel.all(false);
         final Preference sortBy = findPreference("special_default_sort");
@@ -946,7 +946,7 @@ public class SpecialListSettings extends PreferencesHelper {
         pref.setSummary(getFieldText(key));
         if (MirakelCommonPreferences.isDebug()) {
             findPreference("special_lists_where").setSummary(
-                this.specialList.getWhereQueryForTasks());
+                this.specialList.getWhereQueryForTasks().select("*").getQuery(Task.URI));
         }
     }
 
