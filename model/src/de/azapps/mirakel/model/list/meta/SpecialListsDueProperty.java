@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.list.meta;
 import android.content.Context;
 
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
@@ -61,11 +62,13 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        String query = Task.DUE + " IS NOT NULL AND date(" + Task.DUE
-                       + ",'unixepoch','localtime')<=date('now','";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
+                MirakelQueryBuilder.Operation.NOT_EQ, (String)null);
+        String query = "date('now','";
         if (this.lenght == 0) {
-            return query + "localtime')";
+            return qb.and("date(" + Task.DUE
+                          + ",'unixepoch','localtime')", MirakelQueryBuilder.Operation.LE, "date('now','localtime')");
         }
         if (this.lenght > 0) {
             query += "+";
@@ -82,9 +85,10 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
             query += "year";
             break;
         default:
-            break;
+            return new MirakelQueryBuilder(ctx);
         }
-        return query + "','localtime')";
+        return qb.and("date(" + Task.DUE
+                      + ",'unixepoch','localtime')", MirakelQueryBuilder.Operation.LE, query + "')");
     }
 
     @Override

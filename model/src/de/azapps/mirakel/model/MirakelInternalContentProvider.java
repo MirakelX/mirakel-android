@@ -159,7 +159,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
         return u;
     }
 
-    private static String getTableName(final Uri u) {
+    public static String getTableName(final Uri u) {
         final List<String> l = u.getPathSegments();
         if (l.size() > 0 && EXISTING_TABLES.contains(l.get(0))) {
             return l.get(0);
@@ -209,8 +209,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
             dbHelper = new DatabaseHelper(getContext());
             isPreInit = false;
         }
-        final ScheduledExecutorService worker =
-            Executors.newSingleThreadScheduledExecutor();
+        final ScheduledExecutorService worker = Executors
+                                                .newSingleThreadScheduledExecutor();
         worker.schedule(new Runnable() {
             @Override
             public void run() {
@@ -320,6 +320,7 @@ public class MirakelInternalContentProvider extends ContentProvider {
         }
         return u;
     }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void withTransaction(final DBTransaction what) {
         if (what != null) {
@@ -346,7 +347,8 @@ public class MirakelInternalContentProvider extends ContentProvider {
                 }
             } else {
                 if (!isPreInit) {
-                    throw new DataBaseLockedException("Database already in a transaction");
+                    throw new DataBaseLockedException(
+                        "Database already in a transaction");
                 }
             }
         }

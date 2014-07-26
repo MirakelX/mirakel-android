@@ -19,11 +19,6 @@
 
 package de.azapps.mirakel.model.semantic;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -34,39 +29,36 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.tools.Log;
 
 public class Semantic extends SemanticBase {
 
-
-    private static final String TAG = "Semantic";
-
-    private static final String[] allColumns = { ID, CONDITION, PRIORITY, DUE, LIST, WEEKDAY};
+    public static final String[] allColumns = { ID, CONDITION, PRIORITY, DUE,
+                                                LIST, WEEKDAY
+                                              };
     private static Map<String, Semantic> semantics = new HashMap<>();
     public static final String TABLE = "semantic_conditions";
-    private static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
+    public static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
 
+    @Override
     protected Uri getUri() {
         return URI;
     }
 
     public static List<Semantic> all() {
-        final Cursor c = query(URI, allColumns, null, null, null);
-        c.moveToFirst();
-        final List<Semantic> all = new ArrayList<Semantic>();
-        while (!c.isAfterLast()) {
-            all.add(cursorToSemantic(c));
-            c.moveToNext();
-        }
-        c.close();
-        return all;
+        return new MirakelQueryBuilder(context).getList(Semantic.class);
     }
 
     // Static
@@ -159,37 +151,33 @@ public class Semantic extends SemanticBase {
         return Task.newTask(taskName, currentList, due, prio);
     }
 
-    private static Semantic cursorToSemantic(final Cursor c) {
-        final int id = c.getInt(c.getColumnIndex(ID));
-        final String condition = c.getString(c.getColumnIndex(CONDITION));
+    public Semantic(final Cursor c) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c
+                .getColumnIndex(CONDITION)));
         Integer priority = null;
         if (!c.isNull(c.getColumnIndex(PRIORITY))) {
             priority = c.getInt(c.getColumnIndex(PRIORITY));
         }
+        setPriority(priority);
         Integer due = null;
         if (!c.isNull(c.getColumnIndex(DUE))) {
             due = c.getInt(c.getColumnIndex(DUE));
         }
+        setDue(due);
         ListMirakel list = null;
         if (!c.isNull(c.getColumnIndex(LIST))) {
             list = ListMirakel.get(c.getInt(c.getColumnIndex(LIST)));
         }
+        setList(list);
         Integer weekday = null;
         if (!c.isNull(c.getColumnIndex(WEEKDAY))) {
             weekday = c.getInt(c.getColumnIndex(WEEKDAY));
         }
-        return new Semantic(id, condition, priority, due, list, weekday);
+        setWeekday(weekday);
     }
 
     public static Semantic first() {
-        final Cursor cursor = query(URI, allColumns, null, null, null);
-        if (cursor.moveToFirst()) {
-            final Semantic s = cursorToSemantic(cursor);
-            cursor.close();
-            return s;
-        }
-        cursor.close();
-        return null;
+        return new MirakelQueryBuilder(context).get(Semantic.class);
     }
 
     /**
@@ -199,14 +187,8 @@ public class Semantic extends SemanticBase {
      * @return
      */
     public static Semantic get(final long id) {
-        final Cursor cursor = query(URI, allColumns, ID + "=" + id, null, null);
-        if (cursor.moveToFirst()) {
-            final Semantic s = cursorToSemantic(cursor);
-            cursor.close();
-            return s;
-        }
-        cursor.close();
-        return null;
+        return new MirakelQueryBuilder(context).and(ID, Operation.EQ, id).get(
+                   Semantic.class);
     }
 
     /**
@@ -221,14 +203,9 @@ public class Semantic extends SemanticBase {
     }
 
     private static void initAll() {
-        final Cursor c = query(URI, allColumns, null, null, null);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            final Semantic s = cursorToSemantic(c);
+        for (final Semantic s : all()) {
             semantics.put(s.getCondition(), s);
-            c.moveToNext();
         }
-        c.close();
     }
 
     public static Semantic newSemantic(final String condition,
@@ -239,9 +216,8 @@ public class Semantic extends SemanticBase {
         return m.create();
     }
 
-    protected Semantic(final int id, final String condition,
-                       final Integer priority, final Integer due, final ListMirakel list,
-                       final Integer weekday) {
+    Semantic(final int id, final String condition, final Integer priority,
+             final Integer due, final ListMirakel list, final Integer weekday) {
         super(id, condition, priority, due, list, weekday);
     }
 

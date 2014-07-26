@@ -23,9 +23,12 @@ import android.content.Context;
 
 import java.util.List;
 
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
+import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsTagProperty extends SpecialListsSetProperty {
 
@@ -40,13 +43,11 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        String query = this.isNegated ? " NOT " : "";
-        query += ModelBase.ID + " IN (";
-        query += "SELECT task_id FROM " + Tag.TAG_CONNECTION_TABLE;
-        query += " WHERE tag_id IN(";
-        query = addContent(query);
-        return query + "))";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(Task.ID,
+                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
+                                                new MirakelQueryBuilder(ctx).distinct().select("task_id").and("tag_id",
+                                                        MirakelQueryBuilder.Operation.IN, content), MirakelInternalContentProvider.TAG_CONNECTION_URI);
     }
 
     @Override

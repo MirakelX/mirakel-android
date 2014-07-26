@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.list.meta;
 import android.content.Context;
 
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
@@ -39,20 +40,17 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        String ret = Task.PROGRESS;
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         switch (op) {
         case EQUAL:
-            ret += " = ";
-            break;
+            return qb.and(Task.PROGRESS, MirakelQueryBuilder.Operation.EQ, value);
         case GREATER_THAN:
-            ret += " >= ";
-            break;
+            return qb.and(Task.PROGRESS, MirakelQueryBuilder.Operation.GT, value);
         case LESS_THAN:
-            ret += " <= ";
-            break;
+            return qb.and(Task.PROGRESS, MirakelQueryBuilder.Operation.LT, value);
         }
-        return ret + value;
+        return qb;
     }
 
     @Override

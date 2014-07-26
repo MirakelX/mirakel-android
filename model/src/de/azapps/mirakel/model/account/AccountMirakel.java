@@ -38,6 +38,8 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
 
 public class AccountMirakel extends AccountBase {
@@ -121,7 +123,7 @@ public class AccountMirakel extends AccountBase {
     public static final String[] allColumns = { ModelBase.ID,
                                                 ModelBase.NAME, TYPE, ENABLED, SYNC_KEY
                                               };
-    private static final Uri URI = MirakelInternalContentProvider.ACCOUNT_URI;
+    public static final Uri URI = MirakelInternalContentProvider.ACCOUNT_URI;
 
     public static final String TABLE = "account";
 
@@ -131,106 +133,67 @@ public class AccountMirakel extends AccountBase {
         return URI;
     }
 
-
-    private static AccountMirakel cursorToAccount(final Cursor c) {
-        return new AccountMirakel(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-                                  ACCOUNT_TYPES.parseInt(c.getInt(c.getColumnIndex(TYPE))), c.getInt(c.getColumnIndex(ENABLED)) == 1,
-                                  c.getString(c.getColumnIndex(SYNC_KEY)));
+    public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
+        List<AccountMirakel> l = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                l.add(new AccountMirakel(c));
+            } while (c.moveToNext());
+        }
+        return l;
     }
 
-    public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
-        final List<AccountMirakel> accounts = new ArrayList<>();
-        if (c.moveToFirst()) {
-            while (!c.isAfterLast()) {
-                accounts.add(cursorToAccount(c));
-                c.moveToNext();
-            }
-        }
-        return accounts;
+
+    public AccountMirakel(final Cursor c) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+              ACCOUNT_TYPES.parseInt(c.getInt(c.getColumnIndex(TYPE))), c.getInt(c.getColumnIndex(ENABLED)) == 1,
+              c.getString(c.getColumnIndex(SYNC_KEY)));
     }
 
     public static AccountMirakel get(final Account account) {
-        final Cursor c = query(URI, allColumns, ModelBase.NAME
-                               + "='" + account.name + "'", null, null);
-        if (!c.moveToFirst()) {
-            c.close();
-            return null;
-        }
-        final AccountMirakel a = cursorToAccount(c);
-        c.close();
-        return a;
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
+                account.name).get(AccountMirakel.class);
     }
 
     public static AccountMirakel get(final long id) {
-        final Cursor c = query(URI, allColumns, ModelBase.ID
-                               + " = " + id, null, null);
-        if (c.moveToFirst()) {
-            final AccountMirakel a = cursorToAccount(c);
-            c.close();
-            return a;
-        }
-        c.close();
-        return null;
+        return new MirakelQueryBuilder(context).get(AccountMirakel.class, id);
     }
 
-    public static int countRemoteAccounts() {
-        final Cursor c = query(URI, new String[] {"count(*)"}, "NOT " + TYPE + "=" +
-                               ACCOUNT_TYPES.LOCAL.toInt() + " AND " + ENABLED + "=1", null, null);
-        if (c.moveToFirst()) {
-            final int ret = c.getInt(0);
-            c.close();
-            return ret;
-        }
-        c.close();
-        return 0;
+    public static long countRemoteAccounts() {
+        return new MirakelQueryBuilder(context).
+               and (TYPE, Operation.NOT_EQ, ACCOUNT_TYPES.LOCAL.toInt()).and(ENABLED,
+                       Operation.EQ, true).count(URI);
     }
 
     public static List<AccountMirakel> all() {
-        final Cursor c = query(URI, allColumns, null, null, null);
-        final List<AccountMirakel> accounts = cursorToAccountList(c);
-        c.close();
-        return accounts;
+        return new MirakelQueryBuilder(context).getList(AccountMirakel.class);
     }
 
     public static AccountMirakel getByName(final String name) {
-        final Cursor c = query(URI, allColumns, ModelBase.NAME
-                               + "='" + name + "'", null, null);
-        if (c.moveToFirst()) {
-            final AccountMirakel a = cursorToAccount(c);
-            c.close();
-            return a;
-        }
-        c.close();
-        return null;
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
+                name).get(AccountMirakel.class);
     }
 
     public static List<AccountMirakel> getEnabled(final boolean isEnabled) {
-        final Cursor c = query(URI, allColumns, ENABLED + "="
-                               + (isEnabled ? 1 : 0), null, null);
-        final List<AccountMirakel> accounts = cursorToAccountList(c);
-        c.close();
-        return accounts;
+        return new MirakelQueryBuilder(context).and(ENABLED, Operation.EQ,
+                isEnabled).getList(AccountMirakel.class);
     }
 
     public static AccountMirakel getLocal() {
-        final Cursor c = query(URI, allColumns, TYPE + "="
-                               + ACCOUNT_TYPES.LOCAL.toInt() + " AND " + ENABLED + "=1", null, null);
-        if (c.moveToFirst()) {
-            final AccountMirakel a = cursorToAccount(c);
-            c.close();
+        AccountMirakel a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
+                ACCOUNT_TYPES.LOCAL.toInt()).and(ENABLED, Operation.EQ,
+                        true).get(AccountMirakel.class);
+        if (a != null) {
             return a;
         }
-        c.close();
         return newAccount(context.getString(R.string.local_account),
                           ACCOUNT_TYPES.LOCAL, true);
     }
 
     public static List<AccountMirakel> getRemote() {
-        final Cursor c = query(URI, allColumns, "not " + TYPE + "="
-                               + ACCOUNT_TYPES.LOCAL.toInt() + " AND " + ENABLED + "=1", null,	null);
-        final List<AccountMirakel> accounts = cursorToAccountList(c);
-        c.close();
-        return accounts;
+        return new MirakelQueryBuilder(context).and(TYPE, Operation.NOT_EQ,
+                ACCOUNT_TYPES.LOCAL.toInt()).and(ENABLED, Operation.EQ,
+                        true).getList(AccountMirakel.class);
     }
 
 
@@ -241,17 +204,12 @@ public class AccountMirakel extends AccountBase {
         cv.put(TYPE, type.toInt());
         cv.put(ENABLED, enabled);
         final long id = insert(URI, cv);
-        final Cursor cursor = query(URI, allColumns,
-                                    ModelBase.ID + " = " + id, null, null);
-        cursor.moveToFirst();
-        final AccountMirakel newAccount = cursorToAccount(cursor);
-        cursor.close();
-        return newAccount;
+        return get(id);
     }
 
     public static void update(final Account[] accounts) {
         final List<AccountMirakel> accountList = AccountMirakel.all();
-        final int countRemotes = AccountMirakel.countRemoteAccounts();
+        final long countRemotes = AccountMirakel.countRemoteAccounts();
         final Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
         for (final AccountMirakel a : accountList) {
             map.put(a.getName(), a);
@@ -277,7 +235,7 @@ public class AccountMirakel extends AccountBase {
                 el.getValue().destroy();
             }
         }
-        final int countRemotesNow = AccountMirakel.countRemoteAccounts();
+        final long countRemotesNow = AccountMirakel.countRemoteAccounts();
         if (countRemotes == 0 && countRemotesNow == 1) {
             // If we just added our first remote account we want to set it as
             // the default one.
@@ -339,5 +297,6 @@ public class AccountMirakel extends AccountBase {
         }
         return null;
     }
+
 
 }

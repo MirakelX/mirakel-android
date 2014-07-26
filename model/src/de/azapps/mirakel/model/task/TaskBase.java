@@ -19,8 +19,6 @@
 
 package de.azapps.mirakel.model.task;
 
-import android.content.ContentValues;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.content.ContentValues;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -214,6 +213,7 @@ abstract class TaskBase extends ModelBase {
         return this.content;
     }
 
+    @Override
     public ContentValues getContentValues() throws NoSuchListException {
         final ContentValues cv = super.getContentValues();
         cv.put(TaskBase.UUID, this.uuid);
@@ -337,6 +337,11 @@ abstract class TaskBase extends ModelBase {
         if (this.additionalEntries == null) {
             this.additionalEntries = parseAdditionalEntries(this.additionalEntriesString);
         }
+    }
+
+    protected void setAdditionalEntries(final String additional) {
+        this.additionalEntriesString = additional;
+        initAdditionalEntries();
     }
 
     public static Map<String, String> parseAdditionalEntries(
@@ -490,24 +495,26 @@ abstract class TaskBase extends ModelBase {
         }
     }
 
+    @Override
     public void setName(final String newName) {
         if (getName() != null && getName().equals(newName)) {
             return;
         }
         super.setName(newName);
-        if (edited != null) {
+        if (this.edited != null) {
             this.edited.put(ModelBase.NAME, true);
         }
     }
 
-    public void setPriority(final int newPriority) {
-        if (this.priority == newPriority) {
+    public void setPriority(final int priority) {
+        if (this.priority == priority) {
             return;
         }
-        if (newPriority > 2 || newPriority < -2) {
-            throw new IllegalArgumentException("Priority is not in Range [-2,2]");
+        if (priority > 2 || priority < -2) {
+            throw new IllegalArgumentException(
+                "Priority is not in Range [-2,2]");
         }
-        this.priority = newPriority;
+        this.priority = priority;
         this.edited.put(TaskBase.PRIORITY, true);
     }
 
@@ -575,7 +582,6 @@ abstract class TaskBase extends ModelBase {
         return setDone(!this.done);
     }
 
-
     public List<Tag> getTags() {
         checkTags();
         return this.tags;
@@ -629,8 +635,8 @@ abstract class TaskBase extends ModelBase {
                  + (getName() == null ? 0 : getName().hashCode());
         result = prime * result + this.priority;
         result = prime * result + this.progress;
-        result = prime * result + (int)this.recurrence;
-        result = prime * result + (int)this.recurringReminder;
+        result = prime * result + (int) this.recurrence;
+        result = prime * result + (int) this.recurringReminder;
         result = prime * result
                  + (this.reminder == null ? 0 : this.reminder.hashCode());
         result = prime * result

@@ -65,6 +65,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
@@ -478,9 +479,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-        // MainActivity.updateTasksUUID = true; TODO do we need this
-        // anymore?
-        // Don't remove this version-gap
+            // MainActivity.updateTasksUUID = true; TODO do we need this
+            // anymore?
+            // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -566,7 +567,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-        // Add Accountmanagment
+            // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -592,11 +593,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-        // add progress
+            // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-        // Add some columns for caldavsync
+            // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -614,7 +615,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-        // add some options to reccuring
+            // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -634,15 +635,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-        // also save the time of a due-date
+            // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-        // save all times in tasktable as utc-unix-seconds
+            // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-        // move tw-sync-key to db
-        // move tw-certs into accountmanager
+            // move tw-sync-key to db
+            // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -669,8 +670,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                                   .get(this.context);
             Cursor c = db.query(AccountMirakel.TABLE,
                                 AccountMirakel.allColumns, null, null, null, null, null);
-            final List<AccountMirakel> accounts = AccountMirakel
-                                                  .cursorToAccountList(c);
+            final List<AccountMirakel> accounts = AccountMirakel.cursorToAccountList(c);
             c.close();
             for (final AccountMirakel a : accounts) {
                 if (a.getType() == ACCOUNT_TYPES.TASKWARRIOR) {
@@ -861,7 +861,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-        // refactor recurrence to follow the taskwarrior method
+            // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -958,7 +958,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
                                        + "=?", new String[] {id + ""}, null, null, null);
                 if (tagC.moveToFirst()) {
-                    Tag newTag = Tag.cursorToTag(tagC);
+                    Tag newTag = new Tag(tagC);
                     tagC.close();
                     newTag.setBackgroundColor(newColor);
                     db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});

@@ -22,6 +22,8 @@ package de.azapps.mirakel.model.list.meta;
 import android.content.Context;
 
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public abstract class SpecialListsStringProperty extends
     SpecialListsBaseProperty {
@@ -84,27 +86,23 @@ public abstract class SpecialListsStringProperty extends
     }
 
     @Override
-    public String getWhereQuery() {
-        String query = this.isNegated ? " NOT " : "";
-        query += propertyName() + " LIKE '";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        MirakelQueryBuilder.Operation op = isNegated ? Operation.NOT_LIKE :
+                                           Operation.LIKE;
         if (this.type == null) {
-            return query + "%'";
+            return qb.and(propertyName(), op, "%");
         }
-        final String keyword = this.searchString.replace("'", "''");
         switch (this.type) {
         case BEGIN:
-            query += "%" + keyword;
-            break;
+            return qb.and(propertyName(), op, "%" + searchString);
         case CONTAINS:
-            query += "%" + keyword + "%";
-            break;
+            return qb.and(propertyName(), op, "%" + searchString + "%");
         case END:
-            query += keyword + "%";
-            break;
+            return qb.and(propertyName(), op, searchString + "%");
         default:
-            break;
+            return qb;
         }
-        return query + "'";
     }
 
     @Override

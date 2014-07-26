@@ -42,10 +42,13 @@ abstract public class ModelBase {
 
     protected static Context context;
 
+    public ModelBase(final Cursor c) {}
+
     protected ModelBase(long newId, String newName) {
         setId(newId);
         setName(newName);
     }
+
 
     /**
      * Initialize the model and the preferences
