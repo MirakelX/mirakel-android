@@ -238,7 +238,7 @@
         <provider
             android:name="de.azapps.mirakel.model.MirakelInternalContentProvider"
             android:authorities="de.azapps.mirakel.provider.internal"
-            android:exported="false" />
+            android:exported="true" />
 
         <service android:name="de.azapps.mirakel.services.NotificationService" />
         <service android:name="de.azapps.mirakel.services.TaskService" />

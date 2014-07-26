@@ -237,9 +237,6 @@ public class ListFragment extends MirakelFragment {
                 cv.put (SyncAdapter.SYNC_STATE, SYNC_STATE.ADD.toInt ());
                 main.getContentResolver().update(MirakelInternalContentProvider.TASK_URI, cv,
                                                  where + " AND NOT " + SyncAdapter.SYNC_STATE + "=" + SYNC_STATE.DELETE, null);
-                getActivity().getContentResolver().delete(MirakelInternalContentProvider.CALDAV_LISTS_URI, "" +
-                        "where " + ModelBase.ID + " in( select " + ModelBase.ID + " from " + Task.TABLE
-                        + " where " + where + ");", null);
                 ListFragment.this.main.getListFragment ().update ();
             }
         }).setNegativeButton (android.R.string.cancel, null).show ();
@@ -303,7 +300,7 @@ public class ListFragment extends MirakelFragment {
         this.adapter = new ListAdapter (getActivity (), R.layout.lists_row,
                                         values, this.enableDrag);
         this.listView.setDragEnabled (this.enableDrag);
-        this.listView.setParts (SpecialList.getSpecialListCount (true));
+        this.listView.setParts ((int)SpecialList.getSpecialListCount (true));
         this.listView.setAdapter (this.adapter);
         this.listView.requestFocus ();
         this.listView.setDropListener (new DropListener () {
