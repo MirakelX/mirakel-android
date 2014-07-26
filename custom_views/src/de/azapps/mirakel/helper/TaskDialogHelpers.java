@@ -70,6 +70,8 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -113,36 +115,32 @@ public class TaskDialogHelpers {
     }
 
     protected static Cursor queryForSubtasks(final Task t, final Context ctx) {
-        StringBuilder where = new StringBuilder();
-        where.append(ModelBase.NAME).append(" LIKE '%").append(searchString).append("%' AND");
-        where.append(" NOT ").append(ModelBase.ID).append(" IN (SELECT parent_id FROM ").append(
-            Task.SUBTASK_TABLE);
-        where.append(" WHERE child_id=").append(t.getId()).append( ") AND ");
-        where.append("NOT ").append(ModelBase.ID).append("=").append(t.getId());
-        where.append(" AND").append(Task.BASIC_FILTER_DISPLAY_TASKS);
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        qb.and(Task.NAME, Operation.LIKE, "%" + searchString + "%");
+        qb.and(Task.ID, Operation.NOT_IN,
+               new MirakelQueryBuilder(ctx).select("parent_id").and("child_id", Operation.EQ,
+                       t), MirakelInternalContentProvider.SUBTASK_URI);
+        qb.and(Task.ID, Operation.NOT_EQ, t);
+        qb = Task.addBasicFiler(qb);
         if (optionEnabled) {
             if (!done) {
-                where.append(" AND ").append(Task.DONE).append("=0");
+                qb.and(Task.DONE, Operation.EQ, false);
             }
             if (content) {
-                where.append(" AND ").append(Task.CONTENT).append(" IS NOT NULL AND NOT ");
-                where.append(Task.CONTENT).append(" =''");
+                qb.and(Task.CONTENT, Operation.NOT_EQ, (String) null);
+                qb.and(Task.CONTENT, Operation.NOT_EQ, "");
             }
             if (reminder) {
-                where.append(" AND ").append(Task.REMINDER).append(" IS NOT NULL");
+                qb.and(Task.REMINDER, Operation.NOT_EQ, (String) null);
             }
             if (listId > 0) {
-                where.append(" AND ").append(Task.LIST_ID).append("=").append(listId);
+                qb.and(Task.LIST_ID, Operation.EQ, listId);
             } else {
-                final String whereList = ((SpecialList) ListMirakel.get(listId))
-                                         .getWhereQueryForTasks();
-                if (whereList != null && !"".equals(whereList.trim())) {
-                    where.append(" AND ").append(where);
-                }
+                qb.and(((SpecialList) ListMirakel.get(listId))
+                       .getWhereQueryForTasks());
             }
         }
-        return ctx.getContentResolver().query(MirakelInternalContentProvider.TASK_URI, Task.allColumns,
-                                              where.toString(), null, null);
+        return qb.select(Task.allColumns).query(Task.URI);
     }
 
     public static void handleAudioRecord(final Context context,
