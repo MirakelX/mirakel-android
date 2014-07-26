@@ -26,6 +26,7 @@ import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
 import de.azapps.tools.Log;
 
 abstract class ListBase  extends ModelBase {
@@ -33,10 +34,12 @@ abstract class ListBase  extends ModelBase {
     public final static String LFT = "lft";
     public final static String RGT = "rgt";
     public final static String COLOR = "color";
-    public final static String SORT_BY = "sort_by";
+    public final static String SORT_BY_FIELD = "sort_by";
     public final static String ACCOUNT_ID = "account_id";
 
-    private int sortBy;
+
+
+    private SORT_BY sortBy;
     private String createdAt;
     private String updatedAt;
     private SYNC_STATE syncState;
@@ -52,7 +55,7 @@ abstract class ListBase  extends ModelBase {
         super(0, "");
     }
 
-    ListBase(final long id, final String name, final short sortBy,
+    ListBase(final long id, final String name, final SORT_BY sortBy,
              final String createdAt, final String updatedAt,
              final SYNC_STATE syncState, final int lft, final int rgt,
              final int color, final AccountMirakel a) {
@@ -71,7 +74,7 @@ abstract class ListBase  extends ModelBase {
         super(id, name);
     }
 
-    protected ListBase(final long id, final String name, final short sortBy,
+    protected ListBase(final long id, final String name, final SORT_BY sortBy,
                        final String createdAt, final String updatedAt,
                        final SYNC_STATE syncState, final int lft, final int rgt,
                        final int color, final int account) {
@@ -102,11 +105,11 @@ abstract class ListBase  extends ModelBase {
         this.updatedAt = updatedAt;
     }
 
-    public int getSortBy() {
+    public SORT_BY getSortBy() {
         return this.sortBy;
     }
 
-    public void setSortBy(final int sortBy) {
+    public void setSortBy(final SORT_BY sortBy) {
         this.sortBy = sortBy;
     }
 
@@ -166,7 +169,7 @@ abstract class ListBase  extends ModelBase {
         }
         cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
         cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
-        cv.put(SORT_BY, this.sortBy);
+        cv.put(SORT_BY_FIELD, this.sortBy.getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(LFT, this.lft);
         cv.put(RGT, this.rgt);
@@ -201,7 +204,7 @@ abstract class ListBase  extends ModelBase {
         result = prime * result
                  + (getName() == null ? 0 : getName().hashCode());
         result = prime * result + this.rgt;
-        result = prime * result + this.sortBy;
+        result = prime * result + this.sortBy.getShort();
         result = prime * result
                  + (this.syncState == null ? 0 : this.syncState.hashCode());
         result = prime * result

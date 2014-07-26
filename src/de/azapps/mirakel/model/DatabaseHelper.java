@@ -65,7 +65,6 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
@@ -159,8 +158,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase. NAME
                    + " TEXT NOT NULL, " + SpecialList.ACTIVE
                    + " INTEGER NOT NULL DEFAULT 0, " + SpecialList.WHERE_QUERY
-                   + " STRING NOT NULL DEFAULT '', " + ListMirakel.SORT_BY
-                   + " INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT + ", "
+                   + " STRING NOT NULL DEFAULT '', " + ListMirakel.SORT_BY_FIELD
+                   + " INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY.OPT.getShort() + ", "
                    + SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
                    + ", " + SpecialList.DEFAULT_LIST + " INTEGER, "
                    + SpecialList.DEFAULT_DUE + " INTEGER," + ListMirakel.COLOR
@@ -343,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                          final long accountId) {
         db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ModelBase.ID
                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase.NAME
-                   + " TEXT NOT NULL, " + ListMirakel.SORT_BY
+                   + " TEXT NOT NULL, " + ListMirakel.SORT_BY_FIELD
                    + " INTEGER NOT NULL DEFAULT 0, " + CREATED_AT
                    + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, " + UPDATED_AT
                    + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "

@@ -75,12 +75,12 @@ public class ListDialogHelpers {
                                                 R.array.task_sorting_items);
         final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
         builder.setTitle(ctx.getString(R.string.task_sorting_title));
-        builder.setSingleChoiceItems(SortingItems, list.getSortBy(),
+        builder.setSingleChoiceItems(SortingItems, list.getSortBy().getShort(),
         new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog,
                                 final int item) {
-                list.setSortBy(item);
+                list.setSortBy(ListMirakel.SORT_BY.fromShort((short) item));
                 list.save();
                 if (res != null) {
                     res.setSummary(SortingItems[item]);

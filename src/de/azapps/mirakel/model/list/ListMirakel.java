@@ -54,18 +54,53 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
  */
 public class ListMirakel extends ListBase {
     public static final String[] allColumns = { ModelBase.ID,
-                                                ModelBase.NAME, SORT_BY, DatabaseHelper.CREATED_AT,
+                                                ModelBase.NAME, SORT_BY_FIELD, DatabaseHelper.CREATED_AT,
                                                 DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
                                                 RGT, COLOR, ACCOUNT_ID
                                               };
+
+    public enum SORT_BY {
+        OPT, DUE, PRIO, ID, REVERT_DEFAULT;
+
+        public short getShort() {
+            switch (this) {
+            case OPT:
+                return 0;
+            case DUE:
+                return 1;
+            case PRIO:
+                return 2;
+            case ID:
+                return 3;
+            case REVERT_DEFAULT:
+                return 4;
+            default:
+                throw new IllegalArgumentException("Unkown SORT_BY type " + this.toString());
+            }
+        }
+
+        public static SORT_BY fromShort(final short s) {
+            switch (s) {
+            case 0:
+                return OPT;
+            case 1:
+                return DUE;
+            case 2:
+                return PRIO;
+            case 3:
+                return ID;
+            case 4:
+                return REVERT_DEFAULT;
+            default:
+                throw new IllegalArgumentException("Cannot transform " + s + " to SORT_BY");
+            }
+        }
+    }
     public static final Uri URI = MirakelInternalContentProvider.LIST_URI;
 
 
     // private static final String TAG = "ListMirakel";
 
-
-    public static final short SORT_BY_OPT = 0, SORT_BY_DUE = 1,
-                              SORT_BY_PRIO = 2, SORT_BY_ID = 3, SORT_BY_REVERT_DEFAULT = 4;
 
     public static final String TABLE = "lists";
 
@@ -76,27 +111,27 @@ public class ListMirakel extends ListBase {
     }
 
     public MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb) {
-        return addSortBy(qb, (short)getSortBy(), getId());
+        return addSortBy(qb, getSortBy(), getId());
     }
 
-    public static MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb, final short sorting,
+    public static MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb, final SORT_BY sorting,
             final long listId) {
         final String dueSort = "CASE WHEN (" + Task.DUE
                                + " IS NULL) THEN datetime('now','+50 years') ELSE datetime("
                                + Task.DUE
                                + ",'unixepoch','localtime','start of day') END ";
         switch (sorting) {
-        case ListMirakel.SORT_BY_PRIO:
+        case PRIO:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             break;
-        case ListMirakel.SORT_BY_OPT:
+        case OPT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             //$FALL-THROUGH$
-        case ListMirakel.SORT_BY_DUE:
+        case DUE:
             qb.sort(Task.DONE, Sorting.ASC);
             qb.sort(dueSort, Sorting.ASC);
             break;
-        case ListMirakel.SORT_BY_REVERT_DEFAULT:
+        case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
             //$FALL-THROUGH$
@@ -182,7 +217,8 @@ public class ListMirakel extends ListBase {
 
     public ListMirakel(final Cursor c) {
         super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              c.getShort(c.getColumnIndex(SORT_BY)), c.getString(c.getColumnIndex(DatabaseHelper.CREATED_AT)),
+              SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))),
+              c.getString(c.getColumnIndex(DatabaseHelper.CREATED_AT)),
               c.getString(c.getColumnIndex(DatabaseHelper.UPDATED_AT)),
               SYNC_STATE.parseInt(c.getInt(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
@@ -232,7 +268,7 @@ public class ListMirakel extends ListBase {
         if (l != null) {
             return l;
         }
-        return newList(context.getString(R.string.inbox), SORT_BY_OPT, account);
+        return newList(context.getString(R.string.inbox), SORT_BY.OPT, account);
     }
 
     public static ListMirakel get(final long listId) {
@@ -272,7 +308,7 @@ public class ListMirakel extends ListBase {
      * @return
      */
     public static ListMirakel newList(final String name) {
-        return newList(name, SORT_BY_OPT);
+        return newList(name, SORT_BY.OPT);
     }
 
     /**
@@ -284,12 +320,12 @@ public class ListMirakel extends ListBase {
      *            the default sorting
      * @return new List
      */
-    public static ListMirakel newList(final String name, final short sort_by) {
+    public static ListMirakel newList(final String name, final SORT_BY sort_by) {
         return newList(name, sort_by,
                        MirakelModelPreferences.getDefaultAccount());
     }
 
-    public static ListMirakel newList(final String name, final short sort_by,
+    public static ListMirakel newList(final String name, final SORT_BY sort_by,
                                       final AccountMirakel account) {
         ListMirakel l = new ListMirakel(0, name, sort_by, null, null, SYNC_STATE.ADD, 0, 0, 0, account);
         ListMirakel newList = l.create();
@@ -301,7 +337,7 @@ public class ListMirakel extends ListBase {
         final ContentValues values = new ContentValues();
         values.put(ModelBase.NAME, getName());
         values.put(ACCOUNT_ID, getAccount().getId());
-        values.put(SORT_BY, getSortBy());
+        values.put(SORT_BY_FIELD, getSortBy().getShort());
         values.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
         values.put(DatabaseHelper.CREATED_AT,
                    new SimpleDateFormat(
@@ -366,7 +402,7 @@ public class ListMirakel extends ListBase {
         }
         j = el.get("sort_by");
         if (j != null) {
-            t.setSortBy(j.getAsInt());
+            t.setSortBy(SORT_BY.fromShort(j.getAsShort()));
         }
         return t;
     }
@@ -395,7 +431,7 @@ public class ListMirakel extends ListBase {
         super(id, name);
     }
 
-    public ListMirakel(final long id, final String name, final short sort_by,
+    public ListMirakel(final long id, final String name, final SORT_BY sort_by,
                        final String created_at, final String updated_at,
                        final SYNC_STATE sync_state, final int lft, final int rgt,
                        final int color, final AccountMirakel account) {
@@ -403,7 +439,7 @@ public class ListMirakel extends ListBase {
               color, account);
     }
 
-    protected ListMirakel(final long id, final String name, final short sort_by,
+    protected ListMirakel(final long id, final String name, final SORT_BY sort_by,
                           final String created_at, final String updated_at,
                           final SYNC_STATE sync_state, final int lft, final int rgt,
                           final int color, final int account) {

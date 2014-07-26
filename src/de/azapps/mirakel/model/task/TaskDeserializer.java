@@ -156,7 +156,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 if (list == null
                     || list.getAccount().getId() != this.account.getId()) {
                     list = ListMirakel.newList(val.getAsString(),
-                                               ListMirakel.SORT_BY_OPT, this.account);
+                                               ListMirakel.SORT_BY.OPT, this.account);
                 }
                 t.setList(list, true);
                 break;
