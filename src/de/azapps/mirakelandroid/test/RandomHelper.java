@@ -88,9 +88,7 @@ public class RandomHelper {
     }
 
     public static Calendar getRandomCalendar() {
-        final Calendar c = new GregorianCalendar();
-        c.setTimeInMillis(random.nextLong() % (2^32));
-        return c;
+        return getRandomGregorianCalendar();
     }
 
     public static long getRandomlong() {
