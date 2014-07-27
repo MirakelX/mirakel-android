@@ -150,10 +150,9 @@ public class TagDialog extends DialogFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-        return new MirakelQueryBuilder(ctx).select(Tag.allColumns).and(Tag.ID, Operation.NOT_IN,
-                Arrays.asList(new String[] {Tag.getTagsQuery(new String[] { ModelBase.ID })}),
-                Arrays.asList(new String[] {task.getId() + ""})).and(Tag.NAME,
-                        Operation.LIKE, this.searchString + "%").toCursorLoader(Tag.URI);
+        return new CursorLoader(ctx, Tag.URI, Tag.allColumns,
+                                "NOT " + Tag.ID + " IN(" + Tag.getTagsQuery(new String[] { ModelBase.ID }) + ") AND " + Tag.NAME +
+                                " LIKE ?", new String[] {this.task.getId() + "", this.searchString + "%"}, null);
     }
 
     @Override
