@@ -30,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +104,17 @@ public class SpecialList extends ListMirakel {
             return ListMirakel.first();
         }
         return this.defaultList;
+    }
+
+    public static List<SpecialList> cursorToSpecialLists(final Cursor c) {
+        List<SpecialList> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new SpecialList(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
     }
 
     public void setDefaultList(final ListMirakel defaultList) {

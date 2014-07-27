@@ -73,6 +73,16 @@ public class Recurring extends RecurringBase {
 
 
     // Static
+    public static List<Recurring> cursorToRecurringList(final Cursor c) {
+        List<Recurring> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new Recurring(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
+    }
 
 
     public static Recurring createTemporayCopy(final Recurring r) {
