@@ -184,7 +184,7 @@ public class SpecialListSettings extends PreferencesHelper {
         final Preference sortBy = findPreference("special_default_sort");
         sortBy.setOnPreferenceChangeListener(null);
         sortBy.setSummary(this.activity.getResources().getStringArray(
-                              R.array.task_sorting_items)[this.specialList.getSortBy()]);
+                              R.array.task_sorting_items)[this.specialList.getSortBy().getShort()]);
         sortBy.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(final Preference preference) {
