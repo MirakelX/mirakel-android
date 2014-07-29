@@ -91,6 +91,11 @@ public class SpecialList extends ListMirakel {
         return URI;
     }
 
+    @Override
+    public long getId() {
+        return -1 * super.getId();
+    }
+
     public Map<String, SpecialListsBaseProperty> getWhere() {
         return this.where;
     }
@@ -132,7 +137,7 @@ public class SpecialList extends ListMirakel {
     SpecialList(final long id, final String name,
                 final Map<String, SpecialListsBaseProperty> whereQuery,
                 final boolean active, final ListMirakel listMirakel,
-                final Integer defaultDate, final short sort_by,
+                final Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt) {
         super(-id, name, sort_by, "", "", sync_state, 0, 0, color,
@@ -180,7 +185,7 @@ public class SpecialList extends ListMirakel {
     public static final String DEFAULT_DUE = "def_date";
     public static final String[] allColumns = { ModelBase.ID,
                                                 ModelBase.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
-                                                DEFAULT_DUE, SORT_BY, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
+                                                DEFAULT_DUE, SORT_BY_FIELD, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
                                                 RGT
                                               };
     private static final String TAG = "SpecialList";
@@ -214,7 +219,7 @@ public class SpecialList extends ListMirakel {
     public static SpecialList newSpecialList(final String name,
             final Map<String, SpecialListsBaseProperty> whereQuery,
             final boolean active) {
-        final SpecialList s = new SpecialList(0, name, whereQuery, active, null, null, (short)0,
+        final SpecialList s = new SpecialList(0, name, whereQuery, active, null, null, SORT_BY.OPT,
                                               SYNC_STATE.ADD, 0,
                                               0, 0);
         return s.create();
@@ -290,7 +295,7 @@ public class SpecialList extends ListMirakel {
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();
         cv.put(ModelBase.NAME, getName());
-        cv.put(SORT_BY, getSortBy());
+        cv.put(SORT_BY_FIELD, getSortBy().getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
         cv.put(ACTIVE, isActive() ? 1 : 0);
         cv.put(WHERE_QUERY, serializeWhere(getWhere()));
@@ -334,7 +339,7 @@ public class SpecialList extends ListMirakel {
      * @return List
      */
     public static SpecialList get(final long listId) {
-        SpecialList l = new MirakelQueryBuilder(context).get(SpecialList.class, listId);
+        SpecialList l = new MirakelQueryBuilder(context).get(SpecialList.class, Math.abs(listId));
         if (l != null) {
             return l;
         }
@@ -373,7 +378,7 @@ public class SpecialList extends ListMirakel {
      */
     public SpecialList(final Cursor c) {
         super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              c.getShort(c.getColumnIndex(SORT_BY)), "", "",
+              SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))), "", "",
               SYNC_STATE.parseInt(c.getInt(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
               AccountMirakel.getLocal());
@@ -382,6 +387,7 @@ public class SpecialList extends ListMirakel {
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
         setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
         setDefaultDate(c.isNull(defDateCol) ? null : c.getInt(defDateCol));
+        isSpecial = true;
     }
 
     private static Map<String, SpecialListsBaseProperty> deserializeWhere(

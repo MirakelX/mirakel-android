@@ -46,6 +46,7 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
@@ -189,34 +190,6 @@ public class Task extends TaskBase {
         return t;
     }
 
-    public static String getSorting(final int sorting) {
-        String order = "";
-        final String dueSort = "CASE WHEN (" + TaskBase.DUE
-                               + " IS NULL) THEN datetime('now','+50 years') ELSE datetime("
-                               + TaskBase.DUE
-                               + ",'unixepoch','localtime','start of day') END ASC";
-        switch (sorting) {
-        case ListMirakel.SORT_BY_PRIO:
-            order = TaskBase.PRIORITY + " desc";
-            break;
-        case ListMirakel.SORT_BY_OPT:
-            order = ", " + TaskBase.PRIORITY + " DESC";
-            //$FALL-THROUGH$
-        case ListMirakel.SORT_BY_DUE:
-            order = "done ASC, " + dueSort + order;
-            break;
-        case ListMirakel.SORT_BY_REVERT_DEFAULT:
-            order = TaskBase.PRIORITY + " DESC, " + dueSort + order;
-            //$FALL-THROUGH$
-        default:
-            if (!order.equals("")) {
-                order += ", ";
-            }
-            order += ModelBase.ID + " ASC";
-        }
-        return order;
-    }
-
     public static List<Pair<Long, String>> getTaskNames() {
         final Cursor c = addBasicFiler(new MirakelQueryBuilder(context))
                          .select(ID, NAME).query(URI);
@@ -235,11 +208,11 @@ public class Task extends TaskBase {
      *
      * @param listId
      * @param sorting
-     *            The Sorting (@see Mirakel.SORT_*)
+     *            The Sorting (@see ListMirakel.SORT_BY)
      * @param showDone
      * @return
      */
-    public static List<Task> getTasks(final long listId, final int sorting,
+    public static List<Task> getTasks(final long listId, final SORT_BY sorting,
                                       final boolean showDone) {
         final Cursor cursor = getTasksCursor(listId, sorting, showDone);
         return cursorToTaskList(cursor);
@@ -250,12 +223,12 @@ public class Task extends TaskBase {
      *
      * @param list
      * @param sorting
-     *            The Sorting (@see Mirakel.SORT_*)
+     *            The Sorting (@see ListMirakel.SORT_BY)
      * @param showDone
      * @return
      */
     public static List<Task> getTasks(final ListMirakel list,
-                                      final int sorting, final boolean showDone) {
+                                      final SORT_BY sorting, final boolean showDone) {
         return getTasks(list.getId(), sorting, showDone);
     }
 
@@ -266,7 +239,7 @@ public class Task extends TaskBase {
      * @param sorting
      * @return
      */
-    private static Cursor getTasksCursor(final long listId, final int sorting,
+    private static Cursor getTasksCursor(final long listId, final SORT_BY sorting,
                                          final boolean showDone) {
         final ListMirakel l = ListMirakel.get(listId);
         if (l == null) {
@@ -287,11 +260,11 @@ public class Task extends TaskBase {
      * @param sorting
      * @return
      */
-    private static Cursor getTasksCursor(final long listId, final int sorting,
+    private static Cursor getTasksCursor(final long listId, final SORT_BY sorting,
                                          final MirakelQueryBuilder qb) {
         addBasicFiler(qb);
         qb.sort(Task.DONE, Sorting.ASC);
-        ListMirakel.addSortBy(qb, (short) sorting, listId);
+        ListMirakel.addSortBy(qb, sorting, listId);
         return qb.select(allColumns).query(URI);
     }
 
@@ -300,7 +273,7 @@ public class Task extends TaskBase {
                    new MirakelQueryBuilder(context).select(
                        addPrefix(allColumns, TABLE)).and(
                        SUBTASK_TABLE + ".parent_id", Operation.EQ, subtask),
-                   ListMirakel.SORT_BY_OPT, 0).query(
+                   SORT_BY.OPT, 0).query(
                    MirakelInternalContentProvider.TASK_SUBTASK_URI);
     }
 

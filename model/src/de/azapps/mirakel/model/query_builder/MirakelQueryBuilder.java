@@ -406,20 +406,14 @@ public class MirakelQueryBuilder {
             final Constructor<T> constructor = clazz
                                                .getConstructor(Cursor.class);
             return constructor.newInstance(c);
-        } catch (final NoSuchMethodException e) {
-            Log.wtf(TAG,
-                    "go and implement a the constructor "
-                    + clazz.getCanonicalName() + "(Cursor)");
-            throw new IllegalArgumentException(
-                "go and implement a the constructor "
-                + clazz.getCanonicalName() + "(Cursor)");
-        } catch (IllegalAccessException | InvocationTargetException
-                     | InstantiationException e) {
-            Log.wtf(TAG,
-                    "go and make the constructor " + clazz.getCanonicalName()
-                    + "(Cursor) accessible");
-            throw new IllegalArgumentException("go and make the constructor "
-                                               + clazz.getCanonicalName() + "(Cursor) accessible");
+        } catch (NoSuchMethodException e) {
+            Log.wtf(TAG, "go and implement a the constructor " + clazz.getCanonicalName() + "(Cursor)");
+            throw new IllegalArgumentException("go and implement a the constructor " + clazz.getCanonicalName()
+                                               + "(Cursor)", e);
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            Log.wtf(TAG, "go and make the constructor " + clazz.getCanonicalName() + "(Cursor) accessible");
+            throw new IllegalArgumentException("go and make the constructor " + clazz.getCanonicalName() +
+                                               "(Cursor) accessible", e);
         }
     }
 

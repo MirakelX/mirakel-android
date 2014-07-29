@@ -77,7 +77,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 41;
+    public static final int DATABASE_VERSION = 42;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -126,9 +126,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " INTEGER NOT NULL default 0)");
     }
 
-    public DatabaseHelper(final Context ctx) {
+    private DatabaseHelper(final Context ctx) {
         super(ctx, getDBName(ctx), null, DATABASE_VERSION);
         this.context = ctx;
+    }
+
+    private static DatabaseHelper databaseHelperSingleton;
+
+    public static DatabaseHelper getDatabaseHelper(Context context) {
+        if (databaseHelperSingleton == null) {
+            databaseHelperSingleton = new DatabaseHelper(context);
+        }
+        return databaseHelperSingleton;
     }
 
     /**
@@ -149,8 +158,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase. NAME
                    + " TEXT NOT NULL, " + SpecialList.ACTIVE
                    + " INTEGER NOT NULL DEFAULT 0, " + SpecialList.WHERE_QUERY
-                   + " STRING NOT NULL DEFAULT '', " + ListMirakel.SORT_BY
-                   + " INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY_OPT + ", "
+                   + " STRING NOT NULL DEFAULT '', " + ListMirakel.SORT_BY_FIELD
+                   + " INTEGER NOT NULL DEFAULT " + ListMirakel.SORT_BY.OPT.getShort() + ", "
                    + SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
                    + ", " + SpecialList.DEFAULT_LIST + " INTEGER, "
                    + SpecialList.DEFAULT_DUE + " INTEGER," + ListMirakel.COLOR
@@ -333,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                          final long accountId) {
         db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ModelBase.ID
                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase.NAME
-                   + " TEXT NOT NULL, " + ListMirakel.SORT_BY
+                   + " TEXT NOT NULL, " + ListMirakel.SORT_BY_FIELD
                    + " INTEGER NOT NULL DEFAULT 0, " + CREATED_AT
                    + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, " + UPDATED_AT
                    + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
@@ -479,9 +488,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-            // MainActivity.updateTasksUUID = true; TODO do we need this
-            // anymore?
-            // Don't remove this version-gap
+        // MainActivity.updateTasksUUID = true; TODO do we need this
+        // anymore?
+        // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -567,7 +576,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-            // Add Accountmanagment
+        // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -593,11 +602,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-            // add progress
+        // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-            // Add some columns for caldavsync
+        // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -615,7 +624,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-            // add some options to reccuring
+        // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -635,15 +644,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-            // also save the time of a due-date
+        // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-            // save all times in tasktable as utc-unix-seconds
+        // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-            // move tw-sync-key to db
-            // move tw-certs into accountmanager
+        // move tw-sync-key to db
+        // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -861,7 +870,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-            // refactor recurrence to follow the taskwarrior method
+        // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -967,6 +976,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             db.execSQL("DROP TABLE tmp_tags;");
             db.execSQL("create unique index tag_unique ON tag (name);");
+        case 41:
+            updateCaldavExtra(db);
         default:
             break;
         }
@@ -979,14 +990,338 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         settingsIntToLong(settings, "subtaskAddToList");
     }
     private void settingsIntToLong(SharedPreferences settings, String key) {
-        final int i = settings.getInt(key, -1);
-        if (i != -1) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putLong(key, Long.valueOf(i));
-            editor.commit();
+        try {
+            final int i = settings.getInt(key, -1);
+            if (i != -1) {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putLong(key, Long.valueOf(i));
+                editor.commit();
+            }
+        } catch (ClassCastException e) {
+            Log.i(TAG, "The setting was already a long", e);
+            return;
         }
     }
 
+
+
+    private static void createCaldavLists(final SQLiteDatabase db) {
+        // Create table for extras for lists
+        db.execSQL("CREATE TABLE caldav_lists_extra (\n" +
+                   "list_id INTEGER PRIMARY KEY REFERENCES lists(_id) ON DELETE CASCADE ON UPDATE CASCADE,\n" +
+                   "_sync_id TEXT,\n" +
+                   "sync_version TEXT,\n" +
+                   "sync1 TEXT,\n" +
+                   "sync2 TEXT,\n" +
+                   "sync3 TEXT,\n" +
+                   "sync4 TEXT,\n" +
+                   "sync5 TEXT,\n" +
+                   "sync6 TEXT,\n" +
+                   "sync7 TEXT,\n" +
+                   "sync8 TEXT,\n" +
+                   "account_type TEXT,\n" +
+                   "access_level INTEGER,\n" +
+                   "visible INTEGER,\n" +
+                   "sync_enabled INTEGER,\n" +
+                   "owner TEXT);");
+        // Create view for lists
+        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, sync_enabled, owner\n"
+                   +
+                   "FROM lists as l\n" +
+                   "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
+                   "LEFT JOIN account AS a ON a._id = account_id;");
+        // Create trigger for lists
+        // Insert trigger
+        db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
+                   "BEGIN\n" +
+                   "INSERT INTO lists (sync_state, name, color, account_id) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name));\n"
+                   +
+                   "INSERT INTO caldav_lists_extra VALUES\n" +
+                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
+                   +
+                   "END;");
+        // Update trigger
+        db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
+                   "BEGIN\n" +
+                   "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
+                   +
+                   "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
+                   +
+                   "END;");
+        // delete trigger
+        db.execSQL("CREATE TRIGGER caldav_lists_delete_trigger INSTEAD OF DELETE on caldav_lists\n" +
+                   "BEGIN\n" +
+                   "    DELETE FROM lists WHERE _id = old._id;\n" +
+                   "END;\n");
+    }
+
+    private static void createCaldavTasks(final SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE caldav_tasks_extra (\n" +
+                   "_sync_id TEXT,\n" +
+                   "sync_version TEXT,\n" +
+                   "sync1 TEXT,\n" +
+                   "sync2 TEXT,\n" +
+                   "sync3 TEXT,\n" +
+                   "sync4 TEXT,\n" +
+                   "sync5 TEXT,\n" +
+                   "sync6 TEXT,\n" +
+                   "sync7 TEXT,\n" +
+                   "sync8 TEXT,\n" +
+                   "_uid TEXT,\n" +
+                   "task_id INTEGER PRIMARY KEY REFERENCES tasks(_id) ON DELETE CASCADE ON UPDATE CASCADE,\n" +
+                   "location TEXT,\n" +
+                   "geo TEXT,\n" +
+                   "url TEXT,\n" +
+                   "organizer TEXT,\n" +
+                   "priority INTEGER,\n" +
+                   "classification INTEGER,\n" +
+                   "completed_is_allday DEFAULT 0,\n" +
+                   "status,\n" +
+                   "task_color INTEGER,\n" +
+                   "dtstart INTEGER,\n" +
+                   "is_allday INTEGER,\n" +
+                   "tz TEXT,\n" +
+                   "duration TEXT,\n" +
+                   "rdate TEXT,\n" +
+                   "exdate TEXT,\n" +
+                   "rrule TEXT,\n" +
+                   "original_instance_sync_id INTEGER,\n" +
+                   "original_instance_id INTEGER,\n" +
+                   "original_instance_time INTEGER,\n" +
+                   "original_instance_allday INTEGER,\n" +
+                   "parent_id INTEGER,\n" +
+                   "sorting TEXT,\n" +
+                   "has_alarms INTEGER);");
+        // View
+        db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
+                   "caldav_tasks_extra._sync_id,\n" +
+                   "caldav_tasks_extra.sync_version,\n" +
+                   "CASE WHEN t.sync_state IN (-1,0) THEN 0 ELSE 1 END _dirty,\n" +
+                   "caldav_tasks_extra.sync1,\n" +
+                   "caldav_tasks_extra.sync2,\n" +
+                   "caldav_tasks_extra.sync3,\n" +
+                   "caldav_tasks_extra.sync4,\n" +
+                   "caldav_tasks_extra.sync5,\n" +
+                   "caldav_tasks_extra.sync6,\n" +
+                   "caldav_tasks_extra.sync7,\n" +
+                   "caldav_tasks_extra.sync8,\n" +
+                   "caldav_tasks_extra._uid,\n" +
+                   "CASE WHEN t.sync_state = -1 THEN 1 ELSE 0 END _deleted,\n" +
+                   "t._id,\n" +
+                   "t.list_id,\n" +
+                   "t.name as title,\n" +
+                   "location,\n" +
+                   "geo,\n" +
+                   "t.content as description,\n" +
+                   "url,\n" +
+                   "organizer,\n" +
+                   "caldav_tasks_extra.priority,\n" +
+                   "classification,\n" +
+                   "CASE WHEN t.done=1 THEN t.updated_at ELSE null END AS completed,\n" +
+                   "completed_is_allday,\n" +
+                   "t.progress AS percent_complete,\n" +
+                   "status,\n" +
+                   "CASE WHEN status = 0 THEN 1 ELSE 0 END AS is_new,\n" +
+                   "CASE WHEN status = 2 OR status = 3 THEN 1 ELSE 0 END AS is_closed,\n" +
+                   "task_color,\n" +
+                   "dtstart,\n" +
+                   "is_allday,\n" +
+                   "t.created_at * 1000 AS created,\n" +
+                   "t.updated_at * 1000 AS last_modified,\n" +
+                   "tz,\n" +
+                   "t.due * 1000 AS due,\n" +
+                   "duration,\n" +
+                   "rdate,\n" +
+                   "exdate,\n" +
+                   "rrule,\n" +
+                   "original_instance_sync_id,\n" +
+                   "original_instance_id,\n" +
+                   "original_instance_time,\n" +
+                   "original_instance_allday,\n" +
+                   "parent_id,\n" +
+                   "sorting,\n" +
+                   "has_alarms,\n" +
+                   "l.account_name,\n" +
+                   "l.account_type,\n" +
+                   "l.list_name,\n" +
+                   "l.list_color,\n" +
+                   "l.owner AS list_owner,\n" +
+                   "l.access_level AS list_access_level,\n" +
+                   "l.visible\n" +
+                   "FROM\n" +
+                   "tasks AS t\n" +
+                   "LEFT JOIN caldav_tasks_extra ON task_id = t._id\n" +
+                   "INNER JOIN caldav_lists as l ON l._id = t.list_id;");
+        // Insert trigger
+        db.execSQL("CREATE TRIGGER caldav_tasks_insert_trigger INSTEAD OF INSERT ON caldav_tasks\n" +
+                   "BEGIN\n" +
+                   "    INSERT INTO tasks (sync_state, list_id, name, content, progress, done, due, priority, created_at, updated_at) VALUES (\n"
+                   +
+                   "    0,\n" +
+                   "    new.list_id,\n" +
+                   "    new.title,\n" +
+                   "    new.description,\n" +
+                   "    new.percent_complete,\n" +
+                   "    CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
+                   "    new.due / 1000,\n" +
+                   "    CASE WHEN new.priority < 4 THEN 2 ELSE\n" +
+                   "         CASE WHEN new.priority < 7 THEN 1 ELSE\n" +
+                   "              CASE WHEN new.priority < 9 THEN -1 ELSE\n" +
+                   "              0\n" +
+                   "              END\n" +
+                   "         END\n" +
+                   "    END,\n" +
+                   "    new.created / 1000,\n" +
+                   "    new.last_modified / 1000);\n" +
+                   "    INSERT INTO caldav_tasks_extra (task_id,location,geo,url,organizer,priority,classification, completed_is_allday, status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, original_instance_id, original_instance_time, original_instance_allday, parent_id, sorting, has_alarms)\n"
+                   +
+                   "    VALUES\n" +
+                   "    ((SELECT last_insert_rowid() FROM tasks), new.location, new.geo, new.url, new.organizer, new.priority, new.classification, new. completed_is_allday, new. status, new. task_color, new. dtstart, new. is_allday, new. tz, new. duration, new. rdate, new. exdate, new. rrule, new. original_instance_sync_id, new. original_instance_id, new. original_instance_time, new. original_instance_allday, new. parent_id, new. sorting, new. has_alarms);\n"
+                   +
+                   "END;");
+        // Update trigger
+        db.execSQL("CREATE TRIGGER caldav_tasks_update_trigger INSTEAD OF UPDATE ON caldav_tasks\n" +
+                   "BEGIN\n" +
+                   "UPDATE tasks SET\n" +
+                   "sync_state = 0,\n" +
+                   "list_id = new.list_id,\n" +
+                   "name = new.title,\n" +
+                   "content = new.description,\n" +
+                   "progress = new.percent_complete,\n" +
+                   "done = CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
+                   "due = new.due / 1000,\n" +
+                   "priority = CASE WHEN new.priority < 4 THEN 2 ELSE\n" +
+                   "CASE WHEN new.priority < 7 THEN 1 ELSE\n" +
+                   "CASE WHEN new.priority < 9 THEN -1 ELSE\n" +
+                   "0\n" +
+                   "END\n" +
+                   "END\n" +
+                   "END,\n" +
+                   "updated_at = new.last_modified / 1000\n" +
+                   "WHERE _id = old._id;\n" +
+                   "INSERT OR REPLACE INTO caldav_tasks_extra VALUES (\n" +
+                   "new._sync_id,\n" +
+                   "new.sync_version,\n" +
+                   "new.sync1,\n" +
+                   "new.sync2,\n" +
+                   "new.sync3,\n" +
+                   "new.sync4,\n" +
+                   "new.sync5,\n" +
+                   "new.sync6,\n" +
+                   "new.sync7,\n" +
+                   "new.sync8,\n" +
+                   "new._uid,\n" +
+                   "new._id,\n" +
+                   "new.location,\n" +
+                   "new.geo,\n" +
+                   "new.url,\n" +
+                   "new.organizer,\n" +
+                   "new.priority,\n" +
+                   "new.classification,\n" +
+                   "new.completed_is_allday,\n" +
+                   "new.status,\n" +
+                   "new.task_color,\n" +
+                   "new.dtstart,\n" +
+                   "new.is_allday,\n" +
+                   "new.tz,\n" +
+                   "new.duration,\n" +
+                   "new.rdate,\n" +
+                   "new.exdate,\n" +
+                   "new.rrule,\n" +
+                   "new.original_instance_sync_id,\n" +
+                   "new.original_instance_id,\n" +
+                   "new.original_instance_time,\n" +
+                   "new.original_instance_allday,\n" +
+                   "new.parent_id,\n" +
+                   "new.sorting,\n" +
+                   "new.has_alarms);\n" +
+                   "END;");
+        // Delete Trigger
+        db.execSQL("CREATE TRIGGER caldav_tasks_delete_trigger INSTEAD OF DELETE ON caldav_tasks\n" +
+                   "BEGIN\n" +
+                   "    DELETE FROM tasks WHERE _id=old._id;\n" +
+                   "    DELETE FROM caldav_tasks_extra WHERE task_id=old._id;\n" +
+                   "END;");
+    }
+
+    private static void createCaldavProperties(final SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE caldav_properties (\n" +
+                   "property_id INTEGER,\n" +
+                   "task_id INTEGER REFERENCES tasks(_id) ON DELETE CASCADE ON UPDATE CASCADE,\n" +
+                   "mimetype TEXT,\n" +
+                   "prop_version TEXT,\n" +
+                   "prop_sync1 TEXT,\n" +
+                   "prop_sync2 TEXT,\n" +
+                   "prop_sync3 TEXT,\n" +
+                   "prop_sync4 TEXT,\n" +
+                   "prop_sync5 TEXT,\n" +
+                   "prop_sync6 TEXT,\n" +
+                   "prop_sync7 TEXT,\n" +
+                   "prop_sync8 TEXT,\n" +
+                   "data0  TEXT,\n" +
+                   "data1  TEXT,\n" +
+                   "data2  TEXT,\n" +
+                   "data3  TEXT,\n" +
+                   "data4  TEXT,\n" +
+                   "data5  TEXT,\n" +
+                   "data6  TEXT,\n" +
+                   "data7  TEXT,\n" +
+                   "data8  TEXT,\n" +
+                   "data9  TEXT,\n" +
+                   "data10 TEXT,\n" +
+                   "data11 TEXT,\n" +
+                   "data12 TEXT,\n" +
+                   "data13 TEXT,\n" +
+                   "data14 TEXT,\n" +
+                   "data15 TEXT,\n" +
+                   "PRIMARY KEY (property_id, task_id)\n" +
+                   ");");
+    }
+
+    private static void createCaldavCategories(final SQLiteDatabase db) {
+        // View
+        // This is just a cross product of the tag table and all possible accounts.
+        // I think we need this because the caldav task adapter could do something like
+        // SELECT * FROM caldav_categories WHERE account_name="…";
+        // And we have one list of tags for all accounts
+        db.execSQL("CREATE VIEW caldav_categories AS\n" +
+                   "SELECT _id, account_name, account_type, name, color FROM tag,\n" +
+                   "(SELECT DISTINCT(account_name) account_name, account_type FROM caldav_lists) as account_info;");
+        // INSERT Trigger
+        db.execSQL("Create TRIGGER caldav_categories_insert_trigger INSTEAD OF INSERT ON caldav_categories\n"
+                   +
+                   "BEGIN\n" +
+                   "    INSERT OR REPLACE INTO tag (name,color) VALUES (new.name, new.color);\n" +
+                   "END;");
+        // UPDATE Trigger
+        db.execSQL("CREATE TRIGGER caldav_categories_update_trigger INSTEAD OF UPDATE ON caldav_categories\n"
+                   +
+                   "BEGIN\n" +
+                   "    UPDATE tag SET name=new.name, color=new.color WHERE _id=new._id;\n" +
+                   "END;");
+        // DELETE Trigger
+        // Do nothing! We care about tags not caldav!
+        db.execSQL("CREATE TRIGGER caldav_categories_delete_trigger INSTEAD OF DELETE ON caldav_categories\n"
+                   +
+                   "BEGIN\n" +
+                   "SELECT _id from tag;\n" +
+                   "END;");
+    }
+
+    private static void createCaldavAlarms(final SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE caldav_alarms (\n" +
+                   "alarm_id INTEGER PRIMARY KEY,\n" +
+                   "last_trigger TEXT,\n" +
+                   "next_trigger TEXT);");
+    }
+    private static void updateCaldavExtra(final SQLiteDatabase db) {
+        createCaldavLists(db);
+        createCaldavTasks(db);
+        createCaldavProperties(db);
+        createCaldavCategories(db);
+        createCaldavAlarms(db);
+        db.execSQL("DROP TABLE caldav_extra;");
+    }
 
     private static void createTableRecurrenceTW(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "
