@@ -29,6 +29,7 @@ import de.azapps.mirakel.model.MirakelContentProvider;
 import android.test.suitebuilder.annotation.MediumTest;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
+import de.azapps.mirakelandroid.test.TestHelper;
 
 
 public class ${TESTCLASS}Test extends MirakelTestCase {
@@ -62,8 +63,9 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
         List<$TESTCLASS> elems=${TESTCLASS}.${GETALL_FUNCTION};
         $TESTCLASS elem=$CREATEFUNCTION.function;
         elems.add(elem);
-        List<$TESTCLASS> new_elems=${TESTCLASS}.${GETALL_FUNCTION};
-        assertEquals("Something changed while adding a new element to the database $CREATEFUNCTION",elems,new_elems);
+        List<$TESTCLASS> newElems=${TESTCLASS}.${GETALL_FUNCTION};
+        boolean result = TestHelper.listEquals(elems,newElems);
+        assertTrue("Something changed while adding a new element to the database $CREATEFUNCTION",result);
     }
     @MediumTest
     public void testNewEquals${CREATEFUNCTION.name}${foreach.count}() {
@@ -81,7 +83,8 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
         $TESTCLASS elem=elems.get(randomItem);
         elem.save();
         List<$TESTCLASS> newElems=${TESTCLASS}.${GETALL_FUNCTION};
-        assertEquals("If nothing was changed the database should not be update",newElems,elems);
+        boolean result = TestHelper.listEquals(elems,newElems);
+        assertTrue("If nothing was changed the database should not be update",result);
     }
     #foreach ($UPDATEFUNCTION in $UPDATEFUNCTIONS)
     @MediumTest
@@ -106,7 +109,12 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
         assertNull("Elem was not deleted",${TESTCLASS}.get(id));
         List<$TESTCLASS> newElems=${TESTCLASS}.${GETALL_FUNCTION};
         elems.remove(randomItem);
-        assertEquals("Deleted more than needed",elems,newElems);
+        // Now we have to iterate over the array and update each element
+        for(int i=0; i<elems.size(); i++) {
+             elems.set(i,${TESTCLASS}.get(elems.get(i).getId()));
+        }
+        boolean result = TestHelper.listEquals(elems,newElems);
+        assertTrue("Deleted more than needed",result);
     }
 
 }

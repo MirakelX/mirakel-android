@@ -41,131 +41,121 @@ import de.azapps.tools.FileUtils;
 
 public class RandomHelper {
 
-	// its ok to use this here, it's only for testing
-	@SuppressLint("TrulyRandom")
-	private static SecureRandom random = new SecureRandom();
-	private static Context ctx;
+    // its ok to use this here, it's only for testing
+    @SuppressLint("TrulyRandom")
+    private static SecureRandom random = new SecureRandom();
+    private static Context ctx;
 
-	public static void init(final Context ctx) {
-		RandomHelper.ctx = ctx;
-	}
+    public static void init(final Context ctx) {
+        RandomHelper.ctx = ctx;
+    }
 
-	public static int getRandomint() {
-		return random.nextInt();
-	}
-	public static short getRandomshort() {
-		return (short) random.nextInt();
-	}
-	public static Long getRandomLong() {
-		return random.nextLong();
-	}
+    public static int getRandomint() {
+        return random.nextInt();
+    }
+    public static short getRandomshort() {
+        return (short) random.nextInt();
+    }
+    public static Long getRandomLong() {
+        return random.nextLong();
+    }
 
-	public static boolean getRandomboolean() {
-		return random.nextBoolean();
-	}
+    public static boolean getRandomboolean() {
+        return random.nextBoolean();
+    }
 
-	public static String getRandomString() {
-		return new BigInteger(130, random).toString(32);
-	}
+    public static String getRandomString() {
+        return new BigInteger(130, random).toString(32);
+    }
 
-	public static SYNC_STATE getRandomSYNC_STATE() {
-		return SYNC_STATE.values()[random.nextInt(SYNC_STATE.values().length)];
-	}
+    public static SYNC_STATE getRandomSYNC_STATE() {
+        return SYNC_STATE.values()[random.nextInt(SYNC_STATE.values().length)];
+    }
 
-	public static AccountMirakel getRandomAccountMirakel() {
-		return new AccountMirakel(
-				random.nextInt(),
-				getRandomString(),
-				ACCOUNT_TYPES.parseInt(random.nextInt(ACCOUNT_TYPES.values().length - 1) + 1),
-				random.nextBoolean(), getRandomString());
-	}
+    public static AccountMirakel getRandomAccountMirakel() {
+        List<AccountMirakel> all = AccountMirakel.all();
+        return all.get(random.nextInt(all.size()));
+    }
 
-	public static Integer getRandomInteger() {
-		return getRandomint();
-	}
+    public static Integer getRandomInteger() {
+        return getRandomint();
+    }
 
-	public static ListMirakel getRandomListMirakel() {
-		ListMirakel.init(ctx);
-		final List<ListMirakel> t = ListMirakel.all();
-		return t.get(random.nextInt(t.size()));
-	}
+    public static ListMirakel getRandomListMirakel() {
+        ListMirakel.init(ctx);
+        final List<ListMirakel> t = ListMirakel.all();
+        return t.get(random.nextInt(t.size()));
+    }
 
-	public static Calendar getRandomCalendar() {
-		final Calendar c = new GregorianCalendar();
-		c.setTimeInMillis(random.nextLong());
-		return c;
-	}
+    public static Calendar getRandomCalendar() {
+        return getRandomGregorianCalendar();
+    }
 
-	public static long getRandomlong() {
-		return random.nextLong();
-	}
+    public static long getRandomlong() {
+        return random.nextLong();
+    }
 
-	public static Uri getRandomUri() {
-		// return a constant uri because uri must exist
-		final String p = FileUtils.getMirakelDir() + "/databases/mirakel.db";
-		final File f = new File(p);
-		return Uri.fromFile(f);
-	}
+    public static Uri getRandomUri() {
+        // return a constant uri because uri must exist
+        final String p = FileUtils.getMirakelDir() + "/databases/mirakel.db";
+        final File f = new File(p);
+        return Uri.fromFile(f);
+    }
 
-	public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
-		return ACCOUNT_TYPES.values()[random
-		                              .nextInt(ACCOUNT_TYPES.values().length)];
-	}
+    public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
+        return ACCOUNT_TYPES.values()[random
+                                      .nextInt(ACCOUNT_TYPES.values().length)];
+    }
 
-	public static Task getRandomTask() {
-		Task.init(ctx);
-		final List<Task> t = Task.all();
-		return t.get(random.nextInt(t.size()));
-	}
+    public static Task getRandomTask() {
+        Task.init(ctx);
+        final List<Task> t = Task.all();
+        return t.get(random.nextInt(t.size()));
+    }
 
-	public static SparseBooleanArray getRandomSparseBooleanArray() {
-		final SparseBooleanArray ret = new SparseBooleanArray(7);
-		ret.append(Calendar.SUNDAY, getRandomboolean());
-		ret.append(Calendar.MONDAY, getRandomboolean());
-		ret.append(Calendar.THURSDAY, getRandomboolean());
-		ret.append(Calendar.WEDNESDAY, getRandomboolean());
-		ret.append(Calendar.TUESDAY, getRandomboolean());
-		ret.append(Calendar.FRIDAY, getRandomboolean());
-		ret.append(Calendar.SATURDAY, getRandomboolean());
-		return ret;
-	}
+    public static SparseBooleanArray getRandomSparseBooleanArray() {
+        final SparseBooleanArray ret = new SparseBooleanArray(7);
+        ret.append(Calendar.SUNDAY, getRandomboolean());
+        ret.append(Calendar.MONDAY, getRandomboolean());
+        ret.append(Calendar.THURSDAY, getRandomboolean());
+        ret.append(Calendar.WEDNESDAY, getRandomboolean());
+        ret.append(Calendar.TUESDAY, getRandomboolean());
+        ret.append(Calendar.FRIDAY, getRandomboolean());
+        ret.append(Calendar.SATURDAY, getRandomboolean());
+        return ret;
+    }
 
-	public static Map<String, String> getRandomMap_String_String() {
-		final Map<String, String> ret = new HashMap<String, String>();
-		for (int i = 0; i < random.nextInt(10); i++) {
-			ret.put(getRandomString(), getRandomString());
-		}
-		return ret;
-	}
+    public static Map<String, String> getRandomMap_String_String() {
+        final Map<String, String> ret = new HashMap<String, String>();
+        for (int i = 0; i < random.nextInt(10); i++) {
+            ret.put(getRandomString(), getRandomString());
+        }
+        return ret;
+    }
 
-	public static GregorianCalendar getRandomGregorianCalendar() {
-		final GregorianCalendar cal = new GregorianCalendar();
-		cal.add(Calendar.SECOND, random.nextInt(60));
-		cal.add(Calendar.MINUTE, random.nextInt(60));
-		cal.add(Calendar.HOUR, random.nextInt(24));
-		cal.add(Calendar.DAY_OF_MONTH, random.nextInt(30));
-		cal.add(Calendar.DAY_OF_YEAR, random.nextInt(1));
-		return cal;
-	}
+    public static GregorianCalendar getRandomGregorianCalendar() {
+        final GregorianCalendar cal = new GregorianCalendar();
+        cal.add(Calendar.SECOND, random.nextInt(60));
+        cal.add(Calendar.MINUTE, random.nextInt(60));
+        cal.add(Calendar.HOUR, random.nextInt(24));
+        cal.add(Calendar.DAY_OF_MONTH, random.nextInt(30));
+        cal.add(Calendar.DAY_OF_YEAR, random.nextInt(1));
+        return cal;
+    }
 
-	public static Context getRandomContext() {
-		return ctx;
-	}
+    public static Context getRandomContext() {
+        return ctx;
+    }
 
-	public static Map<String, SpecialListsBaseProperty> getRandomMap_String_SpecialListsBaseProperty() {
-		return new HashMap<>();
-	}
+    public static Map<String, SpecialListsBaseProperty> getRandomMap_String_SpecialListsBaseProperty() {
+        return new HashMap<>();
+    }
 
-	public static short getRandomshort() {
-		return (short) random.nextInt(Short.MAX_VALUE);
-	}
+    public static int getRandomPriority() {
+        return random.nextInt(5) - 2;
+    }
 
-	public static Long getRandomLong() {
-		return random.nextLong();
-	}
-
-	public static int getRandomPriority() {
-		return random.nextInt(5) - 2;
-	}
-
+    public static ListMirakel.SORT_BY getRandomSORT_BY() {
+        return ListMirakel.SORT_BY.fromShort((short)random.nextInt(ListMirakel.SORT_BY.values().length));
+    }
 }
