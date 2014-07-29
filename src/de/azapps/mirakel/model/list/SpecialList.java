@@ -387,6 +387,7 @@ public class SpecialList extends ListMirakel {
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
         setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
         setDefaultDate(c.isNull(defDateCol) ? null : c.getInt(defDateCol));
+        isSpecial = true;
     }
 
     private static Map<String, SpecialListsBaseProperty> deserializeWhere(

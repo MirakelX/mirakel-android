@@ -38,6 +38,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
@@ -487,7 +488,11 @@ abstract class TaskBase extends ModelBase {
             && this.list.getId() == newList.getId()) {
             return;
         }
-        this.list = newList;
+        if (newList.isSpecial()) {
+            this.list = ((SpecialList) newList).getDefaultList();
+        } else {
+            this.list = newList;
+        }
         this.edited.put(TaskBase.LIST_ID, true);
         if (removeNoListFlag) {
             if (this.additionalEntries == null) {
