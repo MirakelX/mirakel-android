@@ -263,11 +263,14 @@ public class TaskWarriorSync {
         if (error != TW_ERRORS.NO_ERROR) {
             client.close();
             final String status = remotes.get("status");
-            if (status != null
-                && status.contains("Could not find common ancestor")) {
-                throw new TaskWarriorSyncFailedException(
-                    TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
-                    "sync() throwed error");
+            if (status != null) {
+                if (status.contains("Could not find common ancestor")) {
+                    throw new TaskWarriorSyncFailedException(
+                        TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
+                        "sync() throwed error");
+                } else if (status.contains("Access denied")) {
+                    throw new TaskWarriorSyncFailedException(TW_ERRORS.ACCESS_DENIED, "Access denied");
+                }
             }
         }
         if (remotes.get("status").equals("Client sync key not found.")) {

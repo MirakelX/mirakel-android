@@ -62,7 +62,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="load_config">Select the config file for Taskwarrior</string>
     <string name="select_config">Select Taskwarrior config file</string>
     <string name="message_try_later">Try to sync later</string>
-    <string name="message_access_denied">Access denied!\nDid you use the right config file?</string>
+    <string name="message_access_denied">Access denied!\nDid you use the right config file?\nYou have to configure the Taskwarrior server such it accepts syncing with Mirakel.</string>
     <string name="message_create_socket">Cannot create socket!\nDid you enable your network connection?</string>
     <string name="message_account_suspended">Your account is suspended!</string>
     <string name="message_parse_message">Cannot parse tasks – please write how this happened</string>
