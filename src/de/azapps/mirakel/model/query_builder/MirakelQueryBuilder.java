@@ -328,6 +328,10 @@ public class MirakelQueryBuilder {
                                subQuery, subqueryUri);
     }
 
+    public MirakelQueryBuilder and (final String condition) {
+        return appendCondition(Conjunction.AND, condition);
+    }
+
     // or
     public <T extends Number> MirakelQueryBuilder or (final String field,
             final Operation op, final T filter) {
@@ -392,6 +396,10 @@ public class MirakelQueryBuilder {
         }
         return appendCondition(Conjunction.OR, not + field + " " + op,
                                subQuery, subqueryUri);
+    }
+
+    public MirakelQueryBuilder or (final String condition) {
+        return appendCondition(Conjunction.OR, condition);
     }
 
     public MirakelQueryBuilder not(final MirakelQueryBuilder other) {
