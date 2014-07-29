@@ -125,8 +125,10 @@ public class ListMirakel extends ListBase {
             qb.sort(Task.PRIORITY, Sorting.DESC);
             break;
         case OPT:
+            qb.sort(Task.DONE, Sorting.ASC);
+            qb.sort(dueSort, Sorting.ASC);
             qb.sort(Task.PRIORITY, Sorting.DESC);
-            //$FALL-THROUGH$
+            break;
         case DUE:
             qb.sort(Task.DONE, Sorting.ASC);
             qb.sort(dueSort, Sorting.ASC);
@@ -134,7 +136,7 @@ public class ListMirakel extends ListBase {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
