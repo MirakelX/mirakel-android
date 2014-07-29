@@ -278,8 +278,11 @@ public class DateTimeHelper {
             if (a != b) {
                 return false;
             }
-        } else if (Math.abs(a.getTimeInMillis() / 1000 - b.getTimeInMillis() / 1000) > 1) {
-            return false;
+        } else {
+            long ta = a.getTimeInMillis() / 1000;
+            long tb = b.getTimeInMillis() / 1000;
+            boolean ret = Math.abs(ta - tb) < 1;
+            return ret;
         }
         return true;
     }
