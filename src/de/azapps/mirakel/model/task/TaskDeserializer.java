@@ -155,8 +155,13 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                                    this.account);
                 if (list == null
                     || list.getAccount().getId() != this.account.getId()) {
-                    list = ListMirakel.newList(val.getAsString(),
-                                               ListMirakel.SORT_BY.OPT, this.account);
+                    try {
+                        list = ListMirakel.newList(val.getAsString(),
+                                                   ListMirakel.SORT_BY.OPT, this.account);
+                    } catch (ListMirakel.ListAlreadyExistsException e) {
+                        // This can not happen!
+                        throw new RuntimeException("ListAlreadyExist while syncing from taskd. Thats impossible", e);
+                    }
                 }
                 t.setList(list, true);
                 break;

@@ -77,7 +77,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 42;
+    public static final int DATABASE_VERSION = 43;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -978,9 +978,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("create unique index tag_unique ON tag (name);");
         case 41:
             updateCaldavExtra(db);
+        case 42:
+            updateListTable(db);
         default:
             break;
         }
+    }
+
+    private void updateListTable(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + ListMirakel.TABLE + " RENAME TO tmp_lists;");
+        db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ModelBase.ID
+                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase.NAME
+                   + " TEXT NOT NULL, " + ListMirakel.SORT_BY_FIELD
+                   + " INTEGER NOT NULL DEFAULT 0, " + CREATED_AT
+                   + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, " + UPDATED_AT
+                   + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                   + SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
+                   + ", " + ListMirakel.LFT + " INTEGER, " + ListMirakel.RGT
+                   + " INTEGER " + ", " + ListMirakel.COLOR + " INTEGER,"
+                   + ListMirakel.ACCOUNT_ID + " INTEGER REFERENCES "
+                   + AccountMirakel.TABLE + " (" + ModelBase.ID
+                   + ") ON DELETE CASCADE ON UPDATE CASCADE "
+                   + ")");
+        db.execSQL("INSERT INTO " + ListMirakel.TABLE + " SELECT * FROM tmp_lists");
+        db.execSQL("DROP TABLE tmp_lists;");
     }
 
 

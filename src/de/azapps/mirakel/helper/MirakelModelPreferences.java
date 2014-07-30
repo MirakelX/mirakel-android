@@ -71,8 +71,16 @@ public class MirakelModelPreferences extends MirakelPreferences {
         // Create a new list and set this list as the default list for future
         // subtasks
         if (list == null) {
-            list = ListMirakel.newList(context
-                                       .getString(R.string.subtask_list_name));
+            String listName = context.getString(R.string.subtask_list_name);
+            list = ListMirakel.findByName(listName);
+            if (list == null) {
+                try {
+                    list = ListMirakel.newList(listName);
+                } catch (ListMirakel.ListAlreadyExistsException e) {
+                    // This could never ever happen!
+                    throw new RuntimeException("ListAlreadyExistsException. This is not possible…", e);
+                }
+            }
             setSubtaskAddToList(list);
         }
         return list;

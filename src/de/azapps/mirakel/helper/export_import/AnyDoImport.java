@@ -191,12 +191,13 @@ public class AnyDoImport {
         }
     }
 
+
     private static SparseIntArray parseList(final JsonObject jsonList,
                                             final SparseIntArray listMapping) {
         final String name = jsonList.get("name").getAsString();
         final int id = jsonList.get("id").getAsInt();
-        final ListMirakel l = ListMirakel.newList(name);
-        listMapping.put(id, (int)l.getId());
+        final ListMirakel l = ListMirakel.saveNewList(name);
+        listMapping.put(id, (int) l.getId());
         return listMapping;
     }
 
