@@ -52,7 +52,6 @@
   <string name="load_config">Sélectionner le fichier de configuration pour Taskwarrior</string>
   <string name="select_config">Sélectionner le fichier de configuration Taskwarrior</string>
   <string name="message_try_later">Essayez de lancer la synchronisation plus tard</string>
-  <string name="message_access_denied">Accès refusé! \nAvez-vous utilisé le bon fichier de configuration ?</string>
   <string name="message_create_socket">Impossible de créer le socket! \nAvez-vous activé votre connexion réseau ?</string>
   <string name="message_account_suspended">Votre compte est suspendu!</string>
   <string name="message_parse_message">Impossible d\'analyser vos tâches – veuillez-nous contacter pour décrire comment cet état est-il survenu.</string>

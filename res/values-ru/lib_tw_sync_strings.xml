@@ -25,7 +25,6 @@
   <string name="load_config">Выберите конфигурационный файл для Taskwarrior</string>
   <string name="select_config">Выберите конфигурационный файл для Taskwarrior</string>
   <string name="message_try_later">Попробуйте синхронизировать позже</string>
-  <string name="message_access_denied">Доступ запрещён!\nВы точно используете правильный конфигурационный файл?</string>
   <string name="message_create_socket">Не удается создать сокет! \nПроверьте сетевое подключение.</string>
   <string name="message_account_suspended">Ваш аккаунт заблокирован!</string>
   <string name="message_parse_message">Не удается интерпретировать задачи – пожалуйста, напишите нам, как это произошло</string>

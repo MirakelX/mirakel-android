@@ -56,7 +56,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="load_config">Selecteer het configuratie bestand voor Taskwarrior</string>
   <string name="select_config">Selecteer het Taskwarrior configuratie bestand</string>
   <string name="message_try_later">Probeer later te synchroniseren</string>
-  <string name="message_access_denied">Toegang geweigerd!\nIs de goede config file gebruikt?</string>
   <string name="message_create_socket">De aansluiting kan niet worden gemaakt!\nStaat de netwerk verbinding aan?</string>
   <string name="message_account_suspended">Het account is geschorst!</string>
   <string name="message_parse_message">Kan de taak niet parsen – schrijf alstublieft hoe dit gebeurde</string>
