@@ -55,6 +55,8 @@ import com.mobeta.android.dslv.DragSortListView.DropListener;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.main_activity.MirakelFragment;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
@@ -161,35 +163,39 @@ public class ListFragment extends MirakelFragment {
         new AlertDialog.Builder (this.main)
         .setTitle (this.main.getString (R.string.list_change_name_title))
         .setView (this.input)
-        .setPositiveButton (this.main.getString (android.R.string.ok),
-        new DialogInterface.OnClickListener () {
+        .setPositiveButton (this.main.getString(android.R.string.ok),
+        new DialogInterface.OnClickListener() {
             @Override
-            public void onClick (final DialogInterface dialog,
-                                 final int whichButton) {
-                ListMirakel l = list;
-                if (l == null) {
-                    l = ListMirakel
-                        .newList (ListFragment.this.input
-                                  .getText ().toString ());
-                } else {
-                    l.setName (ListFragment.this.input.getText ()
-                               .toString ());
+            public void onClick(final DialogInterface dialog,
+                                final int whichButton) {
+                try {
+                    ListMirakel l = list;
+                    if (l == null) {
+                        l = ListMirakel
+                            .newList(ListFragment.this.input
+                                     .getText().toString());
+                    } else {
+                        l.setListName(ListFragment.this.input.getText()
+                                      .toString());
+                    }
+                    l.save(list != null);
+                    update();
+                } catch (ListMirakel.ListAlreadyExistsException e) {
+                    ErrorReporter.report(ErrorType.LIST_ALREADY_EXIST);
                 }
-                l.save (list != null);
-                update ();
             }
         })
-        .setNegativeButton (
-            this.main.getString (android.R.string.cancel),
-        new DialogInterface.OnClickListener () {
+        .setNegativeButton(
+            this.main.getString(android.R.string.cancel),
+        new DialogInterface.OnClickListener() {
             @Override
-            public void onClick (final DialogInterface dialog,
-                                 final int whichButton) {
-                imm.hideSoftInputFromWindow (getActivity ()
-                                             .getCurrentFocus ().getWindowToken (),
-                                             InputMethodManager.HIDE_NOT_ALWAYS);
+            public void onClick(final DialogInterface dialog,
+                                final int whichButton) {
+                imm.hideSoftInputFromWindow(getActivity()
+                                            .getCurrentFocus().getWindowToken(),
+                                            InputMethodManager.HIDE_NOT_ALWAYS);
             }
-        }).show ();
+        }).show();
         this.input.postDelayed (new Runnable () {
             @Override
             public void run () {
