@@ -488,9 +488,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-        // MainActivity.updateTasksUUID = true; TODO do we need this
-        // anymore?
-        // Don't remove this version-gap
+            // MainActivity.updateTasksUUID = true; TODO do we need this
+            // anymore?
+            // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -576,7 +576,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-        // Add Accountmanagment
+            // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -602,11 +602,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-        // add progress
+            // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-        // Add some columns for caldavsync
+            // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -624,7 +624,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-        // add some options to reccuring
+            // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -644,15 +644,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-        // also save the time of a due-date
+            // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-        // save all times in tasktable as utc-unix-seconds
+            // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-        // move tw-sync-key to db
-        // move tw-certs into accountmanager
+            // move tw-sync-key to db
+            // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -870,7 +870,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-        // refactor recurrence to follow the taskwarrior method
+            // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -1033,8 +1033,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Create trigger for lists
         // Insert trigger
         db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
-                   "BEGIN\n" +
-                   "INSERT INTO lists (sync_state, name, color, account_id) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name));\n"
+                   "BEGIN\n"
+                   + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
                    +
                    "INSERT INTO caldav_lists_extra VALUES\n" +
                    "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
