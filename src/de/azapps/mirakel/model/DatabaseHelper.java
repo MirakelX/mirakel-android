@@ -1115,7 +1115,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "t.content as description,\n" +
                    "url,\n" +
                    "organizer,\n" +
-                   "caldav_tasks_extra.priority,\n" +
+                   "CASE \n" +
+                   "     WHEN t.priority<0 THEN\n" +
+                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 7 AND 9 THEN caldav_tasks_extra.priority ELSE 9 END\n"
+                   +
+                   "     WHEN t.priority=1 THEN\n" +
+                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 4 AND 6 THEN caldav_tasks_extra.priority ELSE 5 END\n"
+                   +
+                   "     WHEN t.priority=2 THEN\n" +
+                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 1 AND 3 THEN caldav_tasks_extra.priority ELSE 1 END\n"
+                   +
+                   "     ELSE 0\n" +
+                   "END AS priority," +
                    "classification,\n" +
                    "CASE WHEN t.done=1 THEN t.updated_at ELSE null END AS completed,\n" +
                    "completed_is_allday,\n" +
@@ -1164,12 +1175,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    new.percent_complete,\n" +
                    "    CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
                    "    new.due / 1000,\n" +
-                   "    CASE WHEN new.priority < 4 THEN 2 ELSE\n" +
-                   "         CASE WHEN new.priority < 7 THEN 1 ELSE\n" +
-                   "              CASE WHEN new.priority < 9 THEN -1 ELSE\n" +
-                   "              0\n" +
-                   "              END\n" +
-                   "         END\n" +
+                   "    CASE WHEN new.priority=0 THEN 0\n" +
+                   "    CASE WHEN new.priority < 4 THEN 2 \n" +
+                   "    CASE WHEN new.priority < 7 THEN 1 \n" +
+                   "    CASE WHEN new.priority <= 9 THEN -1 \n" +
+                   "    ELSE 0\n" +
                    "    END,\n" +
                    "    new.created / 1000,\n" +
                    "    new.last_modified / 1000);\n" +
@@ -1190,12 +1200,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "progress = new.percent_complete,\n" +
                    "done = CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
                    "due = new.due / 1000,\n" +
-                   "priority = CASE WHEN new.priority < 4 THEN 2 ELSE\n" +
-                   "CASE WHEN new.priority < 7 THEN 1 ELSE\n" +
-                   "CASE WHEN new.priority < 9 THEN -1 ELSE\n" +
-                   "0\n" +
-                   "END\n" +
-                   "END\n" +
+                   "priority = CASE WHEN new.priority=0 THEN 0\n" +
+                   "CASE WHEN new.priority < 4 THEN 2 \n" +
+                   "CASE WHEN new.priority < 7 THEN 1 \n" +
+                   "CASE WHEN new.priority <= 9 THEN -1 \n" +
+                   "ELSE 0\n" +
                    "END,\n" +
                    "updated_at = new.last_modified / 1000\n" +
                    "WHERE _id = old._id;\n" +
