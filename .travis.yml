@@ -10,7 +10,7 @@ android:
     - android-19
     - sys-img-x86-android-19
 install:
-    - pip install git+https://github.com/purcell/airspeed.git
+    - sudo pip install git+https://github.com/purcell/airspeed.git
 before_script:
   - keytool -genkey -noprompt   -alias androiddebugkey  -dname "CN=mirakel.azapps.de, OU=ID, O=az, L=Mirakel, S=A, C=ANT"   -keystore main/debug.keystore  -storepass android  -keypass android
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
