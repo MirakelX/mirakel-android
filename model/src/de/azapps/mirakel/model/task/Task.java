@@ -16,9 +16,9 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.task;
 
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Pair;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -41,11 +40,16 @@ import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.services.NotificationService;
@@ -53,23 +57,19 @@ import de.azapps.tools.Log;
 
 public class Task extends TaskBase {
 
-    public static final String[] allColumns = { DatabaseHelper.ID,
-                                                TaskBase.UUID, TaskBase.LIST_ID, DatabaseHelper.NAME,
-                                                TaskBase.CONTENT, TaskBase.DONE, TaskBase.DUE, TaskBase.REMINDER,
-                                                TaskBase.PRIORITY, DatabaseHelper.CREATED_AT,
-                                                DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD,
-                                                TaskBase.ADDITIONAL_ENTRIES, TaskBase.RECURRING,
-                                                TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS,
+    public static final String[] allColumns = { ModelBase.ID, TaskBase.UUID,
+                                                TaskBase.LIST_ID, ModelBase.NAME, TaskBase.CONTENT, TaskBase.DONE,
+                                                TaskBase.DUE, TaskBase.REMINDER, TaskBase.PRIORITY,
+                                                DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
+                                                DatabaseHelper.SYNC_STATE_FIELD, TaskBase.ADDITIONAL_ENTRIES,
+                                                TaskBase.RECURRING, TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS,
                                                 TaskBase.RECURRING_SHOWN
                                               };
     public static final String BASIC_FILTER_DISPLAY_TASKS = " NOT "
             + DatabaseHelper.SYNC_STATE_FIELD + " = " + SYNC_STATE.DELETE
             + " AND " + RECURRING_SHOWN + "=1";
-    private static Context context;
-    private static SQLiteDatabase database;
 
-    private static DatabaseHelper dbHelper;
-    private static boolean calledFromDBHelper;
+    public final static Uri URI = MirakelInternalContentProvider.TASK_URI;
 
     public static final String SUBTASK_TABLE = "subtasks";
     public static final String TABLE = "tasks";
@@ -81,18 +81,15 @@ public class Task extends TaskBase {
         return this.recurrenceParent != null;
     }
 
-    public static String concatColumsForQuery() {
-        String cols = "";
-        boolean first = true;
-        for (final String c : Task.allColumns) {
-            if (first) {
-                first = false;
-            } else {
-                cols += ", ";
-            }
-            cols += "t." + c;
-        }
-        return cols;
+    @Override
+    protected Uri getUri() {
+        return URI;
+    }
+
+    public static MirakelQueryBuilder addBasicFiler(final MirakelQueryBuilder qb) {
+        return qb.and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                      SYNC_STATE.DELETE.toInt()).and(RECURRING_SHOWN, Operation.EQ,
+                              true);
     }
 
     /**
@@ -101,29 +98,8 @@ public class Task extends TaskBase {
      * @return
      */
     public static List<Task> all() {
-        final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
-                                             BASIC_FILTER_DISPLAY_TASKS + " AND " + DONE + "=0", null, null,
-                                             null, null);
-        final List<Task> list = cursorToTaskList(c);
-        c.close();
-        return list;
-    }
-
-    /**
-     * Close the Database-Connection
-     */
-    public static void close() {
-        Task.dbHelper.close();
-    }
-
-    /**
-     * CALL THIS ONLY FROM DBHelper
-     *
-     * @param db
-     */
-    public static void setDB(final SQLiteDatabase db) {
-        calledFromDBHelper = true;
-        database = db;
+        return addBasicFiler(new MirakelQueryBuilder(context)).and(DONE,
+                Operation.EQ, false).getList(Task.class);
     }
 
     /**
@@ -133,43 +109,10 @@ public class Task extends TaskBase {
      * @return
      */
     public static Task cursorToTask(final Cursor cursor) {
-        int i = 0;
-        Calendar due;
-        if (cursor.isNull(6)) {
-            due = null;
-        } else {
-            due = DateTimeHelper.createLocalCalendar(cursor.getLong(6), true);
-        }
-        Calendar reminder;
-        if (cursor.isNull(7)) {
-            reminder = null;
-        } else {
-            reminder = DateTimeHelper.createLocalCalendar(cursor.getLong(7));
-        }
-        Calendar created_at;
-        if (cursor.isNull(9)) {
-            created_at = null;
-        } else {
-            created_at = new GregorianCalendar();
-            created_at.setTimeInMillis(cursor.getLong(9) * 1000);
-        }
-        Calendar updated_at;
-        if (cursor.isNull(10)) {
-            updated_at = null;
-        } else {
-            updated_at = new GregorianCalendar();
-            updated_at.setTimeInMillis(cursor.getLong(10) * 1000);
-        }
-        return new Task(cursor.getLong(i++), cursor.getString(i++),
-                        ListMirakel.get((int) cursor.getLong(i++)),
-                        cursor.getString(i++), cursor.getString(i++),
-                        cursor.getInt(i) == 1, due, reminder, cursor.getInt(8),
-                        created_at, updated_at, SYNC_STATE.valueOf(cursor.getShort(11)),
-                        cursor.getString(12), cursor.getInt(13), cursor.getInt(14),
-                        cursor.getInt(15), cursor.getShort(16) == 1);
+        return new Task(cursor);
     }
 
-    private static List<Task> cursorToTaskList(final Cursor cursor) {
+    public static List<Task> cursorToTaskList(final Cursor cursor) {
         cursor.moveToFirst();
         final List<Task> tasks = new ArrayList<>();
         while (!cursor.isAfterLast()) {
@@ -181,15 +124,18 @@ public class Task extends TaskBase {
     }
 
     public static void deleteDoneTasks() {
-        Task.database.beginTransaction();
         final ContentValues values = new ContentValues();
         values.put("sync_state", SYNC_STATE.DELETE.toInt());
-        final String where = "sync_state!=" + SYNC_STATE.ADD + " AND done=1";
-        Task.database.update(Task.TABLE, values, where, null);
-        Task.database.delete(Task.TABLE, "sync_state=" + SYNC_STATE.ADD
-                             + " AND done=1", null);
-        Task.database.setTransactionSuccessful();
-        Task.database.endTransaction();
+        MirakelInternalContentProvider
+        .withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+            @Override
+            public void exec() {
+                update(URI, values, "sync_state!=" + SYNC_STATE.ADD
+                       + " AND done=1", null);
+                delete(URI, "sync_state=" + SYNC_STATE.ADD
+                       + " AND done=1", null);
+            }
+        });
         NotificationService.updateServices(context, false);
     }
 
@@ -206,57 +152,26 @@ public class Task extends TaskBase {
     /**
      *
      * @param id
-     * @param force Search also for deleted tasks. Do not use it unless you exactly
-     *                 know what you are doing
+     * @param force
+     *            Search also for deleted tasks. Do not use it unless you
+     *            exactly know what you are doing
      * @return
      */
-    public static Task get(final long id, boolean force) {
-        String extraSQL = " and not "
-                          + DatabaseHelper.SYNC_STATE_FIELD + "="
-                          + SYNC_STATE.DELETE;
-        if (force) {
-            extraSQL = "";
+    public static Task get(final long id, final boolean force) {
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(ID,
+                Operation.EQ, id);
+        if (!force) {
+            qb.and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                   SYNC_STATE.DELETE.toInt());
         }
-        final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-                              DatabaseHelper.ID + "=" + id + extraSQL, null, null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Task t = cursorToTask(cursor);
-            cursor.close();
-            return t;
-        }
-        cursor.close();
-        return null;
-    }
-
-    /**
-     * Get tasks by Sync State
-     *
-     * @param state
-     * @return
-     */
-    public static List<Task> getBySyncState(final SYNC_STATE state) {
-        final Cursor c = Task.database.query(Task.TABLE, Task.allColumns,
-                                             DatabaseHelper.SYNC_STATE_FIELD + "=" + state.toInt() + " and "
-                                             + TaskBase.LIST_ID + ">0", null, null, null, null
-                                            );
-        return cursorToTaskList(c);
+        return qb.get(Task.class);
     }
 
     public static Task getByUUID(final String uuid) {
-        final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-                              TaskBase.UUID + "='" + uuid + "' AND NOT "
-                              + DatabaseHelper.SYNC_STATE_FIELD + "="
-                              + SYNC_STATE.DELETE, null, null, null, null
-                                                 );
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Task t = cursorToTask(cursor);
-            cursor.close();
-            return t;
-        }
-        cursor.close();
-        return null;
+        return new MirakelQueryBuilder(context)
+               .and(UUID, Operation.EQ, uuid)
+               .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                    SYNC_STATE.DELETE.toInt()).get(Task.class);
     }
 
     public static Task getDummy(final Context ctx) {
@@ -275,42 +190,11 @@ public class Task extends TaskBase {
         return t;
     }
 
-    public static String getSorting(final int sorting) {
-        String order = "";
-        final String dueSort = "CASE WHEN (" + TaskBase.DUE
-                               + " IS NULL) THEN datetime('now','+50 years') ELSE datetime("
-                               + TaskBase.DUE
-                               + ",'unixepoch','localtime','start of day') END ASC";
-        switch (sorting) {
-        case ListMirakel.SORT_BY_PRIO:
-            order = TaskBase.PRIORITY + " desc";
-            break;
-        case ListMirakel.SORT_BY_OPT:
-            order = ", " + TaskBase.PRIORITY + " DESC";
-        //$FALL-THROUGH$
-        case ListMirakel.SORT_BY_DUE:
-            order = "done ASC, " + dueSort + order;
-            break;
-        case ListMirakel.SORT_BY_REVERT_DEFAULT:
-            order = TaskBase.PRIORITY + " DESC, " + dueSort + order;
-        //$FALL-THROUGH$
-        default:
-            if (!order.equals("")) {
-                order += ", ";
-            }
-            order += DatabaseHelper.ID + " ASC";
-        }
-        return order;
-    }
-
     public static List<Pair<Long, String>> getTaskNames() {
-        final Cursor c = Task.database.query(Task.TABLE, new String[] {
-                                                 DatabaseHelper.ID, DatabaseHelper.NAME
-                                             },
-                                             BASIC_FILTER_DISPLAY_TASKS, null, null, null, null
-                                            );
-        c.moveToFirst();
+        final Cursor c = addBasicFiler(new MirakelQueryBuilder(context))
+                         .select(ID, NAME).query(URI);
         final List<Pair<Long, String>> names = new ArrayList<>();
+        c.moveToFirst();
         while (!c.isAfterLast()) {
             names.add(new Pair<>(c.getLong(0), c.getString(1)));
             c.moveToNext();
@@ -324,11 +208,11 @@ public class Task extends TaskBase {
      *
      * @param listId
      * @param sorting
-     *            The Sorting (@see Mirakel.SORT_*)
+     *            The Sorting (@see ListMirakel.SORT_BY)
      * @param showDone
      * @return
      */
-    public static List<Task> getTasks(final int listId, final int sorting,
+    public static List<Task> getTasks(final long listId, final SORT_BY sorting,
                                       final boolean showDone) {
         final Cursor cursor = getTasksCursor(listId, sorting, showDone);
         return cursorToTaskList(cursor);
@@ -339,28 +223,13 @@ public class Task extends TaskBase {
      *
      * @param list
      * @param sorting
-     *            The Sorting (@see Mirakel.SORT_*)
+     *            The Sorting (@see ListMirakel.SORT_BY)
      * @param showDone
      * @return
      */
     public static List<Task> getTasks(final ListMirakel list,
-                                      final int sorting, final boolean showDone) {
+                                      final SORT_BY sorting, final boolean showDone) {
         return getTasks(list.getId(), sorting, showDone);
-    }
-
-    /**
-     * Get Tasks from a List Use it only if really necessary!
-     *
-     * @param list
-     * @param sorting
-     *            The Sorting (@see Mirakel.SORT_*)
-     * @param showDone
-     * @return
-     */
-    public static List<Task> getTasks(final ListMirakel list,
-                                      final int sorting, final boolean showDone, final String where) {
-        final Cursor cursor = getTasksCursor(list.getId(), sorting, where);
-        return cursorToTaskList(cursor);
     }
 
     /**
@@ -370,19 +239,18 @@ public class Task extends TaskBase {
      * @param sorting
      * @return
      */
-    private static Cursor getTasksCursor(final int listId, final int sorting,
+    private static Cursor getTasksCursor(final long listId, final SORT_BY sorting,
                                          final boolean showDone) {
         final ListMirakel l = ListMirakel.get(listId);
         if (l == null) {
             Log.wtf(TAG, "list not found");
             return new MatrixCursor(allColumns);
         }
-        String where = l.getWhereQueryForTasks();
+        final MirakelQueryBuilder qb = l.getWhereQueryForTasks();
         if (!showDone) {
-            where += (where.trim().equals("") ? "" : " AND ") + " "
-                     + TaskBase.DONE + "=0";
+            qb.and(DONE, Operation.EQ, false);
         }
-        return getTasksCursor(listId, sorting, where);
+        return getTasksCursor(listId, sorting, qb);
     }
 
     /**
@@ -392,94 +260,39 @@ public class Task extends TaskBase {
      * @param sorting
      * @return
      */
-    private static Cursor getTasksCursor(final int listId, final int sorting,
-                                         String where) {
-        if (where == null) {
-            where = "";
-        } else if (!where.equals("")) {
-            where += " AND ";
-        }
-        where += " " + BASIC_FILTER_DISPLAY_TASKS;
-        String order = getSorting(sorting);
-        if (listId < 0) {
-            order += ", " + TaskBase.LIST_ID + " ASC";
-        }
-        return Task.database.query(Task.TABLE, Task.allColumns, where, null,
-                                   null, null, TaskBase.DONE + ", " + order);
+    private static Cursor getTasksCursor(final long listId, final SORT_BY sorting,
+                                         final MirakelQueryBuilder qb) {
+        addBasicFiler(qb);
+        qb.sort(Task.DONE, Sorting.ASC);
+        ListMirakel.addSortBy(qb, sorting, listId);
+        return qb.select(allColumns).query(URI);
     }
 
     private static Cursor getTasksCursor(final Task subtask) {
-        String columns = "t." + Task.allColumns[0];
-        for (int i = 1; i < Task.allColumns.length; i++) {
-            columns += ", t." + Task.allColumns[i];
-        }
-        return Task.database.rawQuery("SELECT " + columns + " FROM "
-                                      + Task.TABLE + " t INNER JOIN " + Task.SUBTASK_TABLE
-                                      + " s on t._id=s.child_id WHERE s.parent_id=? ORDER BY "
-                                      + getSorting(ListMirakel.SORT_BY_OPT), new String[] {""
-                                              + subtask.getId()
-                                                                                          });
+        return ListMirakel.addSortBy(
+                   new MirakelQueryBuilder(context).select(
+                       addPrefix(allColumns, TABLE)).and(
+                       SUBTASK_TABLE + ".parent_id", Operation.EQ, subtask),
+                   SORT_BY.OPT, 0).query(
+                   MirakelInternalContentProvider.TASK_SUBTASK_URI);
     }
 
     // Static Methods
 
     public static List<Task> getTasksToSync(final Account account) {
-        final AccountMirakel a = AccountMirakel.get(account);
-        final List<ListMirakel> lists = ListMirakel.getListsForAccount(a);
-        String listIDs = "";
-        boolean first = true;
-        for (final ListMirakel l : lists) {
-            listIDs += (first ? "" : ",") + l.getId();
-            first = false;
-        }
-        final String where = "NOT " + DatabaseHelper.SYNC_STATE_FIELD + " IN ("
-                             + SYNC_STATE.NOTHING + ") and " + TaskBase.LIST_ID + " IN ("
-                             + listIDs + ")";
-        final Cursor cursor = MirakelContentProvider.getReadableDatabase()
-                              .query(Task.TABLE, Task.allColumns, where, null, null, null,
-                                     null);
-        return cursorToTaskList(cursor);
+        return new MirakelQueryBuilder(context)
+               .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                    SYNC_STATE.NOTHING.toInt())
+               .and(LIST_ID,
+                    Operation.IN,
+                    ListMirakel.getListsForAccount(AccountMirakel
+                            .get(account))).getList(Task.class);
     }
 
     public static List<Task> getTasksWithReminders() {
-        final String where = TaskBase.REMINDER + " NOT NULL and "
-                             + TaskBase.DONE + "=0";
-        final Cursor cursor = MirakelContentProvider.getReadableDatabase()
-                              .query(Task.TABLE, Task.allColumns, where, null, null, null,
-                                     null);
-        return cursorToTaskList(cursor);
-    }
-
-    /**
-     * Get a Task to sync it
-     *
-     * @param id
-     * @return
-     */
-    public static Task getToSync(final long id) {
-        final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-                              DatabaseHelper.ID + "='" + id + "'", null, null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Task t = cursorToTask(cursor);
-            cursor.close();
-            return t;
-        }
-        cursor.close();
-        return null;
-    }
-
-    /**
-     * Initialize the Database and the preferences
-     *
-     * @param ctx
-     *            The Application-Context
-     */
-    public static void init(final Context ctx) {
-        Task.context = ctx;
-        Task.dbHelper = new DatabaseHelper(Task.context);
-        Task.database = Task.dbHelper.getWritableDatabase();
-        calledFromDBHelper = false;
+        return new MirakelQueryBuilder(context)
+               .and(REMINDER, Operation.NOT_EQ, (String) null)
+               .and(DONE, Operation.EQ, false).getList(Task.class);
     }
 
     public static Task newTask(final String name, final ListMirakel list) {
@@ -487,8 +300,8 @@ public class Task extends TaskBase {
     }
 
     public static Task newTask(final String name, final ListMirakel list,
-                               final GregorianCalendar due, final int prio) {
-        return newTask(name, list, "", false, due, prio);
+                               final GregorianCalendar due, final int priority) {
+        return newTask(name, list, "", false, due, priority);
     }
 
     /**
@@ -518,13 +331,6 @@ public class Task extends TaskBase {
         }
     }
 
-    public static List<Task> rawQuery(final String generateQuery) {
-        final Cursor c = Task.database.rawQuery(generateQuery, null);
-        final List<Task> ret = cursorToTaskList(c);
-        c.close();
-        return ret;
-    }
-
     public static void resetSyncState(final List<Task> tasks) {
         if (tasks.size() == 0) {
             return;
@@ -533,8 +339,8 @@ public class Task extends TaskBase {
             if (t.getSyncState() != SYNC_STATE.DELETE) {
                 t.setSyncState(SYNC_STATE.NOTHING);
                 try {
-                    Task.database.update(Task.TABLE, t.getContentValues(),
-                                         DatabaseHelper.ID + " = " + t.getId(), null);
+                    update(URI, t.getContentValues(), ID + " = " + t.getId(),
+                           null);
                 } catch (final NoSuchListException e) {
                     Log.d(Task.TAG, "List did vanish", e);
                 } catch (final Exception e) {
@@ -572,6 +378,59 @@ public class Task extends TaskBase {
         this.recurrenceParent = null;
     }
 
+    public Task(final Cursor cursor) {
+        if (cursor.isAfterLast()) {
+            throw new IllegalArgumentException("cursor out of bounds");
+        }
+        if (cursor.isNull(cursor.getColumnIndex(DUE))) {
+            setDue(null);
+        } else {
+            setDue(DateTimeHelper.createLocalCalendar(
+                       cursor.getLong(cursor.getColumnIndex(DUE)), true));
+        }
+        if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
+            setReminder(null);
+        } else {
+            setReminder(DateTimeHelper.createLocalCalendar(cursor
+                        .getLong(cursor.getColumnIndex(REMINDER))));
+        }
+        Calendar created_at = null;
+        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
+            created_at = null;
+        } else {
+            created_at = new GregorianCalendar();
+            created_at.setTimeInMillis(cursor.getLong(cursor
+                                       .getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000);
+        }
+        setCreatedAt(created_at);
+        Calendar updated_at;
+        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT))) {
+            updated_at = null;
+        } else {
+            updated_at = new GregorianCalendar();
+            updated_at.setTimeInMillis(cursor.getLong(cursor
+                                       .getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000);
+        }
+        setUpdatedAt(updated_at);
+        setId(cursor.getLong(cursor.getColumnIndex(ID)));
+        setUUID(cursor.getString(cursor.getColumnIndex(UUID)));
+        setList(ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))));
+        setName(cursor.getString(cursor.getColumnIndex(NAME)));
+        setContent(cursor.getString(cursor.getColumnIndex(CONTENT)));
+        setDone(cursor.getShort(cursor.getColumnIndex(DONE)) == 1);
+        setPriority(cursor.getInt(cursor.getColumnIndex(PRIORITY)));
+        setSyncState(SYNC_STATE.valueOf(cursor.getShort(cursor
+                                        .getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))));
+        setAdditionalEntries(cursor.getString(cursor
+                                              .getColumnIndex(ADDITIONAL_ENTRIES)));
+        setRecurrence(cursor.getInt(cursor.getColumnIndex(RECURRING)));
+        setRecurringReminder(cursor.getInt(cursor
+                                           .getColumnIndex(RECURRING_REMINDER)));
+        setProgress(cursor.getInt(cursor.getColumnIndex(PROGRESS)));
+        setIsRecurringShown(cursor.getShort(cursor
+                                            .getColumnIndex(RECURRING_SHOWN)) == 1);
+    }
+
     public Task(final String name) {
         super(name);
         this.recurrenceParent = null;
@@ -592,10 +451,7 @@ public class Task extends TaskBase {
         final ContentValues cv = new ContentValues();
         cv.put("parent_id", getId());
         cv.put("child_id", t.getId());
-        Task.database.beginTransaction();
-        Task.database.insert(Task.SUBTASK_TABLE, null, cv);
-        Task.database.setTransactionSuccessful();
-        Task.database.endTransaction();
+        insert(MirakelInternalContentProvider.SUBTASK_URI, cv);
     }
 
     public boolean checkIfParent(final Task t) {
@@ -614,7 +470,7 @@ public class Task extends TaskBase {
     throws NoSuchListException {
         final ContentValues values = new ContentValues();
         values.put(TaskBase.UUID, getUUID());
-        values.put(DatabaseHelper.NAME, getName());
+        values.put(ModelBase.NAME, getName());
         if (getList() == null) {
             throw new NoSuchListException();
         }
@@ -642,24 +498,12 @@ public class Task extends TaskBase {
                    getUpdatedAt().getTimeInMillis() / 1000);
         values.put(TaskBase.PROGRESS, getProgress());
         values.put(ADDITIONAL_ENTRIES, getAdditionalEntriesString());
-        Task.database.beginTransaction();
-        final long insertId = Task.database.insertOrThrow(Task.TABLE, null,
-                              values);
-        this.setId(insertId);
-        Task.database.setTransactionSuccessful();
-        Task.database.endTransaction();
+        setId(insert(URI, values));
         handleInsertTWRecurring();
-        final Cursor cursor = Task.database.query(Task.TABLE, Task.allColumns,
-                              DatabaseHelper.ID + " = " + insertId, null, null, null, null);
-        cursor.moveToFirst();
-        final Task newTask = cursorToTask(cursor);
-        cursor.close();
+        final Task newTask = get(getId());
         if (!calledFromSync) {
             UndoHistory.logCreate(newTask, Task.context);
-            if (!calledFromDBHelper) {
-                NotificationService.updateServices(context,
-                                                   getReminder() != null);
-            }
+            NotificationService.updateServices(context, getReminder() != null);
         }
         return newTask;
     }
@@ -668,11 +512,8 @@ public class Task extends TaskBase {
         if (permanently) {
             s.destroy();
         } else {
-            Task.database.beginTransaction();
-            Task.database.delete(Task.SUBTASK_TABLE, "parent_id=" + getId()
-                                 + " and child_id=" + s.getId(), null);
-            Task.database.setTransactionSuccessful();
-            Task.database.endTransaction();
+            delete(MirakelInternalContentProvider.SUBTASK_URI, "parent_id="
+                   + getId() + " and child_id=" + s.getId(), null);
         }
     }
 
@@ -680,13 +521,14 @@ public class Task extends TaskBase {
      * Delete a task
      *
      */
+    @Override
     public void destroy() {
         destroy(false);
     }
 
     public void destroySubtasks() {
-        List<Task> tasks = getSubtasks();
-        for (Task t : tasks) {
+        final List<Task> tasks = getSubtasks();
+        for (final Task t : tasks) {
             t.destroy();
         }
     }
@@ -699,20 +541,22 @@ public class Task extends TaskBase {
         updateRecurringMaster();
         final String subWhereQuery = " IN (SELECT child FROM "
                                      + Recurring.TW_TABLE + " WHERE parent=" + getId() + ")";
-        final String whereQuery = DatabaseHelper.ID + " = " + id + " OR " + DatabaseHelper.ID +
-                                  subWhereQuery;
+        final String whereQuery = ModelBase.ID + " = " + id + " OR "
+                                  + ModelBase.ID + subWhereQuery;
         if (getSyncState() == SYNC_STATE.ADD || force) {
-            Task.database.delete(Task.TABLE, whereQuery,
-                                 null);
-            database.delete(FileMirakel.TABLE, "task_id = " + id + " OR task_id " + subWhereQuery, null);
-            database.delete(Recurring.TW_TABLE, "parent=?", new String[] {getId() + ""});
+            delete(URI, whereQuery, null);
+            delete(MirakelInternalContentProvider.FILE_URI, "task_id = " + id
+                   + " OR task_id " + subWhereQuery, null);
+            delete(MirakelInternalContentProvider.RECURRING_TW_URI, "parent=?",
+                   new String[] { getId() + "" });
             destroyGarbage();
         } else {
             final ContentValues values = new ContentValues();
             values.put(DatabaseHelper.SYNC_STATE_FIELD,
                        SYNC_STATE.DELETE.toInt());
-            Task.database.update(Task.TABLE, values, whereQuery, null);
-            database.delete(FileMirakel.TABLE, "task_id = " + id + " OR task_id " + subWhereQuery, null);
+            update(URI, values, whereQuery, null);
+            delete(MirakelInternalContentProvider.FILE_URI, "task_id = " + id
+                   + " OR task_id " + subWhereQuery, null);
         }
         NotificationService.updateServices(context, getReminder() != null);
     }
@@ -722,12 +566,9 @@ public class Task extends TaskBase {
         destroyRecurrenceGarbageForTask(getId());
     }
 
-    public static void destroyRecurrenceGarbageForTask(long id) {
-        Task.database.beginTransaction();
-        Task.database.delete(Task.SUBTASK_TABLE, "parent_id=" + id
-                             + " or child_id=" + id, null);
-        Task.database.setTransactionSuccessful();
-        Task.database.endTransaction();
+    public static void destroyRecurrenceGarbageForTask(final long id) {
+        delete(MirakelInternalContentProvider.SUBTASK_URI, "parent_id=" + id
+               + " or child_id=" + id, null);
     }
 
     public String[] getDependencies() {
@@ -738,13 +579,9 @@ public class Task extends TaskBase {
         return FileMirakel.getForTask(this);
     }
 
-    public int getSubtaskCount() {
-        final Cursor c = Task.database.rawQuery("Select count(_id) from "
-                                                + Task.SUBTASK_TABLE + " where parent_id=" + getId(), null);
-        c.moveToFirst();
-        final int count = c.getInt(0);
-        c.close();
-        return count;
+    public long getSubtaskCount() {
+        return new MirakelQueryBuilder(context).and("parent_id", Operation.EQ,
+                this).count(MirakelInternalContentProvider.SUBTASK_URI);
     }
 
     public List<Task> getSubtasks() {
@@ -773,15 +610,13 @@ public class Task extends TaskBase {
         if (otherTask == null) {
             return false;
         }
-        final Cursor c = Task.database.rawQuery("Select count(_id) from "
-                                                + Task.SUBTASK_TABLE + " where parent_id=" + otherTask.getId()
-                                                + " AND child_id=" + getId(), null);
-        c.moveToFirst();
-        final int count = c.getInt(0);
-        c.close();
-        return count > 0;
+        return new MirakelQueryBuilder(context)
+               .and("parent_id", Operation.EQ, otherTask)
+               .and("child_id", Operation.EQ, this)
+               .count(MirakelInternalContentProvider.SUBTASK_URI) > 0;
     }
 
+    @Override
     public void save() {
         save(true);
     }
@@ -801,14 +636,11 @@ public class Task extends TaskBase {
         }
     }
 
-    private void unsafeSave(boolean log, final boolean calledFromSync,
+    private void unsafeSave(final boolean log, final boolean calledFromSync,
                             final boolean updateUpdatedAt) throws NoSuchListException {
         if (!isEdited()) {
             Log.d(Task.TAG, "new Task equals old, did not need to save it");
             return;
-        }
-        if (calledFromDBHelper) {
-            log = false;
         }
         if (isEdited(RECURRING) && !calledFromSync) {
             final Task old = Task.get(getId());
@@ -817,15 +649,22 @@ public class Task extends TaskBase {
             } else if (old.getRecurrenceId() != getRecurrenceId()) {
                 final Recurring r = getRecurring();
                 if (r == null) {
-                    final Cursor c = database.query(Recurring.TW_TABLE, new String[] {"parent"}, "child=?",
-                                                    new String[] {getId() + ""},
-                                                    null, null, null);
-                    if (c.moveToFirst() && c.getCount() > 0) {
-                        long masterID = c.getLong(0);
-                        database.execSQL("UPDATE " + TABLE + " SET " + RECURRING + "=-1 WHERE " + DatabaseHelper.ID +
-                                         " IN (SELECT child FROM " + Recurring.TW_TABLE + " WHERE parent=" + masterID + ")");
-                        database.delete(Recurring.TW_TABLE, "parent=?", new String[] {masterID + ""});
-                        database.delete(TABLE, DatabaseHelper.ID + "=?", new String[] {masterID + ""});
+                    final Cursor c = new MirakelQueryBuilder(context)
+                    .select("parent")
+                    .and("child", Operation.EQ, this)
+                    .query(MirakelInternalContentProvider.RECURRING_TW_URI);
+                    if (c.moveToFirst()) {
+                        final long masterID = c.getLong(0);
+                        final ContentValues cv = new ContentValues();
+                        cv.put(RECURRING, -1);
+                        update(URI, cv, ModelBase.ID
+                               + " IN (SELECT child FROM "
+                               + Recurring.TW_TABLE + " WHERE parent="
+                               + masterID + ")", null);
+                        delete(MirakelInternalContentProvider.RECURRING_TW_URI,
+                               "parent=?", new String[] { masterID + "" });
+                        delete(URI, ModelBase.ID + "=?",
+                               new String[] { masterID + "" });
                     }
                     c.close();
                 } else {
@@ -849,68 +688,59 @@ public class Task extends TaskBase {
             UndoHistory.updateLog(old, Task.context);
         }
         final List<Tag> tags = getTags();
-        Task.database.beginTransaction();
-        if (isEdited(TaskBase.RECURRING)) {
-            long master = getId();
-            Cursor c = database.query(Recurring.TW_TABLE,
-                                      new String[] {"parent"}, "child=?", new String[] {master
-                                              + ""
-                                                                                       }, null, null, null
-                                     );
-            c.moveToFirst();
-            if (c.getCount() > 0) {
-                master = c.getLong(0);
-            }
-            c.close();
-            c = database.query(Recurring.TW_TABLE, new String[] {"child"},
-                               "parent=?", new String[] {master + ""}, null, null, null);
-            boolean first = true;
-            String ids = "";
-            for (c.moveToFirst(); c.moveToNext();) {
-                if (first) {
-                    first = false;
-                } else {
-                    ids += ",";
+        MirakelInternalContentProvider
+        .withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+            @Override
+            public void exec() {
+                if (isEdited(TaskBase.RECURRING)) {
+                    long master = getId();
+                    final Cursor c = new MirakelQueryBuilder(context)
+                    .select("parent")
+                    .and("child", Operation.EQ, master)
+                    .query(MirakelInternalContentProvider.RECURRING_TW_URI);
+                    if (c.moveToFirst()) {
+                        master = c.getLong(0);
+                    }
+                    c.close();
+                    final ContentValues cv = new ContentValues();
+                    cv.put(RECURRING, getRecurrenceId());
+                    update(URI, cv, ModelBase.ID
+                           + " IN (SELECT child FROM "
+                           + Recurring.TW_TABLE + " WHERE parent="
+                           + master + ")", null);
                 }
-                ids += c.getLong(0);
+                update(URI, values, ModelBase.ID + " = " + getId(),
+                       null);
+                for (final Tag t : tags) {
+                    saveTag(t);
+                }
+                clearEdited();
             }
-            c.close();
-            final ContentValues cv = new ContentValues();
-            cv.put(RECURRING, getRecurrenceId());
-            database.update(TABLE, cv, DatabaseHelper.ID + " IN (?)",
-                            new String[] { ids });
-        }
-        Task.database.update(Task.TABLE, values, DatabaseHelper.ID + " = "
-                             + getId(), null);
-        for (final Tag t : tags) {
-            saveTag(t);
-        }
+        });
         boolean updateReminders = false;
         if (isEdited(TaskBase.DONE) || isEdited(TaskBase.REMINDER)
             || isEdited(TaskBase.RECURRING_REMINDER)) {
             updateReminders = true;
         }
-        clearEdited();
-        Task.database.setTransactionSuccessful();
-        Task.database.endTransaction();
-        if (!calledFromDBHelper && !calledFromSync) {
-            NotificationService.updateServices(Task.context, updateReminders);
-        }
+        NotificationService.updateServices(Task.context, updateReminders);
     }
 
     public List<Task> getRecurrenceChilds() {
-        final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
-                                           + " FROM " + TABLE + " AS t INNER JOIN "
-                                           + Recurring.TW_TABLE
-                                           + " AS r ON t._id=r.child WHERE r.parent =" + getId() + "  ORDER BY r.offsetCount ASC;", null);
-        return cursorToTaskList(c);
+        return cursorToTaskList(new MirakelQueryBuilder(context)
+                                .select(addPrefix(allColumns, TABLE))
+                                .and(Recurring.TW_TABLE + ".parent =", Operation.EQ, this)
+                                .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
+                                      Sorting.ASC)
+                                .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI));
     }
 
     public Task getRecurrenceMaster() {
-        final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
-                                           + " FROM " + TABLE + " AS t INNER JOIN "
-                                           + Recurring.TW_TABLE
-                                           + " AS r ON t._id=r.parent WHERE r.child =" + getId() + ";", null);
+        final Cursor c = new MirakelQueryBuilder(context)
+        .select(addPrefix(allColumns, TABLE))
+        .and(Recurring.TW_TABLE + ".child =", Operation.EQ, this)
+        .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
+              Sorting.ASC)
+        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI);
         if (c.moveToFirst()) {
             return cursorToTask(c);
         } else {
@@ -919,14 +749,18 @@ public class Task extends TaskBase {
     }
 
     private void updateRecurringChilds(final Recurring r) {
-        final Cursor c = database.rawQuery("SELECT " + concatColumsForQuery()
-                                           + ", r.offsetCount FROM " + TABLE + " AS t INNER JOIN "
-                                           + Recurring.TW_TABLE
-                                           + " AS r ON t._id=r.child WHERE parent IN (SELECT parent FROM "
-                                           + Recurring.TW_TABLE + " WHERE child=" + getId()
-                                           + ") ORDER BY r.offsetCount ASC;", null);
-        c.moveToFirst();
-        if (c.getCount() > 0) {
+        final Cursor c = new MirakelQueryBuilder(context)
+        .select(addPrefix(allColumns, TABLE))
+        .and(Recurring.TW_TABLE + "." + Recurring.PARENT,
+             Operation.IN,
+             new MirakelQueryBuilder(context).select(
+                 Recurring.PARENT).and(Recurring.CHILD,
+                                       Operation.EQ, this),
+             MirakelInternalContentProvider.RECURRING_TW_URI)
+        .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
+              Sorting.ASC)
+        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI);
+        if (c.moveToFirst()) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -957,7 +791,7 @@ public class Task extends TaskBase {
         Log.i(TAG, "changed recurrence");
         // add first
         final long oldId = getId();
-        final int recID = getRecurrenceId();
+        final long recID = getRecurrenceId();
         final Task child = create();
         setIsRecurringShown(false);
         // switch ids
@@ -971,14 +805,13 @@ public class Task extends TaskBase {
         cv.put("child", child.getId());
         cv.put("offset", 0);
         cv.put("offsetCount", 0);
-        database.insert(Recurring.TW_TABLE, null, cv);
+        insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
         // if not done manual this will cause a stackoverflow
         cv.clear();
         cv.put(RECURRING, recID);
         cv.put(UUID, java.util.UUID.randomUUID().toString());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
-        database.update(TABLE, cv, DatabaseHelper.ID + "=?",
-                        new String[] { oldId + "" });
+        update(URI, cv, ModelBase.ID + "=?", new String[] { oldId + "" });
     }
 
     private void handleInsertTWRecurring() {
@@ -989,10 +822,11 @@ public class Task extends TaskBase {
                 Log.wtf(TAG, toString() + " is null!?");
                 return;
             }
-            final Cursor c = database.query(Recurring.TW_TABLE,
-                                            Recurring.allTWColumns, "parent=? AND child=?",
-                                            new String[] {master.getId() + "", getId() + ""}, null,
-                                            null, null);
+            final Cursor c = new MirakelQueryBuilder(context)
+            .select(Recurring.allTWColumns)
+            .and("parent", Operation.EQ, master)
+            .and("child", Operation.EQ, this)
+            .query(MirakelInternalContentProvider.RECURRING_TW_URI);
             c.moveToFirst();
             if (c.getCount() < 1) {
                 final ContentValues cv = new ContentValues();
@@ -1000,7 +834,7 @@ public class Task extends TaskBase {
                 cv.put("child", getId());
                 cv.put("offsetCount", this.recurrenceParent.second);
                 cv.put("offset", master.getRecurring().getInterval());
-                database.insert(Recurring.TW_TABLE, null, cv);
+                insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
             }
             c.close();
             setRecurrence(master.getRecurrenceId());
@@ -1011,29 +845,28 @@ public class Task extends TaskBase {
     }
 
     public static void fixRecurringShowing() {
-        database.execSQL("UPDATE " + TABLE + " SET " + RECURRING_SHOWN
-                         + "=0 WHERE _id IN (SELECT parent FROM " + Recurring.TW_TABLE
-                         + ");");
-        database.execSQL("UPDATE " + TABLE + " SET " + RECURRING_SHOWN
-                         + "=1 WHERE _id IN (SELECT r.child FROM " + Recurring.TW_TABLE
-                         + " AS r INNER JOIN " + TABLE + " AS t ON t._id=r.child);");
+        final ContentValues cv = new ContentValues();
+        cv.put(RECURRING_SHOWN, false);
+        update(URI, cv, ModelBase.ID + " IN (SELECT parent FROM "
+               + Recurring.TW_TABLE + ")", null);
+        cv.clear();
+        cv.put(RECURRING_SHOWN, true);
+        ;
+        update(URI, cv, ModelBase.ID + " IN (SELECT r.child FROM "
+               + Recurring.TW_TABLE + " AS r INNER JOIN " + TABLE
+               + " AS t ON t._id=r.child)", null);
     }
 
     private void updateRecurringMaster() {
         // update master if child changed
-        final Cursor c = database.query(Recurring.TW_TABLE,
-                                        new String[] {"parent"}, "child=?", new String[] {getId()
-                                                + ""
-                                                                                         }, null, null, null
-                                       );
-        c.moveToFirst();
-        if (c.getCount() > 0) {
+        final Cursor c = new MirakelQueryBuilder(context).select("parent")
+        .and("child", Operation.EQ, this)
+        .query(MirakelInternalContentProvider.RECURRING_TW_URI);
+        if (c.moveToFirst()) {
             final ContentValues cv = new ContentValues();
             cv.put(DatabaseHelper.SYNC_STATE_FIELD,
                    SYNC_STATE.NEED_SYNC.toInt());
-            database.update(TABLE, cv, "_id=?", new String[] { c.getLong(0)
-                            + ""
-                                                             });
+            update(URI, cv, "_id=?", new String[] { c.getLong(0) + "" });
         }
         c.close();
     }
@@ -1098,22 +931,17 @@ public class Task extends TaskBase {
     }
 
     private boolean saveTag(final Tag t) {
-        final Cursor c = database.query(Tag.TAG_CONNECTION_TABLE,
-                                        new String[] {"count(*)"}, "task_id=? and tag_id=?",
-                                        new String[] {getId() + "", t.getId() + ""}, null, null,
-                                        null, null);
-        c.moveToFirst();
-        if (c.getCount() > 0 && c.getInt(0) > 0) {
-            c.close();
+        if (new MirakelQueryBuilder(context).and("task_id", Operation.EQ, this)
+            .and("tag_id", Operation.EQ, t)
+            .count(MirakelInternalContentProvider.TAG_CONNECTION_URI) > 0) {
             // already exists;
             return false;
         }
-        c.close();
         if (getId() != 0) {
             final ContentValues cv = new ContentValues();
             cv.put("tag_id", t.getId());
             cv.put("task_id", getId());
-            database.insert(Tag.TAG_CONNECTION_TABLE, null, cv);
+            insert(MirakelInternalContentProvider.TAG_CONNECTION_URI, cv);
             return true;
         }
         return false;
@@ -1138,7 +966,8 @@ public class Task extends TaskBase {
         } catch (final NoSuchListException e) {
             Log.w(Task.TAG, "List did vanish");
         }
-        database.delete(Tag.TAG_CONNECTION_TABLE, "task_id=? and tag_id=?",
-                        new String[] { getId() + "", t.getId() + "" });
+        delete(MirakelInternalContentProvider.TAG_CONNECTION_URI,
+               "task_id=? and tag_id=?",
+               new String[] { getId() + "", t.getId() + "" });
     }
 }

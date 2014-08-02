@@ -65,16 +65,16 @@ public class RecurringActivity extends ListSettings {
 
     @Override
     protected void setupSettings() {
-        this.recurring = Recurring.get(getIntent().getIntExtra("id", 0));
+        this.recurring = Recurring.get(getIntent().getLongExtra("id", 0));
         new RecurringSettings(this, this.recurring).setup();
     }
 
     @Override
-    protected List<Pair<Integer, String>> getItems() {
+    protected List<Pair<Long, String>> getItems() {
         final List<Recurring> allRecurrences = Recurring.all();
-        final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+        final List<Pair<Long, String>> items = new ArrayList<>();
         for (final Recurring r : allRecurrences) {
-            items.add(new Pair<Integer, String>(r.getId(), r.getLabel()));
+            items.add(new Pair<>(r.getId(), r.getLabel()));
         }
         return items;
     }

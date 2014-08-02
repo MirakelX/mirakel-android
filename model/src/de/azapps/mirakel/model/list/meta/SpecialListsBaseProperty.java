@@ -16,9 +16,12 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 public abstract class SpecialListsBaseProperty {
 
@@ -27,7 +30,7 @@ public abstract class SpecialListsBaseProperty {
     }
 
     // for wherequery
-    abstract public String getWhereQuery();
+    abstract public MirakelQueryBuilder getWhereQuery(final Context ctx);
 
     // for db
     abstract public String serialize();

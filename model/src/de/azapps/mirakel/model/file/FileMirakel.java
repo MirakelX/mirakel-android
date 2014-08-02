@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.model.file;
 
 import java.io.File;
@@ -10,7 +29,6 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,26 +36,29 @@ import android.util.TypedValue;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class FileMirakel extends FileBase {
 
-    private static final String[] allColumns = { "_id", "task_id", "name",
-                                                 "path"
-                                               };
+    public static final String[] allColumns = { ID, NAME, TASK, PATH };
     public static final String cacheDirPath = FileUtils.getMirakelDir()
             + "image_cache";
-    private static SQLiteDatabase database;
-
-    private static DatabaseHelper dbHelper;
     public static final File fileCacheDir = new File(cacheDirPath);
     public static final String TABLE = "files";
     private static final String TAG = "FileMirakel";
+    public static final Uri URI = MirakelInternalContentProvider.FILE_URI;
 
     // private static final String TAG = "FileMirakel";
+
+    @Override
+    protected Uri getUri() {
+        return URI;
+    }
 
     /**
      * Get all Tasks
@@ -45,47 +66,46 @@ public class FileMirakel extends FileBase {
      * @return
      */
     public static List<FileMirakel> all() {
-        final List<FileMirakel> files = new ArrayList<FileMirakel>();
-        final Cursor c = database.query(TABLE, allColumns, null, null, null,
-                                        null, null);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            files.add(cursorToFile(c));
-            c.moveToNext();
+        return new MirakelQueryBuilder(context).getList(FileMirakel.class);
+    }
+
+    public static List<FileMirakel> cursorToFileList(final Cursor c) {
+        List<FileMirakel> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new FileMirakel(c));
+            } while (c.moveToNext());
         }
         c.close();
-        return files;
+        return ret;
     }
 
-    /**
-     * Close the Database-Connection
-     */
-    public static void close() {
-        dbHelper.close();
-    }
-
-    private static FileMirakel cursorToFile(final Cursor cursor) {
-        int i = 0;
-        return new FileMirakel(cursor.getInt(i++),
-                               Task.get(cursor.getInt(i++)), cursor.getString(i++),
-                               Uri.parse(cursor.getString(i++)));
+    public FileMirakel(final Cursor c) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c
+                .getColumnIndex(NAME)), Task.get(c.getInt(c
+                        .getColumnIndex(TASK))), Uri.parse(c.getString(c
+                                .getColumnIndex(PATH))));
     }
 
     // Static Methods
 
     public static void destroyForTask(final Task t) {
         final List<FileMirakel> files = getForTask(t);
-        database.beginTransaction();
-        for (final FileMirakel file : files) {
-            final File destFile = new File(FileMirakel.fileCacheDir,
-                                           file.getId() + ".png");
-            if (destFile.exists()) {
-                destFile.delete();
+        MirakelInternalContentProvider
+        .withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+            @Override
+            public void exec() {
+                for (final FileMirakel file : files) {
+                    final File destFile = new File(
+                        FileMirakel.fileCacheDir, file.getId()
+                        + ".png");
+                    if (destFile.exists()) {
+                        destFile.delete();
+                    }
+                    file.destroy();
+                }
             }
-            file.destroy(false);
-        }
-        database.setTransactionSuccessful();
-        database.endTransaction();
+        });
     }
 
     /**
@@ -94,53 +114,13 @@ public class FileMirakel extends FileBase {
      * @param id
      * @return
      */
-    public static FileMirakel get(final int id) {
-        final Cursor cursor = database.query(TABLE, allColumns, "_id=" + id,
-                                             null, null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final FileMirakel t = cursorToFile(cursor);
-            cursor.close();
-            return t;
-        }
-        cursor.close();
-        return null;
-    }
-
-    public static int getFileCount(final Task t) {
-        if (t == null) {
-            return 0;
-        }
-        final Cursor c = database.rawQuery("Select count(_id) from " + TABLE
-                                           + " where task_id=?", new String[] { "" + t.getId() });
-        c.moveToFirst();
-        final int count = c.getInt(0);
-        c.close();
-        return count;
+    public static FileMirakel get(final long id) {
+        return new MirakelQueryBuilder(context).get(FileMirakel.class, id);
     }
 
     public static List<FileMirakel> getForTask(final Task task) {
-        final List<FileMirakel> files = new ArrayList<FileMirakel>();
-        final Cursor cursor = database.query(TABLE, allColumns, "task_id="
-                                             + task.getId(), null, null, null, null);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            files.add(cursorToFile(cursor));
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return files;
-    }
-
-    /**
-     * Initialize the Database and the preferences
-     *
-     * @param context
-     *            The Application-Context
-     */
-    public static void init(final Context context) {
-        dbHelper = new DatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
+        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task)
+               .getList(FileMirakel.class);
     }
 
     public static FileMirakel newFile(final Context ctx, final Task task,
@@ -198,38 +178,24 @@ public class FileMirakel extends FileBase {
      */
     public static FileMirakel newFile(final Task task, final String name,
                                       final Uri uri) {
-        final FileMirakel m = new FileMirakel(0, task, name, uri);
+        final FileMirakel m = new FileMirakel(0, name, task, uri);
         return m.create();
     }
 
-    protected FileMirakel(final int id, final Task task, final String name,
-                          final Uri uri) {
-        super(id, task, name, uri);
+    FileMirakel(final int id, final String name, final Task task, final Uri uri) {
+        super(id, name, task, uri);
     }
 
     public FileMirakel create() {
         final ContentValues values = getContentValues();
         values.remove("_id");
-        database.beginTransaction();
-        final int insertId = (int) database.insertOrThrow(TABLE, null, values);
-        database.setTransactionSuccessful();
-        database.endTransaction();
+        final long insertId = insert(URI, values);
         return FileMirakel.get(insertId);
     }
 
+    @Override
     public void destroy() {
-        destroy(true);
-    }
-
-    public void destroy(final boolean oneTransaction) {
-        if (oneTransaction) {
-            database.beginTransaction();
-        }
-        database.delete(TABLE, "_id=" + getId(), null);
-        if (oneTransaction) {
-            database.setTransactionSuccessful();
-            database.endTransaction();
-        }
+        super.destroy();
         new File(fileCacheDir, getId() + ".png").delete();
     }
 
@@ -239,14 +205,6 @@ public class FileMirakel extends FileBase {
             return BitmapFactory.decodeFile(osFile.getAbsolutePath());
         }
         return null;
-    }
-
-    public void save() {
-        database.beginTransaction();
-        final ContentValues values = getContentValues();
-        database.update(TABLE, values, "_id = " + getId(), null);
-        database.setTransactionSuccessful();
-        database.endTransaction();
     }
 
 }

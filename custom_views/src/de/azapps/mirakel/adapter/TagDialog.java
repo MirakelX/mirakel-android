@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
@@ -23,13 +22,18 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import de.azapps.mirakel.DefinitionsHelper;
+
+import java.util.Arrays;
+
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.customviews.R;
-import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class TagDialog extends DialogFragment implements
     LoaderManager.LoaderCallbacks<Cursor> {
@@ -37,12 +41,10 @@ public class TagDialog extends DialogFragment implements
     private String searchString;
     private TagAdapter adapter;
     private Context ctx;
-    private final SQLiteDatabase db;
     private Task task;
     private OnTaskChangedListner taskChanged;
 
     public TagDialog() {
-        this.db = MirakelContentProvider.getReadableDatabase();
         this.searchString = "";
     }
 
@@ -132,13 +134,10 @@ public class TagDialog extends DialogFragment implements
     protected void createNewTag(final EditText search) {
         TagDialog.this.searchString = search.getText().toString();
         getLoaderManager().restartLoader(0, null, TagDialog.this);
-        final Cursor c = TagDialog.this.db.query(Tag.TABLE,
-                         new String[] { "count(*)" }, DatabaseHelper.NAME + " LIKE ?",
-                         new String[] { TagDialog.this.searchString + '%' }, null, null,
-                         null);
-        c.moveToFirst();
-        if (c.getCount() > 0 && c.getInt(0) == 0) {// tag does not
-            // exists
+        long count = new MirakelQueryBuilder(ctx).and(Tag.NAME, Operation.LIKE,
+                TagDialog.this.searchString + '%').count(Tag.URI);
+        // check if tag does not exists
+        if (count == 0) {
             final InputMethodManager imm = (InputMethodManager) this.ctx
                                            .getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
@@ -151,14 +150,9 @@ public class TagDialog extends DialogFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-        final Uri u = Uri.parse("content://"
-                                + DefinitionsHelper.AUTHORITY_INTERNAL + "/" + "tags");
-        final String tagsQuery = "AND " + DatabaseHelper.ID + " NOT IN ("
-                                 + Tag.getTagsQuery(new String[] { DatabaseHelper.ID }) + ")";
-        return new CursorLoader(getActivity(), u, Tag.allColumns,
-                                DatabaseHelper.NAME + " LIKE ? " + tagsQuery, new String[] {
-                                    this.searchString + "%", this.task.getId() + ""
-                                }, null);
+        return new CursorLoader(ctx, Tag.URI, Tag.allColumns,
+                                "NOT " + Tag.ID + " IN(" + Tag.getTagsQuery(new String[] { ModelBase.ID }) + ") AND " + Tag.NAME +
+                                " LIKE ?", new String[] {this.task.getId() + "", this.searchString + "%"}, null);
     }
 
     @Override

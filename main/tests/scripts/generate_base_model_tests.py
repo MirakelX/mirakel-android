@@ -54,34 +54,45 @@ getter={}
 setter={}
 imports=""
 path=str(sys.argv[1]).split('/')
-className=path[len(path)-1].replace(".java","")
+classBaseName=path[len(path)-1].replace(".java","")
+if os.path.isfile(sys.argv[1].replace(classBaseName,classBaseName.replace("Base",""))):
+    className=classBaseName.replace("Base","")
+elif os.path.isfile(sys.argv[1].replace(classBaseName,classBaseName.replace("Base","Mirakel"))):
+    className=classBaseName.replace("Base","Mirakel")
+    
 constructor=""
 constructorState=-1;
 with open(sys.argv[1]) as f:
     for s in f:
         s=s.strip()
         if "public" in s:
-            if "set" in s:
-           #     print s
+            if "set" in s and "(" in s and ")" in s:
+                #print s
                 res=split(s,False)
                 setter[res[0]]=res[1]
-            elif "get" in s or "is" in s:
-          #      print s
+            elif ("get" in s or "is" in s) and "(" in s and ")" in s:
+                #print s
                 res=split(s,True)
                 getter[res[0]]=res[1]
-            elif "public "+className+"(" in s and constructorState==-1:
-                constructor+=s
-                constructorState=0;
         elif "import" in s:
             imports+=s+"\n";
-        elif constructorState==0:
-            constructor+=s
-            if ")" in s:
-                constructorState=1
 path[len(path)-1]=""
 isSrc=False
 fullClass=""
 testPath=""
+
+with open(sys.argv[1].replace(classBaseName,className)) as f:
+    for s in f:
+        s=s.replace("public","")
+        s=s.strip()
+        if s.startswith(className+"(") and constructorState==-1 and not "Cursor" in s:
+            constructor+=s
+            constructorState=0;
+        elif constructorState==0:
+            constructor+=s
+        if ")" in s and constructorState==0:
+            constructorState=1
+
 ## print(str(getter))
 ## print(setter)
 for p in path:
@@ -128,7 +139,7 @@ output+="import de.azapps.mirakelandroid.test.MirakelTestCase;\n"
 output+="import junit.framework.TestCase;\n\n"
 output+="import android.test.suitebuilder.annotation.SmallTest;\n"
 
-output+="public class "+className+"Test extends MirakelTestCase {\n\n"
+output+="public class "+classBaseName+"Test extends MirakelTestCase {\n\n"
 
 output+="\t@Override\n"
 output+="\tprotected void setUp() throws Exception {\n"
@@ -141,7 +152,10 @@ for s in setter:
         test+="\t@SmallTest\n"
         test+="\tpublic void test"+s[1]+"() {\n"
         test+=getTestClass
-        test+="\t\tfinal "+s[0]+" t=RandomHelper.getRandom"+s[0]+"();\n"
+        if s[1]=="Priority":
+            test+="\t\tfinal "+s[0]+" t=RandomHelper.getRandomPriority();\n"
+        else:
+            test+="\t\tfinal "+s[0]+" t=RandomHelper.getRandom"+s[0]+"();\n"
         test+="\t\tobj."+setter[s]+"(t);\n";
         test+="\t\tassertEquals(\"Getting and setting "+s[1]+" does not match\",t,obj."+getter[s]+"());\n\t}"
         output+=test+"\n\n"
@@ -155,6 +169,6 @@ directory=sys.argv[2]+'/src/'+testPath+'/';
 # print("Finish generating Test for "+className)
 if not os.path.exists(directory):
     os.makedirs(directory)
-f = open(directory+className+'Test.java', 'w')
+f = open(directory+classBaseName+'Test.java', 'w')
 f.write(output)
 f.close()

@@ -54,7 +54,9 @@
   <string name="task_empty">Aucune tâche sélectionnée&#8230;</string>
   <string name="no_lists">Cette tâche ne peut pas être synchronisée, car vous n\'avez pas de listes</string>
   <string name="import_any_do_click">Importation de Any.Do</string>
+  <string name="any_do_import_title">Sélectionner le fichier de sauvegarde Any.do</string>
   <string name="any_do_this_file">Importation de %s?\nsi non s\'il vous plaît sélectionner un fichier vous-même</string>
+  <string name="any_do_how_to">Sauvegardez  vos données Any.do en premier. Pour ce faire, aller dans l\'application Any.do → Configuration → Sauvegarde → Créer une sauvegarde. Puis revenez et appuyez sur OK.\n Ou sélectionnez le fichier par vous même.</string>
   <string name="select_file">Sélectionnez un fichier</string>
   <string name="wait">Veuillez patienter&#8230;</string>
   <string name="backup_import_ok">L\'importation s\'est bien passée - Veuillez redémarrer Mirakel</string>
@@ -167,10 +169,10 @@
     <item>Achats</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>aujourd\'hui acheter le cadeau d\'anniversaire pour grand-père</item>
+    <item>Buy birthday present for grandpa</item>
     <item>Musique</item>
-    <item>Organiser la fête lundi</item>
-    <item>Finir la présentation aujourd\'hui</item>
+    <item>Organize the party</item>
+    <item>Finish presentation</item>
     <item>Lait</item>
     <item>Fromage</item>
   </string-array>

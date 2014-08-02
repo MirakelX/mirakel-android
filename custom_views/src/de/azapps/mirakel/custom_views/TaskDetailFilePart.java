@@ -110,7 +110,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
             private Bitmap preview;
             @Override
             public void run() {
-                if (FileUtils.isAudio(TaskDetailFilePart.this.file.getUri())) {
+                if (FileUtils.isAudio(TaskDetailFilePart.this.file.getFileUri())) {
                     final int resource_id = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
                                             : R.drawable.ic_action_play;
                     this.preview = BitmapFactory.decodeResource(
@@ -148,9 +148,9 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
                 }
             }
         }).start();
-        if (FileUtils.isAudio(this.file.getUri())) {
+        if (FileUtils.isAudio(this.file.getFileUri())) {
             this.fileName.setText(R.string.audio_record_file);
-        } else if (FileUtils.isImage(this.file.getUri())) {
+        } else if (FileUtils.isImage(this.file.getFileUri())) {
             this.fileName.setText(R.string.image_file);
         } else {
             this.fileName.setText(this.file.getName());
@@ -158,8 +158,8 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
         try {
             this.file.getFileStream(this.context);
             final String name = FileUtils.getNameFromUri(this.context,
-                                this.file.getUri());
-            this.filePath.setText(name.length() == 0 ? this.file.getUri()
+                                this.file.getFileUri());
+            this.filePath.setText(name.length() == 0 ? this.file.getFileUri()
                                   .toString() : name);
         } catch (final FileNotFoundException e) {
             this.filePath.setText(R.string.error_FILE_NOT_FOUND);

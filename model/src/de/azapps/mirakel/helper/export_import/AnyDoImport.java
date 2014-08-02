@@ -16,6 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.helper.export_import;
 
 import java.io.File;
@@ -70,7 +71,7 @@ public class AnyDoImport {
         }
         final Set<Entry<String, JsonElement>> f = i.entrySet();
         SparseIntArray listMapping = new SparseIntArray();
-        List<Pair<Integer, String>> contents = new ArrayList<Pair<Integer, String>>();
+        List<Pair<Integer, String>> contents = new ArrayList<>();
         taskMapping = new SparseIntArray();
         for (final Entry<String, JsonElement> e : f) {
             if (e.getKey().equals("categorys")) {
@@ -195,7 +196,7 @@ public class AnyDoImport {
         final String name = jsonList.get("name").getAsString();
         final int id = jsonList.get("id").getAsInt();
         final ListMirakel l = ListMirakel.newList(name);
-        listMapping.put(id, l.getId());
+        listMapping.put(id, (int)l.getId());
         return listMapping;
     }
 

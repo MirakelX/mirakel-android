@@ -16,7 +16,14 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.recurring;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Pair;
+import android.util.SparseBooleanArray;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -25,83 +32,58 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Pair;
-import android.util.SparseBooleanArray;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class Recurring extends RecurringBase {
     public static final String TABLE = "recurring";
     private final static String TAG = "Recurring";
-    private final static String[] allColumns = { "_id", "label", "minutes",
-                                                 "hours", "days", "months", "years", "for_due", "start_date",
-                                                 "end_date", "temporary", "isExact", "monday", "tuesday",
-                                                 "wednesday", "thursday", "friday", "saturday", "sunnday",
-                                                 "derived_from"
-                                               };
-    public final static String[] allTWColumns = { "_id", "parent", "child",
-                                                  "offset", "offsetCount"
-                                                };
-    public static final String TW_TABLE = "recurring_tw_mask";
-    private static SQLiteDatabase database;
-    private static DatabaseHelper dbHelper;
 
-    public Recurring(final int _id, final String label, final int minutes,
+    public final static String[] allColumns = { ID, LABEL, MINUTES, HOURS, DAYS, MONTHS, YEARS, FOR_DUE, START_DATE, END_DATE, TEMPORARY, EXACT, MONDAY,
+                                                TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, DERIVED
+                                              };
+    public final static String[] allTWColumns = { ID, PARENT, CHILD, OFFSET, OFFSET_COUNT};
+    public static final String TW_TABLE = "recurring_tw_mask";
+
+    protected Uri getUri() {
+        return URI;
+    }
+
+    public static final Uri URI = MirakelInternalContentProvider.RECURRING_URI;
+
+    public Recurring(final long _id, final String label, final int minutes,
                      final int hours, final int days, final int months, final int years,
                      final boolean forDue, final Calendar startDate,
                      final Calendar endDate, final boolean temporary,
                      final boolean isExact, final SparseBooleanArray weekdays,
-                     final Integer derivedFrom) {
+                     final Long derivedFrom) {
         super(_id, label, minutes, hours, days, months, years, forDue,
               startDate, endDate, temporary, isExact, weekdays, derivedFrom);
     }
 
-    public void save() {
-        database.beginTransaction();
-        final ContentValues values = getContentValues();
-        database.update(TABLE, values, "_id = " + getId(), null);
-        database.setTransactionSuccessful();
-        database.endTransaction();
-    }
 
     // Static
-
-    /**
-     * Initialize the Database and the preferences
-     *
-     * @param context
-     *            The Application-Context
-     */
-    public static void init(final Context context) {
-        dbHelper = new DatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
+    public static List<Recurring> cursorToRecurringList(final Cursor c) {
+        List<Recurring> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new Recurring(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
     }
 
-    /**
-     * CALL THIS ONLY FROM DBHelper
-     *
-     * @param db
-     */
-    public static void setDB(final SQLiteDatabase db) {
-        database = db;
-    }
-
-    /**
-     * Close the Database-Connection
-     */
-    public static void close() {
-        dbHelper.close();
-    }
 
     public static Recurring createTemporayCopy(final Recurring r) {
         final Recurring newR = new Recurring(0, r.getLabel(), r.getMinutes(),
@@ -123,14 +105,10 @@ public class Recurring extends RecurringBase {
     }
 
     public Recurring create() {
-        database.beginTransaction();
         final ContentValues values = getContentValues();
-        values.remove(DatabaseHelper.ID);
-        final int insertId = (int) database.insertOrThrow(TABLE, null, values);
-        this.setId(insertId);
-        database.setTransactionSuccessful();
-        database.endTransaction();
-        return Recurring.get(insertId);
+        values.remove(ModelBase.ID);
+        setId(insert(URI, values));
+        return Recurring.get(getId());
     }
 
     /**
@@ -139,124 +117,98 @@ public class Recurring extends RecurringBase {
      * @param id
      * @return
      */
-    public static Recurring get(final int id) {
-        final Cursor cursor = database.query(TABLE, allColumns, "_id=" + id,
-                                             null, null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Recurring r = cursorToRecurring(cursor);
-            cursor.close();
-            return r;
-        }
-        cursor.close();
-        return null;
+    public static Recurring get(final long id) {
+        return new MirakelQueryBuilder(context).get(Recurring.class, id);
     }
 
     public static Recurring get(final int minutes, final int hours,
                                 final int days, final int month, final int years,
                                 final Calendar start, final Calendar end) {
-        String cal = "";
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(MINUTES,
+                Operation.EQ, minutes).and(HOURS, Operation.EQ, hours)
+        .and(DAYS, Operation.EQ, days).and(MONTHS, Operation.EQ,
+                                           month).and(YEARS, Operation.EQ, years);
         if (start != null) {
-            cal += " start_date=" + DateTimeHelper.formatDateTime(start);
+            qb.and(START_DATE, Operation.EQ, DateTimeHelper.formatDateTime(start));
+        } else {
+            qb.and(START_DATE, Operation.EQ, (String)null);
         }
         if (end != null) {
-            cal = cal + (cal.equals("") ? "" : " and") + " end_date="
-                  + DateTimeHelper.formatDateTime(end);
+            qb.and(END_DATE, Operation.EQ, DateTimeHelper.formatDateTime(end));
+        } else {
+            qb.and(END_DATE, Operation.EQ, (String)null);
         }
-        final Cursor cursor = database.query(TABLE, allColumns, "minutes="
-                                             + minutes + " and hours=" + hours + " and days=" + days
-                                             + " and months=" + month + " and years=" + years + cal, null,
-                                             null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Recurring r = cursorToRecurring(cursor);
-            cursor.close();
-            return r;
-        }
-        cursor.close();
-        return null;
+        return qb.get(Recurring.class);
     }
 
     public static Recurring get(final int days, final int month, final int years) {
         return get(0, 0, days, month, years, null, null);
     }
 
-    public static Recurring first() {
-        final Cursor cursor = database.query(TABLE, allColumns, null, null,
-                                             null, null, null, "1");
-        cursor.moveToFirst();
-        if (cursor.getCount() != 0) {
-            final Recurring r = cursorToRecurring(cursor);
-            cursor.close();
-            return r;
-        }
-        cursor.close();
-        return null;
-    }
 
-    public static void destroyTemporary(final int recurrenceId) {
-        database.beginTransaction();
-        database.delete(TABLE, "temporary=1 AND _id=" + recurrenceId, null);
-        database.setTransactionSuccessful();
-        database.endTransaction();
+    public static void destroyTemporary(final long recurrenceId) {
+        delete(URI, TEMPORARY + "=1 AND " + ID + "=" + recurrenceId, null);
     }
 
     public void destroy() {
-        database.beginTransaction();
-        database.delete(TABLE, "_id=" + getId(), null);
-        // Fix recurring onDelete in TaskTable
-        ContentValues cv = new ContentValues();
-        cv.put("recurring", -1);
-        database.update(Task.TABLE, cv, "recurring=" + getId(), null);
-        cv = new ContentValues();
-        cv.put("recurring_reminder", -1);
-        database.update(Task.TABLE, cv, "recurring_reminder=" + getId(), null);
-        database.setTransactionSuccessful();
-        database.endTransaction();
+        MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+            @Override
+            public void exec() {
+                delete(URI, ID + "=" + getId(), null);
+                // Fix recurring onDelete in TaskTable
+                ContentValues cv = new ContentValues();
+                cv.put(Task.RECURRING, -1);
+                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING + "=" + getId(), null);
+                cv = new ContentValues();
+                cv.put(Task.RECURRING_REMINDER, -1);
+                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING_REMINDER + "=" + getId(), null);
+            }
+        });
     }
 
     public static List<Recurring> all() {
-        final Cursor c = database.query(TABLE, allColumns, null, null, null,
-                                        null, null);
-        c.moveToFirst();
-        final List<Recurring> all = new ArrayList<Recurring>();
-        while (!c.isAfterLast()) {
-            all.add(cursorToRecurring(c));
-            c.moveToNext();
-        }
-        c.close();
-        return all;
+        return new MirakelQueryBuilder(context).getList(Recurring.class);
     }
 
-    private static Recurring cursorToRecurring(final Cursor c) {
-        int i = 0;
+
+    public Recurring(final Cursor c) {
+        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(LABEL)));
         Calendar start;
         try {
-            start = DateTimeHelper.parseDateTime(c.getString(8));
+            start = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(START_DATE)));
         } catch (final ParseException e) {
             start = null;
             Log.d(TAG, "cannot parse Date");
         }
         Calendar end;
         try {
-            end = DateTimeHelper.parseDateTime(c.getString(9));
+            end = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(END_DATE)));
         } catch (final ParseException e) {
             Log.d(TAG, "cannot parse Date");
             end = null;
         }
         final SparseBooleanArray weekdays = new SparseBooleanArray();
-        weekdays.put(Calendar.MONDAY, c.getInt(12) == 1);
-        weekdays.put(Calendar.TUESDAY, c.getInt(13) == 1);
-        weekdays.put(Calendar.WEDNESDAY, c.getInt(14) == 1);
-        weekdays.put(Calendar.THURSDAY, c.getInt(15) == 1);
-        weekdays.put(Calendar.FRIDAY, c.getInt(16) == 1);
-        weekdays.put(Calendar.SATURDAY, c.getInt(17) == 1);
-        weekdays.put(Calendar.SUNDAY, c.getInt(18) == 1);
-        final Integer derivedFrom = c.isNull(19) ? null : c.getInt(19);
-        return new Recurring(c.getInt(i++), c.getString(i++), c.getInt(i++),
-                             c.getInt(i++), c.getInt(i++), c.getInt(i++), c.getInt(i++),
-                             c.getInt(i++) == 1, start, end, c.getInt(10) == 1,
-                             c.getInt(11) == 1, weekdays, derivedFrom);
+        weekdays.put(Calendar.MONDAY, c.getShort(c.getColumnIndex(MONDAY)) == 1);
+        weekdays.put(Calendar.TUESDAY, c.getShort(c.getColumnIndex(TUESDAY)) == 1);
+        weekdays.put(Calendar.WEDNESDAY, c.getShort(c.getColumnIndex(WEDNESDAY)) == 1);
+        weekdays.put(Calendar.THURSDAY, c.getShort(c.getColumnIndex(THURSDAY)) == 1);
+        weekdays.put(Calendar.FRIDAY, c.getShort(c.getColumnIndex(FRIDAY)) == 1);
+        weekdays.put(Calendar.SATURDAY, c.getShort(c.getColumnIndex(SATURDAY)) == 1);
+        weekdays.put(Calendar.SUNDAY, c.getShort(c.getColumnIndex(SUNDAY)) == 1);
+        final Long derivedFrom = c.isNull(c.getColumnIndex(DERIVED)) ? null : c.getLong(c.getColumnIndex(
+                                     DERIVED));
+        setMinutes(c.getInt(c.getColumnIndex(MINUTES)));
+        setHours(c.getInt(c.getColumnIndex(HOURS)));
+        setDays(c.getInt(c.getColumnIndex(DAYS)));
+        setMonths(c.getInt(c.getColumnIndex(MONTHS)));
+        setYears(c.getInt(c.getColumnIndex(YEARS)));
+        setForDue(c.getShort(c.getColumnIndex(FOR_DUE)) == 1);
+        setStartDate(start);
+        setEndDate(end);
+        setTemporary(c.getShort(c.getColumnIndex(TEMPORARY)) == 1);
+        setExact(c.getShort(c.getColumnIndex(EXACT)) == 1);
+        setWeekdays(weekdays);
+        setDerivedFrom(derivedFrom);
     }
 
     public Task incrementRecurringDue(final Task t) {
@@ -268,10 +220,9 @@ public class Recurring extends RecurringBase {
         long masterID = t.getId();
         long offset = 0;
         long offsetCount = 0;
-        Cursor c = database.query(TW_TABLE, allTWColumns, "child=?",
-                                  new String[] { t.getId() + "" }, null, null, null);
-        c.moveToFirst();
-        if (c.getCount() > 0) {// this is already a child-task
+        Cursor c = new MirakelQueryBuilder(context).select(allTWColumns).and(CHILD,
+                Operation.EQ, t).query(MirakelInternalContentProvider.RECURRING_TW_URI);
+        if (c.moveToFirst()) {// this is already a child-task
             masterID = c.getLong(1);
             offset = c.getLong(3);
             offsetCount = c.getLong(4);
@@ -279,12 +230,10 @@ public class Recurring extends RecurringBase {
         c.close();
         offset += newDue.getTimeInMillis() - t.getDue().getTimeInMillis();
         ++offsetCount;
-        c = database.query(TW_TABLE, new String[] { "child" },
-                           "parent=? AND offsetCount=?", new String[] { masterID + "",
-                                   offsetCount + ""
-                                                                      }, null, null, null);
-        c.moveToFirst();
-        if (c.getCount() > 0) {
+        c = new MirakelQueryBuilder(context).select(CHILD).and(PARENT, Operation.EQ,
+                masterID).and(OFFSET_COUNT, Operation.EQ,
+                              offsetCount).query(MirakelInternalContentProvider.RECURRING_TW_URI);
+        if (c.moveToFirst()) {
             final Task task = Task.get(c.getLong(0));
             c.close();
             if (task != null) {
@@ -305,14 +254,14 @@ public class Recurring extends RecurringBase {
         cv.put(Task.RECURRING, t.getRecurrenceId());
         cv.put(Task.UUID, UUID.randomUUID().toString());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
-        database.update(Task.TABLE, cv, DatabaseHelper.ID + "=?",
-                        new String[] { newTask.getId() + "" });
+        update(MirakelInternalContentProvider.TASK_URI, cv, ModelBase.ID + "=?",
+               new String[] {newTask.getId() + ""});
         cv = new ContentValues();
-        cv.put("parent", masterID);
-        cv.put("child", newTask.getId());
-        cv.put("offset", offset);
-        cv.put("offsetCount", offsetCount);
-        database.insert(TW_TABLE, null, cv);
+        cv.put(PARENT, masterID);
+        cv.put(CHILD, newTask.getId());
+        cv.put(OFFSET, offset);
+        cv.put(OFFSET_COUNT, offsetCount);
+        insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
         return newTask;
     }
 
@@ -363,26 +312,17 @@ public class Recurring extends RecurringBase {
         return c;
     }
 
-    public static List<Pair<Integer, String>> getForDialog(final boolean isDue/*
-																			 * ,
-																			 * Task
-																			 * task
-																			 */) {
-        String where = "temporary=0";
+    public static List<Pair<Integer, String>> getForDialog(final boolean isDue) {
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(TEMPORARY,
+                Operation.EQ, false);
         if (isDue) {
-            where += " AND for_due=1";
+            qb.and(FOR_DUE, Operation.EQ, true);
         }
-        /*
-         * if (task != null) { int id = -1; if (isDue) id =
-         * task.getRecurrenceId(); else id = task.getRecurringReminderId(); if
-         * (id > -1) where += " OR _id=" + id; }
-         */
-        final Cursor c = database.query(TABLE, new String[] { "_id", "label" },
-                                        where, null, null, null, null);
-        final List<Pair<Integer, String>> ret = new ArrayList<Pair<Integer, String>>();
+        final Cursor c = qb.select(ID, LABEL).query(URI);
+        final List<Pair<Integer, String>> ret = new ArrayList<>();
         c.moveToFirst();
         while (!c.isAfterLast()) {
-            ret.add(new Pair<Integer, String>(c.getInt(0), c.getString(1)));
+            ret.add(new Pair<>(c.getInt(0), c.getString(1)));
             c.moveToNext();
         }
         c.close();

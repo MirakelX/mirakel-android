@@ -32,7 +32,7 @@ public class TagsSettingsFragment extends PreferenceFragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
         final Bundle b = getArguments();
         if (b != null) {
-            this.tag = Tag.getTag(getArguments().getInt("id"));
+            this.tag = Tag.get(getArguments().getLong("id"));
             ((TagsSettingsActivity) getActivity()).setTag(this.tag);
             actionBar.setTitle(this.tag.getName());
             if (!MirakelCommonPreferences.isTablet()) {

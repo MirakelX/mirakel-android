@@ -16,9 +16,8 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.list.meta;
 
-import java.util.Map.Entry;
+package de.azapps.mirakel.model.list.meta;
 
 import android.util.Log;
 
@@ -26,6 +25,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+
+import java.util.Map.Entry;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
 

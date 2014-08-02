@@ -16,12 +16,16 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
-import de.azapps.mirakel.model.DatabaseHelper;
+
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
+import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsFileProperty extends SpecialListsNegatedProperty {
 
@@ -35,10 +39,11 @@ public class SpecialListsFileProperty extends SpecialListsNegatedProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        return (done ? "" : "NOT ") + DatabaseHelper.ID
-               + " IN (SELECT DISTINCT task_id FROM " + FileMirakel.TABLE
-               + ")";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        final MirakelQueryBuilder.Operation op = done ? Operation.IN :
+                Operation.NOT_IN;
+        return new MirakelQueryBuilder(ctx).and(Task.ID, op,
+                                                new MirakelQueryBuilder(ctx).select(FileMirakel.TASK), FileMirakel.URI);
     }
 
     @Override

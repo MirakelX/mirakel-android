@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnShowListener;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -64,10 +65,13 @@ import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -91,7 +95,7 @@ public class TaskDialogHelpers {
     private static final DialogInterface.OnClickListener dialogDoNothing = null;
 
     protected static boolean done;
-    protected static int listId;
+    protected static long listId;
     protected static boolean newTask;
     protected static boolean optionEnabled;
     protected static boolean reminder;
@@ -110,46 +114,33 @@ public class TaskDialogHelpers {
         }
     }
 
-    protected static String generateQuery(final Task t) {
-        String query = "SELECT " + getAllColumns() + " FROM " + Task.TABLE
-                       + " WHERE name LIKE '%" + searchString + "%' AND";
-        query += " NOT _id IN (SELECT parent_id from " + Task.SUBTASK_TABLE
-                 + " where child_id=" + t.getId() + ") AND ";
-        query += "NOT " + DatabaseHelper.ID + "=" + t.getId();
-        query += " AND" + Task.BASIC_FILTER_DISPLAY_TASKS;
+    protected static Cursor queryForSubtasks(final Task t, final Context ctx) {
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        qb.and(Task.NAME, Operation.LIKE, "%" + searchString + "%");
+        qb.and(Task.ID, Operation.NOT_IN,
+               new MirakelQueryBuilder(ctx).select("parent_id").and("child_id", Operation.EQ,
+                       t), MirakelInternalContentProvider.SUBTASK_URI);
+        qb.and(Task.ID, Operation.NOT_EQ, t);
+        qb = Task.addBasicFiler(qb);
         if (optionEnabled) {
             if (!done) {
-                query += " and " + Task.DONE + "=0";
+                qb.and(Task.DONE, Operation.EQ, false);
             }
             if (content) {
-                query += " and " + Task.CONTENT + " is not null and not "
-                         + Task.CONTENT + " =''";
+                qb.and(Task.CONTENT, Operation.NOT_EQ, (String) null);
+                qb.and(Task.CONTENT, Operation.NOT_EQ, "");
             }
             if (reminder) {
-                query += " and " + Task.REMINDER + " is not null";
+                qb.and(Task.REMINDER, Operation.NOT_EQ, (String) null);
             }
             if (listId > 0) {
-                query += " and " + Task.LIST_ID + "=" + listId;
+                qb.and(Task.LIST_ID, Operation.EQ, listId);
             } else {
-                final String where = ((SpecialList) ListMirakel.get(listId))
-                                     .getWhereQueryForTasks();
-                Log.d(TAG, where);
-                if (where != null && !where.trim().equals("")) {
-                    query += " and " + where;
-                }
+                qb.and(((SpecialList) ListMirakel.get(listId))
+                       .getWhereQueryForTasks());
             }
         }
-        query += ";";
-        Log.d(TAG, query);
-        return query;
-    }
-
-    private static String getAllColumns() {
-        String col = Task.allColumns[0];
-        for (int i = 1; i < Task.allColumns.length; i++) {
-            col += "," + Task.allColumns[i];
-        }
-        return col;
+        return qb.select(Task.allColumns).query(Task.URI);
     }
 
     public static void handleAudioRecord(final Context context,
@@ -407,10 +398,10 @@ public class TaskDialogHelpers {
         final View v = ((Activity) ctx).getLayoutInflater().inflate(
                            R.layout.select_subtask, null, false);
         final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
-        subtaskAdapter = new SubtaskAdapter(ctx, 0, Task.rawQuery("Select "
-                                            + getAllColumns() + " FROM " + Task.TABLE + " where NOT "
-                                            + DatabaseHelper.ID + "=" + task.getId() + " AND "
-                                            + Task.BASIC_FILTER_DISPLAY_TASKS), task, asSubtask);
+        final List<Task> tasks = Task.cursorToTaskList(ctx.getContentResolver().query(
+                                     MirakelInternalContentProvider.TASK_URI, Task.allColumns,
+                                     ModelBase.ID + "=" + task.getId() + " AND " + Task.BASIC_FILTER_DISPLAY_TASKS, null, null, null));
+        subtaskAdapter = new SubtaskAdapter(ctx, 0, tasks, task, asSubtask);
         lv.post(new Runnable() {
             @Override
             public void run() {
@@ -455,7 +446,7 @@ public class TaskDialogHelpers {
             public void onTextChanged(final CharSequence s, final int start,
                                       final int before, final int count) {
                 searchString = s.toString();
-                updateListView(subtaskAdapter, task, lv);
+                updateListView(subtaskAdapter, task, lv, ctx);
             }
         });
         final Button options = (Button) v.findViewById(R.id.subtasks_options);
@@ -518,7 +509,7 @@ public class TaskDialogHelpers {
                     }
                     newTask = false;
                     lv.invalidateViews();
-                    updateListView(subtaskAdapter, task, lv);
+                    updateListView(subtaskAdapter, task, lv, ctx);
                 }
             });
         }
@@ -528,7 +519,7 @@ public class TaskDialogHelpers {
             public void onCheckedChanged(final CompoundButton buttonView,
                                          final boolean isChecked) {
                 done = isChecked;
-                updateListView(subtaskAdapter, task, lv);
+                updateListView(subtaskAdapter, task, lv, ctx);
             }
         });
         final CheckBox reminderBox = (CheckBox) v
@@ -540,7 +531,7 @@ public class TaskDialogHelpers {
                 final CompoundButton buttonView,
                 final boolean isChecked) {
                 reminder = isChecked;
-                updateListView(subtaskAdapter, task, lv);
+                updateListView(subtaskAdapter, task, lv, ctx);
             }
         });
         final Button list = (Button) v.findViewById(R.id.subtask_list);
@@ -558,7 +549,7 @@ public class TaskDialogHelpers {
                     public void onClick(final DialogInterface dialog,
                                         final int which) {
                         listId = lists.get(which).getId();
-                        updateListView(subtaskAdapter, task, lv);
+                        updateListView(subtaskAdapter, task, lv, ctx);
                         list.setText(lists.get(which).getName());
                         dialog.dismiss();
                     }
@@ -574,7 +565,7 @@ public class TaskDialogHelpers {
                 final CompoundButton buttonView,
                 final boolean isChecked) {
                 content = isChecked;
-                updateListView(subtaskAdapter, task, lv);
+                updateListView(subtaskAdapter, task, lv, ctx);
             }
         });
         final EditText newTaskEdit = (EditText) v
@@ -656,10 +647,10 @@ public class TaskDialogHelpers {
     }
 
     public static void openFile(final Context context, final FileMirakel file) {
-        final String mimetype = FileUtils.getMimeType(file.getUri());
+        final String mimetype = FileUtils.getMimeType(file.getFileUri());
         final Intent i2 = new Intent();
         i2.setAction(android.content.Intent.ACTION_VIEW);
-        i2.setDataAndType(file.getUri(), mimetype);
+        i2.setDataAndType(file.getFileUri(), mimetype);
         try {
             context.startActivity(i2);
         } catch (final ActivityNotFoundException e) {
@@ -738,7 +729,7 @@ public class TaskDialogHelpers {
     }
 
     protected static void setRecurence(final Task task, final boolean isDue,
-                                       final int id, final ExecInterface callback) {
+                                       final long id, final ExecInterface callback) {
         if (isDue) {
             Recurring.destroyTemporary(task.getRecurrenceId());
             task.setRecurrence(id);
@@ -764,14 +755,14 @@ public class TaskDialogHelpers {
     }
 
     protected static void updateListView(final SubtaskAdapter a, final Task t,
-                                         final ListView lv) {
+                                         final ListView lv, final Context ctx) {
         if (t == null || a == null || lv == null) {
             return;
         }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final List<Task> tasks = Task.rawQuery(generateQuery(t));
+                final List<Task> tasks = Task.cursorToTaskList(queryForSubtasks(t, ctx));
                 if (tasks == null) {
                     return;
                 }

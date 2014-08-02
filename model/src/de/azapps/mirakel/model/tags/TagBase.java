@@ -16,43 +16,43 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.tags;
 
 import android.content.ContentValues;
 import android.graphics.Color;
-import de.azapps.mirakel.model.DatabaseHelper;
 
-class TagBase {
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.model.ModelBase;
+import de.azapps.tools.Log;
+
+abstract class TagBase extends ModelBase {
+    private static final String TAG = "TagBase";
 
     public static final String DARK_TEXT = "dark_text";
-    public static final String BACKGROUND_COLOR_R = "color_r";
-    public static final String BACKGROUND_COLOR_B = "color_b";
-    public static final String BACKGROUND_COLOR_G = "color_g";
-    public static final String BACKGROUND_COLOR_A = "color_a";
+    public static final String BACKGROUND_COLOR = "color";
 
     private boolean isDarkText;
     // Color as specified in android.graphics.Color
     private int backgroundColor;
-    private String name;
-    private int id;
 
-    public TagBase(final int id, final boolean dark, final int backColor,
-                   final String name) {
-        setName(name);
-        setId(id);
+    public TagBase(final long id, final String name, final int backColor, final boolean dark) {
+        super(id, name);
         setBackgroundColor(backColor);
         setDarkText(dark);
     }
 
+    @Override
     public ContentValues getContentValues() {
-        final ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.ID, this.id);
-        cv.put(DatabaseHelper.NAME, this.name);
+        final ContentValues cv;
+        try {
+            cv = super.getContentValues();
+        } catch (DefinitionsHelper.NoSuchListException e) {
+            Log.wtf(TAG, "How could this happen? ", e);
+            return new ContentValues();
+        }
         cv.put(TagBase.DARK_TEXT, this.isDarkText);
-        cv.put(TagBase.BACKGROUND_COLOR_R, Color.red(this.backgroundColor));
-        cv.put(TagBase.BACKGROUND_COLOR_G, Color.green(this.backgroundColor));
-        cv.put(TagBase.BACKGROUND_COLOR_B, Color.blue(this.backgroundColor));
-        cv.put(TagBase.BACKGROUND_COLOR_A, Color.alpha(this.backgroundColor));
+        cv.put(TagBase.BACKGROUND_COLOR, this.backgroundColor);
         return cv;
     }
 
@@ -72,31 +72,15 @@ class TagBase {
         this.isDarkText = isDarkText;
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    protected void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.id;
+        result = prime * result + (int)this.getId();
         result = prime * result + this.backgroundColor;
         result = prime * result + (this.isDarkText ? 1231 : 1237);
         result = prime * result
-                 + (this.name == null ? 0 : this.name.hashCode());
+                 + (this.getName() == null ? 0 : this.getName().hashCode());
         return result;
     }
 
@@ -112,7 +96,7 @@ class TagBase {
             return false;
         }
         final TagBase other = (TagBase) obj;
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
         if (this.backgroundColor != other.backgroundColor) {
@@ -121,11 +105,11 @@ class TagBase {
         if (this.isDarkText != other.isDarkText) {
             return false;
         }
-        if (this.name == null) {
-            if (other.name != null) {
+        if (this.getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.name.equals(other.name)) {
+        } else if (!this.getName().equals(other.getName())) {
             return false;
         }
         return true;

@@ -42,7 +42,7 @@ import de.azapps.tools.Log;
 
 public class WidgetHelper {
     public static RemoteViews configureItem(final RemoteViews rv,
-                                            final Task task, final Context context, final int listId,
+                                            final Task task, final Context context, final long listId,
                                             final boolean isMinimal, final int widgetId) {
         Intent openIntent;
         try {

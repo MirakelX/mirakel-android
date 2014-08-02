@@ -16,76 +16,58 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.tags;
 
-import java.util.ArrayList;
-import java.util.List;
+package de.azapps.mirakel.model.tags;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import de.azapps.mirakel.model.DatabaseHelper;
+import android.net.Uri;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public class Tag extends TagBase {
 
     public static final String TABLE = "tag";
     public static final String TAG_CONNECTION_TABLE = "task_tag";
-    public static final String[] allColumns = { DatabaseHelper.ID, DARK_TEXT,
-                                                DatabaseHelper.NAME, BACKGROUND_COLOR_A, BACKGROUND_COLOR_R,
-                                                BACKGROUND_COLOR_G, BACKGROUND_COLOR_B
+    public static final String[] allColumns = {ModelBase.ID, ModelBase.NAME, DARK_TEXT,
+                                               BACKGROUND_COLOR
                                               };
-    private static Context context;
-    private static DatabaseHelper dbHelper;
-    private static SQLiteDatabase database;
+    public static final Uri URI = MirakelInternalContentProvider.TAG_URI;
 
-    public Tag(final int id, final boolean isDarkBackground, final String name,
-               final int backColor) {
-        super(id, isDarkBackground, backColor, name);
+    public Tag(final int id, final String name, final int backColor, final boolean isDarkBackground) {
+        super(id, name, backColor, isDarkBackground);
     }
 
-    public static int count() {
-        int count = 0;
-        final Cursor c = database.rawQuery("SELECT count(*) FROM " + TABLE,
-                                           null);
-        c.moveToFirst();
-        if (c.getCount() > 0) {
-            count = c.getInt(0);
-        }
-        c.close();
-        return count;
+    protected Uri getUri() {
+        return URI;
     }
 
-    public static Tag get(final int id) {
-        final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
-                                        + "=?", new String[] { id + "" }, null, null, null);
-        c.moveToFirst();
-        final Tag t;
-        if (c.getCount() > 0) {
-            t = cursorToTag(c);
-        } else {
-            t = null;
-        }
-        c.close();
-        return t;
+    public static long count() {
+        return new MirakelQueryBuilder(context).count(URI);
+    }
+
+    public static Tag get(final long id) {
+        return new MirakelQueryBuilder(context).get(Tag.class, id);
     }
 
     public static List<Tag> all() {
-        final Cursor c = database.query(TABLE, allColumns, null, null, null,
-                                        null, null);
-        return cursorToTagList(c);
+        return new MirakelQueryBuilder(context).getList(Tag.class);
     }
 
     public static List<Tag> getTagsForTask(final long id) {
-        if (database == null) {
-            return new ArrayList<>();
-        }
-        final Cursor c = database.rawQuery(getTagsQuery(Tag.allColumns),
-                                           new String[] { id + "" });
-        return Tag.cursorToTagList(c);
+        return Tag.cursorToTagList(new MirakelQueryBuilder(context).select(addPrefix(allColumns,
+                                   TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
+                                   .query(MirakelInternalContentProvider.TASK_TAG_URI));
     }
 
     public static String getTagsQuery(final String[] columns) {
@@ -101,7 +83,7 @@ public class Tag extends TagBase {
         }
         final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
                              + " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
-                             + ".tag_id=" + Tag.TABLE + "." + DatabaseHelper.ID + " WHERE "
+                             + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID + " WHERE "
                              + TAG_CONNECTION_TABLE + ".task_id=?";
         return query;
     }
@@ -117,32 +99,21 @@ public class Tag extends TagBase {
             return t;
         }
         final ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.NAME, name);
+        cv.put(ModelBase.NAME, name);
         cv.put(DARK_TEXT, dark);
-        cv.put(BACKGROUND_COLOR_R, Color.red(color));
-        cv.put(BACKGROUND_COLOR_G, Color.green(color));
-        cv.put(BACKGROUND_COLOR_B, Color.blue(color));
-        cv.put(BACKGROUND_COLOR_A, Color.alpha(color));
-        final int id = (int) database.insert(TABLE, null, cv);
-        return getTag(id);
+        cv.put(BACKGROUND_COLOR, color);
+        final long id = insert(URI, cv);
+        return get(id);
     }
 
-    public static Tag getTag(final int id) {
-        final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.ID
-                                        + "=?", new String[] { "" + id }, null, null, null);
-        c.moveToFirst();
-        final Tag t = cursorToTag(c);
-        c.close();
-        return t;
-    }
 
-    public static int getNextColor(final int count, final Context ctx) {
+    public static int getNextColor(final long count, final Context ctx) {
         final TypedArray ta = ctx.getResources().obtainTypedArray(
                                   R.array.default_colors);
         final int transparency[] = ctx.getResources().getIntArray(
                                        R.array.default_transparency);
-        final int alpha = count / ta.length() % transparency.length;
-        final int colorPos = count % ta.length();
+        final int alpha = (int)count / ta.length() % transparency.length;
+        final int colorPos = (int)count % ta.length();
         final int color = android.graphics.Color.argb(transparency[alpha],
                           Color.red(ta.getColor(colorPos, 0)),
                           Color.green(ta.getColor(colorPos, 0)),
@@ -151,21 +122,17 @@ public class Tag extends TagBase {
         return color;
     }
 
-    public static Tag cursorToTag(final Cursor c) {
-        if (c.getCount() > 0) {
-            return new Tag(c.getInt(0), c.getShort(1) == 1, c.getString(2),
-                           Color.argb(c.getShort(3), c.getShort(4), c.getShort(5),
-                                      c.getShort(6)));
-        }
-        return null;
+
+    public Tag(final Cursor c) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+              c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1);
     }
 
     private static List<Tag> cursorToTagList(final Cursor c) {
-        final List<Tag> tags = new ArrayList<Tag>();
-        if (c.getCount() > 0) {
-            c.moveToFirst();
+        final List<Tag> tags = new ArrayList<>();
+        if (c.moveToFirst()) {
             do {
-                tags.add(cursorToTag(c));
+                tags.add(new Tag(c));
             } while (c.moveToNext());
         }
         c.close();
@@ -173,55 +140,13 @@ public class Tag extends TagBase {
     }
 
     private static Tag getByName(final String name) {
-        final Cursor c = database.query(TABLE, allColumns, DatabaseHelper.NAME
-                                        + "=?", new String[] { name }, null, null, null);
-        c.moveToFirst();
-        final Tag t = cursorToTag(c);
-        c.close();
-        return t;
-    }
-
-    /**
-     * Close the Database-Connection
-     */
-    public static void close() {
-        dbHelper.close();
-    }
-
-    /**
-     * Initialize the Database and the preferences
-     *
-     * @param context
-     *            The Application-Context
-     */
-    public static void init(final Context ctx) {
-        context = ctx;
-        dbHelper = new DatabaseHelper(context);
-        database = dbHelper.getWritableDatabase();
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
-
-    public void destroy() {
-        database.delete(TABLE, DatabaseHelper.ID + "=?", new String[] { getId()
-                        + ""
-                                                                      });
-    }
-
-    public void save() {
-        database.update(TABLE, getContentValues(), DatabaseHelper.ID + "=?",
-                        new String[] { getId() + "" });
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class);
     }
 
     /**
      * Serialize Tags of a Task to a tw-compatible json-String
      *
-     * @param The
-     *            task, to which the tags should be serialized
-     *
+     * @param id of the task, to which the tags should be serialized
      * @return All tags as json-string in tw-form
      */
     public static String serialize(final long id) {

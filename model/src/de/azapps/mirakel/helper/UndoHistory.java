@@ -16,6 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.helper;
 
 import android.content.Context;
@@ -27,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -44,6 +46,9 @@ public class UndoHistory {
     }
 
     public static void logCreate(final Task newTask, final Context ctx) {
+        if (newTask == null) {
+            return;
+        }
         updateLog(TASK, newTask.getId() + "", ctx);
     }
 
@@ -82,9 +87,8 @@ public class UndoHistory {
                         t.save(false);
                     } else {
                         try {
-                            MirakelContentProvider.getWritableDatabase()
-                            .insert(Task.TABLE, null,
-                                    t.getContentValues());
+                            ctx.getContentResolver().insert(MirakelInternalContentProvider.TASK_URI,
+                                                            t.getContentValues());
                         } catch (final Exception e) {
                             Log.e(TAG, "cannot restore Task", e);
                         }
@@ -96,8 +100,8 @@ public class UndoHistory {
                         l.save(false);
                     } else {
                         try {
-                            MirakelContentProvider.getWritableDatabase()
-                            .insert(ListMirakel.TABLE, null,
+                            ctx.getContentResolver()
+                            .insert(MirakelInternalContentProvider.LIST_URI,
                                     l.getContentValues());
                         } catch (final Exception e) {
                             Log.e(TAG, "cannot restore List", e);

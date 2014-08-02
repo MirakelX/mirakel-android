@@ -16,9 +16,15 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import java.util.List;
+
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 public abstract class SpecialListsSetProperty extends SpecialListsBaseProperty {
     protected boolean isNegated;
@@ -31,11 +37,9 @@ public abstract class SpecialListsSetProperty extends SpecialListsBaseProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        String query = this.isNegated ? " not " : "";
-        query += propertyName() + " IN (";
-        query = addContent(query);
-        return query + ")";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(propertyName(),
+                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN, content);
     }
 
     @Override
@@ -43,20 +47,10 @@ public abstract class SpecialListsSetProperty extends SpecialListsBaseProperty {
         String ret = "\"" + propertyName() + "\":{";
         ret += "\"isNegated\":" + (this.isNegated ? "true" : "false");
         ret += ",\"content\":[";
-        ret = addContent(ret);
+        ret += TextUtils.join(",", content);
         return ret + "]}";
     }
 
-    protected String addContent(String ret) {
-        boolean first = true;
-        for (final int c : this.content) {
-            ret += (first ? "" : ",") + c;
-            if (first) {
-                first = false;
-            }
-        }
-        return ret;
-    }
 
     public boolean isNegated() {
         return this.isNegated;

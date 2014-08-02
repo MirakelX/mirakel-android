@@ -1,16 +1,38 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.model.account;
 
 import android.content.ContentValues;
-import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
-class AccountBase {
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
+import de.azapps.tools.Log;
+
+abstract class AccountBase  extends ModelBase {
+    private final static String TAG = "AccountBase";
+
     public final static String TYPE = "type";
     public final static String ENABLED = "enabled";
     public static final String SYNC_KEY = "sync_key";
 
-    private int id;
-    private String name;
     private int type;
     private boolean enabled;
     private String syncKey;
@@ -18,28 +40,12 @@ class AccountBase {
     public AccountBase(final int id, final String name,
                        final ACCOUNT_TYPES type, final boolean enabled,
                        final String syncKey) {
-        this.setId(id);
-        this.setName(name);
+        super(id, name);
         this.setType(type.toInt());
         this.setEnabeld(enabled);
         this.setSyncKey(syncKey);
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    protected void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
 
     public ACCOUNT_TYPES getType() {
         return ACCOUNT_TYPES.parseInt(this.type);
@@ -50,19 +56,19 @@ class AccountBase {
     }
 
     public ContentValues getContentValues() {
-        final ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.ID, this.id);
-        cv.put(DatabaseHelper.NAME, this.name);
+        final ContentValues cv;
+        try {
+            cv = super.getContentValues();
+        } catch (DefinitionsHelper.NoSuchListException e) {
+            Log.wtf(TAG, "how could this ever happen?", e);
+            return new ContentValues();
+        }
         cv.put(TYPE, this.type);
         cv.put(ENABLED, this.enabled);
         cv.put(SYNC_KEY, this.syncKey);
         return cv;
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
 
     public boolean isEnabled() {
         return this.enabled;
@@ -84,10 +90,10 @@ class AccountBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.id;
+        result = prime * result + (int)getId();
         result = prime * result + (this.enabled ? 1231 : 1237);
         result = prime * result
-                 + (this.name == null ? 0 : this.name.hashCode());
+                 + (getName() == null ? 0 : getName().hashCode());
         result = prime * result
                  + (this.syncKey == null ? 0 : this.syncKey.hashCode());
         result = prime * result + this.type;
@@ -106,17 +112,17 @@ class AccountBase {
             return false;
         }
         final AccountBase other = (AccountBase) obj;
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
         if (this.enabled != other.enabled) {
             return false;
         }
-        if (this.name == null) {
-            if (other.name != null) {
+        if (this.getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.name.equals(other.name)) {
+        } else if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.syncKey == null) {

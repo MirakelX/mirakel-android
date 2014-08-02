@@ -1,46 +1,59 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.model.semantic;
+
+import android.content.ContentValues;
 
 import java.util.Locale;
 
-import android.content.ContentValues;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 
-class SemanticBase {
-    private int id;
-    private String condition;
+abstract class SemanticBase  extends ModelBase {
     private Integer priority;
     private Integer due;
     private ListMirakel list;
     private Integer weekday;
     public static final String CONDITION = "condition", PRIORITY = "priority",
-                               LIST = "list", DUE = "due", WEEKDAY = "weekday";
+                               LIST = "default_list_id", DUE = "due", WEEKDAY = "weekday";
 
     public SemanticBase(final int id, final String condition,
                         final Integer priority, final Integer due, final ListMirakel list,
                         final Integer weekday) {
-        super();
-        this.id = id;
-        this.condition = condition.toLowerCase(Locale.getDefault());
+        super(id, condition.toLowerCase(Locale.getDefault()));
         this.priority = priority;
         this.list = list;
         this.due = due;
         this.weekday = weekday;
     }
-
-    public int getId() {
-        return this.id;
+    SemanticBase(final long id, final String condition) {
+        super(id, condition);
     }
 
-    protected void setId(final int id) {
-        this.id = id;
-    }
 
     public String getCondition() {
-        return this.condition;
+        return getName();
     }
 
     public void setCondition(final String condition) {
-        this.condition = condition.toLowerCase(Locale.getDefault());
+        setName(condition.toLowerCase(Locale.getDefault()));
     }
 
     public Integer getPriority() {
@@ -75,19 +88,16 @@ class SemanticBase {
         this.weekday = weekday;
     }
 
-    @Override
-    public String toString() {
-        return this.condition;
-    }
 
+    @Override
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();
-        cv.put("_id", this.id);
-        cv.put("condition", this.condition);
-        cv.put("default_list_id", this.list == null ? null : this.list.getId());
-        cv.put("priority", this.priority);
-        cv.put("due", this.due);
-        cv.put("weekday", this.weekday);
+        cv.put(ID, getId());
+        cv.put(CONDITION, getName());
+        cv.put(LIST, this.list == null ? null : this.list.getId());
+        cv.put(PRIORITY, this.priority);
+        cv.put(DUE, this.due);
+        cv.put(WEEKDAY, this.weekday);
         return cv;
     }
 
@@ -103,11 +113,11 @@ class SemanticBase {
             return false;
         }
         final SemanticBase other = (SemanticBase) obj;
-        if (this.condition == null) {
-            if (other.condition != null) {
+        if (this.getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.condition.equals(other.condition)) {
+        } else if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.due == null) {
@@ -117,7 +127,7 @@ class SemanticBase {
         } else if (!this.due.equals(other.due)) {
             return false;
         }
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
         if (this.list == null) {
@@ -149,9 +159,9 @@ class SemanticBase {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                 + (this.condition == null ? 0 : this.condition.hashCode());
+                 + (this.getName() == null ? 0 : this.getName().hashCode());
         result = prime * result + (this.due == null ? 0 : this.due.hashCode());
-        result = prime * result + this.id;
+        result = prime * result + (int)this.getId();
         result = prime * result
                  + (this.list == null ? 0 : this.list.hashCode());
         result = prime * result

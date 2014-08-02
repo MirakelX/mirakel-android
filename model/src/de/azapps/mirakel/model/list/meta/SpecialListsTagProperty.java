@@ -16,14 +16,19 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
+
+import android.content.Context;
 
 import java.util.List;
 
-import android.content.Context;
-import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
+import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsTagProperty extends SpecialListsSetProperty {
 
@@ -38,13 +43,11 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        String query = this.isNegated ? " NOT " : "";
-        query += DatabaseHelper.ID + " IN (";
-        query += "SELECT task_id FROM " + Tag.TAG_CONNECTION_TABLE;
-        query += " WHERE tag_id IN(";
-        query = addContent(query);
-        return query + "))";
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(Task.ID,
+                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
+                                                new MirakelQueryBuilder(ctx).distinct().select("task_id").and("tag_id",
+                                                        MirakelQueryBuilder.Operation.IN, content), MirakelInternalContentProvider.TAG_CONNECTION_URI);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
         String summary = this.isNegated ? ctx.getString(R.string.not_in) : "";
         boolean first = true;
         for (final int p : this.content) {
-            final Tag t = Tag.getTag(p);
+            final Tag t = Tag.get(p);
             if (t == null) {
                 continue;
             }

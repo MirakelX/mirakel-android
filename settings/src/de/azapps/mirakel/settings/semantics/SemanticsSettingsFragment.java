@@ -51,7 +51,7 @@ public class SemanticsSettingsFragment extends PreferenceFragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
         final Bundle b = getArguments();
         if (b != null) {
-            this.semantic = Semantic.get(getArguments().getInt("id"));
+            this.semantic = Semantic.get(getArguments().getLong("id"));
             ((SemanticsSettingsActivity) getActivity())
             .setSemantic(this.semantic);
             actionBar.setTitle(this.semantic.getCondition());

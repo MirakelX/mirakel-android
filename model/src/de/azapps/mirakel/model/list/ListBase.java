@@ -20,41 +20,47 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
+
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
+import de.azapps.tools.Log;
 
-class ListBase {
+abstract class ListBase  extends ModelBase {
     // db-columns
     public final static String LFT = "lft";
     public final static String RGT = "rgt";
     public final static String COLOR = "color";
-    public final static String SORT_BY = "sort_by";
+    public final static String SORT_BY_FIELD = "sort_by";
     public final static String ACCOUNT_ID = "account_id";
 
-    private int id;
-    private String name;
-    private int sortBy;
+
+
+    private SORT_BY sortBy;
     private String createdAt;
     private String updatedAt;
     private SYNC_STATE syncState;
     private int lft, rgt;
     private int color;
-    private int accountID;
+    private long accountID;
     private AccountMirakel accountMirakel;
     protected boolean isSpecial = false;
 
+    private static final String TAG = "ListBase";
+
     ListBase() {
-        // nothing
+        super(0, "");
     }
 
-    ListBase(final int id, final String name, final short sortBy,
+    ListBase(final long id, final String name, final SORT_BY sortBy,
              final String createdAt, final String updatedAt,
              final SYNC_STATE syncState, final int lft, final int rgt,
              final int color, final AccountMirakel a) {
-        this.setId(id);
+        super(id, name);
         this.setCreatedAt(createdAt);
-        this.setName(name);
         this.setUpdatedAt(updatedAt);
         this.setSortBy(sortBy);
         this.setSyncState(syncState);
@@ -64,18 +70,16 @@ class ListBase {
         this.setAccount(a);
     }
 
-    ListBase(final int id, final String name) {
-        this.setId(id);
-        this.setName(name);
+    ListBase(final long id, final String name) {
+        super(id, name);
     }
 
-    protected ListBase(final int id, final String name, final short sortBy,
+    protected ListBase(final long id, final String name, final SORT_BY sortBy,
                        final String createdAt, final String updatedAt,
                        final SYNC_STATE syncState, final int lft, final int rgt,
                        final int color, final int account) {
-        this.setId(id);
+        super(id, name);
         this.setCreatedAt(createdAt);
-        this.setName(name);
         this.setUpdatedAt(updatedAt);
         this.setSortBy(sortBy);
         this.setSyncState(syncState);
@@ -83,22 +87,6 @@ class ListBase {
         this.setRgt(rgt);
         this.setColor(color);
         this.setAccount(account);
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    private void setId(final int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public String getCreatedAt() {
@@ -117,11 +105,11 @@ class ListBase {
         this.updatedAt = updatedAt;
     }
 
-    public int getSortBy() {
+    public SORT_BY getSortBy() {
         return this.sortBy;
     }
 
-    public void setSortBy(final int sortBy) {
+    public void setSortBy(final SORT_BY sortBy) {
         this.sortBy = sortBy;
     }
 
@@ -161,7 +149,7 @@ class ListBase {
         this.accountMirakel = a;
     }
 
-    protected void setAccount(final int account) {
+    protected void setAccount(final long account) {
         this.accountMirakel = null;
         this.accountID = account;
     }
@@ -170,18 +158,18 @@ class ListBase {
         return this.isSpecial;
     }
 
-    @Override
-    public String toString() {
-        return this.name;
-    }
 
     public ContentValues getContentValues() {
-        final ContentValues cv = new ContentValues();
-        cv.put(DatabaseHelper.ID, this.id);
-        cv.put(DatabaseHelper.NAME, this.name);
+        final ContentValues cv;
+        try {
+            cv = super.getContentValues();
+        } catch (DefinitionsHelper.NoSuchListException e) {
+            Log.wtf(TAG, "dies could not happen", e);
+            return new ContentValues();
+        }
         cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
         cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
-        cv.put(SORT_BY, this.sortBy);
+        cv.put(SORT_BY_FIELD, this.sortBy.getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(LFT, this.lft);
         cv.put(RGT, this.rgt);
@@ -202,21 +190,21 @@ class ListBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.accountID;
+        result = prime * result + (int)this.accountID;
         result = prime
                  * result
-                 + (this.accountMirakel == null ? 0 : this.accountMirakel
+                 + (this.getAccount() == null ? 0 : this.getAccount()
                     .hashCode());
         result = prime * result + this.color;
         result = prime * result
                  + (this.createdAt == null ? 0 : this.createdAt.hashCode());
-        result = prime * result + this.id;
+        result = prime * result + (int)getId();
         result = prime * result + (this.isSpecial ? 1231 : 1237);
         result = prime * result + this.lft;
         result = prime * result
-                 + (this.name == null ? 0 : this.name.hashCode());
+                 + (getName() == null ? 0 : getName().hashCode());
         result = prime * result + this.rgt;
-        result = prime * result + this.sortBy;
+        result = prime * result + this.sortBy.getShort();
         result = prime * result
                  + (this.syncState == null ? 0 : this.syncState.hashCode());
         result = prime * result
@@ -239,11 +227,11 @@ class ListBase {
         if (this.accountID != other.accountID) {
             return false;
         }
-        if (this.accountMirakel == null) {
-            if (other.accountMirakel != null) {
+        if (this.getAccount() == null) {
+            if (other.getAccount() != null) {
                 return false;
             }
-        } else if (!this.accountMirakel.equals(other.accountMirakel)) {
+        } else if (!this.getAccount().equals(other.getAccount())) {
             return false;
         }
         if (this.color != other.color) {
@@ -256,7 +244,7 @@ class ListBase {
         } else if (!this.createdAt.equals(other.createdAt)) {
             return false;
         }
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
         if (this.isSpecial != other.isSpecial) {
@@ -265,11 +253,11 @@ class ListBase {
         if (this.lft != other.lft) {
             return false;
         }
-        if (this.name == null) {
-            if (other.name != null) {
+        if (getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.name.equals(other.name)) {
+        } else if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.rgt != other.rgt) {
@@ -279,13 +267,6 @@ class ListBase {
             return false;
         }
         if (this.syncState != other.syncState) {
-            return false;
-        }
-        if (this.updatedAt == null) {
-            if (other.updatedAt != null) {
-                return false;
-            }
-        } else if (!this.updatedAt.equals(other.updatedAt)) {
             return false;
         }
         return true;

@@ -38,7 +38,10 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.export_import.ExportImport;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -121,7 +124,7 @@ public class Mirakel extends Application {
         DefinitionsHelper.init (ctx);
         MirakelPreferences.init (ctx);
         ErrorReporter.init (ctx);
-        MirakelContentProvider.init (ctx);
+        ModelBase.init(ctx);
         final Locale locale = Helpers.getLocal (ctx);
         Locale.setDefault (locale);
         BuildHelper.setPlaystore (ctx.getResources ().getBoolean (
@@ -130,31 +133,6 @@ public class Mirakel extends Application {
         config.locale = locale;
         ctx.getResources ().updateConfiguration (config,
                 ctx.getResources ().getDisplayMetrics ());
-        // Initialize Models
-        ListMirakel.init (ctx);
-        Task.init (ctx);
-        SpecialList.init (ctx);
-        FileMirakel.init (ctx);
-        Semantic.init (ctx);
-        Recurring.init (ctx);
-        AccountMirakel.init (ctx);
-        Tag.init (ctx);
     }
 
-    public static void terminate () {
-        ListMirakel.close ();
-        Task.close ();
-        SpecialList.close ();
-        FileMirakel.close ();
-        Semantic.close ();
-        Recurring.close ();
-        AccountMirakel.close ();
-        Tag.close ();
-    }
-
-    @Override
-    public void onTerminate () {
-        super.onTerminate ();
-        terminate ();
-    }
 }

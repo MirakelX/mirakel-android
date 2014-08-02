@@ -1,16 +1,60 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.model.recurring;
+
+import android.content.ContentValues;
+import android.util.SparseBooleanArray;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import android.content.ContentValues;
-import android.util.SparseBooleanArray;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.model.ModelBase;
 
-public class RecurringBase {
-    private String label;
-    private int id;
+abstract class RecurringBase extends ModelBase {
+    public final static String LABEL = "label";
+    public final static String MINUTES = "minutes";
+    public final static String HOURS = "hours";
+    public final static String DAYS = "days";
+    public final static String MONTHS = "months";
+    public final static String YEARS = "years";
+    public final static String FOR_DUE = "for_due";
+    public final static String START_DATE = "start_date";
+    public final static String END_DATE = "end_date";
+    public final static String TEMPORARY = "temporary";
+    public final static String EXACT = "isExact";
+    public final static String MONDAY = "monday";
+    public final static String TUESDAY = "tuesday";
+    public final static String WEDNESDAY = "wednesday";
+    public final static String THURSDAY = "thursday";
+    public final static String FRIDAY = "friday";
+    public final static String SATURDAY = "saturday";
+    public final static String SUNDAY = "sunnday";
+    public final static String DERIVED = "derived_from";
+
+    public final static String PARENT = "parent";
+    public final static String CHILD = "child";
+    public final static String OFFSET = "offset";
+    public final static String OFFSET_COUNT = "offsetCount";
+
     private int minutes;
     private int hours;
     private int days;
@@ -22,19 +66,18 @@ public class RecurringBase {
     private boolean temporary;
     private boolean isExact;
     private SparseBooleanArray weekdays;
-    private Integer derivedFrom;
+    private Long derivedFrom;
 
-    public RecurringBase(final int id, final String label, final int minutes,
+    public RecurringBase(final long id, final String label, final int minutes,
                          final int hours, final int days, final int months, final int years,
                          final boolean forDue, final Calendar startDate,
                          final Calendar endDate, final boolean temporary,
                          final boolean isExact, final SparseBooleanArray weekdays,
-                         final Integer derivedFrom) {
-        super();
+                         final Long derivedFrom) {
+        super(id, label);
         this.days = days;
         this.forDue = forDue;
         this.hours = hours;
-        this.label = label;
         this.minutes = minutes;
         this.months = months;
         this.years = years;
@@ -46,13 +89,16 @@ public class RecurringBase {
         this.setWeekdays(weekdays);
         this.derivedFrom = derivedFrom;
     }
+    protected RecurringBase(final long id, final String label) {
+        super(id, label);
+    }
 
     public String getLabel() {
-        return this.label;
+        return getName();
     }
 
     public void setLabel(final String label) {
-        this.label = label;
+        setName(label);
     }
 
     public int getYears() {
@@ -101,19 +147,6 @@ public class RecurringBase {
 
     public void setMinutes(final int minutes) {
         this.minutes = minutes;
-    }
-
-    @Override
-    public String toString() {
-        return this.label;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    protected void setId(final int id) {
-        this.id = id;
     }
 
     public Calendar getStartDate() {
@@ -182,11 +215,11 @@ public class RecurringBase {
         }
     }
 
-    public Integer getDerivedFrom() {
+    public Long getDerivedFrom() {
         return this.derivedFrom;
     }
 
-    public void setDerivedFrom(final Integer derivedFrom) {
+    public void setDerivedFrom(final Long derivedFrom) {
         this.derivedFrom = derivedFrom;
     }
 
@@ -209,28 +242,29 @@ public class RecurringBase {
                 + this.months * month + this.years * year) * 1000;
     }
 
+    @Override
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();
-        cv.put("_id", this.id);
-        cv.put("minutes", this.minutes);
-        cv.put("hours", this.hours);
-        cv.put("days", this.days);
-        cv.put("months", this.months);
-        cv.put("years", this.years);
-        cv.put("for_due", this.forDue);
-        cv.put("label", this.label);
-        cv.put("start_date", DateTimeHelper.formatDateTime(this.startDate));
-        cv.put("end_date", DateTimeHelper.formatDateTime(this.endDate));
-        cv.put("temporary", this.temporary);
-        cv.put("isExact", this.isExact);
-        cv.put("monday", this.weekdays.get(Calendar.MONDAY, false));
-        cv.put("tuesday", this.weekdays.get(Calendar.TUESDAY, false));
-        cv.put("wednesday", this.weekdays.get(Calendar.WEDNESDAY, false));
-        cv.put("thursday", this.weekdays.get(Calendar.THURSDAY, false));
-        cv.put("friday", this.weekdays.get(Calendar.FRIDAY, false));
-        cv.put("saturday", this.weekdays.get(Calendar.SATURDAY, false));
-        cv.put("sunnday", this.weekdays.get(Calendar.SUNDAY, false));
-        cv.put("derived_from", this.derivedFrom);
+        cv.put(ModelBase.ID, getId());
+        cv.put(MINUTES, this.minutes);
+        cv.put(HOURS, this.hours);
+        cv.put(DAYS, this.days);
+        cv.put(MONTHS, this.months);
+        cv.put(YEARS, this.years);
+        cv.put(FOR_DUE, this.forDue);
+        cv.put(LABEL, getName());
+        cv.put(START_DATE, DateTimeHelper.formatDateTime(this.startDate));
+        cv.put(END_DATE, DateTimeHelper.formatDateTime(this.endDate));
+        cv.put(TEMPORARY, this.temporary);
+        cv.put(EXACT, this.isExact);
+        cv.put(MONDAY, this.weekdays.get(Calendar.MONDAY, false));
+        cv.put(TUESDAY, this.weekdays.get(Calendar.TUESDAY, false));
+        cv.put(WEDNESDAY, this.weekdays.get(Calendar.WEDNESDAY, false));
+        cv.put(THURSDAY, this.weekdays.get(Calendar.THURSDAY, false));
+        cv.put(FRIDAY, this.weekdays.get(Calendar.FRIDAY, false));
+        cv.put(SATURDAY, this.weekdays.get(Calendar.SATURDAY, false));
+        cv.put(SUNDAY, this.weekdays.get(Calendar.SUNDAY, false));
+        cv.put(DERIVED, this.derivedFrom);
         return cv;
     }
 
@@ -246,7 +280,7 @@ public class RecurringBase {
             return false;
         }
         final RecurringBase other = (RecurringBase) obj;
-        if (this.id != other.id) {
+        if (this.getId() != other.getId()) {
             return false;
         }
         if (this.days != other.days) {
@@ -259,11 +293,7 @@ public class RecurringBase {
         } else if (!this.derivedFrom.equals(other.derivedFrom)) {
             return false;
         }
-        if (this.endDate == null) {
-            if (other.endDate != null) {
-                return false;
-            }
-        } else if (!this.endDate.equals(other.endDate)) {
+        if (!DateTimeHelper.equalsCalendar(this.endDate, other.endDate)) {
             return false;
         }
         if (this.forDue != other.forDue) {
@@ -275,11 +305,11 @@ public class RecurringBase {
         if (this.isExact != other.isExact) {
             return false;
         }
-        if (this.label == null) {
-            if (other.label != null) {
+        if (this.getName() == null) {
+            if (other.getName() != null) {
                 return false;
             }
-        } else if (!this.label.equals(other.label)) {
+        } else if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.minutes != other.minutes) {
@@ -288,11 +318,7 @@ public class RecurringBase {
         if (this.months != other.months) {
             return false;
         }
-        if (this.startDate == null) {
-            if (other.startDate != null) {
-                return false;
-            }
-        } else if (!this.startDate.equals(other.startDate)) {
+        if (!DateTimeHelper.equalsCalendar(this.startDate, other.startDate)) {
             return false;
         }
         if (this.temporary != other.temporary) {
@@ -308,7 +334,7 @@ public class RecurringBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.id;
+        result = prime * result + (int)this.getId();
         result = prime * result + this.days;
         result = prime * result
                  + (this.derivedFrom == null ? 0 : this.derivedFrom.hashCode());
@@ -318,7 +344,7 @@ public class RecurringBase {
         result = prime * result + this.hours;
         result = prime * result + (this.isExact ? 1231 : 1237);
         result = prime * result
-                 + (this.label == null ? 0 : this.label.hashCode());
+                 + (this.getName() == null ? 0 : this.getName().hashCode());
         result = prime * result + this.minutes;
         result = prime * result + this.months;
         result = prime * result

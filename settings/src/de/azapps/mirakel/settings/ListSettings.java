@@ -83,7 +83,7 @@ public abstract class ListSettings extends PreferenceActivity {
 
     protected abstract OnClickListener getHelpOnClickListener();
 
-    protected abstract List<Pair<Integer, String>> getItems();
+    protected abstract List<Pair<Long, String>> getItems();
 
     protected abstract int getSettingsRessource();
 
@@ -110,9 +110,9 @@ public abstract class ListSettings extends PreferenceActivity {
     @SuppressLint("NewApi")
     @Override
     public void onBuildHeaders(final List<Header> target) {
-        for (final Pair<Integer, String> item : getItems()) {
+        for (final Pair<Long, String> item : getItems()) {
             final Bundle b = new Bundle();
-            b.putInt("id", item.first);
+            b.putLong("id", item.first);
             final Header header = new Header();
             header.fragment = getDestFragmentClass().getCanonicalName();
             header.title = item.second;
@@ -237,8 +237,8 @@ public abstract class ListSettings extends PreferenceActivity {
 
     @SuppressWarnings("deprecation")
     private void setup() {
-        final List<Pair<Integer, String>> items = getItems();
-        for (final Pair<Integer, String> item : items) {
+        final List<Pair<Long, String>> items = getItems();
+        for (final Pair<Long, String> item : items) {
             final Preference p = new Preference(this);
             p.setTitle(item.second);
             p.setKey(String.valueOf(item.first));

@@ -170,10 +170,10 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
     <item>Shopping</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>oggi comprare regalo di compleanno per il nonno</item>
+    <item>Comprare un regalo di compleanno per il nonno</item>
     <item>Musica</item>
-    <item>lunedì organizzare la festa</item>
-    <item>oggi completare la presentazione</item>
+    <item>Organizzare la festa</item>
+    <item>Completare la presentazione</item>
     <item>Latte</item>
     <item>Formaggio</item>
   </string-array>

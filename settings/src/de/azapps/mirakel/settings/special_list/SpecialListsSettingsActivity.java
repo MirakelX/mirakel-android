@@ -42,7 +42,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
     private SpecialList newSpecialList() {
         return SpecialList.newSpecialList(
                    getString(R.string.special_lists_new),
-                   new HashMap<String, SpecialListsBaseProperty>(), true, this);
+                   new HashMap<String, SpecialListsBaseProperty>(), true);
     }
 
     @SuppressLint("NewApi")
@@ -65,7 +65,7 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
     @Override
     protected void setupSettings() {
-        this.specialList = SpecialList.get(getIntent().getIntExtra("id",
+        this.specialList = SpecialList.get(getIntent().getLongExtra("id",
                                            SpecialList.firstSpecial().getId())
                                            * -1);
         try {
@@ -76,11 +76,11 @@ public class SpecialListsSettingsActivity extends ListSettings {
     }
 
     @Override
-    protected List<Pair<Integer, String>> getItems() {
+    protected List<Pair<Long, String>> getItems() {
         final List<SpecialList> specialLists = SpecialList.allSpecial(true);
-        final List<Pair<Integer, String>> items = new ArrayList<Pair<Integer, String>>();
+        final List<Pair<Long, String>> items = new ArrayList<>();
         for (final SpecialList list : specialLists) {
-            items.add(new Pair<Integer, String>(list.getId(), list.getName()));
+            items.add(new Pair<>(list.getId(), list.getName()));
         }
         return items;
     }

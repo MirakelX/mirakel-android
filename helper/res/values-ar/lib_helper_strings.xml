@@ -14,15 +14,27 @@ SDK-نسخة: %2$d\n
 جهاز: %3$s\n]]>
     </string>
   <string name="contact_chooser">جاري إرسال البريد الإلكتروني&#8230;</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">انتبه! جهازك لايدعم التقاط الصور</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources"> عذراً! لايوجد مكان يمكن حفظ الصورة فيه</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">انتبه! جهازك لا يدعم تحويل الكلام إلى نص</string>
   <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">مهام فرعية لا يمكنها تشكيل حلقة</string>
   <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">لا أعرف كيفية فتح هذا الملف – عذراً</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">لايوجد زبون بريد إلكتروني مثبت</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">الرجاء تثبيت مدير الملفات</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">حدث خطأ داخلي أثناء تحليل اسم الملف</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">حدث خطأ غير متوقع</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">لم يتم العثور على هذا الملف</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء تصدير قاعدة البيانات</string>
   <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء استيراد قاعدة البيانات</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">لم أتمكن من إنشاء صورة مصغرة. الملف كبير جداً</string>
   <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">اوو، لقد اختفت قائمة المهام. اسف&#8230;</string>
-  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء استيراد من Astrid!</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">هذا ليس ملف قاعدة بيانات ميركل!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء الاستيراد من Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">لم يتم العثور على ملف Taskwarrior</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">لا يمكن تحميل ملف التكوين</string>
-  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">عنوان URL غير صحيح. هل تفحصت التعليمة البرمجية الصحيحة؟</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">عنوان URL غير صحيح. هل مسحت الرمز الصحيح حقاً؟</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">لا يوجد إذن لقراءة الملف</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">عجباً لقد طارت القائمة&#8230;</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">لا نعرف كيفية إصلاح هذه العلة. تجري إعادة تشغيل ميركل.</string>
 </resources>

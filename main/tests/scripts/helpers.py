@@ -41,6 +41,8 @@ def randomFunction(fname,params):
     p_strings=[]
     for param in params:
         paramtype=param["type"].replace("<","_").replace(",","_").replace(">","");
+        if param["name"]=="priority":
+            paramtype="Priority"
         p_strings.append("RandomHelper.getRandom" + paramtype +"()")
     p_string=", ".join(p_strings)
     return fname +"(" + p_string + ")"

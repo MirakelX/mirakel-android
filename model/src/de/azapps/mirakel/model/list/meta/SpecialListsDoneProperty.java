@@ -16,10 +16,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsDoneProperty extends SpecialListsNegatedProperty {
@@ -29,8 +32,8 @@ public class SpecialListsDoneProperty extends SpecialListsNegatedProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        return "done=" + (this.done ? "1" : "0");
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(Task.DONE, MirakelQueryBuilder.Operation.EQ, done);
     }
 
     @Override

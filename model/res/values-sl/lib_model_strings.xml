@@ -168,10 +168,10 @@
     <item>Nakupovanje</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>danes Kupi darilo za rojstni dan</item>
+    <item>Buy birthday present for grandpa</item>
     <item>Glasba</item>
-    <item>ponedeljek Priprave na zabavo</item>
-    <item>danes Zaključek predstavitve</item>
+    <item>Organize the party</item>
+    <item>Finish presentation</item>
     <item>Mleko</item>
     <item>Sir</item>
   </string-array>

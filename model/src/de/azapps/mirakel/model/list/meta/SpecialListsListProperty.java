@@ -16,15 +16,18 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package de.azapps.mirakel.model.list.meta;
+
+import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsListProperty extends SpecialListsSetProperty {
@@ -40,31 +43,30 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
     }
 
     @Override
-    public String getWhereQuery() {
-        String query = this.isNegated ? " not " : "";
-        query += "(";
-        query += propertyName() + " IN (";
-        boolean first = true;
-        final List<Integer> special = new ArrayList<Integer>();
+    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        final List<Integer> special = new ArrayList<>();
+        final List<Integer> normal = new ArrayList<>();
         for (final int c : this.content) {
             if (c > 0) {
-                query += (first ? "" : ",") + c;
-                if (first) {
-                    first = false;
-                }
+                normal.add(c);
             } else if (c < 0) {
                 special.add(c);
             }
         }
-        query += ") ";
+        qb.and(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, normal);
         // TODO handle loops here
         for (final int p : special) {
             final SpecialList s = (SpecialList) ListMirakel.get(p);
-            if (s != null && !s.getWhereQueryForTasks().trim().equals("")) {
-                query += " OR " + s.getWhereQueryForTasks();
+            if (s != null && s.getWhereQueryForTasks() != null) {
+                qb.or(s.getWhereQueryForTasks());
             }
         }
-        return query + ")";
+        if (isNegated) {
+            return new MirakelQueryBuilder(ctx).not(qb);
+        } else {
+            return qb;
+        }
     }
 
     @Override

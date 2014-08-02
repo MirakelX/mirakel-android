@@ -580,8 +580,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(
                             PreferencesAppHelper.this.activity);
                         builder.setTitle(R.string.import_to);
-                        final List<CharSequence> items = new ArrayList<CharSequence>();
-                        final List<Integer> list_ids = new ArrayList<Integer>();
+                        final List<CharSequence> items = new ArrayList<>();
+                        final List<Long> list_ids = new ArrayList<>();
                         final int currentItem = 0;
                         for (final ListMirakel list : ListMirakel.all()) {
                             if (list.getId() > 0) {
@@ -604,7 +604,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
                                                 items.get(item)));
                                 final SharedPreferences.Editor editor = MirakelPreferences
                                                                         .getEditor();
-                                editor.putInt(
+                                editor.putLong(
                                     "defaultImportList",
                                     list_ids.get(item));
                                 editor.commit();
@@ -988,8 +988,8 @@ public class PreferencesAppHelper extends PreferencesHelper {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(
                             PreferencesAppHelper.this.activity);
                         builder.setTitle(R.string.import_to);
-                        final List<CharSequence> items = new ArrayList<CharSequence>();
-                        final List<Integer> list_ids = new ArrayList<Integer>();
+                        final List<CharSequence> items = new ArrayList<>();
+                        final List<Long> list_ids = new ArrayList<>();
                         final int currentItem = 0;
                         for (final ListMirakel list : ListMirakel.all()) {
                             if (list.getId() > 0) {
@@ -1015,7 +1015,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
                                                 items.get(item)));
                                 final SharedPreferences.Editor editor = MirakelPreferences
                                                                         .getEditor();
-                                editor.putInt(
+                                editor.putLong(
                                     "subtaskAddToList",
                                     list_ids.get(item));
                                 editor.commit();

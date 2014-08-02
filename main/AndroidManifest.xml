@@ -146,7 +146,7 @@
             android:name="de.azapps.mirakel.static_activities.DonationsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_donations"
-            android:parentActivityName="e.azapps.mirakel.static_activities.SettingsActivity"
+            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
@@ -238,7 +238,7 @@
         <provider
             android:name="de.azapps.mirakel.model.MirakelInternalContentProvider"
             android:authorities="de.azapps.mirakel.provider.internal"
-            android:exported="false" />
+            android:exported="true" />
 
         <service android:name="de.azapps.mirakel.services.NotificationService" />
         <service android:name="de.azapps.mirakel.services.TaskService" />
