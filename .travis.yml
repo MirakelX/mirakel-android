@@ -2,10 +2,13 @@ language: android
 jdk: oraclejdk7
 env:
   matrix:
-    - ANDROID_TARGET=android-19 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-19 ANDROID_ABI=x86
 android:
   components:
-    - build-tools-19.1.0
+    - build-tools-20.0.0
+    - extra-android-support
+    - android-19
+    - sys-img-x86-android-19
 before_script:
   - keytool -genkey -noprompt   -alias androiddebugkey  -dname "CN=mirakel.azapps.de, OU=ID, O=az, L=Mirakel, S=A, C=ANT"   -keystore main/debug.keystore  -storepass android  -keypass android
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
