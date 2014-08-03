@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="de.azapps.mirakel.new_ui">
-    <uses-sdk android:minSdkVersion="8"
-              android:targetSdkVersion="19" />
-    <!-- need to build with gradle-->
-    <application />
+          xmlns:tools="http://schemas.android.com/tools"
+    package="de.azapps.mirakel.new_ui" >
+
+    <uses-sdk
+        tools:node="replace"
+        android:targetSdkVersion="L"
+        android:minSdkVersion="11"/>
+    <application>
+        <activity
+            android:name=".activities.MirakelActivity"
+            android:theme="@style/MirakelBaseTheme"
+            android:label="@string/title_activity_mirakel" >
+        </activity>
+    </application>
+
 </manifest>

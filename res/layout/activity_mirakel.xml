@@ -1,0 +1,20 @@
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/drawer_layout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="de.azapps.mirakel.new_ui.activities.MirakelActivity">
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="de.azapps.mirakel.new_ui.fragments.TasksFragment"
+        android:id="@+id/tasks_fragment"/>
+    <fragment
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:name="de.azapps.mirakel.new_ui.fragments.ListsFragment"
+        android:layout_gravity="start"
+        android:id="@+id/lists_fragment"/>
+</android.support.v4.widget.DrawerLayout>
+

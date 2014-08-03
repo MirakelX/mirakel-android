@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <de.azapps.mirakel.new_ui.views.PriorityDoneView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/task_priority_done"
+        custom:progress_color="@color/progress"
+        custom:progress_background_color="@color/progress_background"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_name"
+            android:text="Example task"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/task_due"
+                android:text="Today"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/task_list"
+                android:text="List"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    <!-- TODO Priority -->
+
+</LinearLayout>
