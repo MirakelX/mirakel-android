@@ -107,7 +107,7 @@ public class CreditsActivity extends Activity {
     }
 
     public void onOpenGithubClick(final View v) {
-        Helpers.openURL(this, "https://github.com/azapps/mirakel-android");
+        Helpers.openURL(this, "https://github.com/MirakelX/mirakel-android/");
     }
 
     public void onOpenGooglePlusClick(final View v) {
