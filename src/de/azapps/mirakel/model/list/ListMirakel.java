@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -197,6 +198,11 @@ public class ListMirakel extends ListBase {
         return lists;
     }
 
+    public static CursorLoader allCursorLoader() {
+        return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                SYNC_STATE.DELETE.toString()).sort(LFT,
+                        Sorting.ASC).toCursorLoader(MirakelInternalContentProvider.LIST_URI);
+    }
 
 
     /**
