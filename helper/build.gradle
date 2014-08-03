@@ -33,5 +33,6 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
     compile "joda-time:joda-time:$jodaLibraryVersion"
+    compile "com.google.guava:guava:$guavaVersion"
 }
 
