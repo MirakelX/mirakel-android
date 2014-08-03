@@ -983,6 +983,10 @@ public class MainActivity extends ActionBarActivity implements
                     MainActivity.this.menu.findItem (R.id.menu_contact)
                     .setVisible (BuildHelper.isBeta ());
                 }
+                if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
+                    MainActivity.this.menu.findItem (R.id.menu_new_ui)
+                    .setVisible (BuildHelper.isBeta ());
+                }
                 if (!fromShare) {
                     updateShare ();
                 }
@@ -1334,6 +1338,9 @@ public class MainActivity extends ActionBarActivity implements
             break;
         case R.id.menu_contact:
             Helpers.contact (this);
+            break;
+        case R.id.menu_new_ui:
+            MirakelCommonPreferences.setUseNewUI(true);
             break;
         case R.id.menu_sync_now:
             final Bundle bundle = new Bundle ();

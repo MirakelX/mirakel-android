@@ -45,6 +45,11 @@ android {
     defaultConfig {
             testApplicationId "de.azapps.mirakelandroid.test"
             testInstrumentationRunner "android.test.InstrumentationTestRunner"
+
+            minSdkVersion 15
+            targetSdkVersion 19
+            versionCode 1
+            versionName '1.0'
     }
     signingConfigs {
         release {

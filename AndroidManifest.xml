@@ -72,8 +72,7 @@
         android:protectionLevel="signatureOrSystem" />
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="19" />
+        tools:node="replace" />
 
 
         <instrumentation

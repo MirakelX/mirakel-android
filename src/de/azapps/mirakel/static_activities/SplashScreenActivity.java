@@ -37,6 +37,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 
 public class SplashScreenActivity extends Activity {
     public static final String EXIT = "de.azapps.mirakel.EXIT";
@@ -62,7 +63,12 @@ public class SplashScreenActivity extends Activity {
             setTheme (R.style.Theme_SplashScreen);
         }
         // Intents
-        if (MirakelCommonPreferences.isStartupAllLists ()) {
+        if (MirakelCommonPreferences.useNewUI()) {
+            final Intent intent = new Intent (SplashScreenActivity.this,
+                                              MirakelActivity.class);
+            intent.setAction (DefinitionsHelper.SHOW_LISTS);
+            startActivityForResult (intent, 42);
+        } else  if (MirakelCommonPreferences.isStartupAllLists ()) {
             final Intent intent = new Intent (SplashScreenActivity.this,
                                               MainActivity.class);
             intent.setAction (DefinitionsHelper.SHOW_LISTS);
