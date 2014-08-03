@@ -55,7 +55,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="load_config">Izberite nastavitveno datoteko za Taskwarrior</string>
   <string name="select_config">Izbor nastavitvene datoteke za strežnik Taskwarrior</string>
   <string name="message_try_later">Poskusi usklajevati kasneje</string>
-  <string name="message_access_denied">Dostop je zavrnjen!\nAli je uporabljena prava nastavitvena datoteka?</string>
   <string name="message_create_socket">Ni mogoče ustvariti vodila!\nAli je omrežna povezava omogočena?</string>
   <string name="message_account_suspended">Vaš račun je začasno izklopljen!</string>
   <string name="message_parse_message">Ni mogoče razčleniti nalog. Pošljite poročilo o napaki.</string>

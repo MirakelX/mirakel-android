@@ -55,7 +55,6 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="load_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="select_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="message_try_later">Versuch es später nochmal</string>
-  <string name="message_access_denied">Zugriff verweigert!\nVerwendest du die richtige Konfigurationsdatei?</string>
   <string name="message_create_socket">Kann den Socket nicht erstellen!\nWahrscheinlich keine Netzwerkverbindung?</string>
   <string name="message_account_suspended">Ihr Konto ist gesperrt!</string>
   <string name="message_parse_message">Konnte die Aufgabe nicht parsen – schreib uns, wie das passiert ist</string>

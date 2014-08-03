@@ -57,7 +57,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="load_config">Selezionare il file di configurazione per Taskwarrior</string>
   <string name="select_config">Selezionare il file di configurazione di Taskwarrior</string>
   <string name="message_try_later">Provare a sincronizzare più tardi</string>
-  <string name="message_access_denied">Accesso negato.\nÈ stato usato il file di configurazione corretto?</string>
   <string name="message_create_socket">Impossibile creare il socket.\nÈ stata abilitata la connessione di rete?</string>
   <string name="message_account_suspended">Account sospeso!</string>
   <string name="message_parse_message">Impossibile analizzare le attivita. Scrivere come questo si è verificato</string>
