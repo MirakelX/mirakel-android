@@ -1197,17 +1197,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
                    "    new.due / 1000,\n" +
                    "    CASE WHEN new.priority=0 THEN 0\n" +
-                   "    CASE WHEN new.priority < 4 THEN 2 \n" +
-                   "    CASE WHEN new.priority < 7 THEN 1 \n" +
-                   "    CASE WHEN new.priority <= 9 THEN -1 \n" +
+                   "         WHEN new.priority < 4 THEN 2 \n" +
+                   "         WHEN new.priority < 7 THEN 1 \n" +
+                   "         WHEN new.priority <= 9 THEN -1 \n" +
                    "    ELSE 0\n" +
                    "    END,\n" +
                    "    new.created / 1000,\n" +
                    "    new.last_modified / 1000);\n" +
-                   "    INSERT INTO caldav_tasks_extra (task_id,location,geo,url,organizer,priority,classification, completed_is_allday, status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, original_instance_id, original_instance_time, original_instance_allday, parent_id, sorting, has_alarms)\n"
+                   "    INSERT INTO caldav_tasks_extra (task_id,_sync_id,location,geo,url,organizer,priority,classification, completed_is_allday,"
+                   +
+                   "    status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, "
+                   +
+                   "    original_instance_id, original_instance_time, original_instance_allday, parent_id, sorting, has_alarms,"
+                   +
+                   "    sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8)\n"
                    +
                    "    VALUES\n" +
-                   "    ((SELECT last_insert_rowid() FROM tasks), new.location, new.geo, new.url, new.organizer, new.priority, new.classification, new. completed_is_allday, new. status, new. task_color, new. dtstart, new. is_allday, new. tz, new. duration, new. rdate, new. exdate, new. rrule, new. original_instance_sync_id, new. original_instance_id, new. original_instance_time, new. original_instance_allday, new. parent_id, new. sorting, new. has_alarms);\n"
+                   "    ((SELECT last_insert_rowid() FROM tasks),new._sync_id, new.location, new.geo, new.url, new.organizer, "
+                   +
+                   "    new.priority, new.classification, new.completed_is_allday, new.status, new.task_color, new.dtstart, new.is_allday, "
+                   +
+                   "    new.tz, new.duration, new.rdate, new.exdate, new.rrule, new.original_instance_sync_id, new.original_instance_id, "
+                   +
+                   "    new.original_instance_time, new.original_instance_allday, new.parent_id, new.sorting, new.has_alarms,"
+                   +
+                   "    new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8);\n"
                    +
                    "END;");
         // Update trigger
@@ -1222,10 +1236,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "done = CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
                    "due = new.due / 1000,\n" +
                    "priority = CASE WHEN new.priority=0 THEN 0\n" +
-                   "CASE WHEN new.priority < 4 THEN 2 \n" +
-                   "CASE WHEN new.priority < 7 THEN 1 \n" +
-                   "CASE WHEN new.priority <= 9 THEN -1 \n" +
-                   "ELSE 0\n" +
+                   "                WHEN new.priority < 4 THEN 2 \n" +
+                   "                WHEN new.priority < 7 THEN 1 \n" +
+                   "                WHEN new.priority <= 9 THEN -1 \n" +
+                   "                ELSE 0\n" +
                    "END,\n" +
                    "updated_at = new.last_modified / 1000\n" +
                    "WHERE _id = old._id;\n" +
