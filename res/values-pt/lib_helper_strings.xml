@@ -38,4 +38,5 @@ Dispositivo: %3$s\n]]>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Não tem permissões para ler o ficheiro</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Parece que a lista desapareceu???</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Não sabemos como corrigir este erro. A reiniciar...</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Este nome de lista já existe. Escolha outro nome.</string>
 </resources>
