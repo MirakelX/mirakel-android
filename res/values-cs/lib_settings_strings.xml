@@ -117,7 +117,6 @@
   <string name="settings_dev_sync">Synchronizace</string>
   <string name="add">Přidat</string>
   <string name="action_credits">Poděkování</string>
-  <string name="action_credits_summary">O nás ;)</string>
   <string name="title_activity_credits">O autorech</string>
   <string name="special_list_where_subtask_title_text">Podúkoly</string>
 </resources>
