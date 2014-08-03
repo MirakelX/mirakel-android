@@ -90,7 +90,9 @@ configure(allprojects) {
     ext.nineoldandroisVersion="2.4.0"
     ext.robotiumVersion = "5.1"
     ext.gsonVersion = "2.2.+"
-    ext.junitVersion= "4.11"
+    ext.junitVersion = "4.11"
+    ext.guavaVersion = "17.0"
+    ext.butterknifeVersion = "5.1.1"
 }
 
 allprojects {
@@ -102,18 +104,19 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
-}
 
 task checkTODO() {
-	exec {
+       exec {
         executable 'bash'
         args rootDir.toString()+'/build/checkTODO.sh'
     }
 }
 
 task format() {
-	exec {
+       exec {
         executable 'bash'
         args rootDir.toString()+'/build/format.sh'
     }
+}
+
 }
