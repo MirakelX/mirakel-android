@@ -97,7 +97,7 @@ public class WunderlistImport {
             final Map<String, Long> listMapping) {
         final String name = jsonList.get("title").getAsString();
         final String id = jsonList.get("id").getAsString();
-        final ListMirakel l = ListMirakel.newList(name);
+        final ListMirakel l = ListMirakel.saveNewList(name);
         l.setCreatedAt(jsonList.get("created_at").getAsString());
         l.setUpdatedAt(jsonList.get("updated_at").getAsString());
         l.save(false);

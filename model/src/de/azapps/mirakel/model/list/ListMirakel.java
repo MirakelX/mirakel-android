@@ -53,6 +53,13 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
  * @author az
  */
 public class ListMirakel extends ListBase {
+
+    public static class ListAlreadyExistsException extends Exception {
+        public ListAlreadyExistsException(String detailMessage) {
+            super(detailMessage);
+        }
+    }
+
     public static final String[] allColumns = { ModelBase.ID,
                                                 ModelBase.NAME, SORT_BY_FIELD, DatabaseHelper.CREATED_AT,
                                                 DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
@@ -125,8 +132,10 @@ public class ListMirakel extends ListBase {
             qb.sort(Task.PRIORITY, Sorting.DESC);
             break;
         case OPT:
+            qb.sort(Task.DONE, Sorting.ASC);
+            qb.sort(dueSort, Sorting.ASC);
             qb.sort(Task.PRIORITY, Sorting.DESC);
-            //$FALL-THROUGH$
+            break;
         case DUE:
             qb.sort(Task.DONE, Sorting.ASC);
             qb.sort(dueSort, Sorting.ASC);
@@ -134,7 +143,7 @@ public class ListMirakel extends ListBase {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
@@ -268,7 +277,12 @@ public class ListMirakel extends ListBase {
         if (l != null) {
             return l;
         }
-        return newList(context.getString(R.string.inbox), SORT_BY.OPT, account);
+        try {
+            return newList(context.getString(R.string.inbox), SORT_BY.OPT, account);
+        } catch (ListAlreadyExistsException e) {
+            // WTF? This could never happen (theoretically)
+            throw new RuntimeException("getInboxList() failed somehow", e);
+        }
     }
 
     public static ListMirakel get(final long listId) {
@@ -307,8 +321,25 @@ public class ListMirakel extends ListBase {
      * @param name
      * @return
      */
-    public static ListMirakel newList(final String name) {
+    public static ListMirakel newList(final String name) throws ListAlreadyExistsException {
         return newList(name, SORT_BY.OPT);
+    }
+
+    private static ListMirakel saveNewList(String name, final int iteration) {
+        ListMirakel listMirakel;
+        try {
+            if (iteration > 0) {
+                name += "_" + iteration;
+            }
+            listMirakel = ListMirakel.newList(name);
+        } catch (ListMirakel.ListAlreadyExistsException e) {
+            return saveNewList(name, iteration + 1);
+        }
+        return listMirakel;
+    }
+
+    public static ListMirakel saveNewList(final String name) {
+        return saveNewList(name, 0);
     }
 
     /**
@@ -320,20 +351,33 @@ public class ListMirakel extends ListBase {
      *            the default sorting
      * @return new List
      */
-    public static ListMirakel newList(final String name, final SORT_BY sort_by) {
+    public static ListMirakel newList(final String name,
+                                      final SORT_BY sort_by) throws ListAlreadyExistsException {
         return newList(name, sort_by,
                        MirakelModelPreferences.getDefaultAccount());
     }
 
     public static ListMirakel newList(final String name, final SORT_BY sort_by,
-                                      final AccountMirakel account) {
+                                      final AccountMirakel account) throws ListAlreadyExistsException {
         ListMirakel l = new ListMirakel(0, name, sort_by, null, null, SYNC_STATE.ADD, 0, 0, 0, account);
         ListMirakel newList = l.create();
         UndoHistory.logCreate(newList, context);
         return newList;
     }
 
-    private ListMirakel create() {
+    public static ListMirakel getByName(final String name, AccountMirakel accountMirakel) {
+        return new MirakelQueryBuilder(context)
+               .and(ListBase.NAME, Operation.EQ, name)
+               .and(ListMirakel.ACCOUNT_ID, Operation.EQ, accountMirakel)
+               .get(ListMirakel.class);
+    }
+
+    private ListMirakel create() throws ListAlreadyExistsException {
+        ListMirakel listMirakel = getByName(getName(), getAccount());
+        if (listMirakel != null) {
+            throw new ListAlreadyExistsException("List" + listMirakel.getName() + " already exists:" +
+                                                 listMirakel.getId());
+        }
         final ContentValues values = new ContentValues();
         values.put(ModelBase.NAME, getName());
         values.put(ACCOUNT_ID, getAccount().getId());
@@ -410,7 +454,7 @@ public class ListMirakel extends ListBase {
     public static ListMirakel safeFirst(final Context ctx) {
         ListMirakel s = first();
         if (s == null) {
-            s = ListMirakel.newList(ctx.getString(R.string.inbox));
+            s = getInboxList(MirakelModelPreferences.getDefaultAccount());
         }
         return s;
     }

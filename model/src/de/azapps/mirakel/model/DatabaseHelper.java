@@ -77,7 +77,7 @@ import de.azapps.tools.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 42;
+    public static final int DATABASE_VERSION = 43;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -488,9 +488,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-        // MainActivity.updateTasksUUID = true; TODO do we need this
-        // anymore?
-        // Don't remove this version-gap
+            // MainActivity.updateTasksUUID = true; TODO do we need this
+            // anymore?
+            // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -576,7 +576,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-        // Add Accountmanagment
+            // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -602,11 +602,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-        // add progress
+            // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-        // Add some columns for caldavsync
+            // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -624,7 +624,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-        // add some options to reccuring
+            // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -644,15 +644,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-        // also save the time of a due-date
+            // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-        // save all times in tasktable as utc-unix-seconds
+            // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-        // move tw-sync-key to db
-        // move tw-certs into accountmanager
+            // move tw-sync-key to db
+            // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -870,7 +870,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-        // refactor recurrence to follow the taskwarrior method
+            // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -978,9 +978,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("create unique index tag_unique ON tag (name);");
         case 41:
             updateCaldavExtra(db);
+        case 42:
+            updateListTable(db);
         default:
             break;
         }
+    }
+
+    private void updateListTable(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + ListMirakel.TABLE + " RENAME TO tmp_lists;");
+        db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ModelBase.ID
+                   + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase.NAME
+                   + " TEXT NOT NULL, " + ListMirakel.SORT_BY_FIELD
+                   + " INTEGER NOT NULL DEFAULT 0, " + CREATED_AT
+                   + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, " + UPDATED_AT
+                   + " INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+                   + SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
+                   + ", " + ListMirakel.LFT + " INTEGER, " + ListMirakel.RGT
+                   + " INTEGER " + ", " + ListMirakel.COLOR + " INTEGER,"
+                   + ListMirakel.ACCOUNT_ID + " INTEGER REFERENCES "
+                   + AccountMirakel.TABLE + " (" + ModelBase.ID
+                   + ") ON DELETE CASCADE ON UPDATE CASCADE "
+                   + ")");
+        db.execSQL("INSERT INTO " + ListMirakel.TABLE + " SELECT * FROM tmp_lists");
+        db.execSQL("DROP TABLE tmp_lists;");
     }
 
 
@@ -1033,8 +1054,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Create trigger for lists
         // Insert trigger
         db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
-                   "BEGIN\n" +
-                   "INSERT INTO lists (sync_state, name, color, account_id) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name));\n"
+                   "BEGIN\n"
+                   + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
                    +
                    "INSERT INTO caldav_lists_extra VALUES\n" +
                    "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
@@ -1115,7 +1136,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "t.content as description,\n" +
                    "url,\n" +
                    "organizer,\n" +
-                   "caldav_tasks_extra.priority,\n" +
+                   "CASE \n" +
+                   "     WHEN t.priority<0 THEN\n" +
+                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 7 AND 9 THEN caldav_tasks_extra.priority ELSE 9 END\n"
+                   +
+                   "     WHEN t.priority=1 THEN\n" +
+                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 4 AND 6 THEN caldav_tasks_extra.priority ELSE 5 END\n"
+                   +
+                   "     WHEN t.priority=2 THEN\n" +
+                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 1 AND 3 THEN caldav_tasks_extra.priority ELSE 1 END\n"
+                   +
+                   "     ELSE 0\n" +
+                   "END AS priority," +
                    "classification,\n" +
                    "CASE WHEN t.done=1 THEN t.updated_at ELSE null END AS completed,\n" +
                    "completed_is_allday,\n" +
@@ -1164,12 +1196,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    new.percent_complete,\n" +
                    "    CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
                    "    new.due / 1000,\n" +
-                   "    CASE WHEN new.priority < 4 THEN 2 ELSE\n" +
-                   "         CASE WHEN new.priority < 7 THEN 1 ELSE\n" +
-                   "              CASE WHEN new.priority < 9 THEN -1 ELSE\n" +
-                   "              0\n" +
-                   "              END\n" +
-                   "         END\n" +
+                   "    CASE WHEN new.priority=0 THEN 0\n" +
+                   "    CASE WHEN new.priority < 4 THEN 2 \n" +
+                   "    CASE WHEN new.priority < 7 THEN 1 \n" +
+                   "    CASE WHEN new.priority <= 9 THEN -1 \n" +
+                   "    ELSE 0\n" +
                    "    END,\n" +
                    "    new.created / 1000,\n" +
                    "    new.last_modified / 1000);\n" +
@@ -1190,12 +1221,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "progress = new.percent_complete,\n" +
                    "done = CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
                    "due = new.due / 1000,\n" +
-                   "priority = CASE WHEN new.priority < 4 THEN 2 ELSE\n" +
-                   "CASE WHEN new.priority < 7 THEN 1 ELSE\n" +
-                   "CASE WHEN new.priority < 9 THEN -1 ELSE\n" +
-                   "0\n" +
-                   "END\n" +
-                   "END\n" +
+                   "priority = CASE WHEN new.priority=0 THEN 0\n" +
+                   "CASE WHEN new.priority < 4 THEN 2 \n" +
+                   "CASE WHEN new.priority < 7 THEN 1 \n" +
+                   "CASE WHEN new.priority <= 9 THEN -1 \n" +
+                   "ELSE 0\n" +
                    "END,\n" +
                    "updated_at = new.last_modified / 1000\n" +
                    "WHERE _id = old._id;\n" +

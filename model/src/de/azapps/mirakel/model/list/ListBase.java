@@ -89,6 +89,15 @@ abstract class ListBase  extends ModelBase {
         this.setAccount(account);
     }
 
+    public void setListName(final String name) throws ListMirakel.ListAlreadyExistsException {
+        ListMirakel listMirakel = ListMirakel.getByName(name, getAccount());
+        if (listMirakel != null && listMirakel.getId() != getId()) {
+            throw new ListMirakel.ListAlreadyExistsException("List " + getName() + " already exists as ID: " +
+                    listMirakel.getId());
+        }
+        setName(name);
+    }
+
     public String getCreatedAt() {
         return this.createdAt;
     }

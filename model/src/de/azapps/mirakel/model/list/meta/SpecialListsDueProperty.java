@@ -68,7 +68,7 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
         String query = "date('now','";
         if (this.lenght == 0) {
             return qb.and("date(" + Task.DUE
-                          + ",'unixepoch','localtime')", MirakelQueryBuilder.Operation.LE, "date('now','localtime')");
+                          + ",'unixepoch','localtime') <= date('now','localtime')");
         }
         if (this.lenght > 0) {
             query += "+";
@@ -88,7 +88,7 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
             return new MirakelQueryBuilder(ctx);
         }
         return qb.and("date(" + Task.DUE
-                      + ",'unixepoch','localtime')", MirakelQueryBuilder.Operation.LE, query + "')");
+                      + ",'unixepoch','localtime') <= " + query + "')");
     }
 
     @Override
