@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 import android.util.Pair;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -100,6 +101,14 @@ public class Task extends TaskBase {
     public static List<Task> all() {
         return addBasicFiler(new MirakelQueryBuilder(context)).and(DONE,
                 Operation.EQ, false).getList(Task.class);
+    }
+
+    public static CursorLoader allCursorLoader(boolean showDone) {
+        MirakelQueryBuilder mirakelQueryBuilder = addBasicFiler(new MirakelQueryBuilder(context));
+        if (!showDone) {
+            mirakelQueryBuilder.and(DONE, Operation.EQ, false);
+        }
+        return mirakelQueryBuilder.toCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 
     /**
