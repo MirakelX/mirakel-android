@@ -21,7 +21,9 @@ package de.azapps.mirakel.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -123,6 +125,12 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri UPDATE_LIST_MOVE_UP_URI = getUri(UPDATE_LIST_MOVE_UP);
     public static final Uri UPDATE_LIST_FIX_RGT_URI = getUri(UPDATE_LIST_FIX_RGT);
 
+    private static Map<String, String> views = new HashMap<>();
+    static {
+        views.put("caldav_lists", ListMirakel.TABLE);
+        views.put("caldav_tasks", Task.TABLE);
+    }
+
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
                     LISTS_SORT_JOIN);
@@ -204,8 +212,15 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         if (!locked) {
             db.beginTransaction();
         }
-        final Uri u = ContentUris.withAppendedId(uri,
-                      db.insert(table, null, values));
+        Uri u = ContentUris.withAppendedId(uri,
+                                           db.insert(table, null, values));
+        if (views.containsKey(table)) {
+            Cursor c = db.query(views.get(table), new String[] {"MAX(_id)"}, null, null, null, null, null);
+            if (c.moveToFirst()) {
+                u = ContentUris.withAppendedId(uri, c.getLong(0));
+            }
+            c.close();
+        }
         if (!locked) {
             db.setTransactionSuccessful();
             db.endTransaction();
