@@ -57,6 +57,7 @@ import android.widget.ViewSwitcher;
 
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListner;
+import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
@@ -77,6 +78,7 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
 import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
 
@@ -115,13 +117,13 @@ public class TaskDialogHelpers {
     }
 
     protected static Cursor queryForSubtasks(final Task t, final Context ctx) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         qb.and(Task.NAME, Operation.LIKE, "%" + searchString + "%");
         qb.and(Task.ID, Operation.NOT_IN,
                new MirakelQueryBuilder(ctx).select("parent_id").and("child_id", Operation.EQ,
                        t), MirakelInternalContentProvider.SUBTASK_URI);
         qb.and(Task.ID, Operation.NOT_EQ, t);
-        qb = Task.addBasicFiler(qb);
+        Task.addBasicFiler(qb);
         if (optionEnabled) {
             if (!done) {
                 qb.and(Task.DONE, Operation.EQ, false);
@@ -136,8 +138,13 @@ public class TaskDialogHelpers {
             if (listId > 0) {
                 qb.and(Task.LIST_ID, Operation.EQ, listId);
             } else {
-                qb.and(((SpecialList) ListMirakel.get(listId))
-                       .getWhereQueryForTasks());
+                Optional<SpecialList> specialListOptional = SpecialList.getSpecial(listId);
+                OptionalUtils.withOptional(specialListOptional, new OptionalUtils.Procedure<SpecialList>() {
+                    @Override
+                    public void apply(SpecialList input) {
+                        qb.and(input.getWhereQueryForTasks());
+                    }
+                });
             }
         }
         return qb.select(Task.allColumns).query(Task.URI);
@@ -173,12 +180,16 @@ public class TaskDialogHelpers {
                                 final int which) {
                 Task mTask = task;
                 if (task == null || task.getId() == 0) {
+                    ListMirakel listMirakel;
+                    if (task == null) {
+                        listMirakel = MirakelModelPreferences
+                                      .getSafeImportDefaultList();
+                    } else {
+                        listMirakel = task.getList();
+                    }
                     mTask = Semantic.createTask(
                                 MirakelCommonPreferences
-                                .getAudioDefaultTitle(),
-                                task == null ? MirakelModelPreferences
-                                .getImportDefaultList(true)
-                                : task.getList(), true,
+                                .getAudioDefaultTitle(), Optional.fromNullable(listMirakel), true,
                                 context);
                 }
                 audio_record_mRecorder.stop();
@@ -370,7 +381,8 @@ public class TaskDialogHelpers {
                                 final int which) {
                 for (final Task s : subtasks) {
                     final boolean permanent;
-                    if (s.getList().equals(MirakelModelPreferences.subtaskAddToList())) {
+                    Optional<ListMirakel> listMirakelOptional = MirakelModelPreferences.subtaskAddToList();
+                    if (listMirakelOptional.isPresent() && s.getList().equals(listMirakelOptional.get())) {
                         permanent = true;
                     } else {
                         permanent = false;
@@ -414,7 +426,7 @@ public class TaskDialogHelpers {
         reminder = false;
         optionEnabled = false;
         newTask = true;
-        listId = SpecialList.firstSpecialSafe(ctx).getId();
+        listId = SpecialList.firstSpecialSafe().getId();
         final EditText search = (EditText) v
                                 .findViewById(R.id.subtask_searchbox);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -640,7 +652,7 @@ public class TaskDialogHelpers {
                                      final Context ctx) {
         final ListMirakel list = MirakelModelPreferences
                                  .getListForSubtask(parent);
-        final Task t = Semantic.createTask(name, list,
+        final Task t = Semantic.createTask(name, Optional.fromNullable(list),
                                            MirakelCommonPreferences.useSemanticNewTask(), ctx);
         parent.addSubtask(t);
         return t;
