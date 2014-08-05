@@ -1,9 +1,13 @@
 package de.azapps.mirakel.new_ui.activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -14,13 +18,19 @@ import android.view.View;
 
 import com.google.common.base.Optional;
 
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakel.new_ui.fragments.TaskFragment;
+import de.azapps.mirakel.new_ui.fragments.TasksFragment;
+import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
+import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 
 import static com.google.common.base.Optional.fromNullable;
-import static de.azapps.tools.OptionalUtils.Procedure;
-import static de.azapps.tools.OptionalUtils.withOptional;
+import static de.azapps.tools.OptionalUtils.*;
 
-public class MirakelActivity extends ActionBarActivity {
+public class MirakelActivity extends ActionBarActivity implements OnTaskSelectedListener, OnListSelectedListener {
 
 	private class ViewHolder {
 		private Optional<DrawerLayout> mDrawerLayout;
@@ -34,11 +44,9 @@ public class MirakelActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
-
 		getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
-
 		initDrawer();
-
+		handleIntent(getIntent());
 	}
 
 	@Override
@@ -63,44 +71,6 @@ public class MirakelActivity extends ActionBarActivity {
 			}
 		});
 	}
-
-
-
-	private void initDrawer() {
-		// Nav drawer
-		viewHolder.mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
-		withOptional(viewHolder.mDrawerLayout,new Procedure<DrawerLayout>() {
-			@Override
-			public void apply(DrawerLayout mDrawerLayout) {
-				final ActionBar actionBar = MirakelActivity.this.getSupportActionBar();
-				ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(MirakelActivity.this, mDrawerLayout,
-						R.drawable.ic_drawer,
-						R.string.list_title, /* "open drawer" description */
-						R.string.list_title /* "close drawer" description */) {
-
-					/** Called when a drawer has settled in a completely closed state. */
-					public void onDrawerClosed(View view) {
-						super.onDrawerClosed(view);
-						actionBar.setTitle(R.string.list_title);
-						invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-					}
-
-					/** Called when a drawer has settled in a completely open state. */
-					public void onDrawerOpened(View drawerView) {
-						super.onDrawerOpened(drawerView);
-						actionBar.setTitle(R.string.list_title);
-						invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-					}
-				};
-				mDrawerLayout.setDrawerListener(mDrawerToggle);
-				viewHolder.mDrawerToggle = Optional.of(mDrawerToggle);
-				actionBar.setDisplayHomeAsUpEnabled(true);
-				actionBar.setHomeButtonEnabled(true);
-			}
-		});
-
-	}
-
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
@@ -144,5 +114,91 @@ public class MirakelActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+	@Override
+	public void onTaskSelected(Task task) {
+		DialogFragment newFragment = TaskFragment.newInstance(task.getId());
+		newFragment.show(getSupportFragmentManager(), "dialog");
+
+	}
+
+	@Override
+	public void onListSelected(ListMirakel list) {
+		setList(list.getId());
+	}
+
+	private void setList(long list_id) {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+		TasksFragment tasksFragment = TasksFragment.newInstance(list_id);
+		fragmentTransaction.replace(R.id.tasks_fragment,tasksFragment);
+		fragmentTransaction.commit();
+	}
+
+	private void handleIntent(Intent intent) {
+		if(intent==null) {
+			return;
+		}
+		switch(intent.getAction()) {
+			case DefinitionsHelper.SHOW_TASK:
+			case DefinitionsHelper.SHOW_TASK_FROM_WIDGET:
+				// TODO
+				break;
+			case Intent.ACTION_SEND:
+			case Intent.ACTION_SEND_MULTIPLE:
+				// TODO
+				break;
+			case DefinitionsHelper.SHOW_LIST:
+			case DefinitionsHelper.SHOW_LIST_FROM_WIDGET:
+				setList(intent.getIntExtra (DefinitionsHelper.EXTRA_ID, 0));
+				break;
+			case Intent.ACTION_SEARCH:
+				// TODO
+				break;
+			case DefinitionsHelper.ADD_TASK_FROM_WIDGET:
+				// TODO
+				break;
+			case DefinitionsHelper.SHOW_MESSAGE:
+				// TODO
+				break;
+		}
+	}
+
+	private void initDrawer() {
+		// Nav drawer
+		viewHolder.mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
+		withOptional(viewHolder.mDrawerLayout,new Procedure<DrawerLayout>() {
+			@Override
+			public void apply(DrawerLayout mDrawerLayout) {
+				final ActionBar actionBar = MirakelActivity.this.getSupportActionBar();
+				ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(MirakelActivity.this, mDrawerLayout,
+						R.drawable.ic_drawer,
+						R.string.list_title, /* "open drawer" description */
+						R.string.list_title /* "close drawer" description */) {
+
+					/** Called when a drawer has settled in a completely closed state. */
+					public void onDrawerClosed(View view) {
+						super.onDrawerClosed(view);
+						actionBar.setTitle(R.string.list_title);
+						invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+					}
+
+					/** Called when a drawer has settled in a completely open state. */
+					public void onDrawerOpened(View drawerView) {
+						super.onDrawerOpened(drawerView);
+						actionBar.setTitle(R.string.list_title);
+						invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+					}
+				};
+				mDrawerLayout.setDrawerListener(mDrawerToggle);
+				viewHolder.mDrawerToggle = Optional.of(mDrawerToggle);
+				actionBar.setDisplayHomeAsUpEnabled(true);
+				actionBar.setHomeButtonEnabled(true);
+			}
+		});
+
+	}
+
 
 }

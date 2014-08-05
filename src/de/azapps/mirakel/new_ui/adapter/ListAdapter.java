@@ -32,17 +32,24 @@ public class ListAdapter extends CursorAdapter {
 	public void bindView(View view, Context context, Cursor cursor) {
 		ViewHolder viewHolder = (ViewHolder) view.getTag();
 		ListMirakel listMirakel = new ListMirakel(cursor);
+		viewHolder.list= listMirakel;
+
 		viewHolder.name.setText(listMirakel.getName());
 		viewHolder.count.setText(listMirakel.countTasks() + "");
 	}
 
-	static class ViewHolder {
-		TextView name;
-		TextView count;
+	public static class ViewHolder {
+		private final TextView name;
+		private final TextView count;
+		private ListMirakel list;
 
-		public ViewHolder(View view) {
+		private ViewHolder(View view) {
 			name = (TextView) view.findViewById(R.id.list_name);
 			count = (TextView) view.findViewById(R.id.list_count);
+		}
+
+		public ListMirakel getList() {
+			return list;
 		}
 	}
 }

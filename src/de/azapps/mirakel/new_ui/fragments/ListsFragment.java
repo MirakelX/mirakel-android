@@ -2,19 +2,19 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ListView;
 
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
+import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +23,7 @@ import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 public class ListsFragment extends ListFragment implements LoaderManager.LoaderCallbacks {
 
 	ListAdapter mAdapter;
+	OnListSelectedListener mListener;
 
 
     public ListsFragment() {
@@ -36,7 +37,24 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
 		mAdapter = new ListAdapter(getActivity(), null, 0);
 		setListAdapter(mAdapter);
 		getLoaderManager().initLoader(0, null, this);
+
 	}
+
+	@Override
+	public void onListItemClick (ListView l, View v, int position, long id) {
+		mListener.onListSelected(((ListAdapter.ViewHolder) v.getTag()).getList());
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		try {
+			mListener = (OnListSelectedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString() + " must implement OnListSelectedListener");
+		}
+	}
+
 
 
 	@Override

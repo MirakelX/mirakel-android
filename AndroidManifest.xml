@@ -13,6 +13,11 @@
             android:theme="@style/MirakelBaseTheme"
             android:label="@string/title_activity_mirakel" >
         </activity>
+        <activity
+            android:name=".activities.TaskActivity"
+            android:theme="@style/MirakelBaseTheme"
+            android:label="@string/title_activity_mirakel" >
+        </activity>
     </application>
 
 </manifest>

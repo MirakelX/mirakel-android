@@ -6,22 +6,25 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
-import de.azapps.mirakel.new_ui.views.PriorityDoneView;
+import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 
 public class TaskAdapter extends CursorAdapter {
 
 	private LayoutInflater mInflater;
+	private View.OnClickListener itemClickListener;
 
-	public TaskAdapter(Context context, Cursor c, int flags) {
+	public TaskAdapter(Context context, Cursor c, int flags, View.OnClickListener itemClickListener) {
 		super(context, c, flags);
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.itemClickListener = itemClickListener;
 	}
 
 	@Override
@@ -33,9 +36,11 @@ public class TaskAdapter extends CursorAdapter {
 	}
 
 	@Override
-	public void bindView(View view, Context context, Cursor cursor) {
+	public void bindView(View view, final Context context, Cursor cursor) {
 		ViewHolder viewHolder = (ViewHolder) view.getTag();
+		view.setOnClickListener(itemClickListener);
 		Task task = new Task(cursor);
+		viewHolder.task=task;
 		viewHolder.name.setText(task.getName());
 
 		if (task.getDue() != null) {
@@ -52,19 +57,31 @@ public class TaskAdapter extends CursorAdapter {
 		viewHolder.list.setText(task.getList().getName());
 		viewHolder.priorityDone.setDone(task.isDone());
 		viewHolder.priorityDone.setProgress(task.getProgress());
+		viewHolder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO implement this
+				Toast.makeText(context, "Check", Toast.LENGTH_LONG).show();
+			}
+		});
 	}
 
-	static class ViewHolder {
-		TextView name;
-		TextView due;
-		TextView list;
-		PriorityDoneView priorityDone;
+	public static class ViewHolder {
+		final TextView name;
+		final TextView due;
+		final TextView list;
+		final ProgressDoneView priorityDone;
+		private Task task;
 
 		public ViewHolder(View view) {
 			name = (TextView) view.findViewById(R.id.task_name);
 			due = (TextView) view.findViewById(R.id.task_due);
 			list = (TextView) view.findViewById(R.id.task_list);
-			priorityDone = (PriorityDoneView) view.findViewById(R.id.task_priority_done);
+			priorityDone = (ProgressDoneView) view.findViewById(R.id.task_priority_done);
+		}
+
+		public Task getTask() {
+			return task;
 		}
 	}
 }

@@ -1,47 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:custom="http://schemas.android.com/apk/res-auto"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <de.azapps.mirakel.new_ui.views.PriorityDoneView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/task_priority_done"
-        custom:progress_color="@color/progress"
-        custom:progress_background_color="@color/progress_background"/>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    custom:cardCornerRadius="4dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/task_name"
-            android:text="Example task"/>
+        <de.azapps.mirakel.new_ui.views.ProgressDoneView
+            android:layout_width="@dimen/priorityDoneSize"
+            android:layout_height="@dimen/priorityDoneSize"
+            android:id="@+id/task_priority_done"
+            custom:progress_color="@color/progress"
+            custom:progress_background_color="@color/progress_background"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/task_due"
-                android:text="Today"/>
+                style="@style/task_name"
+                android:id="@+id/task_name"
+                android:text="Example task"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/task_list"
-                android:text="List"/>
+                android:layout_height="wrap_content">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/task_due"
+                    android:text="Today"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/task_list"
+                    android:text="List"/>
+
+            </LinearLayout>
         </LinearLayout>
+        <!-- TODO Priority -->
     </LinearLayout>
-    <!-- TODO Priority -->
 
-</LinearLayout>
+</android.support.v7.widget.CardView>

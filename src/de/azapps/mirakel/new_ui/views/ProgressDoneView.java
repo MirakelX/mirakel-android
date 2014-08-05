@@ -6,12 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 
 import de.azapps.mirakel.new_ui.R;
 
-public class PriorityDoneView extends RelativeLayout {
+public class ProgressDoneView extends RelativeLayout {
 	private int progress;
 	private boolean done;
 	private int progressColor, progressBackgroundColor;
@@ -19,15 +21,15 @@ public class PriorityDoneView extends RelativeLayout {
 
 	private CheckBox checkBox;
 
-	public PriorityDoneView(Context context) {
+	public ProgressDoneView(Context context) {
 		this(context, null);
 	}
 
-	public PriorityDoneView(Context context, AttributeSet attrs) {
+	public ProgressDoneView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public PriorityDoneView(Context context, AttributeSet attrs, int defStyleAttr) {
+	public ProgressDoneView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		inflate(context, R.layout.priority_done, this);
 
@@ -42,6 +44,12 @@ public class PriorityDoneView extends RelativeLayout {
 		} finally {
 			attributes.recycle();
 		}
+		setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				setDone(!done);
+			}
+		});
 	}
 
 	private int dpToPx(int px) {
@@ -85,10 +93,14 @@ public class PriorityDoneView extends RelativeLayout {
 		return done;
 	}
 
-	public void setDone(boolean done) {
-		this.done = done;
+	private void rebuildLayout() {
 		invalidate();
 		requestLayout();
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
+		rebuildLayout();
 	}
 
 	public int getProgressColor() {
@@ -97,6 +109,7 @@ public class PriorityDoneView extends RelativeLayout {
 
 	public void setProgressColor(int progressColor) {
 		this.progressColor = progressColor;
+		rebuildLayout();
 	}
 
 	public int getProgressBackgroundColor() {
@@ -105,5 +118,11 @@ public class PriorityDoneView extends RelativeLayout {
 
 	public void setProgressBackgroundColor(int progressBackgroundColor) {
 		this.progressBackgroundColor = progressBackgroundColor;
+		rebuildLayout();
+	}
+
+	public void setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener listener) {
+		this.checkBox.setOnCheckedChangeListener(listener);
+		rebuildLayout();
 	}
 }

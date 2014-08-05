@@ -1,6 +1,7 @@
 package com.faizmalkani.floatingactionbutton;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -40,7 +42,8 @@ public class FloatingActionButton extends View {
         this(context, attributeSet, 0);
     }
 
-    public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton);
@@ -65,6 +68,7 @@ public class FloatingActionButton extends View {
                 context.getSystemService(Context.WINDOW_SERVICE);
         Display display = mWindowManager.getDefaultDisplay();
         Point size = new Point();
+		// TODO support older android versions
         display.getSize(size);
         mScreenHeight = size.y;
     }
