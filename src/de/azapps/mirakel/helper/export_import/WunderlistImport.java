@@ -34,6 +34,7 @@ import java.util.Set;
 import android.content.Context;
 import android.util.Pair;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -116,11 +117,14 @@ public class WunderlistImport {
         final String name = jsonTask.get("title").getAsString();
         final String list_id_string = jsonTask.get("list_id").getAsString();
         final Long listId = listMapping.get(list_id_string);
-        ListMirakel list = null;
+        Optional<ListMirakel> listMirakelOptional = Optional.absent();
+        final ListMirakel list;
         if (listId != null) {
-            list = ListMirakel.get(listId);
+            listMirakelOptional = ListMirakel.get(listId);
         }
-        if (list == null) {
+        if (listMirakelOptional.isPresent()) {
+            list = listMirakelOptional.get();
+        } else {
             list = ListMirakel.safeFirst(ctx);
         }
         final Task t = Task.newTask(name, list);

@@ -33,6 +33,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -74,14 +77,14 @@ public class Semantic extends SemanticBase {
         return ret;
     }
 
-    public static Task createTask(String taskName, ListMirakel currentList,
+    public static Task createTask(String taskName, Optional<ListMirakel> currentList,
                                   final boolean useSemantic, final Context context) {
         GregorianCalendar due = null;
         int prio = 0;
-        if (currentList != null && currentList.isSpecial()) {
+        if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
-                final SpecialList slist = (SpecialList) currentList;
-                currentList = slist.getDefaultList();
+                final SpecialList slist = (SpecialList) currentList.get();
+                currentList = Optional.fromNullable(slist.getDefaultList());
                 if (slist.getDefaultDate() != null) {
                     due = new GregorianCalendar();
                     due.add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
@@ -104,7 +107,7 @@ public class Semantic extends SemanticBase {
                     }
                 }
             } catch (final NullPointerException e) {
-                currentList = ListMirakel.safeFirst(context);
+                currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
             }
         }
         if (useSemantic) {
@@ -128,7 +131,7 @@ public class Semantic extends SemanticBase {
                     prio = s.getPriority();
                 }
                 // Set list
-                if (s.getList() != null) {
+                if (s.getList().isPresent()) {
                     currentList = s.getList();
                 }
                 // Weekday?
@@ -156,10 +159,10 @@ public class Semantic extends SemanticBase {
                         DateTimeHelper.getTimeZoneOffset(false, due));
             }
         }
-        if (currentList == null) {
-            currentList = ListMirakel.safeFirst(context);
+        if (!currentList.isPresent()) {
+            currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
         }
-        return Task.newTask(taskName, currentList, due, prio);
+        return Task.newTask(taskName, currentList.get(), due, prio);
     }
 
     public Semantic(final Cursor c) {
@@ -175,7 +178,7 @@ public class Semantic extends SemanticBase {
             due = c.getInt(c.getColumnIndex(DUE));
         }
         setDue(due);
-        ListMirakel list = null;
+        Optional<ListMirakel> list = null;
         if (!c.isNull(c.getColumnIndex(LIST))) {
             list = ListMirakel.get(c.getInt(c.getColumnIndex(LIST)));
         }
@@ -220,7 +223,7 @@ public class Semantic extends SemanticBase {
     }
 
     public static Semantic newSemantic(final String condition,
-                                       final Integer priority, final Integer due, final ListMirakel list,
+                                       final Integer priority, final Integer due, final Optional<ListMirakel> list,
                                        final Integer weekday) {
         final Semantic m = new Semantic(0, condition, priority, due, list,
                                         weekday);
@@ -228,7 +231,7 @@ public class Semantic extends SemanticBase {
     }
 
     Semantic(final int id, final String condition, final Integer priority,
-             final Integer due, final ListMirakel list, final Integer weekday) {
+             final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
         super(id, condition, priority, due, list, weekday);
     }
 

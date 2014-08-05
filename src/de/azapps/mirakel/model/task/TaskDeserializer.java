@@ -23,6 +23,7 @@ import android.content.Context;
 import android.util.Pair;
 import android.util.SparseBooleanArray;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -143,27 +144,27 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 t.setProgress(progress);
                 break;
             case "list_id": {
-                ListMirakel list = ListMirakel.get(val.getAsInt());
-                if (list == null) {
-                    list = SpecialList.firstSpecial().getDefaultList();
+                Optional<ListMirakel> list = ListMirakel.get(val.getAsInt());
+                if (!list.isPresent()) {
+                    list = Optional.fromNullable(SpecialList.firstSpecialSafe().getDefaultList());
                 }
-                t.setList(list, true);
+                t.setList(list.get(), true);
                 break;
             }
             case "project": {
-                ListMirakel list = ListMirakel.findByName(val.getAsString(),
-                                   this.account);
+                Optional<ListMirakel> list = ListMirakel.findByName(val.getAsString(),
+                                             this.account);
                 if (list == null
-                    || list.getAccount().getId() != this.account.getId()) {
+                    || list.get().getAccount().getId() != this.account.getId()) {
                     try {
-                        list = ListMirakel.newList(val.getAsString(),
-                                                   ListMirakel.SORT_BY.OPT, this.account);
+                        list = Optional.fromNullable(ListMirakel.newList(val.getAsString(),
+                                                     ListMirakel.SORT_BY.OPT, this.account));
                     } catch (ListMirakel.ListAlreadyExistsException e) {
                         // This can not happen!
                         throw new RuntimeException("ListAlreadyExist while syncing from taskd. Thats impossible", e);
                     }
                 }
-                t.setList(list, true);
+                t.setList(list.get(), true);
                 break;
             }
             case "created_at":
