@@ -1046,7 +1046,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "sync_enabled INTEGER,\n" +
                    "owner TEXT);");
         // Create view for lists
-        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, sync_enabled, owner\n"
+        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
+                   +
+                   "a.enabled AS sync_enabled, owner\n"
                    +
                    "FROM lists as l\n" +
                    "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
@@ -1056,8 +1058,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
                    "BEGIN\n"
                    + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
-                   +
-                   "INSERT INTO caldav_lists_extra VALUES\n" +
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT INTO caldav_lists_extra VALUES\n" +
                    "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
                    +
                    "END;");
@@ -1065,8 +1067,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
                    "BEGIN\n" +
                    "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
-                   +
-                   "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
                    +
                    "END;");
         // delete trigger
