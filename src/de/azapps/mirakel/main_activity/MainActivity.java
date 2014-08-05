@@ -985,7 +985,7 @@ public class MainActivity extends ActionBarActivity implements
                 }
                 if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
                     MainActivity.this.menu.findItem (R.id.menu_new_ui)
-                    .setVisible (BuildHelper.isBeta ());
+                    .setVisible (false/*BuildHelper.isBeta ()*/);
                 }
                 if (!fromShare) {
                     updateShare ();
