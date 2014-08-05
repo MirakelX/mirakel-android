@@ -29,12 +29,16 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
+import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DueDialog;
 import de.azapps.widgets.DueDialog.VALUE;
 
@@ -180,14 +184,15 @@ public class SemanticsSettings extends PreferencesHelper implements
         }
         this.semanticsList.setEntries(listEntries);
         this.semanticsList.setEntryValues(listValues);
-        if (this.semantic.getList() == null) {
+        if (!this.semantic.getList().isPresent()) {
             this.semanticsList.setValueIndex(0);
             this.semanticsList.setSummary(this.activity
                                           .getString(R.string.semantics_no_list));
         } else {
-            this.semanticsList.setValue(String.valueOf(this.semantic.getList()
+            ListMirakel listMirakel = this.semantic.getList().get();
+            this.semanticsList.setValue(String.valueOf(listMirakel
                                         .getId()));
-            this.semanticsList.setSummary(this.semantic.getList().getName());
+            this.semanticsList.setSummary(listMirakel.getName());
         }
     }
 
@@ -195,7 +200,6 @@ public class SemanticsSettings extends PreferencesHelper implements
      * Updates the variables for the due Dialog and returns the summary for the
      * Due-Preference
      *
-     * @param due
      * @return
      */
     protected String updateDueStuff() {
@@ -265,11 +269,16 @@ public class SemanticsSettings extends PreferencesHelper implements
                 this.semanticsList
                 .setSummary(this.semanticsList.getEntries()[0]);
             } else {
-                final ListMirakel newList = ListMirakel.get(Integer
-                                            .parseInt(newValue));
+                final Optional<ListMirakel> newList = ListMirakel.get(Integer
+                                                      .parseInt(newValue));
                 this.semantic.setList(newList);
                 this.semanticsList.setValue(newValue);
-                this.semanticsList.setSummary(newList.getName());
+                OptionalUtils.withOptional(newList, new OptionalUtils.Procedure<ListMirakel>() {
+                    @Override
+                    public void apply(ListMirakel input) {
+                        semanticsList.setSummary(input.getName());
+                    }
+                });
             }
             this.semantic.save();
         } else if (key.equals("semantics_condition")) {
