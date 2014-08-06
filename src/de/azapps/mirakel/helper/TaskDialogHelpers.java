@@ -80,7 +80,7 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
-import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
+import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListener;
 
 public class TaskDialogHelpers {
     protected static AlertDialog audio_playback_dialog;
@@ -333,7 +333,7 @@ public class TaskDialogHelpers {
                                   : task.getReminder();
         final FragmentManager fm = ctx.getSupportFragmentManager();
         final DateTimeDialog dtDialog = DateTimeDialog.newInstance(
-        new OnDateTimeSetListner() {
+        new OnDateTimeSetListener() {
             @Override
             public void onDateTimeSet(final int year, final int month,
                                       final int dayOfMonth, final int hourOfDay,

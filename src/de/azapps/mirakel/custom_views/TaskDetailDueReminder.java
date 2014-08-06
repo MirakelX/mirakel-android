@@ -264,9 +264,8 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
         } else {
             this.taskDue.setText(DateTimeHelper.formatDate(this.context,
                                  this.task.getDue()));
-            this.taskDue.setTextColor(this.context.getResources().getColor(
-                                          TaskHelper.getTaskDueColor(this.task.getDue(),
-                                                  this.task.isDone())));
+            this.taskDue.setTextColor(TaskHelper.getTaskDueColor(this.context, this.task.getDue(),
+                                      this.task.isDone()));
         }
     }
 
