@@ -20,6 +20,7 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">إضافة حساب</string>
+  <string name="account_title">حسابات</string>
   <string name="sync_new">حساب جديد</string>
   <string name="sync_use">استخدام المزامنة</string>
   <string name="sync_warning">يتم تجريب المزامنة</string>
@@ -162,6 +163,7 @@
   <string name="register_server">إذا كنت بحاجة حساب للمزامنة على الخادم الخاص بنا، الرجاء إرسال بريد إلكتروني إلينا. مع الإصدار التالي ستحصل على إمكانية تسجيل حساب جديد!</string>
   <string name="special_lists_title">القوائم الوصفيَّة</string>
   <string name="register">تسجيل</string>
+  <string name="auto_backup_interval">الفاصل الزمني للنسخ الاحتياطي التلقائي</string>
   <string name="auto_backup_interval_summary">النسخ الاحتياطي لقاعدة البيانات كل أيام %s</string>
   <string name="preferences_colorize">الألوان</string>
   <string name="preferences_colorize_tasks">تلوين المهام</string>
@@ -231,7 +233,6 @@
   <string name="title_donations">تبرع</string>
   <string name="add">إضافة</string>
   <string name="action_credits">الإعتمادات</string>
-  <string name="action_credits_summary">عنا ;)</string>
   <string name="title_activity_credits">حول البرنامج و الاعتمادات</string>
   <string name="credits_googleplus_description">الانضمام إلى مجتمعنا G+</string>
   <string name="credits_translations">الترجمات</string>

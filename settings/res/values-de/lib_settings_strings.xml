@@ -246,7 +246,6 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="title_donations">Spenden</string>
   <string name="add">Hinzufügen</string>
   <string name="action_credits">Credits</string>
-  <string name="action_credits_summary">Über uns ;)</string>
   <string name="title_activity_credits">Über uns</string>
   <string name="credits_github_description">Finde uns auf GitHub</string>
   <string name="credits_googleplus_description">Trete unserer G+ Gruppe bei</string>

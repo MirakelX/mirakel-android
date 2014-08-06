@@ -322,7 +322,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="title_donations">Donate</string>
     <string name="add">Add</string>
     <string name="action_credits">Credits</string>
-    <string name="action_credits_summary">About us ;)</string>
+    <string name="action_credits_summary">About us</string>
     <string name="title_activity_credits">Credits and about</string>
     <string name="credits_github_description">Fork us on github</string>
     <string name="credits_googleplus_description">Join our G+ community</string>

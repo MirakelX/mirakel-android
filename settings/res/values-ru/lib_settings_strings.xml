@@ -165,7 +165,6 @@
   <string name="title_donations">Пожертвовать</string>
   <string name="add">Добавить</string>
   <string name="action_credits">Авторы</string>
-  <string name="action_credits_summary">О нас ;)</string>
   <string name="title_activity_credits">Об авторах</string>
   <string name="credits_github_description">Найдите нас на github</string>
   <string name="credits_googleplus_description">Вступите в наше сообщество G+</string>

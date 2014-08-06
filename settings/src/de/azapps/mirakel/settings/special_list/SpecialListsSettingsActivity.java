@@ -65,9 +65,12 @@ public class SpecialListsSettingsActivity extends ListSettings {
 
     @Override
     protected void setupSettings() {
-        this.specialList = SpecialList.get(getIntent().getLongExtra("id",
-                                           SpecialList.firstSpecial().getId())
-                                           * -1);
+        Intent intent = getIntent();
+        if (intent.hasExtra("id")) {
+            this.specialList = SpecialList.getSpecial(getIntent().getLongExtra("id", 0)).orNull();
+        } else {
+            this.specialList = SpecialList.firstSpecialSafe();
+        }
         try {
             new SpecialListSettings(this, this.specialList).setup();
         } catch (final NoSuchListException e) {

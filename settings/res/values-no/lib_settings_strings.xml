@@ -103,7 +103,6 @@
   <string name="settings_dev_sync">Synkronisering</string>
   <string name="add">Legg til</string>
   <string name="action_credits">Medvirkende</string>
-  <string name="action_credits_summary">Om oss ;)</string>
   <string name="title_activity_credits">Medvirkende og om</string>
   <string name="special_list_where_subtask_title_text">Deloppgave</string>
 </resources>

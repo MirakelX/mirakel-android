@@ -52,6 +52,9 @@ import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.common.base.Optional;
+
 import de.azapps.changelog.Changelog;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
@@ -72,6 +75,7 @@ import de.azapps.mirakel.static_activities.SettingsFragment;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.OptionalUtils;
 
 @SuppressLint("SimpleDateFormat")
 public class PreferencesAppHelper extends PreferencesHelper {
@@ -168,9 +172,11 @@ public class PreferencesAppHelper extends PreferencesHelper {
                 public boolean onPreferenceChange(
                     final Preference preference,
                     final Object newValue) {
-                    final String list = ListMirakel.get(
-                                            Integer.parseInt((String) newValue))
-                                        .getName();
+                    Optional<ListMirakel> listMirakelOptional = ListMirakel.get(Integer.parseInt((String) newValue));
+                    if (!listMirakelOptional.isPresent()) {
+                        return false; // Do not update summary
+                    }
+                    final String list = listMirakelOptional.get().getName();
                     notificationsListPreference
                     .setSummary(PreferencesAppHelper.this.activity
                                 .getString(
@@ -198,11 +204,16 @@ public class PreferencesAppHelper extends PreferencesHelper {
             .setEntryValues(entryValuesWithDefault);
             notificationsListOpenPreference.setValue(MirakelCommonPreferences
                     .getNotificationsListOpenId() + "");
-            final ListMirakel notificationsListOpen = MirakelModelPreferences
+            final Optional<ListMirakel> notificationsListOpen = MirakelModelPreferences
                     .getNotificationsListOpen();
-            notificationsListOpenPreference.setSummary(this.activity.getString(
-                        R.string.notifications_list_open_summary,
-                        notificationsListOpen.getName()));
+            OptionalUtils.withOptional(notificationsListOpen, new OptionalUtils.Procedure<ListMirakel>() {
+                @Override
+                public void apply(ListMirakel input) {
+                    notificationsListOpenPreference.setSummary(activity.getString(
+                                R.string.notifications_list_open_summary,
+                                input.getName()));
+                }
+            });
             notificationsListOpenPreference
             .setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
                 @Override
@@ -212,7 +223,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
                     String list;
                     if (!"default".equals(newValue.toString())) {
                         list = ListMirakel.get(
-                                   Integer.parseInt((String) newValue))
+                                   Integer.parseInt((String) newValue)).get()
                                .getName();
                     } else {
                         list = MirakelModelPreferences
@@ -295,7 +306,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
                 ListMirakel startupList = MirakelModelPreferences
                                           .getStartupList();
                 if (startupList == null) {
-                    startupList = SpecialList.firstSpecialSafe(this.activity);
+                    startupList = SpecialList.firstSpecialSafe();
                 }
                 startupListPreference.setSummary(this.activity.getString(
                                                      R.string.startup_list_summary, startupList.getName()));
@@ -561,11 +572,11 @@ public class PreferencesAppHelper extends PreferencesHelper {
         final CheckBoxPreference importDefaultList = (CheckBoxPreference)
                 findPreference("importDefaultList");
         if (importDefaultList != null) {
-            final ListMirakel list = MirakelModelPreferences
-                                     .getImportDefaultList(false);
-            if (list != null) {
+            final Optional<ListMirakel> list = MirakelModelPreferences
+                                               .getImportDefaultList();
+            if (list.isPresent()) {
                 importDefaultList.setSummary(this.activity.getString(
-                                                 R.string.import_default_list_summary, list.getName()));
+                                                 R.string.import_default_list_summary, list.get().getName()));
             } else {
                 importDefaultList
                 .setSummary(R.string.import_no_default_list_summary);
@@ -967,13 +978,13 @@ public class PreferencesAppHelper extends PreferencesHelper {
         final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference)
                 findPreference("subtaskAddToSameList");
         if (subTaskAddToSameList != null) {
-            final ListMirakel subtaskAddToList = MirakelModelPreferences
-                                                 .subtaskAddToList();
+            final Optional<ListMirakel> subtaskAddToList = MirakelModelPreferences
+                    .subtaskAddToList();
             if (!MirakelCommonPreferences.addSubtaskToSameList()
-                && subtaskAddToList != null) {
+                && subtaskAddToList.isPresent()) {
                 subTaskAddToSameList.setSummary(this.activity.getString(
                                                     R.string.settings_subtask_add_to_list_summary,
-                                                    subtaskAddToList.getName()));
+                                                    subtaskAddToList.get().getName()));
             } else {
                 subTaskAddToSameList
                 .setSummary(R.string.settings_subtask_add_to_same_list_summary);
