@@ -53,6 +53,11 @@ public class NoteView extends LinearLayout {
 		});
 	}
 
+	private void rebuildLayout() {
+		invalidate();
+		requestLayout();
+	}
+
 
 	@Override
 	public void dispatchDraw(Canvas canvas) {
@@ -66,9 +71,11 @@ public class NoteView extends LinearLayout {
 
 	public void setNote(String note) {
 		this.note = note;
+		rebuildLayout();
 	}
 
 	public void setOnNoteChangedListener(OptionalUtils.Procedure<String> noteChangedListener) {
 		this.noteChangedListener = noteChangedListener;
+		rebuildLayout();
 	}
 }

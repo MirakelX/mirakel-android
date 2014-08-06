@@ -6,5 +6,10 @@
     <string name="list_title">Lists</string>
     <string name="progress_header">Progress:</string>
     <string name="notes">Notes</string>
+    <string name="task_list_header">List:</string>
+    <string name="task_due_header">Due:</string>
+    <string name="task_reminder_header">Reminder:</string>
+    <string name="task_add_more">Add more</string>
+    <string name="task_button_done">DONE</string>
 
 </resources>
