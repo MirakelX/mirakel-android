@@ -15,6 +15,14 @@ import de.azapps.tools.Log;
 public class DefinitionsHelper {
     public static class NoSuchListException extends Exception {
         static final long serialVersionUID = 1374828057;
+
+        public NoSuchListException() {
+            super();
+        }
+
+        public NoSuchListException(String message) {
+            super(message);
+        }
     }
 
     public static class NoSuchTaskException extends Exception {
