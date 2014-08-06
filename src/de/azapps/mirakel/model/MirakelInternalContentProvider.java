@@ -182,6 +182,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        this.getContext().getContentResolver().notifyChange(uri, null);
         return u;
     }
 
@@ -225,6 +226,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        this.getContext().getContentResolver().notifyChange(u, null);
         return u;
     }
 
@@ -355,6 +357,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        this.getContext().getContentResolver().notifyChange(uri, null);
         return u;
     }
 
