@@ -324,7 +324,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 final Task t = new Task(tasks[i]);
                 t.setDue(dues[i]);
                 t.setPriority(priorities[i]);
-                t.setList(ListMirakel.findByName(task_lists[i]));
+                t.setList(ListMirakel.findByName(task_lists[i]).get());
                 t.setSyncState(SYNC_STATE.ADD);
                 try {
                     cv = t.getContentValues();
@@ -488,9 +488,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-            // MainActivity.updateTasksUUID = true; TODO do we need this
-            // anymore?
-            // Don't remove this version-gap
+        // MainActivity.updateTasksUUID = true; TODO do we need this
+        // anymore?
+        // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -576,7 +576,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-            // Add Accountmanagment
+        // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -602,11 +602,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-            // add progress
+        // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-            // Add some columns for caldavsync
+        // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -624,7 +624,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-            // add some options to reccuring
+        // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -644,15 +644,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-            // also save the time of a due-date
+        // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-            // save all times in tasktable as utc-unix-seconds
+        // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-            // move tw-sync-key to db
-            // move tw-certs into accountmanager
+        // move tw-sync-key to db
+        // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -870,7 +870,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-            // refactor recurrence to follow the taskwarrior method
+        // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -1046,7 +1046,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "sync_enabled INTEGER,\n" +
                    "owner TEXT);");
         // Create view for lists
-        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, sync_enabled, owner\n"
+        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
+                   +
+                   "a.enabled AS sync_enabled, owner\n"
                    +
                    "FROM lists as l\n" +
                    "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
@@ -1056,8 +1058,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
                    "BEGIN\n"
                    + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
-                   +
-                   "INSERT INTO caldav_lists_extra VALUES\n" +
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT INTO caldav_lists_extra VALUES\n" +
                    "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
                    +
                    "END;");
@@ -1065,8 +1067,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
                    "BEGIN\n" +
                    "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
-                   +
-                   "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
                    +
                    "END;");
         // delete trigger
@@ -1097,7 +1099,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "priority INTEGER,\n" +
                    "classification INTEGER,\n" +
                    "completed_is_allday DEFAULT 0,\n" +
-                   "status,\n" +
+                   "status INTEGER,\n" +
                    "task_color INTEGER,\n" +
                    "dtstart INTEGER,\n" +
                    "is_allday INTEGER,\n" +
@@ -1115,64 +1117,76 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "has_alarms INTEGER);");
         // View
         db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
-                   "caldav_tasks_extra._sync_id,\n" +
-                   "caldav_tasks_extra.sync_version,\n" +
+                   "e._sync_id,\n" +
+                   "e.sync_version,\n" +
                    "CASE WHEN t.sync_state IN (-1,0) THEN 0 ELSE 1 END _dirty,\n" +
-                   "caldav_tasks_extra.sync1,\n" +
-                   "caldav_tasks_extra.sync2,\n" +
-                   "caldav_tasks_extra.sync3,\n" +
-                   "caldav_tasks_extra.sync4,\n" +
-                   "caldav_tasks_extra.sync5,\n" +
-                   "caldav_tasks_extra.sync6,\n" +
-                   "caldav_tasks_extra.sync7,\n" +
-                   "caldav_tasks_extra.sync8,\n" +
-                   "caldav_tasks_extra._uid,\n" +
+                   "e.sync1,\n" +
+                   "e.sync2,\n" +
+                   "e.sync3,\n" +
+                   "e.sync4,\n" +
+                   "e.sync5,\n" +
+                   "e.sync6,\n" +
+                   "e.sync7,\n" +
+                   "e.sync8,\n" +
+                   "e._uid,\n" +
                    "CASE WHEN t.sync_state = -1 THEN 1 ELSE 0 END _deleted,\n" +
                    "t._id,\n" +
                    "t.list_id,\n" +
                    "t.name as title,\n" +
-                   "location,\n" +
-                   "geo,\n" +
+                   "e.location,\n" +
+                   "e.geo,\n" +
                    "t.content as description,\n" +
-                   "url,\n" +
-                   "organizer,\n" +
+                   "e.url,\n" +
+                   "e.organizer,\n" +
                    "CASE \n" +
                    "     WHEN t.priority<0 THEN\n" +
-                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 7 AND 9 THEN caldav_tasks_extra.priority ELSE 9 END\n"
+                   "         CASE WHEN e.priority BETWEEN 7 AND 9 THEN e.priority ELSE 9 END\n"
                    +
                    "     WHEN t.priority=1 THEN\n" +
-                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 4 AND 6 THEN caldav_tasks_extra.priority ELSE 5 END\n"
+                   "         CASE WHEN e.priority BETWEEN 4 AND 6 THEN e.priority ELSE 5 END\n"
                    +
                    "     WHEN t.priority=2 THEN\n" +
-                   "         CASE WHEN caldav_tasks_extra.priority BETWEEN 1 AND 3 THEN caldav_tasks_extra.priority ELSE 1 END\n"
+                   "         CASE WHEN e.priority BETWEEN 1 AND 3 THEN e.priority ELSE 1 END\n"
                    +
                    "     ELSE 0\n" +
-                   "END AS priority," +
-                   "classification,\n" +
+                   "END AS priority,\n" +
+                   "e.classification,\n" +
                    "CASE WHEN t.done=1 THEN t.updated_at ELSE null END AS completed,\n" +
-                   "completed_is_allday,\n" +
+                   "e.completed_is_allday,\n" +
                    "t.progress AS percent_complete,\n" +
-                   "status,\n" +
-                   "CASE WHEN status = 0 THEN 1 ELSE 0 END AS is_new,\n" +
-                   "CASE WHEN status = 2 OR status = 3 THEN 1 ELSE 0 END AS is_closed,\n" +
+                   "CASE\n" +
+                   "     WHEN t.done = 1 THEN \n" +
+                   "         CASE WHEN e.status IN (2,3) THEN e.status ELSE 2 END\n" +
+                   "     WHEN t.progress>0 AND NOT t.done=1 THEN 1\n" +
+                   "     ELSE \n" +
+                   "         CASE WHEN e.status IN(0,1) THEN e.status ELSE 0 END\n" +
+                   "END AS status,\n" +
+                   "CASE \n" + "" +
+                   "     WHEN t.done = 0 AND t.progress=0 THEN 1 \n" +
+                   "     ELSE CASE WHEN status = 0 AND NOT t.done=1 THEN 1 ELSE 0 END\n" +
+                   "END AS is_new,\n" +
+                   "CASE \n" +
+                   "     WHEN done=1 THEN 1\n" +
+                   "     ELSE CASE WHEN (status=3 OR status=2) AND NOT t.done=0 THEN 1 ELSE 0 END\n " +
+                   "END AS is_closed,\n" +
                    "task_color,\n" +
-                   "dtstart,\n" +
-                   "is_allday,\n" +
+                   "e.dtstart,\n" +
+                   "e.is_allday,\n" +
                    "t.created_at * 1000 AS created,\n" +
                    "t.updated_at * 1000 AS last_modified,\n" +
-                   "tz,\n" +
+                   "e.tz,\n" +
                    "t.due * 1000 AS due,\n" +
-                   "duration,\n" +
-                   "rdate,\n" +
-                   "exdate,\n" +
-                   "rrule,\n" +
-                   "original_instance_sync_id,\n" +
-                   "original_instance_id,\n" +
-                   "original_instance_time,\n" +
-                   "original_instance_allday,\n" +
-                   "parent_id,\n" +
-                   "sorting,\n" +
-                   "has_alarms,\n" +
+                   "e.duration,\n" +
+                   "e.rdate,\n" +
+                   "e.exdate,\n" +
+                   "e.rrule,\n" +
+                   "e.original_instance_sync_id,\n" +
+                   "e.original_instance_id,\n" +
+                   "e.original_instance_time,\n" +
+                   "e.original_instance_allday,\n" +
+                   "e.parent_id,\n" +
+                   "e.sorting,\n" +
+                   "e.has_alarms,\n" +
                    "l.account_name,\n" +
                    "l.account_type,\n" +
                    "l.list_name,\n" +
@@ -1182,7 +1196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "l.visible\n" +
                    "FROM\n" +
                    "tasks AS t\n" +
-                   "LEFT JOIN caldav_tasks_extra ON task_id = t._id\n" +
+                   "LEFT JOIN caldav_tasks_extra as e ON task_id = t._id\n" +
                    "INNER JOIN caldav_lists as l ON l._id = t.list_id;");
         // Insert trigger
         db.execSQL("CREATE TRIGGER caldav_tasks_insert_trigger INSTEAD OF INSERT ON caldav_tasks\n" +
@@ -1194,20 +1208,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    new.title,\n" +
                    "    new.description,\n" +
                    "    new.percent_complete,\n" +
-                   "    CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
+                   "    CASE WHEN new.status IN(2,3) THEN 1 ELSE 0 END,  \n" +
                    "    new.due / 1000,\n" +
                    "    CASE WHEN new.priority=0 THEN 0\n" +
-                   "    CASE WHEN new.priority < 4 THEN 2 \n" +
-                   "    CASE WHEN new.priority < 7 THEN 1 \n" +
-                   "    CASE WHEN new.priority <= 9 THEN -1 \n" +
+                   "         WHEN new.priority < 4 THEN 2 \n" +
+                   "         WHEN new.priority < 7 THEN 1 \n" +
+                   "         WHEN new.priority <= 9 THEN -1 \n" +
                    "    ELSE 0\n" +
                    "    END,\n" +
                    "    new.created / 1000,\n" +
                    "    new.last_modified / 1000);\n" +
-                   "    INSERT INTO caldav_tasks_extra (task_id,location,geo,url,organizer,priority,classification, completed_is_allday, status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, original_instance_id, original_instance_time, original_instance_allday, parent_id, sorting, has_alarms)\n"
+                   "    INSERT INTO caldav_tasks_extra (task_id,_sync_id,location,geo,url,organizer,priority,classification, completed_is_allday,"
+                   +
+                   "    status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, "
+                   +
+                   "    original_instance_id, original_instance_time, original_instance_allday, parent_id, sorting, has_alarms,"
+                   +
+                   "    sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8)\n"
                    +
                    "    VALUES\n" +
-                   "    ((SELECT last_insert_rowid() FROM tasks), new.location, new.geo, new.url, new.organizer, new.priority, new.classification, new. completed_is_allday, new. status, new. task_color, new. dtstart, new. is_allday, new. tz, new. duration, new. rdate, new. exdate, new. rrule, new. original_instance_sync_id, new. original_instance_id, new. original_instance_time, new. original_instance_allday, new. parent_id, new. sorting, new. has_alarms);\n"
+                   "    ((SELECT last_insert_rowid() FROM tasks),new._sync_id, new.location, new.geo, new.url, new.organizer, "
+                   +
+                   "    new.priority, new.classification, new.completed_is_allday, new.status, new.task_color, new.dtstart, new.is_allday, "
+                   +
+                   "    new.tz, new.duration, new.rdate, new.exdate, new.rrule, new.original_instance_sync_id, new.original_instance_id, "
+                   +
+                   "    new.original_instance_time, new.original_instance_allday, new.parent_id, new.sorting, new.has_alarms,"
+                   +
+                   "    new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8);\n"
                    +
                    "END;");
         // Update trigger
@@ -1219,13 +1247,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "name = new.title,\n" +
                    "content = new.description,\n" +
                    "progress = new.percent_complete,\n" +
-                   "done = CASE WHEN new.status < 2 THEN 0 ELSE 1 END,    \n" +
+                   "done = CASE WHEN new.status IN(2,3) THEN 1 ELSE 0 END,    \n" +
                    "due = new.due / 1000,\n" +
                    "priority = CASE WHEN new.priority=0 THEN 0\n" +
-                   "CASE WHEN new.priority < 4 THEN 2 \n" +
-                   "CASE WHEN new.priority < 7 THEN 1 \n" +
-                   "CASE WHEN new.priority <= 9 THEN -1 \n" +
-                   "ELSE 0\n" +
+                   "                WHEN new.priority < 4 THEN 2 \n" +
+                   "                WHEN new.priority < 7 THEN 1 \n" +
+                   "                WHEN new.priority <= 9 THEN -1 \n" +
+                   "                ELSE 0\n" +
                    "END,\n" +
                    "updated_at = new.last_modified / 1000\n" +
                    "WHERE _id = old._id;\n" +

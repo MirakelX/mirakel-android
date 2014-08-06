@@ -21,21 +21,25 @@ package de.azapps.mirakel.model.semantic;
 
 import android.content.ContentValues;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
 import java.util.Locale;
 
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.tools.OptionalUtils;
 
 abstract class SemanticBase  extends ModelBase {
     private Integer priority;
     private Integer due;
-    private ListMirakel list;
+    private Optional<ListMirakel> list;
     private Integer weekday;
     public static final String CONDITION = "condition", PRIORITY = "priority",
                                LIST = "default_list_id", DUE = "due", WEEKDAY = "weekday";
 
     public SemanticBase(final int id, final String condition,
-                        final Integer priority, final Integer due, final ListMirakel list,
+                        final Integer priority, final Integer due, final Optional<ListMirakel> list,
                         final Integer weekday) {
         super(id, condition.toLowerCase(Locale.getDefault()));
         this.priority = priority;
@@ -72,11 +76,11 @@ abstract class SemanticBase  extends ModelBase {
         this.due = due;
     }
 
-    public ListMirakel getList() {
+    public Optional<ListMirakel> getList() {
         return this.list;
     }
 
-    public void setList(final ListMirakel list) {
+    public void setList(final Optional<ListMirakel> list) {
         this.list = list;
     }
 
@@ -94,7 +98,12 @@ abstract class SemanticBase  extends ModelBase {
         final ContentValues cv = new ContentValues();
         cv.put(ID, getId());
         cv.put(CONDITION, getName());
-        cv.put(LIST, this.list == null ? null : this.list.getId());
+        cv.put(LIST, OptionalUtils.transformOrNull(this.list, new Function<ListMirakel, Long>() {
+            @Override
+            public Long apply(ListMirakel input) {
+                return input.getId();
+            }
+        }));
         cv.put(PRIORITY, this.priority);
         cv.put(DUE, this.due);
         cv.put(WEEKDAY, this.weekday);
@@ -130,11 +139,11 @@ abstract class SemanticBase  extends ModelBase {
         if (this.getId() != other.getId()) {
             return false;
         }
-        if (this.list == null) {
-            if (other.list != null) {
+        if (!this.list.isPresent()) {
+            if (other.list.isPresent()) {
                 return false;
             }
-        } else if (!this.list.equals(other.list)) {
+        } else if (!this.list.get().equals(other.list.get())) {
             return false;
         }
         if (this.priority == null) {
@@ -162,8 +171,12 @@ abstract class SemanticBase  extends ModelBase {
                  + (this.getName() == null ? 0 : this.getName().hashCode());
         result = prime * result + (this.due == null ? 0 : this.due.hashCode());
         result = prime * result + (int)this.getId();
+        int listNum = 0;
+        if (this.list.isPresent()) {
+            listNum = this.list.get().hashCode();
+        }
         result = prime * result
-                 + (this.list == null ? 0 : this.list.hashCode());
+                 + listNum;
         result = prime * result
                  + (this.priority == null ? 0 : this.priority.hashCode());
         result = prime * result

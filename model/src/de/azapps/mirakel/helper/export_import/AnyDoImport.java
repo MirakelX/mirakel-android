@@ -41,6 +41,7 @@ import android.util.Pair;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -56,11 +57,14 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
+import static de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
+
 public class AnyDoImport {
     private static final String TAG = "AnyDoImport";
     private static SparseIntArray taskMapping;
 
-    public static boolean exec(final Context ctx, final FileInputStream stream) {
+    public static boolean exec(final Context ctx,
+                               final FileInputStream stream) throws NoSuchListException {
         JsonObject i;
         try {
             i = new JsonParser().parse(new InputStreamReader(stream))
@@ -142,6 +146,11 @@ public class AnyDoImport {
                         .report(ErrorType.FILE_NOT_FOUND);
                         Log.wtf(TAG, "file vanished", e);
                         return;
+                    } catch (final NoSuchListException e) {
+                        ErrorReporter
+                        .report(ErrorType.LIST_VANISHED);
+                        Log.wtf(TAG, "list vanished", e);
+                        return;
                     }
                     android.os.Process
                     .killProcess(android.os.Process
@@ -203,7 +212,7 @@ public class AnyDoImport {
 
     private static List<Pair<Integer, String>> parseTask(
         final JsonObject jsonTask, final SparseIntArray listMapping,
-        final List<Pair<Integer, String>> contents, final Context ctx) {
+        final List<Pair<Integer, String>> contents, final Context ctx) throws NoSuchListException {
         final String name = jsonTask.get("title").getAsString();
         if (jsonTask.has("parentId")) {
             contents.add(new Pair<Integer, String>(jsonTask.get("parentId")
@@ -211,8 +220,11 @@ public class AnyDoImport {
             return contents;
         }
         final int list_id = jsonTask.get("categoryId").getAsInt();
-        final Task t = Task.newTask(name,
-                                    ListMirakel.get(listMapping.get(list_id)));
+        final Optional<ListMirakel> listMirakel = ListMirakel.get(listMapping.get(list_id));
+        if (!listMirakel.isPresent()) {
+            throw new NoSuchListException("Task:" + jsonTask.get("id").getAsInt());
+        }
+        final Task t = Task.newTask(name, listMirakel.get());
         taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
         if (jsonTask.has("dueDate")) {
             final Calendar due = new GregorianCalendar();

@@ -31,7 +31,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 import android.util.Pair;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -100,6 +104,29 @@ public class Task extends TaskBase {
     public static List<Task> all() {
         return addBasicFiler(new MirakelQueryBuilder(context)).and(DONE,
                 Operation.EQ, false).getList(Task.class);
+    }
+
+    public static CursorLoader allCursorLoader(boolean showDone) {
+        return getCursorLoader(null, showDone);
+    }
+
+    public static CursorLoader getCursorLoader(ListMirakel listMirakel, boolean showDone) {
+        final MirakelQueryBuilder qb;
+        if (listMirakel == null) {
+            qb = new MirakelQueryBuilder(context);
+        } else {
+            qb = listMirakel.getWhereQueryForTasks();
+        }
+        if (!showDone) {
+            qb.and(DONE, Operation.EQ, false);
+        } else {
+            qb.sort(Task.DONE, Sorting.ASC);
+        }
+        addBasicFiler(qb);
+        if (listMirakel != null) {
+            ListMirakel.addSortBy(qb, listMirakel.getSortBy(), listMirakel.getId());
+        }
+        return qb.toCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 
     /**
@@ -241,16 +268,18 @@ public class Task extends TaskBase {
      */
     private static Cursor getTasksCursor(final long listId, final SORT_BY sorting,
                                          final boolean showDone) {
-        final ListMirakel l = ListMirakel.get(listId);
-        if (l == null) {
+        final Optional<ListMirakel> l = ListMirakel.get(listId);
+        if (!l.isPresent()) {
             Log.wtf(TAG, "list not found");
+            // TODO throw something
             return new MatrixCursor(allColumns);
+        } else {
+            final MirakelQueryBuilder qb = l.get().getWhereQueryForTasks();
+            if (!showDone) {
+                qb.and(DONE, Operation.EQ, false);
+            }
+            return getTasksCursor(listId, sorting, qb);
         }
-        final MirakelQueryBuilder qb = l.getWhereQueryForTasks();
-        if (!showDone) {
-            qb.and(DONE, Operation.EQ, false);
-        }
-        return getTasksCursor(listId, sorting, qb);
     }
 
     /**
@@ -414,7 +443,7 @@ public class Task extends TaskBase {
         setUpdatedAt(updated_at);
         setId(cursor.getLong(cursor.getColumnIndex(ID)));
         setUUID(cursor.getString(cursor.getColumnIndex(UUID)));
-        setList(ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))));
+        setList(ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))).get());
         setName(cursor.getString(cursor.getColumnIndex(NAME)));
         setContent(cursor.getString(cursor.getColumnIndex(CONTENT)));
         setDone(cursor.getShort(cursor.getColumnIndex(DONE)) == 1);

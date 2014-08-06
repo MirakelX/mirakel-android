@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,9 +57,9 @@ public class AccountMirakel extends AccountBase {
         }
 
         public static ACCOUNT_TYPES parseAccountType(final String type) {
-            if (type.equals(ACCOUNT_TYPE_DAVDROID)) {
+            if (ACCOUNT_TYPE_DAVDROID.equals(type) || ACCOUNT_TYPE_DAVDROID_MIRAKEL.equals(type)) {
                 return CALDAV;
-            } else if (type.equals(ACCOUNT_TYPE_MIRAKEL)) {
+            } else if (ACCOUNT_TYPE_MIRAKEL.equals(type)) {
                 return TASKWARRIOR;
             } else {
                 return LOCAL;
@@ -118,8 +119,12 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
+    public static final String ACCOUNT_TYPE_DAVDROID_MIRAKEL = "bitfire.at.davdroid.mirakel";
 
     public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";
+
+    private static final List<String> allowedAccounts = Arrays.asList(new String[] {ACCOUNT_TYPE_DAVDROID_MIRAKEL, ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL});
+
     public static final String[] allColumns = { ModelBase.ID,
                                                 ModelBase.NAME, TYPE, ENABLED, SYNC_KEY
                                               };
@@ -169,11 +174,6 @@ public class AccountMirakel extends AccountBase {
         return new MirakelQueryBuilder(context).getList(AccountMirakel.class);
     }
 
-    public static AccountMirakel getByName(final String name) {
-        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
-                name).get(AccountMirakel.class);
-    }
-
     public static List<AccountMirakel> getEnabled(final boolean isEnabled) {
         return new MirakelQueryBuilder(context).and(ENABLED, Operation.EQ,
                 isEnabled).getList(AccountMirakel.class);
@@ -210,14 +210,12 @@ public class AccountMirakel extends AccountBase {
     public static void update(final Account[] accounts) {
         final List<AccountMirakel> accountList = AccountMirakel.all();
         final long countRemotes = AccountMirakel.countRemoteAccounts();
-        final Map<String, AccountMirakel> map = new HashMap<String, AccountMirakel>();
+        final Map<String, AccountMirakel> map = new HashMap<>();
         for (final AccountMirakel a : accountList) {
             map.put(a.getName(), a);
         }
         for (final Account a : accounts) {
-            Log.d(TAG, "Accountname: " + a.name + " | TYPE: " + a.type);
-            if (a.type.equals(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)
-                || a.type.equals(AccountMirakel.ACCOUNT_TYPE_DAVDROID)) {
+            if (allowedAccounts.contains(a.type)) {
                 Log.d(TAG, "is supportet Account");
                 if (!map.containsKey(a.name)) {
                     // Add new account here....
@@ -241,7 +239,7 @@ public class AccountMirakel extends AccountBase {
             // the default one.
             final List<AccountMirakel> remotes = AccountMirakel.getRemote();
             // This could happen, the operations are not atomar
-            if (remotes.size() != 0) {
+            if (remotes.size() != 0 && remotes.get(0).getType() != ACCOUNT_TYPES.CALDAV) {
                 final AccountMirakel account = remotes.get(0);
                 MirakelModelPreferences.setDefaultAccount(account);
                 ListMirakel.setDefaultAccount(account);

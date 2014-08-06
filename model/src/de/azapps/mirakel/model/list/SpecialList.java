@@ -24,6 +24,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -64,10 +66,14 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
+import de.azapps.tools.OptionalUtils;
+
+import static com.google.common.base.Optional.fromNullable;
+import static de.azapps.tools.OptionalUtils.transformOrNull;
 
 public class SpecialList extends ListMirakel {
     private boolean active;
-    private ListMirakel defaultList;
+    private Optional<ListMirakel> defaultList;
     private Integer defaultDate;
     private Map<String, SpecialListsBaseProperty> where;
 
@@ -105,10 +111,11 @@ public class SpecialList extends ListMirakel {
     }
 
     public ListMirakel getDefaultList() {
-        if (this.defaultList == null) {
+        if (!this.defaultList.isPresent()) {
             return ListMirakel.first();
+        } else {
+            return this.defaultList.get();
         }
-        return this.defaultList;
     }
 
     public static List<SpecialList> cursorToSpecialLists(final Cursor c) {
@@ -122,7 +129,7 @@ public class SpecialList extends ListMirakel {
         return ret;
     }
 
-    public void setDefaultList(final ListMirakel defaultList) {
+    public void setDefaultList(final Optional<ListMirakel> defaultList) {
         this.defaultList = defaultList;
     }
 
@@ -136,7 +143,7 @@ public class SpecialList extends ListMirakel {
 
     SpecialList(final long id, final String name,
                 final Map<String, SpecialListsBaseProperty> whereQuery,
-                final boolean active, final ListMirakel listMirakel,
+                final boolean active, final Optional<ListMirakel> defaultList,
                 final Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt) {
@@ -144,7 +151,7 @@ public class SpecialList extends ListMirakel {
               AccountMirakel.getLocal());
         this.active = active;
         this.where = whereQuery;
-        this.defaultList = listMirakel;
+        this.defaultList = defaultList;
         this.defaultDate = defaultDate;
         this.isSpecial = true;
         setLft(lft);
@@ -211,7 +218,7 @@ public class SpecialList extends ListMirakel {
                 update(URI, cv, ModelBase.ID + "=" + getId(), null);
             }
         });
-        return get(getId());
+        return getSpecial(getId()).get();
     }
 
 
@@ -299,8 +306,12 @@ public class SpecialList extends ListMirakel {
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
         cv.put(ACTIVE, isActive() ? 1 : 0);
         cv.put(WHERE_QUERY, serializeWhere(getWhere()));
-        cv.put(DEFAULT_LIST,
-               this.defaultList == null ? null : this.defaultList.getId());
+        cv.put(DEFAULT_LIST, transformOrNull(this.defaultList, new Function<ListMirakel, Long>() {
+            @Override
+            public Long apply(ListMirakel input) {
+                return input.getId();
+            }
+        }));
         cv.put(DEFAULT_DUE, this.defaultDate);
         cv.put(COLOR, getColor());
         cv.put(LFT, getLft());
@@ -338,12 +349,9 @@ public class SpecialList extends ListMirakel {
      *            List–ID
      * @return List
      */
-    public static SpecialList get(final long listId) {
+    public static Optional<SpecialList> getSpecial(final long listId) {
         SpecialList l = new MirakelQueryBuilder(context).get(SpecialList.class, Math.abs(listId));
-        if (l != null) {
-            return l;
-        }
-        return firstSpecial();
+        return fromNullable(l);
     }
 
     /**
@@ -351,23 +359,23 @@ public class SpecialList extends ListMirakel {
      *
      * @return List
      */
-    public static SpecialList firstSpecial() {
-        return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
-                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
-                        Sorting.ASC).get(SpecialList.class);
+    public static Optional<SpecialList> firstSpecial() {
+        return fromNullable(new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
+                            Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
+                                    Sorting.ASC).get(SpecialList.class));
     }
 
-    public static SpecialList firstSpecialSafe(final Context ctx) {
-        SpecialList s = SpecialList.firstSpecial();
-        if (s == null) {
-            s = SpecialList.newSpecialList(ctx.getString(R.string.list_all),
-                                           new HashMap<String, SpecialListsBaseProperty>(), true);
+    public static SpecialList firstSpecialSafe() {
+        Optional<SpecialList> s = SpecialList.firstSpecial();
+        if (!s.isPresent()) {
+            s = fromNullable(SpecialList.newSpecialList(context.getString(R.string.list_all),
+                             new HashMap<String, SpecialListsBaseProperty>(), true));
             if (ListMirakel.count() == 0) {
-                ListMirakel.safeFirst(ctx);
+                ListMirakel.safeFirst(context);
             }
-            s.save(false);
+            s.get().save(false);
         }
-        return s;
+        return s.get();
     }
 
     /**
