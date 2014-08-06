@@ -93,13 +93,13 @@ public class TaskHelper {
         if (isDone) {
             color = R.color.Grey;
         } else if (cmpr > 0) {
-            color = R.color.Red;
+            color = R.color.due_overdue;
         } else if (cmpr == 0) {
-            color = R.color.Orange;
+            color = R.color.due_today;
         } else if (nextWeek.compareTo(due) >= 0) {
-            color = R.color.Yellow;
+            color = R.color.due_next;
         } else {
-            color = R.color.Green;
+            color = R.color.due_future;
         }
         return color;
     }
