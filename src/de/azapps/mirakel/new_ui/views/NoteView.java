@@ -1,6 +1,8 @@
 package de.azapps.mirakel.new_ui.views;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
@@ -17,8 +19,6 @@ public class NoteView extends LinearLayout {
 	private String note;
 
 	private TextView noteText;
-	private EditText noteEdit;
-	private ViewSwitcher viewSwitcher;
 	private OptionalUtils.Procedure<String> noteChangedListener;
 
 
@@ -35,22 +35,7 @@ public class NoteView extends LinearLayout {
 		inflate(context, R.layout.view_note, this);
 
 		noteText = (TextView) findViewById(R.id.task_note_text);
-		noteEdit = (EditText) findViewById(R.id.task_note_edit);
-		viewSwitcher = (ViewSwitcher) findViewById(R.id.task_note_view_switcher);
-		setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO
-				noteEdit.setText(note);
-				viewSwitcher.getNextView();
-				String newNote=noteEdit.getText().toString();
-
-				// On Success
-//				noteChangedListener.apply(newNote);
-//				setNote(newNote);
-//				viewSwitcher.getNextView();
-			}
-		});
+		noteText.setOnClickListener(onNoteEditListener);
 	}
 
 	private void rebuildLayout() {
@@ -78,4 +63,25 @@ public class NoteView extends LinearLayout {
 		this.noteChangedListener = noteChangedListener;
 		rebuildLayout();
 	}
+
+	private final OnClickListener onNoteEditListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+			final EditText editText = new EditText(getContext());
+			editText.setText(note);
+			builder.setTitle(getContext().getString(R.string.edit_note))
+					.setView(editText)
+					.setPositiveButton(R.string.save,new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String newNote = editText.getText().toString();
+							noteText.setText(newNote);
+							noteChangedListener.apply(newNote);
+						}
+					})
+					.setNegativeButton(android.R.string.cancel,null);
+			builder.show();
+		}
+	};
 }

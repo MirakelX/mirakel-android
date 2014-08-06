@@ -22,9 +22,12 @@ package de.azapps.mirakel.new_ui.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fourmob.datetimepicker.date.DatePicker;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.google.common.base.Optional;
 
 import java.util.Calendar;
@@ -36,14 +39,16 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
+import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static de.azapps.tools.OptionalUtils.Procedure;
 
-/**
- * Created by az on 06.08.14.
- */
 public class DatesView extends LinearLayout {
+	private OnClickListener dueEditListener;
+	private OnClickListener listEditListener;
+	private OnClickListener reminderEditListener;
 	private TextView dueText;
 	private TextView listText;
 	private TextView reminderText;
@@ -74,6 +79,7 @@ public class DatesView extends LinearLayout {
 
 	@Override
 	public void dispatchDraw(Canvas canvas) {
+		// Set data
 		if(isInEditMode()) {
 			dueText.setText("today");
 			reminderText.setText("today at 6 pm");
@@ -83,7 +89,7 @@ public class DatesView extends LinearLayout {
 		}
 		if (due.isPresent()) {
 			dueText.setText(DateTimeHelper.formatDate(getContext(), due.get()));
-			dueText.setTextColor(TaskHelper.getTaskDueColor(due.get(), isDone));
+			dueText.setTextColor(TaskHelper.getTaskDueColor(getContext(),due.get(), isDone));
 		} else {
 			dueText.setText(getContext().getString(R.string.no_date));
 			dueText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
@@ -93,11 +99,17 @@ public class DatesView extends LinearLayout {
 
 		if (reminder.isPresent()) {
 			reminderText.setText(DateTimeHelper.formatReminder(getContext(), reminder.get()));
-			reminderText.setTextColor(getContext().getResources().getColor(R.color.Black));
+			reminderText.setTextColor(getContext().getResources().getColor(R.color.Black)); // TODO fix color
 		} else {
 			reminderText.setText(getContext().getString(R.string.no_reminder));
 			reminderText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
 		}
+
+		// Set listener
+		dueText.setOnClickListener(dueEditListener);
+		listText.setOnClickListener(listEditListener);
+		reminderText.setOnClickListener(reminderEditListener);
+
 		super.dispatchDraw(canvas);
 	}
 
@@ -117,4 +129,12 @@ public class DatesView extends LinearLayout {
 		this.isDone = task.isDone();
 		rebuildLayout();
 	}
+
+	public void setListeners(OnClickListener dueEditListener, OnClickListener listEditListener, OnClickListener reminderEditListener) {
+		this.dueEditListener = dueEditListener;
+		this.listEditListener = listEditListener;
+		this.reminderEditListener = reminderEditListener;
+
+	}
+
 }

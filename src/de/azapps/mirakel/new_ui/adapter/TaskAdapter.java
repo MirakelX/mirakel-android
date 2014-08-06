@@ -47,9 +47,8 @@ public class TaskAdapter extends CursorAdapter {
 			viewHolder.due.setVisibility(View.VISIBLE);
 			viewHolder.due.setText(DateTimeHelper.formatDate(context,
 					task.getDue()));
-			viewHolder.due.setTextColor(context.getResources().getColor(
-					TaskHelper.getTaskDueColor(task.getDue(),
-							task.isDone())));
+			viewHolder.due.setTextColor(TaskHelper.getTaskDueColor(context,task.getDue(),
+							task.isDone()));
 		} else {
 			viewHolder.due.setVisibility(View.GONE);
 		}

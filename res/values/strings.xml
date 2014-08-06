@@ -11,5 +11,7 @@
     <string name="task_reminder_header">Reminder:</string>
     <string name="task_add_more">Add more</string>
     <string name="task_button_done">DONE</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="save">Save</string>
 
 </resources>

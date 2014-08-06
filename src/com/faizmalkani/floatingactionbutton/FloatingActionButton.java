@@ -42,7 +42,7 @@ public class FloatingActionButton extends View {
         this(context, attributeSet, 0);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
