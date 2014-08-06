@@ -22,6 +22,9 @@ package de.azapps.mirakel.helper;
 import java.util.List;
 
 import android.content.SharedPreferences.Editor;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
@@ -29,6 +32,9 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 
 public class MirakelModelPreferences extends MirakelPreferences {
     private static final String TAG = "MirakelModelPreferences";
@@ -47,56 +53,57 @@ public class MirakelModelPreferences extends MirakelPreferences {
         return AccountMirakel.getLocal();
     }
 
-    public static ListMirakel getImportDefaultList(final boolean safe) {
+    public static Optional<ListMirakel> getImportDefaultList() {
         if (settings.getBoolean("importDefaultList", false)) {
             final int listId = settings.getInt("defaultImportList", 0);
             if (listId == 0) {
-                return null;
+                return absent();
             }
             return ListMirakel.get(listId);
         }
-        if (!safe) {
-            return null;
-        }
-        return ListMirakel.safeFirst(context);
+        return absent();
+    }
+    public static ListMirakel getSafeImportDefaultList() {
+        return getImportDefaultList().or(ListMirakel.safeFirst(context));
     }
 
     public static ListMirakel getListForSubtask(final Task parent) {
-        ListMirakel list = null;
+        Optional<ListMirakel> list = absent();
         if (MirakelCommonPreferences.addSubtaskToSameList()) {
-            list = parent.getList();
+            list = fromNullable(parent.getList());
         } else {
             list = subtaskAddToList();
         }
         // Create a new list and set this list as the default list for future
         // subtasks
-        if (list == null) {
+        if (!list.isPresent()) {
             String listName = context.getString(R.string.subtask_list_name);
             list = ListMirakel.findByName(listName);
-            if (list == null) {
+            if (!list.isPresent()) {
                 try {
-                    list = ListMirakel.newList(listName);
+                    list = fromNullable(ListMirakel.newList(listName));
                 } catch (ListMirakel.ListAlreadyExistsException e) {
                     // This could never ever happen!
                     throw new RuntimeException("ListAlreadyExistsException. This is not possible…", e);
                 }
             }
-            setSubtaskAddToList(list);
+            setSubtaskAddToList(list.get());
         }
-        return list;
+        return list.get();
     }
 
     private static ListMirakel getListFromIdString(final int preference) {
-        ListMirakel list;
+        Optional<ListMirakel> list;
         try {
             list = ListMirakel.get(preference);
         } catch (final NumberFormatException e) {
-            list = SpecialList.firstSpecial();
+            list = fromNullable((ListMirakel) SpecialList.firstSpecial().orNull());
         }
-        if (list == null) {
-            list = ListMirakel.safeFirst(context);
+        if (!list.isPresent()) {
+            return ListMirakel.safeFirst(context);
+        } else {
+            return list.get();
         }
-        return list;
     }
 
     public static ListMirakel getNotificationsList() {
@@ -104,7 +111,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
                                    .getNotificationsListId());
     }
 
-    public static ListMirakel getNotificationsListOpen() {
+    public static Optional<ListMirakel> getNotificationsListOpen() {
         return ListMirakel.get(MirakelCommonPreferences
                                .getNotificationsListOpenId());
     }
@@ -134,12 +141,12 @@ public class MirakelModelPreferences extends MirakelPreferences {
         return editor.commit();
     }
 
-    public static ListMirakel subtaskAddToList() {
+    public static Optional<ListMirakel> subtaskAddToList() {
         try {
             if (settings.contains("subtaskAddToList")) {
                 return ListMirakel.get(settings.getLong("subtaskAddToList", -1));
             } else {
-                return null;
+                return absent();
             }
         } catch (final Exception e) {
             // let old as fallback
@@ -148,7 +155,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
                         "subtaskAddToList", "-1")));
             } catch (final NumberFormatException e1) {
                 Log.e(TAG, "Numberformat exception", e1);
-                return null;
+                return absent();
             }
         }
     }

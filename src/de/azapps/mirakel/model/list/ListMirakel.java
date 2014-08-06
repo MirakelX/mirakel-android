@@ -26,6 +26,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.CursorLoader;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -50,6 +51,11 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
+import de.azapps.tools.OptionalUtils;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
+
 /**
  * @author az
  */
@@ -249,18 +255,18 @@ public class ListMirakel extends ListBase {
         return lists;
     }
 
-    public static ListMirakel findByName(final String name) {
+    public static Optional<ListMirakel> findByName(final String name) {
         return findByName(name, null);
     }
 
-    public static ListMirakel findByName(final String name,
-                                         final AccountMirakel account) {
+    public static Optional<ListMirakel> findByName(final String name,
+            final AccountMirakel account) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(NAME,
                 Operation.EQ, name);
         if (account != null) {
             qb.and(ACCOUNT_ID, Operation.EQ, account);
         }
-        return qb.get(ListMirakel.class);
+        return fromNullable(qb.get(ListMirakel.class));
     }
 
     // Static Methods
@@ -291,11 +297,16 @@ public class ListMirakel extends ListBase {
         }
     }
 
-    public static ListMirakel get(final long listId) {
+    public static Optional<ListMirakel> get(final long listId) {
         if (listId < 0) {
-            return SpecialList.get(-listId);
+            Optional<SpecialList> specialList = SpecialList.getSpecial(-listId);
+            if (specialList.isPresent()) {
+                return Optional.of((ListMirakel) specialList.get());
+            } else {
+                return absent();
+            }
         }
-        return new MirakelQueryBuilder(context).get(ListMirakel.class, listId);
+        return fromNullable(new MirakelQueryBuilder(context).get(ListMirakel.class, listId));
     }
 
     public static void setDefaultAccount(final AccountMirakel account) {
@@ -316,7 +327,7 @@ public class ListMirakel extends ListBase {
 
     public static ListMirakel getSafeDefaultList() {
         final ListMirakel list = MirakelModelPreferences
-                                 .getImportDefaultList(true);
+                                 .getSafeImportDefaultList();
         return list;
     }
 
@@ -415,7 +426,7 @@ public class ListMirakel extends ListBase {
                 c.close();
             }
         });
-        final ListMirakel newList = get(getId());
+        final ListMirakel newList = get(getId()).get();
         UndoHistory.logCreate(newList, context);
         return newList;
     }
@@ -425,10 +436,7 @@ public class ListMirakel extends ListBase {
         final JsonElement id = el.get("id");
         if (id != null) {
             // use old List from db if existing
-            t = ListMirakel.get(id.getAsInt());
-        }
-        if (t == null) {
-            t = new ListMirakel();
+            t = ListMirakel.get(id.getAsInt()).or(new ListMirakel());
         }
         JsonElement j = el.get("name");
         if (j != null) {
@@ -466,11 +474,12 @@ public class ListMirakel extends ListBase {
     }
 
     public static ListMirakel safeGet(final int listId) {
-        ListMirakel l = get(listId);
-        if (l == null) {
-            l = safeFirst(context);
+        Optional<ListMirakel> l = get(listId);
+        if (!l.isPresent()) {
+            return safeFirst(context);
+        } else {
+            return l.get();
         }
-        return l;
     }
 
     private ListMirakel() {
@@ -589,7 +598,7 @@ public class ListMirakel extends ListBase {
                                      Locale.getDefault()).format(new Date()));
                     ContentValues values = getContentValues();
                     if (log) {
-                        UndoHistory.updateLog(ListMirakel.get(getId()), context);
+                        UndoHistory.updateLog(ListMirakel.get(getId()).get(), context);
                     }
                     update(URI, values, ModelBase.ID
                            + " = " + getId(), null);

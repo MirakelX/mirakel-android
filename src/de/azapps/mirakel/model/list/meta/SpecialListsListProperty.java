@@ -21,6 +21,8 @@ package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
 
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.OptionalUtils;
 
 public class SpecialListsListProperty extends SpecialListsSetProperty {
 
@@ -44,7 +47,7 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
 
     @Override
     public MirakelQueryBuilder getWhereQuery(final Context ctx) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         final List<Integer> special = new ArrayList<>();
         final List<Integer> normal = new ArrayList<>();
         for (final int c : this.content) {
@@ -57,10 +60,15 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         qb.and(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, normal);
         // TODO handle loops here
         for (final int p : special) {
-            final SpecialList s = (SpecialList) ListMirakel.get(p);
-            if (s != null && s.getWhereQueryForTasks() != null) {
-                qb.or(s.getWhereQueryForTasks());
-            }
+            final Optional<SpecialList> s = SpecialList.getSpecial(p);
+            OptionalUtils.withOptional(s, new OptionalUtils.Procedure<SpecialList>() {
+                @Override
+                public void apply(SpecialList input) {
+                    if (input.getWhereQueryForTasks() != null) {
+                        qb.or(input.getWhereQueryForTasks());
+                    }
+                }
+            });
         }
         if (isNegated) {
             return new MirakelQueryBuilder(ctx).not(qb);
@@ -75,11 +83,11 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
                          : "";
         boolean first = true;
         for (final int p : this.content) {
-            final ListMirakel l = ListMirakel.get(p);
-            if (l == null) {
+            final Optional<ListMirakel> l = ListMirakel.get(p);
+            if (!l.isPresent()) {
                 continue;
             }
-            summary += (first ? "" : ",") + l;
+            summary += (first ? "" : ",") + l.get();
             if (first) {
                 first = false;
             }

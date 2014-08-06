@@ -45,6 +45,9 @@ import org.xml.sax.SAXException;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
+
+import com.google.common.base.Optional;
+
 import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -150,13 +153,15 @@ public class ExportImport {
                     if (child != null && child.getAttributes() != null) {
                         final String listname = child.getAttributes()
                                                 .getNamedItem("value").getTextContent();
-                        list = ListMirakel.findByName(listname);
-                        if (list == null) {
+                        Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(listname);
+                        if (listMirakelOptional.isPresent()) {
+                            list = listMirakelOptional.get();
+                        } else {
                             list = ListMirakel.saveNewList(listname);
                         }
                     } else {
                         list = MirakelModelPreferences
-                               .getImportDefaultList(true);
+                               .getSafeImportDefaultList();
                     }
                     final Task t = Task.newTask(name, list);
                     // Priority
@@ -242,7 +247,7 @@ public class ExportImport {
                 "yyyy-MM-dd HH:mm:ss");
             while ((row = listsReader.readNext()) != null) {
                 final String name = row[0];
-                if (ListMirakel.findByName(name) == null) {
+                if (!ListMirakel.findByName(name).isPresent()) {
                     ListMirakel.saveNewList(name);
                     Log.v(TAG, "created list:" + name);
                 }
@@ -265,9 +270,12 @@ public class ExportImport {
                 }
                 // Done
                 final boolean done = !row[9].equals("");
-                ListMirakel list = ListMirakel.findByName(listName);
-                if (list == null) {
-                    list = ListMirakel.first();
+                final Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(listName);
+                final ListMirakel list;
+                if (listMirakelOptional.isPresent()) {
+                    list = listMirakelOptional.get();
+                } else {
+                    list = ListMirakel.safeFirst(context);
                 }
                 final Task t = Task.newTask(name, list);
                 t.setContent(content);

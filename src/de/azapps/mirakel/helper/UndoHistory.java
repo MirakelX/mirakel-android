@@ -34,6 +34,9 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
+
+import static de.azapps.tools.OptionalUtils.withOptional;
 
 public class UndoHistory {
     private static final short LIST = 1;
@@ -64,7 +67,12 @@ public class UndoHistory {
                         Task.get(id).destroy(true);
                         break;
                     case LIST:
-                        ListMirakel.get((int) id).destroy(true);
+                        withOptional(ListMirakel.get(id), new OptionalUtils.Procedure<ListMirakel>() {
+                            @Override
+                            public void apply(ListMirakel input) {
+                                input.destroy(true);
+                            }
+                        });
                         break;
                     default:
                         Log.wtf(TAG, "unkown Type");
