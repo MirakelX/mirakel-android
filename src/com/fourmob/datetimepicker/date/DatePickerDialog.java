@@ -12,6 +12,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
+import com.google.common.base.Optional;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.date_time.R;
 
@@ -28,6 +32,15 @@ public class DatePickerDialog extends DialogFragment {
         super();
     }
 
+    public static DatePickerDialog newInstance(final OnDateSetListener onDateSetListener,
+            Optional<Calendar> date, final boolean dark) {
+        final Calendar notNullDate = date.or(new GregorianCalendar());
+        final boolean hasNoDate = !date.isPresent();
+        final int year = notNullDate.get(Calendar.YEAR);
+        final int month = notNullDate.get(Calendar.MONTH);
+        final int day = notNullDate.get(Calendar.DAY_OF_MONTH);
+        return newInstance(onDateSetListener, year, month, day, dark, hasNoDate);
+    }
     public static DatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
         final int month, final int day, final boolean dark,

@@ -12,9 +12,13 @@ import android.widget.ViewSwitcher;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
+import com.google.common.base.Optional;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePicker;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.date_time.R;
 
@@ -26,8 +30,19 @@ public class DateTimeDialog extends DialogFragment {
         super();
     }
 
+    public static DateTimeDialog newInstance(final OnDateTimeSetListener callback,
+            final Optional<Calendar> dateTime, final boolean dark) {
+        Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
+        final int year = notNullDateTime.get(Calendar.YEAR);
+        final int month = notNullDateTime.get(Calendar.MONTH);
+        final int day = notNullDateTime.get(Calendar.DAY_OF_MONTH);
+        final int hour = notNullDateTime.get(Calendar.HOUR_OF_DAY);
+        final int minute = notNullDateTime.get(Calendar.MINUTE);
+        return newInstance(callback, year, month, day, hour, minute, true, dark);
+    }
+
     public static DateTimeDialog newInstance(
-        final OnDateTimeSetListner callback, final int year,
+        final OnDateTimeSetListener callback, final int year,
         final int month, final int dayOfMonth, final int hourOfDay,
         final int minute, final boolean vibrate, final boolean dark) {
         final DateTimeDialog dt = new DateTimeDialog();
@@ -64,9 +79,9 @@ public class DateTimeDialog extends DialogFragment {
     protected TimePicker tp;
     protected DatePicker dp;
     protected boolean isCurrentDatepicker = true;
-    protected OnDateTimeSetListner mCallback;
+    protected OnDateTimeSetListener mCallback;
 
-    void setOnDateTimeSetListner(final OnDateTimeSetListner listner) {
+    void setOnDateTimeSetListner(final OnDateTimeSetListener listner) {
         this.mCallback = listner;
     }
 
@@ -157,16 +172,8 @@ public class DateTimeDialog extends DialogFragment {
         return v;
     }
 
-    public interface OnDateTimeSetListner {
+    public interface OnDateTimeSetListener {
 
-        /**
-         * @param view
-         *            The view associated with this listener.
-         * @param hourOfDay
-         *            The hour that was set.
-         * @param minute
-         *            The minute that was set.
-         */
         void onDateTimeSet(final int year, final int month,
                            final int dayOfMonth, final int hourOfDay, final int minute);
 
