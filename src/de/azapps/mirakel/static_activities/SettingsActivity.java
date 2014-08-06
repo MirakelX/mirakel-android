@@ -32,6 +32,8 @@ import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.Toast;
+
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.SettingsAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -148,8 +150,15 @@ public class SettingsActivity extends PreferenceActivity {
                                                          SettingsActivity.this.stream,
                                                          FileUtils.getMimeType(data.getData()));
                     case FILE_ANY_DO:
-                        return AnyDoImport.exec(SettingsActivity.this,
-                                                SettingsActivity.this.stream);
+                        try {
+                            return AnyDoImport.exec(SettingsActivity.this,
+                                                    SettingsActivity.this.stream);
+                        } catch (DefinitionsHelper.NoSuchListException e) {
+                            ErrorReporter
+                            .report(ErrorType.LIST_VANISHED);
+                            Log.wtf(TAG, "list vanished", e);
+                            return true;
+                        }
                     case FILE_WUNDERLIST:
                         return WunderlistImport.exec(SettingsActivity.this,
                                                      SettingsActivity.this.stream);
