@@ -2,7 +2,11 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +21,17 @@ import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
+import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
+import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
 
@@ -48,6 +56,9 @@ public class TaskFragment extends DialogFragment {
     private DatesView datesView;
 
 
+    private MirakelContentObserver observer;
+
+
     public TaskFragment() {
     }
 
@@ -67,6 +78,27 @@ public class TaskFragment extends DialogFragment {
         Bundle arguments = getArguments();
         long task_id = arguments.getLong("task_id");
         task = Task.get(task_id);
+        Map<Uri, MirakelContentObserver.ObserverCallBack> callBackMap = new HashMap<>();
+        callBackMap.put(Task.URI, new MirakelContentObserver.ObserverCallBack() {
+            @Override
+            public void handleChange() {
+                task = Task.get(task.getId());
+                updateAll();
+            }
+            @Override
+            public void handleChange(long id) {
+                task = Task.get(task.getId());
+                updateAll();
+            }
+        });
+        new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), callBackMap);
+    }
+
+    @Override
+    public void onDismiss (DialogInterface dialog) {
+        if (observer != null) {
+            getActivity().getContentResolver().unregisterContentObserver(observer);
+        }
     }
 
     @Override

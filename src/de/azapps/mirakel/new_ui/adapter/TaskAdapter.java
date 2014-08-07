@@ -37,7 +37,7 @@ public class TaskAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final ViewHolder viewHolder = (ViewHolder) view.getTag();
         view.setOnClickListener(itemClickListener);
         Task task = new Task(cursor);
         viewHolder.task = task;
@@ -57,8 +57,8 @@ public class TaskAdapter extends CursorAdapter {
         viewHolder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO implement this
-                Toast.makeText(context, "Check", Toast.LENGTH_LONG).show();
+                viewHolder.getTask().setDone(isChecked);
+                viewHolder.getTask().save();
             }
         });
     }
