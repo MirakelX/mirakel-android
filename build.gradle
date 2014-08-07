@@ -52,12 +52,6 @@ android {
         fdroid {
             flavorDimension "stores"
         }
-        l_test {
-            flavorDimension "apis"
-            minSdkVersion "L"
-            targetSdkVersion "L"
-            compileSdkVersion "android-L"
-        }
         normal {
             flavorDimension "apis"
             compileSdkVersion rootProject.ext.compileSdkVersion
@@ -67,6 +61,12 @@ android {
             minSdkVersion 8
             targetSdkVersion 19
             compileSdkVersion rootProject.ext.compileSdkVersion
+        }
+        l_test {
+            flavorDimension "apis"
+            minSdkVersion "L"
+            targetSdkVersion "L"
+            compileSdkVersion "android-L"
         }
     }
 
@@ -90,7 +90,9 @@ android {
             resources.srcDirs = ['tests/src']
         }
 
-        old { java.srcDirs = ['src-old'] }
+        old { java.srcDirs = ['src-patched/src-old'] }
+        normal { java.srcDirs = ['src-patched/src-normal'] }
+        l_test { java.srcDirs = ['src-patched/src-normal'] }
 
         google {
             manifest.srcFile  "res-google/AndroidManifest.xml"
