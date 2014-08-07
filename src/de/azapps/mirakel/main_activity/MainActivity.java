@@ -995,7 +995,7 @@ public class MainActivity extends ActionBarActivity implements
                 }
                 if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
                     MainActivity.this.menu.findItem (R.id.menu_new_ui)
-                    .setVisible (false/*BuildHelper.isBeta ()*/);
+                    .setVisible (BuildHelper.isBeta ());
                 }
                 if (!fromShare) {
                     updateShare ();
@@ -1351,6 +1351,7 @@ public class MainActivity extends ActionBarActivity implements
             break;
         case R.id.menu_new_ui:
             MirakelCommonPreferences.setUseNewUI(true);
+            Helpers.restartApp(this);
             break;
         case R.id.menu_sync_now:
             final Bundle bundle = new Bundle ();
