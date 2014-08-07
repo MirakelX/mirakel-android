@@ -331,4 +331,17 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("writeLogsToFile", false);
     }
 
+    public static boolean useNewUI() {
+        if (settings == null) {
+            return false;
+        }
+        return settings.getBoolean("newUI", false);
+    }
+
+    public static void setUseNewUI(final boolean val) {
+        final Editor ed = settings.edit();
+        ed.putBoolean("newUI", val);
+        ed.commit();
+    }
+
 }
