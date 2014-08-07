@@ -21,10 +21,10 @@ package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.content.CursorLoader;
 
 import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
@@ -51,7 +51,6 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
-import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -150,7 +149,7 @@ public class ListMirakel extends ListBase {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-        //$FALL-THROUGH$
+            //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
