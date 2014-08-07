@@ -26,11 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.content.CursorLoader;
+import android.os.Build;
 import android.text.TextUtils;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -48,8 +49,20 @@ public class MirakelQueryBuilder {
     private final StringBuilder sortOrder = new StringBuilder();
     private boolean distinct = false;
 
-    public CursorLoader toCursorLoader(final Uri uri) {
-        return new CursorLoader(
+
+    public android.support.v4.content.CursorLoader toSupportCursorLoader(final Uri uri) {
+        return new android.support.v4.content.CursorLoader(
+                   this.context,
+                   uri,
+                   this.projection.toArray(new String[this.projection.size()]),
+                   this.selection.toString(),
+                   this.selectionArgs.toArray(new String[this.selectionArgs.size()]),
+                   this.sortOrder.toString());
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    public android.content.CursorLoader toCursorLoader(final Uri uri) {
+        return new android.content.CursorLoader(
                    this.context,
                    uri,
                    this.projection.toArray(new String[this.projection.size()]),
