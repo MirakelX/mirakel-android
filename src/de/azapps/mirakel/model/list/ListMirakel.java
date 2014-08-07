@@ -149,7 +149,7 @@ public class ListMirakel extends ListBase {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
@@ -202,11 +202,18 @@ public class ListMirakel extends ListBase {
         cursor.close();
         return lists;
     }
-
-    public static CursorLoader allCursorLoader() {
+    private static MirakelQueryBuilder getBasicMQB() {
         return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
                 SYNC_STATE.DELETE.toString()).sort(LFT,
-                        Sorting.ASC).toCursorLoader(MirakelInternalContentProvider.LIST_URI);
+                        Sorting.ASC);
+    }
+
+    public static CursorLoader allCursorLoader() {
+        return getBasicMQB().toCursorLoader(MirakelInternalContentProvider.LIST_URI);
+    }
+
+    public static Cursor getAllCursor() {
+        return getBasicMQB().query(MirakelInternalContentProvider.LIST_URI);
     }
 
 
