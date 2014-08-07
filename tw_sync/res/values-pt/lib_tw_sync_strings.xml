@@ -57,6 +57,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="load_config">Selecione o ficheiro de configurações do Taskwarrior</string>
   <string name="select_config">Selecione o ficheiro de configuração Taskwarrior</string>
   <string name="message_try_later">Tentar mais tarde</string>
+  <string name="message_access_denied">Acesso negado!\nUtilizou o ficheiro correto?\nTem que configurar o servidor Taskwarrior de modo a que aceite a sincronização através do Mirakel.</string>
   <string name="message_create_socket">Não é possível criar o socket!\nAtivou a ligação de rede?</string>
   <string name="message_account_suspended">A sua conta está suspensa!</string>
   <string name="message_parse_message">Tarefas não processadas. Indique-nos como é que o erro ocorreu</string>
