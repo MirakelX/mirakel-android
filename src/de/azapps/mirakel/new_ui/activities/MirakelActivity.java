@@ -19,6 +19,8 @@ import android.view.View;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
@@ -111,6 +113,10 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         }
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_toggle_ui) {
+            MirakelCommonPreferences.setUseNewUI(false);
+            Helpers.restartApp(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
