@@ -20,6 +20,7 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Account toevoegen</string>
+  <string name="account_title">Lidmaatschap</string>
   <string name="sync_new">Nieuwe account</string>
   <string name="sync_use">Gebruik synchronisatie</string>
   <string name="sync_warning">Synchronisatie is experimenteel</string>
@@ -246,6 +247,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="title_donations">Doneer</string>
   <string name="add">Toevoegen</string>
   <string name="action_credits">Colofon</string>
+  <string name="action_credits_summary">Over ons</string>
   <string name="title_activity_credits">Colofon en Over</string>
   <string name="credits_github_description">Kopieer (Fork) de broncode op github</string>
   <string name="credits_googleplus_description">Word lid van G + community</string>
