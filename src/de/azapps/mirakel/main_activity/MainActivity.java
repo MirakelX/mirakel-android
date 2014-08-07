@@ -52,7 +52,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -726,28 +726,28 @@ public class MainActivity extends ActionBarActivity implements
 
     public void handleSetDue (final List<Task> tasks) {
         final Calendar dueLocal = new GregorianCalendar ();
-        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance (
-        new DatePicker.OnDateSetListener () {
+        final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(
+        new DatePicker.OnDateSetListener() {
             @Override
-            public void onDateSet (final DatePicker dp, final int year,
-                                   final int month, final int day) {
-                final Calendar due = new GregorianCalendar (year, month,
+            public void onDateSet(final DatePicker dp, final int year,
+                                  final int month, final int day) {
+                final Calendar due = new GregorianCalendar(year, month,
                         day);
                 for (final Task task : tasks) {
-                    task.setDue (due);
-                    saveTask (task);
+                    task.setDue(due);
+                    saveTask(task);
                 }
             }
             @Override
-            public void onNoDateSet () {
+            public void onNoDateSet() {
                 for (final Task task : tasks) {
-                    task.setDue (null);
-                    saveTask (task);
+                    task.setDue(null);
+                    saveTask(task);
                 }
             }
-        }, dueLocal.get (Calendar.YEAR), dueLocal.get (Calendar.MONTH),
-        dueLocal.get (Calendar.DAY_OF_MONTH), false,
-        MirakelCommonPreferences.isDark (), true);
+        }, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
+        dueLocal.get(Calendar.DAY_OF_MONTH), false,
+        MirakelCommonPreferences.isDark(), true);
         datePickerDialog.show (getSupportFragmentManager (), "datepicker");
     }
 
