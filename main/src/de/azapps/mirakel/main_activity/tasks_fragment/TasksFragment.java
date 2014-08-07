@@ -639,7 +639,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
         } else {
             list  = listMirakelOptional.get();
         }
-        return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toCursorLoader(
+        return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toSupportCursorLoader(
                    Task.URI);
     }
 

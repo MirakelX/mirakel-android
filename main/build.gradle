@@ -13,40 +13,19 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/NOTICE.txt'
-            exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
     }
-    flavorDimensions "stores"
+    flavorDimensions "stores", "apis"
     lintOptions {
         disable 'MissingTranslation'
     }
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-
-        androidTest.setRoot('tests')
-        androidTest {
-            manifest.srcFile 'AndroidManifest.xml'
-            java { srcDirs = ['tests/src']}
-            res.srcDirs = ['tests/res']
-            assets.srcDirs = ['tests/assets']
-            resources.srcDirs = ['tests/src']
-        }
-
-    }
     defaultConfig {
-            testApplicationId "de.azapps.mirakelandroid.test"
-            testInstrumentationRunner "android.test.InstrumentationTestRunner"
-            minSdkVersion 15
-            targetSdkVersion 19
+        testApplicationId "de.azapps.mirakelandroid.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+        minSdkVersion 15
+        targetSdkVersion 19
     }
     signingConfigs {
         release {
@@ -62,7 +41,7 @@ android {
             runProguard true
             proguardFile 'proguard-android.txt'
         }
-	    debug {
+        debug {
             signingConfig signingConfigs.release
         }
     }
@@ -73,13 +52,49 @@ android {
         fdroid {
             flavorDimension "stores"
         }
-    }
-    android.sourceSets.google {
-        manifest {
-            srcFile "res-google/AndroidManifest.xml"
+        l_test {
+            flavorDimension "apis"
+            minSdkVersion "L"
+            targetSdkVersion "L"
+            compileSdkVersion "android-L"
         }
-        res{
-            srcDir "res-google"
+        normal {
+            flavorDimension "apis"
+            compileSdkVersion rootProject.ext.compileSdkVersion
+        }
+        old {
+            flavorDimension "apis"
+            minSdkVersion 8
+            targetSdkVersion 19
+            compileSdkVersion rootProject.ext.compileSdkVersion
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+        androidTest.setRoot('tests')
+        androidTest {
+            manifest.srcFile 'AndroidManifest.xml'
+            java { srcDirs = ['tests/src'] }
+            res.srcDirs = ['tests/res']
+            assets.srcDirs = ['tests/assets']
+            resources.srcDirs = ['tests/src']
+        }
+
+        old { java.srcDirs = ['src-old'] }
+
+        google {
+            manifest.srcFile  "res-google/AndroidManifest.xml"
+            res.srcDirs = ['res-google']
         }
     }
 }
@@ -96,7 +111,8 @@ dependencies {
     compile project(':custom_views')
     compile project(':acra')
     compile project(':drag-sort-listview')
-    compile project(':new_ui')
+    l_testCompile project(path: ':new_ui', configuration: 'l_testRelease')
+    normalCompile project(path: ':new_ui', configuration: 'normalRelease')
 
     //for tests
     androidTestCompile files("$project.buildDir/classes/debug")
