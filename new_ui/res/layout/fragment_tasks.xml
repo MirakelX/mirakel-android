@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.azapps.mirakel.new_ui.fragments.TasksFragment">
+
+    <ListView
+        android:id="@+id/task_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.faizmalkani.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabbutton"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp" />
+
+    <!--
+    Your layouts here. Do not put anything below the FAB layout
+    -->
+
+</FrameLayout>
