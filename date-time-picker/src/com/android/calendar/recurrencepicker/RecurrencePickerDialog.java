@@ -62,7 +62,7 @@ import android.widget.ToggleButton;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -465,7 +465,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
         this.mEndDateView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final DatePickerDialog dp = DatePickerDialog.newInstance(
+                final SupportDatePickerDialog dp = SupportDatePickerDialog.newInstance(
                 new OnDateSetListener() {
                     @Override
                     public void onNoDateSet() {
@@ -505,8 +505,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
                                        final View arg1, final int pos, final long arg3) {
                 switch (pos) {
                 case 1:
-                        RecurrencePickerDialog.this.mEndDateView
-                        .setVisibility(View.VISIBLE);
+                    RecurrencePickerDialog.this.mEndDateView
+                    .setVisibility(View.VISIBLE);
                     if (RecurrencePickerDialog.this.mEndDate == null) {
                         RecurrencePickerDialog.this.mEndDate = RecurrencePickerDialog.this.mStartDate;
                         if (RecurrencePickerDialog.this.mEndDate == null) {
@@ -552,8 +552,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
                                        final View arg1, final int pos, final long arg3) {
                 switch (pos) {
                 case 1:
-                        RecurrencePickerDialog.this.mStartDateView
-                        .setVisibility(View.VISIBLE);
+                    RecurrencePickerDialog.this.mStartDateView
+                    .setVisibility(View.VISIBLE);
                     if (RecurrencePickerDialog.this.mStartDate == null) {
                         RecurrencePickerDialog.this.mStartDate = RecurrencePickerDialog.this.mEndDate;
                         if (RecurrencePickerDialog.this.mStartDate == null) {
@@ -591,7 +591,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
         this.mStartDateView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final DatePickerDialog dp = DatePickerDialog.newInstance(
+                final SupportDatePickerDialog dp = SupportDatePickerDialog.newInstance(
                 new OnDateSetListener() {
                     @Override
                     public void onNoDateSet() {
