@@ -17,6 +17,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.SeekBar;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.widget.R;
@@ -59,8 +62,12 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
                 final Preference preference, final Object newValue) {
                 WidgetHelper.setList(context, widgetId,
                                      Integer.parseInt((String) newValue));
-                final String list = ListMirakel.get(
-                                        Integer.parseInt((String) newValue)).getName();
+                Optional<ListMirakel> listMirakelOptional = ListMirakel.get(
+                            Integer.parseInt((String) newValue));
+                if (!listMirakelOptional.isPresent()) {
+                    return true;
+                }
+                final String list = listMirakelOptional.get().getName();
                 widgetListPreference
                 .setSummary(PreferencesWidgetHelper.this.activity
                             .getString(

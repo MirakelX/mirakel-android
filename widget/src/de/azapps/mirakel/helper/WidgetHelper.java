@@ -31,9 +31,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
@@ -202,18 +203,12 @@ public class WidgetHelper {
     public static ListMirakel getList(final Context context, final int widgetId) {
         final int listId = getSettings(context).getInt(
                                getKey(widgetId, "list_id"), 0);
-        ListMirakel list = ListMirakel.get(listId);
-        if (list == null) {
-            list = SpecialList.firstSpecial();
-            if (list == null) {
-                list = ListMirakel.first();
-                if (list == null) {
-                    ErrorReporter.report(ErrorType.TASKS_NO_LIST);
-                    return null;
-                }
-            }
+        Optional<ListMirakel> list = ListMirakel.get(listId);
+        if (!list.isPresent()) {
+            return SpecialList.firstSpecialSafe();
+        } else {
+            return list.get();
         }
-        return list;
     }
 
     public static void setList(final Context context, final int widgetId,
