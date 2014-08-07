@@ -2,30 +2,30 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.google.common.base.Optional;
+import com.fourmob.datetimepicker.date.DatePicker;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 
-import de.azapps.mirakel.model.list.ListMirakel;
+import java.util.GregorianCalendar;
+
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
-import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
+import de.azapps.widgets.DateTimeDialog;
 
 import static com.google.common.base.Optional.fromNullable;
 
@@ -112,7 +112,6 @@ public class TaskFragment extends DialogFragment {
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
-        return layout;
     }
 
     private OptionalUtils.Procedure<Integer> progressChangedListener = new
@@ -160,4 +159,61 @@ public class TaskFragment extends DialogFragment {
             task.save();
             taskNameViewSwitcher.showNext();
         }
-    }
+    };
+
+    private OptionalUtils.Procedure<String> noteChangedListener = new
+    OptionalUtils.Procedure<String>() {
+        @Override
+        public void apply(String input) {
+            task.setContent(input);
+            task.save();
+        }
+    };
+    private final View.OnClickListener dueEditListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new
+            DatePicker.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
+                    task.setDue(new GregorianCalendar(year, month, day));
+                    task.save();
+                }
+                @Override
+                public void onNoDateSet() {
+                    task.setDue(null);
+                    task.save();
+                }
+            }, fromNullable(task.getDue()), false);
+            datePickerDialog.show(getFragmentManager(), "dueDialog");
+        }
+    };
+
+    private final View.OnClickListener listEditListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // TODO implement this
+        }
+    };
+    private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            DateTimeDialog dateTimeDialog = DateTimeDialog.newInstance(new
+            DateTimeDialog.OnDateTimeSetListener() {
+                @Override
+                public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
+                    task.setReminder(new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute));
+                    task.save();
+                }
+                @Override
+                public void onNoTimeSet() {
+                    task.setReminder(null);
+                    task.save();
+                }
+            }, fromNullable(task.getReminder()), false);
+            dateTimeDialog.show(getFragmentManager(), "reminderDialog");
+        }
+    };
+
+}
+
