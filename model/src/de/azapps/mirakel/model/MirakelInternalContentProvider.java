@@ -182,6 +182,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        this.getContext().getContentResolver().notifyChange(uri, null);
         return u;
     }
 
@@ -225,6 +226,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        this.getContext().getContentResolver().notifyChange(u, null);
         return u;
     }
 
@@ -297,6 +299,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
         }
+        c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
     }
 
@@ -355,6 +358,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        this.getContext().getContentResolver().notifyChange(uri, null);
         return u;
     }
 

@@ -80,28 +80,29 @@ public class TaskHelper {
      *            Is the Task done?
      * @return ID of the Color–Resource
      */
-    public static int getTaskDueColor(final Calendar origDue,
+    public static int getTaskDueColor(final Context context, final Calendar origDue,
                                       final boolean isDone) {
+        int colorResource;
         if (origDue == null) {
-            return R.color.Grey;
-        }
-        final LocalDate today = new LocalDate();
-        final LocalDate nextWeek = new LocalDate().plusDays(7);
-        final LocalDate due = new LocalDate(origDue);
-        final int cmpr = today.compareTo(due);
-        int color;
-        if (isDone) {
-            color = R.color.Grey;
-        } else if (cmpr > 0) {
-            color = R.color.due_overdue;
-        } else if (cmpr == 0) {
-            color = R.color.due_today;
-        } else if (nextWeek.compareTo(due) >= 0) {
-            color = R.color.due_next;
+            colorResource = R.color.Grey;
         } else {
-            color = R.color.due_future;
+            final LocalDate today = new LocalDate();
+            final LocalDate nextWeek = new LocalDate().plusDays(7);
+            final LocalDate due = new LocalDate(origDue);
+            final int cmpr = today.compareTo(due);
+            if (isDone) {
+                colorResource = R.color.Grey;
+            } else if (cmpr > 0) {
+                colorResource = R.color.due_overdue;
+            } else if (cmpr == 0) {
+                colorResource = R.color.due_today;
+            } else if (nextWeek.compareTo(due) >= 0) {
+                colorResource = R.color.due_next;
+            } else {
+                colorResource = R.color.due_future;
+            }
         }
-        return color;
+        return context.getResources().getColor(colorResource);
     }
 
     public static int getPrioColor(final int priority) {
