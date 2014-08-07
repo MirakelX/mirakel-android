@@ -38,4 +38,5 @@ Device: %3$s\n]]>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Geen toestemming om het bestand te lezen</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Oeps, de lijst is verdwenen...</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">We weten niet hoe we deze fout moeten oplossen. Mirakel start opnieuw op.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Lijstnaam al bestaat. Kies een andere.</string>
 </resources>
