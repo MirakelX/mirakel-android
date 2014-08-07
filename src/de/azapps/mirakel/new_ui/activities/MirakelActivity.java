@@ -46,7 +46,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                R.color.colorAccent)));
+                R.color.colorPrimary)));
         initDrawer();
         handleIntent(getIntent());
     }

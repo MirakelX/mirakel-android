@@ -31,10 +31,11 @@ import de.azapps.mirakel.new_ui.R;
 public class TaskActivity extends ActionBarActivity {
 
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_task);
-		getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAccent)));
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_task);
+        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(
+                R.color.colorPrimary)));
+    }
 }

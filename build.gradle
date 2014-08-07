@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'eclipse'
 
 android {
+    publishNonDefault true
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -27,6 +28,24 @@ android {
         }
 
     }
+    productFlavors {
+        normal{
+            minSdkVersion 15
+            targetSdkVersion 19
+            compileSdkVersion 19
+        }
+        l_test {
+            minSdkVersion 15
+            targetSdkVersion "L"
+            compileSdkVersion "android-L"
+        }
+    }
+    android.sourceSets.l_test {
+        res{
+            srcDir "res-l"
+        }
+    }
+
 }
 
 dependencies {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#8C2E58</color>
-    <color name="colorControlHighlight">#144F59</color>
+    <color name="colorPrimary">#8C2E58</color>
+    <color name="colorAccent">#144F59</color>
     <color name="progress_background">#CCCCCC</color>
     <color name="progress">#AC7D92</color>
     <color name="mirakel_light_grey">#808080</color>

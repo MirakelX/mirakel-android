@@ -90,7 +90,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void initFab() {
         FloatingActionButton mFab = (FloatingActionButton) layout.findViewById(R.id.fabbutton);
-        mFab.setColor(getResources().getColor(R.color.colorControlHighlight));
+        mFab.setColor(getResources().getColor(R.color.colorAccent));
         mFab.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
         mFab.hide(false);
         mFab.setOnClickListener(new View.OnClickListener() {
