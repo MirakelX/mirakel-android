@@ -34,7 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -175,7 +175,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                                           : TaskDetailDueReminder.this.task.getDue();
                 final FragmentManager fm = ((ActionBarActivity) TaskDetailDueReminder.this.context)
                                            .getSupportFragmentManager();
-                final DatePickerDialog datePickerDialog = DatePickerDialog
+                final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog
                         .newInstance(
                 new DatePicker.OnDateSetListener() {
                     @Override

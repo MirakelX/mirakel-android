@@ -79,8 +79,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
-import de.azapps.widgets.DateTimeDialog;
-import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListener;
+import de.azapps.widgets.SupportDateTimeDialog;
+import de.azapps.widgets.SupportDateTimeDialog.OnDateTimeSetListener;
 
 public class TaskDialogHelpers {
     protected static AlertDialog audio_playback_dialog;
@@ -332,7 +332,7 @@ public class TaskDialogHelpers {
         final Calendar reminder = task.getReminder() == null ? new GregorianCalendar()
                                   : task.getReminder();
         final FragmentManager fm = ctx.getSupportFragmentManager();
-        final DateTimeDialog dtDialog = DateTimeDialog.newInstance(
+        final SupportDateTimeDialog dtDialog = SupportDateTimeDialog.newInstance(
         new OnDateTimeSetListener() {
             @Override
             public void onDateTimeSet(final int year, final int month,
