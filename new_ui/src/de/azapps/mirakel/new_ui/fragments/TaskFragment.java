@@ -1,8 +1,14 @@
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +23,20 @@ import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
+
+import de.azapps.mirakel.model.MirakelContentObserver;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakel.new_ui.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
+import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
 
@@ -46,6 +59,9 @@ public class TaskFragment extends DialogFragment {
 
     private NoteView noteView;
     private DatesView datesView;
+    private TagsView task_tags;
+
+    private MirakelContentObserver observer;
 
 
     public TaskFragment() {
@@ -67,6 +83,28 @@ public class TaskFragment extends DialogFragment {
         Bundle arguments = getArguments();
         long task_id = arguments.getLong("task_id");
         task = Task.get(task_id);
+        Map<Uri, MirakelContentObserver.ObserverCallBack> callBackMap = new HashMap<>();
+        callBackMap.put(Task.URI, new MirakelContentObserver.ObserverCallBack() {
+            @Override
+            public void handleChange() {
+                task = Task.get(task.getId());
+                updateAll();
+            }
+            @Override
+            public void handleChange(long id) {
+                task = Task.get(task.getId());
+                updateAll();
+            }
+        });
+        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(),
+                                              callBackMap);
+    }
+
+    @Override
+    public void onDismiss (DialogInterface dialog) {
+        if (observer != null) {
+            getActivity().getContentResolver().unregisterContentObserver(observer);
+        }
     }
 
     @Override
@@ -88,6 +126,7 @@ public class TaskFragment extends DialogFragment {
         progressView = (ProgressView) layout.findViewById(R.id.task_progress);
         noteView = (NoteView) layout.findViewById(R.id.task_note);
         datesView = (DatesView) layout.findViewById(R.id.task_dates);
+        task_tags = (TagsView) layout.findViewById(R.id.task_tags);
         updateAll();
         return layout;
     }
@@ -112,6 +151,7 @@ public class TaskFragment extends DialogFragment {
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
+        task_tags.setTask(task);
     }
 
     private OptionalUtils.Procedure<Integer> progressChangedListener = new
@@ -192,7 +232,18 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // TODO implement this
+            final SimpleModelAdapter adapter = new SimpleModelAdapter(getActivity(), ListMirakel.getAllCursor(),
+                    0);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.task_move_to);
+            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    task.setList(new ListMirakel((Cursor) adapter.getItem(i)));
+                    task.save();
+                }
+            });
+            builder.show();
         }
     };
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {

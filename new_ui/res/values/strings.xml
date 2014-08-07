@@ -13,5 +13,7 @@
     <string name="task_button_done">DONE</string>
     <string name="edit_note">Edit Note</string>
     <string name="save">Save</string>
+    <string name="task_move_to">Move task to</string>
+    <string name="task_tags">Tags:</string>
 
 </resources>
