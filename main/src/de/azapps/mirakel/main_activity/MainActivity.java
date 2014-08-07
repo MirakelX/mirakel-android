@@ -53,6 +53,7 @@ import android.widget.ListView;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -100,6 +101,9 @@ import de.azapps.mirakel.static_activities.SplashScreenActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
+
+import static de.azapps.tools.OptionalUtils.withOptional;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -192,7 +196,7 @@ public class MainActivity extends ActionBarActivity implements
             return;
         }
         this.skipSwipe = true;
-        final Task task = Semantic.createTask (this.newTaskSubject, list, true,
+        final Task task = Semantic.createTask (this.newTaskSubject, Optional.fromNullable(list), true,
                                                this);
         task.setContent (this.newTaskContent == null ? "" : this.newTaskContent);
         task.save ();
@@ -260,7 +264,7 @@ public class MainActivity extends ActionBarActivity implements
      */
     public ListMirakel getCurrentList () {
         if (this.currentList == null) {
-            this.currentList = SpecialList.firstSpecialSafe (this);
+            this.currentList = SpecialList.firstSpecialSafe ();
         }
         return this.currentList;
     }
@@ -501,7 +505,7 @@ public class MainActivity extends ActionBarActivity implements
                             if (getCurrentList ().getId () == list
                                 .getId ()) {
                                 setCurrentList (SpecialList
-                                                .firstSpecial ());
+                                                .firstSpecialSafe());
                             }
                         }
                         if (getListFragment () != null) {
@@ -671,8 +675,14 @@ public class MainActivity extends ActionBarActivity implements
             public void onClick (final DialogInterface dialog,
                                  final int item) {
                 for (final Task t : tasks) {
-                    t.setList (ListMirakel.get (list_ids.get (item)), true);
-                    t.save ();
+                    Optional<ListMirakel> listMirakelOptional = ListMirakel.get(list_ids.get(item));
+                    withOptional(listMirakelOptional, new OptionalUtils.Procedure<ListMirakel>() {
+                        @Override
+                        public void apply(ListMirakel input) {
+                            t.setList(input, true);
+                            t.save();
+                        }
+                    });
                 }
                 /*
                  * There are 3 possibilities how to handle the post-move
@@ -983,6 +993,10 @@ public class MainActivity extends ActionBarActivity implements
                     MainActivity.this.menu.findItem (R.id.menu_contact)
                     .setVisible (BuildHelper.isBeta ());
                 }
+                if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
+                    MainActivity.this.menu.findItem (R.id.menu_new_ui)
+                    .setVisible (false/*BuildHelper.isBeta ()*/);
+                }
                 if (!fromShare) {
                     updateShare ();
                 }
@@ -1076,7 +1090,7 @@ public class MainActivity extends ActionBarActivity implements
                 } else {
                     task = Semantic.createTask (
                                MirakelCommonPreferences.getPhotoDefaultTitle (),
-                               this.currentList, false, this);
+                               Optional.fromNullable(this.currentList), false, this);
                     task.save ();
                     if (getTasksFragment () != null) {
                         getTasksFragment ().getLoaderManager ().restartLoader (0,
@@ -1334,6 +1348,9 @@ public class MainActivity extends ActionBarActivity implements
             break;
         case R.id.menu_contact:
             Helpers.contact (this);
+            break;
+        case R.id.menu_new_ui:
+            MirakelCommonPreferences.setUseNewUI(true);
             break;
         case R.id.menu_sync_now:
             final Bundle bundle = new Bundle ();
@@ -1598,10 +1615,10 @@ public class MainActivity extends ActionBarActivity implements
                 this.newTaskSubject = MirakelCommonPreferences
                                       .getImportFileTitle ();
             }
-            final ListMirakel listFromSharing = MirakelModelPreferences
-                                                .getImportDefaultList (false);
-            if (listFromSharing != null) {
-                addTaskFromSharing (listFromSharing, intent);
+            final Optional<ListMirakel> listFromSharing = MirakelModelPreferences
+                    .getImportDefaultList ();
+            if (listFromSharing.isPresent()) {
+                addTaskFromSharing (listFromSharing.get(), intent);
             } else {
                 final AlertDialog.Builder builder = new AlertDialog.Builder (
                     this);
@@ -1621,10 +1638,14 @@ public class MainActivity extends ActionBarActivity implements
                     @Override
                     public void onClick (final DialogInterface dialog,
                                          final int item) {
-                        addTaskFromSharing (
-                            ListMirakel.get (list_ids.get (item)),
-                            intent);
-                        dialog.dismiss ();
+                        Optional<ListMirakel> listMirakelOptional = ListMirakel.get(list_ids.get(item));
+                        withOptional(listMirakelOptional, new OptionalUtils.Procedure<ListMirakel>() {
+                            @Override
+                            public void apply(ListMirakel input) {
+                                addTaskFromSharing(input, intent);
+                                dialog.dismiss();
+                            }
+                        });
                     }
                 });
                 builder.create ().show ();
@@ -1640,10 +1661,7 @@ public class MainActivity extends ActionBarActivity implements
                                                DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
             }
             Log.v (MainActivity.TAG, "ListId: " + listId);
-            ListMirakel list = ListMirakel.get (listId);
-            if (list == null) {
-                list = SpecialList.firstSpecial ();
-            }
+            ListMirakel list = ListMirakel.get (listId).or(SpecialList.firstSpecialSafe());
             setCurrentList (list);
             this.currentTask = list.getFirstTask ();
             if (getTaskFragment () != null) {
@@ -1658,7 +1676,12 @@ public class MainActivity extends ActionBarActivity implements
                        DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
             final int listId = Integer.parseInt (intent.getAction ().replace (
                     DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
-            setCurrentList (ListMirakel.get (listId));
+            Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
+            if (listMirakelOptional.isPresent()) {
+                setCurrentList(listMirakelOptional.get());
+            } else {
+                setCurrentList(ListMirakel.safeFirst(this));
+            }
             this.mDrawerLayout.postDelayed (new Runnable () {
                 @Override
                 public void run () {
@@ -1700,7 +1723,7 @@ public class MainActivity extends ActionBarActivity implements
         }
         setIntent (null);
         if (this.currentList == null) {
-            setCurrentList (SpecialList.firstSpecial ());
+            setCurrentList (SpecialList.firstSpecialSafe ());
         }
     }
 
@@ -1709,7 +1732,7 @@ public class MainActivity extends ActionBarActivity implements
      */
     private void setupLayout () {
         if (this.currentList == null) {
-            setCurrentList (SpecialList.firstSpecial ());
+            setCurrentList (SpecialList.firstSpecialSafe());
         }
         // clear tabletfragments
         final ViewGroup all = (ViewGroup) this
@@ -1754,7 +1777,7 @@ public class MainActivity extends ActionBarActivity implements
             }
         }
         if (this.currentList != null) {
-            this.currentList = ListMirakel.get (this.currentList.getId ());
+            this.currentList = ListMirakel.get (this.currentList.getId ()).get();
         } else {
             this.currentList = this.currentTask.getList ();
         }

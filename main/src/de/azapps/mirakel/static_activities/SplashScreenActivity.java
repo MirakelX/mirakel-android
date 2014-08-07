@@ -18,9 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.static_activities;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -29,14 +26,11 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
-import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 
 public class SplashScreenActivity extends Activity {
     public static final String EXIT = "de.azapps.mirakel.EXIT";
@@ -62,22 +56,23 @@ public class SplashScreenActivity extends Activity {
             setTheme (R.style.Theme_SplashScreen);
         }
         // Intents
+        final Class startActivity;
+        if (MirakelCommonPreferences.useNewUI()) {
+            startActivity = MirakelActivity.class;
+        } else {
+            startActivity = MainActivity.class;
+        }
         if (MirakelCommonPreferences.isStartupAllLists ()) {
             final Intent intent = new Intent (SplashScreenActivity.this,
-                                              MainActivity.class);
+                                              startActivity);
             intent.setAction (DefinitionsHelper.SHOW_LISTS);
             startActivityForResult (intent, 42);
         } else {
-            ListMirakel sl = SpecialList.firstSpecial ();
-            if (sl == null) {
-                final Map<String, SpecialListsBaseProperty> where = new   HashMap<> ();
-                where.put (Task.DONE, new SpecialListsDoneProperty (false));
-                sl = SpecialList.newSpecialList (getString (R.string.list_all),
-                                                 where, true);
-            }
+            // Create a meta list if not existent
+            SpecialList.firstSpecialSafe ();
             final long listId = MirakelModelPreferences.getStartupList ().getId ();
             final Intent intent = new Intent (SplashScreenActivity.this,
-                                              MainActivity.class);
+                                              startActivity);
             intent.setAction (DefinitionsHelper.SHOW_LIST);
             intent.putExtra (DefinitionsHelper.EXTRA_ID, listId);
             finish ();

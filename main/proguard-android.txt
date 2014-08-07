@@ -50,6 +50,12 @@
 -keep public class com.google.vending.licensing.ILicensingService
 -keep public class com.android.vending.licensing.ILicensingService
 
+#keep constructors of models
+
+-keepclasseswithmembers class *{
+    public <init>(android.database.Cursor);
+}
+
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -72,6 +78,8 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+
 
 -keep class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator *;

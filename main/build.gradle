@@ -45,6 +45,8 @@ android {
     defaultConfig {
             testApplicationId "de.azapps.mirakelandroid.test"
             testInstrumentationRunner "android.test.InstrumentationTestRunner"
+            minSdkVersion 15
+            targetSdkVersion 19
     }
     signingConfigs {
         release {
@@ -94,6 +96,7 @@ dependencies {
     compile project(':custom_views')
     compile project(':acra')
     compile project(':drag-sort-listview')
+    compile project(':new_ui')
 
     //for tests
     androidTestCompile files("$project.buildDir/classes/debug")

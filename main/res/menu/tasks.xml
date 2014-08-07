@@ -66,6 +66,10 @@
         android:title="@string/action_contact"
         mirakel:showAsAction="never"/>
     <item
+        android:id="@+id/menu_new_ui"
+        android:title="@string/use_new_ui"
+        mirakel:showAsAction="never"/>
+    <item
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         mirakel:showAsAction="never"/>

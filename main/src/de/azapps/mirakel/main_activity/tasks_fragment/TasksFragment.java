@@ -38,7 +38,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -64,8 +63,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
-import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -73,12 +74,8 @@ import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
-import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -228,7 +225,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
             return true;
         }
         final ListMirakel list = this.main.getCurrentList ();
-        final Task createdTask = Semantic.createTask (name, list,
+        final Task createdTask = Semantic.createTask (name, Optional.fromNullable(list),
                                  MirakelCommonPreferences.useSemanticNewTask (), getActivity ());
         getLoaderManager ().restartLoader (0, null, this);
         this.main.setCurrentTask (createdTask, false);
@@ -634,10 +631,13 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader (final int arg0, final Bundle arg1) {
-        ListMirakel list = ListMirakel.get (this.listId);
-        if (list == null) {
+        Optional<ListMirakel> listMirakelOptional = ListMirakel.get (this.listId);
+        final ListMirakel list;
+        if (!listMirakelOptional.isPresent()) {
             ErrorReporter.report (ErrorType.LIST_VANISHED);
-            list = SpecialList.firstSpecialSafe (getActivity ());
+            list = SpecialList.firstSpecialSafe ();
+        } else {
+            list  = listMirakelOptional.get();
         }
         return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toCursorLoader(
                    Task.URI);
