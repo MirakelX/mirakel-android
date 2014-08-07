@@ -46,4 +46,8 @@ Audio afspelen&#8230;</string>
     <item>Label verwijderen</item>
   </string-array>
   <string name="tag_has_dark_text">Tekst is zwart</string>
+  <string-array name="recurring_task_select">
+    <item>Alleen deze herhaling</item>
+    <item>Alle herhalingen</item>
+  </string-array>
 </resources>
