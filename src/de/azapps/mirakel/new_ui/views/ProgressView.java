@@ -1,13 +1,8 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import de.azapps.mirakel.new_ui.R;

@@ -3,14 +3,11 @@ package de.azapps.mirakel.new_ui.views;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.tools.OptionalUtils;

@@ -26,6 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -35,6 +36,7 @@ import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
+import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
 
@@ -57,7 +59,7 @@ public class TaskFragment extends DialogFragment {
 
     private NoteView noteView;
     private DatesView datesView;
-
+    private TagsView task_tags;
 
     private MirakelContentObserver observer;
 
@@ -94,7 +96,8 @@ public class TaskFragment extends DialogFragment {
                 updateAll();
             }
         });
-        new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), callBackMap);
+        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(),
+                                              callBackMap);
     }
 
     @Override
@@ -123,6 +126,7 @@ public class TaskFragment extends DialogFragment {
         progressView = (ProgressView) layout.findViewById(R.id.task_progress);
         noteView = (NoteView) layout.findViewById(R.id.task_note);
         datesView = (DatesView) layout.findViewById(R.id.task_dates);
+        task_tags = (TagsView) layout.findViewById(R.id.task_tags);
         updateAll();
         return layout;
     }
@@ -147,6 +151,7 @@ public class TaskFragment extends DialogFragment {
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
+        task_tags.setTask(task);
     }
 
     private OptionalUtils.Procedure<Integer> progressChangedListener = new

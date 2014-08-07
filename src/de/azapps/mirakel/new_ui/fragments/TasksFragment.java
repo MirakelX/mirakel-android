@@ -16,7 +16,6 @@ import android.widget.ListView;
 import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import com.google.common.base.Optional;
 
-
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;

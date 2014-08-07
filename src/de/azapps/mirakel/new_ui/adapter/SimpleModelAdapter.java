@@ -29,7 +29,6 @@ import android.widget.TextView;
 
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.new_ui.R;
 
 public class SimpleModelAdapter extends CursorAdapter {
     private LayoutInflater mInflater;
