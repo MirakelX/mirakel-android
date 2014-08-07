@@ -299,6 +299,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
         }
+        c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
     }
 
