@@ -51,11 +51,13 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="wrong_config">Het lijkt erop dat het verkeerde configuratie bestand gebruikt is</string>
   <string name="cert_not_found">Het certificaat is verdwenen. Activeer gelieve opnieuw uw account.</string>
   <string name="could_not_find_common_ancestor">Kon geen gemeenschappelijk begin vinden. Dit betekent dat er iets niet synchroon loopt met de server and dat u de Mirakel gegeven moet wissen. Sorry</string>
+  <string name="client_sync_key_not_found">Client sync sleutel niet gevonden. Controleer uw taskwarrior configuratie.</string>
   <string name="config_404">Kan het configuratiebestand niet vinden</string>
   <string name="config_error_empty">Er is geen %s vermelding in de config</string>
   <string name="load_config">Selecteer het configuratie bestand voor Taskwarrior</string>
   <string name="select_config">Selecteer het Taskwarrior configuratie bestand</string>
   <string name="message_try_later">Probeer later te synchroniseren</string>
+  <string name="message_access_denied">Toegang geweigerd! \nGebruikt u het juiste configuratiebestand? \nU moet de Taskwarrior server configureren om te synchroniseren met Mirakel.</string>
   <string name="message_create_socket">De aansluiting kan niet worden gemaakt!\nStaat de netwerk verbinding aan?</string>
   <string name="message_account_suspended">Het account is geschorst!</string>
   <string name="message_parse_message">Kan de taak niet parsen – schrijf alstublieft hoe dit gebeurde</string>
