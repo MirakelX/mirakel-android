@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~ Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <changelog>
+    <version name="2.7-beta1" date="2014-08-05" code="64">
+        <text>If you use davdroid to sync your tasks, please install the latest version of our patched davdroid. Then please readd the account and resync.</text>
+        <feature>Reimplement CalDavSync</feature>
+        <feature>Preparing internal datamodel for new UI</feature>
+        <feature>Bugfixes</feature>
+    </version>
     <version name="2.6.2" date="2014-07-13" code="63">
         <feature>Bugfixes</feature>
     </version>
