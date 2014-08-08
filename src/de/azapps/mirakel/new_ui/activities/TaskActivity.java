@@ -34,7 +34,7 @@ public class TaskActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task);
+        setContentView(R.layout.activity_mirakel);
         getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(
                 R.color.colorPrimary)));
     }

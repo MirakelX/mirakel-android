@@ -30,18 +30,15 @@ import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.*;
 
 public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     OnListSelectedListener {
 
-    private class ViewHolder {
-        private Optional<DrawerLayout> mDrawerLayout;
-        private Optional<ActionBarDrawerToggle> mDrawerToggle;
-    }
-
-    private ViewHolder viewHolder = new ViewHolder();
+    private Optional<DrawerLayout> mDrawerLayout = absent();
+    private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
 
 
     @Override
@@ -58,7 +55,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        withOptional(viewHolder.mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
+        withOptional(mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
             @Override
             public void apply(ActionBarDrawerToggle input) {
                 input.syncState();
@@ -69,7 +66,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        withOptional(viewHolder.mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
+        withOptional(mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
             @Override
             public void apply(ActionBarDrawerToggle input) {
                 input.onConfigurationChanged(newConfig);
@@ -80,9 +77,9 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (viewHolder.mDrawerLayout.isPresent()) {
+        if (mDrawerLayout.isPresent()) {
             // For phones
-            boolean drawerOpen = viewHolder.mDrawerLayout.get().isDrawerOpen(Gravity.START);
+            boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(Gravity.START);
             if (drawerOpen) {
                 // TODO list menu
             } else {
@@ -106,9 +103,9 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (viewHolder.mDrawerToggle.isPresent()) {
+        if (mDrawerToggle.isPresent()) {
             // Phone
-            if (viewHolder.mDrawerToggle.get().onOptionsItemSelected(item)) {
+            if (mDrawerToggle.get().onOptionsItemSelected(item)) {
                 return true;
             }
         }
@@ -179,8 +176,8 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
 
     private void initDrawer() {
         // Nav drawer
-        viewHolder.mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
-        withOptional(viewHolder.mDrawerLayout, new Procedure<DrawerLayout>() {
+        mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
             public void apply(DrawerLayout mDrawerLayout) {
                 final ActionBar actionBar = MirakelActivity.this.getActionBar();
@@ -202,7 +199,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                     }
                 };
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
-                viewHolder.mDrawerToggle = Optional.of(mDrawerToggle);
+                MirakelActivity.this.mDrawerToggle = Optional.of(mDrawerToggle);
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setHomeButtonEnabled(true);
             }
