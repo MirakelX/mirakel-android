@@ -15,5 +15,6 @@
     <string name="save">Save</string>
     <string name="task_move_to">Move task to</string>
     <string name="task_tags">Tags:</string>
+    <string name="subtask_add">Add subtask…</string>
 
 </resources>

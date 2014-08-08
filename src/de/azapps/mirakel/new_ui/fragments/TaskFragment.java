@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.fourmob.datetimepicker.date.DatePicker;
@@ -27,20 +28,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import de.azapps.mirakel.custom_views.BaseTaskDetailRow;
+import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.adapter.SimpleModelAdapter;
+import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
+import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
 
 import static com.google.common.base.Optional.fromNullable;
+import static de.azapps.tools.OptionalUtils.Procedure;
 
 public class TaskFragment extends DialogFragment {
 
@@ -60,6 +66,7 @@ public class TaskFragment extends DialogFragment {
     private NoteView noteView;
     private DatesView datesView;
     private TagsView task_tags;
+    private SubtasksView subtasksView;
 
     private MirakelContentObserver observer;
 
@@ -127,6 +134,7 @@ public class TaskFragment extends DialogFragment {
         noteView = (NoteView) layout.findViewById(R.id.task_note);
         datesView = (DatesView) layout.findViewById(R.id.task_dates);
         task_tags = (TagsView) layout.findViewById(R.id.task_tags);
+        subtasksView = (SubtasksView) layout.findViewById(R.id.task_subtasks);
         updateAll();
         return layout;
     }
@@ -152,10 +160,12 @@ public class TaskFragment extends DialogFragment {
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
         task_tags.setTask(task);
+        subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
+                                 onSubtaskDoneListener);
     }
 
-    private OptionalUtils.Procedure<Integer> progressChangedListener = new
-    OptionalUtils.Procedure<Integer>() {
+    private Procedure<Integer> progressChangedListener = new
+    Procedure<Integer>() {
         @Override
         public void apply(Integer input) {
             task.setProgress(input);
@@ -201,8 +211,8 @@ public class TaskFragment extends DialogFragment {
         }
     };
 
-    private OptionalUtils.Procedure<String> noteChangedListener = new
-    OptionalUtils.Procedure<String>() {
+    private Procedure<String> noteChangedListener = new
+    Procedure<String>() {
         @Override
         public void apply(String input) {
             task.setContent(input);
@@ -263,6 +273,34 @@ public class TaskFragment extends DialogFragment {
                 }
             }, fromNullable(task.getReminder()), false);
             dateTimeDialog.show(getFragmentManager(), "reminderDialog");
+        }
+    };
+
+
+    private Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
+        @Override
+        public void apply(Task task) {
+            task.setDone(!task.isDone());
+            task.save();
+        }
+    };
+    private View.OnClickListener onSubtaskAddListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            TaskDialogHelpers.handleSubtask(getActivity(), task, new BaseTaskDetailRow.OnTaskChangedListner() {
+                @Override
+                public void onTaskChanged(Task newTask) {
+                    task.save();
+                }
+            }, false);
+        }
+    };
+
+    private OnTaskSelectedListener onSubtaskClickListener = new OnTaskSelectedListener() {
+        @Override
+        public void onTaskSelected(Task task) {
+            DialogFragment newFragment = TaskFragment.newInstance(task.getId());
+            newFragment.show(getFragmentManager(), "dialog");
         }
     };
 

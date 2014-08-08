@@ -52,28 +52,37 @@
         <de.azapps.mirakel.new_ui.views.DatesView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:id="@+id/task_dates"/>
 
         <!-- Progress -->
         <de.azapps.mirakel.new_ui.views.ProgressView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:id="@+id/task_progress"/>
         <!-- Tags -->
 
         <de.azapps.mirakel.new_ui.views.TagsView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:id="@+id/task_tags"/>
 
         <!-- Notes -->
         <de.azapps.mirakel.new_ui.views.NoteView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:id="@+id/task_note"/>
 
 
         <!-- TODO Subtasks -->
+        <de.azapps.mirakel.new_ui.views.SubtasksView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/task_subtasks"/>
 
         <!-- TODO Files -->
 
