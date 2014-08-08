@@ -114,11 +114,14 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         getLoaderManager().restartLoader(0, args, this);
     }
 
+    public void setList(Long list_id) {
+        listId = Optional.fromNullable(list_id);
+        update();
+    }
 
     @Override
-    public Loader onCreateLoader(int i, Bundle bundle) {
+    public Loader onCreateLoader(int i, Bundle arguments) {
         boolean showDone = MirakelCommonPreferences.showDoneMain();
-        Bundle arguments = getArguments();
         try {
             listId = Optional.of(arguments.getLong("list_id"));
         } catch (IllegalStateException | NullPointerException e) {

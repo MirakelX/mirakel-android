@@ -136,8 +136,8 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     private void setList(long list_id) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TasksFragment tasksFragment = TasksFragment.newInstance(list_id);
-        fragmentTransaction.replace(R.id.tasks_fragment, tasksFragment);
+        TasksFragment tasksFragment = (TasksFragment) fragmentManager.findFragmentById(R.id.tasks_fragment);
+        tasksFragment.setList(list_id);
         fragmentTransaction.commit();
     }
 

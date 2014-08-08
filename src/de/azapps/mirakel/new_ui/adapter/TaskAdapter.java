@@ -22,13 +22,13 @@ public class TaskAdapter extends CursorAdapter {
 
     public TaskAdapter(Context context, Cursor c, int flags, View.OnClickListener itemClickListener) {
         super(context, c, flags);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.row_task, null);
+        View view = mInflater.inflate(R.layout.row_task, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;
