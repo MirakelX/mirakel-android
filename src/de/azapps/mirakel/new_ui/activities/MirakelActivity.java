@@ -143,6 +143,12 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     @Override
     public void onListSelected(ListMirakel list) {
         setList(list);
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
+            @Override
+            public void apply(DrawerLayout input) {
+                input.closeDrawer(Gravity.START);
+            }
+        });
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@ package de.azapps.mirakel.new_ui.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,8 +31,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -42,6 +48,7 @@ import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
+import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
 
@@ -68,6 +75,8 @@ public class TaskFragment extends DialogFragment {
     private DatesView datesView;
     private TagsView task_tags;
     private SubtasksView subtasksView;
+    private Button addMoreButton;
+    private Button doneButton;
 
     private MirakelContentObserver observer;
 
@@ -135,7 +144,16 @@ public class TaskFragment extends DialogFragment {
         datesView = (DatesView) layout.findViewById(R.id.task_dates);
         task_tags = (TagsView) layout.findViewById(R.id.task_tags);
         subtasksView = (SubtasksView) layout.findViewById(R.id.task_subtasks);
+        addMoreButton = (Button) layout.findViewById(R.id.task_button_add_more);
+        doneButton = (Button) layout.findViewById(R.id.task_button_done);
         updateAll();
+        if (task.isStub()) {
+            taskNameViewSwitcher.showNext();
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                                         Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(taskNameEdit, InputMethodManager.SHOW_IMPLICIT);
+            taskNameEdit.selectAll();
+        }
         return layout;
     }
 
@@ -152,6 +170,7 @@ public class TaskFragment extends DialogFragment {
             }
         });
         taskName.setText(task.getName());
+        taskNameEdit.setText(task.getName());
         taskName.setOnClickListener(onEditName);
         progressView.setProgress(task.getProgress());
         progressView.setOnProgressChangeListener(progressChangedListener);
@@ -162,6 +181,7 @@ public class TaskFragment extends DialogFragment {
         task_tags.setTask(task);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
                                  onSubtaskDoneListener);
+        doneButton.setOnClickListener(onDoneButtonClickListener);
     }
 
     private Procedure<Integer> progressChangedListener = new
@@ -301,6 +321,21 @@ public class TaskFragment extends DialogFragment {
         public void onTaskSelected(Task task) {
             DialogFragment newFragment = TaskFragment.newInstance(task);
             newFragment.show(getFragmentManager(), "dialog");
+        }
+    };
+
+    private View.OnClickListener onDoneButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (task.isStub()) {
+                try {
+                    task.create();
+                } catch (final DefinitionsHelper.NoSuchListException e) {
+                    ErrorReporter.report(ErrorType.TASKS_NO_LIST);
+                    Log.e(TAG, "NoSuchListException", e);
+                }
+            }
+            dismiss();
         }
     };
 
