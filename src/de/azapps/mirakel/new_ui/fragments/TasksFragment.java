@@ -38,7 +38,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Required empty public constructor
     }
 
-
     public static TasksFragment newInstance(ListMirakel listMirakel) {
         TasksFragment f = new TasksFragment();
         // Supply num input as an argument.
@@ -46,6 +45,10 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         args.putParcelable(ARGUMENT_LIST, listMirakel);
         f.setArguments(args);
         return f;
+    }
+
+    public ListMirakel getList() {
+        return listMirakel;
     }
 
     @Override

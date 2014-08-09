@@ -109,7 +109,7 @@ public class TaskFragment extends DialogFragment {
 
     @Override
     public void onDismiss (DialogInterface dialog) {
-        if (observer != null) {
+        if (observer != null && getActivity() != null && getActivity().getContentResolver() != null) {
             getActivity().getContentResolver().unregisterContentObserver(observer);
         }
     }

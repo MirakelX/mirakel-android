@@ -27,16 +27,14 @@
               tools:context="de.azapps.mirakel.new_ui.activities.MirakelActivity">
 
     <fragment
-        android:layout_width="0dp"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
         android:name="de.azapps.mirakel.new_ui.fragments.ListsFragment"
         android:id="@+id/lists_fragment"/>
 
     <fragment
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="de.azapps.mirakel.new_ui.fragments.TasksFragment"
-        android:layout_weight="7"
         android:id="@+id/tasks_fragment"/>
 </LinearLayout>

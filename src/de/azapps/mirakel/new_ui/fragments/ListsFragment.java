@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 
@@ -50,6 +51,7 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
         mAdapter = new ListAdapter(getActivity(), null, 0);
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+        getListView().setBackgroundColor(getResources().getColor(R.color.white));
     }
 
 

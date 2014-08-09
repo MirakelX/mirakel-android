@@ -25,6 +25,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
@@ -40,6 +41,18 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Getter / Setter
+    private TasksFragment getTasksFragment() {
+        return (TasksFragment) getFragmentManager().findFragmentById(R.id.tasks_fragment);
+    }
+
+    private ListsFragment getListsFragment() {
+        return (ListsFragment) getFragmentManager().findFragmentById(R.id.lists_fragment);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +62,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                 R.color.colorPrimary)));
         initDrawer();
         handleIntent(getIntent());
+        getActionBar().setTitle(getTasksFragment().getList().getName());
     }
 
     @Override
@@ -131,10 +145,13 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         setList(list);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Other functions
+
     private void setList(ListMirakel listMirakel) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TasksFragment tasksFragment = (TasksFragment) fragmentManager.findFragmentById(R.id.tasks_fragment);
+        TasksFragment tasksFragment = getTasksFragment();
         tasksFragment.setList(listMirakel);
         fragmentTransaction.commit();
     }
@@ -188,7 +205,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                     /** Called when a drawer has settled in a completely closed state. */
                     public void onDrawerClosed(View view) {
                         super.onDrawerClosed(view);
-                        actionBar.setTitle(R.string.list_title);
+                        actionBar.setTitle(getTasksFragment().getList().getName());
                         invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                     /** Called when a drawer has settled in a completely open state. */
