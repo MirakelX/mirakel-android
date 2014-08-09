@@ -36,7 +36,10 @@ import android.net.Uri;
 
 import com.google.common.base.Optional;
 
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -45,12 +48,16 @@ import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
 
 public class Semantic extends SemanticBase {
 
     public static final String[] allColumns = { ID, CONDITION, PRIORITY, DUE,
                                                 LIST, WEEKDAY
                                               };
+    private static final String TAG = "de.azapps.mirakel.model.semantic.Semantic";
     private static Map<String, Semantic> semantics = new HashMap<>();
     public static final String TABLE = "semantic_conditions";
     public static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
@@ -79,6 +86,18 @@ public class Semantic extends SemanticBase {
 
     public static Task createTask(String taskName, Optional<ListMirakel> currentList,
                                   final boolean useSemantic, final Context context) {
+        Task stubTask = createStubTask(taskName, currentList, useSemantic, context);
+        try {
+            return stubTask.create();
+        } catch (final DefinitionsHelper.NoSuchListException e) {
+            ErrorReporter.report(ErrorType.TASKS_NO_LIST);
+            Log.e(TAG, "NoSuchListException", e);
+            return null;
+        }
+    }
+
+    public static Task createStubTask(String taskName, Optional<ListMirakel> currentList,
+                                      final boolean useSemantic, final Context context) {
         GregorianCalendar due = null;
         int prio = 0;
         if (currentList.isPresent() && currentList.get().isSpecial()) {
@@ -162,7 +181,9 @@ public class Semantic extends SemanticBase {
         if (!currentList.isPresent()) {
             currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
         }
-        return Task.newTask(taskName, currentList.get(), due, prio);
+        final Task t = new Task(taskName, currentList.get(), due, prio);
+        t.setStub(true);
+        return t;
     }
 
     public Semantic(final Cursor c) {
@@ -178,7 +199,7 @@ public class Semantic extends SemanticBase {
             due = c.getInt(c.getColumnIndex(DUE));
         }
         setDue(due);
-        Optional<ListMirakel> list = null;
+        Optional<ListMirakel> list = absent();
         if (!c.isNull(c.getColumnIndex(LIST))) {
             list = ListMirakel.get(c.getInt(c.getColumnIndex(LIST)));
         }

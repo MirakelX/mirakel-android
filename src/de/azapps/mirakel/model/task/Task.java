@@ -113,6 +113,19 @@ public class Task extends TaskBase implements Parcelable {
         this.recurrenceParent = null;
     }
 
+    public Task(final String name, final ListMirakel list,
+                final GregorianCalendar due, final int priority) {
+        this(name, list, "", false, due, priority);
+    }
+
+    public Task(final String name, final ListMirakel list,
+                final String content, final boolean done,
+                final GregorianCalendar due, final int priority) {
+        this(0, java.util.UUID.randomUUID().toString(),
+             list, name, content, done, due, null, priority, null, null,
+             SYNC_STATE.ADD, "", -1, -1, 0, true);
+    }
+
     public Task(final long id, final String uuid, final ListMirakel list,
                 final String name, final String content, final boolean done,
                 final Calendar due, final Calendar reminder, final int priority,
@@ -688,6 +701,10 @@ public class Task extends TaskBase implements Parcelable {
             Log.d(Task.TAG, "new Task equals old, did not need to save it");
             return;
         }
+        if (isStub()) {
+            Log.d(TAG, "It's a stub, don't save it");
+            return;
+        }
         if (isEdited(RECURRING) && !calledFromSync) {
             final Task old = Task.get(getId());
             if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1) {
@@ -1043,6 +1060,7 @@ public class Task extends TaskBase implements Parcelable {
         dest.writeTypedList(tags);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
+        dest.writeByte(isStub() ? (byte) 1 : (byte) 0);
     }
 
     private Task(Parcel in) {
@@ -1079,6 +1097,7 @@ public class Task extends TaskBase implements Parcelable {
         in.readTypedList(tags, Tag.CREATOR);
         this.setId(in.readLong());
         this.setName(in.readString());
+        this.setStub(in.readByte() != 0);
     }
 
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {

@@ -76,6 +76,7 @@ abstract class TaskBase extends ModelBase {
     protected Calendar updatedAt;
     protected String uuid = "";
     protected List<Tag> tags;
+    private boolean isStub = false;
 
     TaskBase() {
         // nothing
@@ -612,6 +613,14 @@ abstract class TaskBase extends ModelBase {
     protected void removeTag(final Tag tag) {
         checkTags();
         this.tags.remove(tag);
+    }
+
+    public boolean isStub() {
+        return isStub;
+    }
+
+    public void setStub(boolean isStub) {
+        this.isStub = isStub;
     }
 
     @Override

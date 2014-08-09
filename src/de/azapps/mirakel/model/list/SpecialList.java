@@ -69,12 +69,13 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.transformOrNull;
 
 public class SpecialList extends ListMirakel implements android.os.Parcelable {
     private boolean active;
-    private Optional<ListMirakel> defaultList;
+    private Optional<ListMirakel> defaultList = absent();
     private Integer defaultDate;
     private Map<String, SpecialListsBaseProperty> where;
     private String whereString;
