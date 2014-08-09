@@ -63,6 +63,7 @@ import de.azapps.tools.Log;
 
 public class Task extends TaskBase implements Parcelable {
 
+    // Constants
     public static final String[] allColumns = { ModelBase.ID, TaskBase.UUID,
                                                 TaskBase.LIST_ID, ModelBase.NAME, TaskBase.CONTENT, TaskBase.DONE,
                                                 TaskBase.DUE, TaskBase.REMINDER, TaskBase.PRIORITY,
@@ -81,10 +82,22 @@ public class Task extends TaskBase implements Parcelable {
     public static final String TABLE = "tasks";
 
     private static final String TAG = "TasksDataSource";
+
+    // Wozu brauchen wir das hier und nicht in TaskBase?
     private Pair<String, Integer> recurrenceParent;
 
     public boolean hasRecurringParent() {
         return this.recurrenceParent != null;
+    }
+
+    private String dependencies[];
+
+    public void setDependencies(final String[] dep) {
+        this.dependencies = dep;
+    }
+
+    void addRecurringChild(final Pair<String, Integer> newRec) {
+        this.recurrenceParent = newRec;
     }
 
     @Override
@@ -92,11 +105,89 @@ public class Task extends TaskBase implements Parcelable {
         return URI;
     }
 
-    public static MirakelQueryBuilder addBasicFiler(final MirakelQueryBuilder qb) {
-        return qb.and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
-                      SYNC_STATE.DELETE.toInt()).and(RECURRING_SHOWN, Operation.EQ,
-                              true);
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Constructors
+
+    Task() {
+        super();
+        this.recurrenceParent = null;
     }
+
+    public Task(final long id, final String uuid, final ListMirakel list,
+                final String name, final String content, final boolean done,
+                final Calendar due, final Calendar reminder, final int priority,
+                final Calendar created_at, final Calendar updated_at,
+                final SYNC_STATE sync_state, final String additionalEntriesString,
+                final int recurring, final int recurring_reminder,
+                final int progress, final boolean shown) {
+        super(id, uuid, list, name, content, done, due, reminder, priority,
+              created_at, updated_at, sync_state, additionalEntriesString,
+              recurring, recurring_reminder, progress, shown);
+        this.recurrenceParent = null;
+    }
+
+    public Task(final Cursor cursor) {
+        if (cursor.isAfterLast()) {
+            throw new IllegalArgumentException("cursor out of bounds");
+        }
+        if (cursor.isNull(cursor.getColumnIndex(DUE))) {
+            setDue(null);
+        } else {
+            setDue(DateTimeHelper.createLocalCalendar(
+                       cursor.getLong(cursor.getColumnIndex(DUE)), true));
+        }
+        if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
+            setReminder(null);
+        } else {
+            setReminder(DateTimeHelper.createLocalCalendar(cursor
+                        .getLong(cursor.getColumnIndex(REMINDER))));
+        }
+        Calendar created_at = null;
+        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
+            created_at = null;
+        } else {
+            created_at = new GregorianCalendar();
+            created_at.setTimeInMillis(cursor.getLong(cursor
+                                       .getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000);
+        }
+        setCreatedAt(created_at);
+        Calendar updated_at;
+        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT))) {
+            updated_at = null;
+        } else {
+            updated_at = new GregorianCalendar();
+            updated_at.setTimeInMillis(cursor.getLong(cursor
+                                       .getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000);
+        }
+        setUpdatedAt(updated_at);
+        setId(cursor.getLong(cursor.getColumnIndex(ID)));
+        setUUID(cursor.getString(cursor.getColumnIndex(UUID)));
+        setList(ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))).get());
+        setName(cursor.getString(cursor.getColumnIndex(NAME)));
+        setContent(cursor.getString(cursor.getColumnIndex(CONTENT)));
+        setDone(cursor.getShort(cursor.getColumnIndex(DONE)) == 1);
+        setPriority(cursor.getInt(cursor.getColumnIndex(PRIORITY)));
+        setSyncState(SYNC_STATE.valueOf(cursor.getShort(cursor
+                                        .getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))));
+        setAdditionalEntries(cursor.getString(cursor
+                                              .getColumnIndex(ADDITIONAL_ENTRIES)));
+        setRecurrence(cursor.getInt(cursor.getColumnIndex(RECURRING)));
+        setRecurringReminder(cursor.getInt(cursor
+                                           .getColumnIndex(RECURRING_REMINDER)));
+        setProgress(cursor.getInt(cursor.getColumnIndex(PROGRESS)));
+        setIsRecurringShown(cursor.getShort(cursor
+                                            .getColumnIndex(RECURRING_SHOWN)) == 1);
+    }
+
+    public Task(final String name) {
+        super(name);
+        this.recurrenceParent = null;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Factory methods
+
 
     /**
      * Get all Tasks
@@ -362,131 +453,8 @@ public class Task extends TaskBase implements Parcelable {
         }
     }
 
-    public static void resetSyncState(final List<Task> tasks) {
-        if (tasks.size() == 0) {
-            return;
-        }
-        for (final Task t : tasks) {
-            if (t.getSyncState() != SYNC_STATE.DELETE) {
-                t.setSyncState(SYNC_STATE.NOTHING);
-                try {
-                    update(URI, t.getContentValues(), ID + " = " + t.getId(),
-                           null);
-                } catch (final NoSuchListException e) {
-                    Log.d(Task.TAG, "List did vanish", e);
-                } catch (final Exception e) {
-                    t.destroy(false);
-                    Log.d(Task.TAG, "destroy: " + t.getName(), e);
-                }
-            } else {
-                Log.d(Task.TAG, "destroy: " + t.getName());
-                t.destroy(true);
-            }
-        }
-    }
-
-    private String dependencies[];
-
-    public void setDependencies(final String[] dep) {
-        this.dependencies = dep;
-    }
-
-    Task() {
-        super();
-        this.recurrenceParent = null;
-    }
-
-    public Task(final long id, final String uuid, final ListMirakel list,
-                final String name, final String content, final boolean done,
-                final Calendar due, final Calendar reminder, final int priority,
-                final Calendar created_at, final Calendar updated_at,
-                final SYNC_STATE sync_state, final String additionalEntriesString,
-                final int recurring, final int recurring_reminder,
-                final int progress, final boolean shown) {
-        super(id, uuid, list, name, content, done, due, reminder, priority,
-              created_at, updated_at, sync_state, additionalEntriesString,
-              recurring, recurring_reminder, progress, shown);
-        this.recurrenceParent = null;
-    }
-
-    public Task(final Cursor cursor) {
-        if (cursor.isAfterLast()) {
-            throw new IllegalArgumentException("cursor out of bounds");
-        }
-        if (cursor.isNull(cursor.getColumnIndex(DUE))) {
-            setDue(null);
-        } else {
-            setDue(DateTimeHelper.createLocalCalendar(
-                       cursor.getLong(cursor.getColumnIndex(DUE)), true));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
-            setReminder(null);
-        } else {
-            setReminder(DateTimeHelper.createLocalCalendar(cursor
-                        .getLong(cursor.getColumnIndex(REMINDER))));
-        }
-        Calendar created_at = null;
-        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
-            created_at = null;
-        } else {
-            created_at = new GregorianCalendar();
-            created_at.setTimeInMillis(cursor.getLong(cursor
-                                       .getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000);
-        }
-        setCreatedAt(created_at);
-        Calendar updated_at;
-        if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT))) {
-            updated_at = null;
-        } else {
-            updated_at = new GregorianCalendar();
-            updated_at.setTimeInMillis(cursor.getLong(cursor
-                                       .getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000);
-        }
-        setUpdatedAt(updated_at);
-        setId(cursor.getLong(cursor.getColumnIndex(ID)));
-        setUUID(cursor.getString(cursor.getColumnIndex(UUID)));
-        setList(ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))).get());
-        setName(cursor.getString(cursor.getColumnIndex(NAME)));
-        setContent(cursor.getString(cursor.getColumnIndex(CONTENT)));
-        setDone(cursor.getShort(cursor.getColumnIndex(DONE)) == 1);
-        setPriority(cursor.getInt(cursor.getColumnIndex(PRIORITY)));
-        setSyncState(SYNC_STATE.valueOf(cursor.getShort(cursor
-                                        .getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))));
-        setAdditionalEntries(cursor.getString(cursor
-                                              .getColumnIndex(ADDITIONAL_ENTRIES)));
-        setRecurrence(cursor.getInt(cursor.getColumnIndex(RECURRING)));
-        setRecurringReminder(cursor.getInt(cursor
-                                           .getColumnIndex(RECURRING_REMINDER)));
-        setProgress(cursor.getInt(cursor.getColumnIndex(PROGRESS)));
-        setIsRecurringShown(cursor.getShort(cursor
-                                            .getColumnIndex(RECURRING_SHOWN)) == 1);
-    }
-
-    public Task(final String name) {
-        super(name);
-        this.recurrenceParent = null;
-    }
-
-    void addRecurringChild(final Pair<String, Integer> newRec) {
-        this.recurrenceParent = newRec;
-    }
-
-    public FileMirakel addFile(final Context ctx, final Uri uri) {
-        return FileMirakel.newFile(ctx, this, uri);
-    }
-
-    public void addSubtask(final Task t) {
-        if (checkIfParent(t)) {
-            return;
-        }
-        final ContentValues cv = new ContentValues();
-        cv.put("parent_id", getId());
-        cv.put("child_id", t.getId());
-        insert(MirakelInternalContentProvider.SUBTASK_URI, cv);
-    }
-
     public boolean checkIfParent(final Task t) {
-        return isChildRec(t);
+        return hasSubtasksLoop(t);
     }
 
     public Task create() throws NoSuchListException {
@@ -539,12 +507,66 @@ public class Task extends TaskBase implements Parcelable {
         return newTask;
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // helper methods
+
+    public static MirakelQueryBuilder addBasicFiler(final MirakelQueryBuilder qb) {
+        return qb.and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                      SYNC_STATE.DELETE.toInt()).and(RECURRING_SHOWN, Operation.EQ,
+                              true);
+    }
+
+    public static void resetSyncState(final List<Task> tasks) {
+        if (tasks.size() == 0) {
+            return;
+        }
+        for (final Task t : tasks) {
+            if (t.getSyncState() != SYNC_STATE.DELETE) {
+                t.setSyncState(SYNC_STATE.NOTHING);
+                try {
+                    update(URI, t.getContentValues(), ID + " = " + t.getId(),
+                           null);
+                } catch (final NoSuchListException e) {
+                    Log.d(Task.TAG, "List did vanish", e);
+                } catch (final Exception e) {
+                    t.destroy(false);
+                    Log.d(Task.TAG, "destroy: " + t.getName(), e);
+                }
+            } else {
+                Log.d(Task.TAG, "destroy: " + t.getName());
+                t.destroy(true);
+            }
+        }
+    }
+
+    public FileMirakel addFile(final Context ctx, final Uri uri) {
+        return FileMirakel.newFile(ctx, this, uri);
+    }
+
+    public void addSubtask(final Task t) {
+        if (checkIfParent(t)) {
+            return;
+        }
+        final ContentValues cv = new ContentValues();
+        cv.put("parent_id", getId());
+        cv.put("child_id", t.getId());
+        insert(MirakelInternalContentProvider.SUBTASK_URI, cv);
+    }
+
     public void deleteSubtask(final Task s, final boolean permanently) {
         if (permanently) {
             s.destroy();
         } else {
             delete(MirakelInternalContentProvider.SUBTASK_URI, "parent_id="
                    + getId() + " and child_id=" + s.getId(), null);
+        }
+    }
+
+    public void destroySubtasks() {
+        final List<Task> tasks = getSubtasks();
+        for (final Task t : tasks) {
+            t.destroy();
         }
     }
 
@@ -555,13 +577,6 @@ public class Task extends TaskBase implements Parcelable {
     @Override
     public void destroy() {
         destroy(false);
-    }
-
-    public void destroySubtasks() {
-        final List<Task> tasks = getSubtasks();
-        for (final Task t : tasks) {
-            t.destroy();
-        }
     }
 
     public void destroy(final boolean force) {
@@ -610,7 +625,7 @@ public class Task extends TaskBase implements Parcelable {
         return FileMirakel.getForTask(this);
     }
 
-    public long getSubtaskCount() {
+    public long countSubtasks() {
         return new MirakelQueryBuilder(context).and("parent_id", Operation.EQ,
                 this).count(MirakelInternalContentProvider.SUBTASK_URI);
     }
@@ -627,10 +642,10 @@ public class Task extends TaskBase implements Parcelable {
         return subTasks;
     }
 
-    private boolean isChildRec(final Task t) {
+    private boolean hasSubtasksLoop(final Task t) {
         final List<Task> subtasks = getSubtasks();
         for (final Task s : subtasks) {
-            if (s.getId() == t.getId() || s.isChildRec(t)) {
+            if (s.getId() == t.getId() || s.hasSubtasksLoop(t)) {
                 return true;
             }
         }
@@ -754,15 +769,6 @@ public class Task extends TaskBase implements Parcelable {
             updateReminders = true;
         }
         NotificationService.updateServices(Task.context, updateReminders);
-    }
-
-    public List<Task> getRecurrenceChilds() {
-        return cursorToTaskList(new MirakelQueryBuilder(context)
-                                .select(addPrefix(allColumns, TABLE))
-                                .and(Recurring.TW_TABLE + ".parent =", Operation.EQ, this)
-                                .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
-                                      Sorting.ASC)
-                                .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI));
     }
 
     public Task getRecurrenceMaster() {
