@@ -29,7 +29,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.ListSettings;
 import de.azapps.mirakel.settings.R;
@@ -39,7 +43,7 @@ public class SemanticsSettingsActivity extends ListSettings {
 
     private Semantic newSemantic() {
         return Semantic.newSemantic(getString(R.string.semantic_new), null,
-                                    null, null, null);
+                                    null, Optional.<ListMirakel>absent(), null);
     }
 
     @SuppressLint("NewApi")
