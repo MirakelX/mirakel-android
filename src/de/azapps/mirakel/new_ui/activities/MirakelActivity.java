@@ -22,6 +22,7 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
@@ -124,20 +125,20 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
 
     @Override
     public void onTaskSelected(Task task) {
-        DialogFragment newFragment = TaskFragment.newInstance(task.getId());
+        DialogFragment newFragment = TaskFragment.newInstance(task);
         newFragment.show(getFragmentManager(), "dialog");
     }
 
     @Override
     public void onListSelected(ListMirakel list) {
-        setList(list.getId());
+        setList(list);
     }
 
-    private void setList(long list_id) {
+    private void setList(ListMirakel listMirakel) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         TasksFragment tasksFragment = (TasksFragment) fragmentManager.findFragmentById(R.id.tasks_fragment);
-        tasksFragment.setList(list_id);
+        tasksFragment.setList(listMirakel);
         fragmentTransaction.commit();
     }
 
@@ -156,7 +157,13 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
             break;
         case DefinitionsHelper.SHOW_LIST:
         case DefinitionsHelper.SHOW_LIST_FROM_WIDGET:
-            setList(intent.getIntExtra (DefinitionsHelper.EXTRA_ID, 0));
+            Optional<ListMirakel> listMirakelOptional = ListMirakel.get(intent.getIntExtra(
+                        DefinitionsHelper.EXTRA_ID, 0));
+            if (listMirakelOptional.isPresent()) {
+                setList(listMirakelOptional.get());
+            } else {
+                setList(SpecialList.firstSpecialSafe());
+            }
             break;
         case Intent.ACTION_SEARCH:
             // TODO

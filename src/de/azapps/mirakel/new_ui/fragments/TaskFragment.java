@@ -51,6 +51,7 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 public class TaskFragment extends DialogFragment {
 
     private static final String TAG = "TaskFragment";
+    public static final String ARGUMENT_TASK = "task";
 
     private View layout;
     private Task task;
@@ -74,11 +75,11 @@ public class TaskFragment extends DialogFragment {
     public TaskFragment() {
     }
 
-    public static TaskFragment newInstance(long task_id) {
+    public static TaskFragment newInstance(Task task) {
         TaskFragment f = new TaskFragment();
         // Supply num input as an argument.
         Bundle args = new Bundle();
-        args.putLong("task_id", task_id);
+        args.putParcelable(ARGUMENT_TASK, task);
         f.setArguments(args);
         return f;
     }
@@ -88,8 +89,7 @@ public class TaskFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
         Bundle arguments = getArguments();
-        long task_id = arguments.getLong("task_id");
-        task = Task.get(task_id);
+        task = arguments.getParcelable(ARGUMENT_TASK);
         Map<Uri, MirakelContentObserver.ObserverCallBack> callBackMap = new HashMap<>();
         callBackMap.put(Task.URI, new MirakelContentObserver.ObserverCallBack() {
             @Override
@@ -299,7 +299,7 @@ public class TaskFragment extends DialogFragment {
     private OnTaskSelectedListener onSubtaskClickListener = new OnTaskSelectedListener() {
         @Override
         public void onTaskSelected(Task task) {
-            DialogFragment newFragment = TaskFragment.newInstance(task.getId());
+            DialogFragment newFragment = TaskFragment.newInstance(task);
             newFragment.show(getFragmentManager(), "dialog");
         }
     };

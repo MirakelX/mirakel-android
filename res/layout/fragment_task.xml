@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minWidth="1000dp"
+        android:minWidth="600dp"
         tools:context="de.azapps.mirakel.new_ui.fragments.TaskFragment">
 
         <LinearLayout
