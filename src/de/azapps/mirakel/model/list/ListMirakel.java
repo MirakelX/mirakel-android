@@ -25,6 +25,8 @@ import android.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
@@ -58,7 +60,7 @@ import static com.google.common.base.Optional.fromNullable;
 /**
  * @author az
  */
-public class ListMirakel extends ListBase {
+public class ListMirakel extends ListBase implements Parcelable {
 
     public static class ListAlreadyExistsException extends Exception {
         public ListAlreadyExistsException(String detailMessage) {
@@ -488,7 +490,7 @@ public class ListMirakel extends ListBase {
         }
     }
 
-    private ListMirakel() {
+    protected ListMirakel() {
         super();
     }
 
@@ -663,4 +665,44 @@ public class ListMirakel extends ListBase {
         }
         return qb;
     }
+
+    // Parcelable stuff
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
+        dest.writeString(this.createdAt);
+        dest.writeString(this.updatedAt);
+        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeInt(this.lft);
+        dest.writeInt(this.rgt);
+        dest.writeInt(this.color);
+        dest.writeLong(this.accountID);
+        dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private ListMirakel(Parcel in) {
+        int tmpSortBy = in.readInt();
+        this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
+        this.createdAt = in.readString();
+        this.updatedAt = in.readString();
+        int tmpSyncState = in.readInt();
+        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        this.lft = in.readInt();
+        this.rgt = in.readInt();
+        this.color = in.readInt();
+        this.accountID = in.readLong();
+        this.isSpecial = in.readByte() != 0;
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
 }

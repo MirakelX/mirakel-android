@@ -38,14 +38,18 @@ abstract class FileBase extends ModelBase {
     public static final String PATH = "path";
 
     private static final String TAG = "FileBase";
-    private Task task;
-    private Uri fileUri;
+    protected Task task;
+    protected Uri fileUri;
 
     public FileBase(final long id, final String name, final Task task,
                     final Uri uri) {
         super(id, name);
         this.task = task;
         this.fileUri = uri;
+    }
+
+    protected FileBase() {
+        // Do nothing
     }
 
 

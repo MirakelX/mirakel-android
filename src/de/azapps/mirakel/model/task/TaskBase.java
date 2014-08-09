@@ -59,23 +59,23 @@ abstract class TaskBase extends ModelBase {
 
     public static final String UUID = "uuid";
     private Map<String, String> additionalEntries = null;
-    private String additionalEntriesString;
-    private String content;
-    private Calendar createdAt;
-    private boolean done;
-    private Calendar due;
+    protected String additionalEntriesString;
+    protected String content;
+    protected Calendar createdAt;
+    protected boolean done;
+    protected Calendar due;
     protected final Map<String, Boolean> edited = new HashMap<>();
-    private ListMirakel list;
-    private int priority;
-    private int progress;
-    private long recurrence;
-    private long recurringReminder;
-    private boolean isRecurringShown;
-    private Calendar reminder;
-    private SYNC_STATE syncState;
-    private Calendar updatedAt;
-    private String uuid = "";
-    private List<Tag> tags;
+    protected ListMirakel list;
+    protected int priority;
+    protected int progress;
+    protected long recurrence;
+    protected long recurringReminder;
+    protected boolean isRecurringShown;
+    protected Calendar reminder;
+    protected SYNC_STATE syncState;
+    protected Calendar updatedAt;
+    protected String uuid = "";
+    protected List<Tag> tags;
 
     TaskBase() {
         // nothing

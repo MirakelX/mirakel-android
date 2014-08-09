@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -71,11 +72,12 @@ import de.azapps.tools.OptionalUtils;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.transformOrNull;
 
-public class SpecialList extends ListMirakel {
+public class SpecialList extends ListMirakel implements android.os.Parcelable {
     private boolean active;
     private Optional<ListMirakel> defaultList;
     private Integer defaultDate;
     private Map<String, SpecialListsBaseProperty> where;
+    private String whereString;
 
     public static final Uri URI = MirakelInternalContentProvider.SPECIAL_LISTS_URI;
 
@@ -89,7 +91,7 @@ public class SpecialList extends ListMirakel {
 
     @Override
     public MirakelQueryBuilder getWhereQueryForTasks() {
-        return packWhere(this.where);
+        return packWhere(getWhere());
     }
 
     @Override
@@ -103,10 +105,14 @@ public class SpecialList extends ListMirakel {
     }
 
     public Map<String, SpecialListsBaseProperty> getWhere() {
+        if (where == null) {
+            where = deserializeWhere(whereString);
+        }
         return this.where;
     }
 
     public void setWhere(final Map<String, SpecialListsBaseProperty> where) {
+        this.whereString = serializeWhere(where);
         this.where = where;
     }
 
@@ -151,6 +157,7 @@ public class SpecialList extends ListMirakel {
               AccountMirakel.getLocal());
         this.active = active;
         this.where = whereQuery;
+        this.whereString = serializeWhere(whereQuery);
         this.defaultList = defaultList;
         this.defaultDate = defaultDate;
         this.isSpecial = true;
@@ -391,7 +398,7 @@ public class SpecialList extends ListMirakel {
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
               AccountMirakel.getLocal());
         int defDateCol = c.getColumnIndex(DEFAULT_DUE);
-        setWhere(deserializeWhere(c.getString(c.getColumnIndex(WHERE_QUERY))));
+        whereString = c.getString(c.getColumnIndex(WHERE_QUERY));
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
         setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
         setDefaultDate(c.isNull(defDateCol) ? null : c.getInt(defDateCol));
@@ -475,4 +482,60 @@ public class SpecialList extends ListMirakel {
         return qb.count(URI);
     }
 
+    // Parcelable stuff
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(active ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.defaultList);
+        dest.writeValue(this.defaultDate);
+        dest.writeString(this.whereString);
+        dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
+        dest.writeString(this.createdAt);
+        dest.writeString(this.updatedAt);
+        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeInt(this.lft);
+        dest.writeInt(this.rgt);
+        dest.writeInt(this.color);
+        dest.writeLong(this.accountID);
+        dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private SpecialList(Parcel in) {
+        super();
+        this.active = in.readByte() != 0;
+        this.defaultList = (Optional<ListMirakel>) in.readSerializable();
+        this.defaultDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.whereString = in.readString();
+        int tmpSortBy = in.readInt();
+        this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
+        this.createdAt = in.readString();
+        this.updatedAt = in.readString();
+        int tmpSyncState = in.readInt();
+        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        this.lft = in.readInt();
+        this.rgt = in.readInt();
+        this.color = in.readInt();
+        this.accountID = in.readLong();
+        this.isSpecial = in.readByte() != 0;
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
+    public static final Creator<SpecialList> CREATOR = new Creator<SpecialList>() {
+        public SpecialList createFromParcel(Parcel source) {
+            return new SpecialList(source);
+        }
+        public SpecialList[] newArray(int size) {
+            return new SpecialList[size];
+        }
+    };
 }

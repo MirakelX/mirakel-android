@@ -25,6 +25,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +45,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
 
-public class AccountMirakel extends AccountBase {
+public class AccountMirakel extends AccountBase implements Parcelable {
     public enum ACCOUNT_TYPES {
         CALDAV, LOCAL, TASKWARRIOR;
         public static ACCOUNT_TYPES getSyncType(final String type) {
@@ -296,5 +298,37 @@ public class AccountMirakel extends AccountBase {
         return null;
     }
 
+    // Parcelable stuff
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.type);
+        dest.writeByte(enabled ? (byte) 1 : (byte) 0);
+        dest.writeString(this.syncKey);
+        dest.writeLong(getId());
+        dest.writeString(getName());
+    }
+
+    private AccountMirakel(Parcel in) {
+        super();
+        this.type = in.readInt();
+        this.enabled = in.readByte() != 0;
+        this.syncKey = in.readString();
+        setId(in.readLong());
+        setName(in.readString());
+    }
+
+    public static final Creator<AccountMirakel> CREATOR = new Creator<AccountMirakel>() {
+        public AccountMirakel createFromParcel(Parcel source) {
+            return new AccountMirakel(source);
+        }
+        public AccountMirakel[] newArray(int size) {
+            return new AccountMirakel[size];
+        }
+    };
 }

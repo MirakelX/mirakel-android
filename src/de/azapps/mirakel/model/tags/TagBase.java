@@ -32,14 +32,18 @@ abstract class TagBase extends ModelBase {
     public static final String DARK_TEXT = "dark_text";
     public static final String BACKGROUND_COLOR = "color";
 
-    private boolean isDarkText;
+    protected boolean isDarkText;
     // Color as specified in android.graphics.Color
-    private int backgroundColor;
+    protected int backgroundColor;
 
     public TagBase(final long id, final String name, final int backColor, final boolean dark) {
         super(id, name);
         setBackgroundColor(backColor);
         setDarkText(dark);
+    }
+
+    public TagBase() {
+        // Do nothing
     }
 
     @Override

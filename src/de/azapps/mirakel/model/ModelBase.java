@@ -42,6 +42,8 @@ abstract public class ModelBase {
 
     protected static Context context;
 
+    protected ModelBase() {}
+
     public ModelBase(final Cursor c) {}
 
     protected ModelBase(long newId, String newName) {

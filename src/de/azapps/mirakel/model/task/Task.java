@@ -32,6 +32,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Pair;
 
 import com.google.common.base.Optional;
@@ -59,7 +61,7 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
 
-public class Task extends TaskBase {
+public class Task extends TaskBase implements Parcelable {
 
     public static final String[] allColumns = { ModelBase.ID, TaskBase.UUID,
                                                 TaskBase.LIST_ID, ModelBase.NAME, TaskBase.CONTENT, TaskBase.DONE,
@@ -999,4 +1001,86 @@ public class Task extends TaskBase {
                "task_id=? and tag_id=?",
                new String[] { getId() + "", t.getId() + "" });
     }
+
+    // Parcelable stuff
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (this.recurrenceParent == null) {
+            dest.writeInt(0);
+        } else {
+            dest.writeInt(1);
+            dest.writeString(this.recurrenceParent.first);
+            dest.writeInt(this.recurrenceParent.second);
+        }
+        dest.writeStringArray(this.dependencies);
+        dest.writeString(this.additionalEntriesString);
+        dest.writeString(this.content);
+        dest.writeSerializable(this.createdAt);
+        dest.writeByte(done ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.due);
+        dest.writeLong(this.list.getId());
+        dest.writeInt(this.priority);
+        dest.writeInt(this.progress);
+        dest.writeLong(this.recurrence);
+        dest.writeLong(this.recurringReminder);
+        dest.writeByte(isRecurringShown ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.reminder);
+        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeSerializable(this.updatedAt);
+        dest.writeString(this.uuid);
+        dest.writeTypedList(tags);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private Task(Parcel in) {
+        if (in.readInt() == 0) {
+            recurrenceParent = null;
+        } else {
+            String first = in.readString();
+            Integer second = in.readInt();
+            this.recurrenceParent = new Pair<>(first, second);
+        }
+        this.dependencies = in.createStringArray();
+        this.additionalEntriesString = in.readString();
+        this.content = in.readString();
+        this.createdAt = (Calendar) in.readSerializable();
+        this.done = in.readByte() != 0;
+        this.due = (Calendar) in.readSerializable();
+        long listId = in.readLong();
+        Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
+        if (listMirakelOptional.isPresent()) {
+            this.list = listMirakelOptional.get();
+        } else {
+            throw new RuntimeException("List not found – List id " + listId);
+        }
+        this.priority = in.readInt();
+        this.progress = in.readInt();
+        this.recurrence = in.readLong();
+        this.recurringReminder = in.readLong();
+        this.isRecurringShown = in.readByte() != 0;
+        this.reminder = (Calendar) in.readSerializable();
+        int tmpSyncState = in.readInt();
+        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        this.updatedAt = (Calendar) in.readSerializable();
+        this.uuid = in.readString();
+        in.readTypedList(tags, Tag.CREATOR);
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
+    public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
+        public Task createFromParcel(Parcel source) {
+            return new Task(source);
+        }
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
 }
