@@ -544,7 +544,7 @@ public class MainActivity extends ActionBarActivity implements
         for (Task t : tasks) {
             if (t.getRecurring () != null) {
                 handleDestroyRecurringTask (t);
-            } else if (t.getSubtaskCount() > 0) {
+            } else if (t.countSubtasks() > 0) {
                 handleDestroySubtasks(t);
             } else {
                 normalTasks.add(t);
