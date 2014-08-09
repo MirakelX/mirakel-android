@@ -177,7 +177,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         // Anotations end
         // TW.depends==Mirakel.subtasks!
         // Dependencies
-        if (task.getSubtaskCount() > 0) {
+        if (task.countSubtasks() > 0) {
             boolean first1 = true;
             String depends = "";
             for (final Task subtask : task.getSubtasks()) {
