@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -53,6 +54,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
+import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -212,6 +214,11 @@ public class ListMirakel extends ListBase implements Parcelable {
 
     public static CursorLoader allCursorLoader() {
         return getBasicMQB().toCursorLoader(MirakelInternalContentProvider.LIST_URI);
+    }
+
+    public static CursorLoader allWithSpecialCursorLoader() {
+        return new MirakelQueryBuilder(context).toCursorLoader(
+                   MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
 
     public static Cursor getAllCursor() {
@@ -520,9 +527,19 @@ public class ListMirakel extends ListBase implements Parcelable {
      * @return
      */
     public long countTasks() {
-        final MirakelQueryBuilder qb;
+        MirakelQueryBuilder qb;
         if (getId() < 0) {
-            qb = ((SpecialList) this).getWhereQueryForTasks();
+            try {
+                qb = ((SpecialList) this).getWhereQueryForTasks();
+            } catch (ClassCastException e) {
+                Optional<SpecialList> specialList = SpecialList.getSpecial(getId());
+                qb = OptionalUtils.withOptional(specialList, new Function<SpecialList, MirakelQueryBuilder>() {
+                    @Override
+                    public MirakelQueryBuilder apply(SpecialList input) {
+                        return input.getWhereQueryForTasks();
+                    }
+                }, new MirakelQueryBuilder(context));
+            }
         } else {
             qb = new MirakelQueryBuilder(context).and(Task.LIST_ID, Operation.EQ, this);
         }
@@ -641,6 +658,22 @@ public class ListMirakel extends ListBase implements Parcelable {
      */
     public List<Task> tasks(final boolean showDone) {
         return Task.getTasks(this, getSortBy(), showDone);
+    }
+
+    public CursorLoader getTasksCursorLoader(final boolean showDone) {
+        if (getId() < 0) {
+            // We look like a List but we are better than one MUHAHA
+            Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
+            if (specialListOptional.isPresent()) {
+                SpecialList specialList = specialListOptional.get();
+                MirakelQueryBuilder mirakelQueryBuilder = specialList.getWhereQueryForTasks();
+                return mirakelQueryBuilder.toCursorLoader(MirakelInternalContentProvider.TASK_URI);
+            } else {
+                throw new RuntimeException("No such special list");
+            }
+        } else {
+            return Task.getCursorLoader(this, showDone);
+        }
     }
 
     public String toJson() {

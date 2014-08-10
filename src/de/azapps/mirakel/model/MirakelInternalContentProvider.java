@@ -95,12 +95,15 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String CALDAV_INSTANCE_PROPERTIES = "caldav_instance_properties";
     public static final String CALDAV_INSTANCES = "caldav_instances";
 
+    public static final String LIST_WITH_SPECIAL = "list_with_special";
+
     // Uris
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
     public static final Uri TASK_TAG_URI = getUri(TASK_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
+    public static final Uri LIST_WITH_SPECIAL_URI = getUri(LIST_WITH_SPECIAL);
     public static final Uri TAG_CONNECTION_URI = getUri(Tag.TAG_CONNECTION_TABLE);
     public static final Uri CALDAV_LISTS_URI = getUri("caldav_lists");
     public static final Uri CALDAV_TASKS_URI = getUri("caldav_tasks");
@@ -133,11 +136,11 @@ public class MirakelInternalContentProvider extends ContentProvider implements
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
-                    LISTS_SORT_JOIN);
+                    LISTS_SORT_JOIN, LIST_WITH_SPECIAL);
     private static final List<String> BLACKLISTED_FOR_DELETION = Arrays
             .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
                     LISTS_SORT_JOIN, UPDATE_LIST_MOVE_DOWN, UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN,
-                    UPDATE_LIST_FIX_RGT);
+                    UPDATE_LIST_FIX_RGT, LIST_WITH_SPECIAL);
 
     private static final List<String> BLACKLISTED_FOR_QUERY = Arrays.asList(UPDATE_LIST_MOVE_DOWN,
             UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN, UPDATE_LIST_FIX_RGT);
@@ -293,8 +296,19 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         default:
             builder.setTables(table);
         }
-        final Cursor c = builder.query(getReadableDatabase(), projection,
-                                       selection, selectionArgs, groupBy, null, sortOrder);
+        final Cursor c;
+        if (LIST_WITH_SPECIAL.equals(table)) {
+            // TODO Account centric view
+            c = getReadableDatabase().rawQuery(
+                    "select _id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,color, account_id, 1 as isNormal from lists\n"
+                    +
+                    "    UNION\n" +
+                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, 0 as account_id, 0 as isNormal from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
+                    null);
+        } else {
+            c = builder.query(getReadableDatabase(), projection,
+                              selection, selectionArgs, groupBy, null, sortOrder);
+        }
         if (c == null) {
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
