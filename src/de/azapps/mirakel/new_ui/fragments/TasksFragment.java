@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.faizmalkani.floatingactionbutton.FloatingActionButton;
-import com.google.common.base.Optional;
 
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -70,7 +69,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 mListener.onTaskSelected(((TaskAdapter.ViewHolder) view.getTag()).getTask());
             }
         });
-        //getLoaderManager().initLoader(0, null, this);
     }
 
 
@@ -123,7 +121,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader onCreateLoader(int i, Bundle arguments) {
-        boolean showDone = MirakelCommonPreferences.showDoneMain();
+        //somehow the meaning of this is reversed
+        boolean showDone = !MirakelCommonPreferences.hideDoneMain();
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
         return listMirakel.getTasksCursorLoader(showDone);
     }
