@@ -11,7 +11,8 @@
         <activity
             android:name=".activities.MirakelActivity"
             android:theme="@style/MirakelBaseTheme"
-            android:label="@string/title_activity_mirakel" >
+            android:label="@string/title_activity_mirakel"
+            android:uiOptions="none">
         </activity>
         <activity
             android:name=".activities.TaskActivity"
