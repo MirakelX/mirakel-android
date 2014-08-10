@@ -125,7 +125,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public Loader onCreateLoader(int i, Bundle arguments) {
         boolean showDone = MirakelCommonPreferences.showDoneMain();
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
-        return Task.getCursorLoader(listMirakel, showDone);
+        return listMirakel.getTasksCursorLoader(showDone);
     }
 
     @Override

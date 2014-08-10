@@ -74,7 +74,7 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
 
     @Override
     public Loader onCreateLoader(int i, Bundle bundle) {
-        return ListMirakel.allCursorLoader();
+        return ListMirakel.allWithSpecialCursorLoader();
     }
 
     @Override
