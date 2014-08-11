@@ -19,16 +19,16 @@
 
 package de.azapps.mirakel.new_ui.activities;
 
+import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
 import de.azapps.mirakel.new_ui.R;
 
 /**
  * Created by az on 06.08.14.
  */
-public class TaskActivity extends ActionBarActivity {
+public class TaskActivity extends Activity {
 
 
     @Override
