@@ -54,7 +54,6 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
-import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -153,7 +152,7 @@ public class ListMirakel extends ListBase implements Parcelable {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-        //$FALL-THROUGH$
+            //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
@@ -533,12 +532,8 @@ public class ListMirakel extends ListBase implements Parcelable {
                 qb = ((SpecialList) this).getWhereQueryForTasks();
             } catch (ClassCastException e) {
                 Optional<SpecialList> specialList = SpecialList.getSpecial(getId());
-                qb = OptionalUtils.withOptional(specialList, new Function<SpecialList, MirakelQueryBuilder>() {
-                    @Override
-                    public MirakelQueryBuilder apply(SpecialList input) {
-                        return input.getWhereQueryForTasks();
-                    }
-                }, new MirakelQueryBuilder(context));
+                qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
+                         context);
             }
         } else {
             qb = new MirakelQueryBuilder(context).and(Task.LIST_ID, Operation.EQ, this);
