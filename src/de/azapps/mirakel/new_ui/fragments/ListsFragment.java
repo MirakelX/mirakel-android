@@ -24,6 +24,7 @@ import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -49,6 +50,7 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter = new ListAdapter(getActivity(), null, 0);
+        getListView().setDivider(new ColorDrawable(getResources().getColor(R.color.transparent)));
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
         getListView().setBackgroundColor(getResources().getColor(R.color.white));

@@ -2,6 +2,7 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,11 @@ public class TaskAdapter extends CursorAdapter {
         Task task = new Task(cursor);
         viewHolder.task = task;
         viewHolder.name.setText(task.getName());
+        if (task.isDone()) {
+            viewHolder.name.setPaintFlags(viewHolder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            viewHolder.name.setPaintFlags(viewHolder.name.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+        }
         if (task.getDue() != null) {
             viewHolder.due.setVisibility(View.VISIBLE);
             viewHolder.due.setText(DateTimeHelper.formatDate(context,
