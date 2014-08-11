@@ -21,9 +21,12 @@ package de.azapps.mirakel.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +45,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Build;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -128,10 +137,27 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri UPDATE_LIST_MOVE_UP_URI = getUri(UPDATE_LIST_MOVE_UP);
     public static final Uri UPDATE_LIST_FIX_RGT_URI = getUri(UPDATE_LIST_FIX_RGT);
 
-    private static Map<String, String> views = new HashMap<>();
+    private static final Map<String, String> views = new HashMap<>();
     static {
         views.put("caldav_lists", ListMirakel.TABLE);
         views.put("caldav_tasks", Task.TABLE);
+    }
+
+    private static final ListMultimap<Uri, Uri> notifyUris =  ArrayListMultimap.create();
+    private List<Uri> hasNotify = new ArrayList<>();
+
+    static {
+        notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
+        notifyUris.put(CALDAV_TASKS_URI, TASK_URI);
+        notifyUris.put(LIST_URI, CALDAV_LISTS_URI);
+        notifyUris.put(TASK_URI, CALDAV_TASKS_URI);
+        notifyUris.put(UPDATE_LIST_ORDER_URI, LIST_URI);
+        notifyUris.put(UPDATE_LIST_MOVE_DOWN_URI, LIST_URI);
+        notifyUris.put(UPDATE_LIST_MOVE_UP_URI, LIST_URI);
+        notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_URI);
+        notifyUris.put(TASK_URI, LIST_URI);
+        notifyUris.put(TASK_URI, TASK_URI);
+        notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
     }
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
@@ -165,6 +191,23 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         return database;
     }
 
+    private List<Uri> transformUriForNotify(final Uri u) {
+        List<Uri> uris = new ArrayList<>();
+        if (notifyUris.containsKey(u)) {
+            for (Uri u1 : notifyUris.get(u)) {
+                if (!hasNotify.contains(u1)) {
+                    hasNotify.add(u1);
+                    uris.addAll(transformUriForNotify(u1));
+                }
+            }
+        } else {
+            hasNotify.add(u);
+            uris.add(u);
+        }
+        hasNotify.clear();
+        return uris;
+    }
+
     @Override
     public int delete(final Uri uri, final String selection,
                       final String[] selectionArgs) {
@@ -185,7 +228,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
-        this.getContext().getContentResolver().notifyChange(uri, null);
+        for (Uri notify : transformUriForNotify(uri)) {
+            this.getContext().getContentResolver().notifyChange(notify, null);
+        }
         return u;
     }
 
@@ -229,11 +274,14 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
-        this.getContext().getContentResolver().notifyChange(u, null);
+        for (Uri notify : transformUriForNotify(uri)) {
+            notify = ContentUris.withAppendedId(notify, ContentUris.parseId(u));
+            this.getContext().getContentResolver().notifyChange(notify, null);
+        }
         return u;
     }
 
-    public static void init(final SQLiteDatabase db, final Context ctx) {
+    public static void init(final SQLiteDatabase db) {
         if (db == null) {
             return;
         }
@@ -313,7 +361,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
         }
-        c.setNotificationUri(getContext().getContentResolver(), uri);
+        for (Uri notify : transformUriForNotify(uri)) {
+            c.setNotificationUri(getContext().getContentResolver(), notify);
+        }
         return c;
     }
 
@@ -372,7 +422,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
-        this.getContext().getContentResolver().notifyChange(uri, null);
+        for (Uri notify : transformUriForNotify(uri)) {
+            this.getContext().getContentResolver().notifyChange(notify, null);
+        }
         return u;
     }
 
