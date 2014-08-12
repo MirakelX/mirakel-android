@@ -32,7 +32,13 @@ public class OptionalUtils {
             procedure.apply(optional.get());
         }
     }
-
+    public static <F, V> V withOptional(Optional<F> optional, Function<F, V> function, V alternative) {
+        if (optional.isPresent()) {
+            return function.apply(optional.get());
+        } else {
+            return alternative;
+        }
+    }
     public static <F, V> V transformOrNull(Optional<F> optional, Function<F, V> transformation) {
         if (optional.isPresent()) {
             return transformation.apply(optional.get());
