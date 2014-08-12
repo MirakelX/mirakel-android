@@ -261,7 +261,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static boolean showDoneMain() {
-        return settings.getBoolean("showDoneMain", true);
+        return settings.getBoolean("showDoneMain", false);
     }
 
     public static boolean showKillButton() {
