@@ -489,7 +489,7 @@ abstract class TaskBase extends ModelBase {
             && this.list.getId() == newList.getId()) {
             return;
         }
-        if (newList.isSpecial()) {
+        if (newList != null && newList.isSpecial()) {
             this.list = ((SpecialList) newList).getDefaultList();
         } else {
             this.list = newList;

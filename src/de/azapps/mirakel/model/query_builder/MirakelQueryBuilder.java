@@ -162,8 +162,7 @@ public class MirakelQueryBuilder {
         }
         final boolean isNull = filterInput.get(0) == null;
         final Class clazz = isNull ? null : filterInput.get(0).getClass();
-        final boolean isModel = !isNull && clazz
-                                .isAssignableFrom(ModelBase.class);
+        final boolean isModel = !isNull && filterInput.get(0) instanceof ModelBase;
         final boolean isBoolean = !isNull && (clazz == boolean.class
                                               || clazz == Boolean.class);
         Method getId = null;
