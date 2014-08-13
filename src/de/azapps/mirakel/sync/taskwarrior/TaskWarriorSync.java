@@ -66,6 +66,12 @@ public class TaskWarriorSync {
         private final TW_ERRORS error;
         private final String message;
 
+        TaskWarriorSyncFailedException(final TW_ERRORS type) {
+            super();
+            this.error = type;
+            message = "";
+        }
+
         TaskWarriorSyncFailedException(final TW_ERRORS type, final String message) {
             super();
             this.error = type;
@@ -272,6 +278,7 @@ public class TaskWarriorSync {
                     throw new TaskWarriorSyncFailedException(TW_ERRORS.ACCESS_DENIED, "Access denied");
                 }
             }
+            throw new TaskWarriorSyncFailedException(error);
         }
         if (remotes.get("status").equals("Client sync key not found.")) {
             Log.d(TAG, "reset sync-key");
