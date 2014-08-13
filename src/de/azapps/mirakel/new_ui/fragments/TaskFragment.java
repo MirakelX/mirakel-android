@@ -33,6 +33,7 @@ import java.util.Map;
 
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -41,7 +42,6 @@ import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
-import de.azapps.mirakel.new_ui.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
@@ -266,7 +266,7 @@ public class TaskFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
             final SimpleModelAdapter adapter = new SimpleModelAdapter(getActivity(), ListMirakel.getAllCursor(),
-                    0);
+                    0, ListMirakel.class);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.task_move_to);
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
@@ -310,12 +310,8 @@ public class TaskFragment extends DialogFragment {
     private View.OnClickListener onSubtaskAddListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            TaskDialogHelpers.handleSubtask(getActivity(), task, new BaseTaskDetailRow.OnTaskChangedListner() {
-                @Override
-                public void onTaskChanged(Task newTask) {
-                    task.save();
-                }
-            }, false);
+            AddSubtaskFragment addSubtaskFragment = AddSubtaskFragment.newInstance(task);
+            addSubtaskFragment.show(getFragmentManager(), "subtaskAddDialog");
         }
     };
 

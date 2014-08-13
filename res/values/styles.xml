@@ -9,4 +9,5 @@
     <style name="task_header" >
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="DialogStyle" parent="@android:style/Theme.Holo.Light.Dialog"></style>
 </resources>
