@@ -450,9 +450,11 @@ abstract class TaskBase extends ModelBase {
                 this.done = true;
                 return newTask.getId();
             }
-            Log.wtf(TaskBase.TAG, "Reccuring vanish");
+            Log.wtf(TaskBase.TAG, "Recurring vanish");
         } else if (newDone) {
-            this.progress = 100;
+            this.setProgress(100);
+        } else if (!newDone) {
+            this.setProgress(0);
         }
         return getId();
     }
