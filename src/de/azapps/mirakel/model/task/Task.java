@@ -851,6 +851,7 @@ public class Task extends TaskBase implements Parcelable {
         // there the task is reloaded
         setId(child.getId());
         child.setId(oldId);
+        child.edited.remove(RECURRING);
         child.save(false);
         final ContentValues cv = new ContentValues();
         cv.put("parent", getId());
