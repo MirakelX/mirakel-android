@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -63,11 +64,15 @@ import android.widget.ToggleButton;
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
+import com.google.common.base.Optional;
 
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.recurring.Recurring;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 @SuppressLint("NewApi")
 public class RecurrencePickerDialog extends DialogFragment implements
@@ -110,8 +115,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
         this.mForDue = forDue;
         this.mDark = dark;
         this.mInitialExact = exact;
-        this.mStartDate = null;
-        this.mEndDate = null;
+        this.mStartDate = absent();
+        this.mEndDate = absent();
     }
 
     private final int[] TIME_DAY_TO_CALENDAR_DAY = new int[] { Calendar.SUNDAY,
@@ -126,13 +131,15 @@ public class RecurrencePickerDialog extends DialogFragment implements
     protected int mIntervalValue;
     private RadioGroup mRadioGroup;
     private Spinner mEndSpinner;
-    protected Calendar mEndDate;
+    @NonNull
+    protected Optional<Calendar> mEndDate = absent();
     protected TextView mEndDateView;
     protected boolean mIsCustom = false;
     protected CheckBox mUseExact;
     private boolean mInitialExact;
     private Spinner mStartSpinner;
-    protected Calendar mStartDate;
+    @NonNull
+    protected Optional<Calendar> mStartDate = absent();
     protected TextView mStartDateView;
     private Context ctx;
     protected boolean mIsWeekDay;
@@ -469,22 +476,20 @@ public class RecurrencePickerDialog extends DialogFragment implements
                 new OnDateSetListener() {
                     @Override
                     public void onNoDateSet() {
-                        RecurrencePickerDialog.this.mEndDate = null;
+                        RecurrencePickerDialog.this.mEndDate = absent();
                     }
                     @Override
                     public void onDateSet(
                         final DatePicker datePickerDialog,
                         final int year, final int month,
                         final int day) {
-                        if (RecurrencePickerDialog.this.mEndDate == null) {
-                            RecurrencePickerDialog.this.mEndDate = new GregorianCalendar();
+                        if (!RecurrencePickerDialog.this.mEndDate.isPresent()) {
+                            RecurrencePickerDialog.this.mEndDate = Optional.of((Calendar) new GregorianCalendar());
                         }
-                        RecurrencePickerDialog.this.mEndDate.set(
-                            Calendar.YEAR, year);
-                        RecurrencePickerDialog.this.mEndDate.set(
-                            Calendar.MONTH, month);
-                        RecurrencePickerDialog.this.mEndDate.set(
-                            Calendar.DAY_OF_MONTH, day);
+                        Calendar endDate = RecurrencePickerDialog.this.mEndDate.get();
+                        endDate.set(Calendar.YEAR, year);
+                        endDate.set(Calendar.MONTH, month);
+                        endDate.set(Calendar.DAY_OF_MONTH, day);
                         RecurrencePickerDialog.this.mEndDateView
                         .setText(DateTimeHelper
                                  .formatDate(
@@ -507,22 +512,19 @@ public class RecurrencePickerDialog extends DialogFragment implements
                 case 1:
                     RecurrencePickerDialog.this.mEndDateView
                     .setVisibility(View.VISIBLE);
-                    if (RecurrencePickerDialog.this.mEndDate == null) {
+                    if (!RecurrencePickerDialog.this.mEndDate.isPresent()) {
                         RecurrencePickerDialog.this.mEndDate = RecurrencePickerDialog.this.mStartDate;
-                        if (RecurrencePickerDialog.this.mEndDate == null) {
-                            RecurrencePickerDialog.this.mEndDate = new GregorianCalendar();
-                            RecurrencePickerDialog.this.mEndDate.add(
-                                Calendar.MONTH, 1);
-                        } else {
-                            RecurrencePickerDialog.this.mEndDate.add(
-                                Calendar.MONTH, 1);
+                        if (!RecurrencePickerDialog.this.mEndDate.isPresent()) {
+                            RecurrencePickerDialog.this.mEndDate = Optional.of((Calendar) new GregorianCalendar());
                         }
+                        RecurrencePickerDialog.this.mEndDate.get().add(
+                            Calendar.MONTH, 1);
                     }
                     break;
                 default:// FOREVER
                     RecurrencePickerDialog.this.mEndDateView
                     .setVisibility(View.GONE);
-                    RecurrencePickerDialog.this.mEndDate = null;
+                    RecurrencePickerDialog.this.mEndDate = absent();
                     break;
                 }
                 RecurrencePickerDialog.this.mEndDateView
@@ -554,12 +556,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
                 case 1:
                     RecurrencePickerDialog.this.mStartDateView
                     .setVisibility(View.VISIBLE);
-                    if (RecurrencePickerDialog.this.mStartDate == null) {
+                    if (!RecurrencePickerDialog.this.mStartDate.isPresent()) {
                         RecurrencePickerDialog.this.mStartDate = RecurrencePickerDialog.this.mEndDate;
-                        if (RecurrencePickerDialog.this.mStartDate == null) {
-                            RecurrencePickerDialog.this.mStartDate = new GregorianCalendar();
+                        if (!RecurrencePickerDialog.this.mStartDate.isPresent()) {
+                            RecurrencePickerDialog.this.mStartDate = Optional.of((Calendar) new GregorianCalendar());
                         } else {
-                            RecurrencePickerDialog.this.mStartDate.add(
+                            RecurrencePickerDialog.this.mStartDate.get().add(
                                 Calendar.MONTH, -1);
                         }
                     }
@@ -567,7 +569,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
                 default:// FOREVER
                     RecurrencePickerDialog.this.mStartDateView
                     .setVisibility(View.GONE);
-                    RecurrencePickerDialog.this.mStartDate = null;
+                    RecurrencePickerDialog.this.mStartDate = absent();
                     break;
                 }
                 RecurrencePickerDialog.this.mStartDateView.setText(DateTimeHelper
@@ -595,7 +597,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
                 new OnDateSetListener() {
                     @Override
                     public void onNoDateSet() {
-                        RecurrencePickerDialog.this.mStartDate = null;
+                        RecurrencePickerDialog.this.mStartDate = absent();
                         // cannot happen
                     }
                     @Override
@@ -603,15 +605,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
                         final DatePicker datePickerDialog,
                         final int year, final int month,
                         final int day) {
-                        if (RecurrencePickerDialog.this.mStartDate == null) {
-                            RecurrencePickerDialog.this.mStartDate = new GregorianCalendar();
+                        if (!RecurrencePickerDialog.this.mStartDate.isPresent()) {
+                            RecurrencePickerDialog.this.mStartDate = of((Calendar) new GregorianCalendar());
                         }
-                        RecurrencePickerDialog.this.mStartDate.set(
-                            Calendar.YEAR, year);
-                        RecurrencePickerDialog.this.mStartDate.set(
-                            Calendar.MONTH, month);
-                        RecurrencePickerDialog.this.mStartDate.set(
-                            Calendar.DAY_OF_MONTH, day);
+                        Calendar startDate = RecurrencePickerDialog.this.mStartDate.get();
+                        startDate.set(Calendar.YEAR, year);
+                        startDate.set(Calendar.MONTH, month);
+                        startDate.set(Calendar.DAY_OF_MONTH, day);
                         RecurrencePickerDialog.this.mStartDateView
                         .setText(DateTimeHelper
                                  .formatDate(
@@ -673,13 +673,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
                 this.mIntervalValue = this.mRecurring.getYears();
             }
             this.mStartDate = this.mRecurring.getStartDate();
-            if (this.mStartDate != null) {
+            if (this.mStartDate.isPresent()) {
                 this.mStartSpinner.setSelection(1);
                 this.mStartDateView.setText(DateTimeHelper.formatDate(
                                                 getActivity(), this.mStartDate));
             }
             this.mEndDate = this.mRecurring.getEndDate();
-            if (this.mEndDate != null) {
+            if (this.mEndDate.isPresent()) {
                 this.mEndSpinner.setSelection(1);
                 this.mEndDateView.setText(DateTimeHelper.formatDate(
                                               getActivity(), this.mEndDate));
@@ -750,12 +750,12 @@ public class RecurrencePickerDialog extends DialogFragment implements
         void onCustomRecurrenceSetInterval(final boolean isDue,
                                            final int intervalYears, final int intervalMonths,
                                            final int intervalDays, final int intervalHours,
-                                           final int intervalMinutes, final Calendar startDate,
-                                           final Calendar endDate, final boolean isExact);
+                                           final int intervalMinutes, @NonNull final Optional<Calendar> startDate,
+                                           @NonNull final Optional<Calendar> endDate, final boolean isExact);
 
         void onCustomRecurrenceSetWeekdays(final boolean isDue,
-                                           final List<Integer> weekdays, final Calendar startDate,
-                                           final Calendar endDate, final boolean isExact);
+                                           @NonNull final List<Integer> weekdays, @NonNull final Optional<Calendar> startDate,
+                                           @NonNull final Optional<Calendar> endDate, final boolean isExact);
 
         void onRecurrenceSet(final Recurring r);
 
