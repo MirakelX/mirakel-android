@@ -22,8 +22,11 @@ package de.azapps.mirakel.model.recurring;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.util.SparseBooleanArray;
+
+import com.google.common.base.Optional;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -45,6 +48,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
+import static com.google.common.base.Optional.fromNullable;
+
 public class Recurring extends RecurringBase {
     public static final String TABLE = "recurring";
     private final static String TAG = "Recurring";
@@ -63,10 +68,10 @@ public class Recurring extends RecurringBase {
 
     public Recurring(final long _id, final String label, final int minutes,
                      final int hours, final int days, final int months, final int years,
-                     final boolean forDue, final Calendar startDate,
-                     final Calendar endDate, final boolean temporary,
-                     final boolean isExact, final SparseBooleanArray weekdays,
-                     final Long derivedFrom) {
+                     final boolean forDue, @NonNull final Optional<Calendar> startDate,
+                     @NonNull final Optional<Calendar> endDate, final boolean temporary,
+                     final boolean isExact, @NonNull final SparseBooleanArray weekdays,
+                     @NonNull final Optional<Long> derivedFrom) {
         super(_id, label, minutes, hours, days, months, years, forDue,
               startDate, endDate, temporary, isExact, weekdays, derivedFrom);
     }
@@ -89,18 +94,18 @@ public class Recurring extends RecurringBase {
         final Recurring newR = new Recurring(0, r.getLabel(), r.getMinutes(),
                                              r.getHours(), r.getDays(), r.getMonths(), r.getYears(),
                                              r.isForDue(), r.getStartDate(), r.getEndDate(), true,
-                                             r.isExact(), r.getWeekdaysRaw(), r.getId());
+                                             r.isExact(), r.getWeekdaysRaw(), Optional.of(r.getId()));
         return newR.create();
     }
 
     public static Recurring newRecurring(final String label, final int minutes,
                                          final int hours, final int days, final int months, final int years,
-                                         final boolean forDue, final Calendar startDate,
-                                         final Calendar endDate, final boolean temporary,
+                                         final boolean forDue, final Optional<Calendar> startDate,
+                                         final Optional<Calendar> endDate, final boolean temporary,
                                          final boolean isExact, final SparseBooleanArray weekdays) {
         final Recurring r = new Recurring(0, label, minutes, hours, days,
                                           months, years, forDue, startDate, endDate, temporary, isExact,
-                                          weekdays, null);
+                                          weekdays, Optional.<Long>absent());
         return r.create();
     }
 
@@ -203,12 +208,12 @@ public class Recurring extends RecurringBase {
         setMonths(c.getInt(c.getColumnIndex(MONTHS)));
         setYears(c.getInt(c.getColumnIndex(YEARS)));
         setForDue(c.getShort(c.getColumnIndex(FOR_DUE)) == 1);
-        setStartDate(start);
-        setEndDate(end);
+        setStartDate(fromNullable(start));
+        setEndDate(fromNullable(end));
         setTemporary(c.getShort(c.getColumnIndex(TEMPORARY)) == 1);
         setExact(c.getShort(c.getColumnIndex(EXACT)) == 1);
         setWeekdays(weekdays);
-        setDerivedFrom(derivedFrom);
+        setDerivedFrom(fromNullable(derivedFrom));
     }
 
     public Task incrementRecurringDue(final Task t) {

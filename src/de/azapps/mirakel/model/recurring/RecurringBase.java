@@ -20,7 +20,10 @@
 package de.azapps.mirakel.model.recurring;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
+
+import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,19 +64,23 @@ abstract class RecurringBase extends ModelBase {
     private int months;
     private int years;
     private boolean forDue;
-    private Calendar startDate;
-    private Calendar endDate;
+    @NonNull
+    private Optional<Calendar> startDate;
+    @NonNull
+    private Optional<Calendar> endDate;
     private boolean temporary;
     private boolean isExact;
-    private SparseBooleanArray weekdays;
-    private Long derivedFrom;
+    @NonNull
+    private SparseBooleanArray weekdays = new SparseBooleanArray();
+    @NonNull
+    private Optional<Long> derivedFrom;
 
-    public RecurringBase(final long id, final String label, final int minutes,
+    public RecurringBase(final long id, @NonNull final String label, final int minutes,
                          final int hours, final int days, final int months, final int years,
-                         final boolean forDue, final Calendar startDate,
-                         final Calendar endDate, final boolean temporary,
+                         final boolean forDue, @NonNull final Optional<Calendar> startDate,
+                         @NonNull final Optional<Calendar> endDate, final boolean temporary,
                          final boolean isExact, final SparseBooleanArray weekdays,
-                         final Long derivedFrom) {
+                         @NonNull final Optional<Long> derivedFrom) {
         super(id, label);
         this.days = days;
         this.forDue = forDue;
@@ -97,7 +104,7 @@ abstract class RecurringBase extends ModelBase {
         return getName();
     }
 
-    public void setLabel(final String label) {
+    public void setLabel(@NonNull final String label) {
         setName(label);
     }
 
@@ -149,19 +156,21 @@ abstract class RecurringBase extends ModelBase {
         this.minutes = minutes;
     }
 
-    public Calendar getStartDate() {
+    @NonNull
+    public Optional<Calendar> getStartDate() {
         return this.startDate;
     }
 
-    public void setStartDate(final Calendar startDate) {
+    public void setStartDate(@NonNull final Optional<Calendar> startDate) {
         this.startDate = startDate;
     }
 
-    public Calendar getEndDate() {
+    @NonNull
+    public Optional<Calendar> getEndDate() {
         return this.endDate;
     }
 
-    public void setEndDate(final Calendar endDate) {
+    public void setEndDate(@NonNull final Optional<Calendar> endDate) {
         this.endDate = endDate;
     }
 
@@ -215,11 +224,11 @@ abstract class RecurringBase extends ModelBase {
         }
     }
 
-    public Long getDerivedFrom() {
+    public Optional<Long> getDerivedFrom() {
         return this.derivedFrom;
     }
 
-    public void setDerivedFrom(final Long derivedFrom) {
+    public void setDerivedFrom(final Optional<Long> derivedFrom) {
         this.derivedFrom = derivedFrom;
     }
 
@@ -264,7 +273,7 @@ abstract class RecurringBase extends ModelBase {
         cv.put(FRIDAY, this.weekdays.get(Calendar.FRIDAY, false));
         cv.put(SATURDAY, this.weekdays.get(Calendar.SATURDAY, false));
         cv.put(SUNDAY, this.weekdays.get(Calendar.SUNDAY, false));
-        cv.put(DERIVED, this.derivedFrom);
+        cv.put(DERIVED, this.derivedFrom.orNull());
         return cv;
     }
 
@@ -286,11 +295,8 @@ abstract class RecurringBase extends ModelBase {
         if (this.days != other.days) {
             return false;
         }
-        if (this.derivedFrom == null) {
-            if (other.derivedFrom != null) {
-                return false;
-            }
-        } else if (!this.derivedFrom.equals(other.derivedFrom)) {
+        if ((!this.derivedFrom.isPresent() && other.derivedFrom.isPresent()) ||
+            (this.derivedFrom.isPresent() && !this.derivedFrom.get().equals(other.derivedFrom.orNull()))) {
             return false;
         }
         if (!DateTimeHelper.equalsCalendar(this.endDate, other.endDate)) {
@@ -305,11 +311,7 @@ abstract class RecurringBase extends ModelBase {
         if (this.isExact != other.isExact) {
             return false;
         }
-        if (this.getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!this.getName().equals(other.getName())) {
+        if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.minutes != other.minutes) {
@@ -337,9 +339,9 @@ abstract class RecurringBase extends ModelBase {
         result = prime * result + (int)this.getId();
         result = prime * result + this.days;
         result = prime * result
-                 + (this.derivedFrom == null ? 0 : this.derivedFrom.hashCode());
+                 + (!this.derivedFrom.isPresent() ? 0 : this.derivedFrom.get().hashCode());
         result = prime * result
-                 + (this.endDate == null ? 0 : this.endDate.hashCode());
+                 + (!this.endDate.isPresent() ? 0 : this.endDate.get().hashCode());
         result = prime * result + (this.forDue ? 1231 : 1237);
         result = prime * result + this.hours;
         result = prime * result + (this.isExact ? 1231 : 1237);
@@ -348,7 +350,7 @@ abstract class RecurringBase extends ModelBase {
         result = prime * result + this.minutes;
         result = prime * result + this.months;
         result = prime * result
-                 + (this.startDate == null ? 0 : this.startDate.hashCode());
+                 + (!this.startDate.isPresent() ? 0 : this.startDate.get().hashCode());
         result = prime * result + (this.temporary ? 1231 : 1237);
         result = prime * result + this.years;
         return result;
