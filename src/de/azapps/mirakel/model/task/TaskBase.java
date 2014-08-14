@@ -75,7 +75,7 @@ abstract class TaskBase extends ModelBase {
     protected SYNC_STATE syncState;
     protected Calendar updatedAt;
     protected String uuid = "";
-    protected List<Tag> tags;
+    protected List<Tag> tags = new ArrayList<>();
     private boolean isStub = false;
 
     TaskBase() {
