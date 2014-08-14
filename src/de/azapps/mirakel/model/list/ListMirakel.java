@@ -655,7 +655,7 @@ public class ListMirakel extends ListBase implements Parcelable {
         return Task.getTasks(this, getSortBy(), showDone);
     }
 
-    public CursorLoader getTasksCursorLoader(final boolean showDone) {
+    public CursorLoader getTasksCursorLoader() {
         if (getId() < 0) {
             // We look like a List but we are better than one MUHAHA
             Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
@@ -667,7 +667,7 @@ public class ListMirakel extends ListBase implements Parcelable {
                 throw new RuntimeException("No such special list");
             }
         } else {
-            return Task.getCursorLoader(this, showDone);
+            return Task.getCursorLoader(this);
         }
     }
 

@@ -42,6 +42,7 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -212,21 +213,19 @@ public class Task extends TaskBase implements Parcelable {
                 Operation.EQ, false).getList(Task.class);
     }
 
-    public static CursorLoader allCursorLoader(boolean showDone) {
-        return getCursorLoader(null, showDone);
+    public static CursorLoader allCursorLoader() {
+        return getCursorLoader(null);
     }
 
-    public static CursorLoader getCursorLoader(ListMirakel listMirakel, boolean showDone) {
+    public static CursorLoader getCursorLoader(ListMirakel listMirakel) {
         final MirakelQueryBuilder qb;
         if (listMirakel == null) {
             qb = new MirakelQueryBuilder(context);
+            if (MirakelCommonPreferences.showDoneMain()) {
+                qb.and(Task.DONE, Operation.EQ, false);
+            }
         } else {
             qb = listMirakel.getWhereQueryForTasks();
-        }
-        if (!showDone) {
-            qb.and(DONE, Operation.EQ, false);
-        } else {
-            qb.sort(Task.DONE, Sorting.ASC);
         }
         addBasicFiler(qb);
         if (listMirakel != null) {
