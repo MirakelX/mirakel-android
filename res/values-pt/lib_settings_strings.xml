@@ -247,6 +247,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="title_donations">Donativos</string>
   <string name="add">Adicionar</string>
   <string name="action_credits">Créditos</string>
+  <string name="action_credits_summary">Quem somos</string>
   <string name="title_activity_credits">Créditos e sobre</string>
   <string name="credits_github_description">Fork no github</string>
   <string name="credits_googleplus_description">Integre a nossa comunidade no G+</string>
