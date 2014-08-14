@@ -26,7 +26,6 @@
   <string name="task_change_prio_title">Spremeni prednost</string>
   <string name="remove_subtask">Odstrani podrejeno nalogo</string>
   <string name="add_existing">Dodaj obstoječo nalogo</string>
-  <string name="task_name">Ime naloge:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
   <string name="subtask_done">Ali je naloga končana?</string>
   <string name="subtask_reminder">Ali želite dodati opomnik?</string>

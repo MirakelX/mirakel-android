@@ -25,7 +25,6 @@
   <string name="remove_subtask">إزالة مهمة فرعية</string>
   <string name="remove_files_summary">هل تريد إزالة %1$s  من %2$s ؟</string>
   <string name="add_existing">إضافة المهمة الحالية</string>
-  <string name="task_name">اسم المهمة:</string>
   <string name="subtask_add_options">تصفية &gt;&gt;</string>
   <string name="subtask_done">مهمة منجَزَة؟</string>
   <string name="subtask_reminder">مهمة مع تذكير؟</string>

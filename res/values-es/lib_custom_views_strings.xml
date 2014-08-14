@@ -15,7 +15,6 @@
   <string name="task_change_prio_title">Cambiar prioridad</string>
   <string name="remove_subtask">Eliminar Subtarea</string>
   <string name="add_existing">Añadir tarea existente</string>
-  <string name="task_name">Nombre de la tarea:</string>
   <string name="subtask_add_options">Filtro &gt;&gt;</string>
   <string name="subtask_reminder">¿Tarea con recordatorio?</string>
   <string name="new_task">Nueva tarea</string>

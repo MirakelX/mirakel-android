@@ -11,7 +11,6 @@
   <string name="task_change_prio_title">Endre prioritet</string>
   <string name="remove_subtask">Fjerne deloppgave</string>
   <string name="add_existing">Legg til eksisterende oppgave</string>
-  <string name="task_name">Oppgavenavn:</string>
   <string name="subtask_reminder">Oppgave med påminnelse?</string>
   <string name="new_task">Ny oppgave</string>
   <string name="add">Legg til</string>

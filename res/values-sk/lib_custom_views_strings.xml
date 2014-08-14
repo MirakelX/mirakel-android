@@ -24,7 +24,6 @@
   <string name="task_change_prio_title">Zmeniť prioritu</string>
   <string name="remove_subtask">Odstrániť podúlohu</string>
   <string name="add_existing">Pridať existujúcu úlohu</string>
-  <string name="task_name">Názov úlohy:</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
   <string name="subtask_reminder">Úloha s pripomenutím?</string>
   <string name="new_task">Nová úloha</string>

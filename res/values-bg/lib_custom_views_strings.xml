@@ -25,7 +25,6 @@
   <string name="task_change_prio_title">Смяна на приоритета</string>
   <string name="remove_subtask">Премахване на подзадача</string>
   <string name="add_existing">Добавяне на съществуваща задача</string>
-  <string name="task_name">Име на задачата:</string>
   <string name="subtask_add_options">Филтър &gt;&gt;</string>
   <string name="subtask_reminder">Задача с напомняне?</string>
   <string name="new_task">Нова задача</string>

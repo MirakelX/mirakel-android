@@ -12,7 +12,6 @@
   <string name="task_change_prio_title">Změnit prioritu</string>
   <string name="remove_subtask">Odstranit podúkol</string>
   <string name="add_existing">Přidat existující úkol</string>
-  <string name="task_name">Název úkolu:</string>
   <string name="subtask_reminder">Úkol s připomenutím?</string>
   <string name="new_task">Nový úkol</string>
   <string name="add_subtasks">Přidat podúkol&#8230;</string>

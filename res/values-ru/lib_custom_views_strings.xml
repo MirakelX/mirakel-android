@@ -23,7 +23,6 @@
   <string name="remove_subtask">Удалить подзадачу</string>
   <string name="remove_files_summary">Вы хотите удалить %1$s из %2$s?</string>
   <string name="add_existing">Ввести существующее дело</string>
-  <string name="task_name">Название дела:</string>
   <string name="subtask_add_options">Фильтр &gt;&gt;</string>
   <string name="subtask_done">Задача завершена?</string>
   <string name="subtask_reminder">Дело с напоминанием?</string>
