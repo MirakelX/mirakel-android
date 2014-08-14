@@ -600,14 +600,14 @@ public class TaskDialogHelpers {
                                                .getSelected();
                     for (final Task t : checked) {
                         if (!asSubtask) {
-                            if (!t.checkIfParent(task)) {
+                            if (!t.hasSubtasksLoop(task)) {
                                 task.addSubtask(t);
                             } else {
                                 ErrorReporter
                                 .report(ErrorType.TASKS_CANNOT_FORM_LOOP);
                             }
                         } else {
-                            if (!task.checkIfParent(t)) {
+                            if (!task.hasSubtasksLoop(t)) {
                                 t.addSubtask(task);
                             } else {
                                 ErrorReporter
