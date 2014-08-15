@@ -6,7 +6,7 @@
     <uses-sdk
         tools:node="replace"
         android:targetSdkVersion="L"
-        android:minSdkVersion="11"/>
+        android:minSdkVersion="14"/>
     <application>
         <activity
             android:name=".activities.MirakelActivity"

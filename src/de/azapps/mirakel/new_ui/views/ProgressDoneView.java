@@ -19,7 +19,7 @@
 
 package de.azapps.mirakel.new_ui.views;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -88,7 +88,7 @@ public class ProgressDoneView extends CheckBox {
 
 
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @SuppressLint("NewApi")
     @Override
     public void onDraw(Canvas canvas) {
         final Drawable buttonDrawable = mButtonDrawable;

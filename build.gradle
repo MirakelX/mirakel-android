@@ -14,7 +14,8 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
     lintOptions {
-        disable 'MissingTranslation'
+        disable 'MissingTranslation','Override'
+        enable 'NewerVersionAvailable'
     }
     sourceSets {
         main {
