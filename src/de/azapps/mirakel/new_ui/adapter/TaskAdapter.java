@@ -15,6 +15,7 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
+import de.azapps.mirakel.new_ui.views.TaskNameView;
 
 public class TaskAdapter extends CursorAdapter {
 
@@ -42,11 +43,7 @@ public class TaskAdapter extends CursorAdapter {
         Task task = new Task(cursor);
         viewHolder.task = task;
         viewHolder.name.setText(task.getName());
-        if (task.isDone()) {
-            viewHolder.name.setPaintFlags(viewHolder.name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            viewHolder.name.setPaintFlags(viewHolder.name.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-        }
+        viewHolder.name.setStrikeThrough(task.isDone());
         if (task.getDue() != null) {
             viewHolder.due.setVisibility(View.VISIBLE);
             viewHolder.due.setText(DateTimeHelper.formatDate(context,
@@ -69,14 +66,14 @@ public class TaskAdapter extends CursorAdapter {
     }
 
     public static class ViewHolder {
-        final TextView name;
+        final TaskNameView name;
         final TextView due;
         final TextView list;
         final ProgressDoneView priorityDone;
         private Task task;
 
         public ViewHolder(View view) {
-            name = (TextView) view.findViewById(R.id.task_name);
+            name = (TaskNameView) view.findViewById(R.id.task_name);
             due = (TextView) view.findViewById(R.id.task_due);
             list = (TextView) view.findViewById(R.id.task_list);
             priorityDone = (ProgressDoneView) view.findViewById(R.id.task_priority_done);

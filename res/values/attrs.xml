@@ -16,4 +16,9 @@
         <attr name="progress_color" format="color"/>
         <attr name="progress_background_color" format="color"/>
     </declare-styleable>
+    <declare-styleable name="TaskName">
+        <attr name="strokeSize" format="dimension"/>
+        <attr name="strokeMargin" format="dimension" />
+        <attr name="isStroked" format="boolean" />
+    </declare-styleable>
 </resources>

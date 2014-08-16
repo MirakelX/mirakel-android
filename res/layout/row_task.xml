@@ -37,12 +37,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
+                <de.azapps.mirakel.new_ui.views.TaskNameView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/task_name"
                     android:id="@+id/task_name"
-                    android:text="Example task"/>
+                    android:text="Example task"
+                    custom:strokeSize="2dp"
+                    custom:strokeMargin="5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
