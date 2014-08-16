@@ -789,7 +789,7 @@ public class Task extends TaskBase implements Parcelable {
     public Task getRecurrenceMaster() {
         final Cursor c = new MirakelQueryBuilder(context)
         .select(addPrefix(allColumns, TABLE))
-        .and(Recurring.TW_TABLE + ".child =", Operation.EQ, this)
+        .and(Recurring.TW_TABLE + ".child", Operation.EQ, this)
         .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
               Sorting.ASC)
         .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI);

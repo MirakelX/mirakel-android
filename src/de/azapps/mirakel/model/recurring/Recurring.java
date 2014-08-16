@@ -222,6 +222,9 @@ public class Recurring extends RecurringBase {
         }
         final Calendar newDue = addRecurring((Calendar) t.getDue().clone(),
                                              true);
+        if (newDue.compareTo(t.getDue()) == 0) {
+            return t;
+        }
         long masterID = t.getId();
         long offset = 0;
         long offsetCount = 0;
@@ -283,10 +286,10 @@ public class Recurring extends RecurringBase {
         now.add(Calendar.MINUTE, -1);
         final List<Integer> weekdays = getWeekdays();
         if (weekdays.size() == 0) {
-            if ((getStartDate() == null || getStartDate() != null
-                 && now.after(getStartDate()))
-                && (getEndDate() == null || getEndDate() != null
-                    && now.before(getEndDate()))) {
+            if ((!getStartDate().isPresent() || getStartDate().isPresent()
+                 && now.after(getStartDate().get()))
+                && (!getEndDate().isPresent() || getEndDate().isPresent()
+                    && now.before(getEndDate().get()))) {
                 do {
                     c.add(Calendar.DAY_OF_MONTH, getDays());
                     c.add(Calendar.MONTH, getMonths());
