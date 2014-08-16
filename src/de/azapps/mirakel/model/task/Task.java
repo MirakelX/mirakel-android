@@ -156,7 +156,7 @@ public class Task extends TaskBase implements Parcelable {
             setReminder(DateTimeHelper.createLocalCalendar(cursor
                         .getLong(cursor.getColumnIndex(REMINDER))));
         }
-        Calendar created_at = null;
+        Calendar created_at;
         if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
             created_at = null;
         } else {
@@ -526,7 +526,7 @@ public class Task extends TaskBase implements Parcelable {
     }
 
     public static void resetSyncState(final List<Task> tasks) {
-        if (tasks.size() == 0) {
+        if (tasks.isEmpty()) {
             return;
         }
         for (final Task t : tasks) {
@@ -607,7 +607,7 @@ public class Task extends TaskBase implements Parcelable {
             delete(MirakelInternalContentProvider.FILE_URI, "task_id = " + id
                    + " OR task_id " + subWhereQuery, null);
             delete(MirakelInternalContentProvider.RECURRING_TW_URI, "parent=?",
-                   new String[] { getId() + "" });
+                   new String[] { String.valueOf(getId()) });
             destroyGarbage();
         } else {
             final ContentValues values = new ContentValues();
@@ -728,9 +728,9 @@ public class Task extends TaskBase implements Parcelable {
                                + Recurring.TW_TABLE + " WHERE parent="
                                + masterID + ")", null);
                         delete(MirakelInternalContentProvider.RECURRING_TW_URI,
-                               "parent=?", new String[] { masterID + "" });
+                               "parent=?", new String[] { String.valueOf(masterID) });
                         delete(URI, ModelBase.ID + "=?",
-                               new String[] { masterID + "" });
+                               new String[] { String.valueOf(masterID) });
                     }
                     c.close();
                 } else {
@@ -869,7 +869,7 @@ public class Task extends TaskBase implements Parcelable {
         cv.put(RECURRING, recID);
         cv.put(UUID, java.util.UUID.randomUUID().toString());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
-        update(URI, cv, ModelBase.ID + "=?", new String[] { oldId + "" });
+        update(URI, cv, ModelBase.ID + "=?", new String[] { String.valueOf(oldId) });
     }
 
     private void handleInsertTWRecurring() {
@@ -877,7 +877,7 @@ public class Task extends TaskBase implements Parcelable {
             final Task master = Task.getByUUID(this.recurrenceParent.first);
             if (master == null || master.getRecurring() == null) {
                 // Something is very strange
-                Log.wtf(TAG, toString() + " is null!?");
+                Log.wtf(TAG, this + " is null!?");
                 return;
             }
             final Cursor c = new MirakelQueryBuilder(context)
@@ -904,11 +904,11 @@ public class Task extends TaskBase implements Parcelable {
 
     public static void fixRecurringShowing() {
         final ContentValues cv = new ContentValues();
-        cv.put(RECURRING_SHOWN, false);
+        cv.put(RECURRING_SHOWN, Boolean.FALSE);
         update(URI, cv, ModelBase.ID + " IN (SELECT parent FROM "
                + Recurring.TW_TABLE + ")", null);
         cv.clear();
-        cv.put(RECURRING_SHOWN, true);
+        cv.put(RECURRING_SHOWN, Boolean.TRUE);
         ;
         update(URI, cv, ModelBase.ID + " IN (SELECT r.child FROM "
                + Recurring.TW_TABLE + " AS r INNER JOIN " + TABLE
@@ -924,7 +924,7 @@ public class Task extends TaskBase implements Parcelable {
             final ContentValues cv = new ContentValues();
             cv.put(DatabaseHelper.SYNC_STATE_FIELD,
                    SYNC_STATE.NEED_SYNC.toInt());
-            update(URI, cv, "_id=?", new String[] { c.getLong(0) + "" });
+            update(URI, cv, "_id=?", new String[] { String.valueOf(c.getLong(0)) });
         }
         c.close();
     }
@@ -959,9 +959,8 @@ public class Task extends TaskBase implements Parcelable {
         json += Tag.serialize(getId()) + ",";
         json += "\"created_at\":\""
                 + DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
-        json += "\"updated_at\":\""
-                + DateTimeHelper.formatDateTime(getUpdatedAt()) + "\"}";
-        return json;
+        return json + "\"updated_at\":\""
+               + DateTimeHelper.formatDateTime(getUpdatedAt()) + "\"}";
     }
 
     @Override
@@ -980,7 +979,7 @@ public class Task extends TaskBase implements Parcelable {
             return;
         }
         // save task to set log+modified
-        this.edited.put("tags", true);
+        this.edited.put("tags", Boolean.TRUE);
         try {
             unsafeSave(log, calledFromJsonParser, calledFromJsonParser);
         } catch (final NoSuchListException e) {
@@ -1018,7 +1017,7 @@ public class Task extends TaskBase implements Parcelable {
                           final boolean calledFromJsonParser) {
         // save task to set log+modified
         super.removeTag(t);
-        this.edited.put("tags", true);
+        this.edited.put("tags", Boolean.TRUE);
         try {
             unsafeSave(log, calledFromJsonParser, calledFromJsonParser);
         } catch (final NoSuchListException e) {
@@ -1026,7 +1025,7 @@ public class Task extends TaskBase implements Parcelable {
         }
         delete(MirakelInternalContentProvider.TAG_CONNECTION_URI,
                "task_id=? and tag_id=?",
-               new String[] { getId() + "", t.getId() + "" });
+               new String[] { String.valueOf(getId()), String.valueOf(t.getId()) });
     }
 
     // Parcelable stuff
