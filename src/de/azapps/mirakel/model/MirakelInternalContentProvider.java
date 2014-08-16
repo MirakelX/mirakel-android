@@ -144,11 +144,12 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     }
 
     private static final ListMultimap<Uri, Uri> notifyUris =  ArrayListMultimap.create();
-    private List<Uri> hasNotify = new ArrayList<>();
+
 
     static {
         notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
         notifyUris.put(CALDAV_TASKS_URI, TASK_URI);
+        notifyUris.put(TASK_URI, TASK_URI);
         notifyUris.put(LIST_URI, CALDAV_LISTS_URI);
         notifyUris.put(TASK_URI, CALDAV_TASKS_URI);
         notifyUris.put(UPDATE_LIST_ORDER_URI, LIST_URI);
@@ -156,8 +157,14 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         notifyUris.put(UPDATE_LIST_MOVE_UP_URI, LIST_URI);
         notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_URI);
         notifyUris.put(TASK_URI, LIST_URI);
-        notifyUris.put(TASK_URI, TASK_URI);
+        notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
+        notifyUris.put(CALDAV_LISTS_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(TASK_URI, LIST_WITH_SPECIAL_URI);
         notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(UPDATE_LIST_ORDER_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(UPDATE_LIST_MOVE_DOWN_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(UPDATE_LIST_MOVE_UP_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_WITH_SPECIAL_URI);
     }
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
@@ -194,17 +201,11 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     private List<Uri> transformUriForNotify(final Uri u) {
         List<Uri> uris = new ArrayList<>();
         if (notifyUris.containsKey(u)) {
-            for (Uri u1 : notifyUris.get(u)) {
-                if (!hasNotify.contains(u1)) {
-                    hasNotify.add(u1);
-                    uris.addAll(transformUriForNotify(u1));
-                }
-            }
+            uris.addAll(notifyUris.get(u));
         } else {
-            hasNotify.add(u);
             uris.add(u);
         }
-        hasNotify.clear();
+        uris.add(u);
         return uris;
     }
 

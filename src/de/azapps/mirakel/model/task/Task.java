@@ -466,10 +466,6 @@ public class Task extends TaskBase implements Parcelable {
         }
     }
 
-    public boolean checkIfParent(final Task t) {
-        return hasSubtasksLoop(t);
-    }
-
     public Task create() throws NoSuchListException {
         return create(true);
     }
@@ -558,7 +554,7 @@ public class Task extends TaskBase implements Parcelable {
     }
 
     public void addSubtask(final Task t) {
-        if (checkIfParent(t)) {
+        if (hasSubtasksLoop(t)) {
             return;
         }
         final ContentValues cv = new ContentValues();
@@ -655,7 +651,10 @@ public class Task extends TaskBase implements Parcelable {
         return subTasks;
     }
 
-    private boolean hasSubtasksLoop(final Task t) {
+    public boolean hasSubtasksLoop(final Task t) {
+        if (t.getId() == getId()) {
+            return true;
+        }
         final List<Task> subtasks = getSubtasks();
         for (final Task s : subtasks) {
             if (s.getId() == t.getId() || s.hasSubtasksLoop(t)) {
