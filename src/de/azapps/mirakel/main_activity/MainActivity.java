@@ -993,10 +993,6 @@ public class MainActivity extends ActionBarActivity implements
                     MainActivity.this.menu.findItem (R.id.menu_contact)
                     .setVisible (BuildHelper.isBeta ());
                 }
-                if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
-                    MainActivity.this.menu.findItem (R.id.menu_new_ui)
-                    .setVisible (BuildHelper.isBeta ());
-                }
                 if (!fromShare) {
                     updateShare ();
                 }
