@@ -267,11 +267,6 @@
             android:label="@string/title_activity_credits" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.settings.accounts.AccountSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.settings.tags.TagsSettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_credits" />
