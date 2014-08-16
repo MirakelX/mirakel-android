@@ -24,13 +24,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import android.content.ContentValues;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
@@ -42,6 +43,9 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 abstract class TaskBase extends ModelBase {
     public static final String ADDITIONAL_ENTRIES = "additional_entries";
@@ -75,7 +79,7 @@ abstract class TaskBase extends ModelBase {
     protected SYNC_STATE syncState;
     protected Calendar updatedAt;
     protected String uuid = "";
-    protected List<Tag> tags = new ArrayList<>();
+    protected Optional<List<Tag>> tags = absent();
     private boolean isStub = false;
 
     TaskBase() {
@@ -594,27 +598,27 @@ abstract class TaskBase extends ModelBase {
 
     public List<Tag> getTags() {
         checkTags();
-        return this.tags;
+        return this.tags.get();
     }
 
     private void checkTags() {
-        if (this.tags == null) {
+        if (!this.tags.isPresent()) {
             if (this.getId() == 0) {
-                this.tags = new ArrayList<>();
+                this.tags = of((List<Tag>)new ArrayList<Tag>());
             } else {
-                this.tags = Tag.getTagsForTask(this.getId());
+                this.tags = of(Tag.getTagsForTask(this.getId()));
             }
         }
     }
 
     protected void addTag(final Tag tag) {
         checkTags();
-        this.tags.add(tag);
+        this.tags.get().add(tag);
     }
 
     protected void removeTag(final Tag tag) {
         checkTags();
-        this.tags.remove(tag);
+        this.tags.get().remove(tag);
     }
 
     public boolean isStub() {
@@ -660,7 +664,7 @@ abstract class TaskBase extends ModelBase {
         result = prime * result
                  + (this.syncState == null ? 0 : this.syncState.hashCode());
         result = prime * result
-                 + (this.tags == null ? 0 : this.tags.hashCode());
+                 + (!this.tags.isPresent() ? 0 : this.tags.get().hashCode());
         result = prime * result
                  + (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
         result = prime * result

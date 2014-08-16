@@ -1061,7 +1061,7 @@ public class Task extends TaskBase implements Parcelable {
         dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
         dest.writeSerializable(this.updatedAt);
         dest.writeString(this.uuid);
-        dest.writeTypedList(tags);
+        dest.writeTypedList(getTags());
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
         dest.writeByte(isStub() ? (byte) 1 : (byte) 0);
@@ -1098,7 +1098,7 @@ public class Task extends TaskBase implements Parcelable {
         this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
         this.updatedAt = (Calendar) in.readSerializable();
         this.uuid = in.readString();
-        in.readTypedList(tags, Tag.CREATOR);
+        in.readTypedList(getTags(), Tag.CREATOR);
         this.setId(in.readLong());
         this.setName(in.readString());
         this.setStub(in.readByte() != 0);
