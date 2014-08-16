@@ -278,8 +278,8 @@ public class TaskDialogHelpers {
         if (r != null) {
             isExact = r.isExact();
             Log.d(TAG, "exact: " + isExact);
-            if (r.getDerivedFrom() != null) {
-                final Recurring master = Recurring.get(r.getDerivedFrom());
+            if (r.getDerivedFrom().isPresent()) {
+                final Recurring master = Recurring.get(r.getDerivedFrom().get());
                 if (master != null) {
                     r = master;
                 }
@@ -292,7 +292,7 @@ public class TaskDialogHelpers {
                 final boolean isDue, final int intervalYears,
                 final int intervalMonths, final int intervalDays,
                 final int intervalHours, final int intervalMinutes,
-                final Calendar startDate, final Calendar endDate,
+                final Optional<Calendar> startDate, final Optional<Calendar> endDate,
                 final boolean isExact) {
                 final Recurring r = Recurring.newRecurring("",
                                     intervalMinutes, intervalHours, intervalDays,
@@ -304,7 +304,7 @@ public class TaskDialogHelpers {
             @Override
             public void onCustomRecurrenceSetWeekdays(
                 final boolean isDue, final List<Integer> weekdays,
-                final Calendar startDate, final Calendar endDate,
+                final Optional<Calendar> startDate, final Optional<Calendar> endDate,
                 final boolean isExact) {
                 final SparseBooleanArray weekdaysArray = new SparseBooleanArray();
                 for (final int day : weekdays) {
