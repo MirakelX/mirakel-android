@@ -12,6 +12,7 @@ android {
     }
     lintOptions {
         disable 'MissingTranslation'
+        enable 'NewerVersionAvailable'
     }
     sourceSets {
         main {
