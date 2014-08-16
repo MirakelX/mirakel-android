@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -145,9 +146,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
 
     private static final ListMultimap<Uri, Uri> notifyUris =  ArrayListMultimap.create();
 
-
     static {
-        notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
         notifyUris.put(CALDAV_TASKS_URI, TASK_URI);
         notifyUris.put(TASK_URI, TASK_URI);
         notifyUris.put(LIST_URI, CALDAV_LISTS_URI);
@@ -158,13 +157,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_URI);
         notifyUris.put(TASK_URI, LIST_URI);
         notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
-        notifyUris.put(CALDAV_LISTS_URI, LIST_WITH_SPECIAL_URI);
-        notifyUris.put(TASK_URI, LIST_WITH_SPECIAL_URI);
         notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
-        notifyUris.put(UPDATE_LIST_ORDER_URI, LIST_WITH_SPECIAL_URI);
-        notifyUris.put(UPDATE_LIST_MOVE_DOWN_URI, LIST_WITH_SPECIAL_URI);
-        notifyUris.put(UPDATE_LIST_MOVE_UP_URI, LIST_WITH_SPECIAL_URI);
-        notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_WITH_SPECIAL_URI);
     }
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
@@ -198,16 +191,20 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         return database;
     }
 
-    private List<Uri> transformUriForNotify(final Uri u) {
-        List<Uri> uris = new ArrayList<>();
+    private Set<Uri> transformUriForNotify(final Uri u, Set<Uri> startset) {
         if (notifyUris.containsKey(u)) {
-            uris.addAll(notifyUris.get(u));
+            for (Uri u1 : notifyUris.get(u)) {
+                if (!startset.contains(u1)) {
+                    startset.add(u1);
+                    startset = transformUriForNotify(u1, startset);
+                }
+            }
         } else {
-            uris.add(u);
+            startset.add(u);
         }
-        uris.add(u);
-        return uris;
+        return startset;
     }
+
 
     @Override
     public int delete(final Uri uri, final String selection,
@@ -229,7 +226,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
-        for (Uri notify : transformUriForNotify(uri)) {
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
             this.getContext().getContentResolver().notifyChange(notify, null);
         }
         return u;
@@ -275,7 +272,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
-        for (Uri notify : transformUriForNotify(uri)) {
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
             notify = ContentUris.withAppendedId(notify, ContentUris.parseId(u));
             this.getContext().getContentResolver().notifyChange(notify, null);
         }
@@ -362,7 +359,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
         }
-        for (Uri notify : transformUriForNotify(uri)) {
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
             c.setNotificationUri(getContext().getContentResolver(), notify);
         }
         return c;
@@ -423,7 +420,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
-        for (Uri notify : transformUriForNotify(uri)) {
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
             this.getContext().getContentResolver().notifyChange(notify, null);
         }
         return u;
