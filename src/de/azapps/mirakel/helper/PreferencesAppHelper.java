@@ -18,10 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -55,6 +51,10 @@ import android.widget.Toast;
 
 import com.google.common.base.Optional;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.azapps.changelog.Changelog;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.export_import.AnyDoImport;
@@ -66,9 +66,9 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.recurring.RecurringActivity;
-import de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
+import de.azapps.mirakel.settings.RecurringSettingsActivity;
+import de.azapps.mirakel.settings.SemanticsSettingsActivity;
+import de.azapps.mirakel.settings.SpecialListsSettingsActivity;
 import de.azapps.mirakel.static_activities.CreditsActivity;
 import de.azapps.mirakel.static_activities.SettingsActivity;
 import de.azapps.mirakel.static_activities.SettingsFragment;
@@ -955,7 +955,7 @@ public class PreferencesAppHelper extends PreferencesHelper {
             semantics.setIntent(startSemanticsIntent);
         }
         final Intent startRecurringIntent = new Intent(this.activity,
-                RecurringActivity.class);
+                RecurringSettingsActivity.class);
         final Preference recurring = findPreference("recurring");
         if (recurring != null) {
             recurring.setIntent(startRecurringIntent);

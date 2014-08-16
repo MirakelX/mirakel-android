@@ -39,5 +39,9 @@
             android:summary="@string/settings_dev_dump_tw_summary"
             android:title="@string/settings_dev_dump_tw" />
     </PreferenceCategory>
-
+    <PreferenceCategory android:title="@string/recurring" >
+        <Preference
+            android:key="recurring"
+            android:title="@string/recurring" />
+    </PreferenceCategory>
 </PreferenceScreen>
