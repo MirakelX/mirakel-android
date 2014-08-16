@@ -560,6 +560,11 @@ public class Task extends TaskBase implements Parcelable {
         cv.put("parent_id", getId());
         cv.put("child_id", t.getId());
         insert(MirakelInternalContentProvider.SUBTASK_URI, cv);
+        if (syncState != SYNC_STATE.DELETE && syncState != SYNC_STATE.ADD) {
+            final ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.NEED_SYNC.toInt());
+            update(URI, values, ID + "=?", new String[] {String.valueOf(getId())});
+        }
     }
 
     public void deleteSubtask(final Task s, final boolean permanently) {
