@@ -61,10 +61,10 @@ public class ReminderAlarm extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        if (intent.getAction().equals(UPDATE_NOTIFICATION)) {
+        if (UPDATE_NOTIFICATION.equals(intent.getAction())) {
             NotificationService.updateServices(context, false);
         }
-        if (!intent.getAction().equals(SHOW_TASK)) {
+        if (!SHOW_TASK.equals(intent.getAction())) {
             return;
         }
         final long taskId = intent.getLongExtra(EXTRA_ID, 0);
@@ -73,6 +73,9 @@ public class ReminderAlarm extends BroadcastReceiver {
         }
         final Task task = Task.get(taskId);
         if (task == null) {
+            PendingIntent pd = PendingIntent.getBroadcast(
+                                   context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            alarmManager.cancel(pd);
             ErrorReporter.report(ErrorType.TASK_VANISHED);
             return;
         }
@@ -140,9 +143,8 @@ public class ReminderAlarm extends BroadcastReceiver {
             pLaterIntent);
         if (MirakelCommonPreferences.useBigNotifications()) {
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-            final String priority = ""
-                                    + (task.getPriority() > 0 ? "+" + task.getPriority() : task
-                                       .getPriority());
+            final String priority = (task.getPriority() > 0 ? "+" + task.getPriority() : String.valueOf(task
+                                     .getPriority()));
             CharSequence due;
             if (task.getDue() == null) {
                 due = context.getString(R.string.no_date);
@@ -166,8 +168,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
     private static AlarmManager alarmManager;
 
-    private static List<Pair<Task, PendingIntent>> activeAlarms = new
-    CopyOnWriteArrayList<Pair<Task, PendingIntent>>();
+    private static List<Pair<Task, PendingIntent>> activeAlarms = new  CopyOnWriteArrayList<>();
 
     public static void updateAlarms(final Context ctx) {
         new Thread(new Runnable() {
@@ -241,10 +242,6 @@ public class ReminderAlarm extends BroadcastReceiver {
         }).start();
     }
 
-    protected static void reloadNotification(final Context ctx, final Task t) {
-        closeNotificationFor(ctx, t.getId());
-        createNotification(ctx, t);
-    }
 
     private static boolean isAlarm(final Task t2) throws NoSuchTaskException {
         for (final Pair<Task, PendingIntent> pair : activeAlarms) {
@@ -272,16 +269,16 @@ public class ReminderAlarm extends BroadcastReceiver {
 
     public static void cancelAlarm(final Context ctx, final Task task) {
         try {
-            final Pair<Task, PendingIntent> p = findTask(task);
+            final Pair<Task, PendingIntent> p = findTask(task.getId());
             cancelAlarm(ctx, task, Task.get(task.getId()), p, p.second);
         } catch (final IndexOutOfBoundsException e) {
             Log.d(TAG, "task not found", e);
         }
     }
 
-    private static Pair<Task, PendingIntent> findTask(final Task task) {
+    private static Pair<Task, PendingIntent> findTask(final long id) {
         for (final Pair<Task, PendingIntent> p : activeAlarms) {
-            if (task.getId() == p.first.getId()) {
+            if (id == p.first.getId()) {
                 return p;
             }
         }
