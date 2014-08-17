@@ -103,7 +103,9 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.withOptional;
+import static com.google.common.base.Optional.of;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -734,14 +736,14 @@ public class MainActivity extends ActionBarActivity implements
                 final Calendar due = new GregorianCalendar(year, month,
                         day);
                 for (final Task task : tasks) {
-                    task.setDue(due);
+                    task.setDue(of(due));
                     saveTask(task);
                 }
             }
             @Override
             public void onNoDateSet() {
                 for (final Task task : tasks) {
-                    task.setDue(null);
+                    task.setDue(Optional.<Calendar>absent());
                     saveTask(task);
                 }
             }
