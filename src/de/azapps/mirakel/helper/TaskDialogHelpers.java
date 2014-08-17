@@ -81,6 +81,7 @@ import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.SupportDateTimeDialog;
 import de.azapps.widgets.SupportDateTimeDialog.OnDateTimeSetListener;
+import static com.google.common.base.Optional.of;
 
 public class TaskDialogHelpers {
     protected static AlertDialog audio_playback_dialog;
@@ -329,8 +330,7 @@ public class TaskDialogHelpers {
 
     public static void handleReminder(final ActionBarActivity ctx,
                                       final Task task, final OnTaskChangedListner onSuccess) {
-        final Calendar reminder = task.getReminder() == null ? new GregorianCalendar()
-                                  : task.getReminder();
+        final Calendar reminder = task.getReminder().or(new GregorianCalendar());
         final FragmentManager fm = ctx.getSupportFragmentManager();
         final SupportDateTimeDialog dtDialog = SupportDateTimeDialog.newInstance(
         new OnDateTimeSetListener() {
@@ -343,12 +343,12 @@ public class TaskDialogHelpers {
                 reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 reminder.set(Calendar.MINUTE, minute);
-                task.setReminder(reminder, true);
+                task.setReminder(of(reminder), true);
                 onSuccess.onTaskChanged(task);
             }
             @Override
             public void onNoTimeSet() {
-                task.setReminder(null);
+                task.setReminder(Optional.<Calendar>absent());
                 onSuccess.onTaskChanged(task);
             }
         }, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),

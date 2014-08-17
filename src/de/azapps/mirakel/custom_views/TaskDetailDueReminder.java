@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
+import com.google.common.base.Optional;
 
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -46,6 +47,10 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class TaskDetailDueReminder extends BaseTaskDetailRow {
     public enum Type {
@@ -171,8 +176,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
             public void onClick(final View v) {
                 TaskDetailDueReminder.this.mIgnoreTimeSet = false;
                 final Calendar dueLocal = TaskDetailDueReminder.this.task
-                                          .getDue() == null ? new GregorianCalendar()
-                                          : TaskDetailDueReminder.this.task.getDue();
+                                          .getDue().or(new GregorianCalendar());
                 final FragmentManager fm = ((ActionBarActivity) TaskDetailDueReminder.this.context)
                                            .getSupportFragmentManager();
                 final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog
@@ -186,15 +190,15 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                             return;
                         }
                         TaskDetailDueReminder.this.task
-                        .setDue(new GregorianCalendar(
-                                    year, month, day));
+                        .setDue(of((Calendar)new GregorianCalendar(
+                                       year, month, day)));
                         save();
                         setDue();
                     }
                     @Override
                     public void onNoDateSet() {
                         TaskDetailDueReminder.this.task
-                        .setDue(null);
+                        .setDue(Optional.<Calendar>absent());
                         TaskDetailDueReminder.this.task
                         .setRecurrence(-1);
                         save();
@@ -257,7 +261,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
     }
 
     protected void setDue() {
-        if (this.task.getDue() == null) {
+        if (!this.task.getDue().isPresent()) {
             this.taskDue.setText(this.context.getString(R.string.no_date));
             this.taskDue.setTextColor(this.context.getResources().getColor(
                                           BaseTaskDetailRow.inactive_color));
@@ -270,16 +274,16 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
     }
 
     private void setReminder() {
-        if (this.task.getReminder() == null) {
+        if (!this.task.getReminder().isPresent()) {
             this.taskReminder.setText(this.context
                                       .getString(R.string.no_reminder));
             this.taskReminder.setTextColor(this.context.getResources()
                                            .getColor(BaseTaskDetailRow.inactive_color));
         } else {
-            Calendar reminder = (Calendar) this.task.getReminder().clone();
+            Calendar reminder = (Calendar) this.task.getReminder().get().clone();
             final Recurring r = this.task.getRecurringReminder();
             if (r != null) {
-                reminder = r.addRecurring(reminder);
+                reminder = r.addRecurring(of(reminder)).get();
                 if (new GregorianCalendar().compareTo(reminder) > 0) {
                     reminder.setTimeInMillis(reminder.getTimeInMillis()
                                              + r.getInterval());
