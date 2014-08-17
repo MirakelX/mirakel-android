@@ -48,7 +48,9 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class Recurring extends RecurringBase {
     public static final String TABLE = "recurring";
@@ -217,12 +219,11 @@ public class Recurring extends RecurringBase {
     }
 
     public Task incrementRecurringDue(final Task t) {
-        if (t.getDue() == null) {
+        if (!t.getDue().isPresent()) {
             return t;
         }
-        final Calendar newDue = addRecurring((Calendar) t.getDue().clone(),
-                                             true);
-        if (newDue.compareTo(t.getDue()) == 0) {
+        final Calendar newDue = addRecurring( of((Calendar)t.getDue().get().clone()), true).get();
+        if (newDue.compareTo(t.getDue().get()) == 0) {
             return t;
         }
         long masterID = t.getId();
@@ -236,7 +237,7 @@ public class Recurring extends RecurringBase {
             offsetCount = c.getLong(4);
         }
         c.close();
-        offset += newDue.getTimeInMillis() - t.getDue().getTimeInMillis();
+        offset += newDue.getTimeInMillis() - t.getDue().get().getTimeInMillis();
         ++offsetCount;
         c = new MirakelQueryBuilder(context).select(CHILD).and(PARENT, Operation.EQ,
                 masterID).and(OFFSET_COUNT, Operation.EQ,
@@ -249,7 +250,7 @@ public class Recurring extends RecurringBase {
             }
         }
         c.close();
-        t.setDue(newDue);
+        t.setDue(of(newDue));
         Task newTask;
         try {
             newTask = t.create();
@@ -263,7 +264,7 @@ public class Recurring extends RecurringBase {
         cv.put(Task.UUID, UUID.randomUUID().toString());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
         update(MirakelInternalContentProvider.TASK_URI, cv, ModelBase.ID + "=?",
-               new String[] {newTask.getId() + ""});
+               new String[] {String.valueOf(newTask.getId())});
         cv = new ContentValues();
         cv.put(PARENT, masterID);
         cv.put(CHILD, newTask.getId());
@@ -273,11 +274,17 @@ public class Recurring extends RecurringBase {
         return newTask;
     }
 
-    public Calendar addRecurring(final Calendar c) {
+    @NonNull
+    public Optional<Calendar> addRecurring(final @NonNull Optional<Calendar> c) {
         return addRecurring(c, false);
     }
 
-    private Calendar addRecurring(Calendar c, final boolean onlyOnce) {
+    @NonNull
+    private Optional<Calendar> addRecurring(@NonNull Optional<Calendar> cal, final boolean onlyOnce) {
+        if (!cal.isPresent()) {
+            return absent();
+        }
+        Calendar c = cal.get();
         final Calendar now = new GregorianCalendar();
         if (isExact()) {
             c = now;
@@ -317,7 +324,7 @@ public class Recurring extends RecurringBase {
             }
             c.add(Calendar.DAY_OF_MONTH, diff);
         }
-        return c;
+        return of(c);
     }
 
     public static List<Pair<Integer, String>> getForDialog(final boolean isDue) {

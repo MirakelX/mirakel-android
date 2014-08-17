@@ -26,6 +26,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -58,10 +61,10 @@ public class TaskService extends Service {
                            Toast.LENGTH_LONG).show();
         } else if (intent.getAction() == TASK_LATER
                    && !task.hasRecurringReminder()) {
-            final GregorianCalendar reminder = new GregorianCalendar();
+            final Calendar reminder = new GregorianCalendar();
             final int addMinutes = MirakelCommonPreferences.getAlarmLater();
             reminder.add(Calendar.MINUTE, addMinutes);
-            task.setReminder(reminder);
+            task.setReminder(Optional.of(reminder));
             task.save();
             Toast.makeText(
                 this,

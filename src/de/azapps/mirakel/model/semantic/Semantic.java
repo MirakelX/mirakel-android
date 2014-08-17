@@ -51,6 +51,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 public class Semantic extends SemanticBase {
 
@@ -98,15 +99,15 @@ public class Semantic extends SemanticBase {
 
     public static Task createStubTask(String taskName, Optional<ListMirakel> currentList,
                                       final boolean useSemantic, final Context context) {
-        GregorianCalendar due = null;
+        Optional<Calendar> due = absent();
         int prio = 0;
         if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
                 final SpecialList slist = (SpecialList) currentList.get();
                 currentList = Optional.fromNullable(slist.getDefaultList());
                 if (slist.getDefaultDate() != null) {
-                    due = new GregorianCalendar();
-                    due.add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
+                    due = of((Calendar)new GregorianCalendar());
+                    due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
                 }
                 if (slist.getWhere().containsKey(Task.PRIORITY)) {
                     final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) slist
@@ -130,7 +131,7 @@ public class Semantic extends SemanticBase {
             }
         }
         if (useSemantic) {
-            GregorianCalendar tempdue = new GregorianCalendar();
+            Calendar tempdue = new GregorianCalendar();
             final String lowername = taskName.toLowerCase(Locale.getDefault());
             final List<String> words = new ArrayList<String>(
                 Arrays.asList(lowername.split("\\s+")));
@@ -143,7 +144,7 @@ public class Semantic extends SemanticBase {
                 // Set due
                 if (s.getDue() != null) {
                     tempdue.add(Calendar.DAY_OF_MONTH, s.getDue());
-                    due = tempdue;
+                    due = of(tempdue);
                 }
                 // Set priority
                 if (s.getPriority() != null) {
@@ -165,17 +166,16 @@ public class Semantic extends SemanticBase {
                     do {
                         tempdue.add(Calendar.DAY_OF_YEAR, 1);
                     } while (tempdue.get(Calendar.DAY_OF_WEEK) != nextWeekday);
-                    due = tempdue;
+                    due = of(tempdue);
                 }
                 taskName = taskName.substring(word.length()).trim();
                 words.remove(0);
             }
-            if (due != null) {
-                due.set(Calendar.HOUR_OF_DAY, 0);
-                due.set(Calendar.MINUTE, 0);
-                due.set(Calendar.SECOND, 0);
-                due.add(Calendar.SECOND,
-                        DateTimeHelper.getTimeZoneOffset(false, due));
+            if (due.isPresent()) {
+                due.get().set(Calendar.HOUR_OF_DAY, 0);
+                due.get().set(Calendar.MINUTE, 0);
+                due.get().set(Calendar.SECOND, 0);
+                due.get().add(Calendar.SECOND, DateTimeHelper.getTimeZoneOffset(false, due.get()));
             }
         }
         if (!currentList.isPresent()) {

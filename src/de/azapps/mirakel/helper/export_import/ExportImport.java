@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -57,6 +58,9 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class ExportImport {
     private static final File dbFile = new File(FileUtils.getMirakelDir()
@@ -186,9 +190,9 @@ public class ExportImport {
                     // Due
                     final long due = Long.parseLong(m.getNamedItem("dueDate")
                                                     .getTextContent());
-                    final GregorianCalendar d = new GregorianCalendar();
+                    final Calendar d = new GregorianCalendar();
                     d.setTimeInMillis(due);
-                    t.setDue(d);
+                    t.setDue(of(d));
                     // Created At
                     final long created = Long.parseLong(m.getNamedItem(
                                                             "created").getTextContent());
@@ -198,9 +202,9 @@ public class ExportImport {
                     // Update At
                     final long update = Long.parseLong(m.getNamedItem(
                                                            "modified").getTextContent());
-                    final GregorianCalendar u = new GregorianCalendar();
+                    final Calendar u = new GregorianCalendar();
                     u.setTimeInMillis(update);
-                    t.setDue(u);
+                    t.setDue(of(u));
                     // Done
                     final String done = m.getNamedItem("completed")
                                         .getTextContent();
@@ -262,7 +266,7 @@ public class ExportImport {
                 final String listName = row[7];
                 final int priority = Integer.valueOf(row[5]) - 1;
                 // Due
-                GregorianCalendar due = new GregorianCalendar();
+                Calendar due = new GregorianCalendar();
                 try {
                     due.setTime(astridFormat.parse(row[4]));
                 } catch (final ParseException e) {
@@ -280,7 +284,7 @@ public class ExportImport {
                 final Task t = Task.newTask(name, list);
                 t.setContent(content);
                 t.setPriority(priority);
-                t.setDue(due);
+                t.setDue(fromNullable(due));
                 t.setDone(done);
                 t.save(false);
                 Log.v(TAG, "created task:" + name);

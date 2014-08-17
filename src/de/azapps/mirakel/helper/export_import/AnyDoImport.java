@@ -57,6 +57,8 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.of;
+
 import static de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 
 public class AnyDoImport {
@@ -231,7 +233,7 @@ public class AnyDoImport {
             final long dueMs = jsonTask.get("dueDate").getAsLong();
             if (dueMs > 0) {
                 due.setTimeInMillis(dueMs);
-                t.setDue(due);
+                t.setDue(of(due));
             }
         }
         if (jsonTask.has("priority")) {

@@ -28,6 +28,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.widget.TextView;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
@@ -59,13 +62,13 @@ public class TaskHelper {
      */
     static String getTaskName(final Context ctx, final Task t) {
         String subject;
-        if (t.getDue() == null) {
+        if (!t.getDue().isPresent()) {
             subject = ctx.getString(R.string.share_task_title, t.getName());
         } else {
             subject = ctx.getString(
                           R.string.share_task_title_with_date,
                           t.getName(),
-                          DateTimeHelper.formatDate(t.getDue(),
+                          DateTimeHelper.formatDate(t.getDue().get(),
                                                     ctx.getString(R.string.dateFormat)));
         }
         return subject;
@@ -80,15 +83,15 @@ public class TaskHelper {
      *            Is the Task done?
      * @return ID of the Color–Resource
      */
-    public static int getTaskDueColor(final Context context, final Calendar origDue,
+    public static int getTaskDueColor(final Context context, final Optional<Calendar> origDue,
                                       final boolean isDone) {
         int colorResource;
-        if (origDue == null) {
+        if (!origDue.isPresent()) {
             colorResource = R.color.Grey;
         } else {
             final LocalDate today = new LocalDate();
             final LocalDate nextWeek = new LocalDate().plusDays(7);
-            final LocalDate due = new LocalDate(origDue);
+            final LocalDate due = new LocalDate(origDue.get());
             final int cmpr = today.compareTo(due);
             if (isDone) {
                 colorResource = R.color.Grey;

@@ -65,7 +65,6 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
@@ -73,6 +72,8 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.fromNullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -322,7 +323,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             final int[] priorities = { 2, -1, 1, 2, 0, 0 };
             for (int i = 0; i < tasks.length; i++) {
                 final Task t = new Task(tasks[i]);
-                t.setDue(dues[i]);
+                t.setDue(fromNullable(dues[i]));
                 t.setPriority(priorities[i]);
                 t.setList(ListMirakel.findByName(task_lists[i]).get());
                 t.setSyncState(SYNC_STATE.ADD);

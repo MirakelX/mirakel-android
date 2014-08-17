@@ -194,24 +194,24 @@ public class ReminderAlarm extends BroadcastReceiver {
                     final Task t = p.first;
                     final Task newTask = Task.get(t.getId());
                     if (newTask == null
-                        || newTask.getReminder() == null
+                        || !newTask.getReminder().isPresent()
                         || newTask.isDone()
-                        || newTask.getReminder().after(
+                        || newTask.getReminder().get().after(
                             new GregorianCalendar())) {
                         cancelAlarm(ctx, t, newTask, p, p.second);
                         continue;
-                    } else if (newTask.getReminder() != null) {
+                    } else if (newTask.getReminder().isPresent()) {
                         final Calendar now = new GregorianCalendar();
-                        if (newTask.getReminder().after(now)
+                        if (newTask.getReminder().get().after(now)
                             && newTask.getRecurringReminder() == null) {
                             closeNotificationFor(ctx, t.getId());
                             updateAlarm(ctx, newTask);
-                        } else if (newTask.getReminder().after(now)
+                        } else if (newTask.getReminder().get().after(now)
                                    && newTask.getRecurringReminder() != null
-                                   && newTask.getReminder().compareTo(
+                                   && newTask.getReminder().get().compareTo(
                                        newTask.getRecurringReminder()
                                        .addRecurring(
-                                           newTask.getReminder())) > 0
+                                           newTask.getReminder()).orNull()) > 0
                                    && !now.after(newTask.getReminder())) {
                             updateAlarm(ctx, newTask);
                         } else if (t.getRecurringReminderId() != newTask
@@ -231,7 +231,7 @@ public class ReminderAlarm extends BroadcastReceiver {
                             Log.i(TAG, "id " + t.getId());
                             final PendingIntent p = updateAlarm(ctx, t);
                             activeAlarms
-                            .add(new Pair<Task, PendingIntent>(t, p));
+                            .add(new Pair<>(t, p));
                         }
                     } catch (final NoSuchTaskException e) {
                         Log.wtf(TAG, "Task not found", e);
@@ -295,18 +295,18 @@ public class ReminderAlarm extends BroadcastReceiver {
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0,
                                             intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        if (pendingIntent == null || task.getReminder() == null) {
+        if (pendingIntent == null || !task.getReminder().isPresent()) {
             return null;
         }
         Log.v(TAG, "Set alarm for " + task.getName() + " on "
-              + task.getReminder().getTimeInMillis());
+              + task.getReminder().get().getTimeInMillis());
         final Recurring recurrence = task.getRecurringReminder();
         if (recurrence == null) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder()
+            alarmManager.set(AlarmManager.RTC_WAKEUP, task.getReminder().get()
                              .getTimeInMillis(), pendingIntent);
         } else {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, task
-                                      .getReminder().getTimeInMillis(), recurrence.getInterval(),
+                                      .getReminder().get().getTimeInMillis(), recurrence.getInterval(),
                                       pendingIntent);
         }
         return pendingIntent;

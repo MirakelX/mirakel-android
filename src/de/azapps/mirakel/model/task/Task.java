@@ -34,6 +34,7 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.google.common.base.Optional;
@@ -61,6 +62,10 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
+import static com.google.common.base.Optional.absent;
 
 public class Task extends TaskBase implements Parcelable {
 
@@ -115,21 +120,22 @@ public class Task extends TaskBase implements Parcelable {
     }
 
     public Task(final String name, final ListMirakel list,
-                final GregorianCalendar due, final int priority) {
+                final @NonNull Optional<Calendar> due, final int priority) {
         this(name, list, "", false, due, priority);
     }
 
     public Task(final String name, final ListMirakel list,
                 final String content, final boolean done,
-                final GregorianCalendar due, final int priority) {
+                final @NonNull Optional<Calendar> due, final int priority) {
         this(0, java.util.UUID.randomUUID().toString(),
-             list, name, content, done, due, null, priority, null, null,
+             list, name, content, done, due, Optional.<Calendar>absent() , priority, null, null,
              SYNC_STATE.ADD, "", -1, -1, 0, true);
     }
 
     public Task(final long id, final String uuid, final ListMirakel list,
                 final String name, final String content, final boolean done,
-                final Calendar due, final Calendar reminder, final int priority,
+                final @NonNull Optional<Calendar> due, final @NonNull Optional<Calendar> reminder,
+                final int priority,
                 final Calendar created_at, final Calendar updated_at,
                 final SYNC_STATE sync_state, final String additionalEntriesString,
                 final int recurring, final int recurring_reminder,
@@ -145,16 +151,16 @@ public class Task extends TaskBase implements Parcelable {
             throw new IllegalArgumentException("cursor out of bounds");
         }
         if (cursor.isNull(cursor.getColumnIndex(DUE))) {
-            setDue(null);
+            setDue(Optional.<Calendar>absent());
         } else {
-            setDue(DateTimeHelper.createLocalCalendar(
-                       cursor.getLong(cursor.getColumnIndex(DUE)), true));
+            setDue(of(DateTimeHelper.createLocalCalendar(
+                          cursor.getLong(cursor.getColumnIndex(DUE)), true)));
         }
         if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
-            setReminder(null);
+            setReminder(Optional.<Calendar>absent());
         } else {
-            setReminder(DateTimeHelper.createLocalCalendar(cursor
-                        .getLong(cursor.getColumnIndex(REMINDER))));
+            setReminder(of(DateTimeHelper.createLocalCalendar(cursor
+                           .getLong(cursor.getColumnIndex(REMINDER)))));
         }
         Calendar created_at;
         if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
@@ -430,11 +436,11 @@ public class Task extends TaskBase implements Parcelable {
     }
 
     public static Task newTask(final String name, final ListMirakel list) {
-        return newTask(name, list, "", false, null, 0);
+        return newTask(name, list, "", false, Optional.<Calendar>absent(), 0);
     }
 
     public static Task newTask(final String name, final ListMirakel list,
-                               final GregorianCalendar due, final int priority) {
+                               final @NonNull Optional<Calendar> due, final int priority) {
         return newTask(name, list, "", false, due, priority);
     }
 
@@ -452,9 +458,9 @@ public class Task extends TaskBase implements Parcelable {
 
     public static Task newTask(final String name, final ListMirakel list,
                                final String content, final boolean done,
-                               final GregorianCalendar due, final int priority) {
+                               final Optional<Calendar> due, final int priority) {
         final Task t = new Task(0, java.util.UUID.randomUUID().toString(),
-                                list, name, content, done, due, null, priority, null, null,
+                                list, name, content, done, due, Optional.<Calendar>absent(), priority, null, null,
                                 SYNC_STATE.ADD, "", -1, -1, 0, true);
         try {
             return t.create();
@@ -484,10 +490,8 @@ public class Task extends TaskBase implements Parcelable {
         values.put(TaskBase.LIST_ID, getList().getId());
         values.put(TaskBase.CONTENT, getContent());
         values.put(TaskBase.DONE, isDone());
-        values.put(TaskBase.DUE,
-                   getDue() == null ? null : DateTimeHelper.getUTCTime(getDue()));
-        values.put(TaskBase.REMINDER, getReminder() == null ? null
-                   : DateTimeHelper.getUTCTime(getReminder()));
+        values.put(TaskBase.DUE, DateTimeHelper.getUTCTime(getDue()));
+        values.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(getReminder()));
         values.put(TaskBase.PRIORITY, getPriority());
         values.put(DatabaseHelper.SYNC_STATE_FIELD,
                    addFlag ? SYNC_STATE.ADD.toInt() : SYNC_STATE.NOTHING.toInt());
@@ -825,7 +829,7 @@ public class Task extends TaskBase implements Parcelable {
                     do {
                         final Task child = cursorToTask(c);
                         final int offset = c.getInt(allColumns.length);
-                        if (offset > 0 && old != null && r != null) {
+                        if (offset > 0 && old != null && r != null && old.getDue().isPresent()) {
                             child.setDue(r.addRecurring(old.getDue()));
                             if (child.getId() == getId()) {
                                 // this task:
@@ -946,8 +950,8 @@ public class Task extends TaskBase implements Parcelable {
         json += "\"priority\":" + getPriority() + ",";
         json += "\"list_id\":" + getList().getId() + ",";
         String s = "";
-        if (getDue() != null) {
-            s = DateTimeHelper.formatDate(getDue());
+        if (getDue().isPresent()) {
+            s = DateTimeHelper.formatDate(getDue().get());
         }
         json += "\"due\":\"" + s + "\",";
         s = "";
@@ -1046,17 +1050,17 @@ public class Task extends TaskBase implements Parcelable {
         }
         dest.writeStringArray(this.dependencies);
         dest.writeString(this.additionalEntriesString);
-        dest.writeString(this.content);
+        dest.writeString(this.content.or(""));
         dest.writeSerializable(this.createdAt);
         dest.writeByte(done ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.due);
+        dest.writeSerializable(this.due.orNull());
         dest.writeLong(this.list.getId());
         dest.writeInt(this.priority);
         dest.writeInt(this.progress);
         dest.writeLong(this.recurrence);
         dest.writeLong(this.recurringReminder);
         dest.writeByte(isRecurringShown ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.reminder);
+        dest.writeSerializable(this.reminder.orNull());
         dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
         dest.writeSerializable(this.updatedAt);
         dest.writeString(this.uuid);
@@ -1076,10 +1080,11 @@ public class Task extends TaskBase implements Parcelable {
         }
         this.dependencies = in.createStringArray();
         this.additionalEntriesString = in.readString();
-        this.content = in.readString();
+        String c = in.readString();
+        this.content = c.length() == 0 ? Optional.<String>absent() : of(c);
         this.createdAt = (Calendar) in.readSerializable();
         this.done = in.readByte() != 0;
-        this.due = (Calendar) in.readSerializable();
+        this.due = fromNullable((Calendar) in.readSerializable());
         long listId = in.readLong();
         Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
         if (listMirakelOptional.isPresent()) {
@@ -1092,7 +1097,7 @@ public class Task extends TaskBase implements Parcelable {
         this.recurrence = in.readLong();
         this.recurringReminder = in.readLong();
         this.isRecurringShown = in.readByte() != 0;
-        this.reminder = (Calendar) in.readSerializable();
+        this.reminder = fromNullable((Calendar) in.readSerializable());
         int tmpSyncState = in.readInt();
         this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
         this.updatedAt = (Calendar) in.readSerializable();
