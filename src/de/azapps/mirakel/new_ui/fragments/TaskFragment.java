@@ -20,12 +20,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.google.common.base.Optional;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,11 +50,13 @@ import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.Log;
-import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DateTimeDialog;
+
+
 
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.Procedure;
+import static com.google.common.base.Optional.of;
 
 public class TaskFragment extends DialogFragment {
 
@@ -246,15 +249,15 @@ public class TaskFragment extends DialogFragment {
             DatePicker.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
-                    task.setDue(new GregorianCalendar(year, month, day));
+                    task.setDue(of((Calendar)new GregorianCalendar(year, month, day)));
                     task.save();
                 }
                 @Override
                 public void onNoDateSet() {
-                    task.setDue(null);
+                    task.setDue(Optional.<Calendar>absent());
                     task.save();
                 }
-            }, fromNullable(task.getDue()), false);
+            }, task.getDue(), false);
             datePickerDialog.show(getFragmentManager(), "dueDialog");
         }
     };
@@ -283,15 +286,15 @@ public class TaskFragment extends DialogFragment {
             DateTimeDialog.OnDateTimeSetListener() {
                 @Override
                 public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-                    task.setReminder(new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute));
+                    task.setReminder(of((Calendar)new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
                     task.save();
                 }
                 @Override
                 public void onNoTimeSet() {
-                    task.setReminder(null);
+                    task.setReminder(Optional.<Calendar>absent());
                     task.save();
                 }
-            }, fromNullable(task.getReminder()), false);
+            }, task.getReminder(), false);
             dateTimeDialog.show(getFragmentManager(), "reminderDialog");
         }
     };
