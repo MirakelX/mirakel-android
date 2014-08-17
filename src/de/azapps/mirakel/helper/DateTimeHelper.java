@@ -118,6 +118,37 @@ public class DateTimeHelper {
      *            the local Calendar
      * @return utc time in s, 0 if calendar is null
      */
+    public static long getUTCTime(final @NonNull Optional<Calendar> c) {
+        if (!c.isPresent()) {
+            return 0;
+        }
+        return c.get().getTimeInMillis() / 1000
+               - DateTimeHelper.getTimeZoneOffset(false, c.get());
+    }
+
+    /**
+     *
+     * @param c
+     *            the local Calendar
+     * @return the calendar in UTC, null if c is null
+     */
+    public static Calendar getUTCCalendar(final @NonNull Optional<Calendar> c) {
+        if (!c.isPresent()) {
+            return null;
+        }
+        final Calendar ret = (Calendar) c.get().clone();
+        ret.setTimeInMillis(c.get().getTimeInMillis()
+                            - DateTimeHelper.getTimeZoneOffset(true, c.get()));
+        return ret;
+    }
+
+    /**
+     * Use the optional version instead!
+     * @param c
+     *            the local Calendar
+     * @return utc time in s, 0 if calendar is null
+     */
+    @Deprecated
     public static long getUTCTime(final Calendar c) {
         if (c == null) {
             return 0;
@@ -127,11 +158,12 @@ public class DateTimeHelper {
     }
 
     /**
-     *
+     * Use the optional version instead!
      * @param c
      *            the local Calendar
      * @return the calendar in UTC, null if c is null
      */
+    @Deprecated
     public static Calendar getUTCCalendar(final Calendar c) {
         if (c == null) {
             return null;
