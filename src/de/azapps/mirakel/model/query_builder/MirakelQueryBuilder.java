@@ -421,10 +421,9 @@ public class MirakelQueryBuilder {
         return this;
     }
 
-    private <T> T cursorToObject(final Cursor c, final Class<T> clazz) {
+    public static <T> T cursorToObject(final Cursor c, final Class<T> clazz) {
         try {
-            final Constructor<T> constructor = clazz
-                                               .getConstructor(Cursor.class);
+            final Constructor<T> constructor = clazz.getConstructor(Cursor.class);
             return constructor.newInstance(c);
         } catch (NoSuchMethodException e) {
             Log.wtf(TAG, "go and implement a the constructor " + clazz.getCanonicalName() + "(Cursor)");

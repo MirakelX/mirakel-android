@@ -67,7 +67,7 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Optional.absent;
 
-public class Task extends TaskBase implements Parcelable {
+public class Task extends TaskBase {
 
     // Constants
     public static final String[] allColumns = { ModelBase.ID, TaskBase.UUID,

@@ -37,7 +37,7 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
-public class Tag extends TagBase implements Parcelable {
+public class Tag extends TagBase {
 
     public static final String TABLE = "tag";
     public static final String TAG_CONNECTION_TABLE = "task_tag";

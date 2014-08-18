@@ -33,6 +33,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 
 import com.google.common.base.Optional;
 
@@ -275,4 +276,40 @@ public class Semantic extends SemanticBase {
         super.save();
         initAll();
     }
+
+    // Parcelable stuff
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.priority);
+        dest.writeValue(this.due);
+        dest.writeSerializable(this.list);
+        dest.writeValue(this.weekday);
+        dest.writeLong(getId());
+        dest.writeString(getName());
+    }
+
+    private Semantic(Parcel in) {
+        super();
+        this.priority = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.due = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.list = (Optional<ListMirakel>) in.readSerializable();
+        this.weekday = (Integer) in.readValue(Integer.class.getClassLoader());
+        setId(in.readLong());
+        setName(in.readString());
+    }
+
+    public static final Creator<Semantic> CREATOR = new Creator<Semantic>() {
+        public Semantic createFromParcel(Parcel source) {
+            return new Semantic(source);
+        }
+        public Semantic[] newArray(int size) {
+            return new Semantic[size];
+        }
+    };
 }

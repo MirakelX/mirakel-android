@@ -45,7 +45,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
-public class FileMirakel extends FileBase implements Parcelable {
+public class FileMirakel extends FileBase {
 
     public static final String[] allColumns = { ID, NAME, TASK, PATH };
     public static final String cacheDirPath = FileUtils.getMirakelDir()

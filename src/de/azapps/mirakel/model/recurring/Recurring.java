@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.recurring;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.util.SparseBooleanArray;
@@ -344,4 +345,55 @@ public class Recurring extends RecurringBase {
         return ret;
     }
 
+    // Parcelable stuff
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.minutes);
+        dest.writeInt(this.hours);
+        dest.writeInt(this.days);
+        dest.writeInt(this.months);
+        dest.writeInt(this.years);
+        dest.writeByte(forDue ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.startDate);
+        dest.writeSerializable(this.endDate);
+        dest.writeByte(temporary ? (byte) 1 : (byte) 0);
+        dest.writeByte(isExact ? (byte) 1 : (byte) 0);
+        dest.writeSparseBooleanArray(this.weekdays);
+        dest.writeSerializable(this.derivedFrom);
+        dest.writeLong(getId());
+        dest.writeString(getName());
+    }
+
+    private Recurring(Parcel in) {
+        super();
+        this.minutes = in.readInt();
+        this.hours = in.readInt();
+        this.days = in.readInt();
+        this.months = in.readInt();
+        this.years = in.readInt();
+        this.forDue = in.readByte() != 0;
+        this.startDate = (Optional<Calendar>) in.readSerializable();
+        this.endDate = (Optional<Calendar>) in.readSerializable();
+        this.temporary = in.readByte() != 0;
+        this.isExact = in.readByte() != 0;
+        this.weekdays = in.readSparseBooleanArray();
+        this.derivedFrom = (Optional<Long>) in.readSerializable();
+        setId(in.readLong());
+        setName(in.readString());
+    }
+
+    public static final Creator<Recurring> CREATOR = new Creator<Recurring>() {
+        public Recurring createFromParcel(Parcel source) {
+            return new Recurring(source);
+        }
+        public Recurring[] newArray(int size) {
+            return new Recurring[size];
+        }
+    };
 }
