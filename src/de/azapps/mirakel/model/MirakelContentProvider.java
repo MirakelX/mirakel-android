@@ -317,7 +317,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         final ContentResolver db = CaldavDatabaseHelper.getContentProvider(getContext());
-        StringBuilder stringBuilder = new StringBuilder(selection);
+        StringBuilder stringBuilder = new StringBuilder(selection == null ? "" : selection);
 // initialize appendWhere, this allows us to append all other selections with a preceding "AND"
         if (stringBuilder.length() == 0) {
             stringBuilder.append(" 1=1 ");
