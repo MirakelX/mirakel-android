@@ -153,14 +153,14 @@ public class Task extends TaskBase {
         if (cursor.isNull(cursor.getColumnIndex(DUE))) {
             setDue(Optional.<Calendar>absent());
         } else {
-            setDue(of(DateTimeHelper.createLocalCalendar(
-                          cursor.getLong(cursor.getColumnIndex(DUE)), true)));
+            setDue(fromNullable(DateTimeHelper.createLocalCalendar(
+                                    cursor.getLong(cursor.getColumnIndex(DUE)), true)));
         }
         if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
             setReminder(Optional.<Calendar>absent());
         } else {
-            setReminder(of(DateTimeHelper.createLocalCalendar(cursor
-                           .getLong(cursor.getColumnIndex(REMINDER)))));
+            setReminder(fromNullable(DateTimeHelper.createLocalCalendar(cursor
+                                     .getLong(cursor.getColumnIndex(REMINDER)))));
         }
         Calendar created_at;
         if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
