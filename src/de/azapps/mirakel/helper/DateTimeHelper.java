@@ -32,6 +32,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.text.format.Time;
+import android.util.Log;
 
 import com.google.common.base.Optional;
 
@@ -118,9 +119,9 @@ public class DateTimeHelper {
      *            the local Calendar
      * @return utc time in s, 0 if calendar is null
      */
-    public static long getUTCTime(final @NonNull Optional<Calendar> c) {
+    public static Long getUTCTime(final @NonNull Optional<Calendar> c) {
         if (!c.isPresent()) {
-            return 0;
+            return null;
         }
         return c.get().getTimeInMillis() / 1000
                - DateTimeHelper.getTimeZoneOffset(false, c.get());
@@ -363,7 +364,7 @@ public class DateTimeHelper {
         return true;
     }
 
-    public static boolean equalsCalendar(Optional<Calendar> a, Optional<Calendar> b) {
+    public static boolean equalsCalendar(@NonNull Optional<Calendar> a, @NonNull Optional<Calendar> b) {
         if (!a.isPresent() || !b.isPresent()) {
             if (a.isPresent() != b.isPresent()) {
                 return false;
