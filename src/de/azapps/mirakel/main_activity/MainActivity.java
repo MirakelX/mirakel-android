@@ -50,6 +50,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
@@ -484,7 +485,19 @@ public class MainActivity extends ActionBarActivity implements
      *
      * @param lists
      */
-    public void handleDestroyList (final List<ListMirakel> lists) {
+    public void handleDestroyList (final List<ListMirakel> selectedLists) {
+        List<ListMirakel> lists = new ArrayList<>();
+        for (ListMirakel l : selectedLists) {
+            if (l.getAccount().getType() != ACCOUNT_TYPES.CALDAV) {
+                lists.add(l);
+            }
+        }
+        if (lists.size() != selectedLists.size()) {
+            Toast.makeText(this, R.string.delete_caldav_lists, Toast.LENGTH_LONG).show();
+            if (lists.isEmpty()) {
+                return;
+            }
+        }
         String names = "\"" + lists.get (0).getName () + "\"";
         for (int i = 1; i < lists.size (); i++) {
             names += ", \"" + lists.get (i).getName () + "\"";

@@ -101,5 +101,7 @@
         <item>Only this task</item>
         <item>Delete also subtaks</item>
     </string-array>
+
+    <string name="delete_caldav_lists">It's not allowed to delete lists of a caldav account.</string>
     
 </resources>
