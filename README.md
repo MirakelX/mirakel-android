@@ -1,5 +1,8 @@
-mirakel-android
+Mirakel – Easy task managment for professionals
 ===============
+
+# ATTENTION: [We are now using JIRA for Issue managment. Click here to open a new ticket](https://mirakel.atlassian.net/)
+
 [![Build Status](https://travis-ci.org/MirakelX/mirakel-android.png)](https://travis-ci.org/MirakelX/mirakel-android)
 
 *easy task management for professionals*
