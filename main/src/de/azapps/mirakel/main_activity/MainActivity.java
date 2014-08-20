@@ -486,7 +486,7 @@ public class MainActivity extends ActionBarActivity implements
      * @param lists
      */
     public void handleDestroyList (final List<ListMirakel> selectedLists) {
-        List<ListMirakel> lists = new ArrayList<>();
+        final List<ListMirakel> lists = new ArrayList<>();
         for (ListMirakel l : selectedLists) {
             if (l.getAccount().getType() != ACCOUNT_TYPES.CALDAV) {
                 lists.add(l);

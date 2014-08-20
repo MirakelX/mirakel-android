@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="64"
-    android:versionName="2.7-beta1" >
+    android:versionCode="65"
+    android:versionName="2.7-beta2" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -193,14 +193,6 @@
             android:label="@string/title_activity_credits" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.settings.special_list.SpecialListsSettings" />
-        </activity>
-        <activity
             android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
@@ -252,24 +244,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name="de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.settings.semantics.SemanticsSettings" />
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.tags.TagsSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" />
     </application>
 
 </manifest>
