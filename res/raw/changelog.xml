@@ -19,6 +19,13 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
+    <version name="2.7-beta2" date="2014-08-20" code="65">
+        <text><![CDATA[More bugfixes for you! We are now using JIRA for issue tracking. Visit it <a href="https://mirakel.atlassian.net/issues/">here</a>!]]></text>
+        <feature>Bugfixes</feature>
+        <feature>Working on the new UI</feature>
+        <feature>Performance improvements</feature>
+        <feature>Please update DAVdroid and recreate your todo accounts if you are using CalDAV sync</feature>
+    </version>
     <version name="2.7-beta1" date="2014-08-05" code="64">
         <text>If you use davdroid to sync your tasks, please install the latest version of our patched davdroid. Then please readd the account and resync.</text>
         <feature>Reimplement CalDavSync</feature>
