@@ -1,30 +1,9 @@
-/*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists
- *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-
 package com.fourmob.datetimepicker.date;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +19,7 @@ import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.date_time.R;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class DatePickerDialog extends DialogFragment {
+public class SupportDatePickerDialog extends DialogFragment {
 
     protected DatePicker mDatePicker;
     private OnDateSetListener mCallback;
@@ -50,11 +28,11 @@ public class DatePickerDialog extends DialogFragment {
     protected int mInitDay;
     private boolean mHasNoDate;
 
-    public DatePickerDialog() {
+    public SupportDatePickerDialog() {
         super();
     }
 
-    public static DatePickerDialog newInstance(final OnDateSetListener onDateSetListener,
+    public static SupportDatePickerDialog newInstance(final OnDateSetListener onDateSetListener,
             Optional<Calendar> date, final boolean dark) {
         final Calendar notNullDate = date.or(new GregorianCalendar());
         final boolean hasNoDate = !date.isPresent();
@@ -63,7 +41,7 @@ public class DatePickerDialog extends DialogFragment {
         final int day = notNullDate.get(Calendar.DAY_OF_MONTH);
         return newInstance(onDateSetListener, year, month, day, dark, hasNoDate);
     }
-    public static DatePickerDialog newInstance(
+    public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
         final int month, final int day, final boolean dark,
         final boolean hasNoDate) {
@@ -71,11 +49,11 @@ public class DatePickerDialog extends DialogFragment {
                            hasNoDate);
     }
 
-    public static DatePickerDialog newInstance(
+    public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
         final int month, final int day, final boolean vibrate,
         final boolean dark, final boolean hasNoDate) {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog();
+        final SupportDatePickerDialog datePickerDialog = new SupportDatePickerDialog();
         datePickerDialog.initialize(onDateSetListener, year, month, day,
                                     vibrate, dark, hasNoDate);
         return datePickerDialog;
@@ -130,7 +108,7 @@ public class DatePickerDialog extends DialogFragment {
         this.mDatePicker.postDelayed(new Runnable() {
             @Override
             public void run() {
-                DatePickerDialog.this.mDatePicker.onRestoreInstanceState(b);
+                SupportDatePickerDialog.this.mDatePicker.onRestoreInstanceState(b);
             }
         }, 50);
     }
@@ -151,12 +129,12 @@ public class DatePickerDialog extends DialogFragment {
         this.mDatePicker.postDelayed(new Runnable() {
             @Override
             public void run() {
-                DatePickerDialog.this.mDatePicker
-                .setYear(DatePickerDialog.this.mInitYear);
-                DatePickerDialog.this.mDatePicker
-                .setMonth(DatePickerDialog.this.mInitMonth);
-                DatePickerDialog.this.mDatePicker
-                .setDay(DatePickerDialog.this.mInitDay);
+                SupportDatePickerDialog.this.mDatePicker
+                .setYear(SupportDatePickerDialog.this.mInitYear);
+                SupportDatePickerDialog.this.mDatePicker
+                .setMonth(SupportDatePickerDialog.this.mInitMonth);
+                SupportDatePickerDialog.this.mDatePicker
+                .setDay(SupportDatePickerDialog.this.mInitDay);
             }
         }, 0);
         if (!this.mHasNoDate) {
