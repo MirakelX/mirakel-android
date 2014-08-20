@@ -22,7 +22,7 @@
     android:title="@string/settings_tasks_title" >
 
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="showDoneMain"
         android:title="@string/showDone" />
     <CheckBoxPreference

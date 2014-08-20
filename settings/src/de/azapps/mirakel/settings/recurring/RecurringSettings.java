@@ -34,6 +34,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.widget.DatePicker;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesHelper;
@@ -72,14 +75,14 @@ public class RecurringSettings extends PreferencesHelper {
         final String begin = this.activity.getString(R.string.beginning);
         final String end = this.activity.getString(R.string.end);
         startDate
-        .setSummary(this.recurring.getStartDate() == null ? this.activity
+        .setSummary(!this.recurring.getStartDate().isPresent() ? this.activity
                     .getString(R.string.no_begin_end, begin)
                     : DateTimeHelper.formatDate(this.recurring
-                                                .getStartDate(), this.activity
+                                                .getStartDate().get(), this.activity
                                                 .getString(R.string.humanDateTimeFormat)));
-        endDate.setSummary(this.recurring.getEndDate() == null ? this.activity
+        endDate.setSummary(!this.recurring.getEndDate().isPresent() ? this.activity
                            .getString(R.string.no_begin_end, end) : DateTimeHelper
-                           .formatDate(this.recurring.getEndDate(),
+                           .formatDate(this.recurring.getEndDate().get(),
                                        this.activity.getString(R.string.humanDateTimeFormat)));
         recurring_day.setValue(this.recurring.getYears());
         recurring_hour.setValue(this.recurring.getHours());
@@ -225,28 +228,28 @@ public class RecurringSettings extends PreferencesHelper {
                                     final String s) {
         Calendar c = new GregorianCalendar();
         final String no = this.activity.getString(R.string.no_begin_end, s);
-        if (start && this.recurring.getStartDate() != null) {
-            c = this.recurring.getStartDate();
-        } else if (start && this.recurring.getEndDate() != null) {
-            c = this.recurring.getEndDate();
+        if (start && this.recurring.getStartDate().isPresent()) {
+            c = this.recurring.getStartDate().get();
+        } else if (start && this.recurring.getEndDate().isPresent()) {
+            c = this.recurring.getEndDate().get();
         }
         final OnDateSetListener listner = !this.v4_0 ? new OnDateSetListener() {
             @Override
             public void onDateSet(final DatePicker view, final int year,
                                   final int monthOfYear, final int dayOfMonth) {
-                final Calendar c = new GregorianCalendar(year, monthOfYear,
-                        dayOfMonth);
+                final Optional<Calendar> c = Optional.of((Calendar) new GregorianCalendar(year, monthOfYear,
+                                             dayOfMonth));
                 if (start) {
                     RecurringSettings.this.recurring.setStartDate(c);
-                } else if (RecurringSettings.this.recurring.getStartDate() == null
-                           | RecurringSettings.this.recurring.getStartDate()
+                } else if (!RecurringSettings.this.recurring.getStartDate().isPresent()
+                           || RecurringSettings.this.recurring.getStartDate().get()
                            .before(c)) {
                     RecurringSettings.this.recurring.setEndDate(c);
                 } else {
                     RecurringSettings.this.recurring.save();
                     return;
                 }
-                date.setSummary(DateTimeHelper.formatDate(c,
+                date.setSummary(DateTimeHelper.formatDate(c.get(),
                                 RecurringSettings.this.activity
                                 .getString(R.string.humanDateTimeFormat)));
                 RecurringSettings.this.recurring.save();
@@ -266,16 +269,16 @@ public class RecurringSettings extends PreferencesHelper {
                                     final int which) {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         final DatePicker dp = picker.getDatePicker();
-                        final Calendar c = new GregorianCalendar(dp
-                                .getYear(), dp.getMonth(), dp
-                                .getDayOfMonth());
+                        final Optional<Calendar> c = Optional.of((Calendar) new GregorianCalendar(dp
+                                                     .getYear(), dp.getMonth(), dp
+                                                     .getDayOfMonth()));
                         if (start) {
                             RecurringSettings.this.recurring
                             .setStartDate(c);
-                        } else if (RecurringSettings.this.recurring
-                                   .getStartDate() == null
-                                   | RecurringSettings.this.recurring
-                                   .getStartDate().before(c)) {
+                        } else if (!RecurringSettings.this.recurring
+                                   .getStartDate().isPresent()
+                                   || RecurringSettings.this.recurring
+                                   .getStartDate().get().before(c)) {
                             RecurringSettings.this.recurring
                             .setEndDate(c);
                         } else {
@@ -284,7 +287,7 @@ public class RecurringSettings extends PreferencesHelper {
                         }
                         date.setSummary(DateTimeHelper
                                         .formatDate(
-                                            c,
+                                            c.get(),
                                             RecurringSettings.this.activity
                                             .getString(R.string.humanDateTimeFormat)));
                         RecurringSettings.this.recurring.save();
