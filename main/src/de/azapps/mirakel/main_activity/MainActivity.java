@@ -50,9 +50,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -103,7 +104,9 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.withOptional;
+import static com.google.common.base.Optional.of;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -482,7 +485,19 @@ public class MainActivity extends ActionBarActivity implements
      *
      * @param lists
      */
-    public void handleDestroyList (final List<ListMirakel> lists) {
+    public void handleDestroyList (final List<ListMirakel> selectedLists) {
+        List<ListMirakel> lists = new ArrayList<>();
+        for (ListMirakel l : selectedLists) {
+            if (l.getAccount().getType() != ACCOUNT_TYPES.CALDAV) {
+                lists.add(l);
+            }
+        }
+        if (lists.size() != selectedLists.size()) {
+            Toast.makeText(this, R.string.delete_caldav_lists, Toast.LENGTH_LONG).show();
+            if (lists.isEmpty()) {
+                return;
+            }
+        }
         String names = "\"" + lists.get (0).getName () + "\"";
         for (int i = 1; i < lists.size (); i++) {
             names += ", \"" + lists.get (i).getName () + "\"";
@@ -544,7 +559,7 @@ public class MainActivity extends ActionBarActivity implements
         for (Task t : tasks) {
             if (t.getRecurring () != null) {
                 handleDestroyRecurringTask (t);
-            } else if (t.getSubtaskCount() > 0) {
+            } else if (t.countSubtasks() > 0) {
                 handleDestroySubtasks(t);
             } else {
                 normalTasks.add(t);
@@ -726,28 +741,28 @@ public class MainActivity extends ActionBarActivity implements
 
     public void handleSetDue (final List<Task> tasks) {
         final Calendar dueLocal = new GregorianCalendar ();
-        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance (
-        new DatePicker.OnDateSetListener () {
+        final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(
+        new DatePicker.OnDateSetListener() {
             @Override
-            public void onDateSet (final DatePicker dp, final int year,
-                                   final int month, final int day) {
-                final Calendar due = new GregorianCalendar (year, month,
+            public void onDateSet(final DatePicker dp, final int year,
+                                  final int month, final int day) {
+                final Calendar due = new GregorianCalendar(year, month,
                         day);
                 for (final Task task : tasks) {
-                    task.setDue (due);
-                    saveTask (task);
+                    task.setDue(of(due));
+                    saveTask(task);
                 }
             }
             @Override
-            public void onNoDateSet () {
+            public void onNoDateSet() {
                 for (final Task task : tasks) {
-                    task.setDue (null);
-                    saveTask (task);
+                    task.setDue(Optional.<Calendar>absent());
+                    saveTask(task);
                 }
             }
-        }, dueLocal.get (Calendar.YEAR), dueLocal.get (Calendar.MONTH),
-        dueLocal.get (Calendar.DAY_OF_MONTH), false,
-        MirakelCommonPreferences.isDark (), true);
+        }, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
+        dueLocal.get(Calendar.DAY_OF_MONTH), false,
+        MirakelCommonPreferences.isDark(), true);
         datePickerDialog.show (getSupportFragmentManager (), "datepicker");
     }
 
@@ -992,10 +1007,6 @@ public class MainActivity extends ActionBarActivity implements
                 if (MainActivity.this.menu.findItem (R.id.menu_contact) != null) {
                     MainActivity.this.menu.findItem (R.id.menu_contact)
                     .setVisible (BuildHelper.isBeta ());
-                }
-                if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
-                    MainActivity.this.menu.findItem (R.id.menu_new_ui)
-                    .setVisible (false/*BuildHelper.isBeta ()*/);
                 }
                 if (!fromShare) {
                     updateShare ();
@@ -1351,6 +1362,7 @@ public class MainActivity extends ActionBarActivity implements
             break;
         case R.id.menu_new_ui:
             MirakelCommonPreferences.setUseNewUI(true);
+            Helpers.restartApp(this);
             break;
         case R.id.menu_sync_now:
             final Bundle bundle = new Bundle ();
