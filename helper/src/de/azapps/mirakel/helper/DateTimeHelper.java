@@ -29,8 +29,12 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.text.format.Time;
+import android.util.Log;
+
+import com.google.common.base.Optional;
 
 public class DateTimeHelper {
 
@@ -115,6 +119,37 @@ public class DateTimeHelper {
      *            the local Calendar
      * @return utc time in s, 0 if calendar is null
      */
+    public static Long getUTCTime(final @NonNull Optional<Calendar> c) {
+        if (!c.isPresent()) {
+            return null;
+        }
+        return c.get().getTimeInMillis() / 1000
+               - DateTimeHelper.getTimeZoneOffset(false, c.get());
+    }
+
+    /**
+     *
+     * @param c
+     *            the local Calendar
+     * @return the calendar in UTC, null if c is null
+     */
+    public static Calendar getUTCCalendar(final @NonNull Optional<Calendar> c) {
+        if (!c.isPresent()) {
+            return null;
+        }
+        final Calendar ret = (Calendar) c.get().clone();
+        ret.setTimeInMillis(c.get().getTimeInMillis()
+                            - DateTimeHelper.getTimeZoneOffset(true, c.get()));
+        return ret;
+    }
+
+    /**
+     * Use the optional version instead!
+     * @param c
+     *            the local Calendar
+     * @return utc time in s, 0 if calendar is null
+     */
+    @Deprecated
     public static long getUTCTime(final Calendar c) {
         if (c == null) {
             return 0;
@@ -124,11 +159,12 @@ public class DateTimeHelper {
     }
 
     /**
-     *
+     * Use the optional version instead!
      * @param c
      *            the local Calendar
      * @return the calendar in UTC, null if c is null
      */
+    @Deprecated
     public static Calendar getUTCCalendar(final Calendar c) {
         if (c == null) {
             return null;
@@ -140,6 +176,8 @@ public class DateTimeHelper {
     }
 
     /**
+     * Use the optional version instead!
+     *
      * Formats the Date in the format, the user want to see. The default
      * configuration is the relative date format. So the due date is for example
      * „tomorrow“ instead of yyyy-mm-dd
@@ -148,6 +186,7 @@ public class DateTimeHelper {
      * @param date
      * @return
      */
+    @Deprecated
     public static CharSequence formatDate(final Context ctx, final Calendar date) {
         if (date == null) {
             return "";
@@ -157,6 +196,28 @@ public class DateTimeHelper {
         }
         return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
                                     Locale.getDefault()).format(date.getTime());
+    }
+
+    /**
+     * Formats the Date in the format, the user want to see. The default
+     * configuration is the relative date format. So the due date is for example
+     * „tomorrow“ instead of yyyy-mm-dd
+     *
+     * @param ctx
+     * @param date
+     * @return
+     */
+    public static CharSequence formatDate(@NonNull final Context ctx,
+                                          @NonNull final Optional<Calendar> date) {
+        if (!date.isPresent()) {
+            return "";
+        } else {
+            if (MirakelCommonPreferences.isDateFormatRelative()) {
+                return getRelativeDate(ctx, date.get(), false);
+            }
+            return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
+                                        Locale.getDefault()).format(date.get().getTime());
+        }
     }
 
     private static CharSequence getRelativeDate(final Context ctx,
@@ -178,6 +239,14 @@ public class DateTimeHelper {
 
     public static String formatDateTime(final Calendar c) {
         return c == null ? null : dateTimeFormat.format(c.getTime());
+    }
+
+    public static String formatDateTime(final Optional<Calendar> c) {
+        if (c.isPresent()) {
+            return dateTimeFormat.format(c.get().getTime());
+        } else {
+            return null;
+        }
     }
 
     public static String formatDBDateTime(final Calendar c) {
@@ -273,6 +342,14 @@ public class DateTimeHelper {
         return parseDate(date, taskwarriorFormat);
     }
 
+
+    /**
+     * Use Optional implementation instead!
+     * @param a
+     * @param b
+     * @return
+     */
+    @Deprecated
     public static boolean equalsCalendar(Calendar a, Calendar b) {
         if (a == null || b == null) {
             if (a != b) {
@@ -281,6 +358,20 @@ public class DateTimeHelper {
         } else {
             long ta = a.getTimeInMillis() / 1000;
             long tb = b.getTimeInMillis() / 1000;
+            boolean ret = Math.abs(ta - tb) < 1;
+            return ret;
+        }
+        return true;
+    }
+
+    public static boolean equalsCalendar(@NonNull Optional<Calendar> a, @NonNull Optional<Calendar> b) {
+        if (!a.isPresent() || !b.isPresent()) {
+            if (a.isPresent() != b.isPresent()) {
+                return false;
+            }
+        } else {
+            long ta = a.get().getTimeInMillis() / 1000;
+            long tb = b.get().getTimeInMillis() / 1000;
             boolean ret = Math.abs(ta - tb) < 1;
             return ret;
         }
