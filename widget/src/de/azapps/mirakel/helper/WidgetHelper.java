@@ -77,9 +77,8 @@ public class WidgetHelper {
         if (getBoolean(context, widgetId, "widgetDueColors", true)) {
             rv.setTextColor(
                 R.id.tasks_row_due,
-                context.getResources().getColor(
-                    TaskHelper.getTaskDueColor(task.getDue(),
-                                               task.isDone())));
+                TaskHelper.getTaskDueColor(context, task.getDue(),
+                                           task.isDone()));
         } else {
             rv.setTextColor(R.id.tasks_row_due,
                             WidgetHelper.getFontColor(context, widgetId));
@@ -115,7 +114,7 @@ public class WidgetHelper {
             } else {
                 rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
             }
-            if (task.getContent().length() != 0 || task.getSubtaskCount() > 0
+            if (task.getContent().length() != 0 || task.countSubtasks() > 0
                 || task.getFiles().size() > 0) {
                 rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
             } else {
@@ -128,9 +127,8 @@ public class WidgetHelper {
                 if (!isMinimal) {
                     rv.setTextColor(
                         R.id.tasks_row_due,
-                        context.getResources().getColor(
-                            TaskHelper.getTaskDueColor(task.getDue(),
-                                                       task.isDone())));
+                        TaskHelper.getTaskDueColor(context, task.getDue(),
+                                                   task.isDone()));
                 }
             } else {
                 rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
