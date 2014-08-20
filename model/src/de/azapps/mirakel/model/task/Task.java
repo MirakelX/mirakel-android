@@ -67,7 +67,7 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 import static com.google.common.base.Optional.absent;
 
-public class Task extends TaskBase implements Parcelable {
+public class Task extends TaskBase {
 
     // Constants
     public static final String[] allColumns = { ModelBase.ID, TaskBase.UUID,
@@ -153,14 +153,14 @@ public class Task extends TaskBase implements Parcelable {
         if (cursor.isNull(cursor.getColumnIndex(DUE))) {
             setDue(Optional.<Calendar>absent());
         } else {
-            setDue(of(DateTimeHelper.createLocalCalendar(
-                          cursor.getLong(cursor.getColumnIndex(DUE)), true)));
+            setDue(fromNullable(DateTimeHelper.createLocalCalendar(
+                                    cursor.getLong(cursor.getColumnIndex(DUE)), true)));
         }
         if (cursor.isNull(cursor.getColumnIndex(REMINDER))) {
             setReminder(Optional.<Calendar>absent());
         } else {
-            setReminder(of(DateTimeHelper.createLocalCalendar(cursor
-                           .getLong(cursor.getColumnIndex(REMINDER)))));
+            setReminder(fromNullable(DateTimeHelper.createLocalCalendar(cursor
+                                     .getLong(cursor.getColumnIndex(REMINDER)))));
         }
         Calendar created_at;
         if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {

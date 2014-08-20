@@ -58,22 +58,22 @@ abstract class RecurringBase extends ModelBase {
     public final static String OFFSET = "offset";
     public final static String OFFSET_COUNT = "offsetCount";
 
-    private int minutes;
-    private int hours;
-    private int days;
-    private int months;
-    private int years;
-    private boolean forDue;
+    protected int minutes;
+    protected int hours;
+    protected int days;
+    protected int months;
+    protected int years;
+    protected boolean forDue;
     @NonNull
-    private Optional<Calendar> startDate;
+    protected Optional<Calendar> startDate;
     @NonNull
-    private Optional<Calendar> endDate;
-    private boolean temporary;
-    private boolean isExact;
+    protected Optional<Calendar> endDate;
+    protected boolean temporary;
+    protected boolean isExact;
     @NonNull
-    private SparseBooleanArray weekdays = new SparseBooleanArray();
+    protected SparseBooleanArray weekdays = new SparseBooleanArray();
     @NonNull
-    private Optional<Long> derivedFrom;
+    protected Optional<Long> derivedFrom;
 
     public RecurringBase(final long id, @NonNull final String label, final int minutes,
                          final int hours, final int days, final int months, final int years,
@@ -98,6 +98,10 @@ abstract class RecurringBase extends ModelBase {
     }
     protected RecurringBase(final long id, final String label) {
         super(id, label);
+    }
+
+    protected RecurringBase() {
+        // Just for parcelable
     }
 
     public String getLabel() {

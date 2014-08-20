@@ -168,6 +168,7 @@
     <string name="where_like_begin_text">Begins with %s</string>
     <string name="where_like_end_text">Ends with %s</string>
     <string name="delete">Delete</string>
+    <string name="delete_model_title">Do you want to delete "%s"?</string>
     <string name="special_list_progress_equal">Equal to %d</string>
     <string name="special_list_progress_less_than">Less than %d</string>
     <string name="special_list_progress_greater_than">Greater than %d</string>

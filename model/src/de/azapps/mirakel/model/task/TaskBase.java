@@ -126,8 +126,8 @@ abstract class TaskBase extends ModelBase {
         setList(ListMirakel.first(), false);
         setContent("");
         setDone(false);
-        setDue(null);
-        setReminder(null);
+        setDue(Optional.<Calendar>absent());
+        setReminder(Optional.<Calendar>absent());
         this.priority = 0;
         this.setCreatedAt((Calendar) null);
         this.setUpdatedAt((Calendar) null);
@@ -244,16 +244,12 @@ abstract class TaskBase extends ModelBase {
                 && this.due.get().get(Calendar.SECOND) == 0) {
                 cv.put(TaskBase.DUE, this.due.get().getTimeInMillis() / 1000);
             } else {
-                cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(this.due.get()));
+                cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(this.due));
             }
         } else {
             cv.put(TaskBase.DUE, (Integer) null);
         }
-        if (this.reminder.isPresent()) {
-            cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(this.reminder.get()));
-        } else {
-            cv.put(TaskBase.REMINDER, (Integer) null);
-        }
+        cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(this.reminder));
         cv.put(TaskBase.PRIORITY, this.priority);
         if (this.createdAt != null) {
             cv.put(DatabaseHelper.CREATED_AT,

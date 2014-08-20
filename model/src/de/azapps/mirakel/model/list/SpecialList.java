@@ -20,10 +20,10 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -62,18 +62,17 @@ import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsTagProperty;
 import de.azapps.mirakel.model.list.meta.StringDeserializer;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
-import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.transformOrNull;
 
-public class SpecialList extends ListMirakel implements android.os.Parcelable {
+public class SpecialList extends ListMirakel {
     private boolean active;
     private Optional<ListMirakel> defaultList = absent();
     private Integer defaultDate;
@@ -136,7 +135,7 @@ public class SpecialList extends ListMirakel implements android.os.Parcelable {
         return ret;
     }
 
-    public void setDefaultList(final Optional<ListMirakel> defaultList) {
+    public void setDefaultList(@NonNull final Optional<ListMirakel> defaultList) {
         this.defaultList = defaultList;
     }
 
@@ -148,9 +147,9 @@ public class SpecialList extends ListMirakel implements android.os.Parcelable {
         this.defaultDate = defaultDate;
     }
 
-    SpecialList(final long id, final String name,
+    SpecialList(final long id, @NonNull final String name,
                 final Map<String, SpecialListsBaseProperty> whereQuery,
-                final boolean active, final Optional<ListMirakel> defaultList,
+                final boolean active, @NonNull final Optional<ListMirakel> defaultList,
                 final Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt) {
@@ -198,10 +197,10 @@ public class SpecialList extends ListMirakel implements android.os.Parcelable {
     public static final String ACTIVE = "active";
     public static final String DEFAULT_LIST = "def_list";
     public static final String DEFAULT_DUE = "def_date";
-    public static final String[] allColumns = { ModelBase.ID,
-                                                ModelBase.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
-                                                DEFAULT_DUE, SORT_BY_FIELD, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
-                                                RGT
+    public static final String[] allColumns = {ModelBase.ID,
+                                               ModelBase.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
+                                               DEFAULT_DUE, SORT_BY_FIELD, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
+                                               RGT
                                               };
     private static final String TAG = "SpecialList";
 
@@ -228,7 +227,6 @@ public class SpecialList extends ListMirakel implements android.os.Parcelable {
         });
         return getSpecial(getId()).get();
     }
-
 
 
     public static SpecialList newSpecialList(final String name,
@@ -353,8 +351,7 @@ public class SpecialList extends ListMirakel implements android.os.Parcelable {
     /**
      * Get a List by id
      *
-     * @param listId
-     *            List–ID
+     * @param listId List–ID
      * @return List
      */
     public static Optional<SpecialList> getSpecial(final long listId) {

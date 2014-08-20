@@ -61,7 +61,7 @@ import static com.google.common.base.Optional.fromNullable;
 /**
  * @author az
  */
-public class ListMirakel extends ListBase implements Parcelable {
+public class ListMirakel extends ListBase {
 
     public static class ListAlreadyExistsException extends Exception {
         public ListAlreadyExistsException(String detailMessage) {
@@ -152,7 +152,7 @@ public class ListMirakel extends ListBase implements Parcelable {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-            //$FALL-THROUGH$
+        //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }

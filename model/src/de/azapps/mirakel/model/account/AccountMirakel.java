@@ -45,7 +45,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
 
-public class AccountMirakel extends AccountBase implements Parcelable {
+public class AccountMirakel extends AccountBase {
     public enum ACCOUNT_TYPES {
         CALDAV, LOCAL, TASKWARRIOR;
         public static ACCOUNT_TYPES getSyncType(final String type) {
