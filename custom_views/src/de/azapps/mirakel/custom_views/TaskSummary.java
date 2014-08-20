@@ -149,9 +149,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
             this.taskRowDue.setVisibility(View.VISIBLE);
             this.taskRowDue.setText(DateTimeHelper.formatDate(this.context,
                                     this.task.getDue()));
-            this.taskRowDue.setTextColor(this.context.getResources().getColor(
-                                             TaskHelper.getTaskDueColor(this.task.getDue(),
-                                                     this.task.isDone())));
+            this.taskRowDue.setTextColor(TaskHelper.getTaskDueColor(this.context, this.task.getDue(),
+                                         this.task.isDone()));
         } else {
             this.taskRowDue.setVisibility(View.GONE);
         }
