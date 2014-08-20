@@ -21,11 +21,14 @@ package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.content.CursorLoader;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -51,7 +54,6 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
-import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -59,7 +61,7 @@ import static com.google.common.base.Optional.fromNullable;
 /**
  * @author az
  */
-public class ListMirakel extends ListBase {
+public class ListMirakel extends ListBase implements Parcelable {
 
     public static class ListAlreadyExistsException extends Exception {
         public ListAlreadyExistsException(String detailMessage) {
@@ -150,7 +152,7 @@ public class ListMirakel extends ListBase {
         case REVERT_DEFAULT:
             qb.sort(Task.PRIORITY, Sorting.DESC);
             qb.sort(dueSort, Sorting.ASC);
-        //$FALL-THROUGH$
+            //$FALL-THROUGH$
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
@@ -203,11 +205,23 @@ public class ListMirakel extends ListBase {
         cursor.close();
         return lists;
     }
-
-    public static CursorLoader allCursorLoader() {
+    private static MirakelQueryBuilder getBasicMQB() {
         return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
                 SYNC_STATE.DELETE.toString()).sort(LFT,
-                        Sorting.ASC).toCursorLoader(MirakelInternalContentProvider.LIST_URI);
+                        Sorting.ASC);
+    }
+
+    public static CursorLoader allCursorLoader() {
+        return getBasicMQB().toCursorLoader(MirakelInternalContentProvider.LIST_URI);
+    }
+
+    public static CursorLoader allWithSpecialCursorLoader() {
+        return new MirakelQueryBuilder(context).toCursorLoader(
+                   MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
+    }
+
+    public static Cursor getAllCursor() {
+        return getBasicMQB().query(MirakelInternalContentProvider.LIST_URI);
     }
 
 
@@ -482,7 +496,7 @@ public class ListMirakel extends ListBase {
         }
     }
 
-    private ListMirakel() {
+    protected ListMirakel() {
         super();
     }
 
@@ -512,9 +526,15 @@ public class ListMirakel extends ListBase {
      * @return
      */
     public long countTasks() {
-        final MirakelQueryBuilder qb;
+        MirakelQueryBuilder qb;
         if (getId() < 0) {
-            qb = ((SpecialList) this).getWhereQueryForTasks();
+            try {
+                qb = ((SpecialList) this).getWhereQueryForTasks();
+            } catch (ClassCastException e) {
+                Optional<SpecialList> specialList = SpecialList.getSpecial(getId());
+                qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
+                         context);
+            }
         } else {
             qb = new MirakelQueryBuilder(context).and(Task.LIST_ID, Operation.EQ, this);
         }
@@ -635,6 +655,22 @@ public class ListMirakel extends ListBase {
         return Task.getTasks(this, getSortBy(), showDone);
     }
 
+    public CursorLoader getTasksCursorLoader() {
+        if (getId() < 0) {
+            // We look like a List but we are better than one MUHAHA
+            Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
+            if (specialListOptional.isPresent()) {
+                SpecialList specialList = specialListOptional.get();
+                MirakelQueryBuilder mirakelQueryBuilder = specialList.getWhereQueryForTasks();
+                return mirakelQueryBuilder.toCursorLoader(MirakelInternalContentProvider.TASK_URI);
+            } else {
+                throw new RuntimeException("No such special list");
+            }
+        } else {
+            return Task.getCursorLoader(this);
+        }
+    }
+
     public String toJson() {
         String json = "{";
         json += "\"name\":\"" + getName() + "\",";
@@ -657,4 +693,44 @@ public class ListMirakel extends ListBase {
         }
         return qb;
     }
+
+    // Parcelable stuff
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
+        dest.writeString(this.createdAt);
+        dest.writeString(this.updatedAt);
+        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeInt(this.lft);
+        dest.writeInt(this.rgt);
+        dest.writeInt(this.color);
+        dest.writeLong(this.accountID);
+        dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private ListMirakel(Parcel in) {
+        int tmpSortBy = in.readInt();
+        this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
+        this.createdAt = in.readString();
+        this.updatedAt = in.readString();
+        int tmpSyncState = in.readInt();
+        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        this.lft = in.readInt();
+        this.rgt = in.readInt();
+        this.color = in.readInt();
+        this.accountID = in.readLong();
+        this.isSpecial = in.readByte() != 0;
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
 }

@@ -45,6 +45,8 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.of;
+
 public class WunderlistImport {
     private static final String TAG = "WunderlistImport";
     private static Map<String, Integer> taskMapping;
@@ -133,7 +135,7 @@ public class WunderlistImport {
             try {
                 final Calendar due = DateTimeHelper.parseDate(jsonTask.get(
                                          "due_date").getAsString());
-                t.setDue(due);
+                t.setDue(of(due));
             } catch (final ParseException e) {
                 Log.e(TAG, "cannot parse date");
             }

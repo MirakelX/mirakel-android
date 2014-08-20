@@ -33,9 +33,9 @@ abstract class AccountBase  extends ModelBase {
     public final static String ENABLED = "enabled";
     public static final String SYNC_KEY = "sync_key";
 
-    private int type;
-    private boolean enabled;
-    private String syncKey;
+    protected int type;
+    protected boolean enabled;
+    protected String syncKey;
 
     public AccountBase(final int id, final String name,
                        final ACCOUNT_TYPES type, final boolean enabled,
@@ -44,6 +44,10 @@ abstract class AccountBase  extends ModelBase {
         this.setType(type.toInt());
         this.setEnabeld(enabled);
         this.setSyncKey(syncKey);
+    }
+    protected AccountBase() {
+        super();
+        // Do nothing thats just for the Parcelable stuff
     }
 
 

@@ -24,6 +24,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.tools.Log;
@@ -41,6 +42,8 @@ abstract public class ModelBase {
     private String name;
 
     protected static Context context;
+
+    protected ModelBase() {}
 
     public ModelBase(final Cursor c) {}
 
@@ -63,9 +66,11 @@ abstract public class ModelBase {
         context = ctx;
     }
 
+    @NonNull
     public long getId() {
         return this.id;
     }
+    @NonNull
     public String getName() {
         return this.name;
     }
