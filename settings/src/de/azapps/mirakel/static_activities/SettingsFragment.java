@@ -26,9 +26,9 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.PreferencesAppHelper;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.accounts.AccountSettingsActivity;
-import de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity;
-import de.azapps.mirakel.settings.tags.TagsSettingsActivity;
+import de.azapps.mirakel.settings.AccountSettingsActivity;
+import de.azapps.mirakel.settings.SpecialListsSettingsActivity;
+import de.azapps.mirakel.settings.TagsSettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.tools.Log;
 

@@ -73,9 +73,4 @@
             android:summary="@string/settings_subtask_add_to_same_list_summary"
             android:title="@string/settings_subtask_add_to_same_list" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/recurring" >
-        <Preference
-            android:key="recurring"
-            android:title="@string/recurring" />
-    </PreferenceCategory>
 </PreferenceScreen>
