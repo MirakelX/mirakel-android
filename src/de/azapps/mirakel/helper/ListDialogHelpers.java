@@ -27,6 +27,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.Preference;
 import android.widget.TextView;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -132,7 +135,7 @@ public class ListDialogHelpers {
                                 final int item) {
                 final Long lid = list_ids.get(item);
                 if (lid == null) {
-                    specialList.setDefaultList(null);
+                    specialList.setDefaultList(Optional.<ListMirakel>absent());
                 } else {
                     specialList.setDefaultList(ListMirakel.get(lid));
                 }

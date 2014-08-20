@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -69,7 +70,7 @@ import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static de.azapps.tools.OptionalUtils.*;
+import static de.azapps.tools.OptionalUtils.transformOrNull;
 
 public class SpecialList extends ListMirakel {
     private boolean active;
@@ -134,7 +135,7 @@ public class SpecialList extends ListMirakel {
         return ret;
     }
 
-    public void setDefaultList(final Optional<ListMirakel> defaultList) {
+    public void setDefaultList(@NonNull final Optional<ListMirakel> defaultList) {
         this.defaultList = defaultList;
     }
 
@@ -146,9 +147,9 @@ public class SpecialList extends ListMirakel {
         this.defaultDate = defaultDate;
     }
 
-    SpecialList(final long id, final String name,
+    SpecialList(final long id, @NonNull final String name,
                 final Map<String, SpecialListsBaseProperty> whereQuery,
-                final boolean active, final Optional<ListMirakel> defaultList,
+                final boolean active, @NonNull final Optional<ListMirakel> defaultList,
                 final Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt) {
