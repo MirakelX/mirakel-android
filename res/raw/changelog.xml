@@ -133,7 +133,7 @@
     <text>Sorry for the inconvenience but we wanted to fix the last bugs which let the app crash ;)</text>
     <feature>Bugfixes</feature>
     <text><![CDATA[Some of you asked, we delivered: <a href="https://flattr.com/thing/2188714/Mirakel-easy-task-management-for-professionals">Flattr</a> us!]]></text>
-    <text><![CDATA[You are welcome to help us fixing some of our <a href="https://github.com/azapps/mirakel-android/issues">issues</a> ;)]]></text>
+    <text><![CDATA[You are welcome to help us fixing some of our <a href="https://mirakel.atlassian.net/issues/">issues</a> ;)]]></text>
   </version>
   <version name="2.1.1" date="2013-11-03">
     <text>Bugfixes + Czech translation</text>
