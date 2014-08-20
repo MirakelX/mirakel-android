@@ -78,7 +78,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 43;
+    public static final int DATABASE_VERSION = 44;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -489,9 +489,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              */
             db.execSQL("Alter Table " + Task.TABLE + " add column " + Task.UUID
                        + " TEXT NOT NULL DEFAULT '';");
-            // MainActivity.updateTasksUUID = true; TODO do we need this
-            // anymore?
-            // Don't remove this version-gap
+        // MainActivity.updateTasksUUID = true; TODO do we need this
+        // anymore?
+        // Don't remove this version-gap
         case 13:
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + Task.ADDITIONAL_ENTRIES + " TEXT NOT NULL DEFAULT '';");
@@ -577,7 +577,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 23:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column temporary int NOT NULL default 0;");
-            // Add Accountmanagment
+        // Add Accountmanagment
         case 24:
             createAccountTable(db);
             ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
@@ -603,11 +603,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + AccountMirakel.TABLE + " (" + ModelBase.ID
                        + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT "
                        + accountId + "; ");
-            // add progress
+        // add progress
         case 25:
             db.execSQL("ALTER TABLE " + Task.TABLE
                        + " add column progress int NOT NULL default 0;");
-            // Add some columns for caldavsync
+        // Add some columns for caldavsync
         case 26:
             createCalDavExtraTable(db);
         case 27:
@@ -625,7 +625,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                            + ") VALUES (?, " + i + ")",
                            new String[] { weekdays[i] });
             }
-            // add some options to reccuring
+        // add some options to reccuring
         case 29:
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column isExact INTEGER DEFAULT 0;");
@@ -645,15 +645,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column sunnday INTEGER DEFAULT 0;");
             db.execSQL("ALTER TABLE " + Recurring.TABLE
                        + " add column derived_from INTEGER DEFAULT NULL");
-            // also save the time of a due-date
+        // also save the time of a due-date
         case 30:
             db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
                        + Task.DUE + "||' 00:00:00'");
-            // save all times in tasktable as utc-unix-seconds
+        // save all times in tasktable as utc-unix-seconds
         case 31:
             updateTimesToUTC(db);
-            // move tw-sync-key to db
-            // move tw-certs into accountmanager
+        // move tw-sync-key to db
+        // move tw-certs into accountmanager
         case 32:
             db.execSQL("ALTER TABLE " + AccountMirakel.TABLE + " add column "
                        + AccountMirakel.SYNC_KEY + " STRING DEFAULT '';");
@@ -871,7 +871,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MirakelCommonPreferences.saveIntArray(
                     "task_fragment_adapter_settings", parts);
             }
-            // refactor recurrence to follow the taskwarrior method
+        // refactor recurrence to follow the taskwarrior method
         case 38:
             createTableRecurrenceTW(db);
         case 39:
@@ -981,9 +981,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             updateCaldavExtra(db);
         case 42:
             updateListTable(db);
+        case 43:
+            db.execSQL("DROP VIEW caldav_lists;");
+            db.execSQL("DROP VIEW caldav_tasks;");
+            createCaldavListsTrigger(db);
+            createCaldavTasksTrigger(db);
         default:
             break;
         }
+    }
+
+    private static void createCaldavListsTrigger(SQLiteDatabase db) {
+        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
+                   +
+                   "a.enabled AS sync_enabled, owner AS list_owner\n"
+                   +
+                   "FROM lists as l\n" +
+                   "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
+                   "LEFT JOIN account AS a ON a._id = account_id;");
+        // Create trigger for lists
+        // Insert trigger
+        db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
+                   "BEGIN\n"
+                   + "INSERT INTO account(name,type) SELECT new.account_name, " + ACCOUNT_TYPES.CALDAV.toInt() +
+                   " WHERE NOT EXISTS(SELECT 1 FROM account WHERE name=new.account_name);"
+                   + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT INTO caldav_lists_extra VALUES\n" +
+                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.list_owner);\n"
+                   +
+                   "END;");
+        db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
+                   "BEGIN\n" +
+                   "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.list_owner);\n"
+                   +
+                   "END;");
+        db.execSQL("CREATE TRIGGER caldav_lists_delete_trigger INSTEAD OF DELETE on caldav_lists\n" +
+                   "BEGIN\n" +
+                   "    DELETE FROM lists WHERE _id = old._id;\n" +
+                   "END;\n");
     }
 
     private void updateListTable(SQLiteDatabase db) {
@@ -1046,38 +1084,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "visible INTEGER,\n" +
                    "sync_enabled INTEGER,\n" +
                    "owner TEXT);");
-        // Create view for lists
-        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
-                   +
-                   "a.enabled AS sync_enabled, owner\n"
-                   +
-                   "FROM lists as l\n" +
-                   "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
-                   "LEFT JOIN account AS a ON a._id = account_id;");
-        // Create trigger for lists
-        // Insert trigger
-        db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
-                   "BEGIN\n"
-                   + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
-                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
-                   + "INSERT INTO caldav_lists_extra VALUES\n" +
-                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
-                   +
-                   "END;");
-        // Update trigger
-        db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
-                   "BEGIN\n" +
-                   "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
-                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
-                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
-                   +
-                   "END;");
-        // delete trigger
-        db.execSQL("CREATE TRIGGER caldav_lists_delete_trigger INSTEAD OF DELETE on caldav_lists\n" +
-                   "BEGIN\n" +
-                   "    DELETE FROM lists WHERE _id = old._id;\n" +
-                   "END;\n");
+        createCaldavListsTrigger(db);
     }
+
 
     private static void createCaldavTasks(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE caldav_tasks_extra (\n" +
@@ -1116,6 +1125,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "parent_id INTEGER,\n" +
                    "sorting TEXT,\n" +
                    "has_alarms INTEGER);");
+        createCaldavTasksTrigger(db);
+    }
+
+    private static void createCaldavTasksTrigger(SQLiteDatabase db) {
         // View
         db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
                    "e._sync_id,\n" +
@@ -1192,7 +1205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "l.account_type,\n" +
                    "l.list_name,\n" +
                    "l.list_color,\n" +
-                   "l.owner AS list_owner,\n" +
+                   "l.list_owner AS list_owner,\n" +
                    "l.access_level AS list_access_level,\n" +
                    "l.visible\n" +
                    "FROM\n" +
