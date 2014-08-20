@@ -491,11 +491,21 @@ public class MirakelQueryBuilder {
         return uri;
     }
 
+
     public MirakelQueryBuilder sort(final String field, final Sorting s) {
+        sort(field, s, null);
+        return this;
+    }
+
+    public MirakelQueryBuilder sort(final String field, final Sorting s,
+                                    final List<String> selectionArgs) {
         if (this.sortOrder.length() > 0) {
             this.sortOrder.append(", ");
         }
         this.sortOrder.append(field).append(" ").append(s);
+        if (selectionArgs != null) {
+            this.selectionArgs.addAll(selectionArgs);
+        }
         return this;
     }
 
