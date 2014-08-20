@@ -19,6 +19,8 @@
 
 package de.azapps.tools;
 
+import android.support.annotation.NonNull;
+
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
@@ -27,19 +29,22 @@ public class OptionalUtils {
     public static interface Procedure<F> {
         public void apply(F input);
     }
-    public static <F> void withOptional(Optional<F> optional, Procedure<F> procedure) {
+    public static <F> void withOptional(@NonNull Optional<F> optional,
+                                        @NonNull Procedure<F> procedure) {
         if (optional.isPresent()) {
             procedure.apply(optional.get());
         }
     }
-    public static <F, V> V withOptional(Optional<F> optional, Function<F, V> function, V alternative) {
+    public static <F, V> V withOptional(@NonNull Optional<F> optional, @NonNull Function<F, V> function,
+                                        V alternative) {
         if (optional.isPresent()) {
             return function.apply(optional.get());
         } else {
             return alternative;
         }
     }
-    public static <F, V> V transformOrNull(Optional<F> optional, Function<F, V> transformation) {
+    public static <F, V> V transformOrNull(@NonNull Optional<F> optional,
+                                           @NonNull Function<F, V> transformation) {
         if (optional.isPresent()) {
             return transformation.apply(optional.get());
         } else {
