@@ -24,7 +24,6 @@
     <string name="extension_description">Dashclock-extension for Mirakel</string>
     <string name="pref_name_title">Mirakel-Dashclock</string>
     <string name="widget_list">List to show</string>
-    <string name="due" formatted="false">%s (due %s)</string>
     <string name="due_outformat">yyyy-MM-dd</string>
     <string name="number_of">Number of tasks</string>
     <string name="installMirakel">Please install Mirakel to use Dashclock-extension</string>
@@ -33,5 +32,11 @@
     <string name="how_many">How many tasks should be maximal shown?</string>
     <string name="no_permission_title">I have no permission to read the Mirakel data</string>
     <string name="no_permission">Please reinstall Mirakel-Dashclock</string>
+    <string name="list_not_found">List not found</string>
+    <string name="list_not_found_message">Please update your Dashclock settings</string>
+    <string name="no_list_selected">No list selected</string>
+    <string name="select_list_title">Select List</string>
+    <string name="cannot_communicate">Can not communicate with Mirakel</string>
+    <string name="unexpected_error">There was an unexpected error.</string>
 
 </resources>

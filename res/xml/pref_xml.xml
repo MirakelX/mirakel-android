@@ -19,8 +19,7 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <ListPreference
-        android:defaultValue="-1"
+    <Preference
         android:key="startupList"
         android:title="@string/widget_list" />
 
@@ -30,6 +29,7 @@
 
     <CheckBoxPreference
         android:key="showEmpty"
+        android:defaultValue="false"
         android:title="@string/showEmpty" />
     <CheckBoxPreference
         android:defaultValue="true"

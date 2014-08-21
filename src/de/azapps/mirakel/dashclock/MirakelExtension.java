@@ -1,29 +1,22 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
- * 
+ *
  * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
- * 
+ *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     any later version.
- * 
+ *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
- * 
+ *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.dashclock;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import org.dmfs.provider.tasks.TaskContract;
-import org.dmfs.provider.tasks.TaskContract.Tasks;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,122 +26,138 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
+import com.google.common.base.Optional;
 
-public class MirakelExtension extends DashClockExtension {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
-	private static final String TAG = "MirakelExtension";
-	private static boolean initialized = false;
-	private SharedPreferences settings;
-	private static MirakelExtension singleton;
-    private static final String MIRAKEL_AUTHORITY = "de.azapps.mirakel.provider.internal";
-    private static final Uri contentUri = Uri.parse("content://" + MIRAKEL_AUTHORITY
-            + "/tasks");
+import de.azapps.mirakel.model.MirakelContentObserver;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.task.Task;
 
-	@Override
-	protected void onUpdateData(int reason) {
-		singleton = this;
-		if (settings == null)
-			settings = PreferenceManager.getDefaultSharedPreferences(this);
-		// Get values from Settings
-		int list_id = Integer.parseInt(settings.getString("startupList", "-1"));
-		int maxTasks = settings.getInt("showTaskNumber", 1);
-		// Get Tasks
-		String[] col = { Tasks.TITLE, Tasks.PRIORITY, Tasks.DUE };
-		Cursor c = null;
+public class MirakelExtension extends DashClockExtension implements
+    SharedPreferences.OnSharedPreferenceChangeListener, MirakelContentObserver.ObserverCallBack {
+    private static final String TAG = "MirakelExtension";
+    private static int notifId = 0;
 
-		try {
-			c = getContentResolver()
-					.query(contentUri,
-							col,
-							Tasks.LIST_ID + " =?" + " and "
-									+ TaskContract.Tasks.STATUS + " = "
-									+ TaskContract.Tasks.STATUS_NEEDS_ACTION,
-							new String[] { "" + list_id },
-							Tasks.PRIORITY
-									+ " desc, case when ("
-									+ Tasks.DUE
-									+ " is NULL) then date('now','+1000 years') else date("
-									+ Tasks.DUE + ") end asc");
-		} catch (SecurityException e) {
-			Notification notif = new NotificationCompat.Builder(this)
-					.setContentText(getString(R.string.no_permission))
-					.setContentTitle(getString(R.string.no_permission_title))
-					.setSmallIcon(R.drawable.mirakel).build();
-			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			mNotificationManager.notify(0, notif);
-			return;
-		} catch (Exception e) {
-			Log.e(TAG, "Cannot communicate to Mirakel");
-			Log.w(TAG, Log.getStackTraceString(e));
-			return;
-		}
-		c.moveToFirst();
-		// Set Status
-		String status = getResources().getQuantityString(R.plurals.status,
-				c.getCount(), c.getCount());
-		if (c.getCount() == 0) {
-			if (!settings.getBoolean("showEmpty", true)) {
-				Log.d(TAG, "hide");
-				publishUpdate(new ExtensionData().visible(false));
-				return;
-			}
-		}
-		// Set Body
-		String expBody = "";
-		if (c.getCount() > 0) {
-			SimpleDateFormat out = new SimpleDateFormat(
-					getString(R.string.due_outformat), Locale.getDefault());
-			int counter = 0;
-			while (!c.isAfterLast() && counter < maxTasks) {
+    public static void reportError(final Context context, final String title, final String message) {
+        Notification notification = new NotificationCompat.Builder(context)
+        .setContentText(message)
+        .setContentTitle(title)
+        .setSmallIcon(R.drawable.mirakel).build();
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(
+                    Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(notifId++, notification);
+    }
 
-				Date t = null;
-				if (!c.isNull(2)) {
-					try {
-						t = new Date(c.getLong(2));
-					} catch (NullPointerException e) {
-						// Nothing
-					}
-				}
-				if (t != null && settings.getBoolean("showDueDate", true)) {
-					expBody += getString(R.string.due, c.getString(0),
-							out.format(t));
-				} else {
-					expBody += c.getString(0);
-				}
-				c.moveToNext();
-				if (counter < maxTasks - 1 && !c.isAfterLast())
-					expBody += "\n";
-				++counter;
-			}
-		}
-		// Add click-event
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		intent.setComponent(new ComponentName("de.azapps.mirakelandroid",
-				"de.azapps.mirakel.main_activity.MainActivity"));
-		intent.setAction("de.azapps.mirakel.SHOW_LIST");
-		intent.putExtra("de.azapps.mirakel.EXTRA_TASKID", list_id);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		// Set Content
-		publishUpdate(new ExtensionData().visible(true)
-				.icon(R.drawable.bw_mirakel).status(status)
-				.expandedBody(expBody).clickIntent(intent));
-		initialized = true;
-	}
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        notifId = 0;
 
-	public static boolean isInitialized() {
-		return initialized;
-	}
+        ModelBase.init(this);
+        SettingsHelper.init(this);
 
-	public static void updateWidget() {
-		if (singleton == null)
-			return;
-		singleton.onUpdateData(UPDATE_REASON_CONTENT_CHANGED);
-	}
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        settings.registerOnSharedPreferenceChangeListener(this);
+
+        Map<Uri, MirakelContentObserver.ObserverCallBack> observerCallBackMap = new HashMap<>();
+        observerCallBackMap.put(Task.URI, this);
+        observerCallBackMap.put(ListMirakel.URI, this);
+        new MirakelContentObserver(new Handler(Looper.getMainLooper()), this, observerCallBackMap);
+    }
+
+
+    @Override
+    protected void onUpdateData(int reason) {
+        // Get values from Settings
+        final Optional<ListMirakel> listMirakelOptional = SettingsHelper.getList();
+        if (!listMirakelOptional.isPresent()) {
+            reportError(this, getString(R.string.list_not_found), getString(R.string.list_not_found_message));
+            return;
+        }
+        final int maxTasks = SettingsHelper.getMaxTasks();
+        final ListMirakel listMirakel = listMirakelOptional.get();
+        final MirakelQueryBuilder mirakelQueryBuilder = listMirakel.getTasksQueryBuilder();
+        final Cursor cursor;
+        try {
+            cursor = mirakelQueryBuilder.query(Task.URI);
+        } catch (SecurityException e) {
+            reportError(this, getString(R.string.no_permission_title), getString(R.string.no_permission));
+            return;
+        } catch (Exception e) {
+            reportError(this, getString(R.string.cannot_communicate), getString(R.string.unexpected_error));
+            Log.e(TAG, "Cannot communicate to Mirakel", e);
+            return;
+        }
+        // Set Status
+        if (cursor.getCount() == 0 && !SettingsHelper.showEmpty()) {
+            Log.d(TAG, "hide");
+            publishUpdate(new ExtensionData().visible(false));
+        } else {
+            final boolean showDue = SettingsHelper.showDue();
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                getString(R.string.due_outformat), Locale.getDefault());
+
+            final String status = getResources().getQuantityString(R.plurals.status,
+                                  cursor.getCount(), cursor.getCount());
+            final String tasks[] = new String[Math.min(maxTasks, cursor.getCount())];
+            int i = 0;
+            while (cursor.moveToNext() && i < maxTasks) {
+                Task task = MirakelQueryBuilder.cursorToObject(cursor, Task.class);
+                Optional<Calendar> dueOptional = task.getDue();
+                StringBuilder taskRow = new StringBuilder();
+                if (dueOptional.isPresent()) {
+                    taskRow.append(dateFormat.format(dueOptional.get().getTime()) + ": ");
+                }
+                taskRow.append(task.getName());
+                tasks[i] = taskRow.toString();
+                i++;
+            }
+            cursor.close();
+
+            // Add click-event
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.setComponent(new ComponentName("de.azapps.mirakelandroid",
+                                                  "de.azapps.mirakel.main_activity.MainActivity"));
+            intent.setAction("de.azapps.mirakel.SHOW_LIST");
+            intent.putExtra("de.azapps.mirakel.EXTRA_TASKID", listMirakel.getId());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            // Set Content
+            publishUpdate(new ExtensionData().visible(true)
+                          .icon(R.drawable.bw_mirakel).status(status)
+                          .expandedBody(TextUtils.join("\n", tasks)).clickIntent(intent));
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        onUpdateData(UPDATE_REASON_SETTINGS_CHANGED);
+    }
+
+    @Override
+    public void handleChange() {
+        onUpdateData(UPDATE_REASON_CONTENT_CHANGED);
+    }
+
+    @Override
+    public void handleChange(long id) {
+        onUpdateData(UPDATE_REASON_CONTENT_CHANGED);
+    }
 }
