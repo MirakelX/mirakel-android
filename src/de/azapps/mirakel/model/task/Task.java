@@ -223,20 +223,26 @@ public class Task extends TaskBase {
         return getCursorLoader(null);
     }
 
-    public static CursorLoader getCursorLoader(ListMirakel listMirakel) {
+    public static MirakelQueryBuilder getMirakelQueryBuilder(@NonNull Optional<ListMirakel>
+            listMirakelOptional) {
         final MirakelQueryBuilder qb;
-        if (listMirakel == null) {
+        if (!listMirakelOptional.isPresent()) {
             qb = new MirakelQueryBuilder(context);
             if (MirakelCommonPreferences.showDoneMain()) {
                 qb.and(Task.DONE, Operation.EQ, false);
             }
         } else {
-            qb = listMirakel.getWhereQueryForTasks();
+            qb = listMirakelOptional.get().getWhereQueryForTasks();
         }
         addBasicFiler(qb);
-        if (listMirakel != null) {
-            ListMirakel.addSortBy(qb, listMirakel.getSortBy(), listMirakel.getId());
+        if (listMirakelOptional.isPresent()) {
+            ListMirakel.addSortBy(qb, listMirakelOptional.get().getSortBy(), listMirakelOptional.get().getId());
         }
+        return qb;
+    }
+
+    public static CursorLoader getCursorLoader(ListMirakel listMirakel) {
+        MirakelQueryBuilder qb = getMirakelQueryBuilder(fromNullable(listMirakel));
         return qb.toCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 

@@ -57,6 +57,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 /**
  * @author az
@@ -315,7 +316,7 @@ public class ListMirakel extends ListBase {
         if (listId < 0) {
             Optional<SpecialList> specialList = SpecialList.getSpecial(-listId);
             if (specialList.isPresent()) {
-                return Optional.of((ListMirakel) specialList.get());
+                return of((ListMirakel) specialList.get());
             } else {
                 return absent();
             }
@@ -655,20 +656,24 @@ public class ListMirakel extends ListBase {
         return Task.getTasks(this, getSortBy(), showDone);
     }
 
-    public CursorLoader getTasksCursorLoader() {
+    public MirakelQueryBuilder getTasksQueryBuilder() {
         if (getId() < 0) {
             // We look like a List but we are better than one MUHAHA
             Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
             if (specialListOptional.isPresent()) {
                 SpecialList specialList = specialListOptional.get();
                 MirakelQueryBuilder mirakelQueryBuilder = specialList.getWhereQueryForTasks();
-                return mirakelQueryBuilder.toCursorLoader(MirakelInternalContentProvider.TASK_URI);
+                return mirakelQueryBuilder;
             } else {
                 throw new RuntimeException("No such special list");
             }
         } else {
-            return Task.getCursorLoader(this);
+            return Task.getMirakelQueryBuilder(of(this));
         }
+    }
+
+    public CursorLoader getTasksCursorLoader() {
+        return getTasksQueryBuilder().toCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 
     public String toJson() {
