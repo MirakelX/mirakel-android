@@ -7,12 +7,15 @@ import org.dmfs.provider.tasks.TaskContract.Tasks;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.tags.Tag;
+import de.azapps.tools.Log;
 
 
 /**
@@ -31,6 +34,7 @@ public class CategoryHandler extends PropertyHandler {
             Categories.ACCOUNT_NAME + "=? and " + Categories.ACCOUNT_TYPE + "=?";
 
     public static final String IS_NEW_CATEGORY = "is_new_category";
+    private static final String TAG = "CategoryHandler";
 
 
     /**
@@ -44,6 +48,8 @@ public class CategoryHandler extends PropertyHandler {
      *            The {@link ContentValues} to validate.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The valid {@link ContentValues}.
      *
@@ -53,7 +59,7 @@ public class CategoryHandler extends PropertyHandler {
     @Override
     public ContentValues validateValues(ContentResolver db, boolean isNew,
                                         ContentValues values,
-                                        boolean isSyncAdapter) {
+                                        boolean isSyncAdapter, final Context ctx) {
         // the category requires a name or an id
         if (!values.containsKey(Category.CATEGORY_ID) && !values.containsKey(Category.CATEGORY_NAME)) {
             throw new IllegalArgumentException("Neiter an id nor a category name was supplied for the category property.");
@@ -70,13 +76,11 @@ public class CategoryHandler extends PropertyHandler {
         String accountName = null;
         String accountType = null;
         try {
-            {
-                taskCursor.moveToNext();
-                accountName = taskCursor.getString(0);
-                accountType = taskCursor.getString(1);
-                values.put(Categories.ACCOUNT_NAME, accountName);
-                values.put(Categories.ACCOUNT_TYPE, accountType);
-            }
+            taskCursor.moveToNext();
+            accountName = taskCursor.getString(0);
+            accountType = taskCursor.getString(1);
+            values.put(Categories.ACCOUNT_NAME, accountName);
+            values.put(Categories.ACCOUNT_TYPE, accountType);
         } finally {
             if (taskCursor != null) {
                 taskCursor.close();
@@ -111,6 +115,15 @@ public class CategoryHandler extends PropertyHandler {
                     values.put(IS_NEW_CATEGORY, false);
                 } else {
                     values.put(IS_NEW_CATEGORY, true);
+                    if (!values.containsKey(Category.CATEGORY_COLOR)) {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                        cursor = db.query(Tag.URI, new String[] {"count(*)"}, null, null, null);
+                        if (cursor.moveToFirst()) {
+                            values.put(Category.CATEGORY_COLOR, Tag.getNextColor(cursor.getLong(0), ctx));
+                        }
+                    }
                 }
             } finally {
                 if (cursor != null) {
@@ -131,16 +144,19 @@ public class CategoryHandler extends PropertyHandler {
      *            The {@link ContentValues} to insert.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The row id of the new category as <code>long</code>
      */
     @Override
-    public Uri insert(ContentResolver db, ContentValues values, boolean isSyncAdapter) {
-        values = validateValues(db, true, values, isSyncAdapter);
+    public Uri insert(ContentResolver db, ContentValues values, boolean isSyncAdapter,
+                      final Context ctx) {
+        values = validateValues(db, true, values, isSyncAdapter, ctx);
         values = getOrInsertCategory(db, values);
         insertRelation(db, values.getAsString(Category.TASK_ID), values.getAsString(Category.CATEGORY_ID));
         // insert property row and create relation
-        return super.insert(db, values, isSyncAdapter);
+        return super.insert(db, values, isSyncAdapter, ctx);
     }
 
 
@@ -157,17 +173,19 @@ public class CategoryHandler extends PropertyHandler {
      *            The arguments for the selection <code>String</code>.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The number of rows affected.
      */
     @Override
     public int update(ContentResolver db, ContentValues values, String selection,
                       String[] selectionArgs,
-                      boolean isSyncAdapter) {
-        super.update(db, values, selection, selectionArgs, isSyncAdapter);
-        values = validateValues(db, true, values, isSyncAdapter);
+                      boolean isSyncAdapter, final Context ctx) {
+        super.update(db, values, selection, selectionArgs, isSyncAdapter, ctx);
+        values = validateValues(db, true, values, isSyncAdapter, ctx);
         values = getOrInsertCategory(db, values);
-        return super.update(db, values, selection, selectionArgs, isSyncAdapter);
+        return super.update(db, values, selection, selectionArgs, isSyncAdapter, ctx);
     }
 
 
@@ -214,6 +232,18 @@ public class CategoryHandler extends PropertyHandler {
         ContentValues relationValues = new ContentValues();
         relationValues.put("task_id", taskId);
         relationValues.put("tag_id", categoryId);
-        return db.insert(MirakelInternalContentProvider.TASK_TAG_URI, relationValues);
+        return db.insert(MirakelInternalContentProvider.TAG_CONNECTION_URI, relationValues);
+    }
+
+    @Override
+    public int delete(ContentResolver db, String selection, String[] selectionArgs,
+                      boolean isSyncAdapter) {
+        try {
+            return db.delete(MirakelInternalContentProvider.TAG_CONNECTION_URI, selection.replace("property",
+                             "tag"), selectionArgs);
+        } catch (Exception e) {
+            Log.wtf(TAG, "somehow this is a strange query", e);
+        }
+        return 0;
     }
 }

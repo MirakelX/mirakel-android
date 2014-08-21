@@ -69,7 +69,7 @@ public class Tag extends TagBase {
     public static List<Tag> getTagsForTask(final long id) {
         return Tag.cursorToTagList(new MirakelQueryBuilder(context).select(addPrefix(allColumns,
                                    TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
-                                   .query(MirakelInternalContentProvider.TASK_TAG_URI));
+                                   .query(MirakelInternalContentProvider.TASK_TAG_JOIN_URI));
     }
 
     public static String getTagsQuery(final String[] columns) {

@@ -20,6 +20,7 @@ package de.azapps.mirakel.model;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -58,6 +59,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
 public class MirakelContentProvider extends SQLiteContentProvider {
@@ -505,6 +509,9 @@ public class MirakelContentProvider extends SQLiteContentProvider {
             try {
                 if (cursor.moveToFirst()) {
                     mimeType = cursor.getString(0);
+                } else if (new MirakelQueryBuilder(getContext())
+                           .and(ModelBase.ID, Operation.EQ, ContentUris.parseId(uri)).count(Tag.URI) > 0) {
+                    mimeType = TaskContract.Property.Category.CONTENT_ITEM_TYPE;
                 }
             } finally {
                 cursor.close();
@@ -529,7 +536,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
     @Override
     public Uri insertInTransaction(Uri uri, ContentValues values, boolean isSyncAdapter) {
         final ContentResolver db = CaldavDatabaseHelper.getContentProvider(getContext());
-        Uri result_uri = null;
+        Uri result_uri;
         String accountName = getAccountName(uri);
         String accountType = getAccountType(uri);
         switch (uriMatcher.match(uri)) {
@@ -565,7 +572,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
             break;
         case PROPERTIES:
             PropertyHandler handler = PropertyHandlerFactory.create(values.getAsString(Properties.MIMETYPE));
-            result_uri = handler.insert(db, values, isSyncAdapter);
+            result_uri = handler.insert(db, values, isSyncAdapter, getContext());
             break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
@@ -631,7 +638,8 @@ public class MirakelContentProvider extends SQLiteContentProvider {
                 if (cursor.moveToFirst()) {
 // create handler from found mimetype
                     PropertyHandler handler = PropertyHandlerFactory.create(cursor.getString(0));
-                    count = handler.update(db, values, newPropertySelection, selectionArgs, isSyncAdapter);
+                    count = handler.update(db, values, newPropertySelection, selectionArgs, isSyncAdapter,
+                                           getContext());
                     if (count > 0) {
                         postNotifyUri(Tasks.CONTENT_URI);
                         postNotifyUri(Instances.CONTENT_URI);
