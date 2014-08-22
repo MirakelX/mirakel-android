@@ -663,6 +663,7 @@ public class ListMirakel extends ListBase {
             if (specialListOptional.isPresent()) {
                 SpecialList specialList = specialListOptional.get();
                 MirakelQueryBuilder mirakelQueryBuilder = specialList.getWhereQueryForTasks();
+                addSortBy(mirakelQueryBuilder);
                 return mirakelQueryBuilder;
             } else {
                 throw new RuntimeException("No such special list");
