@@ -142,8 +142,8 @@ public class AccountSettingsActivity extends GenericListSettingActivity<AccountM
         syncUsername.setEnabled(false);
         syncUsername.setSummary(accountMirakel.getName());
         //sync Server
-        if (AccountMirakel.ACCOUNT_TYPE_MIRAKEL.equals(accountMirakel.getType())) {
-            syncServer.setEnabled(true);
+        if (AccountMirakel.ACCOUNT_TYPES.TASKWARRIOR == accountMirakel.getType()) {
+            syncServer.setEnabled(false);
             syncServer.setSummary(accountManager.getUserData(account,
                                   SyncAdapter.BUNDLE_SERVER_URL));
             syncServer.setText(accountManager.getUserData(account,
