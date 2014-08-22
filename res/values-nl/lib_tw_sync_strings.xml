@@ -50,7 +50,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="change_account">Account wijzigen</string>
   <string name="wrong_config">Het lijkt erop dat het verkeerde configuratie bestand gebruikt is</string>
   <string name="cert_not_found">Het certificaat is verdwenen. Activeer gelieve opnieuw uw account.</string>
-  <string name="could_not_find_common_ancestor">Kon geen gemeenschappelijk begin vinden. Dit betekent dat er iets niet synchroon loopt met de server and dat u de Mirakel gegeven moet wissen. Sorry</string>
   <string name="client_sync_key_not_found">Client sync sleutel niet gevonden. Controleer uw taskwarrior configuratie.</string>
   <string name="config_404">Kan het configuratiebestand niet vinden</string>
   <string name="config_error_empty">Er is geen %s vermelding in de config</string>

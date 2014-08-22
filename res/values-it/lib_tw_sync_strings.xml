@@ -23,8 +23,8 @@
   </string-array>
   <string name="sync_caldav">Sincronizzazione CalDAV</string>
   <string name="sync_caldav_howto_">
-<![CDATA[È necessario configurare un\'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
-Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e stiamo lavorando insieme ad altri per ampliare le possibilità di sincronizzazione con Mirakel.
+<![CDATA[È necessario configurare un'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
+Presto anche l'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e stiamo lavorando insieme ad altri per ampliare le possibilità di sincronizzazione con Mirakel.
         ]]>
     </string>
   <string name="download">Scarica</string>
@@ -50,7 +50,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="change_account">Cambia account</string>
   <string name="wrong_config">Sembra che sia stato utilizzato un file di configurazione errato</string>
   <string name="cert_not_found">Il certificato è scomparso. Creare nuovamente un account</string>
-  <string name="could_not_find_common_ancestor">Impossibile trovare corrispondenze comuni. Questo significa che qualcosa non è stato sincronizzato con il server ed è necessario cancellare i dati di Mirakel</string>
   <string name="client_sync_key_not_found">Chiave di sincronizzazione client non trovata. Controllare la configurazione di Taskwarrior.</string>
   <string name="config_404">File di configurazione non trovato</string>
   <string name="config_error_empty">Non è presente la voce %s nel file di configurazione</string>
