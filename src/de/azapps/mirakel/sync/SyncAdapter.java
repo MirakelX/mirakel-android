@@ -121,7 +121,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (type.equals(TaskWarriorSync.TYPE)) {
             TW_ERRORS error = TW_ERRORS.NO_ERROR;
             try {
-                new TaskWarriorSync(this.mContext).sync(account);
+                new TaskWarriorSync(this.mContext).sync(account, false);
             } catch (final TaskWarriorSyncFailedException e) {
                 Log.e(TAG, "SyncError", e);
                 error = e.getError();
