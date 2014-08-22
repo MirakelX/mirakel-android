@@ -65,9 +65,9 @@ android {
         }
         l_test {
             flavorDimension "apis"
-            minSdkVersion "L"
-            targetSdkVersion "L"
-            compileSdkVersion "android-L"
+            //minSdkVersion "L"
+            //targetSdkVersion "L"
+            //compileSdkVersion "android-L"
         }
     }
 

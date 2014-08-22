@@ -41,7 +41,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +52,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePicker;
@@ -1722,8 +1725,12 @@ public class MainActivity extends ActionBarActivity implements
                 if (subject == null) {
                     subject = getString (R.string.message_notification);
                 }
+                TextView msg = (TextView) getLayoutInflater().inflate(R.layout.alertdialog_textview, null);
+                msg.setText(Html.fromHtml(message));
+                msg.setMovementMethod(LinkMovementMethod.getInstance());
+                msg.setClickable(true);
                 new AlertDialog.Builder (this).setTitle (subject)
-                .setMessage (message).show ();
+                .setView(msg).show();
             }
         } else {
             setCurrentItem (getTaskFragmentPosition ());
