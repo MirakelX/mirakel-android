@@ -1,0 +1,9 @@
+project_identifier: mirakel
+api_key: #EDIT THIS
+base_url: http://api.crowdin.net
+base_path: #EDIT THIS
+
+files:
+  -
+    source: /res/values/strings_*.xml
+    translation: /res/values-%two_letters_code%/%original_file_name%

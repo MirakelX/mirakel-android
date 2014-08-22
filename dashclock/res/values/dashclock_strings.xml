@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="app_name">Mirakel-Dashclock</string>
+    <string name="extension_title">Mirakel</string>
+    <string name="extension_description">Dashclock-extension for Mirakel</string>
+    <string name="pref_name_title">Mirakel-Dashclock</string>
+    <string name="widget_list">List to show</string>
+    <string name="due_outformat">yyyy-MM-dd</string>
+    <string name="number_of">Number of tasks</string>
+    <string name="installMirakel">Please install Mirakel to use Dashclock-extension</string>
+    <string name="showEmpty">Show if empty?</string>
+    <string name="showDueDate">Show due date?</string>
+    <string name="how_many">How many tasks should be maximal shown?</string>
+    <string name="no_permission_title">I have no permission to read the Mirakel data</string>
+    <string name="no_permission">Please reinstall Mirakel-Dashclock</string>
+    <string name="list_not_found">List not found</string>
+    <string name="list_not_found_message">Please update your Dashclock settings</string>
+    <string name="no_list_selected">No list selected</string>
+    <string name="select_list_title">Select List</string>
+    <string name="cannot_communicate">Can not communicate with Mirakel</string>
+    <string name="unexpected_error">There was an unexpected error.</string>
+
+</resources>
