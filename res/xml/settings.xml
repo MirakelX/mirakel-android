@@ -17,93 +17,59 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/ui_settings_title" >
-        <extra
-            android:name="type"
-            android:value="gui" />
+        android:fragment="de.azapps.mirakel.settings.fragments.UISettingsFragment"
+        android:title="@string/ui_settings_title"
+        android:id="@+id/ui_settings"
+        android:icon="@drawable/settings_ui"/>
+    <header
+        android:title="@string/sync_title"
+        android:id="@+id/sync_settings"
+        android:icon="@drawable/settings_sync">
+        <intent
+            android:targetPackage="de.azapps.mirakelandroid"
+            android:targetClass="de.azapps.mirakel.settings.activities.AccountSettingsActivity"/>
     </header>
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/sync_title" > <!-- android:id="@+id/sync_header" -->
-
-        <extra
-            android:name="type"
-            android:value="accounts" />
+        android:fragment="de.azapps.mirakel.settings.fragments.TaskSettingsFragment"
+        android:title="@string/settings_tasks_title"
+        android:id="@+id/tasks_settings"
+        android:icon="@drawable/settings_tasks"/>
+    <header
+        android:title="@string/special_lists_click"
+        android:id="@+id/meta_lists_settings">
+        <intent
+            android:targetPackage="de.azapps.mirakelandroid"
+            android:targetClass="de.azapps.mirakel.settings.activities.SpecialListsSettingsActivity"/>
     </header>
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/settings_tasks_title" >
-        <extra
-            android:name="type"
-            android:value="tasks" />
-    </header>
+        android:fragment="de.azapps.mirakel.settings.fragments.NotificationSettingsFragment"
+        android:title="@string/notification_title"
+        android:id="@+id/notifications_settings"
+        android:icon="@drawable/settings_notifications"/>
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/special_lists_click" >
-        <extra
-            android:name="type"
-            android:value="speciallists" />
-    </header>
-     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/tag_click" >
-        <extra
-            android:name="type"
-            android:value="tag" />
-    </header>
+        android:fragment="de.azapps.mirakel.settings.fragments.BackupSettingsFragment"
+        android:title="@string/settings_backup"
+        android:id="@+id/backup_settings"
+        android:icon="@drawable/settings_backup"/>
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/notification_title" >
-        <extra
-            android:name="type"
-            android:value="notification" />
-    </header>
+        android:fragment="de.azapps.mirakel.settings.fragments.DevSettingsFragment"
+        android:id="@+id/development_settings"
+        android:title="@string/settings_dev"
+        android:icon="@drawable/settings_dev"/>
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/settings_backup" >
-        <extra
-            android:name="type"
-            android:value="backup" />
-    </header>
+        android:fragment="de.azapps.mirakel.settings.fragments.AboutSettingsFragment"
+        android:title="@string/settings_about"
+        android:id="@+id/about_settings"
+        android:icon="@drawable/settings_about"/>
     <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/settings_misc" >
-        <extra
-            android:name="type"
-            android:value="misc" />
-    </header>
-    <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:id="@+id/header_dev"
-        android:title="@string/settings_dev" >
-        <extra
-            android:name="type"
-            android:value="dev" />
-    </header>
-    <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/settings_about" >
-        <extra
-            android:name="type"
-            android:value="about" />
-    </header>
-    <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/settings_help" >
-        <extra
-            android:name="type"
-            android:value="help" />
-    </header>
-    <header
-        android:fragment="de.azapps.mirakel.static_activities.SettingsFragment"
-        android:title="@string/title_donations" >
-        <extra
-            android:name="type"
-            android:value="donate" />
+        android:title="@string/title_donations"
+        android:id="@+id/donation_settings">
+        <intent
+            android:targetPackage="de.azapps.mirakelandroid"
+            android:targetClass="de.azapps.mirakel.settings.activities.DonationsActivity"/>
     </header>
 
 </preference-headers>

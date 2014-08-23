@@ -20,18 +20,17 @@
 package de.azapps.mirakel.settings.generic_list;
 
 import android.app.Activity;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.settings.R;
@@ -40,7 +39,9 @@ public class GenericListSettingFragment<T extends ModelBase> extends ListFragmen
     LoaderManager.LoaderCallbacks {
     public static interface Callbacks<T extends ModelBase> {
         public void selectItem(T model);
+
         public Uri getUri();
+
         public Class<T> getMyClass();
     }
 
@@ -69,17 +70,16 @@ public class GenericListSettingFragment<T extends ModelBase> extends ListFragmen
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onListItemClick (ListView l, View v, int position, long id) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
         mCallbacks.selectItem(((SimpleModelAdapter.ViewHolder<T>) v.getTag()).getModel());
     }
 
 
     @Override
     public Loader onCreateLoader(int i, Bundle bundle) {
-        return new MirakelQueryBuilder(getActivity()).toSupportCursorLoader(
+        return new MirakelQueryBuilder(getActivity()).toCursorLoader(
                    mCallbacks.getUri());
     }
-
 
     @Override
     public void onLoadFinished(Loader loader, Object o) {

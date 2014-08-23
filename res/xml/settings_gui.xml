@@ -31,17 +31,6 @@
             android:key="highlightSelected"
             android:summary="@string/highlightSelected_summary"
             android:title="@string/highlightSelected" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="dateFormatRelative"
-            android:summary="@string/settings_date_format_relative_summary"
-            android:title="@string/settings_date_format_relative" />
-        <!--
-             <CheckBoxPreference
-            android:defaultValue="@bool/isTablet"
-            android:key="useTabletLayout"
-            android:title="@string/useTabletLayout" />
-        -->
         <ListPreference
             android:key="useTabletLayoutNew"
             android:title="@string/useTabletLayout" />
@@ -51,12 +40,6 @@
             android:entryValues="@array/language_keys"
             android:key="language"
             android:title="@string/language" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="swipeBehavior"
-            android:summary="@string/swipeBehavior_summary"
-            android:title="@string/swipeBehavior_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/list_fragment" >
         <CheckBoxPreference
@@ -89,11 +72,10 @@
             android:title="@string/settings_task_fragment" >
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/do_not_touch" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="KillButton"
-            android:title="@string/kill_button" />
-    </PreferenceCategory>
+    <ListPreference
+        android:defaultValue="0"
+        android:key="startupList"
+        android:summary="@string/startup_list_summary"
+        android:title="@string/startup_list" />
 
 </PreferenceScreen>

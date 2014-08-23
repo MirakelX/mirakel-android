@@ -20,15 +20,14 @@
 package de.azapps.mirakel.settings.generic_list;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.github.machinarius.preferencefragment.PreferenceFragment;
 import com.google.common.base.Optional;
 
 import java.util.Locale;
@@ -59,11 +58,11 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
     }
 
     private Fragment getListFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.list_fragment);
+        return getFragmentManager().findFragmentById(R.id.list_fragment);
     }
 
     private PreferenceFragment getSettingsFragment() {
-        return (PreferenceFragment) getSupportFragmentManager().findFragmentById(R.id.settings_fragment);
+        return (PreferenceFragment) getFragmentManager().findFragmentById(R.id.settings_fragment);
     }
 
 
@@ -80,7 +79,7 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
         setContentView(R.layout.activity_generic_list_setting);
         isTablet = findViewById(R.id.settings_fragment) != null;
         GenericListSettingFragment listFragment = getNewListFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.list_fragment, listFragment);
         if (isTablet) {
             T first =  new MirakelQueryBuilder(this).get(getMyClass());
@@ -97,12 +96,12 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
         supportInvalidateOptionsMenu();
         currentModel = of(model);
         if (getSettingsFragment() == null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.list_fragment, GenericSettingsFragment.newInstance(model));
             transaction.addToBackStack(null);
             transaction.commit();
         } else {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.settings_fragment, GenericSettingsFragment.newInstance(model));
             transaction.commit();
         }
@@ -143,7 +142,7 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
                 public void apply(T input) {
                     handleDelete(input);
                     if (!isTablet) {
-                        getSupportFragmentManager().popBackStack();
+                        getFragmentManager().popBackStack();
                     }
                 }
             });
