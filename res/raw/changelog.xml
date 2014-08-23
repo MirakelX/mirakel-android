@@ -19,6 +19,13 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
+    <version name="2.7" date="2014-08-23" code="66">
+        <text>CalDAV and Taskwarrior sync improvements</text>
+        <text>Please update your Mirakel-DAVdroid.</text>
+        <text><![CDATA[We are now using JIRA for issue tracking. Visit it <a href="https://mirakel.atlassian.net/issues/">here</a>!]]></text>
+        <feature>Bugfixes</feature>
+        <feature>Please try out the new UI (experimental)</feature>
+    </version>
     <version name="2.7-beta2" date="2014-08-20" code="65">
         <text><![CDATA[More bugfixes for you! We are now using JIRA for issue tracking. Visit it <a href="https://mirakel.atlassian.net/issues/">here</a>!]]></text>
         <feature>Bugfixes</feature>
@@ -28,7 +35,7 @@
     </version>
     <version name="2.7-beta1" date="2014-08-05" code="64">
         <text>If you use davdroid to sync your tasks, please install the latest version of our patched davdroid. Then please readd the account and resync.</text>
-        <feature>Reimplement CalDavSync</feature>
+        <feature>Reimplemented CalDavSync</feature>
         <feature>Preparing internal datamodel for new UI</feature>
         <feature>Bugfixes</feature>
     </version>
