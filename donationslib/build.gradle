@@ -1,9 +1,12 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 //apply plugin: 'hugo'
-apply plugin: 'eclipse'
 
 
 android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion  
     packagingOptions {
