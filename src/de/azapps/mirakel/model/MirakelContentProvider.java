@@ -59,6 +59,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.tags.Tag;
@@ -161,7 +164,12 @@ public class MirakelContentProvider extends SQLiteContentProvider {
      * @return The account type or null if no account type has been specified.
      */
     protected String getAccountType(Uri uri) {
-        return uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
+        String accountType = uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
+        if (AccountMirakel.ACCOUNT_TYPE_DAVDROID.equals(accountType)) {
+            ErrorReporter.report(ErrorType.OLD_DAVDROID);
+            return null;
+        }
+        return accountType;
     }
 
 
