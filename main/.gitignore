@@ -36,6 +36,7 @@ dex-cache/
 .gradle
 res-google/project.properties
 keystore
+keystore.properties
 tests/
 # External tool builders
 .externalToolBuilders/

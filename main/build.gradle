@@ -1,9 +1,16 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
 apply plugin: 'eclipse'
 apply plugin: 'robolectric'
 
-
+def getVersionCode() {
+	def manifestFile = file("AndroidManifest.xml")
+	def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+	def manifestText = manifestFile.getText()
+	def matcher = pattern.matcher(manifestText)
+	matcher.find()
+	return Integer.parseInt(matcher.group(1))
+}
 
 android {
     compileOptions {
@@ -29,7 +36,18 @@ android {
         targetSdkVersion 19
     }
     signingConfigs {
-        release {
+    	release {
+            def Properties localProps = new Properties()
+            localProps.load(new FileInputStream(file('./local.properties')))
+            def Properties keyProps = new Properties()
+            assert localProps['keystore.props.file'];
+            keyProps.load(new FileInputStream(file(localProps['keystore.props.file'])))
+            storeFile file(keyProps["store"])
+            keyAlias keyProps["alias"]
+            storePassword keyProps["storePass"]
+            keyPassword keyProps["pass"]
+    	}    
+        debug {
             storeFile file("debug.keystore")
             storePassword "android"
             keyAlias "androiddebugkey"
@@ -43,7 +61,8 @@ android {
             proguardFile 'proguard-android.txt'
         }
         debug {
-            signingConfig signingConfigs.release
+            runProguard false
+            signingConfig signingConfigs.debug
         }
     }
     productFlavors {
@@ -61,14 +80,16 @@ android {
             flavorDimension "apis"
             minSdkVersion 8
             targetSdkVersion 19
+            versionCode getVersionCode()-1
             compileSdkVersion rootProject.ext.compileSdkVersion
         }
-        l_test {
-            flavorDimension "apis"
-            minSdkVersion "L"
-            targetSdkVersion "L"
-            compileSdkVersion "android-L"
-        }
+        //for some reasons this is buggy
+        //l_test {
+            //flavorDimension "apis"
+            //minSdkVersion "L"
+            //targetSdkVersion "L"
+            //compileSdkVersion "android-L"
+        //}
     }
 
     sourceSets {
@@ -114,7 +135,7 @@ dependencies {
     compile project(':custom_views')
     compile project(':acra')
     compile project(':drag-sort-listview')
-    l_testCompile project(path: ':new_ui', configuration: 'l_testRelease')
+    //l_testCompile project(path: ':new_ui', configuration: 'l_testRelease')
     normalCompile project(path: ':new_ui', configuration: 'normalRelease')
 
     //for tests
