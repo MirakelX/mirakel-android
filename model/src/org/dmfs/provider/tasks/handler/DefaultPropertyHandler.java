@@ -2,6 +2,7 @@ package org.dmfs.provider.tasks.handler;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 
@@ -24,6 +25,8 @@ public class DefaultPropertyHandler extends PropertyHandler {
      *            The {@link ContentValues} to validate.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The valid {@link ContentValues}.
      *
@@ -33,7 +36,7 @@ public class DefaultPropertyHandler extends PropertyHandler {
     @Override
     public ContentValues validateValues(ContentResolver db, boolean isNew,
                                         ContentValues values,
-                                        boolean isSyncAdapter) {
+                                        boolean isSyncAdapter, final Context ctx) {
         return values;
     }
 

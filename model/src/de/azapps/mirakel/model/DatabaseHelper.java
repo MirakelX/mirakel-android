@@ -78,7 +78,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 44;
+    public static final int DATABASE_VERSION = 45;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -986,6 +986,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP VIEW caldav_tasks;");
             createCaldavListsTrigger(db);
             createCaldavTasksTrigger(db);
+        case 44:
+            createCaldavPropertyView(db);
         default:
             break;
         }
@@ -1348,6 +1350,102 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "data15 TEXT,\n" +
                    "PRIMARY KEY (property_id, task_id)\n" +
                    ");");
+    }
+
+    private static void createCaldavPropertyView(final SQLiteDatabase db) {
+        db.execSQL("CREATE VIEW caldav_property_view AS\n" +
+                   "SELECT\n" +
+                   "property_id,\n" +
+                   "task_id,\n" +
+                   "mimetype,\n" +
+                   "prop_version,\n" +
+                   "prop_sync1,\n" +
+                   "prop_sync2,\n" +
+                   "prop_sync3,\n" +
+                   "prop_sync4,\n" +
+                   "prop_sync5,\n" +
+                   "prop_sync6,\n" +
+                   "prop_sync7,\n" +
+                   "prop_sync8,\n" +
+                   "data0,\n" +
+                   "data1,\n" +
+                   "data2,\n" +
+                   "data3,\n" +
+                   "data4,\n" +
+                   "data5,\n" +
+                   "data6,\n" +
+                   "data7,\n" +
+                   "data8,\n" +
+                   "data9,\n" +
+                   "data10,\n" +
+                   "data11,\n" +
+                   "data12,\n" +
+                   "data13,\n" +
+                   "data14,\n" +
+                   "data15\n" +
+                   "FROM caldav_properties\n" +
+                   "UNION\n" +
+                   "SELECT \n" +
+                   "(SELECT MAX(property_id) FROM caldav_properties)+tag._id AS property_id,\n" +
+                   "task.task_id AS task_id,\n" +
+                   "'vnd.android.cursor.item/category' AS mimetype,\n" +
+                   "0 AS prop_version,\n" +
+                   "null AS prop_sync1,\n" +
+                   "null AS prop_sync2,\n" +
+                   "null AS prop_sync3,\n" +
+                   "null AS prop_sync4,\n" +
+                   "null AS prop_sync5,\n" +
+                   "null AS prop_sync6,\n" +
+                   "null AS prop_sync7,\n" +
+                   "null AS prop_sync8,\n" +
+                   "tag._id AS data0,\n" +
+                   "tag.name AS data1,\n" +
+                   "tag.color AS data2,\n" +
+                   "null AS data3,\n" +
+                   "null AS data4,\n" +
+                   "null AS data5,\n" +
+                   "null AS data6,\n" +
+                   "null AS data7,\n" +
+                   "null AS data8,\n" +
+                   "null AS data9,\n" +
+                   "null AS data10,\n" +
+                   "null AS data11,\n" +
+                   "null AS data12,\n" +
+                   "null AS data13,\n" +
+                   "null AS data14,\n" +
+                   "null AS data15\n" +
+                   "FROM tag AS TAG\n" +
+                   "INNER JOIN task_tag as task ON tag._id=task.tag_id\n" +
+                   ";");
+        db.execSQL("Create TRIGGER caldav_property_insert_tag_trigger INSTEAD OF INSERT ON caldav_property_view\n"
+                   +
+                   "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tINSERT OR REPLACE INTO tag (name,color) VALUES (new.data1, new.data2);\n" +
+                   "\tINSERT OR REPLACE INTO task_tag(task_id,tag_id) VALUES(new.task_id,(SELECT _id FROM tag WHERE name=new.data1 AND color=new.data2));\n"
+                   +
+                   "END;");
+        db.execSQL("Create TRIGGER caldav_property_insert_other_trigger INSTEAD OF INSERT ON caldav_property_view\n"
+                   +
+                   "WHEN NOT new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tINSERT OR REPLACE INTO caldav_properties (property_id, task_id, mimetype, prop_version, prop_sync1, prop_sync2, prop_sync3, prop_sync4, prop_sync5, prop_sync6, prop_sync7, prop_sync8, data0, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, data14, data15) VALUES (new.property_id, new.task_id, new.mimetype, new.prop_version, new.prop_sync1, new.prop_sync2, new.prop_sync3, new.prop_sync4, new.prop_sync5, new.prop_sync6, new.prop_sync7, new.prop_sync8, new.data0, new.data1, new.data2, new.data3, new.data4, new.data5, new.data6, new.data7, new.data8, new.data9, new.data10, new.data11, new.data12, new.data13, new.data14, new.data15);\n"
+                   +
+                   "END;");
+        db.execSQL("Create TRIGGER caldav_property_update_tag_trigger INSTEAD OF UPDATE ON caldav_property_view\n"
+                   +
+                   "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tUPDATE tag SET name=new.data1, color=new.data2 WHERE _id=new.data0;\n" +
+                   "\tINSERT INTO task_tag(tag_id,task_id) SELECT new.data0, new.task_id WHERE NOT EXISTS(SELECT 1 FROM task_tag WHERE task_tag.tag_id=new.data0 AND task_tag.task_id =new.task_id);\n"
+                   +
+                   "END;");
+        db.execSQL("Create TRIGGER caldav_property_delete_tag_trigger INSTEAD OF DELETE ON caldav_property_view\n"
+                   +
+                   "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tDELETE FROM tag WHERE _id=old.data0;\n" +
+                   "END;");
     }
 
     private static void createCaldavCategories(final SQLiteDatabase db) {

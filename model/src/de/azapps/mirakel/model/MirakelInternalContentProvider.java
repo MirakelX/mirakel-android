@@ -110,7 +110,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     // Uris
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
-    public static final Uri TASK_TAG_URI = getUri(TASK_TAG_JOIN);
+    public static final Uri TASK_TAG_JOIN_URI = getUri(TASK_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
     public static final Uri LIST_WITH_SPECIAL_URI = getUri(LIST_WITH_SPECIAL);
@@ -120,7 +120,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri CALDAV_TASKS_PROPERTY_URI = getUri("caldav_task_properties");
     public static final Uri CALDAV_INSTANCES_URI = getUri(CALDAV_INSTANCES);
     public static final Uri CALDAV_INSTANCE_PROPERTIES_URI = getUri(CALDAV_INSTANCE_PROPERTIES);
-    public static final Uri CALDAV_PROPERTIES_URI = getUri("caldav_properties");
+    public static final Uri CALDAV_PROPERTIES_URI = getUri("caldav_property_view");
     public static final Uri CALDAV_CATEGORIES_URI = getUri("caldav_categories");
     public static final Uri CALDAV_ALARMS_URI = getUri("caldav_alarms");
     public static final Uri SUBTASK_URI = getUri(Task.SUBTASK_TABLE);
