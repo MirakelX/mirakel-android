@@ -25,8 +25,9 @@
   <string name="audio_playback_stop">Stopp</string>
   <string name="task_change_prio_title">Priorität ändern</string>
   <string name="remove_subtask">Lösche Unteraufgabe</string>
-  <string name="remove_files_summary">Möchtest du %1$s von \"%2$s\" entfernen?</string>
-  <string name="add_existing">Vorhanden</string>
+  <string name="remove_files_summary">Möchtest Du %1$s von \"%2$s\" entfernen?</string>
+  <string name="add_existing">Vorhandene Aufgabe hinzufügen</string>
+  <string name="task_name">Name der Aufgabe</string>
   <string name="subtask_add_options">Filter &gt;&gt;</string>
   <string name="subtask_done">Aufgabe erledigt?</string>
   <string name="subtask_reminder">Aufgabe mit Erinnerung?</string>
