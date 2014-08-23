@@ -53,7 +53,10 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="change_account">Change Account</string>
     <string name="wrong_config">It looks like you used a wrong config file</string>
     <string name="cert_not_found">The certificate vanished please recreate your account</string>
-    <string name="could_not_find_common_ancestor">Could not find common ancestor. This means something is out of sync with the server and you have to wipe the mirakel data. Sorry</string>
+    <string name="could_not_find_common_ancestor"><![CDATA[
+        There was an error while syncing. But we have made a workaround and some data could be lost :(. We have made a backup of your Database. Check it if there is something wrong. <br /><br />
+        For more information\'s see <a href="https://mirakel.atlassian.net/browse/MIR-453">here</a>
+        ]]></string>
     <string name="client_sync_key_not_found">Client sync key not found. Please check your taskwarrior configuration.</string>
     
     <string name="config_404">Configuration file not found</string>

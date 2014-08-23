@@ -18,7 +18,6 @@
   <string name="calDavName">CalDav</string>
   <string name="wrong_config">Похоже на то, что Вы используете неправильный конфигурационный файл</string>
   <string name="cert_not_found">Сертефикаты пропали, пожайлуста пересоздайте свой аккаунт</string>
-  <string name="could_not_find_common_ancestor">Не найден общий предок для задачи. Это означает чтото рассинхронизовалось с сервером, и вам придётся очистить данные Mirakel. Нам очень жаль</string>
   <string name="client_sync_key_not_found">Не найден ключ синхронизации клиента. Пожалуйста, проверьте Ваши настройки Taskwarrior.</string>
   <string name="config_404">Конфигурационный файл не найден</string>
   <string name="config_error_empty">Запись %s не существует в конфиге</string>
