@@ -19,4 +19,6 @@ public enum ErrorType {
 
     CONTACT_NO_CLIENT, NO_FILEMANAGER,
 
+    OLD_DAVDROID,
+
 }
