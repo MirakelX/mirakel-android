@@ -5,7 +5,6 @@
   <string name="extension_title">Mirakel</string>
   <string name="extension_description">ملحق Dashclock لMirakel</string>
   <string name="pref_name_title">Mirakel-Dashclock</string>
-  <string name="due" formatted="false">%s (الواجب %s)</string>
   <string name="number_of">عدد من المهام</string>
   <string name="installMirakel">الرجاء تثبيتMirakel  لاستخدام ملحق Dashclock</string>
   <string name="how_many">كم عدد المهام القصوى التي ينبغي إظهارها؟</string>

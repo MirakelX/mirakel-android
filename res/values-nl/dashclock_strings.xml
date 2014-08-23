@@ -5,7 +5,6 @@
   <string name="extension_title">Mirakel</string>
   <string name="extension_description">Dashclock-extensie voor Mirakel</string>
   <string name="pref_name_title">Mirakel-Dashclock</string>
-  <string name="due" formatted="false">%s (als gevolg van %s)</string>
   <string name="number_of">Aantal taken</string>
   <string name="installMirakel">AUB installeer Mirakel voor de Dachclock-extensie</string>
   <string name="how_many">Hoeveel taken maximaal weergeven?</string>
