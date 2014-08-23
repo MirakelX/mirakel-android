@@ -19,7 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
-    <version name="2.7" date="2014-08-23" code="66">
+    <version name="2.7" date="2014-08-23" code="67">
         <text>CalDAV and Taskwarrior sync improvements</text>
         <text>Please update your Mirakel-DAVdroid.</text>
         <text><![CDATA[We are now using JIRA for issue tracking. Visit it <a href="https://mirakel.atlassian.net/issues/">here</a>!]]></text>
