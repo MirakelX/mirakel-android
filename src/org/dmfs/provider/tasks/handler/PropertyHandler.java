@@ -2,6 +2,7 @@ package org.dmfs.provider.tasks.handler;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
@@ -26,13 +27,15 @@ public abstract class PropertyHandler {
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
      *
+     * @param ctx A generic Context
+     *
      * @return The valid {@link ContentValues}.
      *
      * @throws IllegalArgumentException
      *             if the {@link ContentValues} are invalid.
      */
     public abstract ContentValues validateValues(ContentResolver db, boolean isNew,
-            ContentValues values, boolean isSyncAdapter);
+            ContentValues values, boolean isSyncAdapter, final Context ctx);
 
 
     /**
@@ -44,10 +47,13 @@ public abstract class PropertyHandler {
      *            The {@link ContentValues} to insert.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The row id of the new property as <code>long</code>
      */
-    public Uri insert(ContentResolver db, ContentValues values, boolean isSyncAdapter) {
+    public Uri insert(ContentResolver db, ContentValues values, boolean isSyncAdapter,
+                      final Context ctx) {
         return db.insert(CaldavDatabaseHelper.getPropertiesUri(), values);
     }
 
@@ -65,11 +71,13 @@ public abstract class PropertyHandler {
      *            The arguments for the selection <code>String</code>.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The number of rows affected.
      */
     public int update(ContentResolver db, ContentValues values, String selection,
-                      String[] selectionArgs, boolean isSyncAdapter) {
+                      String[] selectionArgs, boolean isSyncAdapter, final Context ctx) {
         return db.update(CaldavDatabaseHelper.getPropertiesUri(), values, selection, selectionArgs);
     }
 
