@@ -8,7 +8,7 @@
 --pad-oper
 --pad-header
 
---delete-empty-lines
+#--delete-empty-lines
 
 --add-brackets
 
