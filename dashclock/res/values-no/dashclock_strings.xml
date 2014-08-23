@@ -5,7 +5,6 @@
   <string name="extension_title">Mirakel</string>
   <string name="extension_description">Dashclock-utvidelse for Mirakel</string>
   <string name="pref_name_title">Mirakel-Dashclock</string>
-  <string name="due" formatted="false">%s (forfall %s)</string>
   <string name="due_outformat">dd.MM.yyyy</string>
   <string name="number_of">Antall oppgaver</string>
   <string name="installMirakel">Vennligst installer Mirakel å bruke Dashclock-utvidelse</string>

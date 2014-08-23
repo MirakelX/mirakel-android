@@ -5,7 +5,6 @@
   <string name="extension_title">Mirakel</string>
   <string name="extension_description">Extension Dashclock pour Mirakel</string>
   <string name="pref_name_title">Mirakel-Dashclock</string>
-  <string name="due" formatted="false">%s (échéance %s)</string>
   <string name="due_outformat">jj/mm/aaaa</string>
   <string name="number_of">Nombre de tâches</string>
   <string name="installMirakel">Veuillez installer Mirakel pour utiliser l\'extension Dashclock</string>

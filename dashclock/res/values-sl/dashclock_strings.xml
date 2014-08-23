@@ -5,7 +5,6 @@
   <string name="extension_title">Mirakel</string>
   <string name="extension_description">Razširitev ure Dashclock za Mirakel</string>
   <string name="pref_name_title">Mirakel - ura</string>
-  <string name="due" formatted="false">%s (zapade %s)</string>
   <string name="due_outformat">dd.mm.yyyy</string>
   <string name="number_of">Število nalog</string>
   <string name="installMirakel">Za uporabo razširitve ure, je treba namestiti program Mirakel</string>

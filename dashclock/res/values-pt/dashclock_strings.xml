@@ -5,7 +5,6 @@
   <string name="extension_title">Mirakel</string>
   <string name="extension_description">Dashclock para Mirakel</string>
   <string name="pref_name_title">Mirakel-Dashclock</string>
-  <string name="due" formatted="false">%s (data limite %s)</string>
   <string name="number_of">Número de tarefas</string>
   <string name="installMirakel">Tem que instalar o Mirakel para usar a extensão Dashclock</string>
   <string name="how_many">O número máximo de tarefas a mostrar?</string>
