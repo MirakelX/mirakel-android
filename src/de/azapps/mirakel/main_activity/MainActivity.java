@@ -99,15 +99,13 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.static_activities.DonationsActivity;
-import de.azapps.mirakel.static_activities.SettingsActivity;
-import de.azapps.mirakel.static_activities.SplashScreenActivity;
+import de.azapps.mirakel.settings.activities.DonationsActivity;
+import de.azapps.mirakel.settings.activities.SettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
-import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.withOptional;
 import static com.google.common.base.Optional.of;
 
@@ -116,8 +114,7 @@ import static com.google.common.base.Optional.of;
  *
  * @author az
  */
-public class MainActivity extends ActionBarActivity implements
-    ViewPager.OnPageChangeListener {
+public class MainActivity extends ActionBarActivity {
     private static boolean isRTL;
     // Intent variables
     public static final int LEFT_FRAGMENT = 0, RIGHT_FRAGMENT = 1;
@@ -176,7 +173,6 @@ public class MainActivity extends ActionBarActivity implements
 
     private boolean showNavDrawer = false;
 
-    private boolean skipSwipe;
     private Intent startIntent;
     private int previousState;
 
@@ -201,7 +197,6 @@ public class MainActivity extends ActionBarActivity implements
         if (this.newTaskSubject == null) {
             return;
         }
-        this.skipSwipe = true;
         final Task task = Semantic.createTask (this.newTaskSubject, Optional.fromNullable(list), true,
                                                this);
         task.setContent (this.newTaskContent == null ? "" : this.newTaskContent);
@@ -211,7 +206,6 @@ public class MainActivity extends ActionBarActivity implements
             addFilesForTask (task, intent);
         }
         setCurrentList (task.getList ());
-        this.skipSwipe = true;
         setCurrentTask (task, true);
     }
 
@@ -254,9 +248,7 @@ public class MainActivity extends ActionBarActivity implements
     private void forceRebuildLayout () {
         this.mPagerAdapter = null;
         this.isResumed = false;
-        this.skipSwipe = true;
         setupLayout ();
-        this.skipSwipe = true;
         if (getTaskFragment () != null) {
             getTaskFragment ().update (MainActivity.this.currentTask);
         }
@@ -389,7 +381,6 @@ public class MainActivity extends ActionBarActivity implements
             return;
         }
         this.currentTask = currentTask;
-        this.skipSwipe = true;
         if (resetGoBackTo) {
             this.goBackTo.clear ();
         }
@@ -486,7 +477,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Is called if the user want to destroy a List
      *
-     * @param lists
+     * @param selectedLists
      */
     public void handleDestroyList (final List<ListMirakel> selectedLists) {
         final List<ListMirakel> lists = new ArrayList<>();
@@ -911,7 +902,6 @@ public class MainActivity extends ActionBarActivity implements
             }
             this.mViewPager.setOffscreenPageLimit (2);
             this.mViewPager.setAdapter (this.mPagerAdapter);
-            this.mViewPager.setOnPageChangeListener (this);
         } else if (this.fragmentManager != null
                    && findViewById (R.id.tasks_fragment) != null
                    && findViewById (R.id.task_fragment) != null) {
@@ -1001,11 +991,6 @@ public class MainActivity extends ActionBarActivity implements
                 if (MainActivity.this.menu.findItem (R.id.menu_sync_now) != null) {
                     MainActivity.this.menu.findItem (R.id.menu_sync_now)
                     .setVisible (MirakelModelPreferences.useSync ());
-                }
-                if (MainActivity.this.menu.findItem (R.id.menu_kill_button) != null) {
-                    MainActivity.this.menu.findItem (R.id.menu_kill_button)
-                    .setVisible (
-                        MirakelCommonPreferences.showKillButton ());
                 }
                 if (MainActivity.this.menu.findItem (R.id.menu_contact) != null) {
                     MainActivity.this.menu.findItem (R.id.menu_contact)
@@ -1220,7 +1205,6 @@ public class MainActivity extends ActionBarActivity implements
                              && getResources ().getConfiguration ().getLayoutDirection () == View.LAYOUT_DIRECTION_RTL;
         this.currentPosition = MainActivity.getTasksFragmentPosition ();
         this.mPagerAdapter = null;
-        this.skipSwipe = false;
         Log.d (MainActivity.TAG, "false");
         this.startIntent = getIntent ();
         this.closeOnBack = false;
@@ -1276,11 +1260,9 @@ public class MainActivity extends ActionBarActivity implements
     private void setCurrentItem (final int pos) {
         if (!MirakelCommonPreferences.isTablet () && this.mViewPager != null
             && this.mViewPager.getCurrentItem () != pos) {
-            this.skipSwipe = true;
             this.mViewPager.postDelayed (new Runnable () {
                 @Override
                 public void run () {
-                    MainActivity.this.skipSwipe = true;
                     MainActivity.this.mViewPager.setCurrentItem (pos);
                 }
             }, 10);
@@ -1398,15 +1380,6 @@ public class MainActivity extends ActionBarActivity implements
         case R.id.search:
             onSearchRequested ();
             break;
-        case R.id.menu_kill_button:
-            // Only Close
-            final Intent killIntent = new Intent (getApplicationContext (),
-                                                  SplashScreenActivity.class);
-            killIntent.setFlags (Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            killIntent.setAction (SplashScreenActivity.EXIT);
-            startActivity (killIntent);
-            finish ();
-            return false;
         case R.id.menu_undo:
             UndoHistory.undoLast (this);
             updateCurrentListAndTask ();
@@ -1445,49 +1418,6 @@ public class MainActivity extends ActionBarActivity implements
         return true;
     }
 
-    @Override
-    public void onPageScrolled (final int position, final float positionOffset,
-                                final int positionOffsetPixels) {
-        if (getTaskFragment () != null && getTasksFragment () != null
-            && getTasksFragment ().getAdapter () != null
-            && MirakelCommonPreferences.swipeBehavior () && !this.skipSwipe) {
-            this.skipSwipe = true;
-            if (getTasksFragment () != null) {
-                setCurrentTask (getTasksFragment ().getLastTouched (), false);
-            }
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged (final int state) {
-        this.skipSwipe = ! (this.previousState == ViewPager.SCROLL_STATE_DRAGGING
-                            && state == ViewPager.SCROLL_STATE_SETTLING);
-        this.previousState = state;
-    }
-
-    @Override
-    public void onPageSelected (final int position) {
-        if (getTasksFragment () != null) {
-            getTasksFragment ().closeActionMode ();
-        }
-        if (getTaskFragment () != null) {
-            getTaskFragment ().closeActionMode ();
-        }
-        runOnUiThread (new Runnable () {
-            @Override
-            public void run () {
-                if (MirakelCommonPreferences.lockDrawerInTaskFragment ()
-                    && position == getTaskFragmentPosition ()) {
-                    MainActivity.this.mDrawerLayout
-                    .setDrawerLockMode (DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                } else {
-                    MainActivity.this.mDrawerLayout
-                    .setDrawerLockMode (DrawerLayout.LOCK_MODE_UNLOCKED);
-                }
-            }
-        });
-        loadMenu (position);
-    }
 
     @SuppressLint ("NewApi")
     @Override
@@ -1583,10 +1513,6 @@ public class MainActivity extends ActionBarActivity implements
         this.goBackTo.push (t);
     }
 
-    public void setSkipSwipe () {
-        this.skipSwipe = true;
-    }
-
     private void handleIntent (final Intent intent) {
         if (intent == null || intent.getAction () == null) {
             Log.d (MainActivity.TAG, "action null");
@@ -1595,7 +1521,6 @@ public class MainActivity extends ActionBarActivity implements
                        DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
             final Task task = TaskHelper.getTaskFromIntent (intent);
             if (task != null) {
-                this.skipSwipe = true;
                 this.currentList = task.getList ();
                 if (this.mDrawerLayout != null) {
                     this.mDrawerLayout.postDelayed (new Runnable () {
