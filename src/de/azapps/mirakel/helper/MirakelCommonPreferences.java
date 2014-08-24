@@ -10,14 +10,14 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.Configuration;
 
 /**
  * In this class we collect all functions to get the current settings. The
@@ -31,24 +31,13 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("subtaskAddToSameList", false);
     }
 
-    public static boolean colorizeSubTasks() {
-        return settings.getBoolean("colorize_subtasks", true);
-    }
-
-    public static boolean colorizeTasks() {
-        return settings.getBoolean("colorize_tasks", true);
-    }
-
-    public static boolean colorizeTasksEverywhere() {
-        return settings.getBoolean("colorize_tasks_everywhere", false);
-    }
 
     public static boolean containsHighlightSelected() {
         return settings.contains("highlightSelected");
     }
 
-    public static boolean containsStartupAllLists() {
-        return settings.contains("startupAllLists");
+    public static boolean containsStartupList() {
+        return settings.contains("startupList");
     }
 
     public static int getAlarmLater() {
@@ -137,10 +126,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getString("PREFS_VERSION_KEY", "");
     }
 
-    public static boolean hideEmptyNotifications() {
-        return settings.getBoolean("notificationsZeroHide", true);
-    }
-
     public static boolean hideKeyboard() {
         return settings.getBoolean("hideKeyboard", true);
     }
@@ -153,8 +138,10 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("DarkTheme", false);
     }
 
-    public static boolean isDateFormatRelative() {
-        return settings.getBoolean("dateFormatRelative", true);
+    public static void setIsDark(boolean isDark) {
+        Editor editor = getEditor();
+        editor.putBoolean("DarkTheme", isDark);
+        editor.commit();
     }
 
     public static boolean isDebug() {
@@ -184,10 +171,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static boolean isStartupAllLists() {
         return settings.getBoolean("startupAllLists", false);
-    }
-
-    public static boolean isSubtaskDefaultNew() {
-        return settings.getBoolean("subtaskDefaultNew", true);
     }
 
     public static boolean isTablet() {
@@ -264,23 +247,11 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("showDoneMain", false);
     }
 
-    public static boolean showKillButton() {
-        return settings.getBoolean("KillButton", false);
-    }
-
-    public static boolean swipeBehavior() {
-        return settings.getBoolean("swipeBehavior", false);
-    }
-
     public static void toogleDebugMenu() {
         settings.edit()
         .putBoolean("enableDebugMenu",
                     !MirakelCommonPreferences.isEnabledDebugMenu())
         .commit();
-    }
-
-    public static boolean useBigNotifications() {
-        return settings.getBoolean("notificationsBig", true);
     }
 
     public static boolean useBtnAudioRecord() {
@@ -305,10 +276,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static boolean usePersistentReminders() {
         return settings.getBoolean("remindersPersistent", true);
-    }
-
-    public static boolean useSemanticNewTask() {
-        return settings.getBoolean("semanticNewTask", true);
     }
 
     public static boolean isDemoMode() {

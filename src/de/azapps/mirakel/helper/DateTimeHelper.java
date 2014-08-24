@@ -191,11 +191,7 @@ public class DateTimeHelper {
         if (date == null) {
             return "";
         }
-        if (MirakelCommonPreferences.isDateFormatRelative()) {
-            return getRelativeDate(ctx, date, false);
-        }
-        return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
-                                    Locale.getDefault()).format(date.getTime());
+        return getRelativeDate(ctx, date, false);
     }
 
     /**
@@ -212,11 +208,7 @@ public class DateTimeHelper {
         if (!date.isPresent()) {
             return "";
         } else {
-            if (MirakelCommonPreferences.isDateFormatRelative()) {
-                return getRelativeDate(ctx, date.get(), false);
-            }
-            return new SimpleDateFormat(ctx.getString(R.string.dateFormat),
-                                        Locale.getDefault()).format(date.get().getTime());
+            return getRelativeDate(ctx, date.get(), false);
         }
     }
 
@@ -263,11 +255,7 @@ public class DateTimeHelper {
 
     public static CharSequence formatReminder(final Context ctx,
             final Calendar date) {
-        if (MirakelCommonPreferences.isDateFormatRelative()) {
-            return getRelativeDate(ctx, date, true);
-        }
-        return DateTimeHelper.formatDate(date,
-                                         ctx.getString(R.string.humanDateTimeFormat));
+        return getRelativeDate(ctx, date, true);
     }
 
     public static String formatTaskWarrior(final Calendar c) {
