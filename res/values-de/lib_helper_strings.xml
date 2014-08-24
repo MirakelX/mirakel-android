@@ -18,7 +18,7 @@ Device: %3$s\n]]>
   <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Ups! Dein Gerät kann nicht fotografieren</string>
   <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Das Foto kann nirgendwo gespeichert werden. Tut mir leid!</string>
   <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Ups! Dein Gerät hat keine Spracherkennungsfunktion</string>
-  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Unteraufgaben können keine Schleifen bilden</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Aufgaben dürfen keine Schleifen bilden</string>
   <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Ich weiß nicht, wie ich diese Datei öffnen soll – tut mir leid</string>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Keine E-Mail Anwendung installiert</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Installiere bitte einen Datei-Manager</string>
@@ -39,4 +39,5 @@ Device: %3$s\n]]>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Huch, die Liste ist verschwunden&#8230;</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Wir wissen nicht, wie wir diesen Fehler beheben  können. Mirakel wird neu gestartet.</string>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Eine Liste mit diesem Namen existiert bereits. Bitte wähle einen anderen Namen.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Bitte aktualisiere DAVdroid</string>
 </resources>
