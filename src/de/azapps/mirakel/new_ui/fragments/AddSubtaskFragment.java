@@ -185,7 +185,7 @@ public class AddSubtaskFragment extends DialogFragment implements LoaderManager.
             final ListMirakel list = MirakelModelPreferences
                                      .getListForSubtask(task);
             Task newTask = Semantic.createTask(name, Optional.fromNullable(list),
-                                               MirakelCommonPreferences.useSemanticNewTask(), getActivity());
+                                               true, getActivity());
             task.addSubtask(newTask);
         }
     }
