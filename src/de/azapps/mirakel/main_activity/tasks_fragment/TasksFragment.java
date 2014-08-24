@@ -232,7 +232,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
         }
         final ListMirakel list = this.main.getCurrentList ();
         final Task createdTask = Semantic.createTask (name, Optional.fromNullable(list),
-                                 MirakelCommonPreferences.useSemanticNewTask (), getActivity ());
+                                 true, getActivity ());
         getLoaderManager ().restartLoader (0, null, this);
         this.main.setCurrentTask (createdTask, false);
         this.main.getListFragment ().update ();
