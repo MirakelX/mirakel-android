@@ -213,18 +213,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
     }
 
     public void updateBackground() {
-        if (MirakelCommonPreferences.colorizeTasks()) {
-            if (MirakelCommonPreferences.colorizeSubTasks()) {
-                final int w = getWidth();
-                ViewHelper.setListColorBackground(this.task.getList(), this, w);
-            } else {
-                setBackgroundColor(this.context.getResources().getColor(
-                                       android.R.color.transparent));
-            }
-        } else {
-            setBackgroundColor(this.context.getResources().getColor(
-                                   android.R.color.transparent));
-        }
+        final int w = getWidth();
+        ViewHelper.setListColorBackground(this.task.getList(), this, w);
     }
 
     protected void updatePriority() {
