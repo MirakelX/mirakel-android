@@ -19,8 +19,6 @@
 
 package de.azapps.mirakel.services;
 
-import java.util.List;
-
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -32,6 +30,9 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+
+import java.util.List;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.R;
@@ -126,8 +127,7 @@ public class NotificationService extends Service {
         .setContentText(notificationText).setSmallIcon(icon)
         .setContentIntent(pOpenIntent).setOngoing(persistent);
         // Big View
-        if (MirakelCommonPreferences.useBigNotifications()
-            && todayTasks.size() > 1
+        if (todayTasks.size() > 1
             && VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (final Task task : todayTasks) {
@@ -139,9 +139,7 @@ public class NotificationService extends Service {
                     NOTIFICATION_SERVICE);
         notificationManager.notify(DefinitionsHelper.NOTIF_DEFAULT,
                                    noti.build());
-        if (MirakelCommonPreferences.hideEmptyNotifications()
-            && todayTasks.size() == 0
-            || !MirakelCommonPreferences.useNotifications()) {
+        if (todayTasks.size() == 0 || !MirakelCommonPreferences.useNotifications()) {
             notificationManager.cancel(DefinitionsHelper.NOTIF_DEFAULT);
             this.existsNotification = false;
         } else {
