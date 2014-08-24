@@ -131,7 +131,7 @@
   <string name="empty">Egal</string>
   <string name="select_by">Auswählen</string>
   <string name="done">Erledigte Aufgaben</string>
-  <string name="undone">Unerledigte Aufgaben</string>
+  <string name="undone">Ausstehende Aufgaben</string>
   <string name="recurrence_custom">Benutzerdefiniert</string>
   <string name="today">Heute</string>
   <string name="tomorrow">Morgen</string>
