@@ -19,13 +19,6 @@
 
 package de.azapps.mirakel.reminders;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -38,6 +31,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Pair;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchTaskException;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -141,25 +142,24 @@ public class ReminderAlarm extends BroadcastReceiver {
             android.R.drawable.ic_menu_close_clear_cancel,
             context.getString(R.string.reminder_notification_later),
             pLaterIntent);
-        if (MirakelCommonPreferences.useBigNotifications()) {
-            final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-            final String priority = (task.getPriority() > 0 ? "+" + task.getPriority() : String.valueOf(task
-                                     .getPriority()));
-            CharSequence due;
-            if (task.getDue() == null) {
-                due = context.getString(R.string.no_date);
-            } else {
-                due = DateTimeHelper.formatDate(context, task.getDue());
-            }
-            inboxStyle.addLine(context.getString(
-                                   R.string.reminder_notification_list, task.getList()
-                                   .getName()));
-            inboxStyle.addLine(context.getString(
-                                   R.string.reminder_notification_priority, priority));
-            inboxStyle.addLine(context.getString(
-                                   R.string.reminder_notification_due, due));
-            builder.setStyle(inboxStyle);
+
+        final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        final String priority = (task.getPriority() > 0 ? "+" + task.getPriority() : String.valueOf(task
+                                 .getPriority()));
+        CharSequence due;
+        if (task.getDue() == null) {
+            due = context.getString(R.string.no_date);
+        } else {
+            due = DateTimeHelper.formatDate(context, task.getDue());
         }
+        inboxStyle.addLine(context.getString(
+                               R.string.reminder_notification_list, task.getList()
+                               .getName()));
+        inboxStyle.addLine(context.getString(
+                               R.string.reminder_notification_priority, priority));
+        inboxStyle.addLine(context.getString(
+                               R.string.reminder_notification_due, due));
+        builder.setStyle(inboxStyle);
         // Build notification
         allReminders.add(task.getId());
         nm.notify(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId(),
@@ -168,7 +168,7 @@ public class ReminderAlarm extends BroadcastReceiver {
 
     private static AlarmManager alarmManager;
 
-    private static List<Pair<Task, PendingIntent>> activeAlarms = new  CopyOnWriteArrayList<>();
+    private static List<Pair<Task, PendingIntent>> activeAlarms = new CopyOnWriteArrayList<>();
 
     public static void updateAlarms(final Context ctx) {
         new Thread(new Runnable() {
