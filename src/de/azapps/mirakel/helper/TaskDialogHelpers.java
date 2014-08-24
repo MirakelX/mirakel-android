@@ -643,17 +643,13 @@ public class TaskDialogHelpers {
                 return false;
             }
         });
-        if (!MirakelCommonPreferences.isSubtaskDefaultNew()) {
-            subtaskSelectOld.performClick();
-        }
     }
 
     protected static Task newSubtask(final String name, final Task parent,
                                      final Context ctx) {
         final ListMirakel list = MirakelModelPreferences
                                  .getListForSubtask(parent);
-        final Task t = Semantic.createTask(name, Optional.fromNullable(list),
-                                           MirakelCommonPreferences.useSemanticNewTask(), ctx);
+        final Task t = Semantic.createTask(name, Optional.fromNullable(list), true, ctx);
         parent.addSubtask(t);
         return t;
     }
