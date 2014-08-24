@@ -83,6 +83,7 @@ abstract class TaskBase extends ModelBase {
     protected SYNC_STATE syncState;
     protected Calendar updatedAt;
     protected String uuid = "";
+    @NonNull
     protected Optional<List<Tag>> tags = absent();
     private boolean isStub = false;
 
@@ -116,7 +117,7 @@ abstract class TaskBase extends ModelBase {
         this.recurringReminder = newRecurringReminder;
         this.progress = newProgress;
         clearEdited();
-        this.tags = null;
+        this.tags = absent();
         setIsRecurringShown(shown);
     }
 
