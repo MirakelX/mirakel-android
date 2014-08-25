@@ -47,8 +47,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         // Init stuff
         super.onCreate(savedInstanceState);
-        ModelBase.init(this);
-        SettingsHelper.init(this);
+        MirakelExtension.init(this);
 
         // Set ActionBar stuff
         Drawable d = getResources().getDrawable(R.drawable.bw_mirakel);
