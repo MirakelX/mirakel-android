@@ -36,6 +36,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Looper;
 
+import com.google.common.base.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -175,7 +176,6 @@ public class TaskWarriorSync {
     private static int _port = 6544;
     private static String _user = "";
 
-    public static final String NO_PROJECT = "NO_PROJECT";
     private static String root;
     private static final String TAG = "TaskWarriorSync";
     public static final String TYPE = "TaskWarrior";
@@ -331,20 +331,11 @@ public class TaskWarriorSync {
                     newSyncKey = taskString;
                     continue;
                 }
-                Task local_task;
+                Optional<Task> local_task;
                 Task server_task;
                 try {
                     Log.i(TAG, taskString);
                     server_task = gson.fromJson(taskString, Task.class);
-                    if (server_task.getList() == null
-                        || server_task.getList().getAccount().getId() != accountMirakel
-                        .getId()) {
-                        final ListMirakel list = ListMirakel
-                                                 .getInboxList(accountMirakel);
-                        server_task.setList(list, false);
-                        Log.d(TAG, "no list");
-                        server_task.addAdditionalEntry(NO_PROJECT, "true");
-                    }
                     this.dependencies.put(server_task.getUUID(),
                                           server_task.getDependencies());
                     local_task = Task.getByUUID(server_task.getUUID());
@@ -356,7 +347,7 @@ public class TaskWarriorSync {
                 if (server_task.getSyncState() == SYNC_STATE.DELETE) {
                     Log.d(TAG, "destroy " + server_task.getName());
                     taskDeleteUUID.add(server_task.getUUID());
-                } else if (local_task == null) {
+                } else if (!local_task.isPresent()) {
                     if (server_task.hasRecurringParent()) {
                         recurringTasksCreate.add(server_task);
                     } else {
@@ -368,7 +359,7 @@ public class TaskWarriorSync {
                         }
                     }
                 } else {
-                    server_task.takeIdFrom(local_task);
+                    server_task.takeIdFrom(local_task.get());
                     Log.d(TAG, "update " + server_task.getName());
                     if (server_task.hasRecurringParent()) {
                         recurringTasksSave.add(server_task);
@@ -378,9 +369,9 @@ public class TaskWarriorSync {
                 }
             }
             for (final Task t : recurringTasksCreate) {
-                final Task t_local = Task.getByUUID(t.getUUID());
-                if (t_local != null) {
-                    t.takeIdFrom(t_local);
+                final Optional<Task> t_local = Task.getByUUID(t.getUUID());
+                if (t_local.isPresent()) {
+                    t.takeIdFrom(t_local.get());
                     t.save(false, true);
                 } else {
                     try {
@@ -394,10 +385,10 @@ public class TaskWarriorSync {
                 t.save(false, true);
             }
             for (final String uuid : taskDeleteUUID) {
-                final Task t = Task.getByUUID(uuid);
+                final Optional<Task> t = Task.getByUUID(uuid);
                 // Force because we are in the sync – we know what we are doing ;)
-                if (t != null) {
-                    t.destroy(true);
+                if (t.isPresent()) {
+                    t.get().destroy(true);
                 }
             }
             accountMirakel.setSyncKey(newSyncKey);
@@ -464,7 +455,7 @@ public class TaskWarriorSync {
 
     private void setDependencies() {
         for (final String uuid : this.dependencies.keySet()) {
-            final Task parent = Task.getByUUID(uuid);
+            final Optional<Task> parent = Task.getByUUID(uuid);
             if (uuid == null || this.dependencies == null) {
                 continue;
             }
@@ -473,15 +464,17 @@ public class TaskWarriorSync {
                 continue;
             }
             for (final String childUuid : childs) {
-                final Task child = Task.getByUUID(childUuid);
-                if (child == null) {
+                final Optional<Task> child = Task.getByUUID(childUuid);
+                if (!child.isPresent()) {
                     continue;
                 }
-                if (child.isSubtaskOf(parent)) {
+                if (child.get().isSubtaskOf(parent.orNull())) {
                     continue;
                 }
                 try {
-                    parent.addSubtask(child);
+                    if (parent.isPresent()) {
+                        parent.get().addSubtask(child.get());
+                    }
                 } catch (final Exception e) {
                     Log.e(TAG, "eat it", e);
                     // eat it
