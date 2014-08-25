@@ -74,7 +74,7 @@ public class DatesView extends LinearLayout {
             listText.setText("At home");
         } else {
             if (due.isPresent()) {
-                dueText.setText(DateTimeHelper.formatDate(getContext(), due.get()));
+                dueText.setText(DateTimeHelper.formatDate(getContext(), due));
                 dueText.setTextColor(TaskHelper.getTaskDueColor(getContext(), due, isDone));
             } else {
                 dueText.setText(getContext().getString(R.string.no_date));

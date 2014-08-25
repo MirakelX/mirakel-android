@@ -35,17 +35,17 @@ android {
             targetSdkVersion 19
             compileSdkVersion 19
         }
-        l_test {
+        /*l_test {
             minSdkVersion 15
             targetSdkVersion "L"
             compileSdkVersion "android-L"
-        }
+        }*/
     }
-    android.sourceSets.l_test {
+    /*android.sourceSets.l_test {
         res{
             srcDir "res-l"
         }
-    }
+    }*/
 
 }
 
