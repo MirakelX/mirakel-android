@@ -19,6 +19,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
+    <version name="2.7.1" date="2014-08-25" code="68">
+        <feature>Bugfixes</feature>
+        <feature>Performance improvements</feature>
+        <feature>Started cleaning up settings</feature>
+    </version>
     <version name="2.7" date="2014-08-23" code="67">
         <text>CalDAV and Taskwarrior sync improvements</text>
         <text>Please update your Mirakel-DAVdroid.</text>
