@@ -97,6 +97,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.activities.DonationsActivity;
@@ -305,9 +306,11 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
         }
-        this.currentTask = currentList.getFirstTask ();
-        if (this.currentTask == null) {
-            this.currentTask = Task.getDummy (getApplicationContext ());
+        Optional<Task> taskOptional = currentList.getFirstTask ();
+        if (taskOptional.isPresent()) {
+            this.currentTask = taskOptional.get();
+        } else  {
+            this.currentTask = Task.getDummy (getApplicationContext (), getCurrentList());
         }
         if (getTasksFragment () != null) {
             getTasksFragment ().updateList (true);
@@ -354,9 +357,11 @@ public class MainActivity extends ActionBarActivity {
      * @return
      */
     public Task getCurrentTask () {
-        this.currentTask = this.currentList.getFirstTask ();
-        if (this.currentTask == null) {
-            this.currentTask = Task.getDummy (getApplicationContext ());
+        Optional<Task> taskOptional = this.currentList.getFirstTask ();
+        if (taskOptional.isPresent()) {
+            this.currentTask = taskOptional.get();
+        } else {
+            this.currentTask = Task.getDummy (getApplicationContext (), getCurrentList());
         }
         return this.currentTask;
     }
@@ -551,7 +556,7 @@ public class MainActivity extends ActionBarActivity {
         final List<Task> normalTasks = new ArrayList<>();
         // Tasks we should handle in a special way
         for (Task t : tasks) {
-            if (t.getRecurring () != null) {
+            if (t.getRecurring ().isPresent()) {
                 handleDestroyRecurringTask (t);
             } else if (t.countSubtasks() > 0) {
                 handleDestroySubtasks(t);
@@ -769,7 +774,7 @@ public class MainActivity extends ActionBarActivity {
                     getTaskFragment ().update (MainActivity.this.currentTask);
                     if (MainActivity.this.currentTask == null) {
                         MainActivity.this.currentTask = Task
-                                                        .getDummy (MainActivity.this);
+                                                        .getDummy (MainActivity.this, getCurrentList());
                     }
                     getSupportActionBar ().setTitle (
                         MainActivity.this.currentTask.getName ());
@@ -1519,14 +1524,14 @@ public class MainActivity extends ActionBarActivity {
         } else if (intent.getAction ().equals (DefinitionsHelper.SHOW_TASK)
                    || intent.getAction ().equals (
                        DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
-            final Task task = TaskHelper.getTaskFromIntent (intent);
-            if (task != null) {
-                this.currentList = task.getList ();
+            final Optional<Task> task = TaskHelper.getTaskFromIntent(intent);
+            if (task.isPresent()) {
+                this.currentList = task.get().getList ();
                 if (this.mDrawerLayout != null) {
                     this.mDrawerLayout.postDelayed (new Runnable () {
                         @Override
                         public void run () {
-                            setCurrentTask (task, true);
+                            setCurrentTask (task.get(), true);
                         }
                     }, 10);
                 }
@@ -1603,9 +1608,12 @@ public class MainActivity extends ActionBarActivity {
             Log.v (MainActivity.TAG, "ListId: " + listId);
             ListMirakel list = ListMirakel.get (listId).or(SpecialList.firstSpecialSafe());
             setCurrentList (list);
-            this.currentTask = list.getFirstTask ();
+            Optional<Task> taskOptional = list.getFirstTask ();
+            if (taskOptional.isPresent()) {
+                this.currentTask = taskOptional.get();
+            }
             if (getTaskFragment () != null) {
-                getTaskFragment ().update (this.currentTask);
+                getTaskFragment().update(this.currentTask);
             }
         } else if (intent.getAction ().equals (DefinitionsHelper.SHOW_LISTS)) {
             this.mDrawerLayout.openDrawer (DefinitionsHelper.GRAVITY_LEFT);
@@ -1620,7 +1628,7 @@ public class MainActivity extends ActionBarActivity {
             if (listMirakelOptional.isPresent()) {
                 setCurrentList(listMirakelOptional.get());
             } else {
-                setCurrentList(ListMirakel.safeFirst(this));
+                setCurrentList(ListMirakel.safeFirst());
             }
             this.mDrawerLayout.postDelayed (new Runnable () {
                 @Override
@@ -1708,16 +1716,19 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
         if (this.currentTask != null) {
-            this.currentTask = Task.get (this.currentTask.getId ());
+            Optional<Task> taskOptional = Task.get (this.currentTask.getId ());
+            if (taskOptional.isPresent()) {
+                this.currentTask = taskOptional.get();
+            } else {
+                throw new TaskVanishedException(this.currentTask.getId());
+            }
         } else {
-            if (this.currentList != null) {
-                final List<Task> currentTasks = this.currentList
-                                                .tasks (MirakelCommonPreferences.showDoneMain ());
-                if (currentTasks.size () == 0) {
-                    this.currentTask = Task.getDummy (getApplicationContext ());
-                } else {
-                    this.currentTask = currentTasks.get (0);
-                }
+            final List<Task> currentTasks = this.currentList
+                                            .tasks(MirakelCommonPreferences.showDoneMain());
+            if (currentTasks.size () == 0) {
+                this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
+            } else {
+                this.currentTask = currentTasks.get (0);
             }
         }
         if (this.currentList != null) {
@@ -1776,13 +1787,18 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void updateUI () {
-        if (getTasksFragment () != null) {
-            getTasksFragment ().updateList (false);
+    public void updateUI() {
+        if (getTasksFragment() != null) {
+            getTasksFragment().updateList(false);
         }
-        if (getTaskFragment () != null && getTaskFragment ().getTask () != null) {
-            getTaskFragment ().update (
-                Task.get (getTaskFragment ().getTask ().getId ()));
+        if (getTaskFragment() != null && getTaskFragment().getTask() != null) {
+
+            Optional<Task> taskOptional = Task.get(getTaskFragment().getTask().getId());
+            if (taskOptional.isPresent()) {
+                getTaskFragment().update(taskOptional.get());
+            } else {
+                throw new TaskVanishedException(getTaskFragment().getTask().getId());
+            }
         }
     }
 

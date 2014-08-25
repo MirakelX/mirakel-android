@@ -32,7 +32,7 @@ public class BackgroundTasks {
                     final SharedPreferences.Editor editor = MirakelPreferences
                                                             .getEditor ();
                     editor.putString ("startupList", ""
-                                      + ListMirakel.first ().getId ());
+                                      + ListMirakel.safeFirst().getId ());
                     editor.commit ();
                 }
                 // We should remove this in the future, nobody uses such old
