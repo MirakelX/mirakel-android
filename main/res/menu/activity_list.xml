@@ -54,9 +54,4 @@
         android:id="@+id/menu_settings"
         android:title="@string/menu_settings"
         mirakel:showAsAction="never"/>
-    <item
-        android:id="@+id/menu_kill_button"
-        android:title="@string/kill_app"
-        mirakel:showAsAction="never"/>
-
 </menu>

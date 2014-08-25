@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="67"
-    android:versionName="2.7" >
+    android:versionCode="68"
+    android:versionName="2.7.1" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -136,19 +136,6 @@
         </activity>
         <!-- android:launchMode="singleTop" -->
         <activity
-            android:name="de.azapps.mirakel.static_activities.SettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_settings"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.static_activities.DonationsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_donations"
-            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
@@ -188,7 +175,7 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.static_activities.CreditsActivity"
+            android:name="de.azapps.mirakel.settings.activities.CreditsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_credits" >
         </activity>

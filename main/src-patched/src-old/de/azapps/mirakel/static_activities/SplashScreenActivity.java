@@ -23,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -35,49 +36,42 @@ import de.azapps.mirakelandroid.R;
 public class SplashScreenActivity extends Activity {
     public static final String EXIT = "de.azapps.mirakel.EXIT";
 
-    @SuppressLint ("NewApi")
+    @SuppressLint("NewApi")
     @Override
-    protected void onCreate (final Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         // Setup splashscreen
-        if (getIntent () != null && getIntent ().getAction () == EXIT) {
-            NotificationService.stop (this);
-            ReminderAlarm.stopAll (this);
-            if (startService (new Intent (SplashScreenActivity.this,
-                                          NotificationService.class)) != null) {
-                stopService (new Intent (SplashScreenActivity.this,
-                                         NotificationService.class));
+        if (getIntent() != null && getIntent().getAction() == EXIT) {
+            NotificationService.stop(this);
+            ReminderAlarm.stopAll(this);
+            if (startService(new Intent(SplashScreenActivity.this,
+                                        NotificationService.class)) != null) {
+                stopService(new Intent(SplashScreenActivity.this,
+                                       NotificationService.class));
             }
-            finish ();
+            finish();
             return;
         }
-        final boolean darkTheme = MirakelCommonPreferences.isDark ();
+        final boolean darkTheme = MirakelCommonPreferences.isDark();
         if (!darkTheme) {
-            setTheme (R.style.Theme_SplashScreen);
+            setTheme(R.style.Theme_SplashScreen);
         }
         // Intents
         final Class startActivity = MainActivity.class;
-        if (MirakelCommonPreferences.isStartupAllLists ()) {
-            final Intent intent = new Intent (SplashScreenActivity.this,
-                                              startActivity);
-            intent.setAction (DefinitionsHelper.SHOW_LISTS);
-            startActivityForResult (intent, 42);
-        } else {
-            // Create a meta list if not existent
-            SpecialList.firstSpecialSafe ();
-            final long listId = MirakelModelPreferences.getStartupList ().getId ();
-            final Intent intent = new Intent (SplashScreenActivity.this,
-                                              startActivity);
-            intent.setAction (DefinitionsHelper.SHOW_LIST);
-            intent.putExtra (DefinitionsHelper.EXTRA_ID, listId);
-            finish ();
-            startActivityForResult (intent, 1);
-        }
+        // Create a meta list if not existent
+        SpecialList.firstSpecialSafe();
+        final long listId = MirakelModelPreferences.getStartupList().getId();
+        final Intent intent = new Intent(SplashScreenActivity.this,
+                                         startActivity);
+        intent.setAction(DefinitionsHelper.SHOW_LIST);
+        intent.putExtra(DefinitionsHelper.EXTRA_ID, listId);
+        finish();
+        startActivityForResult(intent, 1);
     }
 
     @Override
-    protected void onActivityResult (final int requestCode,
-                                     final int resultCode, final Intent data) {
-        finish ();
+    protected void onActivityResult(final int requestCode,
+                                    final int resultCode, final Intent data) {
+        finish();
     }
 }
