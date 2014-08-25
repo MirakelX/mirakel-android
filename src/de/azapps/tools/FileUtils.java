@@ -132,8 +132,7 @@ public class FileUtils {
         try {
             writeToFile(f, s);
         } catch (final IOException e) {
-            Log.e(TAG, "cannot write to file");
-            Log.e(TAG, Log.getStackTraceString(e));
+            Log.e(TAG, "cannot write to file", e);
         }
     }
 

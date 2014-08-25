@@ -56,8 +56,7 @@ public class Helpers {
             mirakelVersion = context.getPackageManager().getPackageInfo(
                                  context.getPackageName(), 0).versionName;
         } catch (final NameNotFoundException e) {
-            Log.logStackTrace(e);
-            Log.e(TAG, "could not get version name from manifest!");
+            Log.e(TAG, "could not get version name from manifest!", e);
         }
         contact(context, context.getString(R.string.contact_subject),
                 context.getString(R.string.contact_text, mirakelVersion,
