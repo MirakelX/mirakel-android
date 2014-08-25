@@ -46,7 +46,7 @@ public class GenericSettingsFragment<T extends ModelBase> extends PreferenceFrag
     }
 
 
-    private Callbacks mCallbacks;
+    private Callbacks<T> mCallbacks;
 
     public Optional<T> getModel() {
         return model;
@@ -61,7 +61,7 @@ public class GenericSettingsFragment<T extends ModelBase> extends PreferenceFrag
 
 
     public static <T extends ModelBase> GenericSettingsFragment<T> newInstance(T model) {
-        GenericSettingsFragment f = new GenericSettingsFragment();
+        GenericSettingsFragment<T> f = new GenericSettingsFragment<>();
         // Supply num input as an argument.
         Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_MODEL, model);
@@ -74,12 +74,13 @@ public class GenericSettingsFragment<T extends ModelBase> extends PreferenceFrag
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallbacks = (Callbacks) activity;
+            mCallbacks = (Callbacks<T>) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement Callbacks");
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
