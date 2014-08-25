@@ -136,19 +136,6 @@
         </activity>
         <!-- android:launchMode="singleTop" -->
         <activity
-            android:name="de.azapps.mirakel.settings.activities.SettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_settings"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.activities.DonationsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_donations"
-            android:parentActivityName="de.azapps.mirakel.settings.activities.SettingsActivity"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
