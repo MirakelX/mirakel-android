@@ -43,6 +43,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -65,13 +69,20 @@ public class MirakelExtension extends DashClockExtension implements
         mNotificationManager.notify(notifId++, notification);
     }
 
+    public static void init(Context ctx) {
+        DefinitionsHelper.init(ctx);
+        MirakelPreferences.init(ctx);
+        ErrorReporter.init(ctx);
+        ModelBase.init(ctx);
+        SettingsHelper.init(ctx);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         notifId = 0;
 
-        ModelBase.init(this);
-        SettingsHelper.init(this);
+        init(this);
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         settings.registerOnSharedPreferenceChangeListener(this);
