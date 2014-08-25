@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
@@ -83,6 +84,7 @@ abstract class TaskBase extends ModelBase {
     protected SYNC_STATE syncState;
     protected Calendar updatedAt;
     protected String uuid = "";
+    @NonNull
     protected Optional<List<Tag>> tags = absent();
     private boolean isStub = false;
 
@@ -116,7 +118,7 @@ abstract class TaskBase extends ModelBase {
         this.recurringReminder = newRecurringReminder;
         this.progress = newProgress;
         clearEdited();
-        this.tags = null;
+        this.tags = absent();
         setIsRecurringShown(shown);
     }
 
@@ -677,7 +679,7 @@ abstract class TaskBase extends ModelBase {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (((Object) this).getClass() != obj.getClass()) {
             return false;
         }
         final TaskBase other = (TaskBase) obj;

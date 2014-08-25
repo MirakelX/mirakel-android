@@ -19,11 +19,6 @@
 
 package de.azapps.mirakel.model.task;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,6 +33,11 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -65,18 +65,17 @@ import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
-import static com.google.common.base.Optional.absent;
 
 public class Task extends TaskBase {
 
     // Constants
-    public static final String[] allColumns = { ModelBase.ID, TaskBase.UUID,
-                                                TaskBase.LIST_ID, ModelBase.NAME, TaskBase.CONTENT, TaskBase.DONE,
-                                                TaskBase.DUE, TaskBase.REMINDER, TaskBase.PRIORITY,
-                                                DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
-                                                DatabaseHelper.SYNC_STATE_FIELD, TaskBase.ADDITIONAL_ENTRIES,
-                                                TaskBase.RECURRING, TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS,
-                                                TaskBase.RECURRING_SHOWN
+    public static final String[] allColumns = {ModelBase.ID, TaskBase.UUID,
+                                               TaskBase.LIST_ID, ModelBase.NAME, TaskBase.CONTENT, TaskBase.DONE,
+                                               TaskBase.DUE, TaskBase.REMINDER, TaskBase.PRIORITY,
+                                               DatabaseHelper.CREATED_AT, DatabaseHelper.UPDATED_AT,
+                                               DatabaseHelper.SYNC_STATE_FIELD, TaskBase.ADDITIONAL_ENTRIES,
+                                               TaskBase.RECURRING, TaskBase.RECURRING_REMINDER, TaskBase.PROGRESS,
+                                               TaskBase.RECURRING_SHOWN
                                               };
     public static final String BASIC_FILTER_DISPLAY_TASKS = " NOT "
             + DatabaseHelper.SYNC_STATE_FIELD + " = " + SYNC_STATE.DELETE
@@ -128,7 +127,7 @@ public class Task extends TaskBase {
                 final String content, final boolean done,
                 final @NonNull Optional<Calendar> due, final int priority) {
         this(0, java.util.UUID.randomUUID().toString(),
-             list, name, content, done, due, Optional.<Calendar>absent() , priority, null, null,
+             list, name, content, done, due, Optional.<Calendar>absent(), priority, null, null,
              SYNC_STATE.ADD, "", -1, -1, 0, true);
     }
 
@@ -294,11 +293,9 @@ public class Task extends TaskBase {
     }
 
     /**
-     *
      * @param id
-     * @param force
-     *            Search also for deleted tasks. Do not use it unless you
-     *            exactly know what you are doing
+     * @param force Search also for deleted tasks. Do not use it unless you
+     *              exactly know what you are doing
      * @return
      */
     public static Task get(final long id, final boolean force) {
@@ -351,8 +348,7 @@ public class Task extends TaskBase {
      * Get Tasks from a List Use it only if really necessary!
      *
      * @param listId
-     * @param sorting
-     *            The Sorting (@see ListMirakel.SORT_BY)
+     * @param sorting  The Sorting (@see ListMirakel.SORT_BY)
      * @param showDone
      * @return
      */
@@ -366,8 +362,7 @@ public class Task extends TaskBase {
      * Get Tasks from a List Use it only if really necessary!
      *
      * @param list
-     * @param sorting
-     *            The Sorting (@see ListMirakel.SORT_BY)
+     * @param sorting  The Sorting (@see ListMirakel.SORT_BY)
      * @param showDone
      * @return
      */
@@ -595,7 +590,6 @@ public class Task extends TaskBase {
 
     /**
      * Delete a task
-     *
      */
     @Override
     public void destroy() {
@@ -617,7 +611,7 @@ public class Task extends TaskBase {
             delete(MirakelInternalContentProvider.FILE_URI, "task_id = " + id
                    + " OR task_id " + subWhereQuery, null);
             delete(MirakelInternalContentProvider.RECURRING_TW_URI, "parent=?",
-                   new String[] { String.valueOf(getId()) });
+                   new String[] {String.valueOf(getId())});
             destroyGarbage();
         } else {
             final ContentValues values = new ContentValues();
@@ -720,31 +714,33 @@ public class Task extends TaskBase {
         }
         if (isEdited(RECURRING) && !calledFromSync) {
             final Task old = Task.get(getId());
-            if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1) {
-                insertFirstRecurringChild();
-            } else if (old.getRecurrenceId() != getRecurrenceId()) {
-                final Recurring r = getRecurring();
-                if (r == null) {
-                    final Cursor c = new MirakelQueryBuilder(context)
-                    .select("parent")
-                    .and("child", Operation.EQ, this)
-                    .query(MirakelInternalContentProvider.RECURRING_TW_URI);
-                    if (c.moveToFirst()) {
-                        final long masterID = c.getLong(0);
-                        final ContentValues cv = new ContentValues();
-                        cv.put(RECURRING, -1);
-                        update(URI, cv, ModelBase.ID
-                               + " IN (SELECT child FROM "
-                               + Recurring.TW_TABLE + " WHERE parent="
-                               + masterID + ")", null);
-                        delete(MirakelInternalContentProvider.RECURRING_TW_URI,
-                               "parent=?", new String[] { String.valueOf(masterID) });
-                        delete(URI, ModelBase.ID + "=?",
-                               new String[] { String.valueOf(masterID) });
+            if (old != null) {
+                if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1) {
+                    insertFirstRecurringChild();
+                } else if (old.getRecurrenceId() != getRecurrenceId()) {
+                    final Recurring r = getRecurring();
+                    if (r == null) {
+                        final Cursor c = new MirakelQueryBuilder(context)
+                        .select("parent")
+                        .and("child", Operation.EQ, this)
+                        .query(MirakelInternalContentProvider.RECURRING_TW_URI);
+                        if (c.moveToFirst()) {
+                            final long masterID = c.getLong(0);
+                            final ContentValues cv = new ContentValues();
+                            cv.put(RECURRING, -1);
+                            update(URI, cv, ModelBase.ID
+                                   + " IN (SELECT child FROM "
+                                   + Recurring.TW_TABLE + " WHERE parent="
+                                   + masterID + ")", null);
+                            delete(MirakelInternalContentProvider.RECURRING_TW_URI,
+                                   "parent=?", new String[] {String.valueOf(masterID)});
+                            delete(URI, ModelBase.ID + "=?",
+                                   new String[] {String.valueOf(masterID)});
+                        }
+                        c.close();
+                    } else {
+                        updateRecurringChilds(r);
                     }
-                    c.close();
-                } else {
-                    updateRecurringChilds(r);
                 }
             }
         }
@@ -879,7 +875,7 @@ public class Task extends TaskBase {
         cv.put(RECURRING, recID);
         cv.put(UUID, java.util.UUID.randomUUID().toString());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
-        update(URI, cv, ModelBase.ID + "=?", new String[] { String.valueOf(oldId) });
+        update(URI, cv, ModelBase.ID + "=?", new String[] {String.valueOf(oldId)});
     }
 
     private void handleInsertTWRecurring() {
@@ -934,7 +930,7 @@ public class Task extends TaskBase {
             final ContentValues cv = new ContentValues();
             cv.put(DatabaseHelper.SYNC_STATE_FIELD,
                    SYNC_STATE.NEED_SYNC.toInt());
-            update(URI, cv, "_id=?", new String[] { String.valueOf(c.getLong(0)) });
+            update(URI, cv, "_id=?", new String[] {String.valueOf(c.getLong(0))});
         }
         c.close();
     }
@@ -1035,7 +1031,7 @@ public class Task extends TaskBase {
         }
         delete(MirakelInternalContentProvider.TAG_CONNECTION_URI,
                "task_id=? and tag_id=?",
-               new String[] { String.valueOf(getId()), String.valueOf(t.getId()) });
+               new String[] {String.valueOf(getId()), String.valueOf(t.getId())});
     }
 
     // Parcelable stuff
@@ -1118,6 +1114,7 @@ public class Task extends TaskBase {
         public Task createFromParcel(Parcel source) {
             return new Task(source);
         }
+
         public Task[] newArray(int size) {
             return new Task[size];
         }

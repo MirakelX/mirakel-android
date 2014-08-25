@@ -157,7 +157,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             case "project": {
                 Optional<ListMirakel> list = ListMirakel.findByName(val.getAsString(),
                                              this.account);
-                if (list == null
+                if (!list.isPresent()
                     || list.get().getAccount().getId() != this.account.getId()) {
                     try {
                         list = Optional.fromNullable(ListMirakel.newList(val.getAsString(),
