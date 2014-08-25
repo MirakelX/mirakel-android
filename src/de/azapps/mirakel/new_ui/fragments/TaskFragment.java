@@ -31,11 +31,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
-import de.azapps.mirakel.custom_views.BaseTaskDetailRow;
-import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
@@ -50,12 +47,9 @@ import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils.Procedure;
 import de.azapps.widgets.DateTimeDialog;
 
-
-
-import static com.google.common.base.Optional.fromNullable;
-import static de.azapps.tools.OptionalUtils.Procedure;
 import static com.google.common.base.Optional.of;
 
 public class TaskFragment extends DialogFragment {
@@ -96,6 +90,15 @@ public class TaskFragment extends DialogFragment {
         return f;
     }
 
+    private void updateTask() {
+        Optional<Task> taskOptional = Task.get(task.getId());
+        if (taskOptional.isPresent()) {
+            task = taskOptional.get();
+        } // else do nothing
+        updateAll();
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,13 +109,12 @@ public class TaskFragment extends DialogFragment {
         callBackMap.put(Task.URI, new MirakelContentObserver.ObserverCallBack() {
             @Override
             public void handleChange() {
-                task = Task.get(task.getId());
-                updateAll();
+                updateTask();
             }
+
             @Override
             public void handleChange(long id) {
-                task = Task.get(task.getId());
-                updateAll();
+                updateTask();
             }
         });
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(),
@@ -120,7 +122,7 @@ public class TaskFragment extends DialogFragment {
     }
 
     @Override
-    public void onDismiss (DialogInterface dialog) {
+    public void onDismiss(DialogInterface dialog) {
         if (observer != null && getActivity() != null && getActivity().getContentResolver() != null) {
             getActivity().getContentResolver().unregisterContentObserver(observer);
         }
@@ -226,6 +228,7 @@ public class TaskFragment extends DialogFragment {
                 }
             });
         }
+
         private void updateName() {
             task.setName(taskNameEdit.getText().toString());
             taskName.setText(task.getName());
@@ -249,9 +252,10 @@ public class TaskFragment extends DialogFragment {
             DatePicker.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
-                    task.setDue(of((Calendar)new GregorianCalendar(year, month, day)));
+                    task.setDue(of((Calendar) new GregorianCalendar(year, month, day)));
                     task.save();
                 }
+
                 @Override
                 public void onNoDateSet() {
                     task.setDue(Optional.<Calendar>absent());
@@ -265,7 +269,8 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final SimpleModelAdapter adapter = new SimpleModelAdapter(getActivity(), ListMirakel.getAllCursor(),
+            final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>(getActivity(),
+                    ListMirakel.getAllCursor(),
                     0, ListMirakel.class);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.task_move_to);
@@ -286,9 +291,10 @@ public class TaskFragment extends DialogFragment {
             DateTimeDialog.OnDateTimeSetListener() {
                 @Override
                 public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-                    task.setReminder(of((Calendar)new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
+                    task.setReminder(of((Calendar) new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
                     task.save();
                 }
+
                 @Override
                 public void onNoTimeSet() {
                     task.setReminder(Optional.<Calendar>absent());
@@ -303,7 +309,7 @@ public class TaskFragment extends DialogFragment {
     private Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
         @Override
         public void apply(Task task) {
-            task.setDone(!task.isDone());
+            task.toggleDone();
             task.save();
         }
     };
