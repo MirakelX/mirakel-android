@@ -65,10 +65,10 @@ gradle.projectsEvaluated {
         delete proj+"/merged-res";
         copy{
             from (res_dir){
-                include '**/*.xml'
+                include '**/*.xml', '**/*.png'
             }
             from (res_v14_dir){
-                include '**/*.xml'
+                include '**/*.xml', '**/*.png'
             }
             into (rootDir.toString()+"/"+proj+"/merged-res") 
         }
