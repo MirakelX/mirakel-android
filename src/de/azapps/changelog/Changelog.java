@@ -62,8 +62,7 @@ public class Changelog {
                                        context.getPackageName(), 0).versionCode;
         } catch (final NameNotFoundException e) {
             this.current_version = NO_VERSION;
-            Log.logStackTrace(e);
-            Log.e(TAG, "could not get version name from manifest!");
+            Log.e(TAG, "could not get version name from manifest!", e);
         }
     }
 
