@@ -18,14 +18,12 @@
  ******************************************************************************/
 package de.azapps.mirakel.custom_views;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -37,6 +35,9 @@ import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
@@ -45,16 +46,15 @@ import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
-import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 public class TaskDetailDueReminder extends BaseTaskDetailRow {
     public enum Type {
-        Combined, Due, Reminder;
+        Combined, Due, Reminder
     }
 
     public static final int MIN_DUE_NEXT_TO_REMINDER_SIZE = 800;
@@ -66,15 +66,15 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                                : android.R.drawable.ic_menu_rotate);
     }
 
-    private static void setupRecurrenceDrawable(final ImageButton reccurence,
-            final Recurring recurring) {
+    private static void setupRecurrenceDrawable(final ImageButton recurrence,
+            @NonNull final Optional<Recurring> recurring) {
         int id;
-        if (recurring == null || recurring.getId() == -1) {
+        if (!recurring.isPresent() || recurring.get().getId() == -1) {
             id = android.R.drawable.ic_menu_mylocation;
         } else {
             id = android.R.drawable.ic_menu_rotate;
         }
-        reccurence.setImageResource(id);
+        recurrence.setImageResource(id);
     }
 
     private final LinearLayout dueWrapper;
@@ -93,6 +93,15 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
     private final TextView taskReminder;
 
     private Type type;
+
+    private void updateTask() {
+        Optional<Task> taskOptional = Task.get(task.getId());
+        if (taskOptional.isPresent()) {
+            task = taskOptional.get();
+        } else {
+            throw new TaskVanishedException(task.getId());
+        }
+    }
 
     public TaskDetailDueReminder(final Context ctx) {
         super(ctx);
@@ -119,26 +128,22 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
         this.recurrenceReminder.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (TaskDetailDueReminder.this.task.getReminder() != null) {
-                    TaskDialogHelpers
-                    .handleRecurrence(
-                        (ActionBarActivity) TaskDetailDueReminder.this.context,
-                        TaskDetailDueReminder.this.task, false,
-                    new ExecInterface() {
-                        @Override
-                        public void exec() {
-                            TaskDetailDueReminder.this.task = Task
-                                                              .get(TaskDetailDueReminder.this.task
-                                                                   .getId());
-                            TaskDetailDueReminder
-                            .setRecurringImage(
-                                TaskDetailDueReminder.this.recurrenceReminder,
-                                TaskDetailDueReminder.this.task
-                                .getRecurringReminderId());
-                            setReminder();
-                        }
-                    });
-                }
+                TaskDialogHelpers
+                .handleRecurrence(
+                    (ActionBarActivity) TaskDetailDueReminder.this.context,
+                    TaskDetailDueReminder.this.task, false,
+                new ExecInterface() {
+                    @Override
+                    public void exec() {
+                        updateTask();
+                        TaskDetailDueReminder
+                        .setRecurringImage(
+                            TaskDetailDueReminder.this.recurrenceReminder,
+                            TaskDetailDueReminder.this.task
+                            .getRecurringReminderId());
+                        setReminder();
+                    }
+                });
             }
         });
         this.reminderWrapper = (LinearLayout) findViewById(R.id.wrapper_reminder);
@@ -149,26 +154,22 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
         this.recurrenceDue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (TaskDetailDueReminder.this.task.getDue() != null) {
-                    TaskDialogHelpers
-                    .handleRecurrence(
-                        (ActionBarActivity) TaskDetailDueReminder.this.context,
-                        TaskDetailDueReminder.this.task, true,
-                    new ExecInterface() {
-                        @Override
-                        public void exec() {
-                            TaskDetailDueReminder.this.task = Task
-                                                              .get(TaskDetailDueReminder.this.task
-                                                                   .getId());
-                            TaskDetailDueReminder
-                            .setRecurringImage(
-                                TaskDetailDueReminder.this.recurrenceDue,
-                                TaskDetailDueReminder.this.task
-                                .getRecurrenceId());
-                            setDue();
-                        }
-                    });
-                }
+                TaskDialogHelpers
+                .handleRecurrence(
+                    (ActionBarActivity) TaskDetailDueReminder.this.context,
+                    TaskDetailDueReminder.this.task, true,
+                new ExecInterface() {
+                    @Override
+                    public void exec() {
+                        updateTask();
+                        TaskDetailDueReminder
+                        .setRecurringImage(
+                            TaskDetailDueReminder.this.recurrenceDue,
+                            TaskDetailDueReminder.this.task
+                            .getRecurrenceId());
+                        setDue();
+                    }
+                });
             }
         });
         this.taskDue.setOnClickListener(new View.OnClickListener() {
@@ -190,11 +191,12 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                             return;
                         }
                         TaskDetailDueReminder.this.task
-                        .setDue(of((Calendar)new GregorianCalendar(
+                        .setDue(of((Calendar) new GregorianCalendar(
                                        year, month, day)));
                         save();
                         setDue();
                     }
+
                     @Override
                     public void onNoDateSet() {
                         TaskDetailDueReminder.this.task
@@ -281,12 +283,12 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                                            .getColor(BaseTaskDetailRow.inactive_color));
         } else {
             Calendar reminder = (Calendar) this.task.getReminder().get().clone();
-            final Recurring r = this.task.getRecurringReminder();
-            if (r != null) {
-                reminder = r.addRecurring(of(reminder)).get();
+            final Optional<Recurring> recurringReminder = this.task.getRecurringReminder();
+            if (recurringReminder.isPresent()) {
+                reminder = recurringReminder.get().addRecurring(of(reminder)).get();
                 if (new GregorianCalendar().compareTo(reminder) > 0) {
                     reminder.setTimeInMillis(reminder.getTimeInMillis()
-                                             + r.getInterval());
+                                             + recurringReminder.get().getInterval());
                 }
             }
             this.taskReminder.setText(DateTimeHelper.formatReminder(
