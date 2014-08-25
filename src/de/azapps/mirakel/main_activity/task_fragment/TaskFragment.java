@@ -20,9 +20,7 @@ package de.azapps.mirakel.main_activity.task_fragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -43,8 +41,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
-import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
-import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListener;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListener;
 import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
 import de.azapps.mirakel.custom_views.TaskDetailView;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListener;
@@ -316,7 +314,7 @@ public abstract class TaskFragment extends Fragment {
                 }
             }
         });
-        this.detailView.setOnFileMarked (new OnFileMarkedListner () {
+        this.detailView.setOnFileMarked (new OnFileMarkedListener() {
             @Override
             public void markFile (final View v, final FileMirakel e,
                                   final boolean marked) {
@@ -340,7 +338,7 @@ public abstract class TaskFragment extends Fragment {
                 }
             }
         });
-        this.detailView.setOnFileClicked (new OnFileClickListner () {
+        this.detailView.setOnFileClicked (new OnFileClickListener() {
             @Override
             public void clickOnFile (final FileMirakel file) {
                 final Context context = getActivity ();
