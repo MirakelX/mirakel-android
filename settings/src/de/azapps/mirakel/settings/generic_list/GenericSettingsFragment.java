@@ -20,20 +20,18 @@
 package de.azapps.mirakel.settings.generic_list;
 
 
-import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
 
-import com.github.machinarius.preferencefragment.PreferenceFragment;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.model.ModelBase;
 
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 public class GenericSettingsFragment<T extends ModelBase> extends PreferenceFragment {
     public static final String ARGUMENT_MODEL = "MODEL";
@@ -87,8 +85,7 @@ public class GenericSettingsFragment<T extends ModelBase> extends PreferenceFrag
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(mCallbacks.getPreferenceResource());
         final Bundle b = getArguments();
-        final android.support.v7.app.ActionBar actionbar = ((ActionBarActivity)
-                getActivity()).getSupportActionBar();
+        final ActionBar actionbar = getActivity().getActionBar();
         if (b != null && b.containsKey(ARGUMENT_MODEL)) {
             this.model = fromNullable((T) b.getParcelable(ARGUMENT_MODEL));
         } else {
