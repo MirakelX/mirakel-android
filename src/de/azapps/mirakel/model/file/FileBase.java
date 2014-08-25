@@ -44,6 +44,7 @@ abstract class FileBase extends ModelBase {
     public FileBase(final long id, final String name, final Task task,
                     final Uri uri) {
         super(id, name);
+        // todo do something if task is null
         this.task = task;
         this.fileUri = uri;
     }

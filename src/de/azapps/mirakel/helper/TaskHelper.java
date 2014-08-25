@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.google.common.base.Optional;
@@ -37,20 +38,17 @@ import de.azapps.mirakel.model.task.Task;
 
 public class TaskHelper {
 
-    public static Task getTaskFromIntent(final Intent intent) {
-        Task task = null;
+    @NonNull
+    public static Optional<Task> getTaskFromIntent(final Intent intent) {
         if (intent == null) {
-            return task;
+            return Optional.absent();
         }
         long taskId = intent.getLongExtra(DefinitionsHelper.EXTRA_ID, 0);
         if (taskId == 0) {
             // ugly fix for show Task from Widget
             taskId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
         }
-        if (taskId != 0) {
-            task = Task.get(taskId);
-        }
-        return task;
+        return Task.get(taskId);
     }
 
     /**

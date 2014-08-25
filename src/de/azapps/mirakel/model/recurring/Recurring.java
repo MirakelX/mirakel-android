@@ -244,10 +244,10 @@ public class Recurring extends RecurringBase {
                 masterID).and(OFFSET_COUNT, Operation.EQ,
                               offsetCount).query(MirakelInternalContentProvider.RECURRING_TW_URI);
         if (c.moveToFirst()) {
-            final Task task = Task.get(c.getLong(0));
+            final Optional<Task> task = Task.get(c.getLong(0));
             c.close();
-            if (task != null) {
-                return task;
+            if (task.isPresent()) {
+                return task.get();
             }
         }
         c.close();

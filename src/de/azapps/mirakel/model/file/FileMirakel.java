@@ -85,7 +85,7 @@ public class FileMirakel extends FileBase {
     public FileMirakel(final Cursor c) {
         super(c.getInt(c.getColumnIndex(ID)), c.getString(c
                 .getColumnIndex(NAME)), Task.get(c.getInt(c
-                        .getColumnIndex(TASK))), Uri.parse(c.getString(c
+                        .getColumnIndex(TASK))).orNull(), Uri.parse(c.getString(c
                                 .getColumnIndex(PATH))));
     }
 
@@ -219,7 +219,7 @@ public class FileMirakel extends FileBase {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.task.getId());
+        dest.writeParcelable(this.task, 0);
         dest.writeParcelable(this.fileUri, 0);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
@@ -227,7 +227,7 @@ public class FileMirakel extends FileBase {
 
     private FileMirakel(Parcel in) {
         super();
-        this.task = Task.get(in.readLong());
+        this.task = in.readParcelable(Task.class.getClassLoader());
         this.fileUri = in.readParcelable(Uri.class.getClassLoader());
         this.setId(in.readLong());
         this.setName(in.readString());

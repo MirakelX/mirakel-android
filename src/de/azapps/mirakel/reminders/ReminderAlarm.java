@@ -32,6 +32,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Pair;
 
+import com.google.common.base.Optional;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -51,6 +53,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.services.TaskService;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
 
 public class ReminderAlarm extends BroadcastReceiver {
     private static final String TAG = "ReminderAlarm";
@@ -58,7 +61,7 @@ public class ReminderAlarm extends BroadcastReceiver {
         "de.azapps.mirakel.reminders.ReminderAlarm.UPDATE_NOTIFICATION";
     public static final String SHOW_TASK = "de.azapps.mirakel.reminders.ReminderAlarm.SHOW_TASK";
     public static final String EXTRA_ID = "de.azapps.mirakel.reminders.ReminderAlarm.EXTRA_ID";
-    private static Set<Long> allReminders = new HashSet<Long>();
+    private static Set<Long> allReminders = new HashSet<>();
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -72,16 +75,15 @@ public class ReminderAlarm extends BroadcastReceiver {
         if (taskId == 0) {
             return;
         }
-        final Task task = Task.get(taskId);
-        if (task == null) {
+        final Optional<Task> task = Task.get(taskId);
+        if (!task.isPresent()) {
             PendingIntent pd = PendingIntent.getBroadcast(
                                    context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.cancel(pd);
             ErrorReporter.report(ErrorType.TASK_VANISHED);
-            return;
+        } else {
+            createNotification(context, task.get());
         }
-        createNotification(context, task);
-        // updateAlarms(context);
     }
 
     private static void createNotification(final Context context,
@@ -147,7 +149,7 @@ public class ReminderAlarm extends BroadcastReceiver {
         final String priority = (task.getPriority() > 0 ? "+" + task.getPriority() : String.valueOf(task
                                  .getPriority()));
         CharSequence due;
-        if (task.getDue() == null) {
+        if (!task.getDue().isPresent()) {
             due = context.getString(R.string.no_date);
         } else {
             due = DateTimeHelper.formatDate(context, task.getDue());
@@ -193,14 +195,13 @@ public class ReminderAlarm extends BroadcastReceiver {
                 final List<Task> tasks = Task.getTasksWithReminders();
                 for (final Pair<Task, PendingIntent> p : activeAlarms) {
                     final Task t = p.first;
-                    final Task newTask = Task.get(t.getId());
+                    final Task newTask = Task.get(t.getId()).orNull();
                     if (newTask == null
                         || !newTask.getReminder().isPresent()
                         || newTask.isDone()
                         || newTask.getReminder().get().after(
                             new GregorianCalendar())) {
                         cancelAlarm(ctx, t, newTask, p, p.second);
-                        continue;
                     } else if (newTask.getReminder().isPresent()) {
                         final Calendar now = new GregorianCalendar();
                         if (newTask.getReminder().get().after(now)
@@ -270,7 +271,13 @@ public class ReminderAlarm extends BroadcastReceiver {
     public static void cancelAlarm(final Context ctx, final Task task) {
         try {
             final Pair<Task, PendingIntent> p = findTask(task.getId());
-            cancelAlarm(ctx, task, Task.get(task.getId()), p, p.second);
+            Optional<Task> taskOptional = Task.get(task.getId());
+            OptionalUtils.withOptional(taskOptional, new OptionalUtils.Procedure<Task>() {
+                @Override
+                public void apply(Task input) {
+                    cancelAlarm(ctx, task, input, p, p.second);
+                }
+            });
         } catch (final IndexOutOfBoundsException e) {
             Log.d(TAG, "task not found", e);
         }
@@ -322,10 +329,10 @@ public class ReminderAlarm extends BroadcastReceiver {
                                        .getSystemService(Context.NOTIFICATION_SERVICE);
         // This hack is a must because otherwise we get a
         // concurrentModificationException
-        final Long[] reminders = allReminders.toArray(new Long[] {});
+        final Long[] reminders = allReminders.toArray(new Long[allReminders.size()]);
         for (final Long id : reminders) {
             nm.cancel(DefinitionsHelper.NOTIF_REMINDER + id.intValue());
-            cancelAlarm(context, Task.get(id));
+            cancelAlarm(context, Task.get(id).orNull());
         }
     }
 }

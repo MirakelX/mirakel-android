@@ -44,6 +44,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.of;
 
@@ -85,9 +86,15 @@ public class WunderlistImport {
         }
         for (final Pair<Task, String> pair : subtasks) {
             try {
-                final Task parent = Task.get(Long.valueOf(taskMapping
-                                             .get(pair.second)));
-                parent.addSubtask(pair.first);
+                final Optional<Task> parent = Task.get(Long.valueOf(taskMapping
+                                                       .get(pair.second)));
+                OptionalUtils.withOptional(parent, new OptionalUtils.Procedure<Task>() {
+                    @Override
+                    public void apply(Task input) {
+                        input.addSubtask(pair.first);
+                    }
+                });
+
             } catch (final Exception e) {
                 Log.e(TAG, "Blame yourself… ", e);
                 // Blame yourself…

@@ -31,6 +31,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
+import com.google.common.base.Optional;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -322,10 +324,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             dues[5] = null;
             final int[] priorities = { 2, -1, 1, 2, 0, 0 };
             for (int i = 0; i < tasks.length; i++) {
-                final Task t = new Task(tasks[i]);
+                final Task t = new Task(tasks[i], ListMirakel.findByName(task_lists[i]).get());
                 t.setDue(fromNullable(dues[i]));
                 t.setPriority(priorities[i]);
-                t.setList(ListMirakel.findByName(task_lists[i]).get());
                 t.setSyncState(SYNC_STATE.ADD);
                 try {
                     cv = t.getContentValues();
@@ -890,16 +891,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 // check if is childtask
                 if (t.existAdditional("parent")) {
-                    final Task master = Task.getByUUID(t
-                                                       .getAdditionalString("parent"));
-                    List<Task> list;
-                    if (recurring.containsKey(master)) {
-                        list = recurring.get(master);
-                    } else {
-                        list = new ArrayList<>();
+                    final Optional<Task> masterOptional = Task.getByUUID(t
+                                                          .getAdditionalString("parent"));
+
+                    if (masterOptional.isPresent()) {
+                        Task master = masterOptional.get();
+                        List<Task> list;
+                        if (recurring.containsKey(master)) {
+                            list = recurring.get(master);
+                        } else {
+                            list = new ArrayList<>();
+                        }
+                        list.add(t);
+                        recurring.put(master, list);
                     }
-                    list.add(t);
-                    recurring.put(master, list);
                 } else if (!recurring.containsKey(t)) {// its recurring master
                     recurring.put(t, new ArrayList<Task>());
                 }

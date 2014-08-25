@@ -99,15 +99,15 @@ public class AnyDoImport {
             }
         }
         for (final Pair<Integer, String> pair : contents) {
-            final Task t = Task.get(taskMapping.get(pair.first));
-            if (t == null) {
+            final Optional<Task> taskOptional = Task.get(taskMapping.get(pair.first));
+            if (!taskOptional.isPresent()) {
                 Log.d(TAG, "Task not found");
                 continue;
             }
-            final String oldContent = t.getContent();
-            t.setContent(oldContent == null || oldContent.equals("") ? pair.second
-                         : oldContent + "\n" + pair.second);
-            t.save(false);
+            final String oldContent = taskOptional.get().getContent();
+            taskOptional.get().setContent(oldContent.equals("") ? pair.second
+                                          : oldContent + "\n" + pair.second);
+            taskOptional.get().save(false);
         }
         return true;
     }

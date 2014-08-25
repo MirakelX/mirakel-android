@@ -40,7 +40,7 @@ abstract public class ModelBase implements Parcelable {
     public static final String NAME = "name";
 
     private long id;
-    private String name;
+    private String name = "";
 
     protected static Context context;
 
@@ -50,6 +50,9 @@ abstract public class ModelBase implements Parcelable {
 
     protected ModelBase(long newId, String newName) {
         setId(newId);
+        if (newName == null) {
+            newName = "";
+        }
         setName(newName);
     }
 

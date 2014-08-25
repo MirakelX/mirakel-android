@@ -49,10 +49,11 @@ public class TaskService extends Service {
     }
 
     private void handleCommand(final Intent intent) {
-        final Task task = TaskHelper.getTaskFromIntent(intent);
-        if (task == null) {
+        Optional<Task> taskOptional = TaskHelper.getTaskFromIntent(intent);
+        if (!taskOptional.isPresent()) {
             return;
         }
+        final Task task = taskOptional.get();
         if (intent.getAction() == TASK_DONE) {
             task.setDone(true);
             task.save();

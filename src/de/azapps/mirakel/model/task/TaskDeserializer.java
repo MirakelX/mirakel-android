@@ -75,28 +75,31 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
     public Task deserialize(final JsonElement json, final Type type,
                             final JsonDeserializationContext ctx) throws JsonParseException {
         final JsonObject el = json.getAsJsonObject();
-        Task t = null;
+        Optional<ListMirakel> taskList = absent();
+        Optional<Task> taskOptional = absent();
         JsonElement id = el.get("id");
         if (id != null && !this.isTW) {// use uuid for tw-sync
-            t = Task.get(id.getAsLong());
+            taskOptional = Task.get(id.getAsLong());
         } else {
             id = el.get("uuid");
             if (id != null) {
-                t = Task.getByUUID(id.getAsString());
+                taskOptional = Task.getByUUID(id.getAsString());
             }
         }
-        if (t == null) {
-            t = new Task();
+        Task task;
+        if (taskOptional.isPresent()) {
+            task = taskOptional.get();
+        } else {
+            task = new Task();
         }
         if (this.isTW) {
-            t.setDue(Optional.<Calendar>absent());
-            t.setDone(false);
-            t.setContent("");
-            t.setPriority(0);
-            t.setProgress(0);
-            t.setList(null, false);
-            t.clearAdditionalEntries();
-            t.setIsRecurringShown(true);
+            task.setDue(Optional.<Calendar>absent());
+            task.setDone(false);
+            task.setContent("");
+            task.setPriority(0);
+            task.setProgress(0);
+            task.clearAdditionalEntries();
+            task.setIsRecurringShown(true);
         }
         // Name
         final Set<Entry<String, JsonElement>> entries = el.entrySet();
@@ -111,18 +114,18 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             key = key.toLowerCase();
             switch (key) {
             case "uuid":
-                t.setUUID(val.getAsString());
+                task.setUUID(val.getAsString());
                 break;
             case "name":
             case "description":
-                t.setName(val.getAsString());
+                task.setName(val.getAsString());
                 break;
             case "content":
                 String content = val.getAsString();
                 if (content == null) {
                     content = "";
                 }
-                t.setContent(content);
+                task.setContent(content);
                 break;
             case "priority":
                 if (setPrioFromNumber) {
@@ -131,72 +134,70 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             //$FALL-THROUGH$
             case "priorityNumber":
                 final String prioString = val.getAsString().trim();
-                if (prioString.equalsIgnoreCase("L") && t.getPriority() != -1) {
-                    t.setPriority(-2);
+                if (prioString.equalsIgnoreCase("L") && task.getPriority() != -1) {
+                    task.setPriority(-2);
                 } else if (prioString.equalsIgnoreCase("M")) {
-                    t.setPriority(1);
+                    task.setPriority(1);
                 } else if (prioString.equalsIgnoreCase("H")) {
-                    t.setPriority(2);
+                    task.setPriority(2);
                 } else if (!prioString.equalsIgnoreCase("L")) {
-                    t.setPriority((int) val.getAsFloat());
+                    task.setPriority((int) val.getAsFloat());
                     setPrioFromNumber = true;
                 }
                 break;
             case "progress":
                 final int progress = (int) val.getAsDouble();
-                t.setProgress(progress);
+                task.setProgress(progress);
                 break;
             case "list_id": {
-                Optional<ListMirakel> list = ListMirakel.get(val.getAsInt());
-                if (!list.isPresent()) {
-                    list = Optional.fromNullable(SpecialList.firstSpecialSafe().getDefaultList());
+                taskList = ListMirakel.get(val.getAsInt());
+                if (!taskList.isPresent()) {
+                    taskList = Optional.fromNullable(SpecialList.firstSpecialSafe().getDefaultList());
                 }
-                t.setList(list.get(), true);
                 break;
             }
             case "project": {
-                Optional<ListMirakel> list = ListMirakel.findByName(val.getAsString(),
-                                             this.account);
-                if (!list.isPresent()
-                    || list.get().getAccount().getId() != this.account.getId()) {
+                taskList = ListMirakel.findByName(val.getAsString(),
+                                                  this.account);
+                if (!taskList.isPresent()
+                    || taskList.get().getAccount().getId() != this.account.getId()) {
                     try {
-                        list = Optional.fromNullable(ListMirakel.newList(val.getAsString(),
-                                                     ListMirakel.SORT_BY.OPT, this.account));
+                        taskList = Optional.fromNullable(ListMirakel.newList(val.getAsString(),
+                                                         ListMirakel.SORT_BY.OPT, this.account));
                     } catch (ListMirakel.ListAlreadyExistsException e) {
                         // This can not happen!
                         throw new RuntimeException("ListAlreadyExist while syncing from taskd. Thats impossible", e);
                     }
                 }
-                t.setList(list.get(), true);
                 break;
             }
             case "created_at":
-                t.setCreatedAt(val.getAsString().replace(":", ""));
+                task.setCreatedAt(val.getAsString().replace(":", ""));
                 break;
             case "updated_at":
-                t.setUpdatedAt(val.getAsString().replace(":", ""));
+                task.setUpdatedAt(val.getAsString().replace(":", ""));
                 break;
             case "entry":
-                t.setCreatedAt(handleDate(val));
+                task.setCreatedAt(handleDate(val));
                 break;
             case "modification":
             case "modified":
-                t.setUpdatedAt(handleDate(val));
+                task.setUpdatedAt(handleDate(val));
                 break;
             case "done":
-                t.setDone(val.getAsBoolean());
+                task.setDone(val.getAsBoolean());
                 break;
             case "status":
                 final String status = val.getAsString();
                 if ("completed".equalsIgnoreCase(status)) {
-                    t.setDone(true);
+                    task.setDone(true);
                 } else if ("deleted".equalsIgnoreCase(status)) {
-                    t.setSyncState(SYNC_STATE.DELETE);
+                    task.setSyncState(SYNC_STATE.DELETE);
                 } else {
-                    t.setDone(false);
+                    task.setDone(false);
                     if (!"recurring".equals(status)) {
-                        t.addAdditionalEntry(key, "\"" + val.getAsString()
-                                             + "\"");
+                        task.addAdditionalEntry(key, "\"" + val.getAsString()
+                                                + "\"");
                     }
                     // TODO don't ignore waiting !!!
                 }
@@ -212,7 +213,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                                             + DateTimeHelper.getTimeZoneOffset(true, due));
                     }
                 }
-                t.setDue(fromNullable(due));
+                task.setDue(fromNullable(due));
                 break;
             case "reminder":
                 Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
@@ -220,32 +221,32 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                     reminder = parseDate(val.getAsString(),
                                          this.context.getString(R.string.TWDateFormat));
                 }
-                t.setReminder(fromNullable(reminder));
+                task.setReminder(fromNullable(reminder));
                 break;
             case "annotations":
-                t.setContent(handleContent(val));
+                task.setContent(handleContent(val));
                 break;
             case "sync_state":
                 if (isTW) {
-                    handleAdditionalEnties(t, key, val);
+                    handleAdditionalEntries(task, key, val);
                 }
                 break;
             case "depends":
-                t.setDependencies(val.getAsString().split(","));
+                task.setDependencies(val.getAsString().split(","));
                 break;
             case "tags":
-                handleTags(t, val);
+                handleTags(task, val);
                 break;
             case "recur":
                 final Recurring r = parseTaskWarriorRecurrence(val
                                     .getAsString());
                 if (r != null) {
-                    t.setRecurrence(r.getId());
+                    task.setRecurrence(r.getId());
                 }
                 break;
             case "imask":
-                t.addRecurringChild(new Pair<>(el.get("parent").getAsString(),
-                                               (int) val.getAsFloat()));
+                task.addRecurringChild(new Pair<>(el.get("parent").getAsString(),
+                                                  (int) val.getAsFloat()));
                 break;
             case "parent":
             case "mask":
@@ -256,19 +257,28 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                                 this.context.getString(R.string.TWDateFormat));
                 break;
             default:
-                handleAdditionalEnties(t, key, val);
+                handleAdditionalEntries(task, key, val);
                 break;
             }
         }
-        if (t.getRecurring() != null) {
-            final Recurring r = t.getRecurring();
+        if (task.getRecurring() != null) {
+            final Recurring r = task.getRecurring();
             r.setEndDate(Optional.fromNullable(end));
             r.save();
         }
-        return t;
+        if (account == null) {
+            taskList = Optional.of(ListMirakel.safeFirst(context));
+        } else if (!taskList.isPresent()) {
+            taskList = Optional.of(ListMirakel
+                                   .getInboxList(account));
+            Log.d(TAG, "no list");
+            task.addAdditionalEntry(Task.NO_PROJECT, "true");
+        }
+        task.setList(taskList.get(), true);
+        return task;
     }
 
-    private static void handleAdditionalEnties(final Task t, final String key,
+    private static void handleAdditionalEntries(final Task t, final String key,
             final JsonElement val) {
         if (val.isJsonPrimitive()) {
             final JsonPrimitive p = (JsonPrimitive) val;

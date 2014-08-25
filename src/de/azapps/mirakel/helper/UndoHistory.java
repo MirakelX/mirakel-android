@@ -64,7 +64,12 @@ public class UndoHistory {
                     final long id = Long.parseLong(last.substring(1));
                     switch (type) {
                     case TASK:
-                        Task.get(id).destroy(true);
+                        withOptional(Task.get(id), new OptionalUtils.Procedure<Task>() {
+                            @Override
+                            public void apply(Task input) {
+                                input.destroy(true);
+                            }
+                        });
                         break;
                     case LIST:
                         withOptional(ListMirakel.get(id), new OptionalUtils.Procedure<ListMirakel>() {
@@ -91,7 +96,7 @@ public class UndoHistory {
                         new TaskDeserializer(false, AccountMirakel
                                              .getLocal(), ctx)).create();
                     final Task t = gson.fromJson(json, Task.class);
-                    if (Task.get(t.getId()) != null) {
+                    if (!Task.get(t.getId()).isPresent()) {
                         t.save(false);
                     } else {
                         try {
