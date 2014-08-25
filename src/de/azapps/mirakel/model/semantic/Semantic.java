@@ -294,6 +294,7 @@ public class Semantic extends SemanticBase {
         dest.writeString(getName());
     }
 
+    @SuppressWarnings("unchecked")
     private Semantic(Parcel in) {
         super();
         this.priority = (Integer) in.readValue(Integer.class.getClassLoader());

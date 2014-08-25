@@ -76,7 +76,6 @@ abstract class TaskBase extends ModelBase {
     protected Optional<Calendar> due = absent();
     @NonNull
     protected final Map<String, Boolean> edited = new HashMap<>();
-    @NonNull
     protected ListMirakel list;
     protected int priority;
     protected int progress;
@@ -287,6 +286,9 @@ abstract class TaskBase extends ModelBase {
 
     @NonNull
     public ListMirakel getList() {
+        if (this.list == null) {
+            throw new RuntimeException("The task is not properly initialized. List is null!");
+        }
         return this.list;
     }
 

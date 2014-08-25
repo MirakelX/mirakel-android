@@ -392,7 +392,7 @@ public class SpecialList extends ListMirakel {
     public SpecialList(final Cursor c) {
         super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
               SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))), "", "",
-              SYNC_STATE.parseInt(c.getInt(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
+              SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
               AccountMirakel.getLocal());
         int defDateCol = c.getColumnIndex(DEFAULT_DUE);
@@ -507,6 +507,7 @@ public class SpecialList extends ListMirakel {
         dest.writeString(this.getName());
     }
 
+    @SuppressWarnings("unchecked")
     private SpecialList(Parcel in) {
         super();
         this.active = in.readByte() != 0;

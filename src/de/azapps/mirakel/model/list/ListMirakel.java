@@ -256,7 +256,7 @@ public class ListMirakel extends ListBase {
               SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))),
               c.getString(c.getColumnIndex(DatabaseHelper.CREATED_AT)),
               c.getString(c.getColumnIndex(DatabaseHelper.UPDATED_AT)),
-              SYNC_STATE.parseInt(c.getInt(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
+              SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
               c.getInt(c.getColumnIndex(ACCOUNT_ID)));
     }

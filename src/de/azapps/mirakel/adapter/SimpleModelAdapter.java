@@ -29,9 +29,10 @@ public class SimpleModelAdapter<T extends ModelBase> extends CursorAdapter {
         return view;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
         viewHolder.model = MirakelQueryBuilder.cursorToObject(cursor, tClass);
         viewHolder.name.setText(viewHolder.model.getName());
     }

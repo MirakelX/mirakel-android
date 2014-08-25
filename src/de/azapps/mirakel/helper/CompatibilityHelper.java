@@ -51,6 +51,7 @@ public class CompatibilityHelper {
         return p.toLowerCase();
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends SpecialListsSetProperty> T getSetProperty(
         String wherePart, final Class<T> clazz, final String propName)
     throws TransformerException {

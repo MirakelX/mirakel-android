@@ -43,7 +43,7 @@ public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter 
     private LayoutInflater mInflater;
     private Class<T> tClass;
     private Set<T> selectedItems = new HashSet<>();
-    private OnSelectionChangedListener selectionChangedListener;
+    private OnSelectionChangedListener<T> selectionChangedListener;
 
     public interface OnSelectionChangedListener<T extends ModelBase> {
         public void onSelectionChanged(Set<T> selectedItems);
@@ -63,9 +63,10 @@ public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter 
         return view;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        final ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
         viewHolder.model = MirakelQueryBuilder.cursorToObject(cursor, tClass);
         viewHolder.name.setText(cursor.getString(cursor.getColumnIndex(ModelBase.NAME)));
         viewHolder.checkBox.setChecked(selectedItems.contains(viewHolder.model));
@@ -106,7 +107,7 @@ public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter 
         }
     }
 
-    public void setSelectionChangedListener(OnSelectionChangedListener selectionChangedListener) {
+    public void setSelectionChangedListener(OnSelectionChangedListener<T> selectionChangedListener) {
         this.selectionChangedListener = selectionChangedListener;
     }
 

@@ -370,6 +370,7 @@ public class Recurring extends RecurringBase {
         dest.writeString(getName());
     }
 
+    @SuppressWarnings("unchecked") // Unchecked cast
     private Recurring(Parcel in) {
         super();
         this.minutes = in.readInt();
