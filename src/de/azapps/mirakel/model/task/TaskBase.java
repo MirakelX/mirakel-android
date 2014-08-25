@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
@@ -678,7 +679,7 @@ abstract class TaskBase extends ModelBase {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (((Object) this).getClass() != obj.getClass()) {
             return false;
         }
         final TaskBase other = (TaskBase) obj;
