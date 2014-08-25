@@ -62,7 +62,9 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                 R.color.colorPrimary)));
         initDrawer();
         handleIntent(getIntent());
-        getActionBar().setTitle(getTasksFragment().getList().getName());
+        if (getTasksFragment() != null && getTasksFragment().getList() != null) {
+            getActionBar().setTitle(getTasksFragment().getList().getName());
+        }
     }
 
     @Override
