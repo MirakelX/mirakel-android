@@ -173,7 +173,7 @@ public class AccountSettingsActivity extends GenericListSettingActivity<AccountM
             @Override
             public boolean onPreferenceChange(final Preference preference,
                                               final Object newValue) {
-                accountMirakel.setEnabeld((Boolean) newValue);
+                accountMirakel.setEnabled((Boolean) newValue);
                 accountMirakel.save();
                 return true;
             }
