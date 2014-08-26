@@ -88,7 +88,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         final JsonObject json = new JsonObject();
         final Map<String, String> additionals = task.getAdditionalEntries();
         boolean isMaster = false;
-        if (task.getRecurring() != null) {
+        if (task.getRecurring().isPresent()) {
             if (new MirakelQueryBuilder(mContext).and(Recurring.CHILD, Operation.EQ,
                     task).count(MirakelInternalContentProvider.RECURRING_TW_URI) == 0) {
                 isMaster = true;
@@ -189,8 +189,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
             json.addProperty("depends", depends);
         }
         // recurring tasks must have a due
-        if (task.getRecurring() != null && task.getDue().isPresent()) {
-            handleRecurrence(json, task.getRecurring());
+        if (task.getRecurring().isPresent() && task.getDue().isPresent()) {
+            handleRecurrence(json, task.getRecurring().get());
             if (isMaster) {
                 String mask = "";
                 final Cursor c = mContext.getContentResolver()
@@ -345,7 +345,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
             } else {
                 end = formatCal(now);
             }
-        } else if (task.getRecurring() != null && isMaster) {
+        } else if (task.getRecurring().isPresent() && isMaster) {
             status = "recurring";
         } else if (task.containsAdditional("status")) {
             status = cleanQuotes(task.getAdditionalString("status"));

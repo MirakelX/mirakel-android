@@ -35,6 +35,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 import com.google.gson.Gson;
@@ -55,6 +56,9 @@ import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.taskwarrior.TLSClient.NoSuchCertificateException;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 public class TaskWarriorSync {
 
@@ -96,7 +100,9 @@ public class TaskWarriorSync {
     }
 
     public enum TW_ERRORS {
-        ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE, CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT, COULD_NOT_FIND_COMMON_ANCESTOR, CLIENT_SYNC_KEY_NOT_FOUND;
+        ACCESS_DENIED, ACCOUNT_SUSPENDED, CANNOT_CREATE_SOCKET, CANNOT_PARSE_MESSAGE,
+        CONFIG_PARSE_ERROR, MESSAGE_ERRORS, NO_ERROR, NOT_ENABLED, TRY_LATER, NO_SUCH_CERT,
+        COULD_NOT_FIND_COMMON_ANCESTOR, CLIENT_SYNC_KEY_NOT_FOUND, ACCOUNT_VANISHED;
         public static TW_ERRORS getError(final int code) {
             switch (code) {
             case 200:
@@ -197,7 +203,13 @@ public class TaskWarriorSync {
 
     private void doSync(final Account a, final Msg sync)
     throws TaskWarriorSyncFailedException {
-        final AccountMirakel accountMirakel = AccountMirakel.get(this.account);
+        final Optional<AccountMirakel> accountMirakelOptional = AccountMirakel.get(this.account);
+        if (!accountMirakelOptional.isPresent()) {
+            // This should never, ever happen
+            throw new TaskWarriorSyncFailedException(
+                TW_ERRORS.ACCOUNT_VANISHED, "Account vanished");
+        }
+        AccountMirakel accountMirakel = accountMirakelOptional.get();
         Log.longInfo(sync.getPayload());
         final TLSClient client = new TLSClient();
         // The following should not happen – except the user is tinkering in our files or so…
@@ -277,7 +289,7 @@ public class TaskWarriorSync {
                     ExportImport.exportDB(mContext);
 
                     // reset sync key
-                    accountMirakel.setSyncKey("");
+                    accountMirakel.setSyncKey(Optional.<String>absent());
                     accountMirakel.save();
 
                     // sync
@@ -317,7 +329,7 @@ public class TaskWarriorSync {
         if (remotes.getPayload() == null || remotes.getPayload().equals("")) {
             Log.i(TAG, "there is no Payload");
         } else {
-            String newSyncKey = null;
+            Optional<String> newSyncKey = absent();
             final String tasksString[] = remotes.getPayload().split("\n");
             final Gson gson = new GsonBuilder().registerTypeAdapter(Task.class,
                     new TaskDeserializer(true, accountMirakel, this.mContext))
@@ -328,7 +340,7 @@ public class TaskWarriorSync {
             for (final String taskString : tasksString) {
                 if (taskString.charAt(0) != '{') {
                     Log.d(TAG, "Key: " + taskString);
-                    newSyncKey = taskString;
+                    newSyncKey = of(taskString);
                     continue;
                 }
                 Optional<Task> local_task;
@@ -405,7 +417,7 @@ public class TaskWarriorSync {
     /**
      * Initialize the variables
      *
-     * @param aMirakel
+     * @param aMirakel MirakelAccount
      * @throws de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TaskWarriorSyncFailedException
      */
     private void init(final AccountMirakel aMirakel)
@@ -419,7 +431,7 @@ public class TaskWarriorSync {
                 TW_ERRORS.CONFIG_PARSE_ERROR,
                 "cannot determine address of server");
         }
-        sync_key = aMirakel.getSyncKey();
+        sync_key = aMirakel.getSyncKey().orNull();
         _host = srv[0];
         _port = Integer.parseInt(srv[1]);
         _user = this.account.name;
@@ -492,12 +504,12 @@ public class TaskWarriorSync {
                      boolean couldNotFindCommonAncestorWorkaround) throws TaskWarriorSyncFailedException {
         this.accountManager = AccountManager.get(this.mContext);
         this.account = a;
-        final AccountMirakel aMirakel = AccountMirakel.get(a);
-        if (aMirakel == null || !aMirakel.isEnabled()) {
+        final Optional<AccountMirakel> aMirakel = AccountMirakel.get(a);
+        if (!aMirakel.isPresent() || !aMirakel.get().isEnabled()) {
             throw new TaskWarriorSyncFailedException(TW_ERRORS.NOT_ENABLED,
                     "TW sync is not enabled");
         }
-        init(aMirakel);
+        init(aMirakel.get());
         final Msg sync = new Msg();
         sync.set("protocol", TW_PROTOCOL_VERSION);
         sync.set("type", "sync");
@@ -548,10 +560,11 @@ public class TaskWarriorSync {
     /**
      * Converts a task to the json-format we need
      *
-     * @param task
-     * @return
+     * @param task Task
+     * @return Task as json
      */
-    String taskToJson(final Task task) {
+    @NonNull
+    String taskToJson(@NonNull final Task task) {
         return new GsonBuilder()
                .registerTypeAdapter(Task.class,
                                     new TaskWarriorTaskSerializer(this.mContext)).create()

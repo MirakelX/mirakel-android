@@ -169,6 +169,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 last_message = this.mContext
                                .getText(R.string.client_sync_key_not_found);
                 break;
+            case ACCOUNT_VANISHED:
+                last_message = mContext.getText(R.string.account_vanished);
+                break;
             case NOT_ENABLED:
             default:
                 return;
