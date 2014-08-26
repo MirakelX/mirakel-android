@@ -10,6 +10,7 @@
   <string name="monthly">Mesačne</string>
   <string name="hourly">Každú hodinu</string>
   <string name="minutly">Každú minútu</string>
+  <string name="recurring">Opakovanie</string>
   <string name="minute">Minúta</string>
   <string name="hour">Hodina</string>
   <string name="day">Deň</string>
@@ -57,6 +58,7 @@
   <string name="reminder_notification_due">Termín: %s</string>
   <string name="reminder_notification_done">Hotovo</string>
   <string name="reminder_notification_later">Neskôr</string>
+  <string name="no_date">Bez termínu</string>
   <string name="task_sorting_title">Zoradiť úlohy podľa</string>
   <string name="share_using">Zdieľať pomocou</string>
   <string name="share_task">Zdieľať úlohu</string>
@@ -114,10 +116,16 @@
   <string name="reminder_set">Pripomenutie je nastavené</string>
   <string name="reminder_unset">Pripomenutie nie je nastavené</string>
   <string name="inverte">Obrátiť výber</string>
+  <string name="where_like_contain_text">Obsahuje %s</string>
   <string name="delete">Odstrániť</string>
   <string name="special_list_progress_less_than">Menej ako %d</string>
   <string name="special_list_progress_greater_than">Viac ako %d</string>
+  <string name="special_list_subtask_parent">Má podúlohu</string>
+  <string name="special_list_subtask_parent_not">Nemá podúlohu</string>
   <string name="special_list_subtask_child">Je podúloha</string>
+  <string name="special_list_subtask_child_not">Nie je podúloha</string>
+  <string name="no_file">Nemá súbor</string>
+  <string name="has_file">Má súbor</string>
   <string-array name="due_day_year_values">
     <item>Deň</item>
     <item>Mesiac</item>
@@ -135,10 +143,10 @@
     <item>Nákupy</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>Buy birthday present for grandpa</item>
+    <item>Kúpiť darček k narodeninám pre deda</item>
     <item>Hudba</item>
-    <item>Organize the party</item>
-    <item>Finish presentation</item>
+    <item>Usporiadať večierok</item>
+    <item>Dokončiť prezentáciu</item>
     <item>Mlieko</item>
     <item>Syr</item>
   </string-array>
