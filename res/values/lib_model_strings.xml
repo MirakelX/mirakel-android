@@ -191,7 +191,20 @@
     </string-array>
 
     <string name="nothing">No recurrence</string>
-    
+    <string name="special_lists_content_title">Content</string>
+    <string name="special_lists_done_title">Done</string>
+    <string name="special_lists_due_title">Due</string>
+    <string name="special_lists_file_title">File</string>
+    <string name="special_lists_list_title">Lists</string>
+    <string name="special_lists_name_title">Name</string>
+    <string name="special_lists_priority_title">Priority</string>
+    <string name="special_lists_progress_title">Progress</string>
+    <string name="special_lists_reminder_title">Reminder</string>
+    <string name="special_lists_subtask_title">Subtasks</string>
+    <string name="special_lists_tag_title">Tag</string>
+    <string name="and">AND</string>
+    <string name="or">OR</string>
+
     <string-array name="demo_lists">
         <item>Work</item>
         <item>Home</item>

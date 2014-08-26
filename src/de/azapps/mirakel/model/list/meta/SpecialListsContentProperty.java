@@ -19,23 +19,53 @@
 
 package de.azapps.mirakel.model.list.meta;
 
+import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsContentProperty extends SpecialListsStringProperty {
 
     public SpecialListsContentProperty(final boolean isNegated,
-                                       final String serachString, final int type) {
-        super(isNegated, serachString, type);
+                                       final @NonNull String searchString, final @NonNull Type type) {
+        super(isNegated, searchString, type);
     }
 
     // needed for class.newInstance()
     public SpecialListsContentProperty() {
-        super(false, null, 0);
+        super();
+    }
+
+    public SpecialListsContentProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
     }
 
     @Override
-    protected String propertyName() {
+    protected String getPropertyName() {
         return Task.CONTENT;
     }
 
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_content_title);
+    }
+
+    private SpecialListsContentProperty(final @NonNull Parcel p) {
+        super(p);
+    }
+
+    public static final Creator<SpecialListsContentProperty> CREATOR = new
+    Creator<SpecialListsContentProperty>() {
+        public SpecialListsContentProperty createFromParcel(Parcel source) {
+            return new SpecialListsContentProperty(source);
+        }
+
+        public SpecialListsContentProperty[] newArray(int size) {
+            return new SpecialListsContentProperty[size];
+        }
+    };
 }

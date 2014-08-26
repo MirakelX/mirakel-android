@@ -52,7 +52,7 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
             for (final Entry<String, JsonElement> entry : json
                  .getAsJsonObject().entrySet()) {
                 switch (entry.getKey()) {
-                case "isNegated":
+                case "isSet":
                     if (entry.getValue().isJsonPrimitive()) {
                         negated = entry.getValue().getAsBoolean();
                         break;
@@ -71,7 +71,7 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                     }
                 //$FALL-THROUGH$
                 default:
-                    throw new JsonParseException("unkown format");
+                    throw new JsonParseException("unknown format");
                 }
             }
             if (serachString != null & type != null && negated != null) {
@@ -80,15 +80,15 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                     ret = this.clazz.newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
                     Log.wtf(TAG, "cannot create new string-class");
-                    throw new JsonParseException("create string-class faild", e);
+                    throw new JsonParseException("create string-class failed", e);
                 }
-                ret.setNegated(negated);
+                ret.setIsNegated(negated);
                 ret.setType(Type.values()[type]);
                 ret.setSearchString(serachString);
                 return ret;
             }
         }
-        throw new JsonParseException("unkown format");
+        throw new JsonParseException("unknown format");
     }
 
 }

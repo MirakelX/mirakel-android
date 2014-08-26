@@ -55,13 +55,13 @@ public class DueDeserializer implements
                     }
                 //$FALL-THROUGH$
                 default:
-                    throw new JsonParseException("unkown format");
+                    throw new JsonParseException("unknown format");
                 }
             }
             if (unit != null && length != null) {
                 return new SpecialListsDueProperty(Unit.values()[unit], length);
             }
         }
-        throw new JsonParseException("unkown format");
+        throw new JsonParseException("unknown format");
     }
 }

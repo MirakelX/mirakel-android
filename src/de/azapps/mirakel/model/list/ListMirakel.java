@@ -698,4 +698,13 @@ public class ListMirakel extends ListBase {
         this.setName(in.readString());
     }
 
+    public static final Creator<ListMirakel> CREATOR = new Creator<ListMirakel>() {
+        public ListMirakel createFromParcel(Parcel source) {
+            return new ListMirakel(source);
+        }
+        public ListMirakel[] newArray(int size) {
+            return new ListMirakel[size];
+        }
+    };
+
 }

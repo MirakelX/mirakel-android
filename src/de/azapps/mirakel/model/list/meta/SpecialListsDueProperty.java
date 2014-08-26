@@ -20,6 +20,8 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -34,46 +36,64 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
 
     private static final String TAG = "SpecialListsDueProperty";
 
-    protected Unit unit;
-    protected int lenght;
+    @NonNull
+    protected Unit unit = Unit.DAY;
+    protected int length;
 
-    public SpecialListsDueProperty(final Unit unit, final int length) {
-        this.lenght = length;
+    public SpecialListsDueProperty(final @NonNull Unit unit, final int length) {
+        this.length = length;
         this.unit = unit;
         if (this.unit == null) {
             this.unit = Unit.DAY;
         }
     }
 
+    public SpecialListsDueProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        if (oldProperty instanceof SpecialListsDueProperty) {
+            length = ((SpecialListsDueProperty) oldProperty).getLength();
+            unit = ((SpecialListsDueProperty) oldProperty).getUnit();
+        } else {
+            length = 0;
+            unit = Unit.DAY;
+        }
+    }
+
+    private SpecialListsDueProperty(final @NonNull Parcel in) {
+        int tmpUnit = in.readInt();
+        this.unit = tmpUnit == -1 ? null : Unit.values()[tmpUnit];
+        this.length = in.readInt();
+    }
+
+    @NonNull
     public Unit getUnit() {
         return this.unit;
     }
 
-    public int getLenght() {
-        return this.lenght;
+    public int getLength() {
+        return this.length;
     }
 
-    public void setLenght(final int l) {
-        this.lenght = l;
+    public void setLength(final int l) {
+        this.length = l;
     }
 
-    public void setUnit(final Unit u) {
+    public void setUnit(final @NonNull Unit u) {
         this.unit = u;
     }
 
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
                 MirakelQueryBuilder.Operation.NOT_EQ, (String)null);
         String query = "date('now','";
-        if (this.lenght == 0) {
+        if (this.length == 0) {
             return qb.and("date(" + Task.DUE
                           + ",'unixepoch','localtime') <= date('now','localtime')");
         }
-        if (this.lenght > 0) {
+        if (this.length > 0) {
             query += "+";
         }
-        query += this.lenght + " ";
+        query += this.length + " ";
         switch (this.unit) {
         case DAY:
             query += "day";
@@ -87,8 +107,7 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
         default:
             return new MirakelQueryBuilder(ctx);
         }
-        return qb.and("date(" + Task.DUE
-                      + ",'unixepoch','localtime') <= " + query + "')");
+        return qb.and("date(" + Task.DUE + ",'unixepoch','localtime') <= " + query + "')");
     }
 
     @Override
@@ -96,21 +115,47 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
         if (this.unit == null) {
             Log.wtf(TAG, "unit is null");
         }
-        String ret = "\"" + Task.DUE + "\":{";
+        String ret = "{\"" + Task.DUE + "\":{";
         ret += "\"unit\":" + this.unit.ordinal();
-        ret += ",\"length\":" + this.lenght;
-        return ret + "}";
+        ret += ",\"length\":" + this.length;
+        return ret + "} }";
     }
 
     @Override
     public String getSummary(final Context mContext) {
-        return this.lenght
+        return this.length
                + " "
                + mContext.getResources().getStringArray(
-                   this.lenght == 1 ? R.array.due_day_year_values
+                   this.length == 1 ? R.array.due_day_year_values
                    : R.array.due_day_year_values_plural)[this.unit
                            .ordinal()];
         // TODO use plurals here
     }
 
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_due_title);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.unit == null ? -1 : this.unit.ordinal());
+        dest.writeInt(this.length);
+    }
+
+    public static final Creator<SpecialListsDueProperty> CREATOR = new
+    Creator<SpecialListsDueProperty>() {
+        public SpecialListsDueProperty createFromParcel(Parcel source) {
+            return new SpecialListsDueProperty(source);
+        }
+
+        public SpecialListsDueProperty[] newArray(int size) {
+            return new SpecialListsDueProperty[size];
+        }
+    };
 }

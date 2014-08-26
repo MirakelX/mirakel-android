@@ -20,6 +20,8 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -27,20 +29,29 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 
-public class SpecialListsFileProperty extends SpecialListsNegatedProperty {
+public class SpecialListsFileProperty extends SpecialListsBooleanProperty {
 
-    public SpecialListsFileProperty(boolean done) {
-        super(done);
+    public SpecialListsFileProperty(boolean hasFile) {
+        super(hasFile);
+    }
+
+    private SpecialListsFileProperty(final @NonNull Parcel in) {
+        super(in);
+    }
+
+    public SpecialListsFileProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
     }
 
     @Override
-    protected String propertyName() {
+    //not used here
+    protected String getPropertyName() {
         return FileMirakel.TABLE;
     }
 
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
-        final MirakelQueryBuilder.Operation op = done ? Operation.IN :
+    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+        final MirakelQueryBuilder.Operation op = isSet ? Operation.IN :
                 Operation.NOT_IN;
         return new MirakelQueryBuilder(ctx).and(Task.ID, op,
                                                 new MirakelQueryBuilder(ctx).select(FileMirakel.TASK), FileMirakel.URI);
@@ -48,7 +59,27 @@ public class SpecialListsFileProperty extends SpecialListsNegatedProperty {
 
     @Override
     public String getSummary(Context ctx) {
-        return ctx.getString(done ? R.string.has_file : R.string.no_file);
+        return ctx.getString(isSet ? R.string.has_file : R.string.no_file);
     }
 
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_file_title);
+    }
+
+    @Override
+    public String getSummaryForConjunction(@NonNull Context ctx) {
+        return getSummary(ctx);
+    }
+
+    public static final Creator<SpecialListsFileProperty> CREATOR = new
+    Creator<SpecialListsFileProperty>() {
+        public SpecialListsFileProperty createFromParcel(Parcel source) {
+            return new SpecialListsFileProperty(source);
+        }
+
+        public SpecialListsFileProperty[] newArray(int size) {
+            return new SpecialListsFileProperty[size];
+        }
+    };
 }

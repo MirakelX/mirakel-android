@@ -19,23 +19,53 @@
 
 package de.azapps.mirakel.model.list.meta;
 
+import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.list.SpecialList;
 
 public class SpecialListsNameProperty extends SpecialListsStringProperty {
 
     public SpecialListsNameProperty(final boolean isNegated,
-                                    final String serachString, final int type) {
-        super(isNegated, serachString, type);
+                                    final @NonNull String searchString, final @NonNull Type type) {
+        super(isNegated, searchString, type);
     }
 
     // needed for class.newInstance()
     public SpecialListsNameProperty() {
-        super(false, null, 0);
+        super();
+    }
+
+    private SpecialListsNameProperty(final @NonNull Parcel in) {
+        super(in);
+    }
+
+    public SpecialListsNameProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
     }
 
     @Override
-    protected String propertyName() {
+    protected String getPropertyName() {
         return ModelBase.NAME;
     }
 
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_name_title);
+    }
+
+
+    public static final Creator<SpecialListsNameProperty> CREATOR = new
+    Creator<SpecialListsNameProperty>() {
+        public SpecialListsNameProperty createFromParcel(Parcel source) {
+            return new SpecialListsNameProperty(source);
+        }
+
+        public SpecialListsNameProperty[] newArray(int size) {
+            return new SpecialListsNameProperty[size];
+        }
+    };
 }

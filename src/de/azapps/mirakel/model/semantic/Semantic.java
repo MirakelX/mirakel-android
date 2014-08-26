@@ -35,6 +35,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
@@ -45,6 +46,7 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
@@ -110,10 +112,16 @@ public class Semantic extends SemanticBase {
                     due = of((Calendar)new GregorianCalendar());
                     due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
                 }
-                if (slist.getWhere().containsKey(Task.PRIORITY)) {
+                if (slist.getWhere().isPresent() &&
+                slist.getWhere().transform(new Function<SpecialListsBaseProperty, Boolean>() {
+                @Override
+                public Boolean apply(SpecialListsBaseProperty input) {
+                        return input instanceof  SpecialListsPriorityProperty;
+                    }
+                }).or(Boolean.FALSE)) {
                     final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) slist
-                            .getWhere().get(Task.PRIORITY);
-                    final boolean not = prop.isNegated();
+                            .getWhere().get();
+                    final boolean not = prop.isSet();
                     prio = not ? -2 : 2;
                     final List<Integer> content = prop.getContent();
                     Collections.sort(content);

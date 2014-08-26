@@ -20,7 +20,11 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.model.R;
@@ -29,26 +33,47 @@ import de.azapps.mirakel.model.task.Task;
 public class SpecialListsPriorityProperty extends SpecialListsSetProperty {
 
     public SpecialListsPriorityProperty(final boolean isNegated,
-                                        final List<Integer> content) {
+                                        final @NonNull List<Integer> content) {
         super(isNegated, content);
     }
 
+    private SpecialListsPriorityProperty(final @NonNull Parcel in) {
+        super(in);
+    }
+
+    public SpecialListsPriorityProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        if (oldProperty instanceof SpecialListsPriorityProperty) {
+            content = ((SpecialListsPriorityProperty) oldProperty).getContent();
+        } else {
+            content = new ArrayList<>();
+        }
+    }
+
     @Override
-    public String propertyName() {
+    protected String getPropertyName() {
         return Task.PRIORITY;
     }
 
     @Override
     public String getSummary(final Context mContext) {
-        String summary = this.isNegated ? mContext.getString(R.string.not_in)
-                         : "";
-        boolean first = true;
-        for (final int p : this.content) {
-            summary += (first ? "" : ",") + p;
-            if (first) {
-                first = false;
-            }
-        }
-        return summary;
+        return (this.isSet ? mContext.getString(R.string.not_in)
+                : "") + " " + TextUtils.join(", ", content);
     }
+
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_priority_title);
+    }
+
+    public static final Creator<SpecialListsPriorityProperty> CREATOR = new
+    Creator<SpecialListsPriorityProperty>() {
+        public SpecialListsPriorityProperty createFromParcel(Parcel source) {
+            return new SpecialListsPriorityProperty(source);
+        }
+
+        public SpecialListsPriorityProperty[] newArray(int size) {
+            return new SpecialListsPriorityProperty[size];
+        }
+    };
 }

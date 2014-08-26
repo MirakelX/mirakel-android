@@ -20,30 +20,57 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
-public class SpecialListsDoneProperty extends SpecialListsNegatedProperty {
+public class SpecialListsDoneProperty extends SpecialListsBooleanProperty {
 
     public SpecialListsDoneProperty(final boolean done) {
         super(done);
     }
 
+    private SpecialListsDoneProperty(final @NonNull Parcel p) {
+        super(p);
+    }
+
+    public SpecialListsDoneProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+    }
+
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
-        return new MirakelQueryBuilder(ctx).and(Task.DONE, MirakelQueryBuilder.Operation.EQ, done);
+    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(Task.DONE, MirakelQueryBuilder.Operation.EQ, isSet);
     }
 
     @Override
     public String getSummary(final Context mContext) {
-        return this.done ? mContext.getString(R.string.done) : mContext
+        return this.isSet ? mContext.getString(R.string.done) : mContext
                .getString(R.string.undone);
     }
 
     @Override
-    protected String propertyName() {
+    protected String getPropertyName() {
         return Task.DONE;
     }
+
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_done_title);
+    }
+
+
+    public static final Creator<SpecialListsDoneProperty> CREATOR = new
+    Creator<SpecialListsDoneProperty>() {
+        public SpecialListsDoneProperty createFromParcel(Parcel source) {
+            return new SpecialListsDoneProperty(source);
+        }
+
+        public SpecialListsDoneProperty[] newArray(int size) {
+            return new SpecialListsDoneProperty[size];
+        }
+    };
 }

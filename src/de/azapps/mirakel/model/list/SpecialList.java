@@ -24,20 +24,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -45,26 +38,10 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
-import de.azapps.mirakel.model.file.FileMirakel;
-import de.azapps.mirakel.model.list.meta.DueDeserializer;
-import de.azapps.mirakel.model.list.meta.ProgressDeserializer;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsTagProperty;
-import de.azapps.mirakel.model.list.meta.StringDeserializer;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
-import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
@@ -74,9 +51,11 @@ import static de.azapps.tools.OptionalUtils.transformOrNull;
 
 public class SpecialList extends ListMirakel {
     private boolean active;
+    @NonNull
     private Optional<ListMirakel> defaultList = absent();
     private Integer defaultDate;
-    private Map<String, SpecialListsBaseProperty> where;
+    @NonNull
+    private Optional<SpecialListsBaseProperty> where = absent();
     private String whereString;
 
     public static final Uri URI = MirakelInternalContentProvider.SPECIAL_LISTS_URI;
@@ -104,14 +83,14 @@ public class SpecialList extends ListMirakel {
         return -1 * super.getId();
     }
 
-    public Map<String, SpecialListsBaseProperty> getWhere() {
-        if (where == null) {
-            where = deserializeWhere(whereString);
+    public Optional<SpecialListsBaseProperty> getWhere() {
+        if (!where.isPresent()) {
+            where = SpecialListsWhereDeserializer.deserializeWhere(whereString);
         }
         return this.where;
     }
 
-    public void setWhere(final Map<String, SpecialListsBaseProperty> where) {
+    public void setWhere(final @NonNull Optional<SpecialListsBaseProperty> where) {
         this.whereString = serializeWhere(where);
         this.where = where;
     }
@@ -139,18 +118,19 @@ public class SpecialList extends ListMirakel {
         this.defaultList = defaultList;
     }
 
+    @Nullable
     public Integer getDefaultDate() {
         return this.defaultDate;
     }
 
-    public void setDefaultDate(final Integer defaultDate) {
+    public void setDefaultDate(final @Nullable Integer defaultDate) {
         this.defaultDate = defaultDate;
     }
 
     SpecialList(final long id, @NonNull final String name,
-                final Map<String, SpecialListsBaseProperty> whereQuery,
+                final @NonNull Optional<SpecialListsBaseProperty> whereQuery,
                 final boolean active, @NonNull final Optional<ListMirakel> defaultList,
-                final Integer defaultDate, final SORT_BY sort_by,
+                final @Nullable Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt) {
         super(-id, name, sort_by, "", "", sync_state, 0, 0, color,
@@ -230,7 +210,7 @@ public class SpecialList extends ListMirakel {
 
 
     public static SpecialList newSpecialList(final String name,
-            final Map<String, SpecialListsBaseProperty> whereQuery,
+            final Optional<SpecialListsBaseProperty> whereQuery,
             final boolean active) {
         final SpecialList s = new SpecialList(0, name, whereQuery, active, null, null, SORT_BY.OPT,
                                               SYNC_STATE.ADD, 0,
@@ -239,27 +219,24 @@ public class SpecialList extends ListMirakel {
     }
 
     public static String serializeWhere(
-        final Map<String, SpecialListsBaseProperty> whereQuery) {
-        String ret = "{";
-        boolean first = true;
-        for (final Entry<String, SpecialListsBaseProperty> w : whereQuery
-             .entrySet()) {
-            ret += (first ? "" : " , ") + w.getValue().serialize();
-            if (first) {
-                first = false;
-            }
+        final Optional<SpecialListsBaseProperty> whereQuery) {
+        if (whereQuery.isPresent()) {
+            return whereQuery.get().serialize();
+        } else {
+            return "";
         }
-        Log.i(TAG, ret);
-        return ret + "}";
     }
 
     private static MirakelQueryBuilder packWhere(
-        final Map<String, SpecialListsBaseProperty> where) {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(context);
-        for (final Entry<String, SpecialListsBaseProperty> w : where.entrySet()) {
-            qb.and(w.getValue().getWhereQuery(context));
-            Log.w(TAG, qb.getSelection());
+        final @NonNull Optional<SpecialListsBaseProperty> where) {
+
+        final MirakelQueryBuilder qb;
+        if (where.isPresent()) {
+            qb = where.get().getWhereQueryBuilder(context);
+        } else {
+            qb = new MirakelQueryBuilder(context);
         }
+        Log.d(TAG, "Query:<" + qb.getSelection() + ">");
         return Task.addBasicFiler(qb);
     }
 
@@ -311,7 +288,7 @@ public class SpecialList extends ListMirakel {
         cv.put(SORT_BY_FIELD, getSortBy().getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
         cv.put(ACTIVE, isActive() ? 1 : 0);
-        cv.put(WHERE_QUERY, serializeWhere(getWhere()));
+        cv.put(WHERE_QUERY, whereString);
         cv.put(DEFAULT_LIST, transformOrNull(this.defaultList, new Function<ListMirakel, Long>() {
             @Override
             public Long apply(ListMirakel input) {
@@ -374,7 +351,7 @@ public class SpecialList extends ListMirakel {
         Optional<SpecialList> s = SpecialList.firstSpecial();
         if (!s.isPresent()) {
             s = fromNullable(SpecialList.newSpecialList(context.getString(R.string.list_all),
-                             new HashMap<String, SpecialListsBaseProperty>(), true));
+                             Optional.<SpecialListsBaseProperty>absent(), true));
             if (ListMirakel.count() == 0) {
                 ListMirakel.safeFirst();
             }
@@ -403,74 +380,6 @@ public class SpecialList extends ListMirakel {
         isSpecial = true;
     }
 
-    private static Map<String, SpecialListsBaseProperty> deserializeWhere(
-        final String whereQuery) {
-        final Map<String, SpecialListsBaseProperty> ret = new HashMap<>();
-        final JsonObject all = new JsonParser().parse(whereQuery)
-        .getAsJsonObject();
-        final Gson gson = new GsonBuilder()
-        .registerTypeAdapter(SpecialListsDueProperty.class,
-                             new DueDeserializer())
-        .registerTypeAdapter(
-            SpecialListsContentProperty.class,
-            new StringDeserializer<>(
-                SpecialListsContentProperty.class)
-        )
-        .registerTypeAdapter(
-            SpecialListsNameProperty.class,
-            new StringDeserializer<>(
-                SpecialListsNameProperty.class)
-        )
-        .registerTypeAdapter(SpecialListsProgressProperty.class,
-                             new ProgressDeserializer()).create();
-        for (final Entry<String, JsonElement> entry : all.entrySet()) {
-            final String key = entry.getKey();
-            Class<? extends SpecialListsBaseProperty> className;
-            switch (key) {
-            case Task.LIST_ID:
-                className = SpecialListsListProperty.class;
-                break;
-            case ModelBase.NAME:
-                className = SpecialListsNameProperty.class;
-                break;
-            case Task.PRIORITY:
-                className = SpecialListsPriorityProperty.class;
-                break;
-            case Task.DONE:
-                className = SpecialListsDoneProperty.class;
-                break;
-            case Task.DUE:
-                className = SpecialListsDueProperty.class;
-                break;
-            case Task.CONTENT:
-                className = SpecialListsContentProperty.class;
-                break;
-            case Task.REMINDER:
-                className = SpecialListsReminderProperty.class;
-                break;
-            case Task.PROGRESS:
-                className = SpecialListsProgressProperty.class;
-                break;
-            case Task.SUBTASK_TABLE:
-                className = SpecialListsSubtaskProperty.class;
-                break;
-            case FileMirakel.TABLE:
-                className = SpecialListsFileProperty.class;
-                break;
-            case Tag.TABLE:
-                className = SpecialListsTagProperty.class;
-                break;
-            default:
-                Log.wtf(TAG, "unkown key: " + key);
-                Log.v(TAG, "implement this?");
-                return new HashMap<>();
-            }
-            final SpecialListsBaseProperty prop = gson.fromJson(
-                    entry.getValue(), className);
-            ret.put(key, prop);
-        }
-        return ret;
-    }
 
     public static long getSpecialListCount(final boolean respectEnable) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(context);
@@ -491,7 +400,7 @@ public class SpecialList extends ListMirakel {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(active ? (byte) 1 : (byte) 0);
-        dest.writeSerializable(this.defaultList);
+        dest.writeParcelable(this.defaultList.orNull(), 0);
         dest.writeValue(this.defaultDate);
         dest.writeString(this.whereString);
         dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
@@ -511,7 +420,8 @@ public class SpecialList extends ListMirakel {
     private SpecialList(Parcel in) {
         super();
         this.active = in.readByte() != 0;
-        this.defaultList = (Optional<ListMirakel>) in.readSerializable();
+        this.defaultList = fromNullable((ListMirakel) in.readParcelable(
+                                            ListMirakel.class.getClassLoader()));
         this.defaultDate = (Integer) in.readValue(Integer.class.getClassLoader());
         this.whereString = in.readString();
         int tmpSortBy = in.readInt();

@@ -20,8 +20,11 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
@@ -31,16 +34,33 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         GREATER_THAN, EQUAL, LESS_THAN;
     }
 
-    int value;
-    OPERATION op;
+    private int value;
+    @NonNull
+    private OPERATION op = OPERATION.LESS_THAN;
 
-    public SpecialListsProgressProperty(int value, OPERATION op) {
+    public SpecialListsProgressProperty(final int value, final @NonNull OPERATION op) {
         this.value = value;
         this.op = op;
     }
 
+    private SpecialListsProgressProperty(final @NonNull Parcel in) {
+        this.value = in.readInt();
+        int tmpOp = in.readInt();
+        this.op = tmpOp == -1 ? null : OPERATION.values()[tmpOp];
+    }
+
+    public SpecialListsProgressProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        if (oldProperty instanceof SpecialListsProgressProperty) {
+            value = ((SpecialListsProgressProperty) oldProperty).getValue();
+            op = ((SpecialListsProgressProperty) oldProperty).getOperation();
+        } else {
+            value = 50;
+            op = OPERATION.GREATER_THAN;
+        }
+    }
+
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         switch (op) {
         case EQUAL:
@@ -55,10 +75,10 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
 
     @Override
     public String serialize() {
-        String ret = "\"" + Task.PROGRESS + "\":{";
+        String ret = "{\"" + Task.PROGRESS + "\":{";
         ret += "\"value\":" + value;
         ret += ",\"op\":" + op.ordinal();
-        return ret + "}";
+        return ret + "} }";
     }
 
     @Override
@@ -76,6 +96,12 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return "";
     }
 
+    @Override
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_progress_title);
+    }
+
+    @NonNull
     public OPERATION getOperation() {
         return op;
     }
@@ -88,8 +114,30 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         this.value = value;
     }
 
-    public void setOperation(OPERATION op) {
+    public void setOperation(final @NonNull OPERATION op) {
         this.op = op;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.value);
+        dest.writeInt(this.op == null ? -1 : this.op.ordinal());
+    }
+
+
+    public static final Creator<SpecialListsProgressProperty> CREATOR = new
+    Creator<SpecialListsProgressProperty>() {
+        public SpecialListsProgressProperty createFromParcel(Parcel source) {
+            return new SpecialListsProgressProperty(source);
+        }
+
+        public SpecialListsProgressProperty[] newArray(int size) {
+            return new SpecialListsProgressProperty[size];
+        }
+    };
 }

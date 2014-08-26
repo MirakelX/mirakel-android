@@ -20,86 +20,105 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 public abstract class SpecialListsStringProperty extends
-    SpecialListsBaseProperty {
+    SpecialListsBooleanProperty {
     public enum Type {
         BEGIN, END, CONTAINS;
     }
 
-    protected boolean isNegated;
-    protected String searchString;
-    protected Type type;
+    @NonNull
+    protected String searchString = "";
+    @NonNull
+    protected Type type = Type.CONTAINS;
 
     public SpecialListsStringProperty(final boolean isNegated,
-                                      final String serachString, final int type) {
-        this.isNegated = isNegated;
-        this.searchString = serachString;
-        this.type = Type.values()[type];
+                                      final @NonNull String searchString, final @NonNull Type type) {
+        super(isNegated);
+        this.searchString = searchString;
+        this.type = type;
     }
 
-    public boolean isNegated() {
-        return this.isNegated;
+    protected SpecialListsStringProperty() {
+        super(true);
+        this.searchString = "";
+        this.type = Type.BEGIN;
     }
 
-    public void setNegated(final boolean negated) {
-        this.isNegated = negated;
+    protected SpecialListsStringProperty(final @NonNull Parcel in) {
+        super(in);
+        this.searchString = in.readString();
+        this.type = Type.values()[in.readInt()];
     }
 
-    public void setSearchString(final String s) {
+    protected SpecialListsStringProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        if (oldProperty instanceof SpecialListsStringProperty) {
+            searchString = ((SpecialListsStringProperty) oldProperty).getSearchString();
+            type = ((SpecialListsStringProperty) oldProperty).getType();
+        } else {
+            searchString = "";
+            type = Type.CONTAINS;
+        }
+    }
+
+    public void setSearchString(final @NonNull String s) {
         this.searchString = s;
     }
 
+    @NonNull
     public String getSearchString() {
         return this.searchString;
     }
 
+    @NonNull
     public Type getType() {
         return this.type;
     }
 
-    public void setType(final Type t) {
+    public void setType(final @NonNull Type t) {
         this.type = t;
     }
 
-    abstract protected String propertyName();
 
     @Override
     public String getSummary(final Context mContext) {
         switch (this.type) {
         case END:
             return mContext.getString(R.string.where_like_end_text,
-                                      this.searchString);
+                                      "\"" + this.searchString + "\"");
         case BEGIN:
             return mContext.getString(R.string.where_like_begin_text,
-                                      this.searchString);
+                                      "\"" + this.searchString + "\"");
         case CONTAINS:
             return mContext.getString(R.string.where_like_contain_text,
-                                      this.searchString);
+                                      "\"" + this.searchString + "\"");
         default:
             return "";
         }
     }
 
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
-        MirakelQueryBuilder.Operation op = isNegated ? Operation.NOT_LIKE :
+        MirakelQueryBuilder.Operation op = isSet ? Operation.NOT_LIKE :
                                            Operation.LIKE;
         if (this.type == null) {
-            return qb.and(propertyName(), op, "%");
+            return qb.and(getPropertyName(), op, "%");
         }
         switch (this.type) {
         case BEGIN:
-            return qb.and(propertyName(), op, "%" + searchString);
+            return qb.and(getPropertyName(), op, "%" + searchString);
         case CONTAINS:
-            return qb.and(propertyName(), op, "%" + searchString + "%");
+            return qb.and(getPropertyName(), op, "%" + searchString + "%");
         case END:
-            return qb.and(propertyName(), op, searchString + "%");
+            return qb.and(getPropertyName(), op, searchString + "%");
         default:
             return qb;
         }
@@ -107,11 +126,19 @@ public abstract class SpecialListsStringProperty extends
 
     @Override
     public String serialize() {
-        String ret = "\"" + propertyName() + "\":{";
-        ret += "\"isNegated\":" + (this.isNegated ? "true" : "false");
+        String ret = "{\"" + getPropertyName() + "\":{";
+        ret += "\"isSet\":" + (this.isSet ? "true" : "false");
         ret += ",\"type\":" + this.type.ordinal();
         ret += ",\"serachString\":\"" + this.searchString + "\"";
-        return ret + "}";
+        return ret + "} }";
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(isSet ? (byte) 1 : (byte) 0);
+        dest.writeString(this.searchString);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
     }
 
 }

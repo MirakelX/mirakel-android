@@ -21,9 +21,11 @@ package de.azapps.mirakel.helper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty.Unit;
@@ -38,6 +40,21 @@ import de.azapps.tools.Log;
 public class CompatibilityHelper {
 
     private static final String TAG = "CompatibilityHelper";
+
+    public static String serializeWhereSpecialLists(
+        final Map<String, SpecialListsBaseProperty> whereQuery) {
+        String ret = "{";
+        boolean first = true;
+        for (final Map.Entry<String, SpecialListsBaseProperty> w : whereQuery
+             .entrySet()) {
+            ret += (first ? "" : " , ") + w.getValue().serialize();
+            if (first) {
+                first = false;
+            }
+        }
+        Log.i(TAG, ret);
+        return ret + "}";
+    }
 
     private static String cleanUp(String p) {
         int oldLenght = p.length();
@@ -107,7 +124,7 @@ public class CompatibilityHelper {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new TransformerException("failed to instance setClass", e);
         }
-        obj.setNegated(isNegated);
+        obj.setIsNegated(isNegated);
         obj.setSearchString(searchString);
         obj.setType(type);
         return obj;

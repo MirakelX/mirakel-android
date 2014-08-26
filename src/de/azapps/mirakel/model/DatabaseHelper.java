@@ -80,7 +80,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 45;
+    public static final int DATABASE_VERSION = 46;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -757,7 +757,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 contentValues.put(SpecialList.WHERE_QUERY,
-                                  SpecialList.serializeWhere(whereMap));
+                                  CompatibilityHelper.serializeWhereSpecialLists(whereMap));
                 db.update(SpecialList.TABLE, contentValues, ModelBase.ID + "=?",
                           new String[] { id + "" });
             }
@@ -998,10 +998,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             createCaldavTasksTrigger(db);
         case 44:
             createCaldavPropertyView(db);
+        case 45:
+            updateSpecialLists(db);
         default:
             break;
         }
     }
+
+    private void updateSpecialLists(SQLiteDatabase db) {
+        Cursor updateSpecial = db.query(SpecialList.TABLE, new String[] {SpecialList.WHERE_QUERY, ModelBase.ID},
+                                        null,
+                                        null, null, null, null);
+        while (updateSpecial.moveToNext()) {
+            String query = updateSpecial.getString(0);
+            StringBuilder newQuery = new StringBuilder();
+            int counter = 0;
+            boolean isMultiPart = false;
+            boolean isArgument = false;
+            boolean lastIsBracket = false;
+            for (int i = 0; i < query.length(); i++) {
+                char p = query.charAt(i);
+                switch (p) {
+                case '"':
+                    lastIsBracket = false;
+                    isArgument = !isArgument;
+                    newQuery.append(p);
+                    break;
+                case '{':
+                    if (!lastIsBracket) {
+                        newQuery.append(p);
+                    }
+                    if (!isArgument) {
+                        if (!lastIsBracket) {
+                            counter++;
+                        }
+                        lastIsBracket = true;
+                    }
+                    break;
+                case '}':
+                    lastIsBracket = false;
+                    if (counter > 0) {
+                        newQuery.append(p);
+                        if (!isArgument) {
+                            counter--;
+                        }
+                    }
+                    break;
+                case ',':
+                    lastIsBracket = false;
+                    if (DefinitionsHelper.freshInstall && counter == 0) {
+                        isMultiPart = true;
+                        newQuery.append(p);
+                        break;
+                    } else if (!DefinitionsHelper.freshInstall && counter == 1) {
+                        isMultiPart = true;
+                        newQuery.append("}").append(p).append("{");
+                        break;
+                    }
+                default:
+                    lastIsBracket = false;
+                    newQuery.append(p);
+                }
+            }
+            ContentValues newWhere = new ContentValues();
+            if (isMultiPart) {
+                newQuery = new StringBuilder("[" + newQuery + "]");
+            }
+            newWhere.put(SpecialList.WHERE_QUERY, newQuery.toString());
+            db.update(SpecialList.TABLE, newWhere, ModelBase.ID + "=?", new String[] {String.valueOf(updateSpecial.getLong(1))});
+        }
+    }
+
+
 
     private static void createCaldavListsTrigger(SQLiteDatabase db) {
         db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "

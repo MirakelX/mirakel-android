@@ -20,29 +20,50 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
-public class SpecialListsSubtaskProperty extends SpecialListsBaseProperty {
+public class SpecialListsSubtaskProperty extends SpecialListsBooleanProperty {
+
     boolean isParent;
-    boolean isNegated;
 
     public SpecialListsSubtaskProperty(boolean isNegated, boolean isParent) {
+        super(isNegated);
         this.isParent = isParent;
-        this.isNegated = isNegated;
+    }
+
+
+    private SpecialListsSubtaskProperty(final @NonNull Parcel in) {
+        super(in);
+        this.isParent = in.readByte() != 0;
+    }
+
+    public SpecialListsSubtaskProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        if (oldProperty instanceof SpecialListsSubtaskProperty) {
+            isParent = ((SpecialListsSubtaskProperty) oldProperty).isParent();
+        } else {
+            isParent = false;
+        }
+    }
+
+    @Override
+    protected String getPropertyName() {
+        return Task.SUBTASK_TABLE;
     }
 
     @Override
     public String getSummary(Context ctx) {
-        if (isParent && isNegated) {
+        if (isParent && isSet) {
             return ctx.getString(R.string.special_list_subtask_parent_not);
-        } else if (isParent && !isNegated) {
+        } else if (isParent && !isSet) {
             return ctx.getString(R.string.special_list_subtask_parent);
-        } else if (!isParent && isNegated) {
+        } else if (!isParent && isSet) {
             return ctx.getString(R.string.special_list_subtask_child_not);
         } else {
             return ctx.getString(R.string.special_list_subtask_child);
@@ -50,23 +71,25 @@ public class SpecialListsSubtaskProperty extends SpecialListsBaseProperty {
     }
 
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    public String getTitle(Context ctx) {
+        return ctx.getString(R.string.special_lists_subtask_title);
+    }
+
+    @Override
+    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.ID,
-                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
+                                                isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
                                                 new MirakelQueryBuilder(ctx).distinct().select((isParent ? "parent_id" : "child_id")),
                                                 MirakelInternalContentProvider.SUBTASK_URI);
     }
 
     @Override
     public String serialize() {
-        String ret = "\"" + Task.SUBTASK_TABLE + "\":{";
-        ret += "\"isNegated\":" + isNegated;
-        return ret + ",\"isParent\":" + isParent + "}";
+        String ret = "{\"" + Task.SUBTASK_TABLE + "\":{";
+        ret += "\"isSet\":" + isSet;
+        return ret + ",\"isParent\":" + isParent + "} }";
     }
 
-    public boolean isNegated() {
-        return isNegated;
-    }
 
     public boolean isParent() {
         return isParent;
@@ -76,7 +99,21 @@ public class SpecialListsSubtaskProperty extends SpecialListsBaseProperty {
         isParent = parent;
     }
 
-    public void setNegated(boolean negated) {
-        isNegated = negated;
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(isParent ? (byte) 1 : (byte) 0);
+        dest.writeByte(isSet ? (byte) 1 : (byte) 0);
     }
+
+    public static final Creator<SpecialListsSubtaskProperty> CREATOR = new
+    Creator<SpecialListsSubtaskProperty>() {
+        public SpecialListsSubtaskProperty createFromParcel(Parcel source) {
+            return new SpecialListsSubtaskProperty(source);
+        }
+
+        public SpecialListsSubtaskProperty[] newArray(int size) {
+            return new SpecialListsSubtaskProperty[size];
+        }
+    };
 }

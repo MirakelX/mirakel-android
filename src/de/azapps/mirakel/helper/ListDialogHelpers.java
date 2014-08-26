@@ -26,6 +26,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.google.common.base.Optional;
@@ -99,103 +100,6 @@ public class ListDialogHelpers {
         return list;
     }
 
-    /**
-     * Handle the actions after clicking on a move task button
-     *
-     */
-    public static SpecialList handleDefaultList(final Context ctx,
-            final SpecialList specialList, final List<ListMirakel> lists,
-            final Preference res) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setTitle(R.string.special_list_def_list);
-        final List<CharSequence> items = new ArrayList<>();
-        final List<Long> list_ids = new ArrayList<>();
-        int currentItem = 0, i = 1;
-        items.add(ctx.getString(R.string.special_list_first));
-        list_ids.add(null);
-        for (final ListMirakel list : lists) {
-            if (list.getId() > 0) {
-                items.add(list.getName());
-                if (specialList.getDefaultList() == null) {
-                    currentItem = 0;
-                } else {
-                    if (specialList.getDefaultList().getId() == list.getId()) {
-                        currentItem = i;
-                    }
-                }
-                list_ids.add(list.getId());
-                ++i;
-            }
-        }
-        builder.setSingleChoiceItems(
-            items.toArray(new CharSequence[items.size()]), currentItem,
-        new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog,
-                                final int item) {
-                final Long lid = list_ids.get(item);
-                if (lid == null) {
-                    specialList.setDefaultList(Optional.<ListMirakel>absent());
-                } else {
-                    specialList.setDefaultList(ListMirakel.get(lid));
-                }
-                specialList.save();
-                alert.dismiss();
-                if (res != null) {
-                    res.setSummary(specialList.getDefaultList()
-                                   .getName());
-                }
-            }
-        });
-        alert = builder.create();
-        alert.show();
-        return specialList;
-    }
 
-    /**
-     * Handle the Default Date Dialog for a SpecialList
-     *
-     * @param ctx
-     * @param specialList
-     * @return
-     */
-    public static SpecialList handleDefaultDate(final Context ctx,
-            final SpecialList specialList, final Preference res) {
-        final String[] items = ctx.getResources().getStringArray(
-                                   R.array.special_list_def_date_picker);
-        final int[] values = ctx.getResources().getIntArray(
-                                 R.array.special_list_def_date_picker_val);
-        int currentItem = 0;
-        if (specialList.getDefaultDate() != null) {
-            final int ddate = specialList.getDefaultDate();
-            for (int i = 0; i < values.length; i++) {
-                if (values[i] == ddate) {
-                    currentItem = i;
-                }
-            }
-        }
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setTitle(R.string.special_list_def_date);
-        builder.setSingleChoiceItems(items, currentItem,
-        new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog,
-                                final int item) {
-                Integer date = values[item];
-                if (date == -1337) {
-                    date = null;
-                }
-                specialList.setDefaultDate(date);
-                specialList.save();
-                alert.dismiss();
-                if (res != null) {
-                    res.setSummary(items[item]);
-                }
-            }
-        });
-        alert = builder.create();
-        alert.show();
-        return specialList;
-    }
 
 }
