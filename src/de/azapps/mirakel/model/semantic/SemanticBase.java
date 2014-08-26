@@ -20,6 +20,7 @@
 package de.azapps.mirakel.model.semantic;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -100,6 +101,7 @@ abstract class SemanticBase  extends ModelBase {
 
 
     @Override
+    @NonNull
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();
         cv.put(ID, getId());
@@ -128,11 +130,7 @@ abstract class SemanticBase  extends ModelBase {
             return false;
         }
         final SemanticBase other = (SemanticBase) obj;
-        if (this.getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!this.getName().equals(other.getName())) {
+        if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.due == null) {
@@ -173,8 +171,7 @@ abstract class SemanticBase  extends ModelBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                 + (this.getName() == null ? 0 : this.getName().hashCode());
+        result = prime * result + (this.getName().hashCode());
         result = prime * result + (this.due == null ? 0 : this.due.hashCode());
         result = prime * result + (int)this.getId();
         int listNum = 0;

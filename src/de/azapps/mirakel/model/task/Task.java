@@ -294,6 +294,7 @@ public class Task extends TaskBase {
         return fromNullable(qb.get(Task.class));
     }
 
+    @NonNull
     public static Optional<Task> getByUUID(final String uuid) {
         return fromNullable(new MirakelQueryBuilder(context)
                             .and(UUID, Operation.EQ, uuid)
@@ -301,7 +302,7 @@ public class Task extends TaskBase {
                                  SYNC_STATE.DELETE.toInt()).get(Task.class));
     }
 
-    public static Task getDummy(final Context ctx, @NonNull final ListMirakel list) {
+    public static Task getDummy(@NonNull final Context ctx, @NonNull final ListMirakel list) {
         return new Task(ctx.getString(R.string.task_empty), list);
     }
 
@@ -394,14 +395,20 @@ public class Task extends TaskBase {
 
     // Static Methods
 
+    @NonNull
     public static List<Task> getTasksToSync(final Account account) {
-        return new MirakelQueryBuilder(context)
-               .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
-                    SYNC_STATE.NOTHING.toInt())
-               .and(LIST_ID,
-                    Operation.IN,
-                    ListMirakel.getListsForAccount(AccountMirakel
-                            .get(account))).getList(Task.class);
+        Optional<AccountMirakel> accountMirakelOptional = AccountMirakel
+                .get(account);
+        if (!accountMirakelOptional.isPresent()) {
+            return new ArrayList<>();
+        } else {
+            return new MirakelQueryBuilder(context)
+                   .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                        SYNC_STATE.NOTHING.toInt())
+                   .and(LIST_ID,
+                        Operation.IN,
+                        ListMirakel.getListsForAccount(accountMirakelOptional.get())).getList(Task.class);
+        }
     }
 
     public static List<Task> getTasksWithReminders() {
@@ -435,7 +442,8 @@ public class Task extends TaskBase {
                                final String content, final boolean done,
                                final Optional<Calendar> due, final int priority) {
         final Task t = new Task(0, java.util.UUID.randomUUID().toString(),
-                                list, name, content, done, due, Optional.<Calendar>absent(), priority, null, null,
+                                list, name, content, done, due, Optional.<Calendar>absent(), priority, new GregorianCalendar(),
+                                new GregorianCalendar(),
                                 SYNC_STATE.ADD, "", -1, -1, 0, true);
         try {
             return t.create();
@@ -684,8 +692,8 @@ public class Task extends TaskBase {
                 if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1) {
                     insertFirstRecurringChild();
                 } else if (old.getRecurrenceId() != getRecurrenceId()) {
-                    final Recurring r = getRecurring();
-                    if (r == null) {
+                    final Optional<Recurring> recurring = getRecurring();
+                    if (!recurring.isPresent()) {
                         final Cursor c = new MirakelQueryBuilder(context)
                         .select("parent")
                         .and("child", Operation.EQ, this)
@@ -705,7 +713,7 @@ public class Task extends TaskBase {
                         }
                         c.close();
                     } else {
-                        updateRecurringChilds(r);
+                        updateRecurringChilds(recurring.get());
                     }
                 }
             }
@@ -852,7 +860,7 @@ public class Task extends TaskBase {
     private void handleInsertTWRecurring() {
         if (this.recurrenceParent != null) {
             final Optional<Task> master = Task.getByUUID(this.recurrenceParent.first);
-            if (!master.isPresent() || master.get().getRecurring() == null) {
+            if (!master.isPresent() || !master.get().getRecurring().isPresent()) {
                 // Something is very strange
                 Log.wtf(TAG, this + " is null!?");
                 return;
@@ -868,8 +876,10 @@ public class Task extends TaskBase {
                 cv.put("parent", master.get().getId());
                 cv.put("child", getId());
                 cv.put("offsetCount", this.recurrenceParent.second);
-                cv.put("offset", master.get().getRecurring().getInterval());
-                insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
+                if (master.get().getRecurring().isPresent()) {
+                    cv.put("offset", master.get().getRecurring().get().getInterval());
+                    insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
+                }
             }
             c.close();
             setRecurrence(master.get().getRecurrenceId());

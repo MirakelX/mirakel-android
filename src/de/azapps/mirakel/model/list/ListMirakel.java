@@ -20,15 +20,13 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -127,10 +125,12 @@ public class ListMirakel extends ListBase {
         return URI;
     }
 
+    @NonNull
     public MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb) {
         return addSortBy(qb, getSortBy(), getId());
     }
 
+    @NonNull
     public static MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb, final SORT_BY sorting,
             final long listId) {
         final String dueSort = "CASE WHEN (" + Task.DUE
@@ -163,28 +163,17 @@ public class ListMirakel extends ListBase {
         return qb;
     }
 
-    public static List<ListMirakel> cursorToList(final Cursor c) {
-        List<ListMirakel> ret = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new ListMirakel(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
-    }
-
     /**
      * Get all Lists in the Database
      *
      * @return List of Lists
      */
+    @NonNull
     public static List<ListMirakel> all() {
         return all(true);
     }
 
-
-
+    @NonNull
     public static List<ListMirakel> all(final boolean withSpecial) {
         final List<ListMirakel> lists = new ArrayList<>();
         if (withSpecial) {
@@ -206,38 +195,24 @@ public class ListMirakel extends ListBase {
         cursor.close();
         return lists;
     }
+
+    @NonNull
     private static MirakelQueryBuilder getBasicMQB() {
         return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
                 SYNC_STATE.DELETE.toString()).sort(LFT,
                         Sorting.ASC);
     }
 
-    public static CursorLoader allCursorLoader() {
-        return getBasicMQB().toCursorLoader(MirakelInternalContentProvider.LIST_URI);
-    }
-
+    @NonNull
     public static CursorLoader allWithSpecialCursorLoader() {
         return new MirakelQueryBuilder(context).toCursorLoader(
                    MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
 
+    @NonNull
     public static Cursor getAllCursor() {
         return getBasicMQB().query(MirakelInternalContentProvider.LIST_URI);
     }
-
-
-    /**
-     * Get Lists by a sync state
-     *
-     * @param state
-     * @see de.azapps.mirakel.DefinitionsHelper.SYNC_STATE
-     * @return
-     */
-    public static List<ListMirakel> bySyncState(final SYNC_STATE state) {
-        return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
-                Operation.EQ, state.toInt()).getList(ListMirakel.class);
-    }
-
 
     public static long count() {
         return new MirakelQueryBuilder(context).count(URI);
@@ -246,11 +221,8 @@ public class ListMirakel extends ListBase {
     /**
      * Create a List from a Cursor
      *
-     * @param c
-     * @return
+     * @param c cursor
      */
-
-
     public ListMirakel(final Cursor c) {
         super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
               SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))),
@@ -261,19 +233,12 @@ public class ListMirakel extends ListBase {
               c.getInt(c.getColumnIndex(ACCOUNT_ID)));
     }
 
-    private static List<ListMirakel> cursorToListList(final Cursor c) {
-        final List<ListMirakel> lists = new ArrayList<ListMirakel>();
-        while (!c.isAfterLast()) {
-            lists.add(new ListMirakel(c));
-            c.moveToNext();
-        }
-        return lists;
-    }
-
+    @NonNull
     public static Optional<ListMirakel> findByName(final String name) {
         return findByName(name, null);
     }
 
+    @NonNull
     public static Optional<ListMirakel> findByName(final String name,
             final AccountMirakel account) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(NAME,
@@ -286,17 +251,7 @@ public class ListMirakel extends ListBase {
 
     // Static Methods
 
-    /**
-     * Get the first List
-     *
-     * @return List
-     */
-    public static ListMirakel first() {
-        return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
-                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
-                        Sorting.ASC).get(ListMirakel.class);
-    }
-
+    @NonNull
     public static ListMirakel getInboxList(final AccountMirakel account) {
         ListMirakel l = new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
                 context.getString(R.string.inbox)).and(ACCOUNT_ID, Operation.EQ,
@@ -312,6 +267,7 @@ public class ListMirakel extends ListBase {
         }
     }
 
+    @NonNull
     public static Optional<ListMirakel> get(final long listId) {
         if (listId < 0) {
             Optional<SpecialList> specialList = SpecialList.getSpecial(-listId);
@@ -324,7 +280,7 @@ public class ListMirakel extends ListBase {
         return fromNullable(new MirakelQueryBuilder(context).get(ListMirakel.class, listId));
     }
 
-    public static void setDefaultAccount(final AccountMirakel account) {
+    public static void setDefaultAccount(@NonNull final AccountMirakel account) {
         final ContentValues v = new ContentValues();
         v.put(ACCOUNT_ID, account.getId());
         update(URI, v, null, null);
@@ -340,38 +296,23 @@ public class ListMirakel extends ListBase {
                         Operation.EQ, account).getList(ListMirakel.class);
     }
 
-    public static ListMirakel getSafeDefaultList() {
-        final ListMirakel list = MirakelModelPreferences
-                                 .getSafeImportDefaultList();
-        return list;
-    }
-
-
-    /**
-     * Create and insert a new List
-     *
-     * @param name
-     * @return
-     */
-    public static ListMirakel newList(final String name) throws ListAlreadyExistsException {
-        return newList(name, SORT_BY.OPT);
-    }
-
-    private static ListMirakel saveNewList(String name, final int iteration) {
+    @NonNull
+    private static ListMirakel safeNewList(String name, final int iteration) {
         ListMirakel listMirakel;
         try {
             if (iteration > 0) {
                 name += "_" + iteration;
             }
-            listMirakel = ListMirakel.newList(name);
+            listMirakel = ListMirakel.newList(name, SORT_BY.OPT);
         } catch (ListMirakel.ListAlreadyExistsException e) {
-            return saveNewList(name, iteration + 1);
+            return safeNewList(name, iteration + 1);
         }
         return listMirakel;
     }
 
+    @NonNull
     public static ListMirakel saveNewList(final String name) {
-        return saveNewList(name, 0);
+        return safeNewList(name, 0);
     }
 
     /**
@@ -383,32 +324,38 @@ public class ListMirakel extends ListBase {
      *            the default sorting
      * @return new List
      */
-    public static ListMirakel newList(final String name,
-                                      final SORT_BY sort_by) throws ListAlreadyExistsException {
+    @NonNull
+    private static ListMirakel newList(final String name,
+                                       final SORT_BY sort_by) throws ListAlreadyExistsException {
         return newList(name, sort_by,
                        MirakelModelPreferences.getDefaultAccount());
     }
 
+    @NonNull
     public static ListMirakel newList(final String name, final SORT_BY sort_by,
                                       final AccountMirakel account) throws ListAlreadyExistsException {
-        ListMirakel l = new ListMirakel(0, name, sort_by, null, null, SYNC_STATE.ADD, 0, 0, 0, account);
+        String now = new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US)
+        .format(new Date());
+        ListMirakel l = new ListMirakel(0, name, sort_by, now, now, SYNC_STATE.ADD, 0, 0, 0, account);
         ListMirakel newList = l.create();
         UndoHistory.logCreate(newList, context);
         return newList;
     }
 
-    public static ListMirakel getByName(final String name, AccountMirakel accountMirakel) {
-        return new MirakelQueryBuilder(context)
-               .and(ListBase.NAME, Operation.EQ, name)
-               .and(ListMirakel.ACCOUNT_ID, Operation.EQ, accountMirakel)
-               .get(ListMirakel.class);
+    @NonNull
+    public static Optional<ListMirakel> getByName(final String name, AccountMirakel accountMirakel) {
+        return fromNullable(new MirakelQueryBuilder(context)
+                            .and(ListBase.NAME, Operation.EQ, name)
+                            .and(ListMirakel.ACCOUNT_ID, Operation.EQ, accountMirakel)
+                            .get(ListMirakel.class));
     }
 
+    @NonNull
     private ListMirakel create() throws ListAlreadyExistsException {
-        ListMirakel listMirakel = getByName(getName(), getAccount());
-        if (listMirakel != null) {
-            throw new ListAlreadyExistsException("List" + listMirakel.getName() + " already exists:" +
-                                                 listMirakel.getId());
+        Optional<ListMirakel> listMirakel = getByName(getName(), getAccount());
+        if (listMirakel.isPresent()) {
+            throw new ListAlreadyExistsException("List" + listMirakel.get().getName() + " already exists:" +
+                                                 listMirakel.get().getId());
         }
         final ContentValues values = new ContentValues();
         values.put(ModelBase.NAME, getName());
@@ -446,7 +393,13 @@ public class ListMirakel extends ListBase {
         return newList;
     }
 
-    public static ListMirakel parseJson(final JsonObject el) {
+    /**
+     * Use this function only if you know what you are doing
+     * @param el Json Object
+     * @return List
+     */
+    @NonNull
+    public static ListMirakel unsafeParseJson(final JsonObject el) {
         ListMirakel t = null;
         final JsonElement id = el.get("id");
         if (id != null) {
@@ -480,18 +433,22 @@ public class ListMirakel extends ListBase {
         return t;
     }
 
-    public static ListMirakel safeFirst(final Context ctx) {
-        ListMirakel s = first();
+    @NonNull
+    public static ListMirakel safeFirst() {
+        ListMirakel s = new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
+                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
+                        Sorting.ASC).get(ListMirakel.class);
         if (s == null) {
             s = getInboxList(MirakelModelPreferences.getDefaultAccount());
         }
         return s;
     }
 
+    @NonNull
     public static ListMirakel safeGet(final int listId) {
         Optional<ListMirakel> l = get(listId);
         if (!l.isPresent()) {
-            return safeFirst(context);
+            return safeFirst();
         } else {
             return l.get();
         }
@@ -501,21 +458,17 @@ public class ListMirakel extends ListBase {
         super();
     }
 
-    ListMirakel(final long id, final String name) {
-        super(id, name);
-    }
-
-    public ListMirakel(final long id, final String name, final SORT_BY sort_by,
-                       final String created_at, final String updated_at,
-                       final SYNC_STATE sync_state, final int lft, final int rgt,
-                       final int color, final AccountMirakel account) {
+    public ListMirakel(final long id, @NonNull final String name, @NonNull final SORT_BY sort_by,
+                       @NonNull final String created_at, @NonNull final String updated_at,
+                       @NonNull final SYNC_STATE sync_state, final int lft, final int rgt,
+                       final int color, @NonNull final AccountMirakel account) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
               color, account);
     }
 
-    protected ListMirakel(final long id, final String name, final SORT_BY sort_by,
-                          final String created_at, final String updated_at,
-                          final SYNC_STATE sync_state, final int lft, final int rgt,
+    protected ListMirakel(final long id, @NonNull final String name, @NonNull final SORT_BY sort_by,
+                          @NonNull final String created_at, @NonNull final String updated_at,
+                          @NonNull final SYNC_STATE sync_state, final int lft, final int rgt,
                           final int color, final int account) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
               color, account);
@@ -530,7 +483,7 @@ public class ListMirakel extends ListBase {
         MirakelQueryBuilder qb;
         if (getId() < 0) {
             try {
-                qb = ((SpecialList) this).getWhereQueryForTasks();
+                qb = this.getWhereQueryForTasks();
             } catch (ClassCastException e) {
                 Optional<SpecialList> specialList = SpecialList.getSpecial(getId());
                 qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
@@ -589,8 +542,8 @@ public class ListMirakel extends ListBase {
         });
     }
 
-    public Task getFirstTask() {
-        return addSortBy(Task.addBasicFiler(getWhereQueryForTasks())).get(Task.class);
+    public Optional<Task> getFirstTask() {
+        return fromNullable(addSortBy(Task.addBasicFiler(getWhereQueryForTasks())).get(Task.class));
     }
 
 
@@ -642,6 +595,7 @@ public class ListMirakel extends ListBase {
      *
      * @return
      */
+    @NonNull
     public List<Task> tasks() {
         return Task.getTasks(this, getSortBy(), false);
     }
@@ -652,10 +606,12 @@ public class ListMirakel extends ListBase {
      * @param showDone
      * @return
      */
+    @NonNull
     public List<Task> tasks(final boolean showDone) {
         return Task.getTasks(this, getSortBy(), showDone);
     }
 
+    @NonNull
     public MirakelQueryBuilder getTasksQueryBuilder() {
         if (getId() < 0) {
             // We look like a List but we are better than one MUHAHA
@@ -673,10 +629,12 @@ public class ListMirakel extends ListBase {
         }
     }
 
+    @NonNull
     public CursorLoader getTasksCursorLoader() {
         return getTasksQueryBuilder().toCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 
+    @NonNull
     public String toJson() {
         String json = "{";
         json += "\"name\":\"" + getName() + "\",";
@@ -691,6 +649,7 @@ public class ListMirakel extends ListBase {
         return json;
     }
 
+    @NonNull
     public MirakelQueryBuilder getWhereQueryForTasks() {
         final MirakelQueryBuilder qb = Task.addBasicFiler(new MirakelQueryBuilder(context).and(Task.LIST_ID,
                                        Operation.EQ, this));
@@ -710,10 +669,10 @@ public class ListMirakel extends ListBase {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
+        dest.writeInt(this.sortBy.ordinal());
         dest.writeString(this.createdAt);
         dest.writeString(this.updatedAt);
-        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeInt(this.syncState.ordinal());
         dest.writeInt(this.lft);
         dest.writeInt(this.rgt);
         dest.writeInt(this.color);
@@ -725,11 +684,11 @@ public class ListMirakel extends ListBase {
 
     private ListMirakel(Parcel in) {
         int tmpSortBy = in.readInt();
-        this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
+        this.sortBy = SORT_BY.values()[tmpSortBy];
         this.createdAt = in.readString();
         this.updatedAt = in.readString();
         int tmpSyncState = in.readInt();
-        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        this.syncState = SYNC_STATE.values()[tmpSyncState];
         this.lft = in.readInt();
         this.rgt = in.readInt();
         this.color = in.readInt();

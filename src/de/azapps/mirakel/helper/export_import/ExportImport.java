@@ -279,7 +279,7 @@ public class ExportImport {
                 if (listMirakelOptional.isPresent()) {
                     list = listMirakelOptional.get();
                 } else {
-                    list = ListMirakel.safeFirst(context);
+                    list = ListMirakel.safeFirst();
                 }
                 final Task t = Task.newTask(name, list);
                 t.setContent(content);

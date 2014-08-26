@@ -304,11 +304,13 @@ abstract class TaskBase extends ModelBase {
         return this.recurrence;
     }
 
-    public Recurring getRecurring() {
+    @NonNull
+    public Optional<Recurring> getRecurring() {
         return Recurring.get(this.recurrence);
     }
 
-    public Recurring getRecurringReminder() {
+    @NonNull
+    public Optional<Recurring> getRecurringReminder() {
         return Recurring.get(this.recurringReminder);
     }
 
@@ -416,7 +418,7 @@ abstract class TaskBase extends ModelBase {
 
     /**
      * @param newDone is the task marked as done?
-     * @return The id of the new task, created by recurring or -1
+     * @return The new task if one was created
      */
     @NonNull
     public Optional<Task> setDone(final boolean newDone) {
@@ -426,12 +428,12 @@ abstract class TaskBase extends ModelBase {
         this.done = newDone;
         this.edited.put(TaskBase.DONE, true);
         if (newDone && this.recurrence != -1 && this.due.isPresent()) {
-            if (getRecurring() != null) {
+            if (getRecurring().isPresent()) {
                 final Optional<Task> oldTask = Task.get(getId());
                 if (!oldTask.isPresent()) {
                     return absent();
                 }
-                final Task newTask = getRecurring().incrementRecurringDue(
+                final Task newTask = getRecurring().get().incrementRecurringDue(
                                          oldTask.get());
                 // set the sync state of the old task to recurring, only show
                 // the new one
@@ -497,7 +499,10 @@ abstract class TaskBase extends ModelBase {
             return;
         }
         super.setName(newName);
-        this.edited.put(ModelBase.NAME, true);
+        // This can not happen (it's final!! – but we are in a constructor), but hey, that's java
+        if (this.edited != null) {
+            this.edited.put(ModelBase.NAME, true);
+        }
     }
 
     public void setPriority(final int priority) {
@@ -694,20 +699,22 @@ abstract class TaskBase extends ModelBase {
         if (this.progress != other.progress) {
             return false;
         }
-        if (this.getRecurring() == null) {
-            if (other.getRecurring() != null) {
+        if (getRecurring().isPresent() && other.getRecurring().isPresent()) {
+            if (!this.getRecurring().get().equals(other.getRecurring().get())) {
                 return false;
             }
-        } else if (!this.getRecurring().equals(other.getRecurring())) {
+        } else if (getRecurring().isPresent() != other.getRecurring().isPresent()) {
             return false;
         }
-        if (this.getRecurringReminder() == null) {
-            if (other.getRecurringReminder() != null) {
+
+        if (getRecurringReminder().isPresent() && other.getRecurringReminder().isPresent()) {
+            if (!this.getRecurringReminder().get().equals(other.getRecurringReminder().get())) {
                 return false;
             }
-        } else if (!this.getRecurringReminder().equals(other.getRecurringReminder())) {
+        } else if (getRecurringReminder().isPresent() != other.getRecurringReminder().isPresent()) {
             return false;
         }
+
         if (!DateTimeHelper.equalsCalendar(this.reminder, other.reminder)) {
             return false;
         }

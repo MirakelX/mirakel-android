@@ -118,7 +118,7 @@ public class SpecialList extends ListMirakel {
 
     public ListMirakel getDefaultList() {
         if (!this.defaultList.isPresent()) {
-            return ListMirakel.first();
+            return ListMirakel.safeFirst();
         } else {
             return this.defaultList.get();
         }
@@ -205,7 +205,7 @@ public class SpecialList extends ListMirakel {
     private static final String TAG = "SpecialList";
 
     private SpecialList create() {
-        final long listId = ListMirakel.safeFirst(context).getId();
+        final long listId = ListMirakel.safeFirst().getId();
         MirakelInternalContentProvider.withTransaction(new
         MirakelInternalContentProvider.DBTransaction() {
             @Override
@@ -376,7 +376,7 @@ public class SpecialList extends ListMirakel {
             s = fromNullable(SpecialList.newSpecialList(context.getString(R.string.list_all),
                              new HashMap<String, SpecialListsBaseProperty>(), true));
             if (ListMirakel.count() == 0) {
-                ListMirakel.safeFirst(context);
+                ListMirakel.safeFirst();
             }
             s.get().save(false);
         }

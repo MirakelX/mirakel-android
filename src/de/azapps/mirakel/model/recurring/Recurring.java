@@ -81,19 +81,9 @@ public class Recurring extends RecurringBase {
 
 
     // Static
-    public static List<Recurring> cursorToRecurringList(final Cursor c) {
-        List<Recurring> ret = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new Recurring(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
-    }
 
-
-    public static Recurring createTemporayCopy(final Recurring r) {
+    @NonNull
+    public static Recurring createTemporaryCopy(final Recurring r) {
         final Recurring newR = new Recurring(0, r.getLabel(), r.getMinutes(),
                                              r.getHours(), r.getDays(), r.getMonths(), r.getYears(),
                                              r.isForDue(), r.getStartDate(), r.getEndDate(), true,
@@ -101,6 +91,7 @@ public class Recurring extends RecurringBase {
         return newR.create();
     }
 
+    @NonNull
     public static Recurring newRecurring(final String label, final int minutes,
                                          final int hours, final int days, final int months, final int years,
                                          final boolean forDue, final Optional<Calendar> startDate,
@@ -112,11 +103,12 @@ public class Recurring extends RecurringBase {
         return r.create();
     }
 
+    @NonNull
     public Recurring create() {
         final ContentValues values = getContentValues();
         values.remove(ModelBase.ID);
         setId(insert(URI, values));
-        return Recurring.get(getId());
+        return Recurring.get(getId()).get();
     }
 
     /**
@@ -125,13 +117,15 @@ public class Recurring extends RecurringBase {
      * @param id
      * @return
      */
-    public static Recurring get(final long id) {
-        return new MirakelQueryBuilder(context).get(Recurring.class, id);
+    @NonNull
+    public static Optional<Recurring> get(final long id) {
+        return fromNullable(new MirakelQueryBuilder(context).get(Recurring.class, id));
     }
 
-    public static Recurring get(final int minutes, final int hours,
-                                final int days, final int month, final int years,
-                                final Calendar start, final Calendar end) {
+    @NonNull
+    public static Optional<Recurring> get(final int minutes, final int hours,
+                                          final int days, final int month, final int years,
+                                          final Calendar start, final Calendar end) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(MINUTES,
                 Operation.EQ, minutes).and(HOURS, Operation.EQ, hours)
         .and(DAYS, Operation.EQ, days).and(MONTHS, Operation.EQ,
@@ -146,10 +140,11 @@ public class Recurring extends RecurringBase {
         } else {
             qb.and(END_DATE, Operation.EQ, (String)null);
         }
-        return qb.get(Recurring.class);
+        return fromNullable(qb.get(Recurring.class));
     }
 
-    public static Recurring get(final int days, final int month, final int years) {
+    @NonNull
+    public static Optional<Recurring> get(final int days, final int month, final int years) {
         return get(0, 0, days, month, years, null, null);
     }
 
@@ -162,14 +157,15 @@ public class Recurring extends RecurringBase {
         MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
             @Override
             public void exec() {
-                delete(URI, ID + "=" + getId(), null);
+                delete(URI, ID + '=' + getId(), null);
                 // Fix recurring onDelete in TaskTable
-                ContentValues cv = new ContentValues();
+                final ContentValues cv = new ContentValues();
                 cv.put(Task.RECURRING, -1);
-                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING + "=" + getId(), null);
-                cv = new ContentValues();
-                cv.put(Task.RECURRING_REMINDER, -1);
-                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING_REMINDER + "=" + getId(), null);
+                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING + '=' + getId(), null);
+                final ContentValues contentValues = new ContentValues();
+                contentValues.put(Task.RECURRING_REMINDER, -1);
+                update(MirakelInternalContentProvider.TASK_URI, contentValues,
+                       Task.RECURRING_REMINDER + '=' + getId(), null);
             }
         });
     }
@@ -219,6 +215,7 @@ public class Recurring extends RecurringBase {
         setDerivedFrom(fromNullable(derivedFrom));
     }
 
+    @NonNull
     public Task incrementRecurringDue(final Task t) {
         if (!t.getDue().isPresent()) {
             return t;
@@ -294,10 +291,8 @@ public class Recurring extends RecurringBase {
         now.add(Calendar.MINUTE, -1);
         final List<Integer> weekdays = getWeekdays();
         if (weekdays.size() == 0) {
-            if ((!getStartDate().isPresent() || getStartDate().isPresent()
-                 && now.after(getStartDate().get()))
-                && (!getEndDate().isPresent() || getEndDate().isPresent()
-                    && now.before(getEndDate().get()))) {
+            if ((!getStartDate().isPresent() || now.after(getStartDate().get()))
+                && (!getEndDate().isPresent() || now.before(getEndDate().get()))) {
                 do {
                     c.add(Calendar.DAY_OF_MONTH, getDays());
                     c.add(Calendar.MONTH, getMonths());

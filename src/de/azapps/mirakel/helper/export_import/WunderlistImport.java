@@ -134,7 +134,7 @@ public class WunderlistImport {
         if (listMirakelOptional.isPresent()) {
             list = listMirakelOptional.get();
         } else {
-            list = ListMirakel.safeFirst(ctx);
+            list = ListMirakel.safeFirst();
         }
         final Task t = Task.newTask(name, list);
         taskMapping.put(jsonTask.get("id").getAsString(), (int) t.getId());

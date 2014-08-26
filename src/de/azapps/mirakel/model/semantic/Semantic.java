@@ -128,7 +128,7 @@ public class Semantic extends SemanticBase {
                     }
                 }
             } catch (final NullPointerException e) {
-                currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
+                currentList = Optional.fromNullable(ListMirakel.safeFirst());
             }
         }
         if (useSemantic) {
@@ -180,7 +180,7 @@ public class Semantic extends SemanticBase {
             }
         }
         if (!currentList.isPresent()) {
-            currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
+            currentList = Optional.fromNullable(ListMirakel.safeFirst());
         }
         final Task t = new Task(taskName, currentList.get(), due, prio);
         t.setStub(true);

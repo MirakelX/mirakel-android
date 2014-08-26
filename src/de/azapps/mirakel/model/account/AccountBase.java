@@ -20,13 +20,18 @@
 package de.azapps.mirakel.model.account;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
+
+import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.tools.Log;
 
-abstract class AccountBase  extends ModelBase {
+import static com.google.common.base.Optional.absent;
+
+abstract class AccountBase extends ModelBase {
     private final static String TAG = "AccountBase";
 
     public final static String TYPE = "type";
@@ -35,16 +40,18 @@ abstract class AccountBase  extends ModelBase {
 
     protected int type;
     protected boolean enabled;
-    protected String syncKey;
+    @NonNull
+    protected Optional<String> syncKey = absent();
 
     public AccountBase(final int id, final String name,
-                       final ACCOUNT_TYPES type, final boolean enabled,
-                       final String syncKey) {
+                       @NonNull final ACCOUNT_TYPES type, final boolean enabled,
+                       @NonNull final Optional<String> syncKey) {
         super(id, name);
         this.setType(type.toInt());
-        this.setEnabeld(enabled);
+        this.setEnabled(enabled);
         this.setSyncKey(syncKey);
     }
+
     protected AccountBase() {
         super();
         // Do nothing thats just for the Parcelable stuff
@@ -69,7 +76,7 @@ abstract class AccountBase  extends ModelBase {
         }
         cv.put(TYPE, this.type);
         cv.put(ENABLED, this.enabled);
-        cv.put(SYNC_KEY, this.syncKey);
+        cv.put(SYNC_KEY, this.syncKey.orNull());
         return cv;
     }
 
@@ -78,15 +85,15 @@ abstract class AccountBase  extends ModelBase {
         return this.enabled;
     }
 
-    public void setEnabeld(final boolean enabeld) {
-        this.enabled = enabeld;
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public String getSyncKey() {
+    public Optional<String> getSyncKey() {
         return this.syncKey;
     }
 
-    public void setSyncKey(final String syncKey) {
+    public void setSyncKey(final Optional<String> syncKey) {
         this.syncKey = syncKey;
     }
 
@@ -94,12 +101,11 @@ abstract class AccountBase  extends ModelBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int)getId();
+        result = prime * result + (int) getId();
         result = prime * result + (this.enabled ? 1231 : 1237);
+        result = prime * result + (getName().hashCode());
         result = prime * result
-                 + (getName() == null ? 0 : getName().hashCode());
-        result = prime * result
-                 + (this.syncKey == null ? 0 : this.syncKey.hashCode());
+                 + (!this.syncKey.isPresent() ? 0 : this.syncKey.get().hashCode());
         result = prime * result + this.type;
         return result;
     }
@@ -122,18 +128,14 @@ abstract class AccountBase  extends ModelBase {
         if (this.enabled != other.enabled) {
             return false;
         }
-        if (this.getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!this.getName().equals(other.getName())) {
+        if (!this.getName().equals(other.getName())) {
             return false;
         }
-        if (this.syncKey == null) {
-            if (other.syncKey != null) {
+        if (this.syncKey.isPresent() && other.syncKey.isPresent()) {
+            if (!this.syncKey.get().equals(other.syncKey.get())) {
                 return false;
             }
-        } else if (!this.syncKey.equals(other.syncKey)) {
+        } else if (this.syncKey.isPresent() != other.syncKey.isPresent()) {
             return false;
         }
         if (this.type != other.type) {

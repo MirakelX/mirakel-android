@@ -207,7 +207,6 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 if (due == null) {
                     due = parseDate(val.getAsString(),
                                     this.context.getString(R.string.TWDateFormat));
-                    // try to workaround timezone-bug
                     if (due != null) {
                         due.setTimeInMillis(due.getTimeInMillis()
                                             + DateTimeHelper.getTimeZoneOffset(true, due));
@@ -261,13 +260,13 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 break;
             }
         }
-        if (task.getRecurring() != null) {
-            final Recurring r = task.getRecurring();
+        if (task.getRecurring().isPresent()) {
+            final Recurring r = task.getRecurring().get();
             r.setEndDate(Optional.fromNullable(end));
             r.save();
         }
         if (account == null) {
-            taskList = Optional.of(ListMirakel.safeFirst(context));
+            taskList = Optional.of(ListMirakel.safeFirst());
         } else if (!taskList.isPresent()) {
             taskList = Optional.of(ListMirakel
                                    .getInboxList(account));

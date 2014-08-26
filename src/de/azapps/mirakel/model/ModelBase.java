@@ -90,6 +90,7 @@ abstract public class ModelBase implements Parcelable {
         return this.name;
     }
 
+    @NonNull
     public ContentValues getContentValues()throws DefinitionsHelper.NoSuchListException {
         ContentValues cv = new ContentValues();
         cv.put(ID, id);

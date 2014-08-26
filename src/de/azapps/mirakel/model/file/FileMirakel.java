@@ -34,7 +34,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -44,6 +48,9 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 
 public class FileMirakel extends FileBase {
 
@@ -116,15 +123,18 @@ public class FileMirakel extends FileBase {
      * @param id
      * @return
      */
-    public static FileMirakel get(final long id) {
-        return new MirakelQueryBuilder(context).get(FileMirakel.class, id);
+    @NonNull
+    public static Optional<FileMirakel> get(final long id) {
+        return fromNullable(new MirakelQueryBuilder(context).get(FileMirakel.class, id));
     }
 
+    @NonNull
     public static List<FileMirakel> getForTask(final Task task) {
         return new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task)
                .getList(FileMirakel.class);
     }
 
+    @NonNull
     public static FileMirakel newFile(final Context ctx, final Task task,
                                       final Uri uri) {
         if (uri == null) {
@@ -178,6 +188,7 @@ public class FileMirakel extends FileBase {
      * @param uri
      * @return new File
      */
+    @NonNull
     public static FileMirakel newFile(final Task task, final String name,
                                       final Uri uri) {
         final FileMirakel m = new FileMirakel(0, name, task, uri);
@@ -188,11 +199,12 @@ public class FileMirakel extends FileBase {
         super(id, name, task, uri);
     }
 
+    @NonNull
     public FileMirakel create() {
         final ContentValues values = getContentValues();
         values.remove("_id");
         final long insertId = insert(URI, values);
-        return FileMirakel.get(insertId);
+        return FileMirakel.get(insertId).get();
     }
 
     @Override
@@ -201,12 +213,13 @@ public class FileMirakel extends FileBase {
         new File(fileCacheDir, getId() + ".png").delete();
     }
 
-    public Bitmap getPreview() {
+    @NonNull
+    public Optional<Bitmap> getPreview() {
         final File osFile = new File(fileCacheDir, getId() + ".png");
         if (osFile.exists()) {
-            return BitmapFactory.decodeFile(osFile.getAbsolutePath());
+            return fromNullable(BitmapFactory.decodeFile(osFile.getAbsolutePath()));
         }
-        return null;
+        return absent();
     }
 
     // Parcelable stuff

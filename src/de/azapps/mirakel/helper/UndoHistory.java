@@ -27,7 +27,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -108,8 +107,8 @@ public class UndoHistory {
                     }
                     break;
                 case LIST:
-                    final ListMirakel l = ListMirakel.parseJson(json);
-                    if (ListMirakel.get(l.getId()) != null) {
+                    final ListMirakel l = ListMirakel.unsafeParseJson(json);
+                    if (ListMirakel.get(l.getId()).isPresent()) {
                         l.save(false);
                     } else {
                         try {

@@ -17,21 +17,19 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.model.task;
+package de.azapps.mirakel.model;
 
-import de.azapps.mirakel.model.ModelVanishedException;
+public class ModelVanishedException extends RuntimeException {
 
-public class TaskVanishedException extends ModelVanishedException {
-    public TaskVanishedException() {
+    public ModelVanishedException() {
         super();
     }
 
-    public TaskVanishedException(String message) {
+    public ModelVanishedException(String message) {
         super(message);
     }
 
-    public TaskVanishedException(long id) {
-        super(id);
+    public ModelVanishedException(long id) {
+        super("TaskId:" + id);
     }
-
 }

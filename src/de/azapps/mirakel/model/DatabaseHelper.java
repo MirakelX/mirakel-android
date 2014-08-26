@@ -691,7 +691,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                   new String[] { a.getId() + "" });
                         continue;
                     }
-                    a.setSyncKey(accountManager.getPassword(account));
+                    a.setSyncKey(fromNullable(accountManager.getPassword(account)));
                     db.update(AccountMirakel.TABLE, a.getContentValues(), ModelBase.ID
                               + "=?", new String[] { a.getId() + "" });
                     if (ca != null && client != null && clientKey != null) {
@@ -925,7 +925,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cv.put("child", t.getId());
                     final int counter = t.getAdditionalInt("imask");
                     cv.put("offsetCount", counter);
-                    cv.put("offset", counter * t.getRecurring().getInterval());
+                    Optional<Recurring> recurringOptional = t.getRecurring();
+                    if (recurringOptional.isPresent()) {
+                        cv.put("offset", counter * recurringOptional.get().getInterval());
+                    } else {
+                        continue;
+                    }
                     db.insert(Recurring.TW_TABLE, null, cv);
                     final int newestOffset = newest.getAdditionalInt("imask");
                     final int currentOffset = t.getAdditionalInt("imask");
