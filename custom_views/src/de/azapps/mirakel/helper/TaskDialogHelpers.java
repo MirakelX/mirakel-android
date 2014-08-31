@@ -79,8 +79,9 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
-import de.azapps.widgets.DateTimeDialog;
-import de.azapps.widgets.DateTimeDialog.OnDateTimeSetListner;
+import de.azapps.widgets.SupportDateTimeDialog;
+import de.azapps.widgets.SupportDateTimeDialog.OnDateTimeSetListener;
+import static com.google.common.base.Optional.of;
 
 public class TaskDialogHelpers {
     protected static AlertDialog audio_playback_dialog;
@@ -278,8 +279,8 @@ public class TaskDialogHelpers {
         if (r != null) {
             isExact = r.isExact();
             Log.d(TAG, "exact: " + isExact);
-            if (r.getDerivedFrom() != null) {
-                final Recurring master = Recurring.get(r.getDerivedFrom());
+            if (r.getDerivedFrom().isPresent()) {
+                final Recurring master = Recurring.get(r.getDerivedFrom().get());
                 if (master != null) {
                     r = master;
                 }
@@ -292,7 +293,7 @@ public class TaskDialogHelpers {
                 final boolean isDue, final int intervalYears,
                 final int intervalMonths, final int intervalDays,
                 final int intervalHours, final int intervalMinutes,
-                final Calendar startDate, final Calendar endDate,
+                final Optional<Calendar> startDate, final Optional<Calendar> endDate,
                 final boolean isExact) {
                 final Recurring r = Recurring.newRecurring("",
                                     intervalMinutes, intervalHours, intervalDays,
@@ -304,7 +305,7 @@ public class TaskDialogHelpers {
             @Override
             public void onCustomRecurrenceSetWeekdays(
                 final boolean isDue, final List<Integer> weekdays,
-                final Calendar startDate, final Calendar endDate,
+                final Optional<Calendar> startDate, final Optional<Calendar> endDate,
                 final boolean isExact) {
                 final SparseBooleanArray weekdaysArray = new SparseBooleanArray();
                 for (final int day : weekdays) {
@@ -329,11 +330,10 @@ public class TaskDialogHelpers {
 
     public static void handleReminder(final ActionBarActivity ctx,
                                       final Task task, final OnTaskChangedListner onSuccess) {
-        final Calendar reminder = task.getReminder() == null ? new GregorianCalendar()
-                                  : task.getReminder();
+        final Calendar reminder = task.getReminder().or(new GregorianCalendar());
         final FragmentManager fm = ctx.getSupportFragmentManager();
-        final DateTimeDialog dtDialog = DateTimeDialog.newInstance(
-        new OnDateTimeSetListner() {
+        final SupportDateTimeDialog dtDialog = SupportDateTimeDialog.newInstance(
+        new OnDateTimeSetListener() {
             @Override
             public void onDateTimeSet(final int year, final int month,
                                       final int dayOfMonth, final int hourOfDay,
@@ -343,12 +343,12 @@ public class TaskDialogHelpers {
                 reminder.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 reminder.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 reminder.set(Calendar.MINUTE, minute);
-                task.setReminder(reminder, true);
+                task.setReminder(of(reminder), true);
                 onSuccess.onTaskChanged(task);
             }
             @Override
             public void onNoTimeSet() {
-                task.setReminder(null);
+                task.setReminder(Optional.<Calendar>absent());
                 onSuccess.onTaskChanged(task);
             }
         }, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
@@ -600,14 +600,14 @@ public class TaskDialogHelpers {
                                                .getSelected();
                     for (final Task t : checked) {
                         if (!asSubtask) {
-                            if (!t.checkIfParent(task)) {
+                            if (!t.hasSubtasksLoop(task)) {
                                 task.addSubtask(t);
                             } else {
                                 ErrorReporter
                                 .report(ErrorType.TASKS_CANNOT_FORM_LOOP);
                             }
                         } else {
-                            if (!task.checkIfParent(t)) {
+                            if (!task.hasSubtasksLoop(t)) {
                                 t.addSubtask(task);
                             } else {
                                 ErrorReporter
@@ -643,17 +643,13 @@ public class TaskDialogHelpers {
                 return false;
             }
         });
-        if (!MirakelCommonPreferences.isSubtaskDefaultNew()) {
-            subtaskSelectOld.performClick();
-        }
     }
 
     protected static Task newSubtask(final String name, final Task parent,
                                      final Context ctx) {
         final ListMirakel list = MirakelModelPreferences
                                  .getListForSubtask(parent);
-        final Task t = Semantic.createTask(name, Optional.fromNullable(list),
-                                           MirakelCommonPreferences.useSemanticNewTask(), ctx);
+        final Task t = Semantic.createTask(name, Optional.fromNullable(list), true, ctx);
         parent.addSubtask(t);
         return t;
     }

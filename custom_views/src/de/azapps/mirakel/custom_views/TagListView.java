@@ -44,12 +44,13 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 
 public class TagListView extends View {
+    private List<Tag> tags;
     private Task task;
     /**
      * This is a List of pairs (point, tag) which maps the bottom right point of
      * the tag-rect to a tag. The list is ordered by the position of the tags
      */
-    private final List<Pair<Point, Tag>> pointMap = new ArrayList<Pair<Point, Tag>>();
+    private final List<Pair<Point, Tag>> pointMap = new ArrayList<>();
     private final Paint paintBackground;
     private final Paint paintText;
     private final Rect rect;
@@ -109,6 +110,7 @@ public class TagListView extends View {
                     break;
                 case 1:
                     TagListView.this.task.removeTag(tag);
+                    TagListView.this.tags.remove(tag);
                     invalidate();
                     break;
                 default:
@@ -153,6 +155,7 @@ public class TagListView extends View {
 
     public void init(final Task task) {
         this.task = task;
+        this.tags = task.getTags();
         invalidate();
     }
 
@@ -165,8 +168,7 @@ public class TagListView extends View {
         super.onDraw(canvas);
         float begin_x = this.START_PADDING;
         float begin_y = 0;
-        float textLength = 0;
-        final List<Tag> tags = this.task.getTags();
+        float textLength;
         this.pointMap.clear();
         if (tags.size() == 0) {
             this.paintText.setColor(getContext().getResources().getColor(
@@ -189,8 +191,8 @@ public class TagListView extends View {
             this.rectF.left = this.rect.left - scale(5) + begin_x;
             this.rectF.right = this.rect.right + scale(5) + begin_x;
             this.rectF.top = begin_y - this.TAG_SIZE;
-            this.pointMap.add(new Pair<Point, Tag>(new Point(
-                    (int) this.rectF.right, (int) this.rectF.bottom), t));
+            this.pointMap.add(new Pair<>(new Point(
+                                             (int) this.rectF.right, (int) this.rectF.bottom), t));
             this.paintBackground.setColor(t.getBackgroundColor());
             // draw all
             canvas.drawRoundRect(this.rectF, 0, 0, this.paintBackground);

@@ -34,25 +34,25 @@ import de.azapps.tools.Log;
 
 public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
-    public interface OnFileClickListner {
+    public interface OnFileClickListener {
         abstract public void clickOnFile(final FileMirakel f);
     }
 
-    public interface OnFileMarkedListner {
+    public interface OnFileMarkedListener {
         abstract public void markFile(final View v, final FileMirakel e,
                                       final boolean marked);
     }
 
     private static final String TAG = "TaskDetailFilePart";
 
-    protected OnFileClickListner clickListner;
+    protected OnFileClickListener clickListner;
     private FileMirakel file;
 
     private final ImageView fileImage;
     private final TextView fileName;
     private final TextView filePath;
     private boolean marked;
-    private OnFileMarkedListner markedListner;
+    private OnFileMarkedListener markedListner;
 
     public TaskDetailFilePart(final Context context) {
         super(context);
@@ -88,11 +88,11 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
         }
     }
 
-    public void setOnFileClickListner(final OnFileClickListner l) {
+    public void setOnFileClickListner(final OnFileClickListener l) {
         this.clickListner = l;
     }
 
-    public void setOnFileMarked(final OnFileMarkedListner l) {
+    public void setOnFileMarked(final OnFileMarkedListener l) {
         this.markedListner = l;
     }
 

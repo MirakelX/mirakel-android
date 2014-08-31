@@ -149,9 +149,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
             this.taskRowDue.setVisibility(View.VISIBLE);
             this.taskRowDue.setText(DateTimeHelper.formatDate(this.context,
                                     this.task.getDue()));
-            this.taskRowDue.setTextColor(this.context.getResources().getColor(
-                                             TaskHelper.getTaskDueColor(this.task.getDue(),
-                                                     this.task.isDone())));
+            this.taskRowDue.setTextColor(TaskHelper.getTaskDueColor(this.context, this.task.getDue(),
+                                         this.task.isDone()));
         } else {
             this.taskRowDue.setVisibility(View.GONE);
         }
@@ -214,18 +213,8 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
     }
 
     public void updateBackground() {
-        if (MirakelCommonPreferences.colorizeTasks()) {
-            if (MirakelCommonPreferences.colorizeSubTasks()) {
-                final int w = getWidth();
-                ViewHelper.setListColorBackground(this.task.getList(), this, w);
-            } else {
-                setBackgroundColor(this.context.getResources().getColor(
-                                       android.R.color.transparent));
-            }
-        } else {
-            setBackgroundColor(this.context.getResources().getColor(
-                                   android.R.color.transparent));
-        }
+        final int w = getWidth();
+        ViewHelper.setListColorBackground(this.task.getList(), this, w);
     }
 
     protected void updatePriority() {

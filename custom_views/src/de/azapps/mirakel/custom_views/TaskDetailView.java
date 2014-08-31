@@ -25,8 +25,8 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailDueReminder.Type;
-import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListner;
-import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListner;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListener;
+import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileMarkedListener;
 import de.azapps.mirakel.custom_views.TaskDetailHeader.OnDoneChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailTagView.NeedFragmentManager;
 import de.azapps.mirakel.custom_views.TaskSummary.OnTaskClickListener;
@@ -177,14 +177,14 @@ public class TaskDetailView extends BaseTaskDetailRow implements
         }
     }
 
-    public void setOnFileClicked(final OnFileClickListner l) {
+    public void setOnFileClicked(final OnFileClickListener l) {
         final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
         if (v != null) {
             ((TaskDetailFile) v).setOnFileClicked(l);
         }
     }
 
-    public void setOnFileMarked(final OnFileMarkedListner l) {
+    public void setOnFileMarked(final OnFileMarkedListener l) {
         final BaseTaskDetailRow v = this.views.get(TYPE.FILE);
         if (v != null) {
             ((TaskDetailFile) v).setOnFileMarked(l);
@@ -217,7 +217,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
                 h.setOnDoneChangedListner(new OnDoneChangedListner() {
                     @Override
                     public void onDoneChanged(final Task newTask) {
-                        if (newTask.getId() != TaskDetailView.this.task.getId()) {
+                        if (task != null && newTask.getId() != TaskDetailView.this.task.getId()) {
                             update(newTask);
                         } else if (TaskDetailView.this.views.get(TYPE.DUE) != null) {
                             TaskDetailView.this.views.get(TYPE.DUE).update(
