@@ -26,7 +26,6 @@ import java.security.cert.CertificateException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +33,8 @@ import java.util.Map;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,12 +44,12 @@ import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.SyncAdapter;
 import de.azapps.mirakel.sync.taskwarrior.TLSClient.NoSuchCertificateException;
 import de.azapps.tools.FileUtils;
@@ -65,6 +64,12 @@ public class TaskWarriorSync {
         private static final long serialVersionUID = 3349776187699690118L;
         private final TW_ERRORS error;
         private final String message;
+
+        TaskWarriorSyncFailedException(final TW_ERRORS type) {
+            super();
+            this.error = type;
+            message = "";
+        }
 
         TaskWarriorSyncFailedException(final TW_ERRORS type, final String message) {
             super();
@@ -265,6 +270,18 @@ public class TaskWarriorSync {
             final String status = remotes.get("status");
             if (status != null) {
                 if (status.contains("Could not find common ancestor")) {
+                    // Ok, lets backup, reset the sync key and sync with empty message
+
+                    // backup
+                    Looper.prepare();
+                    ExportImport.exportDB(mContext);
+
+                    // reset sync key
+                    accountMirakel.setSyncKey("");
+                    accountMirakel.save();
+
+                    // sync
+                    sync(accountMirakel.getAndroidAccount(), true);
                     throw new TaskWarriorSyncFailedException(
                         TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
                         "sync() throwed error");
@@ -272,6 +289,7 @@ public class TaskWarriorSync {
                     throw new TaskWarriorSyncFailedException(TW_ERRORS.ACCESS_DENIED, "Access denied");
                 }
             }
+            throw new TaskWarriorSyncFailedException(error);
         }
         if (remotes.get("status").equals("Client sync key not found.")) {
             Log.d(TAG, "reset sync-key");
@@ -285,7 +303,7 @@ public class TaskWarriorSync {
             this.accountManager.setUserData(a, SyncAdapter.TASKWARRIOR_KEY,
                                             null);
             try {
-                sync(a);
+                sync(a, false);
             } catch (final TaskWarriorSyncFailedException e) {
                 if (e.getError() != TW_ERRORS.NOT_ENABLED) {
                     client.close();
@@ -477,7 +495,8 @@ public class TaskWarriorSync {
                                     Helpers.getLocal(this.mContext)).format(new Date());
     }
 
-    public void sync(final Account a) throws TaskWarriorSyncFailedException {
+    public void sync(final Account a,
+                     boolean couldNotFindCommonAncestorWorkaround) throws TaskWarriorSyncFailedException {
         this.accountManager = AccountManager.get(this.mContext);
         this.account = a;
         final AccountMirakel aMirakel = AccountMirakel.get(a);
@@ -493,7 +512,12 @@ public class TaskWarriorSync {
         sync.set("user", _user);
         sync.set("key", _key);
         String payload = sync_key != null ? sync_key + "\n" : "";
-        final List<Task> local_tasks = Task.getTasksToSync(a);
+        final List<Task> local_tasks;
+        if (couldNotFindCommonAncestorWorkaround) {
+            local_tasks = new ArrayList<>();
+        } else {
+            local_tasks = Task.getTasksToSync(a);
+        }
         for (final Task task : local_tasks) {
             payload += taskToJson(task) + "\n";
         }

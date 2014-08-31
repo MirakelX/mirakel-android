@@ -121,8 +121,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         json.addProperty("status", status);
         json.addProperty("entry", formatCalUTC(task.getCreatedAt()));
         json.addProperty("description", escape(task.getName()));
-        if (task.getDue() != null) {
-            json.addProperty("due", formatCalUTC(task.getDue()));
+        if (task.getDue().isPresent()) {
+            json.addProperty("due", formatCalUTC(task.getDue().get()));
         }
         if (task.getList() != null
             && !additionals.containsKey(TaskWarriorSync.NO_PROJECT)) {
@@ -137,8 +137,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         if (task.getUpdatedAt() != null) {
             json.addProperty("modified", formatCalUTC(task.getUpdatedAt()));
         }
-        if (task.getReminder() != null) {
-            json.addProperty("reminder", formatCalUTC(task.getReminder()));
+        if (task.getReminder().isPresent()) {
+            json.addProperty("reminder", formatCalUTC(task.getReminder().get()));
         }
         if (end != null) {
             json.addProperty("end", end);
@@ -177,7 +177,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         // Anotations end
         // TW.depends==Mirakel.subtasks!
         // Dependencies
-        if (task.getSubtaskCount() > 0) {
+        if (task.countSubtasks() > 0) {
             boolean first1 = true;
             String depends = "";
             for (final Task subtask : task.getSubtasks()) {
