@@ -74,13 +74,19 @@ import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation.LIKE;
+import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting.ASC;
+import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting.DESC;
 
 public class TasksFragment extends android.support.v4.app.Fragment implements
     LoaderManager.LoaderCallbacks<Cursor> {
@@ -226,7 +232,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
         }
         final ListMirakel list = this.main.getCurrentList ();
         final Task createdTask = Semantic.createTask (name, Optional.fromNullable(list),
-                                 MirakelCommonPreferences.useSemanticNewTask (), getActivity ());
+                                 true, getActivity ());
         getLoaderManager ().restartLoader (0, null, this);
         this.main.setCurrentTask (createdTask, false);
         this.main.getListFragment ().update ();
@@ -631,16 +637,32 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader (final int arg0, final Bundle arg1) {
-        Optional<ListMirakel> listMirakelOptional = ListMirakel.get (this.listId);
+        Optional<ListMirakel> listMirakelOptional = ListMirakel.get(this.listId);
         final ListMirakel list;
         if (!listMirakelOptional.isPresent()) {
-            ErrorReporter.report (ErrorType.LIST_VANISHED);
-            list = SpecialList.firstSpecialSafe ();
+            ErrorReporter.report(ErrorType.LIST_VANISHED);
+            list = SpecialList.firstSpecialSafe();
         } else {
-            list  = listMirakelOptional.get();
+            list = listMirakelOptional.get();
         }
-        return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toCursorLoader(
-                   Task.URI);
+        if (this.query != null) {
+            MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(getActivity());
+            Task.addBasicFiler(mirakelQueryBuilder);
+            mirakelQueryBuilder.and(ModelBase.NAME, LIKE, "%" + this.query + "%");
+            if (list.isSpecial()) {
+                MirakelQueryBuilder sortQuery = list.getWhereQueryForTasks().select(ModelBase.ID);
+                mirakelQueryBuilder.sort("CASE WHEN " + ModelBase.ID + " IN (" + sortQuery.getQuery(
+                                             Task.URI) + ") THEN 0  ELSE 1 END", ASC, sortQuery.getSelectionArguments());
+            } else {
+                mirakelQueryBuilder.sort("CASE WHEN " + Task.LIST_ID + " = " + list.getId() + " THEN 0 ELSE 1 END",
+                                         ASC);
+            }
+            list.addSortBy(mirakelQueryBuilder);
+            return mirakelQueryBuilder.toSupportCursorLoader(Task.URI);
+        } else {
+            return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toSupportCursorLoader(
+                       Task.URI);
+        }
     }
 
     @Override

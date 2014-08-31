@@ -1,9 +1,16 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
 apply plugin: 'eclipse'
 apply plugin: 'robolectric'
 
-
+def getVersionCode() {
+	def manifestFile = file("AndroidManifest.xml")
+	def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+	def manifestText = manifestFile.getText()
+	def matcher = pattern.matcher(manifestText)
+	matcher.find()
+	return Integer.parseInt(matcher.group(1))
+}
 
 android {
     compileOptions {
@@ -13,14 +20,78 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/NOTICE.txt'
-            exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
     }
-    flavorDimensions "stores"
+    flavorDimensions "stores", "apis"
     lintOptions {
         disable 'MissingTranslation'
+        enable 'NewerVersionAvailable'
     }
+    defaultConfig {
+        testApplicationId "de.azapps.mirakelandroid.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+        minSdkVersion 15
+        targetSdkVersion 19
+    }
+    signingConfigs {
+    	release {
+            def Properties localProps = new Properties()
+            localProps.load(new FileInputStream(file('./local.properties')))
+            def Properties keyProps = new Properties()
+            assert localProps['keystore.props.file'];
+            keyProps.load(new FileInputStream(file(localProps['keystore.props.file'])))
+            storeFile file(keyProps["store"])
+            keyAlias keyProps["alias"]
+            storePassword keyProps["storePass"]
+            keyPassword keyProps["pass"]
+    	}    
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            runProguard true
+            proguardFile 'proguard-android.txt'
+        }
+        debug {
+            runProguard false
+            signingConfig signingConfigs.debug
+        }
+    }
+    productFlavors {
+        google {
+            flavorDimension "stores"
+        }
+        fdroid {
+            flavorDimension "stores"
+        }
+        normal {
+            flavorDimension "apis"
+            compileSdkVersion rootProject.ext.compileSdkVersion
+        }
+        old {
+            flavorDimension "apis"
+            minSdkVersion 8
+            targetSdkVersion 19
+            versionCode getVersionCode()-1
+            compileSdkVersion rootProject.ext.compileSdkVersion
+        }
+        //for some reasons this is buggy
+        //l_test {
+            //flavorDimension "apis"
+            //minSdkVersion "L"
+            //targetSdkVersion "L"
+            //compileSdkVersion "android-L"
+        //}
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -35,51 +106,19 @@ android {
         androidTest.setRoot('tests')
         androidTest {
             manifest.srcFile 'AndroidManifest.xml'
-            java { srcDirs = ['tests/src']}
+            java { srcDirs = ['tests/src'] }
             res.srcDirs = ['tests/res']
             assets.srcDirs = ['tests/assets']
             resources.srcDirs = ['tests/src']
         }
 
-    }
-    defaultConfig {
-            testApplicationId "de.azapps.mirakelandroid.test"
-            testInstrumentationRunner "android.test.InstrumentationTestRunner"
-            minSdkVersion 15
-            targetSdkVersion 19
-    }
-    signingConfigs {
-        release {
-            storeFile file("debug.keystore")
-            storePassword "android"
-            keyAlias "androiddebugkey"
-            keyPassword "android"
-        }
-    }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            runProguard true
-            proguardFile 'proguard-android.txt'
-        }
-	    debug {
-            signingConfig signingConfigs.release
-        }
-    }
-    productFlavors {
+        old { java.srcDirs = ['src-patched/src-old'] }
+        normal { java.srcDirs = ['src-patched/src-normal'] }
+        l_test { java.srcDirs = ['src-patched/src-normal'] }
+
         google {
-            flavorDimension "stores"
-        }
-        fdroid {
-            flavorDimension "stores"
-        }
-    }
-    android.sourceSets.google {
-        manifest {
-            srcFile "res-google/AndroidManifest.xml"
-        }
-        res{
-            srcDir "res-google"
+            manifest.srcFile  "res-google/AndroidManifest.xml"
+            res.srcDirs = ['res-google']
         }
     }
 }
@@ -96,7 +135,8 @@ dependencies {
     compile project(':custom_views')
     compile project(':acra')
     compile project(':drag-sort-listview')
-    compile project(':new_ui')
+    //l_testCompile project(path: ':new_ui', configuration: 'l_testRelease')
+    normalCompile project(path: ':new_ui', configuration: 'normalRelease')
 
     //for tests
     androidTestCompile files("$project.buildDir/classes/debug")

@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="64"
-    android:versionName="2.7-beta1" >
+    android:versionCode="68"
+    android:versionName="2.7.1" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -136,19 +136,6 @@
         </activity>
         <!-- android:launchMode="singleTop" -->
         <activity
-            android:name="de.azapps.mirakel.static_activities.SettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_settings"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.static_activities.DonationsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_donations"
-            android:parentActivityName="de.azapps.mirakel.static_activities.SettingsActivity"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
             android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
@@ -188,17 +175,9 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.static_activities.CreditsActivity"
+            android:name="de.azapps.mirakel.settings.activities.CreditsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_credits" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.special_list.SpecialListsSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.settings.special_list.SpecialListsSettings" />
         </activity>
         <activity
             android:name="org.acra.CrashReportDialog"
@@ -252,29 +231,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name="de.azapps.mirakel.settings.semantics.SemanticsSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.settings.semantics.SemanticsSettings" />
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.recurring.RecurringActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.accounts.AccountSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.tags.TagsSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" />
     </application>
 
 </manifest>

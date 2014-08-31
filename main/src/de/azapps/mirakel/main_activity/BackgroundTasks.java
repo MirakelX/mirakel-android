@@ -28,10 +28,9 @@ public class BackgroundTasks {
                                        MirakelCommonPreferences.isTablet ());
                     editor.commit ();
                 }
-                if (!MirakelCommonPreferences.containsStartupAllLists ()) {
+                if (!MirakelCommonPreferences.containsStartupList()) {
                     final SharedPreferences.Editor editor = MirakelPreferences
                                                             .getEditor ();
-                    editor.putBoolean ("startupAllLists", false);
                     editor.putString ("startupList", ""
                                       + ListMirakel.first ().getId ());
                     editor.commit ();

@@ -41,7 +41,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,9 +52,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -95,23 +99,22 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.static_activities.DonationsActivity;
-import de.azapps.mirakel.static_activities.SettingsActivity;
-import de.azapps.mirakel.static_activities.SplashScreenActivity;
+import de.azapps.mirakel.settings.activities.DonationsActivity;
+import de.azapps.mirakel.settings.activities.SettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
 import static de.azapps.tools.OptionalUtils.withOptional;
+import static com.google.common.base.Optional.of;
 
 /**
  * This is our main activity. Here happens nearly everything.
  *
  * @author az
  */
-public class MainActivity extends ActionBarActivity implements
-    ViewPager.OnPageChangeListener {
+public class MainActivity extends ActionBarActivity {
     private static boolean isRTL;
     // Intent variables
     public static final int LEFT_FRAGMENT = 0, RIGHT_FRAGMENT = 1;
@@ -170,7 +173,6 @@ public class MainActivity extends ActionBarActivity implements
 
     private boolean showNavDrawer = false;
 
-    private boolean skipSwipe;
     private Intent startIntent;
     private int previousState;
 
@@ -195,7 +197,6 @@ public class MainActivity extends ActionBarActivity implements
         if (this.newTaskSubject == null) {
             return;
         }
-        this.skipSwipe = true;
         final Task task = Semantic.createTask (this.newTaskSubject, Optional.fromNullable(list), true,
                                                this);
         task.setContent (this.newTaskContent == null ? "" : this.newTaskContent);
@@ -205,7 +206,6 @@ public class MainActivity extends ActionBarActivity implements
             addFilesForTask (task, intent);
         }
         setCurrentList (task.getList ());
-        this.skipSwipe = true;
         setCurrentTask (task, true);
     }
 
@@ -248,9 +248,7 @@ public class MainActivity extends ActionBarActivity implements
     private void forceRebuildLayout () {
         this.mPagerAdapter = null;
         this.isResumed = false;
-        this.skipSwipe = true;
         setupLayout ();
-        this.skipSwipe = true;
         if (getTaskFragment () != null) {
             getTaskFragment ().update (MainActivity.this.currentTask);
         }
@@ -383,7 +381,6 @@ public class MainActivity extends ActionBarActivity implements
             return;
         }
         this.currentTask = currentTask;
-        this.skipSwipe = true;
         if (resetGoBackTo) {
             this.goBackTo.clear ();
         }
@@ -480,9 +477,21 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Is called if the user want to destroy a List
      *
-     * @param lists
+     * @param selectedLists
      */
-    public void handleDestroyList (final List<ListMirakel> lists) {
+    public void handleDestroyList (final List<ListMirakel> selectedLists) {
+        final List<ListMirakel> lists = new ArrayList<>();
+        for (ListMirakel l : selectedLists) {
+            if (l.getAccount().getType() != ACCOUNT_TYPES.CALDAV) {
+                lists.add(l);
+            }
+        }
+        if (lists.size() != selectedLists.size()) {
+            Toast.makeText(this, R.string.delete_caldav_lists, Toast.LENGTH_LONG).show();
+            if (lists.isEmpty()) {
+                return;
+            }
+        }
         String names = "\"" + lists.get (0).getName () + "\"";
         for (int i = 1; i < lists.size (); i++) {
             names += ", \"" + lists.get (i).getName () + "\"";
@@ -544,7 +553,7 @@ public class MainActivity extends ActionBarActivity implements
         for (Task t : tasks) {
             if (t.getRecurring () != null) {
                 handleDestroyRecurringTask (t);
-            } else if (t.getSubtaskCount() > 0) {
+            } else if (t.countSubtasks() > 0) {
                 handleDestroySubtasks(t);
             } else {
                 normalTasks.add(t);
@@ -726,28 +735,28 @@ public class MainActivity extends ActionBarActivity implements
 
     public void handleSetDue (final List<Task> tasks) {
         final Calendar dueLocal = new GregorianCalendar ();
-        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance (
-        new DatePicker.OnDateSetListener () {
+        final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(
+        new DatePicker.OnDateSetListener() {
             @Override
-            public void onDateSet (final DatePicker dp, final int year,
-                                   final int month, final int day) {
-                final Calendar due = new GregorianCalendar (year, month,
+            public void onDateSet(final DatePicker dp, final int year,
+                                  final int month, final int day) {
+                final Calendar due = new GregorianCalendar(year, month,
                         day);
                 for (final Task task : tasks) {
-                    task.setDue (due);
-                    saveTask (task);
+                    task.setDue(of(due));
+                    saveTask(task);
                 }
             }
             @Override
-            public void onNoDateSet () {
+            public void onNoDateSet() {
                 for (final Task task : tasks) {
-                    task.setDue (null);
-                    saveTask (task);
+                    task.setDue(Optional.<Calendar>absent());
+                    saveTask(task);
                 }
             }
-        }, dueLocal.get (Calendar.YEAR), dueLocal.get (Calendar.MONTH),
-        dueLocal.get (Calendar.DAY_OF_MONTH), false,
-        MirakelCommonPreferences.isDark (), true);
+        }, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
+        dueLocal.get(Calendar.DAY_OF_MONTH), false,
+        MirakelCommonPreferences.isDark(), true);
         datePickerDialog.show (getSupportFragmentManager (), "datepicker");
     }
 
@@ -893,7 +902,6 @@ public class MainActivity extends ActionBarActivity implements
             }
             this.mViewPager.setOffscreenPageLimit (2);
             this.mViewPager.setAdapter (this.mPagerAdapter);
-            this.mViewPager.setOnPageChangeListener (this);
         } else if (this.fragmentManager != null
                    && findViewById (R.id.tasks_fragment) != null
                    && findViewById (R.id.task_fragment) != null) {
@@ -984,18 +992,9 @@ public class MainActivity extends ActionBarActivity implements
                     MainActivity.this.menu.findItem (R.id.menu_sync_now)
                     .setVisible (MirakelModelPreferences.useSync ());
                 }
-                if (MainActivity.this.menu.findItem (R.id.menu_kill_button) != null) {
-                    MainActivity.this.menu.findItem (R.id.menu_kill_button)
-                    .setVisible (
-                        MirakelCommonPreferences.showKillButton ());
-                }
                 if (MainActivity.this.menu.findItem (R.id.menu_contact) != null) {
                     MainActivity.this.menu.findItem (R.id.menu_contact)
                     .setVisible (BuildHelper.isBeta ());
-                }
-                if (MainActivity.this.menu.findItem (R.id.menu_new_ui) != null) {
-                    MainActivity.this.menu.findItem (R.id.menu_new_ui)
-                    .setVisible (false/*BuildHelper.isBeta ()*/);
                 }
                 if (!fromShare) {
                     updateShare ();
@@ -1206,7 +1205,6 @@ public class MainActivity extends ActionBarActivity implements
                              && getResources ().getConfiguration ().getLayoutDirection () == View.LAYOUT_DIRECTION_RTL;
         this.currentPosition = MainActivity.getTasksFragmentPosition ();
         this.mPagerAdapter = null;
-        this.skipSwipe = false;
         Log.d (MainActivity.TAG, "false");
         this.startIntent = getIntent ();
         this.closeOnBack = false;
@@ -1262,11 +1260,9 @@ public class MainActivity extends ActionBarActivity implements
     private void setCurrentItem (final int pos) {
         if (!MirakelCommonPreferences.isTablet () && this.mViewPager != null
             && this.mViewPager.getCurrentItem () != pos) {
-            this.skipSwipe = true;
             this.mViewPager.postDelayed (new Runnable () {
                 @Override
                 public void run () {
-                    MainActivity.this.skipSwipe = true;
                     MainActivity.this.mViewPager.setCurrentItem (pos);
                 }
             }, 10);
@@ -1351,6 +1347,7 @@ public class MainActivity extends ActionBarActivity implements
             break;
         case R.id.menu_new_ui:
             MirakelCommonPreferences.setUseNewUI(true);
+            Helpers.restartApp(this);
             break;
         case R.id.menu_sync_now:
             final Bundle bundle = new Bundle ();
@@ -1383,15 +1380,6 @@ public class MainActivity extends ActionBarActivity implements
         case R.id.search:
             onSearchRequested ();
             break;
-        case R.id.menu_kill_button:
-            // Only Close
-            final Intent killIntent = new Intent (getApplicationContext (),
-                                                  SplashScreenActivity.class);
-            killIntent.setFlags (Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            killIntent.setAction (SplashScreenActivity.EXIT);
-            startActivity (killIntent);
-            finish ();
-            return false;
         case R.id.menu_undo:
             UndoHistory.undoLast (this);
             updateCurrentListAndTask ();
@@ -1430,49 +1418,6 @@ public class MainActivity extends ActionBarActivity implements
         return true;
     }
 
-    @Override
-    public void onPageScrolled (final int position, final float positionOffset,
-                                final int positionOffsetPixels) {
-        if (getTaskFragment () != null && getTasksFragment () != null
-            && getTasksFragment ().getAdapter () != null
-            && MirakelCommonPreferences.swipeBehavior () && !this.skipSwipe) {
-            this.skipSwipe = true;
-            if (getTasksFragment () != null) {
-                setCurrentTask (getTasksFragment ().getLastTouched (), false);
-            }
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged (final int state) {
-        this.skipSwipe = ! (this.previousState == ViewPager.SCROLL_STATE_DRAGGING
-                            && state == ViewPager.SCROLL_STATE_SETTLING);
-        this.previousState = state;
-    }
-
-    @Override
-    public void onPageSelected (final int position) {
-        if (getTasksFragment () != null) {
-            getTasksFragment ().closeActionMode ();
-        }
-        if (getTaskFragment () != null) {
-            getTaskFragment ().closeActionMode ();
-        }
-        runOnUiThread (new Runnable () {
-            @Override
-            public void run () {
-                if (MirakelCommonPreferences.lockDrawerInTaskFragment ()
-                    && position == getTaskFragmentPosition ()) {
-                    MainActivity.this.mDrawerLayout
-                    .setDrawerLockMode (DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                } else {
-                    MainActivity.this.mDrawerLayout
-                    .setDrawerLockMode (DrawerLayout.LOCK_MODE_UNLOCKED);
-                }
-            }
-        });
-        loadMenu (position);
-    }
 
     @SuppressLint ("NewApi")
     @Override
@@ -1568,10 +1513,6 @@ public class MainActivity extends ActionBarActivity implements
         this.goBackTo.push (t);
     }
 
-    public void setSkipSwipe () {
-        this.skipSwipe = true;
-    }
-
     private void handleIntent (final Intent intent) {
         if (intent == null || intent.getAction () == null) {
             Log.d (MainActivity.TAG, "action null");
@@ -1580,7 +1521,6 @@ public class MainActivity extends ActionBarActivity implements
                        DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
             final Task task = TaskHelper.getTaskFromIntent (intent);
             if (task != null) {
-                this.skipSwipe = true;
                 this.currentList = task.getList ();
                 if (this.mDrawerLayout != null) {
                     this.mDrawerLayout.postDelayed (new Runnable () {
@@ -1710,8 +1650,12 @@ public class MainActivity extends ActionBarActivity implements
                 if (subject == null) {
                     subject = getString (R.string.message_notification);
                 }
+                TextView msg = (TextView) getLayoutInflater().inflate(R.layout.alertdialog_textview, null);
+                msg.setText(Html.fromHtml(message));
+                msg.setMovementMethod(LinkMovementMethod.getInstance());
+                msg.setClickable(true);
                 new AlertDialog.Builder (this).setTitle (subject)
-                .setMessage (message).show ();
+                .setView(msg).show();
             }
         } else {
             setCurrentItem (getTaskFragmentPosition ());
