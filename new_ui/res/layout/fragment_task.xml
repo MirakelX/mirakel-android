@@ -1,95 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:custom="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:minWidth="1000dp"
-              tools:context="de.azapps.mirakel.new_ui.fragments.TaskFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:minWidth="600dp"
+        tools:context="de.azapps.mirakel.new_ui.fragments.TaskFragment">
 
-        <de.azapps.mirakel.new_ui.views.ProgressDoneView
-            android:layout_width="@dimen/priorityDoneSize"
-            android:layout_height="@dimen/priorityDoneSize"
-            android:id="@+id/task_progress_done"
-            custom:progress_color="@color/progress"
-            custom:progress_background_color="@color/progress_background"/>
-
-        <ViewSwitcher
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/task_name_view_switcher">
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
 
-            <TextView
+            <de.azapps.mirakel.new_ui.views.ProgressDoneView
+                android:layout_width="@dimen/priorityDoneSize"
+                android:layout_height="@dimen/priorityDoneSize"
+                android:id="@+id/task_progress_done"
+                custom:progress_color="@color/progress"
+                custom:progress_background_color="@color/progress_background"/>
+
+            <ViewSwitcher
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/task_name"
-                android:id="@+id/task_name"
-                android:text="Example task"/>
+                android:id="@+id/task_name_view_switcher">
 
-            <EditText
-                android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/task_name"
+                    android:id="@+id/task_name"
+                    android:text="Example task"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:id="@+id/task_name_edit"/>
+            </ViewSwitcher>
+
+            <!-- TODO priorities -->
+        </LinearLayout>
+
+        <de.azapps.mirakel.new_ui.views.DatesView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/task_dates"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Progress -->
+        <de.azapps.mirakel.new_ui.views.ProgressView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/task_progress"
+            android:layout_marginBottom="20dp"/>
+        <!-- Tags -->
+
+        <de.azapps.mirakel.new_ui.views.TagsView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/task_tags"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Notes -->
+        <de.azapps.mirakel.new_ui.views.NoteView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/task_note"
+            android:layout_marginBottom="20dp"/>
+
+
+        <!-- TODO Subtasks -->
+        <de.azapps.mirakel.new_ui.views.SubtasksView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/task_subtasks"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- TODO Files -->
+
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:id="@+id/task_name_edit"/>
-        </ViewSwitcher>
+                android:layout_weight="7"
+                android:text="@string/task_add_more"
+                android:background="?android:attr/selectableItemBackground"
+                android:id="@+id/task_button_add_more"/>
 
-        <!-- TODO priorities -->
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/task_button_done"
+                android:background="?android:attr/selectableItemBackground"
+                android:id="@+id/task_button_done"/>
+        </LinearLayout>
+
     </LinearLayout>
-
-    <de.azapps.mirakel.new_ui.views.DatesView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_dates"/>
-
-    <!-- Progress -->
-    <de.azapps.mirakel.new_ui.views.ProgressView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_progress"/>
-
-    <!-- TODO Tags -->
-
-    <!-- Notes -->
-    <de.azapps.mirakel.new_ui.views.NoteView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_note"/>
-
-
-    <!-- TODO Subtasks -->
-
-    <!-- TODO Files -->
-
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:text="@string/task_add_more"
-            android:id="@+id/task_button_add_more"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="@string/task_button_done"
-            android:id="@+id/task_button_done"/>
-    </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

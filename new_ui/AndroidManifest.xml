@@ -6,12 +6,13 @@
     <uses-sdk
         tools:node="replace"
         android:targetSdkVersion="L"
-        android:minSdkVersion="11"/>
+        android:minSdkVersion="14"/>
     <application>
         <activity
             android:name=".activities.MirakelActivity"
             android:theme="@style/MirakelBaseTheme"
-            android:label="@string/title_activity_mirakel" >
+            android:label="@string/title_activity_mirakel"
+            android:uiOptions="none">
         </activity>
         <activity
             android:name=".activities.TaskActivity"

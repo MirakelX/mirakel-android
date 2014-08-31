@@ -19,27 +19,40 @@ import android.view.View;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.*;
 
 public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     OnListSelectedListener {
 
-    private class ViewHolder {
-        private Optional<DrawerLayout> mDrawerLayout;
-        private Optional<ActionBarDrawerToggle> mDrawerToggle;
+    private Optional<DrawerLayout> mDrawerLayout = absent();
+    private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Getter / Setter
+    private TasksFragment getTasksFragment() {
+        return (TasksFragment) getFragmentManager().findFragmentById(R.id.tasks_fragment);
     }
 
-    private ViewHolder viewHolder = new ViewHolder();
+    private ListsFragment getListsFragment() {
+        return (ListsFragment) getFragmentManager().findFragmentById(R.id.lists_fragment);
+    }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +62,16 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                 R.color.colorPrimary)));
         initDrawer();
         handleIntent(getIntent());
+        if (getTasksFragment() != null && getTasksFragment().getList() != null) {
+            getActionBar().setTitle(getTasksFragment().getList().getName());
+        }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        withOptional(viewHolder.mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
+        withOptional(mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
             @Override
             public void apply(ActionBarDrawerToggle input) {
                 input.syncState();
@@ -66,7 +82,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        withOptional(viewHolder.mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
+        withOptional(mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
             @Override
             public void apply(ActionBarDrawerToggle input) {
                 input.onConfigurationChanged(newConfig);
@@ -77,9 +93,9 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (viewHolder.mDrawerLayout.isPresent()) {
+        if (mDrawerLayout.isPresent()) {
             // For phones
-            boolean drawerOpen = viewHolder.mDrawerLayout.get().isDrawerOpen(Gravity.START);
+            boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(Gravity.START);
             if (drawerOpen) {
                 // TODO list menu
             } else {
@@ -103,14 +119,18 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (viewHolder.mDrawerToggle.isPresent()) {
+        if (mDrawerToggle.isPresent()) {
             // Phone
-            if (viewHolder.mDrawerToggle.get().onOptionsItemSelected(item)) {
+            if (mDrawerToggle.get().onOptionsItemSelected(item)) {
                 return true;
             }
         }
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_toggle_ui) {
+            MirakelCommonPreferences.setUseNewUI(false);
+            Helpers.restartApp(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -118,20 +138,29 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
 
     @Override
     public void onTaskSelected(Task task) {
-        DialogFragment newFragment = TaskFragment.newInstance(task.getId());
+        DialogFragment newFragment = TaskFragment.newInstance(task);
         newFragment.show(getFragmentManager(), "dialog");
     }
 
     @Override
     public void onListSelected(ListMirakel list) {
-        setList(list.getId());
+        setList(list);
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
+            @Override
+            public void apply(DrawerLayout input) {
+                input.closeDrawer(Gravity.START);
+            }
+        });
     }
 
-    private void setList(long list_id) {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Other functions
+
+    private void setList(ListMirakel listMirakel) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        TasksFragment tasksFragment = TasksFragment.newInstance(list_id);
-        fragmentTransaction.replace(R.id.tasks_fragment, tasksFragment);
+        TasksFragment tasksFragment = getTasksFragment();
+        tasksFragment.setList(listMirakel);
         fragmentTransaction.commit();
     }
 
@@ -150,7 +179,13 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
             break;
         case DefinitionsHelper.SHOW_LIST:
         case DefinitionsHelper.SHOW_LIST_FROM_WIDGET:
-            setList(intent.getIntExtra (DefinitionsHelper.EXTRA_ID, 0));
+            Optional<ListMirakel> listMirakelOptional = ListMirakel.get(intent.getIntExtra(
+                        DefinitionsHelper.EXTRA_ID, 0));
+            if (listMirakelOptional.isPresent()) {
+                setList(listMirakelOptional.get());
+            } else {
+                setList(SpecialList.firstSpecialSafe());
+            }
             break;
         case Intent.ACTION_SEARCH:
             // TODO
@@ -166,8 +201,8 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
 
     private void initDrawer() {
         // Nav drawer
-        viewHolder.mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
-        withOptional(viewHolder.mDrawerLayout, new Procedure<DrawerLayout>() {
+        mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
             public void apply(DrawerLayout mDrawerLayout) {
                 final ActionBar actionBar = MirakelActivity.this.getActionBar();
@@ -178,7 +213,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                     /** Called when a drawer has settled in a completely closed state. */
                     public void onDrawerClosed(View view) {
                         super.onDrawerClosed(view);
-                        actionBar.setTitle(R.string.list_title);
+                        actionBar.setTitle(getTasksFragment().getList().getName());
                         invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                     /** Called when a drawer has settled in a completely open state. */
@@ -189,7 +224,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
                     }
                 };
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
-                viewHolder.mDrawerToggle = Optional.of(mDrawerToggle);
+                MirakelActivity.this.mDrawerToggle = Optional.of(mDrawerToggle);
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setHomeButtonEnabled(true);
             }

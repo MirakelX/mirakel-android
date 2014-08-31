@@ -20,7 +20,6 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,52 +66,41 @@ public class DatesView extends LinearLayout {
         reminderText = (TextView) findViewById(R.id.dates_reminder);
     }
 
-
-    @Override
-    public void dispatchDraw(Canvas canvas) {
+    private void rebuildLayout() {
         // Set data
         if (isInEditMode()) {
             dueText.setText("today");
             reminderText.setText("today at 6 pm");
             listText.setText("At home");
-            super.dispatchDraw(canvas);
-            return;
-        }
-        if (due.isPresent()) {
-            dueText.setText(DateTimeHelper.formatDate(getContext(), due.get()));
-            dueText.setTextColor(TaskHelper.getTaskDueColor(getContext(), due.get(), isDone));
         } else {
-            dueText.setText(getContext().getString(R.string.no_date));
-            dueText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
+            if (due.isPresent()) {
+                dueText.setText(DateTimeHelper.formatDate(getContext(), due));
+                dueText.setTextColor(TaskHelper.getTaskDueColor(getContext(), due, isDone));
+            } else {
+                dueText.setText(getContext().getString(R.string.no_date));
+                dueText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
+            }
+            listText.setText(listMirakel);
+            if (reminder.isPresent()) {
+                reminderText.setText(DateTimeHelper.formatReminder(getContext(), reminder.get()));
+                reminderText.setTextColor(getContext().getResources().getColor(R.color.Black)); // TODO fix color
+            } else {
+                reminderText.setText(getContext().getString(R.string.no_reminder));
+                reminderText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
+            }
+            // Set listener
+            dueText.setOnClickListener(dueEditListener);
+            listText.setOnClickListener(listEditListener);
+            reminderText.setOnClickListener(reminderEditListener);
         }
-        listText.setText(listMirakel);
-        if (reminder.isPresent()) {
-            reminderText.setText(DateTimeHelper.formatReminder(getContext(), reminder.get()));
-            reminderText.setTextColor(getContext().getResources().getColor(R.color.Black)); // TODO fix color
-        } else {
-            reminderText.setText(getContext().getString(R.string.no_reminder));
-            reminderText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
-        }
-        // Set listener
-        dueText.setOnClickListener(dueEditListener);
-        listText.setOnClickListener(listEditListener);
-        reminderText.setOnClickListener(reminderEditListener);
-        super.dispatchDraw(canvas);
-    }
-
-    private void rebuildLayout() {
         invalidate();
         requestLayout();
     }
 
-    public Optional<Calendar> getDue() {
-        return due;
-    }
-
     public void setData(Task task) {
-        this.due = fromNullable(task.getDue());
+        this.due = task.getDue();
         this.listMirakel = task.getList().getName();
-        this.reminder = fromNullable(task.getReminder());
+        this.reminder = task.getReminder();
         this.isDone = task.isDone();
         rebuildLayout();
     }
@@ -122,6 +110,7 @@ public class DatesView extends LinearLayout {
         this.dueEditListener = dueEditListener;
         this.listEditListener = listEditListener;
         this.reminderEditListener = reminderEditListener;
+        rebuildLayout();
     }
 
 }

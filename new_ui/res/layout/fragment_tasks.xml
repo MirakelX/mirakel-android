@@ -7,7 +7,9 @@
     <ListView
         android:id="@+id/task_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:dividerHeight="0dp"
+        android:divider="@color/transparent"/>
 
     <com.faizmalkani.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabbutton"

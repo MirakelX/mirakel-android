@@ -14,37 +14,43 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.faizmalkani.floatingactionbutton.FloatingActionButton;
-import com.google.common.base.Optional;
-
 
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 
+import static com.google.common.base.Optional.fromNullable;
+
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks {
+
+    public static final String ARGUMENT_LIST = "list";
 
     private TaskAdapter mAdapter;
     private ListView mListView;
     private View layout;
     private OnTaskSelectedListener mListener;
 
-    private Optional<Long> listId;
+    private ListMirakel listMirakel;
 
     public TasksFragment() {
         // Required empty public constructor
     }
 
-
-    public static TasksFragment newInstance(long list_id) {
+    public static TasksFragment newInstance(ListMirakel listMirakel) {
         TasksFragment f = new TasksFragment();
         // Supply num input as an argument.
         Bundle args = new Bundle();
-        args.putLong("list_id", list_id);
+        args.putParcelable(ARGUMENT_LIST, listMirakel);
         f.setArguments(args);
         return f;
+    }
+
+    public ListMirakel getList() {
+        return listMirakel;
     }
 
     @Override
@@ -63,8 +69,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 mListener.onTaskSelected(((TaskAdapter.ViewHolder) view.getTag()).getTask());
             }
         });
-        listId = Optional.absent();
-        getLoaderManager().initLoader(0, null, this);
     }
 
 
@@ -103,35 +107,22 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void clickFAB(View v) {
-        // TODO
+        Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel), true,
+                                            getActivity());
+        mListener.onTaskSelected(task);
     }
 
-
-    private void update() {
+    public void setList(ListMirakel listMirakel) {
+        this.listMirakel = listMirakel;
         Bundle args = new Bundle();
-        if (listId.isPresent()) {
-            args.putLong("list_id", listId.get());
-        }
+        args.putParcelable(ARGUMENT_LIST, listMirakel);
         getLoaderManager().restartLoader(0, args, this);
     }
 
-
     @Override
-    public Loader onCreateLoader(int i, Bundle bundle) {
-        boolean showDone = MirakelCommonPreferences.showDoneMain();
-        Bundle arguments = getArguments();
-        try {
-            listId = Optional.of(arguments.getLong("list_id"));
-        } catch (IllegalStateException | NullPointerException e) {
-            listId = Optional.absent();
-        }
-        if (listId.isPresent()) {
-            Optional<ListMirakel> list = ListMirakel.get(listId.get());
-            if (list.isPresent()) {
-                return Task.getCursorLoader(list.get(), showDone);
-            }
-        }
-        return Task.allCursorLoader(showDone);
+    public Loader onCreateLoader(int i, Bundle arguments) {
+        listMirakel = arguments.getParcelable(ARGUMENT_LIST);
+        return listMirakel.getTasksCursorLoader();
     }
 
     @Override

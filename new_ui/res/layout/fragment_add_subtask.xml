@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Mirakel is an Android App for Managing your ToDo-Lists
+  
+  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  
+      This program is free software: you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation, either version 3 of the License, or
+      any later version.
+  
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+  
+      You should have received a copy of the GNU General Public License
+      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/subtask_new_task"
+            style="@style/Button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/new_task" />
+
+        <View
+            style="@style/buttonDivider"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/subtask_select_old"
+            style="@style/Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@string/add_existing"
+            android:textColor="@color/Grey" />
+    </LinearLayout>
+
+    <ViewSwitcher
+        android:id="@+id/subtask_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:measureAllChildren="false" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/subtask_add_task_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:imeOptions="actionSend"
+                android:inputType="text"
+                android:hint="@string/task_name"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/subtask_searchbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawableLeft="@android:drawable/ic_menu_search"
+                android:drawablePadding="@dimen/padding_drawable"
+                android:hint="@android:string/search_go">
+
+                <requestFocus />
+            </EditText>
+
+            <ListView
+                android:id="@+id/subtask_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ListView>
+        </LinearLayout>-
+    </ViewSwitcher>
+
+</LinearLayout>

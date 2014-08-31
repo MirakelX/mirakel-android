@@ -6,4 +6,7 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/action_toggle_ui"
+          android:title="Use old UI"
+          />
 </menu>

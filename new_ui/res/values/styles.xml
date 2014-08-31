@@ -2,10 +2,12 @@
 <resources>
     <style name="MirakelBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar"></style>
     <style name="task_name">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="task_header" >
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="DialogStyle" parent="@android:style/Theme.Holo.Light.Dialog"></style>
 </resources>

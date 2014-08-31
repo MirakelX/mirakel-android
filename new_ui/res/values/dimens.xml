@@ -5,4 +5,5 @@
 
     <dimen name="priorityDoneSize">40dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
+    <dimen name="padding_list_item">8dp</dimen>
 </resources>

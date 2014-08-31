@@ -2,19 +2,20 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
+import de.azapps.mirakel.new_ui.views.TaskNameView;
 
 public class TaskAdapter extends CursorAdapter {
 
@@ -23,13 +24,13 @@ public class TaskAdapter extends CursorAdapter {
 
     public TaskAdapter(Context context, Cursor c, int flags, View.OnClickListener itemClickListener) {
         super(context, c, flags);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.row_task, null);
+        View view = mInflater.inflate(R.layout.row_task, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;
@@ -37,11 +38,12 @@ public class TaskAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final ViewHolder viewHolder = (ViewHolder) view.getTag();
         view.setOnClickListener(itemClickListener);
         Task task = new Task(cursor);
         viewHolder.task = task;
         viewHolder.name.setText(task.getName());
+        viewHolder.name.setStrikeThrough(task.isDone());
         if (task.getDue() != null) {
             viewHolder.due.setVisibility(View.VISIBLE);
             viewHolder.due.setText(DateTimeHelper.formatDate(context,
@@ -57,21 +59,21 @@ public class TaskAdapter extends CursorAdapter {
         viewHolder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO implement this
-                Toast.makeText(context, "Check", Toast.LENGTH_LONG).show();
+                viewHolder.getTask().setDone(isChecked);
+                viewHolder.getTask().save();
             }
         });
     }
 
     public static class ViewHolder {
-        final TextView name;
+        final TaskNameView name;
         final TextView due;
         final TextView list;
         final ProgressDoneView priorityDone;
         private Task task;
 
         public ViewHolder(View view) {
-            name = (TextView) view.findViewById(R.id.task_name);
+            name = (TaskNameView) view.findViewById(R.id.task_name);
             due = (TextView) view.findViewById(R.id.task_due);
             list = (TextView) view.findViewById(R.id.task_list);
             priorityDone = (ProgressDoneView) view.findViewById(R.id.task_priority_done);

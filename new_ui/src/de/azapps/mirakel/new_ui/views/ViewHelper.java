@@ -17,25 +17,14 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.new_ui.activities;
+package de.azapps.mirakel.new_ui.views;
 
-import android.app.Activity;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
+import android.content.Context;
+import android.util.TypedValue;
 
-import de.azapps.mirakel.new_ui.R;
-
-/**
- * Created by az on 06.08.14.
- */
-public class TaskActivity extends Activity {
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mirakel);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                R.color.colorPrimary)));
+public class ViewHelper {
+    public static float dpToPx(final float dp, final Context ctx) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                                         ctx.getResources().getDisplayMetrics());
     }
 }

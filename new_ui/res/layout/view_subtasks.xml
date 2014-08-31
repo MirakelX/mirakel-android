@@ -21,17 +21,24 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/notes"/>
+        android:id="@+id/task_subtasks_wrapper"
+        android:orientation="vertical">
+        <!-- Just for the preview -->
+        <include layout="@layout/row_subtask"/>
+    </LinearLayout>
 
-    <TextView
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit ame"
-        android:drawableStart="@android:drawable/ic_menu_edit"
+        android:text="@string/subtask_add"
+        android:id="@+id/task_subtasks_add"
+        android:drawableStart="@android:drawable/ic_menu_add"
+        style="?android:attr/borderlessButtonStyle"
         android:drawablePadding="@dimen/padding_drawable"
-        android:id="@+id/task_note_text"/>
-
+        android:textColor="@color/mirakel_light_grey"
+        android:gravity="start|center_vertical"/>
 </merge>

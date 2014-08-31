@@ -19,18 +19,18 @@
 package de.azapps.mirakel.new_ui.fragments;
 
 
-
 import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 
@@ -50,8 +50,10 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter = new ListAdapter(getActivity(), null, 0);
+        getListView().setDivider(new ColorDrawable(getResources().getColor(R.color.transparent)));
         setListAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
+        getListView().setBackgroundColor(getResources().getColor(R.color.white));
     }
 
 
@@ -74,7 +76,7 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
 
     @Override
     public Loader onCreateLoader(int i, Bundle bundle) {
-        return ListMirakel.allCursorLoader();
+        return ListMirakel.allWithSpecialCursorLoader();
     }
 
     @Override
