@@ -32,6 +32,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.TypedValue;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -207,4 +209,37 @@ public class FileMirakel extends FileBase {
         return null;
     }
 
+    // Parcelable stuff
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.task.getId());
+        dest.writeParcelable(this.fileUri, 0);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private FileMirakel(Parcel in) {
+        super();
+        this.task = Task.get(in.readLong());
+        this.fileUri = in.readParcelable(Uri.class.getClassLoader());
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
+    public static final Parcelable.Creator<FileMirakel> CREATOR = new
+    Parcelable.Creator<FileMirakel>() {
+        public FileMirakel createFromParcel(Parcel source) {
+            return new FileMirakel(source);
+        }
+        public FileMirakel[] newArray(int size) {
+            return new FileMirakel[size];
+        }
+    };
 }

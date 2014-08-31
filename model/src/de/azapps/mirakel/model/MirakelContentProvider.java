@@ -20,6 +20,7 @@ package de.azapps.mirakel.model;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -58,6 +59,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
 public class MirakelContentProvider extends SQLiteContentProvider {
@@ -157,7 +164,12 @@ public class MirakelContentProvider extends SQLiteContentProvider {
      * @return The account type or null if no account type has been specified.
      */
     protected String getAccountType(Uri uri) {
-        return uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
+        String accountType = uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
+        if (AccountMirakel.ACCOUNT_TYPE_DAVDROID.equals(accountType)) {
+            ErrorReporter.report(ErrorType.OLD_DAVDROID);
+            return null;
+        }
+        return accountType;
     }
 
 
@@ -317,7 +329,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         final ContentResolver db = CaldavDatabaseHelper.getContentProvider(getContext());
-        StringBuilder stringBuilder = new StringBuilder(selection);
+        StringBuilder stringBuilder = new StringBuilder(selection == null ? "" : selection);
 // initialize appendWhere, this allows us to append all other selections with a preceding "AND"
         if (stringBuilder.length() == 0) {
             stringBuilder.append(" 1=1 ");
@@ -505,6 +517,9 @@ public class MirakelContentProvider extends SQLiteContentProvider {
             try {
                 if (cursor.moveToFirst()) {
                     mimeType = cursor.getString(0);
+                } else if (new MirakelQueryBuilder(getContext())
+                           .and(ModelBase.ID, Operation.EQ, ContentUris.parseId(uri)).count(Tag.URI) > 0) {
+                    mimeType = TaskContract.Property.Category.CONTENT_ITEM_TYPE;
                 }
             } finally {
                 cursor.close();
@@ -529,7 +544,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
     @Override
     public Uri insertInTransaction(Uri uri, ContentValues values, boolean isSyncAdapter) {
         final ContentResolver db = CaldavDatabaseHelper.getContentProvider(getContext());
-        Uri result_uri = null;
+        Uri result_uri;
         String accountName = getAccountName(uri);
         String accountType = getAccountType(uri);
         switch (uriMatcher.match(uri)) {
@@ -565,7 +580,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
             break;
         case PROPERTIES:
             PropertyHandler handler = PropertyHandlerFactory.create(values.getAsString(Properties.MIMETYPE));
-            result_uri = handler.insert(db, values, isSyncAdapter);
+            result_uri = handler.insert(db, values, isSyncAdapter, getContext());
             break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
@@ -631,7 +646,8 @@ public class MirakelContentProvider extends SQLiteContentProvider {
                 if (cursor.moveToFirst()) {
 // create handler from found mimetype
                     PropertyHandler handler = PropertyHandlerFactory.create(cursor.getString(0));
-                    count = handler.update(db, values, newPropertySelection, selectionArgs, isSyncAdapter);
+                    count = handler.update(db, values, newPropertySelection, selectionArgs, isSyncAdapter,
+                                           getContext());
                     if (count > 0) {
                         postNotifyUri(Tasks.CONTENT_URI);
                         postNotifyUri(Instances.CONTENT_URI);

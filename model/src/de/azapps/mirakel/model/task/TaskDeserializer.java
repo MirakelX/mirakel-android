@@ -54,6 +54,9 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
+
 public class TaskDeserializer implements JsonDeserializer<Task> {
 
     private static final String TAG = "TaskDeserializer";
@@ -86,9 +89,9 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             t = new Task();
         }
         if (this.isTW) {
-            t.setDue(null);
+            t.setDue(Optional.<Calendar>absent());
             t.setDone(false);
-            t.setContent(null);
+            t.setContent("");
             t.setPriority(0);
             t.setProgress(0);
             t.setList(null, false);
@@ -154,7 +157,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             case "project": {
                 Optional<ListMirakel> list = ListMirakel.findByName(val.getAsString(),
                                              this.account);
-                if (list == null
+                if (!list.isPresent()
                     || list.get().getAccount().getId() != this.account.getId()) {
                     try {
                         list = Optional.fromNullable(ListMirakel.newList(val.getAsString(),
@@ -209,7 +212,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                                             + DateTimeHelper.getTimeZoneOffset(true, due));
                     }
                 }
-                t.setDue(due);
+                t.setDue(fromNullable(due));
                 break;
             case "reminder":
                 Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
@@ -217,7 +220,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                     reminder = parseDate(val.getAsString(),
                                          this.context.getString(R.string.TWDateFormat));
                 }
-                t.setReminder(reminder);
+                t.setReminder(fromNullable(reminder));
                 break;
             case "annotations":
                 t.setContent(handleContent(val));
@@ -259,7 +262,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         }
         if (t.getRecurring() != null) {
             final Recurring r = t.getRecurring();
-            r.setEndDate(end);
+            r.setEndDate(Optional.fromNullable(end));
             r.save();
         }
         return t;
@@ -395,26 +398,31 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "yrs":
         case "yr":
         case "y":
-            r = new Recurring(0, recur, 0, 0, 0, 0, number, true, null, null,
-                              true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, 0, number, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "semiannual":
-            r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, null, null, true,
-                              false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "biannual":
         case "biyearly":
-            r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, null, null, true,
-                              false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "bimonthly":
-            r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, null, null, true,
-                              true, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              true, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "biweekly":
         case "fortnight":
-            r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, null, null, true,
-                              false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "daily":
             number = 1;
@@ -422,22 +430,25 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "days":
         case "day":
         case "d":
-            r = new Recurring(0, recur, 0, 0, number, 0, 0, true, null, null,
-                              true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, number, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "hours":
         case "hour":
         case "hrs":
         case "hr":
         case "h":
-            r = new Recurring(0, recur, 0, number, 0, 0, 0, true, null, null,
-                              true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, number, 0, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "minutes":
         case "mins":
         case "min":
-            r = new Recurring(0, recur, number, 0, 0, 0, 0, true, null, null,
-                              true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, number, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "monthly":
             number = 1;
@@ -449,8 +460,9 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "mth":
         case "mos":
         case "mo":
-            r = new Recurring(0, recur, 0, 0, 0, number, 0, true, null, null,
-                              true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, number, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "quarterly":
             number = 1;
@@ -460,8 +472,9 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "qtrs":
         case "qtr":
         case "q":
-            r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, null,
-                              null, true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         default:
         case "seconds":
@@ -476,8 +489,9 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
                 weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
             }
-            r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, null, null, true,
-                              false, weekdays, (long)0);
+            r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, weekdays, Optional.<Long>absent());
             break;
         case "sennight":
         case "weekly":
@@ -488,8 +502,8 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         case "wks":
         case "wk":
         case "w":
-            r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, null,
-                              null, true, false, new SparseBooleanArray(), (long)0);
+            r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         }
         return r.create();

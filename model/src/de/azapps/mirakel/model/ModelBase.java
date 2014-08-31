@@ -24,6 +24,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.tools.Log;
@@ -31,7 +33,7 @@ import de.azapps.tools.Log;
 /**
  * Created by weiznich on 02.07.14.
  */
-abstract public class ModelBase {
+abstract public class ModelBase implements Parcelable {
     private static final String TAG = "ModelBase";
 
     public static final String ID = "_id";
@@ -41,6 +43,8 @@ abstract public class ModelBase {
     private String name;
 
     protected static Context context;
+
+    protected ModelBase() {}
 
     public ModelBase(final Cursor c) {}
 
@@ -63,9 +67,11 @@ abstract public class ModelBase {
         context = ctx;
     }
 
+    @NonNull
     public long getId() {
         return this.id;
     }
+    @NonNull
     public String getName() {
         return this.name;
     }

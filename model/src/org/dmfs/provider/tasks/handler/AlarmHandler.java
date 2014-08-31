@@ -4,6 +4,7 @@ import org.dmfs.provider.tasks.TaskContract.Property;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
@@ -30,6 +31,8 @@ public class AlarmHandler extends PropertyHandler {
      *            The {@link ContentValues} to validate.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The valid {@link ContentValues}.
      *
@@ -38,7 +41,7 @@ public class AlarmHandler extends PropertyHandler {
      */
     @Override
     public ContentValues validateValues(ContentResolver db, boolean isNew,
-                                        ContentValues values, boolean isSyncAdapter) {
+                                        ContentValues values, boolean isSyncAdapter, final Context ctx) {
         // row id can not be changed or set manually
         if (values.containsKey(Property.Alarm.PROPERTY_ID)) {
             throw new IllegalArgumentException("_ID can not be set manually");
@@ -66,13 +69,16 @@ public class AlarmHandler extends PropertyHandler {
      *            The {@link ContentValues} to insert.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The row id of the new alarm as <code>long</code>
      */
     @Override
-    public Uri insert(ContentResolver db, ContentValues values, boolean isSyncAdapter) {
-        values = validateValues(db, true, values, isSyncAdapter);
-        return super.insert(db, values, isSyncAdapter);
+    public Uri insert(ContentResolver db, ContentValues values, boolean isSyncAdapter,
+                      final Context ctx) {
+        values = validateValues(db, true, values, isSyncAdapter, ctx);
+        return super.insert(db, values, isSyncAdapter, ctx);
     }
 
 
@@ -89,13 +95,15 @@ public class AlarmHandler extends PropertyHandler {
      *            The arguments for the selection <code>String</code>.
      * @param isSyncAdapter
      *            Indicates that the transaction was triggered from a SyncAdapter.
+     * @param ctx
+     *            A generic context
      *
      * @return The number of rows affected.
      */
     @Override
     public int update(ContentResolver db, ContentValues values, String selection,
-                      String[] selectionArgs, boolean isSyncAdapter) {
-        values = validateValues(db, false, values, isSyncAdapter);
-        return super.update(db, values, selection, selectionArgs, isSyncAdapter);
+                      String[] selectionArgs, boolean isSyncAdapter, final Context ctx) {
+        values = validateValues(db, false, values, isSyncAdapter, ctx);
+        return super.update(db, values, selection, selectionArgs, isSyncAdapter, ctx);
     }
 }

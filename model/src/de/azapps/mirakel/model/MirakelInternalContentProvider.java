@@ -21,9 +21,13 @@ package de.azapps.mirakel.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +46,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Build;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -95,19 +105,22 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String CALDAV_INSTANCE_PROPERTIES = "caldav_instance_properties";
     public static final String CALDAV_INSTANCES = "caldav_instances";
 
+    public static final String LIST_WITH_SPECIAL = "list_with_special";
+
     // Uris
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
-    public static final Uri TASK_TAG_URI = getUri(TASK_TAG_JOIN);
+    public static final Uri TASK_TAG_JOIN_URI = getUri(TASK_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
+    public static final Uri LIST_WITH_SPECIAL_URI = getUri(LIST_WITH_SPECIAL);
     public static final Uri TAG_CONNECTION_URI = getUri(Tag.TAG_CONNECTION_TABLE);
     public static final Uri CALDAV_LISTS_URI = getUri("caldav_lists");
     public static final Uri CALDAV_TASKS_URI = getUri("caldav_tasks");
     public static final Uri CALDAV_TASKS_PROPERTY_URI = getUri("caldav_task_properties");
     public static final Uri CALDAV_INSTANCES_URI = getUri(CALDAV_INSTANCES);
     public static final Uri CALDAV_INSTANCE_PROPERTIES_URI = getUri(CALDAV_INSTANCE_PROPERTIES);
-    public static final Uri CALDAV_PROPERTIES_URI = getUri("caldav_properties");
+    public static final Uri CALDAV_PROPERTIES_URI = getUri("caldav_property_view");
     public static final Uri CALDAV_CATEGORIES_URI = getUri("caldav_categories");
     public static final Uri CALDAV_ALARMS_URI = getUri("caldav_alarms");
     public static final Uri SUBTASK_URI = getUri(Task.SUBTASK_TABLE);
@@ -125,19 +138,35 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri UPDATE_LIST_MOVE_UP_URI = getUri(UPDATE_LIST_MOVE_UP);
     public static final Uri UPDATE_LIST_FIX_RGT_URI = getUri(UPDATE_LIST_FIX_RGT);
 
-    private static Map<String, String> views = new HashMap<>();
+    private static final Map<String, String> views = new HashMap<>();
     static {
         views.put("caldav_lists", ListMirakel.TABLE);
         views.put("caldav_tasks", Task.TABLE);
     }
 
+    private static final ListMultimap<Uri, Uri> notifyUris =  ArrayListMultimap.create();
+
+    static {
+        notifyUris.put(CALDAV_TASKS_URI, TASK_URI);
+        notifyUris.put(TASK_URI, TASK_URI);
+        notifyUris.put(LIST_URI, CALDAV_LISTS_URI);
+        notifyUris.put(TASK_URI, CALDAV_TASKS_URI);
+        notifyUris.put(UPDATE_LIST_ORDER_URI, LIST_URI);
+        notifyUris.put(UPDATE_LIST_MOVE_DOWN_URI, LIST_URI);
+        notifyUris.put(UPDATE_LIST_MOVE_UP_URI, LIST_URI);
+        notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_URI);
+        notifyUris.put(TASK_URI, LIST_URI);
+        notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
+        notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
+    }
+
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
-                    LISTS_SORT_JOIN);
+                    LISTS_SORT_JOIN, LIST_WITH_SPECIAL);
     private static final List<String> BLACKLISTED_FOR_DELETION = Arrays
             .asList("", TASK_RECURRING_TW_JOIN, TASK_SUBTASK_JOIN, TASK_TAG_JOIN,
                     LISTS_SORT_JOIN, UPDATE_LIST_MOVE_DOWN, UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN,
-                    UPDATE_LIST_FIX_RGT);
+                    UPDATE_LIST_FIX_RGT, LIST_WITH_SPECIAL);
 
     private static final List<String> BLACKLISTED_FOR_QUERY = Arrays.asList(UPDATE_LIST_MOVE_DOWN,
             UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN, UPDATE_LIST_FIX_RGT);
@@ -162,6 +191,21 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         return database;
     }
 
+    private Set<Uri> transformUriForNotify(final Uri u, Set<Uri> startset) {
+        if (notifyUris.containsKey(u)) {
+            for (Uri u1 : notifyUris.get(u)) {
+                if (!startset.contains(u1)) {
+                    startset.add(u1);
+                    startset = transformUriForNotify(u1, startset);
+                }
+            }
+        } else {
+            startset.add(u);
+        }
+        return startset;
+    }
+
+
     @Override
     public int delete(final Uri uri, final String selection,
                       final String[] selectionArgs) {
@@ -181,6 +225,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         if (!locked) {
             db.setTransactionSuccessful();
             db.endTransaction();
+        }
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
+            this.getContext().getContentResolver().notifyChange(notify, null);
         }
         return u;
     }
@@ -225,10 +272,14 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             db.setTransactionSuccessful();
             db.endTransaction();
         }
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
+            notify = ContentUris.withAppendedId(notify, ContentUris.parseId(u));
+            this.getContext().getContentResolver().notifyChange(notify, null);
+        }
         return u;
     }
 
-    public static void init(final SQLiteDatabase db, final Context ctx) {
+    public static void init(final SQLiteDatabase db) {
         if (db == null) {
             return;
         }
@@ -291,11 +342,25 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         default:
             builder.setTables(table);
         }
-        final Cursor c = builder.query(getReadableDatabase(), projection,
-                                       selection, selectionArgs, groupBy, null, sortOrder);
+        final Cursor c;
+        if (LIST_WITH_SPECIAL.equals(table)) {
+            // TODO Account centric view
+            c = getReadableDatabase().rawQuery(
+                    "select _id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,color, account_id, 1 as isNormal from lists\n"
+                    +
+                    "    UNION\n" +
+                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, 0 as account_id, 0 as isNormal from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
+                    null);
+        } else {
+            c = builder.query(getReadableDatabase(), projection,
+                              selection, selectionArgs, groupBy, null, sortOrder);
+        }
         if (c == null) {
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
+        }
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
+            c.setNotificationUri(getContext().getContentResolver(), notify);
         }
         return c;
     }
@@ -354,6 +419,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         if (!locked) {
             db.setTransactionSuccessful();
             db.endTransaction();
+        }
+        for (Uri notify : transformUriForNotify(uri, new HashSet<Uri>())) {
+            this.getContext().getContentResolver().notifyChange(notify, null);
         }
         return u;
     }

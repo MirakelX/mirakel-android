@@ -25,6 +25,8 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,7 @@ public class Tag extends TagBase {
     public static List<Tag> getTagsForTask(final long id) {
         return Tag.cursorToTagList(new MirakelQueryBuilder(context).select(addPrefix(allColumns,
                                    TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
-                                   .query(MirakelInternalContentProvider.TASK_TAG_URI));
+                                   .query(MirakelInternalContentProvider.TASK_TAG_JOIN_URI));
     }
 
     public static String getTagsQuery(final String[] columns) {
@@ -171,4 +173,36 @@ public class Tag extends TagBase {
         json += "]";
         return json;
     }
+
+    // Parcelable stuff
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(isDarkText ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.backgroundColor);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private Tag(Parcel in) {
+        super();
+        this.isDarkText = in.readByte() != 0;
+        this.backgroundColor = in.readInt();
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
+    public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {
+        public Tag createFromParcel(Parcel source) {
+            return new Tag(source);
+        }
+        public Tag[] newArray(int size) {
+            return new Tag[size];
+        }
+    };
 }

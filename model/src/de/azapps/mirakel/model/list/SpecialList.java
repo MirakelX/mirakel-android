@@ -20,9 +20,10 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -61,21 +62,22 @@ import de.azapps.mirakel.model.list.meta.SpecialListsSubtaskProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsTagProperty;
 import de.azapps.mirakel.model.list.meta.StringDeserializer;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
-import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.transformOrNull;
 
 public class SpecialList extends ListMirakel {
     private boolean active;
-    private Optional<ListMirakel> defaultList;
+    private Optional<ListMirakel> defaultList = absent();
     private Integer defaultDate;
     private Map<String, SpecialListsBaseProperty> where;
+    private String whereString;
 
     public static final Uri URI = MirakelInternalContentProvider.SPECIAL_LISTS_URI;
 
@@ -89,7 +91,7 @@ public class SpecialList extends ListMirakel {
 
     @Override
     public MirakelQueryBuilder getWhereQueryForTasks() {
-        return packWhere(this.where);
+        return packWhere(getWhere());
     }
 
     @Override
@@ -103,10 +105,14 @@ public class SpecialList extends ListMirakel {
     }
 
     public Map<String, SpecialListsBaseProperty> getWhere() {
+        if (where == null) {
+            where = deserializeWhere(whereString);
+        }
         return this.where;
     }
 
     public void setWhere(final Map<String, SpecialListsBaseProperty> where) {
+        this.whereString = serializeWhere(where);
         this.where = where;
     }
 
@@ -129,7 +135,7 @@ public class SpecialList extends ListMirakel {
         return ret;
     }
 
-    public void setDefaultList(final Optional<ListMirakel> defaultList) {
+    public void setDefaultList(@NonNull final Optional<ListMirakel> defaultList) {
         this.defaultList = defaultList;
     }
 
@@ -141,9 +147,9 @@ public class SpecialList extends ListMirakel {
         this.defaultDate = defaultDate;
     }
 
-    SpecialList(final long id, final String name,
+    SpecialList(final long id, @NonNull final String name,
                 final Map<String, SpecialListsBaseProperty> whereQuery,
-                final boolean active, final Optional<ListMirakel> defaultList,
+                final boolean active, @NonNull final Optional<ListMirakel> defaultList,
                 final Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt) {
@@ -151,6 +157,7 @@ public class SpecialList extends ListMirakel {
               AccountMirakel.getLocal());
         this.active = active;
         this.where = whereQuery;
+        this.whereString = serializeWhere(whereQuery);
         this.defaultList = defaultList;
         this.defaultDate = defaultDate;
         this.isSpecial = true;
@@ -190,10 +197,10 @@ public class SpecialList extends ListMirakel {
     public static final String ACTIVE = "active";
     public static final String DEFAULT_LIST = "def_list";
     public static final String DEFAULT_DUE = "def_date";
-    public static final String[] allColumns = { ModelBase.ID,
-                                                ModelBase.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
-                                                DEFAULT_DUE, SORT_BY_FIELD, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
-                                                RGT
+    public static final String[] allColumns = {ModelBase.ID,
+                                               ModelBase.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
+                                               DEFAULT_DUE, SORT_BY_FIELD, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
+                                               RGT
                                               };
     private static final String TAG = "SpecialList";
 
@@ -220,7 +227,6 @@ public class SpecialList extends ListMirakel {
         });
         return getSpecial(getId()).get();
     }
-
 
 
     public static SpecialList newSpecialList(final String name,
@@ -345,8 +351,7 @@ public class SpecialList extends ListMirakel {
     /**
      * Get a List by id
      *
-     * @param listId
-     *            List–ID
+     * @param listId List–ID
      * @return List
      */
     public static Optional<SpecialList> getSpecial(final long listId) {
@@ -391,7 +396,7 @@ public class SpecialList extends ListMirakel {
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
               AccountMirakel.getLocal());
         int defDateCol = c.getColumnIndex(DEFAULT_DUE);
-        setWhere(deserializeWhere(c.getString(c.getColumnIndex(WHERE_QUERY))));
+        whereString = c.getString(c.getColumnIndex(WHERE_QUERY));
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
         setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
         setDefaultDate(c.isNull(defDateCol) ? null : c.getInt(defDateCol));
@@ -475,4 +480,60 @@ public class SpecialList extends ListMirakel {
         return qb.count(URI);
     }
 
+    // Parcelable stuff
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(active ? (byte) 1 : (byte) 0);
+        dest.writeSerializable(this.defaultList);
+        dest.writeValue(this.defaultDate);
+        dest.writeString(this.whereString);
+        dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
+        dest.writeString(this.createdAt);
+        dest.writeString(this.updatedAt);
+        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeInt(this.lft);
+        dest.writeInt(this.rgt);
+        dest.writeInt(this.color);
+        dest.writeLong(this.accountID);
+        dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.getId());
+        dest.writeString(this.getName());
+    }
+
+    private SpecialList(Parcel in) {
+        super();
+        this.active = in.readByte() != 0;
+        this.defaultList = (Optional<ListMirakel>) in.readSerializable();
+        this.defaultDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.whereString = in.readString();
+        int tmpSortBy = in.readInt();
+        this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
+        this.createdAt = in.readString();
+        this.updatedAt = in.readString();
+        int tmpSyncState = in.readInt();
+        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        this.lft = in.readInt();
+        this.rgt = in.readInt();
+        this.color = in.readInt();
+        this.accountID = in.readLong();
+        this.isSpecial = in.readByte() != 0;
+        this.setId(in.readLong());
+        this.setName(in.readString());
+    }
+
+    public static final Creator<SpecialList> CREATOR = new Creator<SpecialList>() {
+        public SpecialList createFromParcel(Parcel source) {
+            return new SpecialList(source);
+        }
+        public SpecialList[] newArray(int size) {
+            return new SpecialList[size];
+        }
+    };
 }

@@ -65,7 +65,6 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
@@ -74,10 +73,12 @@ import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.fromNullable;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 43;
+    public static final int DATABASE_VERSION = 45;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -300,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
                        + lists[i] + "'," + (i + 2) + "," + (i + 3) + ")");
         }
-        MirakelInternalContentProvider.init(db, context);
+        MirakelInternalContentProvider.init(db);
         onUpgrade(db, 32, DATABASE_VERSION);
         if (MirakelCommonPreferences.isDemoMode()) {
             Semantic.init(context);
@@ -322,7 +323,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             final int[] priorities = { 2, -1, 1, 2, 0, 0 };
             for (int i = 0; i < tasks.length; i++) {
                 final Task t = new Task(tasks[i]);
-                t.setDue(dues[i]);
+                t.setDue(fromNullable(dues[i]));
                 t.setPriority(priorities[i]);
                 t.setList(ListMirakel.findByName(task_lists[i]).get());
                 t.setSyncState(SYNC_STATE.ADD);
@@ -335,7 +336,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.insert(Task.TABLE, null, cv);
             }
         }
-        MirakelInternalContentProvider.init(db, context);
+        MirakelInternalContentProvider.init(db);
     }
 
     private static void createListsTable(final SQLiteDatabase db,
@@ -980,9 +981,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             updateCaldavExtra(db);
         case 42:
             updateListTable(db);
+        case 43:
+            db.execSQL("DROP VIEW caldav_lists;");
+            db.execSQL("DROP VIEW caldav_tasks;");
+            createCaldavListsTrigger(db);
+            createCaldavTasksTrigger(db);
+        case 44:
+            createCaldavPropertyView(db);
         default:
             break;
         }
+    }
+
+    private static void createCaldavListsTrigger(SQLiteDatabase db) {
+        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
+                   +
+                   "a.enabled AS sync_enabled, owner AS list_owner\n"
+                   +
+                   "FROM lists as l\n" +
+                   "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
+                   "LEFT JOIN account AS a ON a._id = account_id;");
+        // Create trigger for lists
+        // Insert trigger
+        db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
+                   "BEGIN\n"
+                   + "INSERT INTO account(name,type) SELECT new.account_name, " + ACCOUNT_TYPES.CALDAV.toInt() +
+                   " WHERE NOT EXISTS(SELECT 1 FROM account WHERE name=new.account_name);"
+                   + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT INTO caldav_lists_extra VALUES\n" +
+                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.list_owner);\n"
+                   +
+                   "END;");
+        db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
+                   "BEGIN\n" +
+                   "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
+                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
+                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.list_owner);\n"
+                   +
+                   "END;");
+        db.execSQL("CREATE TRIGGER caldav_lists_delete_trigger INSTEAD OF DELETE on caldav_lists\n" +
+                   "BEGIN\n" +
+                   "    DELETE FROM lists WHERE _id = old._id;\n" +
+                   "END;\n");
     }
 
     private void updateListTable(SQLiteDatabase db) {
@@ -1045,38 +1086,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "visible INTEGER,\n" +
                    "sync_enabled INTEGER,\n" +
                    "owner TEXT);");
-        // Create view for lists
-        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
-                   +
-                   "a.enabled AS sync_enabled, owner\n"
-                   +
-                   "FROM lists as l\n" +
-                   "LEFT JOIN caldav_lists_extra ON l._id=list_id\n" +
-                   "LEFT JOIN account AS a ON a._id = account_id;");
-        // Create trigger for lists
-        // Insert trigger
-        db.execSQL("CREATE TRIGGER caldav_lists_insert_trigger INSTEAD OF INSERT ON caldav_lists\n" +
-                   "BEGIN\n"
-                   + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
-                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
-                   + "INSERT INTO caldav_lists_extra VALUES\n" +
-                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
-                   +
-                   "END;");
-        // Update trigger
-        db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
-                   "BEGIN\n" +
-                   "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
-                   + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
-                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.owner);\n"
-                   +
-                   "END;");
-        // delete trigger
-        db.execSQL("CREATE TRIGGER caldav_lists_delete_trigger INSTEAD OF DELETE on caldav_lists\n" +
-                   "BEGIN\n" +
-                   "    DELETE FROM lists WHERE _id = old._id;\n" +
-                   "END;\n");
+        createCaldavListsTrigger(db);
     }
+
 
     private static void createCaldavTasks(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE caldav_tasks_extra (\n" +
@@ -1115,6 +1127,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "parent_id INTEGER,\n" +
                    "sorting TEXT,\n" +
                    "has_alarms INTEGER);");
+        createCaldavTasksTrigger(db);
+    }
+
+    private static void createCaldavTasksTrigger(SQLiteDatabase db) {
         // View
         db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
                    "e._sync_id,\n" +
@@ -1191,7 +1207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "l.account_type,\n" +
                    "l.list_name,\n" +
                    "l.list_color,\n" +
-                   "l.owner AS list_owner,\n" +
+                   "l.list_owner AS list_owner,\n" +
                    "l.access_level AS list_access_level,\n" +
                    "l.visible\n" +
                    "FROM\n" +
@@ -1334,6 +1350,102 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "data15 TEXT,\n" +
                    "PRIMARY KEY (property_id, task_id)\n" +
                    ");");
+    }
+
+    private static void createCaldavPropertyView(final SQLiteDatabase db) {
+        db.execSQL("CREATE VIEW caldav_property_view AS\n" +
+                   "SELECT\n" +
+                   "property_id,\n" +
+                   "task_id,\n" +
+                   "mimetype,\n" +
+                   "prop_version,\n" +
+                   "prop_sync1,\n" +
+                   "prop_sync2,\n" +
+                   "prop_sync3,\n" +
+                   "prop_sync4,\n" +
+                   "prop_sync5,\n" +
+                   "prop_sync6,\n" +
+                   "prop_sync7,\n" +
+                   "prop_sync8,\n" +
+                   "data0,\n" +
+                   "data1,\n" +
+                   "data2,\n" +
+                   "data3,\n" +
+                   "data4,\n" +
+                   "data5,\n" +
+                   "data6,\n" +
+                   "data7,\n" +
+                   "data8,\n" +
+                   "data9,\n" +
+                   "data10,\n" +
+                   "data11,\n" +
+                   "data12,\n" +
+                   "data13,\n" +
+                   "data14,\n" +
+                   "data15\n" +
+                   "FROM caldav_properties\n" +
+                   "UNION\n" +
+                   "SELECT \n" +
+                   "(SELECT MAX(property_id) FROM caldav_properties)+tag._id AS property_id,\n" +
+                   "task.task_id AS task_id,\n" +
+                   "'vnd.android.cursor.item/category' AS mimetype,\n" +
+                   "0 AS prop_version,\n" +
+                   "null AS prop_sync1,\n" +
+                   "null AS prop_sync2,\n" +
+                   "null AS prop_sync3,\n" +
+                   "null AS prop_sync4,\n" +
+                   "null AS prop_sync5,\n" +
+                   "null AS prop_sync6,\n" +
+                   "null AS prop_sync7,\n" +
+                   "null AS prop_sync8,\n" +
+                   "tag._id AS data0,\n" +
+                   "tag.name AS data1,\n" +
+                   "tag.color AS data2,\n" +
+                   "null AS data3,\n" +
+                   "null AS data4,\n" +
+                   "null AS data5,\n" +
+                   "null AS data6,\n" +
+                   "null AS data7,\n" +
+                   "null AS data8,\n" +
+                   "null AS data9,\n" +
+                   "null AS data10,\n" +
+                   "null AS data11,\n" +
+                   "null AS data12,\n" +
+                   "null AS data13,\n" +
+                   "null AS data14,\n" +
+                   "null AS data15\n" +
+                   "FROM tag AS TAG\n" +
+                   "INNER JOIN task_tag as task ON tag._id=task.tag_id\n" +
+                   ";");
+        db.execSQL("Create TRIGGER caldav_property_insert_tag_trigger INSTEAD OF INSERT ON caldav_property_view\n"
+                   +
+                   "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tINSERT OR REPLACE INTO tag (name,color) VALUES (new.data1, new.data2);\n" +
+                   "\tINSERT OR REPLACE INTO task_tag(task_id,tag_id) VALUES(new.task_id,(SELECT _id FROM tag WHERE name=new.data1 AND color=new.data2));\n"
+                   +
+                   "END;");
+        db.execSQL("Create TRIGGER caldav_property_insert_other_trigger INSTEAD OF INSERT ON caldav_property_view\n"
+                   +
+                   "WHEN NOT new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tINSERT OR REPLACE INTO caldav_properties (property_id, task_id, mimetype, prop_version, prop_sync1, prop_sync2, prop_sync3, prop_sync4, prop_sync5, prop_sync6, prop_sync7, prop_sync8, data0, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, data14, data15) VALUES (new.property_id, new.task_id, new.mimetype, new.prop_version, new.prop_sync1, new.prop_sync2, new.prop_sync3, new.prop_sync4, new.prop_sync5, new.prop_sync6, new.prop_sync7, new.prop_sync8, new.data0, new.data1, new.data2, new.data3, new.data4, new.data5, new.data6, new.data7, new.data8, new.data9, new.data10, new.data11, new.data12, new.data13, new.data14, new.data15);\n"
+                   +
+                   "END;");
+        db.execSQL("Create TRIGGER caldav_property_update_tag_trigger INSTEAD OF UPDATE ON caldav_property_view\n"
+                   +
+                   "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tUPDATE tag SET name=new.data1, color=new.data2 WHERE _id=new.data0;\n" +
+                   "\tINSERT INTO task_tag(tag_id,task_id) SELECT new.data0, new.task_id WHERE NOT EXISTS(SELECT 1 FROM task_tag WHERE task_tag.tag_id=new.data0 AND task_tag.task_id =new.task_id);\n"
+                   +
+                   "END;");
+        db.execSQL("Create TRIGGER caldav_property_delete_tag_trigger INSTEAD OF DELETE ON caldav_property_view\n"
+                   +
+                   "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
+                   "BEGIN\n" +
+                   "\tDELETE FROM tag WHERE _id=old.data0;\n" +
+                   "END;");
     }
 
     private static void createCaldavCategories(final SQLiteDatabase db) {

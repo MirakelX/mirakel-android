@@ -30,11 +30,13 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
+
 abstract class SemanticBase  extends ModelBase {
-    private Integer priority;
-    private Integer due;
-    private Optional<ListMirakel> list;
-    private Integer weekday;
+    protected Integer priority;
+    protected Integer due;
+    protected Optional<ListMirakel> list = absent();
+    protected Integer weekday;
     public static final String CONDITION = "condition", PRIORITY = "priority",
                                LIST = "default_list_id", DUE = "due", WEEKDAY = "weekday";
 
@@ -49,6 +51,10 @@ abstract class SemanticBase  extends ModelBase {
     }
     SemanticBase(final long id, final String condition) {
         super(id, condition);
+    }
+
+    protected SemanticBase() {
+        // Just for Parcelable
     }
 
 

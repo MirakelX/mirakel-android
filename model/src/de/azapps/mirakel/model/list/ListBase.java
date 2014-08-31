@@ -39,13 +39,14 @@ abstract class ListBase  extends ModelBase {
 
 
 
-    private SORT_BY sortBy;
-    private String createdAt;
-    private String updatedAt;
-    private SYNC_STATE syncState;
-    private int lft, rgt;
-    private int color;
-    private long accountID;
+    protected SORT_BY sortBy;
+    protected String createdAt;
+    protected String updatedAt;
+    protected SYNC_STATE syncState;
+    protected int lft;
+    protected int rgt;
+    protected int color;
+    protected long accountID;
     private AccountMirakel accountMirakel;
     protected boolean isSpecial = false;
 

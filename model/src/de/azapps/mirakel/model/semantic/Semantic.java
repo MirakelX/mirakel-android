@@ -33,10 +33,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcel;
 
 import com.google.common.base.Optional;
 
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -45,12 +49,17 @@ import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 public class Semantic extends SemanticBase {
 
     public static final String[] allColumns = { ID, CONDITION, PRIORITY, DUE,
                                                 LIST, WEEKDAY
                                               };
+    private static final String TAG = "de.azapps.mirakel.model.semantic.Semantic";
     private static Map<String, Semantic> semantics = new HashMap<>();
     public static final String TABLE = "semantic_conditions";
     public static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
@@ -79,15 +88,27 @@ public class Semantic extends SemanticBase {
 
     public static Task createTask(String taskName, Optional<ListMirakel> currentList,
                                   final boolean useSemantic, final Context context) {
-        GregorianCalendar due = null;
+        Task stubTask = createStubTask(taskName, currentList, useSemantic, context);
+        try {
+            return stubTask.create();
+        } catch (final DefinitionsHelper.NoSuchListException e) {
+            ErrorReporter.report(ErrorType.TASKS_NO_LIST);
+            Log.e(TAG, "NoSuchListException", e);
+            return null;
+        }
+    }
+
+    public static Task createStubTask(String taskName, Optional<ListMirakel> currentList,
+                                      final boolean useSemantic, final Context context) {
+        Optional<Calendar> due = absent();
         int prio = 0;
         if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
                 final SpecialList slist = (SpecialList) currentList.get();
                 currentList = Optional.fromNullable(slist.getDefaultList());
                 if (slist.getDefaultDate() != null) {
-                    due = new GregorianCalendar();
-                    due.add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
+                    due = of((Calendar)new GregorianCalendar());
+                    due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
                 }
                 if (slist.getWhere().containsKey(Task.PRIORITY)) {
                     final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) slist
@@ -111,7 +132,7 @@ public class Semantic extends SemanticBase {
             }
         }
         if (useSemantic) {
-            GregorianCalendar tempdue = new GregorianCalendar();
+            Calendar tempdue = new GregorianCalendar();
             final String lowername = taskName.toLowerCase(Locale.getDefault());
             final List<String> words = new ArrayList<String>(
                 Arrays.asList(lowername.split("\\s+")));
@@ -124,7 +145,7 @@ public class Semantic extends SemanticBase {
                 // Set due
                 if (s.getDue() != null) {
                     tempdue.add(Calendar.DAY_OF_MONTH, s.getDue());
-                    due = tempdue;
+                    due = of(tempdue);
                 }
                 // Set priority
                 if (s.getPriority() != null) {
@@ -146,23 +167,24 @@ public class Semantic extends SemanticBase {
                     do {
                         tempdue.add(Calendar.DAY_OF_YEAR, 1);
                     } while (tempdue.get(Calendar.DAY_OF_WEEK) != nextWeekday);
-                    due = tempdue;
+                    due = of(tempdue);
                 }
                 taskName = taskName.substring(word.length()).trim();
                 words.remove(0);
             }
-            if (due != null) {
-                due.set(Calendar.HOUR_OF_DAY, 0);
-                due.set(Calendar.MINUTE, 0);
-                due.set(Calendar.SECOND, 0);
-                due.add(Calendar.SECOND,
-                        DateTimeHelper.getTimeZoneOffset(false, due));
+            if (due.isPresent()) {
+                due.get().set(Calendar.HOUR_OF_DAY, 0);
+                due.get().set(Calendar.MINUTE, 0);
+                due.get().set(Calendar.SECOND, 0);
+                due.get().add(Calendar.SECOND, DateTimeHelper.getTimeZoneOffset(false, due.get()));
             }
         }
         if (!currentList.isPresent()) {
             currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
         }
-        return Task.newTask(taskName, currentList.get(), due, prio);
+        final Task t = new Task(taskName, currentList.get(), due, prio);
+        t.setStub(true);
+        return t;
     }
 
     public Semantic(final Cursor c) {
@@ -178,7 +200,7 @@ public class Semantic extends SemanticBase {
             due = c.getInt(c.getColumnIndex(DUE));
         }
         setDue(due);
-        Optional<ListMirakel> list = null;
+        Optional<ListMirakel> list = absent();
         if (!c.isNull(c.getColumnIndex(LIST))) {
             list = ListMirakel.get(c.getInt(c.getColumnIndex(LIST)));
         }
@@ -254,4 +276,40 @@ public class Semantic extends SemanticBase {
         super.save();
         initAll();
     }
+
+    // Parcelable stuff
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.priority);
+        dest.writeValue(this.due);
+        dest.writeSerializable(this.list);
+        dest.writeValue(this.weekday);
+        dest.writeLong(getId());
+        dest.writeString(getName());
+    }
+
+    private Semantic(Parcel in) {
+        super();
+        this.priority = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.due = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.list = (Optional<ListMirakel>) in.readSerializable();
+        this.weekday = (Integer) in.readValue(Integer.class.getClassLoader());
+        setId(in.readLong());
+        setName(in.readString());
+    }
+
+    public static final Creator<Semantic> CREATOR = new Creator<Semantic>() {
+        public Semantic createFromParcel(Parcel source) {
+            return new Semantic(source);
+        }
+        public Semantic[] newArray(int size) {
+            return new Semantic[size];
+        }
+    };
 }
