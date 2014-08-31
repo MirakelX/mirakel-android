@@ -1,29 +1,8 @@
-/*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists
- *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-
 package de.azapps.widgets;
 
-import android.annotation.TargetApi;
-import android.app.DialogFragment;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,16 +22,15 @@ import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.date_time.R;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class DateTimeDialog extends DialogFragment {
+public class SupportDateTimeDialog extends DialogFragment {
 
     protected static final String TAG = "DateTimeDialog";
 
-    public DateTimeDialog() {
+    public SupportDateTimeDialog() {
         super();
     }
 
-    public static DateTimeDialog newInstance(final OnDateTimeSetListener callback,
+    public static SupportDateTimeDialog newInstance(final OnDateTimeSetListener callback,
             final Optional<Calendar> dateTime, final boolean dark) {
         Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
         final int year = notNullDateTime.get(Calendar.YEAR);
@@ -63,11 +41,11 @@ public class DateTimeDialog extends DialogFragment {
         return newInstance(callback, year, month, day, hour, minute, true, dark);
     }
 
-    public static DateTimeDialog newInstance(
+    public static SupportDateTimeDialog newInstance(
         final OnDateTimeSetListener callback, final int year,
         final int month, final int dayOfMonth, final int hourOfDay,
         final int minute, final boolean vibrate, final boolean dark) {
-        final DateTimeDialog dt = new DateTimeDialog();
+        final SupportDateTimeDialog dt = new SupportDateTimeDialog();
         dt.init(year, month, dayOfMonth, hourOfDay, minute);
         dt.setOnDateTimeSetListner(callback);
         // dt.initialize(callback, year, month, dayOfMonth, hourOfDay, minute,
@@ -133,18 +111,18 @@ public class DateTimeDialog extends DialogFragment {
             @Override
             public void onTimeSet(final RadialPickerLayout view,
                                   final int hourOfDay, final int minute) {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onDateTimeSet(
-                        DateTimeDialog.this.dp.getYear(),
-                        DateTimeDialog.this.dp.getMonth(),
-                        DateTimeDialog.this.dp.getDay(), hourOfDay, minute);
+                if (SupportDateTimeDialog.this.mCallback != null) {
+                    SupportDateTimeDialog.this.mCallback.onDateTimeSet(
+                        SupportDateTimeDialog.this.dp.getYear(),
+                        SupportDateTimeDialog.this.dp.getMonth(),
+                        SupportDateTimeDialog.this.dp.getDay(), hourOfDay, minute);
                 }
                 dismiss();
             }
             @Override
             public void onNoTimeSet() {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onNoTimeSet();
+                if (SupportDateTimeDialog.this.mCallback != null) {
+                    SupportDateTimeDialog.this.mCallback.onNoTimeSet();
                 }
                 dismiss();
             }
@@ -152,18 +130,18 @@ public class DateTimeDialog extends DialogFragment {
         this.dp.setOnDateSetListener(new OnDateSetListener() {
             @Override
             public void onNoDateSet() {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onNoTimeSet();
+                if (SupportDateTimeDialog.this.mCallback != null) {
+                    SupportDateTimeDialog.this.mCallback.onNoTimeSet();
                 }
                 dismiss();
             }
             @Override
             public void onDateSet(final DatePicker datePickerDialog,
                                   final int year, final int month, final int day) {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onDateTimeSet(year, month,
-                            day, DateTimeDialog.this.tp.getHour(),
-                            DateTimeDialog.this.tp.getMinute());
+                if (SupportDateTimeDialog.this.mCallback != null) {
+                    SupportDateTimeDialog.this.mCallback.onDateTimeSet(year, month,
+                            day, SupportDateTimeDialog.this.tp.getHour(),
+                            SupportDateTimeDialog.this.tp.getMinute());
                 }
                 dismiss();
             }
@@ -171,18 +149,18 @@ public class DateTimeDialog extends DialogFragment {
         switchToDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (!DateTimeDialog.this.isCurrentDatepicker) {
-                    DateTimeDialog.this.viewSwitcher.showPrevious();
-                    DateTimeDialog.this.isCurrentDatepicker = true;
+                if (!SupportDateTimeDialog.this.isCurrentDatepicker) {
+                    SupportDateTimeDialog.this.viewSwitcher.showPrevious();
+                    SupportDateTimeDialog.this.isCurrentDatepicker = true;
                 }
             }
         });
         switchToTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (DateTimeDialog.this.isCurrentDatepicker) {
-                    DateTimeDialog.this.viewSwitcher.showNext();
-                    DateTimeDialog.this.isCurrentDatepicker = false;
+                if (SupportDateTimeDialog.this.isCurrentDatepicker) {
+                    SupportDateTimeDialog.this.viewSwitcher.showNext();
+                    SupportDateTimeDialog.this.isCurrentDatepicker = false;
                 }
             }
         });
