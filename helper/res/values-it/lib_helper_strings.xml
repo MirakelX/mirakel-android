@@ -39,4 +39,5 @@ Device: %3$s\n]]>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Accidenti, l\'elenco è scomparso&#8230;</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Non è stato possibile risolvere questo problema. Mirakel verrà riavviato.</string>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Nome elenco già esistente. Scegliere un nome differente.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Aggiornare DAVdroid</string>
 </resources>
