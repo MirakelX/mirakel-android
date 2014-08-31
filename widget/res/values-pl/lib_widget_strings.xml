@@ -20,11 +20,15 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="widget_list">Lista</string>
-  <string name="widget_done">Tarea realizadas</string>
-  <string name="fontcolor">Color de la fuente</string>
-  <string name="widget_transparency">Transparencia</string>
-  <string name="widget_transparency_summary">%s%% transparente</string>
-  <string name="widget_due_colors">Colorear fechas de vencimiento</string>
-  <string name="empty_list">No hay tareas</string>
-  <string name="preferences">Preferencias</string>
+  <string name="widget_list_summary">Pokaż \"%s\"</string>
+  <string name="widget_done">Zadania zakończone</string>
+  <string name="fontcolor">Kolor czcionki</string>
+  <string name="widget_transparency">Przeźroczystość</string>
+  <string name="widget_transparency_summary">%s%% przeźroczysty</string>
+  <string name="widget_due_colors">Koloruj terminy</string>
+  <string name="dark_theme">Ciemny temat kolorystyczny</string>
+  <string name="notifications_list_summary">Pokaż \"%s\"</string>
+  <string name="empty_list">Brak zadań</string>
+  <string name="preferences">Preferencje</string>
+  <string name="widget_use_gradient">Użyj gradientu</string>
 </resources>
