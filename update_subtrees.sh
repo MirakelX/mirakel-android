@@ -11,6 +11,9 @@ export GIT_EDITOR=/bin/true
 export VISUAL=/bin/true
 export EDITOR=/bin/true
 
+
+git reset --hard HEAD
+git checkout master
 git pull
 
 for repo in ${repos[@]} ; do
