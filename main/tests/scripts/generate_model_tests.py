@@ -31,21 +31,24 @@ vars["CREATEFUNCTIONS"]=[]
 vars["UPDATEFUNCTIONS"]=[]
 
 create_line=None
-
+regex=re.compile("public static " + vars["TESTCLASS"] + "\s*(new[a-zA-Z]+)\s*\(([^\)]+)(\))?\s*(throws\s*[a-zA-Z]+)?(\s*{)?$")
 for line in open(filename):
     if create_line!=None:
         line=create_line.strip() + line.strip()
-    m=re.search(r"public static " + vars["TESTCLASS"] + " (new[a-zA-Z]+)\((.*?)(\) {)?$",line)
+    m=regex.search(line)
     if m!=None:
-        (fname,p_strings,bracketEnd)=m.groups()
+        (fname,p_strings,dummy,throw,bracketEnd)=m.groups()
         if bracketEnd==None:
             create_line=line
         else:
             create_line=None
             params=getParams(p_strings)
+            if throw != None:
+                throw=throw.replace("throws","").strip()
             f_ob={
                 "function": vars["TESTCLASS"]+ "." +randomFunction(fname,params),
-                "name": fname[0].upper() + fname[1:]
+                "name": fname[0].upper() + fname[1:],
+                "throw": throw
             }
             vars["CREATEFUNCTIONS"].append(f_ob)
     m=re.search("public (.*?) String TABLE = \"([a-z_]+)\";",line)
@@ -53,13 +56,16 @@ for line in open(filename):
         vars["TABLE"] = m.group(2)
 
 for line in open(basefname):
-    m=re.search("public void (set[a-zA-Z]+)\((.*)\)",line)
+    m=re.search("public void (set[a-zA-Z]+)\((.*)\)\s*(throws\s*[a-zA-Z.]+)?",line)
     if m!=None:
-        (fname,p_strings)=m.groups()
+        (fname,p_strings,throw)=m.groups()
         params=getParams(p_strings)
+        if throw != None:
+            throw=throw.replace("throws","").strip()
         f_ob={
             "function":randomFunction(fname,params),
-            "name":fname[0].upper() + fname[1:]
+            "name":fname[0].upper() + fname[1:],
+            "throw": throw
         }
         vars["UPDATEFUNCTIONS"].append(f_ob)
         
