@@ -18,39 +18,48 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/settings_backup" >
+                  android:title="@string/settings_backup">
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="importDefaultList"
-        android:summary="@string/import_default_list_summary"
-        android:title="@string/import_default_list" />
+    <PreferenceCategory
+        android:title="@string/sharing_title">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="importDefaultList"
+            android:summary="@string/import_default_list_summary"
+            android:title="@string/import_default_list"/>
 
-    <EditTextPreference
-        android:defaultValue="@string/file_default_title"
-        android:key="import_file_title"
-        android:title="@string/settings_file_default_title" />
+        <EditTextPreference
+            android:defaultValue="@string/file_default_title"
+            android:key="import_file_title"
+            android:title="@string/settings_file_default_title"/>
+    </PreferenceCategory>
 
-    <Preference
-        android:key="backup"
-        android:summary="@string/backup_click_summary"
-        android:title="@string/backup_click" />
-    <Preference
-        android:key="import"
-        android:summary="@string/import_click_summary"
-        android:title="@string/import_click" />
-    <Preference
-        android:key="import_astrid"
-        android:title="@string/import_astrid_click" />
-    <Preference
-        android:key="import_any_do"
-        android:title="@string/import_any_do_click" />
-    <Preference
-        android:key="import_wunderlist"
-        android:title="@string/import_wunderlist_click" />
+    <PreferenceCategory
+        android:title="@string/backup_title">
+        <Preference
+            android:key="backup"
+            android:summary="@string/backup_click_summary"
+            android:title="@string/backup_click"/>
+        <Preference
+            android:key="import"
+            android:summary="@string/import_click_summary"
+            android:title="@string/import_click"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/third_party_title">
+        <Preference
+            android:key="import_astrid"
+            android:title="@string/import_astrid_click"/>
+        <Preference
+            android:key="import_any_do"
+            android:title="@string/import_any_do_click"/>
+        <Preference
+            android:key="import_wunderlist"
+            android:title="@string/import_wunderlist_click"/>
+    </PreferenceCategory>
     <Preference
         android:key="autoBackupInterval"
         android:summary="@string/auto_backup_interval_summary"
-        android:title="@string/auto_backup_interval" />
+        android:title="@string/auto_backup_interval"/>
 
 </PreferenceScreen>

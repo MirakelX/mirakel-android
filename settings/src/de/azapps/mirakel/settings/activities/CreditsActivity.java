@@ -1,0 +1,132 @@
+package de.azapps.mirakel.settings.activities;
+
+import java.util.Locale;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.res.Configuration;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.settings.R;
+
+public class CreditsActivity extends Activity {
+    private static final String[][] libraries = {
+        { "Gson", "Apache 2.0", "https://code.google.com/p/google-gson/" },
+        { "Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net" },
+        {
+            "Android Change Log", "Apache 2.0",
+            "https://code.google.com/p/android-change-log/"
+        },
+        { "ACRA", "Apache 2.0", "http://acra.ch" },
+        {
+            "HoloColorPicker", "Apache 2.0",
+            "https://github.com/LarsWerkman/HoloColorPicker"
+        },
+        {
+            "Progress Wheel", "",
+            "https://github.com/Todd-Davies/ProgressWheel"
+        },
+        {
+            "DateTimePicker Compatibility Library", "Apache 2.0",
+            "https://github.com/flavienlaurent/datetimepicker"
+        },
+        { "Webicons", "CC-Attrib", "http://fairheadcreative.com/" },
+        {
+            "Android Donations Lib", "Apache 2.0",
+            "https://github.com/dschuermann/android-donations-lib"
+        },
+        { "Changelog", "", "https://code.google.com/p/android-change-log/" }
+    };
+    private static final String[][] translations = {
+        { "Spanish", "macebal, sml" },
+        { "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
+        { "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
+        { "Portuguese", "Sérgio Marques" },
+        { "Russian", "Katy, Dmitry Derjavin" },
+        { "Spanisch", "macebal, RaindropR", "Pablo Corbalán (@monofluor)" },
+        { "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
+        { "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },
+        { "Dutch", "Toon van Gerwen" },
+        { "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
+        { "Bulgarian", "Boriana Tcholakova" }, { "Polish", "mruwek" },
+        { "Catalan", "sml" }
+    };
+
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        Locale.setDefault(Helpers.getLocal(this));
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        if (MirakelCommonPreferences.isDark()) {
+            setTheme(R.style.AppBaseThemeDARK);
+        }
+        Locale.setDefault(Helpers.getLocal(this));
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_credits);
+        final TextView creditTextHead = (TextView) findViewById(R.id.credits_text_head);
+        creditTextHead.setText(Html
+                               .fromHtml(getString(R.string.credits_text_head)));
+        creditTextHead.setMovementMethod(LinkMovementMethod.getInstance());
+        if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        // Set Libraries
+        String libs = "";
+        for (final String[] library : CreditsActivity.libraries) {
+            libs += "<a href=\"" + library[2] + "\"><b>" + library[0]
+                    + "</b></a> (" + library[1] + ")<br />";
+        }
+        final TextView creditTextLibs = (TextView) findViewById(R.id.credits_libraries_text);
+        creditTextLibs.setText(Html.fromHtml(libs));
+        creditTextLibs.setMovementMethod(LinkMovementMethod.getInstance());
+        // Set translations
+        String trans = "";
+        for (final String[] translation : CreditsActivity.translations) {
+            trans += "<b>" + translation[0] + ": </b>" + translation[1]
+                     + "<br/>";
+        }
+        final TextView creditTextTrans = (TextView) findViewById(R.id.credits_translations_text);
+        creditTextTrans.setText(Html.fromHtml(trans));
+        creditTextTrans.setMovementMethod(LinkMovementMethod.getInstance());
+        final TextView creditTextLicense = (TextView) findViewById(R.id.credits_license_text);
+        creditTextLicense.setText(Html
+                                  .fromHtml(getString(R.string.credits_license)));
+        creditTextLicense.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    public void onOpenGithubClick(final View v) {
+        Helpers.openURL(this, "https://github.com/MirakelX/mirakel-android/");
+    }
+
+    public void onOpenGooglePlusClick(final View v) {
+        Helpers.openURL(this,
+                        "https://plus.google.com/u/0/communities/110640831388790835840");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void sendFeedback(final View v) {
+        Helpers.contact(this);
+    }
+
+}

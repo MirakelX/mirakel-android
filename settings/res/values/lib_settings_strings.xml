@@ -98,7 +98,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="startup_title">App Start</string>
     <string name="startup_show_lists">Show all lists</string>
     <string name="startup_show_lists_summary">Show all lists on startup</string>
-    <string name="startup_list">Select List</string>
+    <string name="startup_list">Select Startup List</string>
     <string name="startup_list_summary">Show tasks of \"%s\"</string>
 
     <!-- Special Lists -->
@@ -201,7 +201,9 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>العربية</item>
         <item>Portuguese</item>
         <item>Italiano</item>
-        <item>Bulgarian</item>
+        <item>Български</item>
+        <item>Polskie</item>
+        <item>Nederlands</item>
         <!--
         <item>Catalan</item>
         <item>Polish</item>
@@ -221,10 +223,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>pt</item>
         <item>it</item>
         <item>bg</item>
-        <!--
-        <item>ca</item>
         <item>pl</item>
-        -->
+        <item>nl</item>
     </string-array>
 
     <!-- Delete done -->
@@ -369,4 +369,13 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     </string-array>
 
     <string name="remove">Remove</string>
+    <string name="no_account_selected">No Account selected</string>
+    <string name="no_recurrence_selected">No recurrence selected</string>
+    <string name="no_semantic_selected">No task template selected</string>
+    <string name="no_special_list_selected">No meta list selected</string>
+    <string name="no_tag_selected">No tag selected</string>
+    <string name="sharing_title">Sharing</string>
+    <string name="backup_title">Backup</string>
+    <string name="third_party_title">Third party apps</string>
+    <string name="title_settings">Settings</string>
 </resources>

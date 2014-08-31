@@ -33,11 +33,6 @@
             android:dependency="notificationsUse"
             android:key="notificationsPersistent"
             android:title="@string/notifications_persistent" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="notificationsUse"
-            android:key="notificationsZeroHide"
-            android:title="@string/notifications_zero_show" />
 
         <ListPreference
             android:defaultValue="-1"
@@ -51,12 +46,6 @@
             android:key="notificationsListOpen"
             android:summary="@string/notifications_list_open_summary"
             android:title="@string/notifications_list_open" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="notificationsUse"
-            android:key="notificationsBig"
-            android:title="@string/notifications_big" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reminder" >
         <CheckBoxPreference
