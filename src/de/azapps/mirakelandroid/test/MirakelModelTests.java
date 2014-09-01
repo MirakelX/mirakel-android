@@ -22,7 +22,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import de.azapps.mirakel.model.file.FileMirakelTest;
 import de.azapps.mirakel.model.list.ListMirakelTest;
-import de.azapps.mirakel.model.list.SpecialListTest;
+//import de.azapps.mirakel.model.list.SpecialListTest;
 import de.azapps.mirakel.model.recurring.RecurringTest;
 import de.azapps.mirakel.model.semantic.SemanticTest;
 import de.azapps.mirakel.model.tags.TagTest;
@@ -39,7 +39,7 @@ public class MirakelModelTests extends TestSuite {
 	public static void addTests(final TestSuite suite) {
 		suite.addTestSuite(FileMirakelTest.class);
 		suite.addTestSuite(ListMirakelTest.class);
-		suite.addTestSuite(SpecialListTest.class);
+		//suite.addTestSuite(SpecialListTest.class);
 		suite.addTestSuite(RecurringTest.class);
 		suite.addTestSuite(SemanticTest.class);
 		suite.addTestSuite(TagTest.class);

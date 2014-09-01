@@ -11,7 +11,7 @@ if len(sys.argv)  != 2:
     print(sys.argv[0] + "  <pathToTestDir>")
     sys.exit()
 
-path="de/azapps/mirakel/model/task"
+path="de/azapps/mirakel/templates/task"
 filename="RecurrenceTest.java"
 
 tests_single={
@@ -94,7 +94,7 @@ for key,value in tests_single.items():
 
 
 loader = CachingFileLoader(".")
-template = loader.load_template(os.path.dirname(__file__) + "/model/recurrenceTemplate.java")
+template = loader.load_template(os.path.dirname(__file__) + "/templates/recurrenceTemplate.java")
 
 
 directory=sys.argv[1]+'/src/'+path+'/';

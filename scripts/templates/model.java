@@ -31,16 +31,18 @@ import de.azapps.mirakel.model.MirakelContentProvider;
 
 import android.test.suitebuilder.annotation.MediumTest;
 
+import com.google.common.base.Optional;
+
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
 
 
-public class ${TESTCLASS} Test extends MirakelTestCase {
+public class ${TESTCLASS}Test extends MirakelTestCase {
     private static SQLiteDatabase database;
 
     @Override
-    protected void setUp()throws Exception{
+    protected void setUp() throws Exception{
         super.setUp();
         database = DatabaseHelper.getDatabaseHelper(getContext()).getWritableDatabase();
         RandomHelper.init(getContext());
@@ -50,60 +52,60 @@ public class ${TESTCLASS} Test extends MirakelTestCase {
 #end
     }
 
-    private int countElems() {
-        Cursor c = database.rawQuery("SELECT COUNT(*) FROM $TABLE", null);
-        c.moveToFirst();
-        return c.getInt(0);
+    private static int countElems() {
+        final Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM $TABLE", null);
+        cursor.moveToFirst();
+        return cursor.getInt(0);
     }
 
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
     @MediumTest
-    public void testNewCount${CREATEFUNCTION.name} ${foreach.count}() {
-        int count_before = countElems();
+    public void testNewCount${CREATEFUNCTION.name}${foreach.count}() {
+        final int countBefore = countElems();
 #if($CREATEFUNCTION.throw)
         try {
 #end
             $CREATEFUNCTION.function;
 #if($CREATEFUNCTION.throw)
-        } catch ($ {TESTCLASS} .$CREATEFUNCTION.throw e) {
+        }catch (${TESTCLASS}.$CREATEFUNCTION.throw e) {
             fail("Exception thrown: " + e.getMessage());
         }
 #end
-        int count_after = countElems();
+        final int countAfter = countElems();
         assertEquals("Insert $TESTCLASS don't change the number of elements in database $CREATEFUNCTION",
-                     count_before + 1, count_after);
+                     countBefore + 1, countAfter);
     }
 
     @MediumTest
-    public void testNewInserted${CREATEFUNCTION.name} ${foreach.count}() {
-        List<$TESTCLASS>elems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
+    public void testNewInserted${CREATEFUNCTION.name}${foreach.count}() {
+        final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
 #if($CREATEFUNCTION.throw)
         try {
 #end
-            $TESTCLASS elem = $CREATEFUNCTION.function;
+            final $TESTCLASS elem = $CREATEFUNCTION.function;
             elems.add(elem);
-            List<$TESTCLASS>newElems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
-            boolean result = TestHelper.listEquals(elems, newElems);
+            final List<$TESTCLASS>newElems = ${TESTCLASS}.${GETALL_FUNCTION};
+            final boolean result = TestHelper.listEquals(elems, newElems);
             assertTrue("Something changed while adding a new element to the database $CREATEFUNCTION", result);
 #if($CREATEFUNCTION.throw)
-        } catch ($ {TESTCLASS} .$CREATEFUNCTION.throw e) {
+        }catch (${TESTCLASS}.$CREATEFUNCTION.throw e) {
             fail("Exception thrown: " + e.getMessage());
         }
 #end
     }
 
     @MediumTest
-    public void testNewEquals${CREATEFUNCTION.name} ${foreach.count}() {
+    public void testNewEquals${CREATEFUNCTION.name}${foreach.count}() {
 #if($CREATEFUNCTION.throw)
         try {
 #end
-            $TESTCLASS elem = $CREATEFUNCTION.function;
+            final $TESTCLASS elem = $CREATEFUNCTION.function;
             assertNotNull("Create new $TESTCLASS failed", elem);
-            int id = (int)elem.getId();
-            $TESTCLASS newElem = $ {TESTCLASS} .get(id);
-            assertEquals("get(id)!=insert()", newElem, elem);
+            final long id = elem.getId();
+            final Optional<$TESTCLASS> newElem = ${TESTCLASS}.get(id);
+            assertEquals("get(id)!=insert()", newElem.orNull(), elem);
 #if($CREATEFUNCTION.throw)
-        } catch ($ {TESTCLASS} .$CREATEFUNCTION.throw e) {
+        }catch (${TESTCLASS}.$CREATEFUNCTION.throw e) {
             fail("Exception thrown: " + e.getMessage());
         }
 #end
@@ -112,51 +114,51 @@ public class ${TESTCLASS} Test extends MirakelTestCase {
 
     // If nothing was changed the database should not be updated
     public void testUpdateEqual() {
-        List<$TESTCLASS>elems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
-        int randomItem = new Random().nextInt(elems.size());
-        $TESTCLASS elem = elems.get(randomItem);
+        final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
+        final int randomItem = new Random().nextInt(elems.size());
+        final $TESTCLASS elem = elems.get(randomItem);
         elem.save();
-        List<$TESTCLASS>newElems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
-        boolean result = TestHelper.listEquals(elems, newElems);
+        final List<$TESTCLASS>newElems = ${TESTCLASS}.${GETALL_FUNCTION};
+        final boolean result = TestHelper.listEquals(elems, newElems);
         assertTrue("If nothing was changed the database should not be update", result);
     }
 
 #foreach($UPDATEFUNCTION in $UPDATEFUNCTIONS)
     @MediumTest
-    public void test${UPDATEFUNCTION.name} ${foreach.count}() {
-        List<$TESTCLASS>elems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
-        int randomItem = new Random().nextInt(elems.size());
-        $TESTCLASS elem = elems.get(randomItem);
+    public void test${UPDATEFUNCTION.name}${foreach.count}() {
+        final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
+        final int randomItem = new Random().nextInt(elems.size());
+        final $TESTCLASS elem = elems.get(randomItem);
 #if($UPDATEFUNCTION.throw)
         try {
 #end
             elem.$UPDATEFUNCTION.function;
 #if($UPDATEFUNCTION.throw)
-        } catch ($UPDATEFUNCTION.throw e) {
+        }catch ($UPDATEFUNCTION.throw e) {
             fail("Exception thrown: " + e.getMessage());
         }
 #end
         elem.save();
-        $TESTCLASS newElem = $ {TESTCLASS} .get(elem.getId());
-        assertEquals("After update the elems are not equal ($UPDATEFUNCTION)", elem, newElem);
+        final Optional<$TESTCLASS> newElem = ${TESTCLASS}.get(elem.getId());
+        assertEquals("After update the elems are not equal ($UPDATEFUNCTION)", elem, newElem.orNull());
     }
 #end
 
     @MediumTest
     public void testDestroy() {
-        List<$TESTCLASS>elems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
-        int randomItem = new Random().nextInt(elems.size());
-        $TESTCLASS elem = elems.get(randomItem);
-        $ID_TYPE id = elem.getId();
+        final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
+        final int randomItem = new Random().nextInt(elems.size());
+        final $TESTCLASS elem = elems.get(randomItem);
+        final $ID_TYPE id = elem.getId();
         elem.destroy();
-        assertNull("Elem was not deleted", $ {TESTCLASS} .get(id));
-        List<$TESTCLASS>newElems = $ {TESTCLASS} .$ {GETALL_FUNCTION};
+        assertFalse("Elem was not deleted", ${TESTCLASS}.get(id).isPresent());
+        final List<$TESTCLASS>newElems = ${TESTCLASS}.${GETALL_FUNCTION};
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
-            elems.set(i, $ {TESTCLASS} .get(elems.get(i).getId()));
+            elems.set(i, ${TESTCLASS}.get(elems.get(i).getId()).orNull());
         }
-        boolean result = TestHelper.listEquals(elems, newElems);
+        final boolean result = TestHelper.listEquals(elems, newElems);
         assertTrue("Deleted more than needed", result);
     }
 

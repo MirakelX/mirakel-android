@@ -31,6 +31,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.util.SparseBooleanArray;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
@@ -39,12 +42,17 @@ import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+
 public class RandomHelper {
 
     // its ok to use this here, it's only for testing
     @SuppressLint("TrulyRandom")
     private static SecureRandom random = new SecureRandom();
     private static Context ctx;
+    private static Optional<Calendar> randomOptional_Calendar;
+    private static Optional<String> randomOptional_String;
 
     public static void init(final Context ctx) {
         RandomHelper.ctx = ctx;
@@ -82,7 +90,6 @@ public class RandomHelper {
     }
 
     public static ListMirakel getRandomListMirakel() {
-        ListMirakel.init(ctx);
         final List<ListMirakel> t = ListMirakel.all();
         return t.get(random.nextInt(t.size()));
     }
@@ -105,6 +112,10 @@ public class RandomHelper {
     public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
         return ACCOUNT_TYPES.values()[random
                                       .nextInt(ACCOUNT_TYPES.values().length)];
+    }
+
+    public static <T> T getRandomElem(final List<T> elems) {
+        return elems.get(random.nextInt(elems.size()));
     }
 
     public static Task getRandomTask() {
@@ -157,5 +168,38 @@ public class RandomHelper {
 
     public static ListMirakel.SORT_BY getRandomSORT_BY() {
         return ListMirakel.SORT_BY.fromShort((short)random.nextInt(ListMirakel.SORT_BY.values().length));
+    }
+
+
+    public static Optional<Calendar> getRandomOptional_Calendar() {
+        if(getRandomboolean()) {
+            return of(getRandomCalendar());
+        } else {
+            return absent();
+        }
+    }
+
+    public static Optional<Long> getRandomOptional_Long() {
+        if(getRandomboolean()) {
+            return of(getRandomLong());
+        } else {
+            return absent();
+        }
+    }
+
+    public static Optional<String> getRandomOptional_String() {
+        if(getRandomboolean()) {
+            return of(getRandomString());
+        } else {
+            return absent();
+        }
+    }
+
+    public static Optional<ListMirakel> getRandomOptional_ListMirakel() {
+        if(getRandomboolean()) {
+            return of(getRandomListMirakel());
+        } else {
+            return absent();
+        }
     }
 }
