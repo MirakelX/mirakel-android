@@ -27,6 +27,7 @@
   <string name="remove_subtask">Enlever la sous-tâche</string>
   <string name="remove_files_summary">Voulez-vous supprimer %1$s de « %2$s » ?</string>
   <string name="add_existing">Ajoutez une tâche existante</string>
+  <string name="task_name">Nom de la tâche</string>
   <string name="subtask_add_options">Filtre &gt;&gt;</string>
   <string name="subtask_done">Tâche effectuée ?</string>
   <string name="subtask_reminder">Tâche avec rappel ?</string>
@@ -44,4 +45,8 @@
     <item>Supprimer le tag</item>
   </string-array>
   <string name="tag_has_dark_text">Le texte est noir</string>
+  <string-array name="recurring_task_select">
+    <item>Seulement cette récurrence</item>
+    <item>Toutes les récurrences</item>
+  </string-array>
 </resources>
