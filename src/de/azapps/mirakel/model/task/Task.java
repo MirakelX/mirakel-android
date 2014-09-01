@@ -692,7 +692,7 @@ public class Task extends TaskBase {
                 if (old.getRecurrenceId() == -1 && getRecurrenceId() != -1) {
                     insertFirstRecurringChild();
                 } else if (old.getRecurrenceId() != getRecurrenceId()) {
-                    final Optional<Recurring> recurring = getRecurring();
+                    final Optional<Recurring> recurring = getRecurrence();
                     if (!recurring.isPresent()) {
                         final Cursor c = new MirakelQueryBuilder(context)
                         .select("parent")
@@ -860,7 +860,7 @@ public class Task extends TaskBase {
     private void handleInsertTWRecurring() {
         if (this.recurrenceParent != null) {
             final Optional<Task> master = Task.getByUUID(this.recurrenceParent.first);
-            if (!master.isPresent() || !master.get().getRecurring().isPresent()) {
+            if (!master.isPresent() || !master.get().getRecurrence().isPresent()) {
                 // Something is very strange
                 Log.wtf(TAG, this + " is null!?");
                 return;
@@ -876,8 +876,8 @@ public class Task extends TaskBase {
                 cv.put("parent", master.get().getId());
                 cv.put("child", getId());
                 cv.put("offsetCount", this.recurrenceParent.second);
-                if (master.get().getRecurring().isPresent()) {
-                    cv.put("offset", master.get().getRecurring().get().getInterval());
+                if (master.get().getRecurrence().isPresent()) {
+                    cv.put("offset", master.get().getRecurrence().get().getInterval());
                     insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
                 }
             }

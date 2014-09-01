@@ -925,7 +925,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cv.put("child", t.getId());
                     final int counter = t.getAdditionalInt("imask");
                     cv.put("offsetCount", counter);
-                    Optional<Recurring> recurringOptional = t.getRecurring();
+                    Optional<Recurring> recurringOptional = t.getRecurrence();
                     if (recurringOptional.isPresent()) {
                         cv.put("offset", counter * recurringOptional.get().getInterval());
                     } else {

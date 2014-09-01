@@ -260,8 +260,8 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 break;
             }
         }
-        if (task.getRecurring().isPresent()) {
-            final Recurring r = task.getRecurring().get();
+        if (task.getRecurrence().isPresent()) {
+            final Recurring r = task.getRecurrence().get();
             r.setEndDate(Optional.fromNullable(end));
             r.save();
         }

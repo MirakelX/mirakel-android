@@ -72,7 +72,7 @@ abstract class FileBase extends ModelBase {
         return this.fileUri;
     }
 
-    public void setUri(@NonNull final Uri path) {
+    public void setFileUri(@NonNull final Uri path) {
         this.fileUri = path;
     }
 

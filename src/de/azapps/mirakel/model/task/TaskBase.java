@@ -305,7 +305,7 @@ abstract class TaskBase extends ModelBase {
     }
 
     @NonNull
-    public Optional<Recurring> getRecurring() {
+    public Optional<Recurring> getRecurrence() {
         return Recurring.get(this.recurrence);
     }
 
@@ -428,12 +428,12 @@ abstract class TaskBase extends ModelBase {
         this.done = newDone;
         this.edited.put(TaskBase.DONE, true);
         if (newDone && this.recurrence != -1 && this.due.isPresent()) {
-            if (getRecurring().isPresent()) {
+            if (getRecurrence().isPresent()) {
                 final Optional<Task> oldTask = Task.get(getId());
                 if (!oldTask.isPresent()) {
                     return absent();
                 }
-                final Task newTask = getRecurring().get().incrementRecurringDue(
+                final Task newTask = getRecurrence().get().incrementRecurringDue(
                                          oldTask.get());
                 // set the sync state of the old task to recurring, only show
                 // the new one
@@ -699,11 +699,11 @@ abstract class TaskBase extends ModelBase {
         if (this.progress != other.progress) {
             return false;
         }
-        if (getRecurring().isPresent() && other.getRecurring().isPresent()) {
-            if (!this.getRecurring().get().equals(other.getRecurring().get())) {
+        if (getRecurrence().isPresent() && other.getRecurrence().isPresent()) {
+            if (!this.getRecurrence().get().equals(other.getRecurrence().get())) {
                 return false;
             }
-        } else if (getRecurring().isPresent() != other.getRecurring().isPresent()) {
+        } else if (getRecurrence().isPresent() != other.getRecurrence().isPresent()) {
             return false;
         }
 
