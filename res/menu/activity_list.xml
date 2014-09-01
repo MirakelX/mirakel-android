@@ -16,8 +16,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!--
     Add
@@ -31,27 +30,27 @@
         android:id="@+id/menu_new_list"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/list_menu_new_list"
-        mirakel:showAsAction="ifRoom|withText">
+        android:showAsAction="ifRoom|withText">
     </item>
     <item
         android:id="@+id/menu_undo"
         android:title="@string/action_undo"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
     <item
         android:id="@+id/menu_sync_now"
         android:title="@string/action_sync_now"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
     <item
         android:id="@+id/menu_sort_lists"
         android:checkable="true"
         android:title="@string/menu_sort_lists"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
     <item
         android:id="@+id/menu_contact"
         android:title="@string/action_contact"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
     <item
         android:id="@+id/menu_settings"
         android:title="@string/menu_settings"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
 </menu>
