@@ -42,7 +42,7 @@
         android:id="@+id/meta_lists_settings">
         <intent
             android:targetPackage="de.azapps.mirakelandroid"
-            android:targetClass="de.azapps.mirakel.settings.activities.SpecialListsSettingsActivity"/>
+            android:targetClass="de.azapps.mirakel.settings.special_list.SpecialListListActivity"/>
     </header>
     <header
         android:fragment="de.azapps.mirakel.settings.fragments.NotificationSettingsFragment"

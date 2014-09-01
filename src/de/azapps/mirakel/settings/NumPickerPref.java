@@ -25,7 +25,6 @@ public class NumPickerPref extends DialogPreference {
     private int SUMMARY_ID;
     protected int VALUE;
     private NumberPicker picker;
-    private TextView tx;
     private View dialog;
 
     public NumPickerPref(final Context context, final AttributeSet attrs) {
@@ -46,54 +45,22 @@ public class NumPickerPref extends DialogPreference {
     @SuppressLint("NewApi")
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            this.dialog = ((Activity) this.ctx).getLayoutInflater().inflate(
-                              R.layout.num_picker_pref_v10, null);
-            final Button plus = (Button) this.dialog
-                                .findViewById(R.id.dialog_num_pick_plus);
-            final Button minus = (Button) this.dialog
-                                 .findViewById(R.id.dialog_num_pick_minus);
-            this.tx = (TextView) this.dialog
-                      .findViewById(R.id.dialog_num_pick_val);
-            updateV10Value();
-            plus.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    if (NumPickerPref.this.VALUE < NumPickerPref.this.MAX_VAL) {
-                        ++NumPickerPref.this.VALUE;
-                        updateV10Value();
-                        updateSummary();
-                    }
-                }
-            });
-            minus.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    if (NumPickerPref.this.VALUE > NumPickerPref.this.MIN_VAL) {
-                        --NumPickerPref.this.VALUE;
-                        updateV10Value();
-                        updateSummary();
-                    }
-                }
-            });
-        } else {
-            this.dialog = ((Activity) this.ctx).getLayoutInflater().inflate(
-                              R.layout.num_picker_pref, null);
-            this.picker = (NumberPicker) this.dialog
-                          .findViewById(R.id.numberPicker);
-            this.picker.setMaxValue(this.MAX_VAL);
-            this.picker.setMinValue(this.MIN_VAL);
-            this.picker.setValue(this.VALUE);
-            this.picker.setWrapSelectorWheel(false);
-            this.picker.setOnValueChangedListener(new OnValueChangeListener() {
-                @Override
-                public void onValueChange(final NumberPicker picker,
-                                          final int oldVal, final int newVal) {
-                    NumPickerPref.this.VALUE = newVal;
-                    updateSummary();
-                }
-            });
-        }
+        this.dialog = ((Activity) this.ctx).getLayoutInflater().inflate(
+                          R.layout.num_picker_pref, null);
+        this.picker = (NumberPicker) this.dialog
+                      .findViewById(R.id.numberPicker);
+        this.picker.setMaxValue(this.MAX_VAL);
+        this.picker.setMinValue(this.MIN_VAL);
+        this.picker.setValue(this.VALUE);
+        this.picker.setWrapSelectorWheel(false);
+        this.picker.setOnValueChangedListener(new OnValueChangeListener() {
+            @Override
+            public void onValueChange(final NumberPicker picker,
+                                      final int oldVal, final int newVal) {
+                NumPickerPref.this.VALUE = newVal;
+                updateSummary();
+            }
+        });
         updateSummary();
         builder.setPositiveButton(android.R.string.ok,
         new DialogInterface.OnClickListener() {
@@ -112,12 +79,6 @@ public class NumPickerPref extends DialogPreference {
             }
         });
         builder.setView(this.dialog);
-    }
-
-    protected void updateV10Value() {
-        if (this.tx != null) {
-            this.tx.setText("" + this.VALUE);
-        }
     }
 
     protected void updateSummary() {
@@ -146,7 +107,6 @@ public class NumPickerPref extends DialogPreference {
 
     @Override
     public void onBindDialogView(final View view) {
-        Log.d(TAG, "bar");
         super.onBindDialogView(view);
     }
 

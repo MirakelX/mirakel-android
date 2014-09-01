@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.settings.generic_list;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -43,7 +44,7 @@ import de.azapps.tools.OptionalUtils;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
-public abstract class GenericListSettingActivity<T extends ModelBase> extends ActionBarActivity
+public abstract class GenericListSettingActivity<T extends ModelBase> extends Activity
     implements
     GenericListSettingFragment.Callbacks<T>, GenericSettingsFragment.Callbacks<T> {
 
@@ -75,7 +76,7 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
         }
         Locale.setDefault(Helpers.getLocal(this));
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_generic_list_setting);
         isTablet = findViewById(R.id.settings_fragment) != null;
         GenericListSettingFragment listFragment = getNewListFragment();
@@ -93,7 +94,7 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
     @Override
     public void selectItem(T model) {
         isInList = false;
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
         currentModel = of(model);
         if (getSettingsFragment() == null) {
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -127,7 +128,7 @@ public abstract class GenericListSettingActivity<T extends ModelBase> extends Ac
     public void onBackPressed() {
         super.onBackPressed();
         isInList = true;
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
         currentModel = absent();
     }
 

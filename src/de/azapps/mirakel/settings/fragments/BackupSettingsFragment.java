@@ -261,9 +261,7 @@ public class BackupSettingsFragment extends PreferenceFragment {
                                         R.string.auto_backup_interval_summary,
                                         val));
                     }
-                })
-                .setNegativeButton(
-                    android.R.string.cancel, null).show();
+                }).setNegativeButton(android.R.string.cancel, null).show();
                 return false;
             }
         });

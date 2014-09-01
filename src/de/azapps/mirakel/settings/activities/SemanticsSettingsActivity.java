@@ -120,9 +120,7 @@ public class SemanticsSettingsActivity extends GenericListSettingActivity<Semant
                 final DueDialog dueDialog = new DueDialog(
                     SemanticsSettingsActivity.this, false);
                 dueDialog.setTitle(semanticsDue.getTitle());
-                dueDialog.setValue(
-                    SemanticsSettingsActivity.this.dueDialogValue,
-                    SemanticsSettingsActivity.this.dueDialogDayYear);
+                dueDialog.setValue(SemanticsSettingsActivity.this.dueDialogValue);
                 dueDialog.setNegativeButton(android.R.string.cancel,
                                             null);
                 dueDialog.setNeutralButton(R.string.no_date,

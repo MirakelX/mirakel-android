@@ -60,6 +60,10 @@ public class SettingsActivity extends PreferenceActivity {
                             NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
     private static final String TAG = "SettingsActivity";
     private FileInputStream stream;
+    private final static  Class[] validFragments = {AboutSettingsFragment.class, BackupSettingsFragment.class,
+                                                    DevSettingsFragment.class, NotificationSettingsFragment.class,
+                                                    TaskSettingsFragment.class, UISettingsFragment.class
+                                                   };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,16 +122,12 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        Class[] validFragments = {AboutSettingsFragment.class, BackupSettingsFragment.class,
-                                  DevSettingsFragment.class, NotificationSettingsFragment.class,
-                                  TaskSettingsFragment.class, UISettingsFragment.class
-                                 };
         for (Class cls : validFragments) {
-            if (cls.toString().equals(fragmentName)) {
+            if (cls.getName().equals(fragmentName)) {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override
