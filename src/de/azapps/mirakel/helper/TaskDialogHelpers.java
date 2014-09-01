@@ -275,7 +275,7 @@ public class TaskDialogHelpers {
     public static void handleRecurrence(final ActionBarActivity activity,
                                         final Task task, final boolean isDue, final ExecInterface callback) {
         final FragmentManager fm = activity.getSupportFragmentManager();
-        Optional<Recurring> recurringOptional = isDue ? task.getRecurring() : task.getRecurringReminder();
+        Optional<Recurring> recurringOptional = isDue ? task.getRecurrence() : task.getRecurringReminder();
         boolean isExact = false;
         if (recurringOptional.isPresent()) {
             Recurring recurring = recurringOptional.get();

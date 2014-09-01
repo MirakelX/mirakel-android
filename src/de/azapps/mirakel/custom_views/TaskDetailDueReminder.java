@@ -343,7 +343,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
         setRecurringImage(this.recurrenceDue, this.task.getRecurrenceId());
         setRecurringImage(this.recurrenceReminder,
                           this.task.getRecurringReminderId());
-        setupRecurrenceDrawable(this.recurrenceDue, this.task.getRecurring());
+        setupRecurrenceDrawable(this.recurrenceDue, this.task.getRecurrence());
         setupRecurrenceDrawable(this.recurrenceReminder,
                                 this.task.getRecurringReminder());
         setDue();
