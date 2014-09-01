@@ -556,7 +556,7 @@ public class MainActivity extends ActionBarActivity {
         final List<Task> normalTasks = new ArrayList<>();
         // Tasks we should handle in a special way
         for (Task t : tasks) {
-            if (t.getRecurring ().isPresent()) {
+            if (t.getRecurrence().isPresent()) {
                 handleDestroyRecurringTask (t);
             } else if (t.countSubtasks() > 0) {
                 handleDestroySubtasks(t);
