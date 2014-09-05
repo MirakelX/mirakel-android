@@ -29,7 +29,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -79,21 +79,21 @@ public class DonationsFragment extends Fragment {
     // Google Play helper object
     protected IabHelper mHelper;
 
-    protected boolean mDebug = false;
+    protected static boolean mDebug = false;
 
-    protected boolean mGoogleEnabled = false;
-    protected String mGooglePubkey = "";
-    protected String[] mGgoogleCatalog = new String[] {};
-    protected String[] mGoogleCatalogValues = new String[] {};
+    protected static boolean mGoogleEnabled = false;
+    protected static String mGooglePubkey = "";
+    protected static String[] mGoogleCatalog = new String[] {};
+    protected static String[] mGoogleCatalogValues = new String[] {};
 
-    protected boolean mPaypalEnabled = false;
-    protected String mPaypalUser = "";
-    protected String mPaypalCurrencyCode = "";
-    protected String mPaypalItemName = "";
+    protected static boolean mPaypalEnabled = false;
+    protected static String mPaypalUser = "";
+    protected static String mPaypalCurrencyCode = "";
+    protected static String mPaypalItemName = "";
 
-    protected boolean mFlattrEnabled = false;
-    protected String mFlattrProjectUrl = "";
-    protected String mFlattrUrl = "";
+    protected static boolean mFlattrEnabled = false;
+    protected static String mFlattrProjectUrl = "";
+    protected static String mFlattrUrl = "";
 
     public DonationsFragment() {
         super();
@@ -160,22 +160,25 @@ public class DonationsFragment extends Fragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.mDebug = getArguments().getBoolean(ARG_DEBUG);
-        this.mGoogleEnabled = getArguments().getBoolean(ARG_GOOGLE_ENABLED);
-        this.mGooglePubkey = getArguments().getString(ARG_GOOGLE_PUBKEY);
-        this.mGgoogleCatalog = getArguments()
-                               .getStringArray(ARG_GOOGLE_CATALOG);
-        this.mGoogleCatalogValues = getArguments().getStringArray(
-                                        ARG_GOOGLE_CATALOG_VALUES);
-        this.mPaypalEnabled = getArguments().getBoolean(ARG_PAYPAL_ENABLED);
-        this.mPaypalUser = getArguments().getString(ARG_PAYPAL_USER);
-        this.mPaypalCurrencyCode = getArguments().getString(
-                                       ARG_PAYPAL_CURRENCY_CODE);
-        this.mPaypalItemName = getArguments().getString(ARG_PAYPAL_ITEM_NAME);
-        this.mFlattrEnabled = getArguments().getBoolean(ARG_FLATTR_ENABLED);
-        this.mFlattrProjectUrl = getArguments().getString(
-                                     ARG_FLATTR_PROJECT_URL);
-        this.mFlattrUrl = getArguments().getString(ARG_FLATTR_URL);
+        if (getArguments() != null) {
+            this.mDebug = getArguments().getBoolean(ARG_DEBUG);
+            this.mGoogleEnabled = getArguments().getBoolean(ARG_GOOGLE_ENABLED);
+            this.mGooglePubkey = getArguments().getString(ARG_GOOGLE_PUBKEY);
+            this.mGoogleCatalog = getArguments()
+                                  .getStringArray(ARG_GOOGLE_CATALOG);
+            this.mGoogleCatalogValues = getArguments().getStringArray(
+                                            ARG_GOOGLE_CATALOG_VALUES);
+            this.mPaypalEnabled = getArguments().getBoolean(ARG_PAYPAL_ENABLED);
+            this.mPaypalUser = getArguments().getString(ARG_PAYPAL_USER);
+            this.mPaypalCurrencyCode = getArguments().getString(
+                                           ARG_PAYPAL_CURRENCY_CODE);
+            this.mPaypalItemName = getArguments().getString(ARG_PAYPAL_ITEM_NAME);
+            this.mFlattrEnabled = getArguments().getBoolean(ARG_FLATTR_ENABLED);
+            this.mFlattrProjectUrl = getArguments().getString(
+                                         ARG_FLATTR_PROJECT_URL);
+            this.mFlattrUrl = getArguments().getString(ARG_FLATTR_URL);
+        }
+        getActivity().getActionBar().setTitle(R.string.title_donations);
     }
 
     @Override
@@ -314,7 +317,7 @@ public class DonationsFragment extends Fragment {
                                             this.mPurchaseFinishedListener, null);
         } else {
             this.mHelper.launchPurchaseFlow(getActivity(),
-                                            this.mGgoogleCatalog[index], IabHelper.ITEM_TYPE_INAPP, 0,
+                                            this.mGoogleCatalog[index], IabHelper.ITEM_TYPE_INAPP, 0,
                                             this.mPurchaseFinishedListener, null);
         }
     }
