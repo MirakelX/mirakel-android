@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.settings.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -30,7 +29,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 
 import com.google.common.base.Optional;
 
@@ -45,7 +43,7 @@ import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.SettingsActivity;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.tools.FileUtils;
 
 public class BackupSettingsFragment extends PreferenceFragment {

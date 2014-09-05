@@ -42,8 +42,8 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.RecurringSettingsActivity;
-import de.azapps.mirakel.settings.activities.TagsSettingsActivity;
+import de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity;
+import de.azapps.mirakel.settings.model_settings.tag.TagSettingsActivity;
 import de.azapps.tools.FileUtils;
 
 public class DevSettingsFragment extends PreferenceFragment {
@@ -190,7 +190,7 @@ public class DevSettingsFragment extends PreferenceFragment {
         recurring.setIntent(startRecurringIntent);
 
         final Intent startTagIntent = new Intent(getActivity(),
-                TagsSettingsActivity.class);
+                TagSettingsActivity.class);
         final Preference tag = findPreference("tags");
         tag.setIntent(startTagIntent);
     }

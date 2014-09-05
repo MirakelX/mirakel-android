@@ -17,16 +17,10 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/speciallist_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.NegatedPropertyFragment">
-
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Is set?"
-        android:id="@+id/negated_property_checkbox"/>
-</LinearLayout>
+    tools:context="de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity"
+    tools:ignore="MergeRootFrame" />

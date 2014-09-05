@@ -9,77 +9,52 @@
     <application>
         <activity
             android:theme="@style/AppBaseTheme"
-            android:name="de.azapps.mirakel.settings.activities.SettingsActivity"
+            android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_settings"
             android:parentActivityName="de.azapps.mirakel.main_activity.MainActivity"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name=".activities.DonationsActivity"
+            android:name=".model_settings.account.AccountSettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_donations"
-            android:parentActivityName=".activities.SettingsActivity"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
-            android:name=".activities.AccountSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:label="@string/sync_title"
+            android:parentActivityName=".SettingsActivity"
             android:theme="@style/AppBaseTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
         <activity
-            android:name=".activities.RecurringSettingsActivity"
+            android:name="de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:label="@string/recurring"
+            android:parentActivityName=".SettingsActivity"
             android:theme="@style/AppBaseTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
         <activity
-            android:name=".special_list.SpecialListListActivity"
+            android:name=".model_settings.special_list.SpecialListListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/special_lists_title"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:parentActivityName=".SettingsActivity"
             android:theme="@style/AppBaseTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
         <activity
-            android:name=".special_list.SpecialListDetailActivity"
+            android:name=".model_settings.semantic.SemanticSettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:label="@string/settings_semantic"
+            android:parentActivityName=".SettingsActivity"
             android:theme="@style/AppBaseTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
         <activity
-            android:name=".activities.SemanticsSettingsActivity"
+            android:name=".model_settings.tag.TagSettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits"
-            android:parentActivityName=".activities.SettingsActivity"
+            android:label="@string/tag_settings"
+            android:parentActivityName=".SettingsActivity"
             android:theme="@style/AppBaseTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
         <activity
-            android:name=".activities.TagsSettingsActivity"
+            android:name=".model_settings.generic_list.GenericModelDetailActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_credits"
             android:theme="@style/AppBaseTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.azapps.mirakel.static_activities.SettingsActivity" />
         </activity>
     </application>
 

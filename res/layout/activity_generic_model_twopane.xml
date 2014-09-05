@@ -21,12 +21,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.NegatedPropertyFragment">
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="horizontal"
+    android:showDividers="middle"
+    tools:context="de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity">
 
+    <FrameLayout
+        android:id="@+id/generic_model_list_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".4" />
+    <FrameLayout
+        android:id="@+id/generic_model_detail_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".6" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Is set?"
-        android:id="@+id/negated_property_checkbox"/>
 </LinearLayout>

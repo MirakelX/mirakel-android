@@ -13,31 +13,31 @@
     <PreferenceCategory
         android:key="recurring_interval"
         android:title="@string/interval" >
-        <de.azapps.mirakel.settings.NumPickerPref
+        <de.azapps.widgets.NumPickerPref
             android:key="recurring_min"
             android:title="@string/minute"
             mirakel:maximumValue="60"
             mirakel:minimumValue="0"
             mirakel:summaryString="@plurals/minutes" />
-        <de.azapps.mirakel.settings.NumPickerPref
+        <de.azapps.widgets.NumPickerPref
             android:key="recurring_hour"
             android:title="@string/hour"
             mirakel:maximumValue="24"
             mirakel:minimumValue="0"
             mirakel:summaryString="@plurals/hours" />
-        <de.azapps.mirakel.settings.NumPickerPref
+        <de.azapps.widgets.NumPickerPref
             android:key="recurring_day"
             android:title="@string/day"
             mirakel:maximumValue="31"
             mirakel:minimumValue="0"
             mirakel:summaryString="@plurals/days" />
-        <de.azapps.mirakel.settings.NumPickerPref
+        <de.azapps.widgets.NumPickerPref
             android:key="recurring_month"
             android:title="@string/month"
             mirakel:maximumValue="12"
             mirakel:minimumValue="0"
             mirakel:summaryString="@plurals/months" />
-        <de.azapps.mirakel.settings.NumPickerPref
+        <de.azapps.widgets.NumPickerPref
             android:key="recurring_year"
             android:title="@string/year"
             mirakel:maximumValue="100"

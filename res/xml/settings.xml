@@ -30,7 +30,7 @@
         android:icon="@drawable/settings_sync">
         <intent
             android:targetPackage="de.azapps.mirakelandroid"
-            android:targetClass="de.azapps.mirakel.settings.activities.AccountSettingsActivity"/>
+            android:targetClass="de.azapps.mirakel.settings.model_settings.account.AccountSettingsActivity"/>
     </header>
     <header
         android:fragment="de.azapps.mirakel.settings.fragments.TaskSettingsFragment"
@@ -42,7 +42,7 @@
         android:id="@+id/meta_lists_settings">
         <intent
             android:targetPackage="de.azapps.mirakelandroid"
-            android:targetClass="de.azapps.mirakel.settings.special_list.SpecialListListActivity"/>
+            android:targetClass="de.azapps.mirakel.settings.model_settings.special_list.SpecialListListActivity"/>
     </header>
     <header
         android:fragment="de.azapps.mirakel.settings.fragments.NotificationSettingsFragment"

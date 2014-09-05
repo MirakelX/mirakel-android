@@ -29,12 +29,10 @@ import java.util.List;
 
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.SettingsActivity;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 
 public class UISettingsFragment extends PreferenceFragment {

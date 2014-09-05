@@ -38,7 +38,7 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.SemanticsSettingsActivity;
+import de.azapps.mirakel.settings.model_settings.semantic.SemanticSettingsActivity;
 
 public class TaskSettingsFragment extends PreferenceFragment {
     @Override
@@ -50,7 +50,7 @@ public class TaskSettingsFragment extends PreferenceFragment {
 
 
         final Intent startSemanticsIntent = new Intent(getActivity(),
-                SemanticsSettingsActivity.class);
+                SemanticSettingsActivity.class);
         final Preference semantics = findPreference("semanticNewTaskSettings");
         if (semantics != null) {
             semantics.setIntent(startSemanticsIntent);

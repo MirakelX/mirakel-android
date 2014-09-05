@@ -20,7 +20,7 @@ public class DueDialog extends AlertDialog {
     protected String[] s;
 
     public enum VALUE {
-        MINUTE, HOUR, DAY, MONTH, YEAR;
+        MINUTE, HOUR, DAY, MONTH, YEAR,;
 
         public int getInt() {
             switch (this) {
