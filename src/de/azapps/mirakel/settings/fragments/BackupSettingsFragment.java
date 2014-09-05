@@ -224,13 +224,11 @@ public class BackupSettingsFragment extends PreferenceFragment {
                 final int min = 0;
                 final NumberPicker numberPicker = new NumberPicker(
                     getActivity());
-                ((NumberPicker) numberPicker).setMaxValue(max);
-                ((NumberPicker) numberPicker).setMinValue(min);
-                ((NumberPicker) numberPicker)
-                .setWrapSelectorWheel(false);
-                ((NumberPicker) numberPicker).setValue(old_val);
-                ((NumberPicker) numberPicker)
-                .setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                numberPicker.setMaxValue(max);
+                numberPicker.setMinValue(min);
+                numberPicker.setWrapSelectorWheel(false);
+                numberPicker.setValue(old_val);
+                numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
                 new AlertDialog.Builder(
                     getActivity())
                 .setTitle(R.string.auto_backup_interval)
@@ -242,24 +240,12 @@ public class BackupSettingsFragment extends PreferenceFragment {
                     public void onClick(
                         final DialogInterface dialog,
                         final int whichButton) {
-                        int val;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                            val = ((NumberPicker) numberPicker)
-                                  .getValue();
-                        } else {
-                            val = Integer
-                                  .parseInt(((TextView) numberPicker
-                                             .findViewById(R.id.dialog_num_pick_val))
-                                            .getText()
-                                            .toString());
-                        }
-                        MirakelCommonPreferences
-                        .setAutoBackupInterval(val);
-                        autoBackupInterval
-                        .setSummary(getActivity()
-                                    .getString(
-                                        R.string.auto_backup_interval_summary,
-                                        val));
+                        int val = numberPicker.getValue();
+                        MirakelCommonPreferences.setAutoBackupInterval(val);
+                        autoBackupInterval.setSummary(getActivity()
+                                                      .getString(
+                                                          R.string.auto_backup_interval_summary,
+                                                          val));
                     }
                 }).setNegativeButton(android.R.string.cancel, null).show();
                 return false;

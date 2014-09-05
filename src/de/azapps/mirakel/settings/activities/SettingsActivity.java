@@ -20,6 +20,7 @@
 package de.azapps.mirakel.settings.activities;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,13 +28,20 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
@@ -50,20 +58,62 @@ import de.azapps.mirakel.settings.fragments.DevSettingsFragment;
 import de.azapps.mirakel.settings.fragments.NotificationSettingsFragment;
 import de.azapps.mirakel.settings.fragments.TaskSettingsFragment;
 import de.azapps.mirakel.settings.fragments.UISettingsFragment;
+import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class SettingsActivity extends PreferenceActivity {
+
+    @NonNull
+    private FRAGMENTS currentFragment = FRAGMENTS.UI;
+
+    private enum FRAGMENTS {
+        ABOUT, BACKUP, DEV, NOTIFICATION, TASK, UI, TASKUI;
+
+        @Override
+        public String toString() {
+            switch (this) {
+            case ABOUT:
+                return AboutSettingsFragment.class.getName();
+            case BACKUP:
+                return BackupSettingsFragment.class.getName();
+            case DEV:
+                return DevSettingsFragment.class.getName();
+            case NOTIFICATION:
+                return NotificationSettingsFragment.class.getName();
+            case TASK:
+                return TaskSettingsFragment.class.getName();
+            case UI:
+                return UISettingsFragment.class.getName();
+            case TASKUI:
+                return TaskFragmentSettingsFragment.class.getName();
+            }
+            return super.toString();
+        }
+
+        public void restoreFragment(final @NonNull PreferenceActivity settingsActivity) {
+            switch (this) {
+            case TASKUI:
+                settingsActivity.startPreferenceFragment(new TaskFragmentSettingsFragment(), false);
+                break;
+            default:
+                settingsActivity.switchToHeader(toString(), null);
+            }
+        }
+    }
+
+    @NonNull
+    private static final Set<FRAGMENTS> validFragments = new HashSet<>();
+    static {
+        validFragments.addAll(Arrays.asList(FRAGMENTS.values()));
+    }
 
     public static final int DONATE = 5;
     public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
                             NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
     private static final String TAG = "SettingsActivity";
     private FileInputStream stream;
-    private final static  Class[] validFragments = {AboutSettingsFragment.class, BackupSettingsFragment.class,
-                                                    DevSettingsFragment.class, NotificationSettingsFragment.class,
-                                                    TaskSettingsFragment.class, UISettingsFragment.class
-                                                   };
+    private boolean isTablet;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +122,7 @@ public class SettingsActivity extends PreferenceActivity {
         }
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        isTablet = MirakelCommonPreferences.isTablet();
     }
 
     @Override
@@ -120,10 +171,11 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
+
     @Override
-    protected boolean isValidFragment(String fragmentName) {
-        for (Class cls : validFragments) {
-            if (cls.getName().equals(fragmentName)) {
+    protected boolean isValidFragment(final String fragmentName) {
+        for (FRAGMENTS f : validFragments) {
+            if (f.toString().equals(fragmentName)) {
                 return true;
             }
         }
@@ -252,10 +304,29 @@ public class SettingsActivity extends PreferenceActivity {
         switch (item.getItemId()) {
         // Respond to the action bar's Up/Home button
         case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
+            if (!isTablet && currentFragment == FRAGMENTS.TASKUI) {
+                FRAGMENTS.UI.restoreFragment(this);
+            } else {
+                NavUtils.navigateUpFromSameTask(this);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment == FRAGMENTS.TASKUI) {
+            FRAGMENTS.UI.restoreFragment(this);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void startPreferenceFragment(Fragment fragment, boolean push) {
+        isValidFragment(fragment.getClass().getName());
+        super.startPreferenceFragment(fragment, push);
     }
 
     @Override

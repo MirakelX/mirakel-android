@@ -127,7 +127,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
 
     private View setupAddButton() {
         final Spinner b = new Spinner(this.context);
-        final SparseArray<String> allItems = new SparseArray<String>();
+        final SparseArray<String> allItems = new SparseArray<>();
         try {
             allItems.put(TYPE.HEADER,
                          TYPE.getTranslatedName(this.context, TYPE.HEADER));
@@ -158,7 +158,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
         for (int i = 0; i < allItems.size(); i++) {
             items[i + 1] = allItems.valueAt(i);
         }
-        final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
+        final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(
             this.context, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         b.setAdapter(adapter);

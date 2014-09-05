@@ -34,6 +34,8 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.activities.SettingsActivity;
+import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 
 public class UISettingsFragment extends PreferenceFragment {
     @Override
@@ -110,6 +112,16 @@ public class UISettingsFragment extends PreferenceFragment {
         startupListPreference.setEntries(entries);
         startupListPreference.setEntryValues(entryValues);
         startupListPreference.setEnabled(true);
+
+        final Preference taskFragment = findPreference("task_fragment");
+        taskFragment.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                ((SettingsActivity)getActivity()).startPreferenceFragment(new TaskFragmentSettingsFragment(),
+                        false);
+                return true;
+            }
+        });
     }
 
     private void setLanguageSummary(final ListPreference language,

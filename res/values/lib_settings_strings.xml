@@ -393,6 +393,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>@string/special_lists_subtask_title</item>
         <item>Subcondition</item>
     </string-array>
+
     <string name="done_text">Only done tasks</string>
     <string name="file_text">Only tasks with files</string>
     <string name="reminder_text">Only tasks with reminder</string>
@@ -402,4 +403,5 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="special_lists_condition_title">Conditions</string>
     <string name="Undo">Undo remove condition</string>
     <string name="add_condition">Add condition</string>
+    <string name="undo_taskui_change">Undo remove of %s</string>
 </resources>
