@@ -27,6 +27,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,9 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
+
 public class Tag extends TagBase {
 
     public static final String TABLE = "tag";
@@ -46,10 +52,17 @@ public class Tag extends TagBase {
                                               };
     public static final Uri URI = MirakelInternalContentProvider.TAG_URI;
 
-    public Tag(final int id, final String name, final int backColor, final boolean isDarkBackground) {
+    public Tag(final long id, final String name, final int backColor, final boolean isDarkBackground) {
         super(id, name, backColor, isDarkBackground);
     }
 
+    public Tag(final Cursor c) {
+        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
+              c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1);
+    }
+
+
+    @Override
     protected Uri getUri() {
         return URI;
     }
@@ -58,63 +71,67 @@ public class Tag extends TagBase {
         return new MirakelQueryBuilder(context).count(URI);
     }
 
-    public static Tag get(final long id) {
-        return new MirakelQueryBuilder(context).get(Tag.class, id);
+    @NonNull
+    public static Optional<Tag> get(final long id) {
+        return Optional.fromNullable(new MirakelQueryBuilder(context).get(Tag.class, id));
     }
 
+    @NonNull
     public static List<Tag> all() {
         return new MirakelQueryBuilder(context).getList(Tag.class);
     }
 
+    @NonNull
     public static List<Tag> getTagsForTask(final long id) {
         return Tag.cursorToTagList(new MirakelQueryBuilder(context).select(addPrefix(allColumns,
                                    TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
                                    .query(MirakelInternalContentProvider.TASK_TAG_JOIN_URI));
     }
 
+    @NonNull
     public static String getTagsQuery(final String[] columns) {
-        String s = "";
+        final StringBuilder stringBuilder = new StringBuilder();
         boolean first = true;
-        for (final String c : columns) {
+        for (final String column : columns) {
             if (!first) {
-                s += ", ";
+                stringBuilder.append(", ");
             } else {
                 first = false;
             }
-            s += Tag.TABLE + "." + c;
+            stringBuilder.append(Tag.TABLE + '.').append(column);
         }
-        final String query = "SELECT " + s + " FROM " + TAG_CONNECTION_TABLE
-                             + " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
-                             + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID + " WHERE "
-                             + TAG_CONNECTION_TABLE + ".task_id=?";
-        return query;
+        return "SELECT " + stringBuilder + " FROM " + TAG_CONNECTION_TABLE
+               + " INNER JOIN " + Tag.TABLE + " ON " + TAG_CONNECTION_TABLE
+               + ".tag_id=" + Tag.TABLE + '.' + ModelBase.ID + " WHERE "
+               + TAG_CONNECTION_TABLE + ".task_id=?";
     }
 
+    @NonNull
     public static Tag newTag(final String name) {
         return newTag(name, true, getNextColor(count(), context));
     }
 
+    @NonNull
     public static Tag newTag(final String name, final boolean dark,
                              final int color) {
-        final Tag t = getByName(name);
-        if (t != null) {
-            return t;
+        final Optional<Tag> t = getByName(name);
+        if (t.isPresent()) {
+            return t.get();
         }
         final ContentValues cv = new ContentValues();
         cv.put(ModelBase.NAME, name);
         cv.put(DARK_TEXT, dark);
         cv.put(BACKGROUND_COLOR, color);
         final long id = insert(URI, cv);
-        return get(id);
+        return get(id).get();
     }
-
 
     public static int getNextColor(final long count, final Context ctx) {
         final TypedArray ta = ctx.getResources().obtainTypedArray(
                                   R.array.default_colors);
         final int transparency[] = ctx.getResources().getIntArray(
                                        R.array.default_transparency);
-        final int alpha = (int)count / ta.length() % transparency.length;
+        final int alpha = ((int) count / ta.length()) % transparency.length;
         final int colorPos = (int)count % ta.length();
         final int color = android.graphics.Color.argb(transparency[alpha],
                           Color.red(ta.getColor(colorPos, 0)),
@@ -124,14 +141,9 @@ public class Tag extends TagBase {
         return color;
     }
 
-
-    public Tag(final Cursor c) {
-        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1);
-    }
-
+    @NonNull
     private static List<Tag> cursorToTagList(final Cursor c) {
-        final List<Tag> tags = new ArrayList<>();
+        final List<Tag> tags = new ArrayList<>(c.getCount());
         if (c.moveToFirst()) {
             do {
                 tags.add(new Tag(c));
@@ -141,8 +153,9 @@ public class Tag extends TagBase {
         return tags;
     }
 
-    private static Tag getByName(final String name) {
-        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class);
+    @NonNull
+    private static Optional<Tag> getByName(final String name) {
+        return fromNullable(new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class));
     }
 
     /**
@@ -151,15 +164,16 @@ public class Tag extends TagBase {
      * @param id of the task, to which the tags should be serialized
      * @return All tags as json-string in tw-form
      */
+    @NonNull
     public static String serialize(final long id) {
-        String json = "";
+        final StringBuilder json = new StringBuilder();
         final List<Tag> tags = getTagsForTask(id);
-        json += "\"tags\":[";
-        if (tags.size() > 0) {
+        json.append("\"tags\":[");
+        if (!tags.isEmpty()) {
             boolean first = true;
             for (final Tag t : tags) {
                 if (!first) {
-                    json += ",";
+                    json.append(',');
                 } else {
                     first = false;
                 }
@@ -167,11 +181,11 @@ public class Tag extends TagBase {
                  * The "tags" field is an array of string, where each string is
                  * a single word containing no spaces.
                  */
-                json += "\"" + t.getName().replace(" ", "_") + "\"";
+                json.append('"').append(t.getName().replace(" ", "_")).append('"');
             }
         }
-        json += "]";
-        return json;
+        json.append(']');
+        return json.toString();
     }
 
     // Parcelable stuff
@@ -182,14 +196,14 @@ public class Tag extends TagBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeByte(isDarkText ? (byte) 1 : (byte) 0);
         dest.writeInt(this.backgroundColor);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
     }
 
-    private Tag(Parcel in) {
+    private Tag(final Parcel in) {
         super();
         this.isDarkText = in.readByte() != 0;
         this.backgroundColor = in.readInt();
@@ -198,10 +212,12 @@ public class Tag extends TagBase {
     }
 
     public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {
-        public Tag createFromParcel(Parcel source) {
+        @Override
+        public Tag createFromParcel(final Parcel source) {
             return new Tag(source);
         }
-        public Tag[] newArray(int size) {
+        @Override
+        public Tag[] newArray(final int size) {
             return new Tag[size];
         }
     };

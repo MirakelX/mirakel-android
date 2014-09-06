@@ -84,6 +84,45 @@ public class Recurring extends RecurringBase {
               startDate, endDate, temporary, isExact, weekdays, derivedFrom);
     }
 
+    public Recurring(final Cursor c) {
+        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(LABEL)));
+        Calendar start;
+        try {
+            start = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(START_DATE)));
+        } catch (final ParseException e) {
+            start = null;
+            Log.d(TAG, "cannot parse Date");
+        }
+        Calendar end;
+        try {
+            end = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(END_DATE)));
+        } catch (final ParseException e) {
+            Log.d(TAG, "cannot parse Date");
+            end = null;
+        }
+        final SparseBooleanArray weekdays = new SparseBooleanArray();
+        weekdays.put(Calendar.MONDAY, c.getShort(c.getColumnIndex(MONDAY)) == 1);
+        weekdays.put(Calendar.TUESDAY, c.getShort(c.getColumnIndex(TUESDAY)) == 1);
+        weekdays.put(Calendar.WEDNESDAY, c.getShort(c.getColumnIndex(WEDNESDAY)) == 1);
+        weekdays.put(Calendar.THURSDAY, c.getShort(c.getColumnIndex(THURSDAY)) == 1);
+        weekdays.put(Calendar.FRIDAY, c.getShort(c.getColumnIndex(FRIDAY)) == 1);
+        weekdays.put(Calendar.SATURDAY, c.getShort(c.getColumnIndex(SATURDAY)) == 1);
+        weekdays.put(Calendar.SUNDAY, c.getShort(c.getColumnIndex(SUNDAY)) == 1);
+        final Long derivedFrom = c.isNull(c.getColumnIndex(DERIVED)) ? null : c.getLong(c.getColumnIndex(
+                                     DERIVED));
+        setMinutes(c.getInt(c.getColumnIndex(MINUTES)));
+        setHours(c.getInt(c.getColumnIndex(HOURS)));
+        setDays(c.getInt(c.getColumnIndex(DAYS)));
+        setMonths(c.getInt(c.getColumnIndex(MONTHS)));
+        setYears(c.getInt(c.getColumnIndex(YEARS)));
+        setForDue(c.getShort(c.getColumnIndex(FOR_DUE)) == 1);
+        setStartDate(fromNullable(start));
+        setEndDate(fromNullable(end));
+        setTemporary(c.getShort(c.getColumnIndex(TEMPORARY)) == 1);
+        setExact(c.getShort(c.getColumnIndex(EXACT)) == 1);
+        setWeekdays(weekdays);
+        setDerivedFrom(fromNullable(derivedFrom));
+    }
 
     // Static
 
@@ -179,46 +218,17 @@ public class Recurring extends RecurringBase {
         return new MirakelQueryBuilder(context).getList(Recurring.class);
     }
 
-
-    public Recurring(final Cursor c) {
-        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(LABEL)));
-        Calendar start;
-        try {
-            start = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(START_DATE)));
-        } catch (final ParseException e) {
-            start = null;
-            Log.d(TAG, "cannot parse Date");
+    public static List<Recurring> cursorToRecurringList(Cursor c) {
+        List<Recurring> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new Recurring(c));
+            } while (c.moveToNext());
         }
-        Calendar end;
-        try {
-            end = DateTimeHelper.parseDateTime(c.getString(c.getColumnIndex(END_DATE)));
-        } catch (final ParseException e) {
-            Log.d(TAG, "cannot parse Date");
-            end = null;
-        }
-        final SparseBooleanArray weekdays = new SparseBooleanArray();
-        weekdays.put(Calendar.MONDAY, c.getShort(c.getColumnIndex(MONDAY)) == 1);
-        weekdays.put(Calendar.TUESDAY, c.getShort(c.getColumnIndex(TUESDAY)) == 1);
-        weekdays.put(Calendar.WEDNESDAY, c.getShort(c.getColumnIndex(WEDNESDAY)) == 1);
-        weekdays.put(Calendar.THURSDAY, c.getShort(c.getColumnIndex(THURSDAY)) == 1);
-        weekdays.put(Calendar.FRIDAY, c.getShort(c.getColumnIndex(FRIDAY)) == 1);
-        weekdays.put(Calendar.SATURDAY, c.getShort(c.getColumnIndex(SATURDAY)) == 1);
-        weekdays.put(Calendar.SUNDAY, c.getShort(c.getColumnIndex(SUNDAY)) == 1);
-        final Long derivedFrom = c.isNull(c.getColumnIndex(DERIVED)) ? null : c.getLong(c.getColumnIndex(
-                                     DERIVED));
-        setMinutes(c.getInt(c.getColumnIndex(MINUTES)));
-        setHours(c.getInt(c.getColumnIndex(HOURS)));
-        setDays(c.getInt(c.getColumnIndex(DAYS)));
-        setMonths(c.getInt(c.getColumnIndex(MONTHS)));
-        setYears(c.getInt(c.getColumnIndex(YEARS)));
-        setForDue(c.getShort(c.getColumnIndex(FOR_DUE)) == 1);
-        setStartDate(fromNullable(start));
-        setEndDate(fromNullable(end));
-        setTemporary(c.getShort(c.getColumnIndex(TEMPORARY)) == 1);
-        setExact(c.getShort(c.getColumnIndex(EXACT)) == 1);
-        setWeekdays(weekdays);
-        setDerivedFrom(fromNullable(derivedFrom));
+        c.close();
+        return ret;
     }
+
 
     @NonNull
     public Task incrementRecurringDue(final Task t) {

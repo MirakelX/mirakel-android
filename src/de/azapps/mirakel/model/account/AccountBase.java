@@ -38,7 +38,8 @@ abstract class AccountBase extends ModelBase {
     public final static String ENABLED = "enabled";
     public static final String SYNC_KEY = "sync_key";
 
-    protected int type;
+    @NonNull
+    protected ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
     protected boolean enabled;
     @NonNull
     protected Optional<String> syncKey = absent();
@@ -47,7 +48,7 @@ abstract class AccountBase extends ModelBase {
                        @NonNull final ACCOUNT_TYPES type, final boolean enabled,
                        @NonNull final Optional<String> syncKey) {
         super(id, name);
-        this.setType(type.toInt());
+        this.setType(type);
         this.setEnabled(enabled);
         this.setSyncKey(syncKey);
     }
@@ -59,10 +60,10 @@ abstract class AccountBase extends ModelBase {
 
 
     public ACCOUNT_TYPES getType() {
-        return ACCOUNT_TYPES.parseInt(this.type);
+        return this.type;
     }
 
-    public void setType(final int type) {
+    public void setType(@NonNull final ACCOUNT_TYPES type) {
         this.type = type;
     }
 
@@ -74,7 +75,7 @@ abstract class AccountBase extends ModelBase {
             Log.wtf(TAG, "how could this ever happen?", e);
             return new ContentValues();
         }
-        cv.put(TYPE, this.type);
+        cv.put(TYPE, this.type.toInt());
         cv.put(ENABLED, this.enabled);
         cv.put(SYNC_KEY, this.syncKey.orNull());
         return cv;
@@ -106,7 +107,7 @@ abstract class AccountBase extends ModelBase {
         result = prime * result + (getName().hashCode());
         result = prime * result
                  + (!this.syncKey.isPresent() ? 0 : this.syncKey.get().hashCode());
-        result = prime * result + this.type;
+        result = prime * result + this.type.toInt();
         return result;
     }
 

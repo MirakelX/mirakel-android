@@ -62,6 +62,7 @@ import static com.google.common.base.Optional.of;
  */
 public class ListMirakel extends ListBase {
 
+
     public static class ListAlreadyExistsException extends Exception {
         public ListAlreadyExistsException(String detailMessage) {
             super(detailMessage);
@@ -194,6 +195,17 @@ public class ListMirakel extends ListBase {
         }
         cursor.close();
         return lists;
+    }
+
+    public static List<ListMirakel> cursorToList(Cursor c) {
+        final List<ListMirakel> ret = new ArrayList<>();
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new ListMirakel(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
     }
 
     @NonNull

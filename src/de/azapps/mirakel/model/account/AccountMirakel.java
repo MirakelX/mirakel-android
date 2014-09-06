@@ -307,7 +307,7 @@ public class AccountMirakel extends AccountBase {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.type);
+        dest.writeInt(this.type.toInt());
         dest.writeByte(enabled ? (byte) 1 : (byte) 0);
         dest.writeString(this.syncKey.orNull());
         dest.writeLong(getId());
@@ -316,7 +316,7 @@ public class AccountMirakel extends AccountBase {
 
     private AccountMirakel(Parcel in) {
         super();
-        this.type = in.readInt();
+        this.type = ACCOUNT_TYPES.parseInt(in.readInt());
         this.enabled = in.readByte() != 0;
         this.syncKey = fromNullable(in.readString());
         setId(in.readLong());
