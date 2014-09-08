@@ -50,7 +50,7 @@ import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.R;
-import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 

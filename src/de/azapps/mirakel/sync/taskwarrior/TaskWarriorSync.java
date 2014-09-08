@@ -48,12 +48,14 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.account.AccountMirakel;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.sync.SyncAdapter;
-import de.azapps.mirakel.sync.taskwarrior.TLSClient.NoSuchCertificateException;
+import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
+import de.azapps.mirakel.sync.taskwarrior.network_helper.Msg;
+import de.azapps.mirakel.sync.taskwarrior.network_helper.TLSClient;
+import de.azapps.mirakel.sync.taskwarrior.network_helper.TLSClient.NoSuchCertificateException;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskSerializer;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -65,7 +67,7 @@ public class TaskWarriorSync {
     private static final String TW_PROTOCOL_VERSION = "v1";
 
     private int clientSyncKeyFailResyncCount = 0;
-    public class TaskWarriorSyncFailedException extends Exception {
+    public static class TaskWarriorSyncFailedException extends Exception {
         private static final long serialVersionUID = 3349776187699690118L;
         private final TW_ERRORS error;
         private final String message;
@@ -78,6 +80,12 @@ public class TaskWarriorSync {
 
         TaskWarriorSyncFailedException(final TW_ERRORS type, final String message) {
             super();
+            this.error = type;
+            this.message = message;
+        }
+
+        TaskWarriorSyncFailedException(final TW_ERRORS type, final String message, final Throwable cause) {
+            super(cause);
             this.error = type;
             this.message = message;
         }
@@ -209,7 +217,7 @@ public class TaskWarriorSync {
             throw new TaskWarriorSyncFailedException(
                 TW_ERRORS.ACCOUNT_VANISHED, "Account vanished");
         }
-        AccountMirakel accountMirakel = accountMirakelOptional.get();
+        final AccountMirakel accountMirakel = accountMirakelOptional.get();
         Log.longInfo(sync.getPayload());
         final TLSClient client = new TLSClient();
         // The following should not happen – except the user is tinkering in our files or so…
@@ -230,15 +238,15 @@ public class TaskWarriorSync {
         } catch (final ParseException e) {
             Log.e(TAG, "cannot open certificate", e);
             throw new TaskWarriorSyncFailedException(
-                TW_ERRORS.CONFIG_PARSE_ERROR, "cannot open certificate");
+                TW_ERRORS.CONFIG_PARSE_ERROR, "cannot open certificate", e);
         } catch (final CertificateException e) {
             Log.e(TAG, "general problem with init", e);
             throw new TaskWarriorSyncFailedException(
-                TW_ERRORS.CONFIG_PARSE_ERROR, "general problem with init");
+                TW_ERRORS.CONFIG_PARSE_ERROR, "general problem with init", e);
         } catch (final NoSuchCertificateException e) {
             Log.e(TAG, "NoSuchCertificateException", e);
             throw new TaskWarriorSyncFailedException(TW_ERRORS.NO_SUCH_CERT,
-                    "general problem with init");
+                    "general problem with init", e);
         }
         try {
             client.connect(_host, _port);
@@ -246,7 +254,7 @@ public class TaskWarriorSync {
             Log.e(TAG, "cannot create socket", e);
             client.close();
             throw new TaskWarriorSyncFailedException(
-                TW_ERRORS.CANNOT_CREATE_SOCKET, "cannot create socket");
+                TW_ERRORS.CANNOT_CREATE_SOCKET, "cannot create socket", e);
         }
         client.send(sync.serialize());
         final String response = client.recv();
@@ -267,13 +275,13 @@ public class TaskWarriorSync {
             Log.e(TAG, "cannot parse message", e);
             client.close();
             throw new TaskWarriorSyncFailedException(
-                TW_ERRORS.CANNOT_PARSE_MESSAGE, "cannot parse message");
+                TW_ERRORS.CANNOT_PARSE_MESSAGE, "cannot parse message", e);
         } catch (final NullPointerException e) {
             Log.wtf(TAG, "remotes.parse throwed NullPointer", e);
             client.close();
             throw new TaskWarriorSyncFailedException(
                 TW_ERRORS.CANNOT_PARSE_MESSAGE,
-                "remotes.parse throwed NullPointer");
+                "remotes.parse throwed NullPointer", e);
         }
         final int code = Integer.parseInt(remotes.get("code"));
         final TW_ERRORS error = TW_ERRORS.getError(code);
@@ -303,7 +311,7 @@ public class TaskWarriorSync {
             }
             throw new TaskWarriorSyncFailedException(error);
         }
-        if (remotes.get("status").equals("Client sync key not found.")) {
+        if ("Client sync key not found.".equals(remotes.get("status"))) {
             Log.d(TAG, "reset sync-key");
             clientSyncKeyFailResyncCount++;
             // How this could happen? Nobody knows but one user was able to do this…
@@ -326,7 +334,7 @@ public class TaskWarriorSync {
             }
         }
         // parse tasks
-        if (remotes.getPayload() == null || remotes.getPayload().equals("")) {
+        if (remotes.getPayload() == null || remotes.getPayload().isEmpty()) {
             Log.i(TAG, "there is no Payload");
         } else {
             Optional<String> newSyncKey = absent();
@@ -343,47 +351,47 @@ public class TaskWarriorSync {
                     newSyncKey = of(taskString);
                     continue;
                 }
-                Optional<Task> local_task;
-                Task server_task;
+                final Optional<Task> localTask;
+                final Task serverTask;
                 try {
                     Log.i(TAG, taskString);
-                    server_task = gson.fromJson(taskString, Task.class);
-                    this.dependencies.put(server_task.getUUID(),
-                                          server_task.getDependencies());
-                    local_task = Task.getByUUID(server_task.getUUID());
+                    serverTask = gson.fromJson(taskString, Task.class);
+                    this.dependencies.put(serverTask.getUUID(),
+                                          serverTask.getDependencies());
+                    localTask = Task.getByUUID(serverTask.getUUID());
                 } catch (final Exception e) {
                     Log.e(TAG, "malformed JSON", e);
                     Log.e(TAG, taskString);
                     continue;
                 }
-                if (server_task.getSyncState() == SYNC_STATE.DELETE) {
-                    Log.d(TAG, "destroy " + server_task.getName());
-                    taskDeleteUUID.add(server_task.getUUID());
-                } else if (!local_task.isPresent()) {
-                    if (server_task.hasRecurringParent()) {
-                        recurringTasksCreate.add(server_task);
+                if (serverTask.getSyncState() == SYNC_STATE.DELETE) {
+                    Log.d(TAG, "destroy " + serverTask.getName());
+                    taskDeleteUUID.add(serverTask.getUUID());
+                } else if (!localTask.isPresent()) {
+                    if (serverTask.hasRecurringParent()) {
+                        recurringTasksCreate.add(serverTask);
                     } else {
                         try {
-                            server_task.create(false, true);
-                            Log.d(TAG, "create " + server_task.getName());
+                            serverTask.create(false, true);
+                            Log.d(TAG, "create " + serverTask.getName());
                         } catch (final NoSuchListException e) {
                             Log.wtf(TAG, "List vanish", e);
                         }
                     }
                 } else {
-                    server_task.takeIdFrom(local_task.get());
-                    Log.d(TAG, "update " + server_task.getName());
-                    if (server_task.hasRecurringParent()) {
-                        recurringTasksSave.add(server_task);
+                    serverTask.takeIdFrom(localTask.get());
+                    Log.d(TAG, "update " + serverTask.getName());
+                    if (serverTask.hasRecurringParent()) {
+                        recurringTasksSave.add(serverTask);
                     } else {
-                        server_task.save(false, true);
+                        serverTask.save(false, true);
                     }
                 }
             }
             for (final Task t : recurringTasksCreate) {
-                final Optional<Task> t_local = Task.getByUUID(t.getUUID());
-                if (t_local.isPresent()) {
-                    t.takeIdFrom(t_local.get());
+                final Optional<Task> localTask = Task.getByUUID(t.getUUID());
+                if (localTask.isPresent()) {
+                    t.takeIdFrom(localTask.get());
                     t.save(false, true);
                 } else {
                     try {
@@ -407,7 +415,7 @@ public class TaskWarriorSync {
             accountMirakel.save();
         }
         final String message = remotes.get("message");
-        if (message != null && !"".equals(message)) {
+        if (message != null && !message.isEmpty()) {
             Log.v(TAG, "Message from Server: " + message);
         }
         client.close();
@@ -458,7 +466,7 @@ public class TaskWarriorSync {
             TaskWarriorSync.user_key = pwds[0].trim();
             _key = pwds[1].trim();
         }
-        if (_key.length() != 0 && _key.length() != 36) {
+        if (!_key.isEmpty() && _key.length() != 36) {
             Log.wtf(TAG, "Key is not valid");
             throw new TaskWarriorSyncFailedException(
                 TW_ERRORS.CONFIG_PARSE_ERROR, "Key is not valid");
@@ -516,30 +524,33 @@ public class TaskWarriorSync {
         sync.set("org", _org);
         sync.set("user", _user);
         sync.set("key", _key);
-        String payload = sync_key != null ? sync_key + "\n" : "";
-        final List<Task> local_tasks;
-        if (couldNotFindCommonAncestorWorkaround) {
-            local_tasks = new ArrayList<>();
-        } else {
-            local_tasks = Task.getTasksToSync(a);
+        final StringBuilder payload = new StringBuilder();
+        if (sync_key != null) {
+            payload.append(sync_key).append('\n');
         }
-        for (final Task task : local_tasks) {
-            payload += taskToJson(task) + "\n";
+        final List<Task> localTasks;
+        if (couldNotFindCommonAncestorWorkaround) {
+            localTasks = new ArrayList<>(0);
+        } else {
+            localTasks = Task.getTasksToSync(a);
+        }
+        for (final Task task : localTasks) {
+            payload.append(taskToJson(task)).append('\n');
         }
         // Format: {UUID:[UUID]}
         this.dependencies = new HashMap<>();
-        final String old_key = this.accountManager.getUserData(a,
-                               SyncAdapter.TASKWARRIOR_KEY);
-        if (old_key != null && !old_key.equals("")) {
-            payload += old_key + "\n";
+        final String oldKey = this.accountManager.getUserData(a,
+                              SyncAdapter.TASKWARRIOR_KEY);
+        if (oldKey != null && !oldKey.isEmpty()) {
+            payload.append(oldKey).append('\n');
         }
         // Build sync-request
-        sync.setPayload(payload);
+        sync.setPayload(payload.toString());
         if (MirakelCommonPreferences.isDumpTw()) {
             try {
                 final FileWriter f = new FileWriter(new File(
                                                         FileUtils.getLogDir(), getTime() + ".tw_up.log"));
-                f.write(payload);
+                f.write(payload.toString());
                 f.close();
             } catch (final Exception e) {
                 Log.e(TAG, "Eat it", e);
@@ -553,7 +564,7 @@ public class TaskWarriorSync {
             throw new TaskWarriorSyncFailedException(e.getError(), e);
         }
         Log.w(TAG, "clear sync state");
-        Task.resetSyncState(local_tasks);
+        Task.resetSyncState(localTasks);
         setDependencies();
     }
 

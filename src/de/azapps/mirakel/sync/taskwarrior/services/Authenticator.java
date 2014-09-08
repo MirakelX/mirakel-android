@@ -32,7 +32,7 @@
  * the License.
  */
 
-package de.azapps.mirakel.sync;
+package de.azapps.mirakel.sync.taskwarrior.services;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

@@ -1,4 +1,4 @@
-package de.azapps.mirakel.sync.taskwarrior;
+package de.azapps.mirakel.sync.taskwarrior.network_helper;
 
 import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
