@@ -67,7 +67,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.SyncAdapter;
+import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
