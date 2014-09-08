@@ -1,28 +1,24 @@
 package de.azapps.mirakel.sync.taskwarrior.network_helper;
 
+import com.google.common.base.Optional;
+
 import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import android.util.Pair;
 import de.azapps.mirakel.DefinitionsHelper;
 
 public class Msg {
-    private List<Pair<String, String>> _header = new ArrayList<Pair<String, String>>();
+    private Map<String, String> _header = new HashMap<>();
     private String _payload;
 
     public Msg() {
         this._payload = "";
         // All messages are marked with the version number, so that the messages
-        // may
-        // be properly evaluated in context.
-        this._header.add(new Pair<String, String>("client", "Mirakel "
-                         + DefinitionsHelper.VERSIONS_NAME));
-    }
-
-    public Msg(final Msg m) {
-        this._payload = m.getPayload();
-        this._header = m._header;
+        // may be properly evaluated in context.
+        this._header.put("client", "Mirakel " + DefinitionsHelper.VERSIONS_NAME);
     }
 
     public void clear() {
@@ -31,49 +27,42 @@ public class Msg {
     }
 
     public void set(final String key, final int value) {
-        this._header.add(new Pair<String, String>(key, value + ""));
+        this._header.put(key, String.valueOf(value));
     }
 
     public void set(final String key, final String value) {
-        this._header.add(new Pair<String, String>(key, value));
+        this._header.put(key, value);
     }
 
     public void set(final String key, final double value) {
-        this._header.add(new Pair<String, String>(key, value + ""));
+        this._header.put(key, String.valueOf(value));
     }
 
     public void setPayload(final String payload) {
         this._payload = payload;
     }
 
-    public String get(final String name) {
-        for (final Pair<String, String> p : this._header) {
-            if (p.first.equals(name)) {
-                return p.second.trim();
-            }
+
+    public Optional<String> getHeader(final String name) {
+        if (_header.containsKey(name)) {
+            return Optional.of(_header.get(name));
+        } else {
+            return Optional.absent();
         }
-        return "";
     }
 
     public String getPayload() {
         return this._payload;
     }
 
-    public List<String> all() {
-        final List<String> names = new ArrayList<String>();
-        for (final Pair<String, String> p : this._header) {
-            names.add(p.first);
-        }
-        return names;
-    }
 
     public String serialize() {
-        String output = "";
-        for (final Pair<String, String> i : this._header) {
-            output += i.first + ": " + i.second + "\n";
+        StringBuilder output = new StringBuilder();
+        for (final Map.Entry<String, String> i : this._header.entrySet()) {
+            output.append(i.getKey() + ": " + i.getValue() + "\n");
         }
-        output += "\n" + this._payload + "\n";
-        return output;
+        output.append("\n" + this._payload + "\n");
+        return output.toString();
     }
 
     public boolean parse(final String input) throws MalformedInputException {
@@ -90,8 +79,8 @@ public class Msg {
             if (delimiter == -1) {
                 throw new MalformedInputException(s.length());
             }
-            this._header.add(new Pair<String, String>(s.substring(0, delimiter)
-                             .trim(), s.substring(delimiter + 1).trim()));
+            this._header.put(s.substring(0, delimiter)
+                             .trim(), s.substring(delimiter + 1).trim());
         }
         this._payload = input.substring(separator + 2).trim();
         return true;

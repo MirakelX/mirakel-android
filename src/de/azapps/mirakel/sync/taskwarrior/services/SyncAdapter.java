@@ -50,12 +50,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.R;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync;
-import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TW_ERRORS;
-import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSync.TaskWarriorSyncFailedException;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TW_ERRORS;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorAccount;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorSyncFailedException;
 import de.azapps.tools.Log;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
@@ -112,7 +116,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (type.equals(TaskWarriorSync.TYPE)) {
             TW_ERRORS error = TW_ERRORS.NO_ERROR;
             try {
-                new TaskWarriorSync(this.mContext).sync(account, false);
+                Optional<AccountMirakel> accountMirakel = AccountMirakel.get(account);
+                if (accountMirakel.isPresent()) {
+                    TaskWarriorAccount taskWarriorAccount = new TaskWarriorAccount(accountMirakel.get(), getContext());
+                    new TaskWarriorSync(this.mContext).sync(taskWarriorAccount, false);
+                }
             } catch (final TaskWarriorSyncFailedException e) {
                 Log.e(TAG, "SyncError", e);
                 error = e.getError();

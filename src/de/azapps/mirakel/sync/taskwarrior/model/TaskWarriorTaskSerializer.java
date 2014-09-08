@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.sync.taskwarrior.utilities;
+package de.azapps.mirakel.sync.taskwarrior.model;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
