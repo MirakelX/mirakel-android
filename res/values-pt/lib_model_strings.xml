@@ -164,6 +164,16 @@
     <item>Anos</item>
   </string-array>
   <string name="nothing">Sem recorrência</string>
+  <string name="special_lists_content_title">Conteúdo</string>
+  <string name="special_lists_done_title">Terminada</string>
+  <string name="special_lists_due_title">Data limite</string>
+  <string name="special_lists_file_title">Ficheiro</string>
+  <string name="special_lists_list_title">Listas</string>
+  <string name="special_lists_name_title">Nome</string>
+  <string name="special_lists_priority_title">Prioridade</string>
+  <string name="special_lists_progress_title">Progresso</string>
+  <string name="special_lists_reminder_title">Lembrete</string>
+  <string name="special_lists_subtask_title">Subtarefas</string>
   <string-array name="demo_lists">
     <item>Trabalho</item>
     <item>Pessoal</item>

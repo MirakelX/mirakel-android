@@ -162,6 +162,16 @@
     <item>let</item>
   </string-array>
   <string name="nothing">Brez ponavljanja</string>
+  <string name="special_lists_content_title">Vsebina</string>
+  <string name="special_lists_done_title">Končano</string>
+  <string name="special_lists_due_title">Zapadlost</string>
+  <string name="special_lists_file_title">Datoteka</string>
+  <string name="special_lists_list_title">Seznami</string>
+  <string name="special_lists_name_title">Ime</string>
+  <string name="special_lists_priority_title">prednosti</string>
+  <string name="special_lists_progress_title">Napredek</string>
+  <string name="special_lists_reminder_title">Opomnik</string>
+  <string name="special_lists_subtask_title">Podrejena naloga</string>
   <string-array name="demo_lists">
     <item>V službi</item>
     <item>Doma</item>

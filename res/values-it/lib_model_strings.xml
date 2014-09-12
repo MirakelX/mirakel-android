@@ -165,6 +165,16 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
     <item>Anni</item>
   </string-array>
   <string name="nothing">Nessuna replica</string>
+  <string name="special_lists_content_title">Contenuto</string>
+  <string name="special_lists_done_title">Fatto</string>
+  <string name="special_lists_due_title">Scadenza</string>
+  <string name="special_lists_file_title">FIle</string>
+  <string name="special_lists_list_title">Elenchi</string>
+  <string name="special_lists_name_title">Nome</string>
+  <string name="special_lists_priority_title">Priorità</string>
+  <string name="special_lists_progress_title">Progresso</string>
+  <string name="special_lists_reminder_title">Promemoria</string>
+  <string name="special_lists_subtask_title">Attività secondarie</string>
   <string-array name="demo_lists">
     <item>Lavoro</item>
     <item>Casa</item>

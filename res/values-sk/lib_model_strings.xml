@@ -137,6 +137,16 @@
     <item>Rokov</item>
   </string-array>
   <string name="nothing">Bez opakovania</string>
+  <string name="special_lists_content_title">Obsah</string>
+  <string name="special_lists_done_title">Hotovo</string>
+  <string name="special_lists_due_title">Termín</string>
+  <string name="special_lists_file_title">Súbor</string>
+  <string name="special_lists_list_title">Zoznamy</string>
+  <string name="special_lists_name_title">Názov</string>
+  <string name="special_lists_priority_title">Priorita</string>
+  <string name="special_lists_progress_title">Pokrok</string>
+  <string name="special_lists_reminder_title">Pripomenutie</string>
+  <string name="special_lists_subtask_title">Podúlohy</string>
   <string-array name="demo_lists">
     <item>Práca</item>
     <item>Domov</item>

@@ -147,6 +147,15 @@
     <item>Года</item>
   </string-array>
   <string name="nothing">Без повтора</string>
+  <string name="special_lists_content_title">Комментарий</string>
+  <string name="special_lists_done_title">Выполнено</string>
+  <string name="special_lists_due_title">Срок</string>
+  <string name="special_lists_file_title">Файл</string>
+  <string name="special_lists_list_title">Списки</string>
+  <string name="special_lists_name_title">Имя</string>
+  <string name="special_lists_priority_title">Приоритет</string>
+  <string name="special_lists_reminder_title">Напоминание</string>
+  <string name="special_lists_subtask_title">Подзадачи</string>
   <string-array name="demo_lists">
     <item>Работа</item>
     <item>Дом</item>

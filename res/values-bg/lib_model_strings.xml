@@ -136,4 +136,13 @@
     <item>Години</item>
   </string-array>
   <string name="nothing">Без повторение</string>
+  <string name="special_lists_content_title">Съдържание</string>
+  <string name="special_lists_done_title">Свършено</string>
+  <string name="special_lists_due_title">Краен срок</string>
+  <string name="special_lists_list_title">Списъци</string>
+  <string name="special_lists_name_title">Име</string>
+  <string name="special_lists_priority_title">Приоритет</string>
+  <string name="special_lists_progress_title">Прогрес</string>
+  <string name="special_lists_reminder_title">Напомняне</string>
+  <string name="special_lists_subtask_title">Подзадачи</string>
 </resources>

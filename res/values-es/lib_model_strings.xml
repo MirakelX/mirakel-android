@@ -126,4 +126,13 @@
     <item>Años</item>
   </string-array>
   <string name="nothing">Ninguna repetición</string>
+  <string name="special_lists_content_title">Contenido</string>
+  <string name="special_lists_done_title">Hecho</string>
+  <string name="special_lists_due_title">vencimiento</string>
+  <string name="special_lists_list_title">Listas</string>
+  <string name="special_lists_name_title">Nombre</string>
+  <string name="special_lists_priority_title">Prioridad</string>
+  <string name="special_lists_progress_title">Progreso</string>
+  <string name="special_lists_reminder_title">Recordatorio</string>
+  <string name="special_lists_subtask_title">Subtareas</string>
 </resources>
