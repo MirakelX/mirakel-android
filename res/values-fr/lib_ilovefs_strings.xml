@@ -3,7 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="app_name">JAimeLL</string>
   <string name="ilovefs_title">J\'♥ la journée du logiciel libre</string>
-  <string name="ilovefs_message"><![CDATA[<p>Le jour de la Saint Valentin est traditionnellement un jour pour montrer et célébrer l\'amour. Alors pourquoi ne pas saisir cette chance pour exprimer votre amour aux logiciels libres cette année ?</p>         <p><a href="https://fsfe.org/campaigns/ilovefs/">En savoir plus</a></p>]]></string>
+  <string name="ilovefs_message"><![CDATA[<p>Le jour de la Saint Valentin est traditionnellement un jour pour montrer et célébrer l'amour. Alors pourquoi ne pas saisir cette chance pour exprimer votre amour aux logiciels libres cette année ?</p>         <p><a href="https://fsfe.org/campaigns/ilovefs/">En savoir plus</a></p>]]></string>
   <string name="ilovefs_rate">J\'aime!</string>
   <string name="ilovefs_email">Ecris nous!</string>
   <string name="ilovefs_email_no_client">Aucun client de messagerie trouvé</string>
