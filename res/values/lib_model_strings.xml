@@ -204,6 +204,7 @@
     <string name="special_lists_tag_title">Tag</string>
     <string name="and">AND</string>
     <string name="or">OR</string>
+    <string name="new_tag">New tag</string>
 
     <string-array name="demo_lists">
         <item>Work</item>
