@@ -6,17 +6,47 @@
   <string name="add_files">Přidat soubor&#8230;</string>
   <string name="file_select">Vyberte soubor</string>
   <string name="save_label">Hotovo</string>
+  <string name="audio_record_file">Záznam zvuku</string>
+  <string name="image_file">Obrázek</string>
+  <string name="task_fragment_header">Záhlaví</string>
+  <string name="task_fragment_file">Soubory</string>
   <string name="task_fragment_due">Termín</string>
   <string name="task_fragment_reminder">Upozornění</string>
+  <string name="task_fragment_content">Poznámky</string>
   <string name="task_fragment_subtask">Podúkoly</string>
+  <string name="task_fragment_progress">Stav</string>
+  <string name="task_fragment_tags">Štítky</string>
+  <string name="audio_record_title">Záznam zvuku&#8230;</string>
+  <string name="audio_record_message">Nahrávám&#8230;</string>
+  <string name="audio_playback_title">Přehrávání zvuku&#8230;</string>
+  <string name="audio_playback_select_title">Co chcete udělat?</string>
+  <string name="audio_playback_pause">Pozastavit</string>
+  <string name="audio_playback_play">Přehrát</string>
+  <string name="audio_playback_stop">Zastavit</string>
   <string name="task_change_prio_title">Změnit prioritu</string>
   <string name="remove_subtask">Odstranit podúkol</string>
+  <string name="remove_files_summary">Chcete odstranit %1$s z \"%2$s\"?</string>
   <string name="add_existing">Přidat existující úkol</string>
+  <string name="task_name">Název úkolu</string>
+  <string name="subtask_add_options">Filtr &gt;&gt;</string>
+  <string name="subtask_done">Úkol dokončen?</string>
   <string name="subtask_reminder">Úkol s připomenutím?</string>
+  <string name="subtask_content">Úkol s poznámkou?</string>
   <string name="new_task">Nový úkol</string>
   <string name="add_subtasks">Přidat podúkol&#8230;</string>
+  <string name="add_tags">Přidat štítek&#8230;</string>
   <string name="add">Přidat</string>
   <string name="add_subtask">Přidat podúkol</string>
   <string name="file_no_activity">Bohužel, daný soubor nelze otevřít</string>
   <string name="remove_files">Odstranit soubory z úkolu</string>
+  <string name="search_tag">Hledat štítek</string>
+  <string-array name="tag_menu">
+    <item>Upravit štítek</item>
+    <item>Odstranit štítek</item>
+  </string-array>
+  <string name="tag_has_dark_text">Text je černý</string>
+  <string-array name="recurring_task_select">
+    <item>Pouze toto opakování</item>
+    <item>Všechna opakování</item>
+  </string-array>
 </resources>
