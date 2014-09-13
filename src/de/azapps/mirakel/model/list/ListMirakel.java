@@ -653,7 +653,7 @@ public class ListMirakel extends ListBase {
     public MirakelQueryBuilder getWhereQueryForTasks() {
         final MirakelQueryBuilder qb = Task.addBasicFiler(new MirakelQueryBuilder(context).and(Task.LIST_ID,
                                        Operation.EQ, this));
-        if (MirakelCommonPreferences.showDoneMain()) {
+        if (!MirakelCommonPreferences.showDoneMain()) {
             qb.and(Task.DONE, Operation.EQ, false);
         }
         return qb;
