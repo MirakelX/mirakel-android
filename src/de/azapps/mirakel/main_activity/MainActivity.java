@@ -112,7 +112,7 @@ import static com.google.common.base.Optional.of;
  *
  * @author az
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements ViewPager.OnPageChangeListener {
     private static boolean isRTL;
     // Intent variables
     public static final int LEFT_FRAGMENT = 0, RIGHT_FRAGMENT = 1;
@@ -900,6 +900,7 @@ public class MainActivity extends FragmentActivity {
             }
             this.mViewPager.setOffscreenPageLimit(2);
             this.mViewPager.setAdapter(this.mPagerAdapter);
+            this.mViewPager.setOnPageChangeListener(this);
         } else if (this.fragmentManager != null
                    && findViewById(R.id.tasks_fragment) != null
                    && findViewById(R.id.task_fragment) != null) {
@@ -1794,4 +1795,23 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {
+
+    }
+
+    @Override
+    public void onPageSelected(final int position) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadMenu(position);
+            }
+        }).start();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
+    }
 }
