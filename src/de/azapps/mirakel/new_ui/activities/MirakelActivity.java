@@ -179,6 +179,11 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
             break;
         case DefinitionsHelper.SHOW_LIST:
         case DefinitionsHelper.SHOW_LIST_FROM_WIDGET:
+            if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
+                //use this when possible
+                setList((ListMirakel) intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST));
+                break;
+            }
             Optional<ListMirakel> listMirakelOptional = ListMirakel.get(intent.getIntExtra(
                         DefinitionsHelper.EXTRA_ID, 0));
             if (listMirakelOptional.isPresent()) {
