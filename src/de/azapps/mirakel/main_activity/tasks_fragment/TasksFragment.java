@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.Editable;
@@ -54,6 +55,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -88,8 +90,8 @@ import de.azapps.tools.Log;
 import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation.LIKE;
 import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting.ASC;
 
-public class TasksFragment extends android.support.v4.app.Fragment implements
-    LoaderManager.LoaderCallbacks<Cursor> {
+public class TasksFragment extends Fragment implements
+    LoaderManager.LoaderCallbacks<Cursor>, FilterQueryProvider {
     private static final String TAG = "TasksFragment";
     private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
     protected TaskAdapter adapter;
@@ -352,6 +354,7 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
                 }
             }
         });
+        adapter.setFilterQueryProvider(this);
         this.listView.setAdapter(this.adapter);
         getLoaderManager().initLoader(0, null, this);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -505,15 +508,9 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
     }
 
     protected List<Task> selectedTasks;
-    private String query;
 
     public void search(final String query) {
-        this.query = query;
-        try {
-            getLoaderManager().restartLoader(0, null, this);
-        } catch (final Exception e) {
-            // eat it
-        }
+        adapter.getFilter().filter(query);
     }
 
     public void updateButtons() {
@@ -611,13 +608,12 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
         }
     }
 
-    public void updateList(final boolean reset) {
+    public void updateList() {
         if (this.main == null || this.main.getCurrentList() == null) {
             Log.wtf(TAG, "no current list found");
             return;
         }
         this.listId = this.main.getCurrentList().getId();
-        this.query = null;
         this.main.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -633,31 +629,19 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-        Optional<ListMirakel> listMirakelOptional = ListMirakel.get(this.listId);
-        final ListMirakel list;
+        final ListMirakel list = getList();
+        return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toSupportCursorLoader(
+                   Task.URI);
+    }
+
+    private ListMirakel getList() {
+        Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
+
         if (!listMirakelOptional.isPresent()) {
             ErrorReporter.report(ErrorType.LIST_VANISHED);
-            list = SpecialList.firstSpecialSafe();
+            return SpecialList.firstSpecialSafe();
         } else {
-            list = listMirakelOptional.get();
-        }
-        if (this.query != null) {
-            MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(getActivity());
-            Task.addBasicFiler(mirakelQueryBuilder);
-            mirakelQueryBuilder.and(ModelBase.NAME, LIKE, "%" + this.query + "%");
-            if (list.isSpecial()) {
-                MirakelQueryBuilder sortQuery = list.getWhereQueryForTasks().select(ModelBase.ID);
-                mirakelQueryBuilder.sort("CASE WHEN " + ModelBase.ID + " IN (" + sortQuery.getQuery(
-                                             Task.URI) + ") THEN 0  ELSE 1 END", ASC, sortQuery.getSelectionArguments());
-            } else {
-                mirakelQueryBuilder.sort("CASE WHEN " + Task.LIST_ID + " = " + list.getId() + " THEN 0 ELSE 1 END",
-                                         ASC);
-            }
-            list.addSortBy(mirakelQueryBuilder);
-            return mirakelQueryBuilder.toSupportCursorLoader(Task.URI);
-        } else {
-            return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toSupportCursorLoader(
-                       Task.URI);
+            return listMirakelOptional.get();
         }
     }
 
@@ -672,32 +656,32 @@ public class TasksFragment extends android.support.v4.app.Fragment implements
         this.adapter.swapCursor(null);
     }
 
-    public Task getLastTouched() {
-        if (this.adapter != null
-            && this.listView != null
-            && this.listView.getChildAt(this.adapter.getLastTouched()) != null) {
-
-            long taskId = (Long) this.listView.getChildAt(
-                              this.adapter.getLastTouched()).getTag();
-            Optional<Task> taskOptional = Task.get(taskId);
-            if (taskOptional.isPresent()) {
-                return taskOptional.get();
-            } else {
-                throw new TaskVanishedException(taskId);
-            }
-        }
-        return null;
-    }
 
     public View getViewForTask(final Task task) {
         return getListView().findViewWithTag(task.getId());
     }
 
-    @SuppressLint("NewApi")
     public void hideActionMode() {
         if (this.mActionMode != null) {
             this.mActionMode.finish();
         }
     }
 
+    @Override
+    public Cursor runQuery(CharSequence constraint) {
+        ListMirakel list = getList();
+        MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(getActivity());
+        Task.addBasicFiler(mirakelQueryBuilder);
+        mirakelQueryBuilder.and(ModelBase.NAME, LIKE, "%" + constraint + "%");
+        if (list.isSpecial()) {
+            MirakelQueryBuilder sortQuery = list.getWhereQueryForTasks().select(ModelBase.ID);
+            mirakelQueryBuilder.sort("CASE WHEN " + ModelBase.ID + " IN (" + sortQuery.getQuery(
+                                         Task.URI) + ") THEN 0  ELSE 1 END", ASC, sortQuery.getSelectionArguments());
+        } else {
+            mirakelQueryBuilder.sort("CASE WHEN " + Task.LIST_ID + " = " + list.getId() + " THEN 0 ELSE 1 END",
+                                     ASC);
+        }
+        list.addSortBy(mirakelQueryBuilder);
+        return mirakelQueryBuilder.query(Task.URI);
+    }
 }

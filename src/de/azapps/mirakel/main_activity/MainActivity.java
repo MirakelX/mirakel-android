@@ -310,7 +310,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             this.currentTask = Task.getDummy (getApplicationContext (), getCurrentList());
         }
         if (getTasksFragment() != null) {
-            getTasksFragment().updateList(true);
+            getTasksFragment().updateList();
             if (switchFragment) {
                 getTasksFragment().setScrollPosition(0);
                 setCurrentItem(MainActivity.getTasksFragmentPosition());
@@ -586,7 +586,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         .setNegativeButton(this.getString(android.R.string.no), null)
         .show();
         if (getTasksFragment() != null) {
-            getTasksFragment().updateList(false);
+            getTasksFragment().updateList();
         }
     }
 
@@ -1750,7 +1750,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             this.currentTask = task;
             getTaskFragment().update(task);
         }
-        getTasksFragment().updateList(false);
+        getTasksFragment().updateList();
         getListFragment().update();
         NotificationService.updateServices(this, true);
     }
@@ -1783,7 +1783,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
     public void updateUI() {
         if (getTasksFragment() != null) {
-            getTasksFragment().updateList(false);
+            getTasksFragment().updateList();
         }
         if (getTaskFragment() != null && getTaskFragment().getTask() != null) {
             Optional<Task> taskOptional = Task.get(getTaskFragment().getTask().getId());

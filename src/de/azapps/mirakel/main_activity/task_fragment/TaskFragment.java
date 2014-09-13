@@ -207,8 +207,8 @@ public class TaskFragment extends Fragment {
                 }
             }
             update (TaskFragment.this.task);
-            TaskFragment.this.main.getTasksFragment ().updateList (false);
-            TaskFragment.this.main.getListFragment ().update ();
+            TaskFragment.this.main.getTasksFragment().updateList();
+            TaskFragment.this.main.getListFragment().update();
             break;
         default:
             return false;
@@ -283,7 +283,7 @@ public class TaskFragment extends Fragment {
             public void onTaskChanged (final Task newTask) {
                 if (TaskFragment.this.main.getTasksFragment () != null
                     && TaskFragment.this.main.getListFragment () != null) {
-                    TaskFragment.this.main.getTasksFragment ().updateList (false);
+                    TaskFragment.this.main.getTasksFragment ().updateList ();
                     TaskFragment.this.main.getListFragment ().update ();
                 }
             }
