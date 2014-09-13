@@ -13,6 +13,7 @@ import android.view.Gravity;
 import de.azapps.tools.Log;
 
 public class DefinitionsHelper {
+
     public static class NoSuchListException extends Exception {
         static final long serialVersionUID = 1374828057;
 
@@ -45,6 +46,7 @@ public class DefinitionsHelper {
     public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
     public static final String MAINWIDGET_CLASS = "de.azapps.mirakel.widget.MainWidgetProvider";
     public static final String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
+    public static final String EXTRA_LIST = "de.azapps.mirakel.EXTRA_LIST";
     public static final String EXTRA_MESSAGE = "de.azapps.mirakel.EXTRA_MESSAGE";
     public static final String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
     public static final String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
