@@ -629,9 +629,7 @@ public class TasksFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(final int arg0, final Bundle arg1) {
-        final ListMirakel list = getList();
-        return list.addSortBy(list.getWhereQueryForTasks()).select(Task.allColumns).toSupportCursorLoader(
-                   Task.URI);
+        return getList().getTasksQueryBuilder().toSupportCursorLoader(Task.URI);
     }
 
     private ListMirakel getList() {
