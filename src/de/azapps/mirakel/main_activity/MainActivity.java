@@ -1592,15 +1592,20 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)
                    || intent.getAction().contains(
                        DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
-            int listId;
-            if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)) {
-                listId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
+            ListMirakel list;
+            if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
+                list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
             } else {
-                listId = Integer.parseInt(intent.getAction().replace(
-                                              DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
+                int listId;
+                if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)) {
+                    listId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
+                } else {
+                    listId = Integer.parseInt(intent.getAction().replace(
+                                                  DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
+                }
+                Log.v(MainActivity.TAG, "ListId: " + listId);
+                list = ListMirakel.get(listId).or(SpecialList.firstSpecialSafe());
             }
-            Log.v (MainActivity.TAG, "ListId: " + listId);
-            ListMirakel list = ListMirakel.get (listId).or(SpecialList.firstSpecialSafe());
             setCurrentList (list);
             Optional<Task> taskOptional = list.getFirstTask ();
             if (taskOptional.isPresent()) {
