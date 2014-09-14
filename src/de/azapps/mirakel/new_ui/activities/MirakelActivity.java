@@ -30,6 +30,7 @@ import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
+import de.azapps.mirakel.settings.SettingsActivity;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -127,6 +128,8 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         }
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            final Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_toggle_ui) {
             MirakelCommonPreferences.setUseNewUI(false);
@@ -182,14 +185,14 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
             if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
                 //use this when possible
                 setList((ListMirakel) intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST));
-                break;
-            }
-            Optional<ListMirakel> listMirakelOptional = ListMirakel.get(intent.getIntExtra(
-                        DefinitionsHelper.EXTRA_ID, 0));
-            if (listMirakelOptional.isPresent()) {
-                setList(listMirakelOptional.get());
             } else {
-                setList(SpecialList.firstSpecialSafe());
+                Optional<ListMirakel> listMirakelOptional = ListMirakel.get(intent.getIntExtra(
+                            DefinitionsHelper.EXTRA_ID, 0));
+                if (listMirakelOptional.isPresent()) {
+                    setList(listMirakelOptional.get());
+                } else {
+                    setList(SpecialList.firstSpecialSafe());
+                }
             }
             break;
         case Intent.ACTION_SEARCH:
