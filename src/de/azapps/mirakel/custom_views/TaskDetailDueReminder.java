@@ -24,8 +24,8 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -111,7 +111,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
             @Override
             public void onClick(final View v) {
                 TaskDialogHelpers.handleReminder(
-                    (ActionBarActivity) TaskDetailDueReminder.this.context,
+                    (FragmentActivity) TaskDetailDueReminder.this.context,
                     TaskDetailDueReminder.this.task,
                 new OnTaskChangedListner() {
                     @Override
@@ -130,7 +130,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
             public void onClick(final View v) {
                 TaskDialogHelpers
                 .handleRecurrence(
-                    (ActionBarActivity) TaskDetailDueReminder.this.context,
+                    (FragmentActivity) TaskDetailDueReminder.this.context,
                     TaskDetailDueReminder.this.task, false,
                 new ExecInterface() {
                     @Override
@@ -156,7 +156,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
             public void onClick(final View v) {
                 TaskDialogHelpers
                 .handleRecurrence(
-                    (ActionBarActivity) TaskDetailDueReminder.this.context,
+                    (FragmentActivity) TaskDetailDueReminder.this.context,
                     TaskDetailDueReminder.this.task, true,
                 new ExecInterface() {
                     @Override
@@ -178,8 +178,8 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                 TaskDetailDueReminder.this.mIgnoreTimeSet = false;
                 final Calendar dueLocal = TaskDetailDueReminder.this.task
                                           .getDue().or(new GregorianCalendar());
-                final FragmentManager fm = ((ActionBarActivity) TaskDetailDueReminder.this.context)
-                                           .getSupportFragmentManager();
+                final FragmentManager fm = ((FragmentActivity)
+                                            TaskDetailDueReminder.this.context).getSupportFragmentManager();
                 final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog
                         .newInstance(
                 new DatePicker.OnDateSetListener() {

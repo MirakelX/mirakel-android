@@ -34,8 +34,8 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -272,7 +272,7 @@ public class TaskDialogHelpers {
     }
 
     @SuppressWarnings("boxing")
-    public static void handleRecurrence(final ActionBarActivity activity,
+    public static void handleRecurrence(final FragmentActivity activity,
                                         final Task task, final boolean isDue, final ExecInterface callback) {
         final FragmentManager fm = activity.getSupportFragmentManager();
         Optional<Recurring> recurringOptional = isDue ? task.getRecurrence() : task.getRecurringReminder();
@@ -330,7 +330,7 @@ public class TaskDialogHelpers {
         rp.show(fm, "reccurence");
     }
 
-    public static void handleReminder(final ActionBarActivity ctx,
+    public static void handleReminder(final FragmentActivity ctx,
                                       final Task task, final OnTaskChangedListner onSuccess) {
         final Calendar reminder = task.getReminder().or(new GregorianCalendar());
         final FragmentManager fm = ctx.getSupportFragmentManager();
