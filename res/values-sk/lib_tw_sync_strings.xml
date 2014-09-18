@@ -6,6 +6,7 @@
   <string name="sync_new">Nový účet</string>
   <string name="sync_use">Použiť synchronizáciu</string>
   <string name="sync_warning">Synchronizácia je experimentálna</string>
+  <string name="sync_use_summary_nothing">Nepoužívať synchronizáciu</string>
   <string name="sync_user">Užívateľské meno</string>
   <string name="sync_server">Server</string>
   <string name="sync_frequency">Plán synchronizácie</string>
@@ -32,7 +33,9 @@
   <string name="type">Typ</string>
   <string name="menu_edit_listaccount">Účet</string>
   <string name="change_account">Zmeniť účet</string>
+  <string name="config_404">Konfiguračný súbor sa nenašiel</string>
   <string name="select_config">Vyberte konfiguračný súbor Taskwarrioru</string>
   <string name="message_try_later">Skúsiť synchronizáciu neskôr</string>
+  <string name="message_account_suspended">Váš účet je pozastavený!</string>
   <string name="finish_sync">Dokončiť synchronizáciu</string>
 </resources>

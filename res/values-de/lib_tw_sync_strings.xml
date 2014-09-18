@@ -9,7 +9,7 @@
   <string name="sync_warning_message">Die Synchronisierung läuft noch sehr instabil. Du kannst sie aber gerne Ausprobieren (Mach vorher aber ein Backup!) – Bist du sicher?</string>
   <string name="sync_use_summary_taskwarrior">Sync mit Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Sync mit Mirakel als %s</string>
-  <string name="sync_use_summary_nothing">Benutzen sie nicht die Synchronisierung</string>
+  <string name="sync_use_summary_nothing">Benutze die Synchronisierung nicht</string>
   <string name="sync_user">Nutzername</string>
   <string name="sync_user_summary">Nutzername auf dem Server</string>
   <string name="sync_server">Server</string>
@@ -18,13 +18,12 @@
   <string name="sync_frequency_summary">Synchronisiere alle %s min</string>
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string-array name="sync_types">
-    <item>CalDAV synchronisieren</item>
+    <item>CalDAV Synchronisierung</item>
     <item>Taskwarrior-Sync</item>
   </string-array>
   <string name="sync_caldav">CalDAV synchronisieren</string>
-  <string name="sync_caldav_howto_">
-<![CDATA[Eine Mirakel-kompatible CalDAV-syncing App muss installiert werden. Derzeit muss eine von uns modifizierte Version von DAVdroid installiert werden die man auf unserer Webseite findet.<br /><br />
-In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wir arbeiten zusammen mit anderen um eine Synchronisation mit Mirakel zu ermöglichen.
+  <string name="sync_caldav_howto_"><![CDATA[Eine Mirakel-kompatible App zur Synchronisierung per CalDAV muss installiert werden. Derzeit muss eine von uns modifizierte Version von DAVdroid installiert werden die man auf unserer Webseite findet.<br /><br />
+In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wir arbeiten mit Anderen zusammen, um eine Synchronisation mit Mirakel zu ermöglichen.
         ]]>
     </string>
   <string name="download">Herunterladen</string>
@@ -48,18 +47,22 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="no_barcode_app_install">Installieren</string>
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Konto ändern</string>
-  <string name="wrong_config">Die Konfigurationsdatei ist fehlerhaft</string>
-  <string name="cert_not_found">Das Zertifikat ist verschwunden, bitte erstellen Sie Ihr Konto neu</string>
+  <string name="wrong_config">Schreibar hast Du eine fehlerhafte Konfigurationsdatei verwendet</string>
+  <string name="cert_not_found">Das Zertifikat ist verschwunden, bitte erstelle Dein Konto neu</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[
+Während der Synchronisierung ist ein Fehler aufgetreten. Zwar haben wir einen Workaround, aber es können Daten verloren gegangen sein :(. Bitte prüfe, ob etwas falsch ist.<br /><br />
+Für weitergehende Informationen siehe <a href="https://mirakel.atlassian.net/browse/MIR-453">hier</a>
+        ]]></string>
   <string name="client_sync_key_not_found">Client-Sync-Schlüssel nicht gefunden. Bitte überprüfe die Taskwarrior Konfiguration.</string>
   <string name="config_404">Konfigurationsdatei nicht gefunden</string>
-  <string name="config_error_empty">Es gibt keinen %s-Eintrag in der Konfigurationsdatei</string>
+  <string name="config_error_empty">Es gibt keinen Eintrag %s in der Konfigurationsdatei</string>
   <string name="load_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="select_config">Wähle die Konfigurationsdatei für Taskwarrior aus</string>
   <string name="message_try_later">Versuch es später nochmal</string>
-  <string name="message_access_denied">Zugriff verweigert!\nHast du die richtige Konfigurationsdatei verwendet?\nDu musst den Taskwarrior Server konfigurieren damit er das Synchronisieren mit Mirakel zulässt.</string>
-  <string name="message_create_socket">Kann den Socket nicht erstellen!\nWahrscheinlich keine Netzwerkverbindung?</string>
+  <string name="message_access_denied">Zugriff verweigert!\nHast du die richtige Konfigurationsdatei verwendet?\nDu musst den Taskwarrior Server konfigurieren, damit er das Synchronisieren mit Mirakel zulässt.</string>
+  <string name="message_create_socket">Kann den Socket nicht erstellen!\nHast Du eine Netzwerkverbindung aktiviert?</string>
   <string name="message_account_suspended">Ihr Konto ist gesperrt!</string>
-  <string name="message_parse_message">Konnte die Aufgabe nicht parsen – schreib uns, wie das passiert ist</string>
-  <string name="message_message_error">Unbekannte Antwort vom Server - Bitte schreib uns wie das passieren konnte.</string>
+  <string name="message_parse_message">Konnte die Aufgabe nicht auswerten – bitte schreib uns, wie das passiert ist</string>
+  <string name="message_message_error">Unbekannte Antwort vom Server - Bitte schreib uns wie das passieren konnte</string>
   <string name="finish_sync">Synchronisation abgeschlossen</string>
 </resources>
