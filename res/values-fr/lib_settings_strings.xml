@@ -20,6 +20,7 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Ajouter un compte</string>
+  <string name="account_title">Comptes</string>
   <string name="sync_new">Nouveau compte</string>
   <string name="sync_use">Utiliser la synchronisation</string>
   <string name="sync_warning">La synchronisation est expérimentale</string>
@@ -82,7 +83,6 @@
   <string name="startup_title">Démarrage de l\'application</string>
   <string name="startup_show_lists">Afficher toutes les listes</string>
   <string name="startup_show_lists_summary">Afficher toutes les listes au démarrage</string>
-  <string name="startup_list">Sélectionner une liste</string>
   <string name="startup_list_summary">Afficher les tâches de \"%s\"</string>
   <string name="special_lists_click">Gérer les listes automatiques</string>
   <string name="special_lists_new">Nouvelle liste automatique</string>
@@ -121,6 +121,7 @@
   <string name="import_wunderlist_howto">Importation de Wunderlist</string>
   <string name="highlightSelected_summary">Mettre en surbrillance les listes/tâches quand vous cliquez dessus</string>
   <string name="highlightSelected">Mise en surbrillance la sélection</string>
+  <string name="settings_date_format_relative">Afficher des dates relatives</string>
   <string name="settings_date_format_relative_summary">Par exemple \"demain\" au lieu de la date réelle</string>
   <string name="showDone">Afficher les tâches finies</string>
   <string name="dark_theme">Thème sombre</string>
@@ -133,9 +134,16 @@
   <string name="hide_keyboard_summary">Cacher le clavier quand la nouvelle tâche est en cours de création</string>
   <string name="undo_number">Nombre de modifications enregistrées</string>
   <string name="undo_number_summary">Annuler les %s modifications</string>
+  <string name="settings_semantic">Modèles de tâche</string>
+  <string name="semantic_new_task">Nouveau modèle de tâche</string>
   <string name="semantic_new_task_config_summary">Configurer les pré-requis pour la création de nouvelles tâches</string>
+  <string name="semantic_new_task_config">Configurer les modèles de tâche</string>
+  <string name="useTabletLayout">Utiliser la disposition tablette</string>
   <string name="general">Général</string>
+  <string name="tasks_fragment">Vue d\'ensemble des tâches</string>
+  <string name="task_fragment">Détails de la tâche</string>
   <string name="do_not_touch">Ne touchez pas</string>
+  <string name="list_fragment">Vue d\'ensemble de la liste</string>
   <string name="show_account_name">Afficher le nom du compte</string>
   <string-array name="tablet_options">
     <item>jamais</item>
@@ -150,11 +158,16 @@
   <string name="delete_done_success">Vos tâches finies ont été supprimées avec succès.</string>
   <string name="menu_color">Changer de couleur</string>
   <string name="howto_setup_server">Comment configurer le serveur</string>
+  <string name="register_server">Si vous avez besoin d\'un compte de synchronisation sur notre serveur, envoyez-nous un e-mail. Dans la prochaine version vous pourrez créer un compte !</string>
+  <string name="special_lists_title">Méta-listes</string>
   <string name="register">S\'enregistrer</string>
   <string name="auto_backup_interval">Période de la sauvegarde automatique</string>
+  <string name="auto_backup_interval_summary">Sauvegarder la base de données tous les %s jours</string>
   <string name="preferences_colorize">Couleurs</string>
   <string name="preferences_colorize_tasks">Coloriser les tâches</string>
   <string name="preferences_colorize_tasks_everywhere">Coloriser les tâches partout</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">...ou seulement dans les méta-listes ?</string>
+  <string name="settings_semantics_title">Configurer les modèles de tâche</string>
   <string name="settings_semantics_condition">Condition</string>
   <string name="settings_semantics_actions">Actions</string>
   <string name="settings_semantics_list">Liste figurante</string>
@@ -185,6 +198,7 @@
     <item>1</item>
     <item>2</item>
   </string-array>
+  <string name="semantics_no_list">Ne pas définir de liste</string>
   <string name="settings_file_default_title">Nom de la tâche pour les fichiers importés</string>
   <string name="semantic_new">Modèle</string>
   <string name="tag_new">Nouvelle étiquette</string>
@@ -196,6 +210,7 @@
   <string name="settings_subtask">Tâches subordonnées</string>
   <string name="settings_subtask_default_new">Voir la nouvelle tâche par défaut</string>
   <string name="settings_subtask_add_to_same_list">Ajouter tâche subordonnée à la liste de la tâche</string>
+  <string name="settings_subtask_add_to_same_list_summary">Ou sélectionnez une liste par défaut, où sera ajoutée la sous-tâche</string>
   <string name="settings_subtask_add_to_list_summary">Ajouter tâche subordonnée à %s</string>
   <string name="settings_use_btn_speak">Afficher le bouton de microphone</string>
   <string name="settings_use_btn_audio">Afficher le bouton d\'enregistrement audio</string>
@@ -232,7 +247,7 @@
     </string>
   <string name="credits_license">
 <![CDATA[<p>Ce programme est un logiciel libre: vous pouvez le redistribuer et/ou le modifier sous les termes de la licence <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>. Cette licence est publiée par "Free Software Foundation" et doit être sous version 3 ou supérieure.</p>
-<p>Ce programme est diffusé en espérant qu\'il réponde à vos besoins au quotidien, mais SANS AUCUNE GARANTIE sur son fonctionnement. Nous nous dégageons de toute responsabilité directe ou indirecte dans l\'utilisation qui est fait de notre programme.  Voir la licence "GNU General Public License" pour plus d\'informations.</p>]]>
+<p>Ce programme est diffusé en espérant qu'il réponde à vos besoins au quotidien, mais SANS AUCUNE GARANTIE sur son fonctionnement. Nous nous dégageons de toute responsabilité directe ou indirecte dans l'utilisation qui est fait de notre programme.  Voir la licence "GNU General Public License" pour plus d'informations.</p>]]>
     </string>
   <string name="credits_translations">Traductions</string>
   <string name="feedback">Envoyez vos commentaires</string>
@@ -241,7 +256,7 @@
   <string name="demo_mode">Mode démo</string>
   <string name="demo_drop_db">Réinitialiser la base de donnée de démonstration</string>
   <string name="write_logs_to_file">Écrire des journaux de déposer</string>
-  <string name="alert_caldav"><![CDATA[La synchronisation avec CalDAV n\'est pas complètement stable. Merci de l\'utiliser avec précaution et de nous informer des éventuelles bogues.]]></string>
+  <string name="alert_caldav"><![CDATA[La synchronisation avec CalDAV n'est pas complètement stable. Merci de l'utiliser avec précaution et de nous informer des éventuelles bogues.]]></string>
   <string name="alert_caldav_title">Informations pour CalDAV</string>
   <string name="alert_taskwarrior"><![CDATA[La resynchronisation avec Taskwarrior semble fonctioner mais il est fortement recommandé de faire une sauvegarde de vos donnée. Merci de nous signaler les éventuelles erreurs et bogues pour que nous puissions les corriger.]]></string>
   <string name="alert_taskwarrior_title">Information pour Taskwarrior</string>
@@ -259,4 +274,6 @@
     <item>N\'a pas de fichier</item>
   </string-array>
   <string name="remove">Enlever</string>
+  <string name="backup_title">Sauvegarde</string>
+  <string name="title_settings">Paramètres</string>
 </resources>

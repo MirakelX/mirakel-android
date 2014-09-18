@@ -83,7 +83,6 @@
   <string name="startup_title">بدء التطبيق</string>
   <string name="startup_show_lists">إظهار كل القوائم</string>
   <string name="startup_show_lists_summary">إظهار كافة القوائم في بدء التشغيل</string>
-  <string name="startup_list">تحديد قائمة</string>
   <string name="startup_list_summary">إظهار المهام من \"%s\"</string>
   <string name="special_lists_click">إدارة القوائم الوصفيَّة</string>
   <string name="special_lists_new">قائمة وصفيَّة جديدة</string>
@@ -248,4 +247,6 @@
     <item>يحوي ملفاً</item>
     <item>ليس لديه ملف</item>
   </string-array>
+  <string name="backup_title">النسخ الاحتياطية</string>
+  <string name="title_settings">إعدادات</string>
 </resources>

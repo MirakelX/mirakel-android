@@ -87,7 +87,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="startup_title">Zagon programa</string>
   <string name="startup_show_lists">Pokaži vse sezname</string>
   <string name="startup_show_lists_summary">Ob zagonu pokaži vse sezname</string>
-  <string name="startup_list">Izbor seznama</string>
   <string name="startup_list_summary">Pokaži nalogo \"%s\"</string>
   <string name="special_lists_click">Upravljanje meta-seznamov</string>
   <string name="special_lists_new">Nov meta-seznam</string>
@@ -286,4 +285,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
     <item>Je brez priloženih datotek</item>
   </string-array>
   <string name="remove">Odstrani</string>
+  <string name="backup_title">Varnostna kopija</string>
+  <string name="title_settings">Nastavitve</string>
 </resources>

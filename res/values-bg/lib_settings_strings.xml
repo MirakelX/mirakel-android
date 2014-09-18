@@ -76,7 +76,6 @@
   <string name="reminders_persistent_summary">Нагласяне на напомнянето никога да не се затваря</string>
   <string name="startup_title">Стартиране на приложението</string>
   <string name="startup_show_lists">Покажи всички списъци</string>
-  <string name="startup_list">Изберете списък</string>
   <string name="special_lists_click">Управление на мета списъци</string>
   <string name="special_lists_new">Нов мета списък</string>
   <string name="settings_misc">Разни</string>
@@ -216,4 +215,6 @@
   <string name="credits_license_title">Лиценз</string>
   <string name="special_list_where_subtask_title_text">Подзадачи</string>
   <string name="special_list_where_progress_title_text">Прогрес</string>
+  <string name="backup_title">Архивиране</string>
+  <string name="title_settings">Настройки</string>
 </resources>

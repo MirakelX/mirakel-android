@@ -41,8 +41,8 @@
   </string-array>
   <string name="sync_caldav">Sincronizzazione CalDAV</string>
   <string name="sync_caldav_howto_">
-<![CDATA[È necessario configurare un\'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
-Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e stiamo lavorando insieme ad altri per ampliare le possibilità di sincronizzazione con Mirakel.
+<![CDATA[È necessario configurare un'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
+Presto anche l'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e stiamo lavorando insieme ad altri per ampliare le possibilità di sincronizzazione con Mirakel.
         ]]>
     </string>
   <string name="download">Scarica</string>
@@ -88,7 +88,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="startup_title">Avvio applicazione</string>
   <string name="startup_show_lists">Mostra tutti gli elenchi</string>
   <string name="startup_show_lists_summary">Mostra tutti gli elenchi all\'avvio</string>
-  <string name="startup_list">Seleziona elenco</string>
+  <string name="startup_list">Selezionare l\'elenco d\'avvio</string>
   <string name="startup_list_summary">Mostra le attività di \"%s\"</string>
   <string name="special_lists_click">Gestione meta-elenchi</string>
   <string name="special_lists_new">Nuovo meta-elenco</string>
@@ -289,4 +289,13 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
     <item>Non contiene file</item>
   </string-array>
   <string name="remove">Rimuovi</string>
+  <string name="no_account_selected">Nessun account selezionato</string>
+  <string name="no_recurrence_selected">Nessuna ricorrenza selezionata</string>
+  <string name="no_semantic_selected">Nessun modello di attvità selezionato</string>
+  <string name="no_special_list_selected">Nessun meta-elenco selezionato</string>
+  <string name="no_tag_selected">Nessuna etichetta selezionata</string>
+  <string name="sharing_title">Condivisione</string>
+  <string name="backup_title">Backup</string>
+  <string name="third_party_title">Applicazioni di terze parti</string>
+  <string name="title_settings">Impostazioni</string>
 </resources>

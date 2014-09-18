@@ -51,7 +51,6 @@
   <string name="startup_title">Запуск приложения</string>
   <string name="startup_show_lists">Показать все списки</string>
   <string name="startup_show_lists_summary">Показать все списки при запуске</string>
-  <string name="startup_list">Выбрать список</string>
   <string name="startup_list_summary">Показать задачи \"%s\"</string>
   <string name="special_lists_click">Управление метасписками</string>
   <string name="special_lists_new">Новый метасписок</string>
@@ -205,4 +204,6 @@
     <item>Не имеет прикреплённого файла</item>
   </string-array>
   <string name="remove">Удалить</string>
+  <string name="backup_title">Резервная копия</string>
+  <string name="title_settings">Параметры</string>
 </resources>

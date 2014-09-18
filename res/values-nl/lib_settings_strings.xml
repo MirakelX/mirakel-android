@@ -88,7 +88,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="startup_title">Start applicatie</string>
   <string name="startup_show_lists">Alle lijsten tonen</string>
   <string name="startup_show_lists_summary">Alle lijsten tonen bij op opstarten</string>
-  <string name="startup_list">Lijst selecteren</string>
   <string name="startup_list_summary">Taken tonen van \"%s\"</string>
   <string name="special_lists_click">Meta lijsten beheren</string>
   <string name="special_lists_new">Nieuwe meta lijst</string>
@@ -289,4 +288,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
     <item>Heeft geen bestand</item>
   </string-array>
   <string name="remove">Verwijder</string>
+  <string name="backup_title">Reservekopie</string>
+  <string name="title_settings">Instellingen</string>
 </resources>

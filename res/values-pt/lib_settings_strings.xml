@@ -88,7 +88,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="startup_title">Ao iniciar</string>
   <string name="startup_show_lists">Mostrar todas as listas</string>
   <string name="startup_show_lists_summary">Mostrar todas as listas ao iniciar</string>
-  <string name="startup_list">Seleção de lista</string>
+  <string name="startup_list">Selecione a lista de arranque</string>
   <string name="startup_list_summary">Mostrar tarefas de \"%s\"</string>
   <string name="special_lists_click">Gerir meta-listas</string>
   <string name="special_lists_new">Nova meta-lista</string>
@@ -289,4 +289,13 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
     <item>Não tem ficheiro</item>
   </string-array>
   <string name="remove">Remover</string>
+  <string name="no_account_selected">Nenhuma conta selecionada</string>
+  <string name="no_recurrence_selected">Nenhuma recorrência selecionada</string>
+  <string name="no_semantic_selected">Nenhum modelo de tarefa selecionado</string>
+  <string name="no_special_list_selected">Nenhuma meta-lista selecionada</string>
+  <string name="no_tag_selected">Nenhuma etiqueta selecionada</string>
+  <string name="sharing_title">Partilha</string>
+  <string name="backup_title">Backup</string>
+  <string name="third_party_title">Aplicações de terceiros</string>
+  <string name="title_settings">Definições</string>
 </resources>
