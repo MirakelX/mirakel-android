@@ -1224,7 +1224,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 public void onClick(final DialogInterface dialog,
                                     final int which) {
                     final Intent intent = new Intent(MainActivity.this,
-                                                     DonationsActivity.class);
+                                                     SettingsActivity.class);
+                    intent.putExtra(SettingsActivity.SHOW_DONATE, true);
                     startActivity(intent);
                 }
             };
