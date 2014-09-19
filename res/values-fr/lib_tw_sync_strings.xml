@@ -46,8 +46,8 @@
   <string name="wrong_config">On dirait que vous utilisez un mauvais fichier de configuration</string>
   <string name="cert_not_found">Le certificat a disparu. Merci de créer de nouveau votre compte.</string>
   <string name="could_not_find_common_ancestor"><![CDATA[ 
-        Une erreur est survenue lors de la synchronisation. Nous l'avons contournée, mais quelques données ont pu être perdues :(. Une sauvegarde de votre base de données a été faite. Vérifiez-la si quelque chose ne va pas.<br /><br />
-        Pour plus d'informations, cliquer <a href="https://mirakel.atlassian.net/browse/MIR-453">ici</a>
+        Une erreur est survenue lors de la synchronisation. Nous l\'avons contournée, mais quelques données ont pu être perdues :(. Une sauvegarde de votre base de données a été faite. Vérifiez-la si quelque chose ne va pas.<br /><br />
+        Pour plus d\'informations, cliquer <a href="https://mirakel.atlassian.net/browse/MIR-453">ici</a>
         ]]></string>
   <string name="client_sync_key_not_found">La clé de synchronisation n\'a pas été trouvé. Merci de vérifier votre configuration de taskwarrior.</string>
   <string name="config_404">Fichier de configuration non trouvé</string>
