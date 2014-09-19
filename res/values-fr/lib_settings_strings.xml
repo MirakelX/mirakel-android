@@ -247,7 +247,7 @@
     </string>
   <string name="credits_license">
 <![CDATA[<p>Ce programme est un logiciel libre: vous pouvez le redistribuer et/ou le modifier sous les termes de la licence <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>. Cette licence est publiée par "Free Software Foundation" et doit être sous version 3 ou supérieure.</p>
-<p>Ce programme est diffusé en espérant qu'il réponde à vos besoins au quotidien, mais SANS AUCUNE GARANTIE sur son fonctionnement. Nous nous dégageons de toute responsabilité directe ou indirecte dans l'utilisation qui est fait de notre programme.  Voir la licence "GNU General Public License" pour plus d'informations.</p>]]>
+<p>Ce programme est diffusé en espérant qu\'il réponde à vos besoins au quotidien, mais SANS AUCUNE GARANTIE sur son fonctionnement. Nous nous dégageons de toute responsabilité directe ou indirecte dans l\'utilisation qui est fait de notre programme.  Voir la licence "GNU General Public License" pour plus d\'informations.</p>]]>
     </string>
   <string name="credits_translations">Traductions</string>
   <string name="feedback">Envoyez vos commentaires</string>
@@ -256,7 +256,7 @@
   <string name="demo_mode">Mode démo</string>
   <string name="demo_drop_db">Réinitialiser la base de donnée de démonstration</string>
   <string name="write_logs_to_file">Écrire des journaux de déposer</string>
-  <string name="alert_caldav"><![CDATA[La synchronisation avec CalDAV n'est pas complètement stable. Merci de l'utiliser avec précaution et de nous informer des éventuelles bogues.]]></string>
+  <string name="alert_caldav"><![CDATA[La synchronisation avec CalDAV n\'est pas complètement stable. Merci de l\'utiliser avec précaution et de nous informer des éventuelles bogues.]]></string>
   <string name="alert_caldav_title">Informations pour CalDAV</string>
   <string name="alert_taskwarrior"><![CDATA[La resynchronisation avec Taskwarrior semble fonctioner mais il est fortement recommandé de faire une sauvegarde de vos donnée. Merci de nous signaler les éventuelles erreurs et bogues pour que nous puissions les corriger.]]></string>
   <string name="alert_taskwarrior_title">Information pour Taskwarrior</string>
