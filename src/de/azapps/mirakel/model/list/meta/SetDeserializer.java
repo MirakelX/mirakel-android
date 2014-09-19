@@ -64,7 +64,7 @@ public class SetDeserializer<T extends SpecialListsSetProperty> implements
                         }
                     }
                 } else if (entry.getValue().isJsonPrimitive()
-                           && "isSet".equals(entry.getKey())) {
+                           && ("isNegated".equals(entry.getKey()) || "isSet".equals(entry.getKey()))) {
                     negated = entry.getValue().getAsBoolean();
                 } else {
                     throw new JsonParseException("unknown format");

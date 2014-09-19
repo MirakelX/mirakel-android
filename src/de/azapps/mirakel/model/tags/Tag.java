@@ -205,4 +205,13 @@ public class Tag extends TagBase {
             return new Tag[size];
         }
     };
+
+    public static Tag getSafeFirst() {
+        List<Tag> all = all();
+        if (all.isEmpty()) {
+            return newTag(context.getString(R.string.new_tag));
+        } else {
+            return all.get(0);
+        }
+    }
 }

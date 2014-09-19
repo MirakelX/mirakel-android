@@ -29,6 +29,10 @@ public class SimpleModelAdapter<T extends ModelBase> extends CursorAdapter {
         return view;
     }
 
+    public T getItem(final int pos) {
+        return MirakelQueryBuilder.cursorToObject((Cursor)super.getItem(pos), tClass);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void bindView(View view, Context context, Cursor cursor) {

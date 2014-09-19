@@ -129,7 +129,7 @@ public abstract class SpecialListsStringProperty extends
         String ret = "{\"" + getPropertyName() + "\":{";
         ret += "\"isSet\":" + (this.isSet ? "true" : "false");
         ret += ",\"type\":" + this.type.ordinal();
-        ret += ",\"serachString\":\"" + this.searchString + "\"";
+        ret += ",\"searchString\":\"" + this.searchString + "\"";
         return ret + "} }";
     }
 

@@ -44,6 +44,7 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
@@ -392,4 +393,15 @@ public class Recurring extends RecurringBase {
             return new Recurring[size];
         }
     };
+
+    public static Recurring getSafeFirst() {
+        List<Recurring> all = all();
+        if (all.isEmpty()) {
+            return Recurring.newRecurring(context.getString(R.string.new_recurring), 0, 0,
+                                          0, 0, 1, true, Optional.<Calendar>absent(), Optional.<Calendar>absent(), false, false,
+                                          new SparseBooleanArray());
+        } else {
+            return all.get(0);
+        }
+    }
 }
