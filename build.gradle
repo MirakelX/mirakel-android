@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
 apply plugin: 'eclipse'
-apply plugin: 'robolectric'
+//apply plugin: 'robolectric'
 
 def getVersionCode() {
 	def manifestFile = file("AndroidManifest.xml")
