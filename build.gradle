@@ -7,7 +7,7 @@ buildscript {
                 artifactUrls "file:~/.m2/"
             }
         }
-        classpath 'com.android.tools.build:gradle:0.12.2'
+        classpath 'com.android.tools.build:gradle:0.13.0'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
         classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
     }
@@ -88,7 +88,7 @@ configure(allprojects) {
     ext.androidMinSDKVersion ="8"
     ext.jodaLibraryVersion = "2.2"
     ext.nineoldandroisVersion="2.4.0"
-    ext.robotiumVersion = "5.1"
+    ext.robotiumVersion = "5.2.1"
     ext.gsonVersion = "2.2.+"
     ext.junitVersion = "4.11"
     ext.guavaVersion = "17.0"
