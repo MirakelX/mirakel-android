@@ -64,6 +64,10 @@ public class Recurring extends RecurringBase {
     public final static String[] allTWColumns = { ID, PARENT, CHILD, OFFSET, OFFSET_COUNT};
     public static final String TW_TABLE = "recurring_tw_mask";
 
+    protected Recurring() {
+        // nothing
+    }
+
     protected Uri getUri() {
         return URI;
     }
