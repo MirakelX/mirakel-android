@@ -177,6 +177,7 @@
   <string name="special_lists_tag_title">Etiqueta</string>
   <string name="and">E</string>
   <string name="or">OU</string>
+  <string name="new_tag">Nova etiqueta</string>
   <string-array name="demo_lists">
     <item>Trabalho</item>
     <item>Pessoal</item>
