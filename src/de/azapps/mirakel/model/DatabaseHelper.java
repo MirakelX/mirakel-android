@@ -908,7 +908,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 } else if (!recurring.containsKey(t)) {// its recurring master
                     recurring.put(t, new ArrayList<Task>());
                 }
-                t.setRecurrence(TaskDeserializer.parseTaskWarriorRecurrence(
+                t.setRecurrence(CompatibilityHelper.parseTaskWarriorRecurrence(
                                     recurString).getId());
                 t.save();
             }

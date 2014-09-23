@@ -91,9 +91,7 @@ public class UndoHistory {
                 switch (type) {
                 case TASK:
                     final Gson gson = new GsonBuilder().registerTypeAdapter(
-                        Task.class,
-                        new TaskDeserializer(false, AccountMirakel
-                                             .getLocal(), ctx)).create();
+                        Task.class, new TaskDeserializer()).create();
                     final Task t = gson.fromJson(json, Task.class);
                     if (!Task.get(t.getId()).isPresent()) {
                         t.save(false);

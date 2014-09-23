@@ -60,15 +60,9 @@ import static com.google.common.base.Optional.fromNullable;
 public class TaskDeserializer implements JsonDeserializer<Task> {
 
     private static final String TAG = "TaskDeserializer";
-    private final boolean isTW;
-    private final AccountMirakel account;
-    private final Context context;
 
-    public TaskDeserializer(final boolean isTW, final AccountMirakel account,
-                            final Context ctx) {
-        this.isTW = isTW;
-        this.account = account;
-        this.context = ctx;
+
+    public TaskDeserializer() {
     }
 
     @Override
@@ -78,46 +72,25 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         Optional<ListMirakel> taskList = absent();
         Optional<Task> taskOptional = absent();
         JsonElement id = el.get("id");
-        if (id != null && !this.isTW) {// use uuid for tw-sync
+        if (id != null) {
             taskOptional = Task.get(id.getAsLong());
-        } else {
-            id = el.get("uuid");
-            if (id != null) {
-                taskOptional = Task.getByUUID(id.getAsString());
-            }
         }
         Task task;
         if (taskOptional.isPresent()) {
             task = taskOptional.get();
         } else {
-            task = new Task();
-        }
-        if (this.isTW) {
-            task.setDue(Optional.<Calendar>absent());
-            task.setDone(false);
-            task.setContent("");
-            task.setPriority(0);
-            task.setProgress(0);
-            task.clearAdditionalEntries();
-            task.setIsRecurringShown(true);
+            throw new JsonParseException("Id is missing");
         }
         // Name
         final Set<Entry<String, JsonElement>> entries = el.entrySet();
-        boolean setPrioFromNumber = false;
-        Calendar end = null;
         for (final Entry<String, JsonElement> entry : entries) {
             String key = entry.getKey();
             final JsonElement val = entry.getValue();
             if (key == null || key.equalsIgnoreCase("id")) {
                 continue;
             }
-            key = key.toLowerCase();
-            switch (key) {
-            case "uuid":
-                task.setUUID(val.getAsString());
-                break;
+            switch (key.toLowerCase()) {
             case "name":
-            case "description":
                 task.setName(val.getAsString());
                 break;
             case "content":
@@ -128,46 +101,15 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 task.setContent(content);
                 break;
             case "priority":
-                if (setPrioFromNumber) {
-                    break;
-                }
-            //$FALL-THROUGH$
-            case "priorityNumber":
-                final String prioString = val.getAsString().trim();
-                if (prioString.equalsIgnoreCase("L") && task.getPriority() != -1) {
-                    task.setPriority(-2);
-                } else if (prioString.equalsIgnoreCase("M")) {
-                    task.setPriority(1);
-                } else if (prioString.equalsIgnoreCase("H")) {
-                    task.setPriority(2);
-                } else if (!prioString.equalsIgnoreCase("L")) {
-                    task.setPriority((int) val.getAsFloat());
-                    setPrioFromNumber = true;
-                }
+                task.setPriority((int) val.getAsFloat());
                 break;
             case "progress":
-                final int progress = (int) val.getAsDouble();
-                task.setProgress(progress);
+                task.setProgress((int) val.getAsDouble());
                 break;
             case "list_id": {
                 taskList = ListMirakel.get(val.getAsInt());
                 if (!taskList.isPresent()) {
                     taskList = Optional.fromNullable(SpecialList.firstSpecialSafe().getDefaultList());
-                }
-                break;
-            }
-            case "project": {
-                taskList = ListMirakel.findByName(val.getAsString(),
-                                                  this.account);
-                if (!taskList.isPresent()
-                    || taskList.get().getAccount().getId() != this.account.getId()) {
-                    try {
-                        taskList = Optional.fromNullable(ListMirakel.newList(val.getAsString(),
-                                                         ListMirakel.SORT_BY.OPT, this.account));
-                    } catch (ListMirakel.ListAlreadyExistsException e) {
-                        // This can not happen!
-                        throw new RuntimeException("ListAlreadyExist while syncing from taskd. Thats impossible", e);
-                    }
                 }
                 break;
             }
@@ -177,101 +119,27 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             case "updated_at":
                 task.setUpdatedAt(val.getAsString().replace(":", ""));
                 break;
-            case "entry":
-                task.setCreatedAt(handleDate(val));
-                break;
-            case "modification":
-            case "modified":
-                task.setUpdatedAt(handleDate(val));
-                break;
             case "done":
                 task.setDone(val.getAsBoolean());
                 break;
-            case "status":
-                final String status = val.getAsString();
-                if ("completed".equalsIgnoreCase(status)) {
-                    task.setDone(true);
-                } else if ("deleted".equalsIgnoreCase(status)) {
-                    task.setSyncState(SYNC_STATE.DELETE);
-                } else {
-                    task.setDone(false);
-                    if (!"recurring".equals(status)) {
-                        task.addAdditionalEntry(key, "\"" + val.getAsString()
-                                                + "\"");
-                    }
-                    // TODO don't ignore waiting !!!
-                }
-                break;
             case "due":
                 Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
-                if (due == null) {
-                    due = parseDate(val.getAsString(),
-                                    this.context.getString(R.string.TWDateFormat));
-                    if (due != null) {
-                        due.setTimeInMillis(due.getTimeInMillis()
-                                            + DateTimeHelper.getTimeZoneOffset(true, due));
-                    }
-                }
                 task.setDue(fromNullable(due));
                 break;
             case "reminder":
                 Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
-                if (reminder == null) {
-                    reminder = parseDate(val.getAsString(),
-                                         this.context.getString(R.string.TWDateFormat));
-                }
                 task.setReminder(fromNullable(reminder));
-                break;
-            case "annotations":
-                task.setContent(handleContent(val));
-                break;
-            case "sync_state":
-                if (isTW) {
-                    handleAdditionalEntries(task, key, val);
-                }
-                break;
-            case "depends":
-                task.setDependencies(val.getAsString().split(","));
                 break;
             case "tags":
                 handleTags(task, val);
-                break;
-            case "recur":
-                final Recurring r = parseTaskWarriorRecurrence(val
-                                    .getAsString());
-                if (r != null) {
-                    task.setRecurrence(r.getId());
-                }
-                break;
-            case "imask":
-                task.addRecurringChild(new Pair<>(el.get("parent").getAsString(),
-                                                  (int) val.getAsFloat()));
-                break;
-            case "parent":
-            case "mask":
-                // ignore this
-                break;
-            case "until":
-                end = parseDate(val.getAsString(),
-                                this.context.getString(R.string.TWDateFormat));
                 break;
             default:
                 handleAdditionalEntries(task, key, val);
                 break;
             }
         }
-        if (task.getRecurrence().isPresent()) {
-            final Recurring r = task.getRecurrence().get();
-            r.setEndDate(Optional.fromNullable(end));
-            r.save();
-        }
-        if (account == null) {
+        if (!taskList.isPresent()) {
             taskList = Optional.of(ListMirakel.safeFirst());
-        } else if (!taskList.isPresent()) {
-            taskList = Optional.of(ListMirakel
-                                   .getInboxList(account));
-            Log.d(TAG, "no list");
-            task.addAdditionalEntry(Task.NO_PROJECT, "true");
         }
         task.setList(taskList.get(), true);
         return task;
@@ -344,36 +212,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         }
     }
 
-    private static String handleContent(final JsonElement val) {
-        String content = "";
-        try {
-            final JsonArray annotations = val.getAsJsonArray();
-            boolean first = true;
-            for (final JsonElement a : annotations) {
-                if (first) {
-                    first = false;
-                } else {
-                    content += "\n";
-                }
-                content += a.getAsJsonObject().get("description").getAsString();
-            }
-        } catch (final Exception e) {
-            Log.e(TAG, "cannot parse json", e);
-        }
-        return content;
-    }
 
-    private Calendar handleDate(final JsonElement val) {
-        Calendar createdAt = parseDate(val.getAsString(),
-                                       this.context.getString(R.string.TWDateFormat));
-        if (createdAt == null) {
-            createdAt = new GregorianCalendar();
-        } else {
-            createdAt.add(Calendar.SECOND,
-                          DateTimeHelper.getTimeZoneOffset(false, createdAt));
-        }
-        return createdAt;
-    }
 
     private static Calendar parseDate(final String date, final String format) {
         final GregorianCalendar temp = new GregorianCalendar();
@@ -386,136 +225,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         }
     }
 
-    public static Recurring parseTaskWarriorRecurrence(final String recur) {
-        final Scanner in = new Scanner(recur);
-        in.useDelimiter("[^0-9]+");
-        int number = 1;
-        if (in.hasNextInt()) {
-            number = in.nextInt();
-        }
-        in.close();
-        // remove number and possible sign(recurrence should be positive but who
-        // knows)
-        final Recurring r;
-        switch (recur.replace("" + number, "").replace("-", "")) {
-        case "yearly":
-        case "annual":
-            number = 1;
-        //$FALL-THROUGH$
-        case "years":
-        case "year":
-        case "yrs":
-        case "yr":
-        case "y":
-            r = new Recurring(0, recur, 0, 0, 0, 0, number, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
-                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "semiannual":
-            r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
-                              false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "biannual":
-        case "biyearly":
-            r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
-                              false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "bimonthly":
-            r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
-                              true, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "biweekly":
-        case "fortnight":
-            r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
-                              false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "daily":
-            number = 1;
-        //$FALL-THROUGH$
-        case "days":
-        case "day":
-        case "d":
-            r = new Recurring(0, recur, 0, 0, number, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
-                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "hours":
-        case "hour":
-        case "hrs":
-        case "hr":
-        case "h":
-            r = new Recurring(0, recur, 0, number, 0, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
-                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "minutes":
-        case "mins":
-        case "min":
-            r = new Recurring(0, recur, number, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
-                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "monthly":
-            number = 1;
-        //$FALL-THROUGH$
-        case "months":
-        case "month":
-        case "mnths":
-        case "mths":
-        case "mth":
-        case "mos":
-        case "mo":
-            r = new Recurring(0, recur, 0, 0, 0, number, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
-                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        case "quarterly":
-            number = 1;
-        //$FALL-THROUGH$
-        case "quarters":
-        case "qrtrs":
-        case "qtrs":
-        case "qtr":
-        case "q":
-            r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
-                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        default:
-        case "seconds":
-        case "secs":
-        case "sec":
-        case "s":
-            Log.w(TAG, "mirakel des not support " + recur);
-            r = null;
-            break;
-        case "weekdays":
-            final SparseBooleanArray weekdays = new SparseBooleanArray(7);
-            for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
-                weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
-            }
-            r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
-                              false, weekdays, Optional.<Long>absent());
-            break;
-        case "sennight":
-        case "weekly":
-            number = 1;
-        //$FALL-THROUGH$
-        case "weeks":
-        case "week":
-        case "wks":
-        case "wk":
-        case "w":
-            r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true, false, new SparseBooleanArray(), Optional.<Long>absent());
-            break;
-        }
-        return r.create();
-    }
+
+
 
 }

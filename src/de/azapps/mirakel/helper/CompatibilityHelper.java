@@ -19,9 +19,15 @@
 
 package de.azapps.mirakel.helper;
 
+import android.util.SparseBooleanArray;
+
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.xml.transform.TransformerException;
 
@@ -35,6 +41,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsSetProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.tools.Log;
 
 public class CompatibilityHelper {
@@ -175,5 +182,137 @@ public class CompatibilityHelper {
         final String wherePart) {
         return new SpecialListsReminderProperty(wherePart.toLowerCase()
                                                 .contains("not"));
+    }
+
+    public static Recurring parseTaskWarriorRecurrence(final String recur) {
+        final Scanner in = new Scanner(recur);
+        in.useDelimiter("[^0-9]+");
+        int number = 1;
+        if (in.hasNextInt()) {
+            number = in.nextInt();
+        }
+        in.close();
+        // remove number and possible sign(recurrence should be positive but who
+        // knows)
+        final Recurring r;
+        switch (recur.replace("" + number, "").replace("-", "")) {
+        case "yearly":
+        case "annual":
+            number = 1;
+        //$FALL-THROUGH$
+        case "years":
+        case "year":
+        case "yrs":
+        case "yr":
+        case "y":
+            r = new Recurring(0, recur, 0, 0, 0, 0, number, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "semiannual":
+            r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "biannual":
+        case "biyearly":
+            r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "bimonthly":
+            r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              true, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "biweekly":
+        case "fortnight":
+            r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "daily":
+            number = 1;
+        //$FALL-THROUGH$
+        case "days":
+        case "day":
+        case "d":
+            r = new Recurring(0, recur, 0, 0, number, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "hours":
+        case "hour":
+        case "hrs":
+        case "hr":
+        case "h":
+            r = new Recurring(0, recur, 0, number, 0, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "minutes":
+        case "mins":
+        case "min":
+            r = new Recurring(0, recur, number, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "monthly":
+            number = 1;
+        //$FALL-THROUGH$
+        case "months":
+        case "month":
+        case "mnths":
+        case "mths":
+        case "mth":
+        case "mos":
+        case "mo":
+            r = new Recurring(0, recur, 0, 0, 0, number, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        case "quarterly":
+            number = 1;
+        //$FALL-THROUGH$
+        case "quarters":
+        case "qrtrs":
+        case "qtrs":
+        case "qtr":
+        case "q":
+            r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(),
+                              true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        default:
+        case "seconds":
+        case "secs":
+        case "sec":
+        case "s":
+            Log.w(TAG, "mirakel des not support " + recur);
+            r = null;
+            break;
+        case "weekdays":
+            final SparseBooleanArray weekdays = new SparseBooleanArray(7);
+            for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
+                weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
+            }
+            r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true,
+                              false, weekdays, Optional.<Long>absent());
+            break;
+        case "sennight":
+        case "weekly":
+            number = 1;
+        //$FALL-THROUGH$
+        case "weeks":
+        case "week":
+        case "wks":
+        case "wk":
+        case "w":
+            r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, Optional.<Calendar>absent(),
+                              Optional.<Calendar>absent(), true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            break;
+        }
+        return r.create();
     }
 }
