@@ -23,6 +23,11 @@ import android.content.Context;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
@@ -85,29 +90,23 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
     public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
                 MirakelQueryBuilder.Operation.NOT_EQ, (String)null);
-        String query = "date('now','";
-        if (this.length == 0) {
-            return qb.and("date(" + Task.DUE
-                          + ",'unixepoch','localtime') <= date('now','localtime')");
-        }
-        if (this.length > 0) {
-            query += "+";
-        }
-        query += this.length + " ";
+        Calendar date = new GregorianCalendar();
+        date.setTimeZone(TimeZone.getTimeZone(TimeZone.getAvailableIDs(0)[0]));
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.HOUR, 0);
         switch (this.unit) {
         case DAY:
-            query += "day";
+            date.add(Calendar.DAY_OF_MONTH, length);
             break;
         case MONTH:
-            query += "month";
+            date.add(Calendar.MONTH, length);
             break;
         case YEAR:
-            query += "year";
+            date.add(Calendar.YEAR, length);
             break;
-        default:
-            return new MirakelQueryBuilder(ctx);
         }
-        return qb.and("date(" + Task.DUE + ",'unixepoch','localtime') <= " + query + "')");
+        return qb.and(Task.DUE, MirakelQueryBuilder.Operation.LT, date.getTimeInMillis() / 1000);
     }
 
     @Override
