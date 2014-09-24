@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="68"
-    android:versionName="2.7.1" >
+    android:versionCode="69"
+    android:versionName="2.8-beta1" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -76,6 +76,7 @@
 
 
         <instrumentation
+            tools:replace="android:label"
             android:name="android.test.InstrumentationTestRunner"
             android:label="your tests label"
             android:targetPackage="de.azapps.mirakelandroid" />
