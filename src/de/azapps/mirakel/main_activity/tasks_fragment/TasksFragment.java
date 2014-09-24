@@ -470,7 +470,7 @@ public class TasksFragment extends Fragment implements
                     final Cursor cursor = (Cursor) TasksFragment.this.listView
                                           .getItemAtPosition(position);
                     if (cursor.getCount() > 0) {
-                        final Task t = Task.cursorToTask(cursor);
+                        final Task t = new Task(cursor);
                         if (!TasksFragment.this.selectedTasks
                             .contains(t) && checked) {
                             TasksFragment.this.selectedTasks.add(t);

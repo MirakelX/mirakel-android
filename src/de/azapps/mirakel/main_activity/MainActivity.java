@@ -627,13 +627,16 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             }
             @Override
             public void handleMultiChange() {
-                Task master = task.getRecurrenceMaster();
+                Optional<Task> master = task.getRecurrenceMaster();
                 // This could happen in some absurd situations.
                 // For example it's the device of a developer :P
-                if (master == null) {
+                if (!master.isPresent()) {
                     task.destroy();
                 } else {
-                    master.destroy();
+                    for (Task child : master.get().getRecurrenceChilds()) {
+                        child.destroy();
+                    }
+                    master.get().destroy();
                     updateAfterDestroy();
                 }
             }
