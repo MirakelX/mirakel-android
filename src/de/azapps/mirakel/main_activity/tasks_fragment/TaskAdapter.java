@@ -46,7 +46,7 @@ public class TaskAdapter extends CursorAdapter {
         if (v == null || ! (v instanceof TaskSummary)) {
             v = new TaskSummary (ctx);
         }
-        final Task t = Task.cursorToTask (c);
+        final Task t = new Task(c);
         ((TaskSummary) v).updatePart (t);
         v.setTag (t.getId ());
     }
