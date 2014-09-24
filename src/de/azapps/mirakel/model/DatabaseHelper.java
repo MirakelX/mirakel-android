@@ -884,7 +884,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                          null);
             final Map<Task, List<Task>> recurring = new HashMap<>();
             for (c.moveToFirst(); c.moveToNext();) {
-                final Task t = Task.cursorToTask(c);
+                final Task t = new Task(c);
                 final String recurString = t.getAdditionalString("recur");
                 if (recurString == null) {
                     continue;

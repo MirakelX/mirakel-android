@@ -63,6 +63,7 @@ import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 
 public class Task extends TaskBase {
@@ -222,17 +223,13 @@ public class Task extends TaskBase {
         }
         return qb;
     }
-    @NonNull
-    public static Task cursorToTask(@NonNull final Cursor cursor) {
-        return new Task(cursor);
-    }
 
     @NonNull
     public static List<Task> cursorToTaskList(@NonNull final Cursor cursor) {
         cursor.moveToFirst();
         final List<Task> tasks = new ArrayList<>();
         while (!cursor.isAfterLast()) {
-            tasks.add(cursorToTask(cursor));
+            tasks.add(new Task(cursor));
             cursor.moveToNext();
         }
         cursor.close();
@@ -613,10 +610,17 @@ public class Task extends TaskBase {
         final List<Task> subTasks = new ArrayList<>();
         c.moveToFirst();
         while (!c.isAfterLast()) {
-            subTasks.add(cursorToTask(c));
+            subTasks.add(new Task(c));
             c.moveToNext();
         }
         c.close();
+
+        if (getRecurrence().isPresent()) {
+            Optional<Task> master = getRecurrenceMaster();
+            if (master.isPresent() && master.get().getId() != getId()) {
+                subTasks.addAll(master.get().getSubtasks());
+            }
+        }
         return subTasks;
     }
 
@@ -763,18 +767,30 @@ public class Task extends TaskBase {
         NotificationService.updateServices(Task.context, updateReminders);
     }
 
-    public Task getRecurrenceMaster() {
+    @NonNull
+    public Optional<Task> getRecurrenceMaster() {
         final Cursor c = new MirakelQueryBuilder(context)
         .select(addPrefix(allColumns, TABLE))
         .and(Recurring.TW_TABLE + ".child", Operation.EQ, this)
         .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
               Sorting.ASC)
-        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI);
+        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_PARENT_URI);
         if (c.moveToFirst()) {
-            return cursorToTask(c);
+            return Optional.of(new Task(c));
         } else {
-            return null;
+            return absent();
         }
+    }
+
+    @NonNull
+    public List<Task> getRecurrenceChilds() {
+        final Cursor c = new MirakelQueryBuilder(context)
+        .select(addPrefix(allColumns, TABLE))
+        .and(Recurring.TW_TABLE + "." + Recurring.PARENT, Operation.EQ, this)
+        .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
+              Sorting.ASC)
+        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_CHILD_URI);
+        return cursorToTaskList(c);
     }
 
     private void updateRecurringChilds(final Recurring r) {
@@ -788,14 +804,14 @@ public class Task extends TaskBase {
              MirakelInternalContentProvider.RECURRING_TW_URI)
         .sort(Recurring.TW_TABLE + "." + Recurring.OFFSET_COUNT,
               Sorting.ASC)
-        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_URI);
+        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_CHILD_URI);
         if (c.moveToFirst()) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     Task old = null;
                     do {
-                        final Task child = cursorToTask(c);
+                        final Task child = new Task(c);
                         final int offset = c.getInt(allColumns.length);
                         if (offset > 0 && old != null && r != null && old.getDue().isPresent()) {
                             child.setDue(r.addRecurring(old.getDue()));
@@ -842,6 +858,10 @@ public class Task extends TaskBase {
         cv.put(UUID, java.util.UUID.randomUUID().toString());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, SYNC_STATE.ADD.toInt());
         update(URI, cv, ModelBase.ID + "=?", new String[] {String.valueOf(oldId)});
+
+        ContentValues subtaskCV = new ContentValues();
+        subtaskCV.put("parent_id", getId());
+        update(MirakelInternalContentProvider.SUBTASK_URI, subtaskCV, "parent_id=?", new String[] {String.valueOf(oldId)});
     }
 
 
@@ -872,10 +892,11 @@ public class Task extends TaskBase {
     }
 
     private void setSubTasksDone() {
-        final List<Task> subTasks = getSubtasks();
-        for (final Task t : subTasks) {
-            t.setDone(true);
-            t.save(false);
+        if (!getRecurrence().isPresent()) {
+            for (final Task t : getSubtasks()) {
+                t.setDone(true);
+                t.save(false);
+            }
         }
     }
 
