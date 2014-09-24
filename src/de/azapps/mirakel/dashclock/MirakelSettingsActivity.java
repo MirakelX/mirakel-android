@@ -78,8 +78,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ListMirakel list = MirakelQueryBuilder.cursorToObject((Cursor) adapter.getItem(which),
-                                           ListMirakel.class);
+                        ListMirakel list = adapter.getItem(which);
                         SettingsHelper.setList(list);
                         startupListPreference.setSummary(list.getName());
                     }
