@@ -45,6 +45,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsListNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
@@ -77,16 +78,12 @@ public class SpecialListsWhereDeserializer {
                          new SetDeserializer<>(SpecialListsPriorityProperty.class))
     .registerTypeAdapter(SpecialListsDueProperty.class,
                          new DueDeserializer())
-    .registerTypeAdapter(
-        SpecialListsContentProperty.class,
-        new StringDeserializer<>(
-            SpecialListsContentProperty.class)
-    )
-    .registerTypeAdapter(
-        SpecialListsNameProperty.class,
-        new StringDeserializer<>(
-            SpecialListsNameProperty.class)
-    )
+    .registerTypeAdapter(SpecialListsContentProperty.class,
+                         new StringDeserializer<>(SpecialListsContentProperty.class))
+    .registerTypeAdapter(SpecialListsNameProperty.class,
+                         new StringDeserializer<>(SpecialListsNameProperty.class))
+    .registerTypeAdapter(SpecialListsListNameProperty.class,
+                         new StringDeserializer<>(SpecialListsListNameProperty.class))
 
     .registerTypeAdapter(SpecialListsProgressProperty.class,
                          new ProgressDeserializer()).create();
@@ -168,10 +165,13 @@ public class SpecialListsWhereDeserializer {
         } else if (obj.has(Tag.TABLE)) {
             key = Tag.TABLE;
             className = SpecialListsTagProperty.class;
+        } else if (obj.has(ListMirakel.TABLE + "." + ListMirakel.NAME)) {
+            key = ListMirakel.TABLE + "." + ListMirakel.NAME;
+            className = SpecialListsListNameProperty.class;
         } else {
-            Log.wtf(TAG, "unkown query object: " + obj.toString());
+            Log.wtf(TAG, "unknown query object: " + obj.toString());
             Log.v(TAG, "implement this?");
-            throw new IllegalArgumentException("unkown query object: " + obj.toString());
+            throw new IllegalArgumentException("unknown query object: " + obj.toString());
         }
         final SpecialListsBaseProperty prop = gson.fromJson(
                 obj.get(key), className);

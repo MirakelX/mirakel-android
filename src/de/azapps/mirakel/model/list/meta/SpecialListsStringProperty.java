@@ -114,11 +114,11 @@ public abstract class SpecialListsStringProperty extends
         }
         switch (this.type) {
         case BEGIN:
-            return qb.and(getPropertyName(), op, "%" + searchString);
+            return qb.and(getPropertyName(), op, searchString + "%");
         case CONTAINS:
             return qb.and(getPropertyName(), op, "%" + searchString + "%");
         case END:
-            return qb.and(getPropertyName(), op, searchString + "%");
+            return qb.and(getPropertyName(), op, "%" + searchString );
         default:
             return qb;
         }
