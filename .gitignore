@@ -5,3 +5,4 @@ exploded-aar/
 dex-cache/
 sonar/
 intermediates/
+scripts/upload.cfg
