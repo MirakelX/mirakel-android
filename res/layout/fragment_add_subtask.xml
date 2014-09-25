@@ -85,7 +85,6 @@
                 android:ems="10"
                 android:inputType="text"
                 android:drawableStart="@android:drawable/ic_menu_search"
-                android:drawableLeft="@android:drawable/ic_menu_search"
                 android:drawablePadding="@dimen/padding_drawable"
                 android:hint="@android:string/search_go">
 
