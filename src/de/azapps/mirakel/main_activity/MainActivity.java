@@ -1188,9 +1188,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     private void initFirst() {
         this.darkTheme = MirakelCommonPreferences.isDark();
         if (this.darkTheme) {
-            setTheme(android.support.v7.appcompat.R.style.Theme_AppCompat);
+            setTheme(R.style.AppBaseThemeDARK);
         } else {
-            setTheme(android.support.v7.appcompat.R.style.Theme_AppCompat_Light_DarkActionBar);
+            setTheme(R.style.AppBaseTheme);
         }
     }
 

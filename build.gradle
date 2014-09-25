@@ -26,7 +26,7 @@ android {
     }
     flavorDimensions "stores", "apis"
     lintOptions {
-        disable 'MissingTranslation'
+        disable 'MissingTranslation','AppCompatResource'
         enable 'NewerVersionAvailable'
     }
     defaultConfig {
@@ -76,13 +76,13 @@ android {
             flavorDimension "apis"
             compileSdkVersion rootProject.ext.compileSdkVersion
         }
-        old {
+        /*old {
             flavorDimension "apis"
             minSdkVersion 8
             targetSdkVersion 19
             versionCode getVersionCode()-1
             compileSdkVersion rootProject.ext.compileSdkVersion
-        }
+        }*/
         //for some reasons this is buggy
         //l_test {
             //flavorDimension "apis"
@@ -99,7 +99,7 @@ android {
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
+            res.srcDirs = ['merged-res']
             assets.srcDirs = ['assets']
         }
 
@@ -112,7 +112,7 @@ android {
             resources.srcDirs = ['tests/src']
         }
 
-        old { java.srcDirs = ['src-patched/src-old'] }
+        //old { java.srcDirs = ['src-patched/src-old'] }
         normal { java.srcDirs = ['src-patched/src-normal'] }
         l_test { java.srcDirs = ['src-patched/src-normal'] }
 
@@ -142,6 +142,17 @@ dependencies {
     androidTestCompile files("$project.buildDir/classes/debug")
     androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
     androidTestCompile "junit:junit:$junitVersion"
+}
+
+task deploy(dependsOn: build) << {
+	println "Do you realy want to deploy Mirakel?"
+	def c=System.console().readLine().toLowerCase();
+	if ( c== 'y'||c=='j'){
+		def script = (rootDir.toString()+"/build/scripts/deploy.sh").execute()
+		script.err.eachLine {line -> println "ERROR: " + line}
+		script.out.each {line -> println line}
+	    script.waitFor()
+	}
 }
 
 

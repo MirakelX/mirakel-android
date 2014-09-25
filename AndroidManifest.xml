@@ -176,11 +176,6 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.settings.activities.CreditsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
-        </activity>
-        <activity
             android:name="org.acra.CrashReportDialog"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
