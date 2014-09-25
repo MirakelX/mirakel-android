@@ -19,7 +19,9 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list.dialogfragments;
 
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,6 +51,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsListNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
@@ -95,13 +98,15 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     public static final int DUE = 2;
     public static final int FILE = 3;
     public static final int LISTS = 4;
-    public static final int NAME = 5;
-    public static final int PRIORITY = 6;
-    public static final int PROGRESS = 7;
-    public static final int REMINDER = 8;
-    public static final int TAGS = 9;
-    public static final int SUBTASKS = 10;
-    public static final int SUBCONDITION = 11;
+    public static final int LIST_NAME = 5;
+    public static final int NAME = 6;
+    public static final int PRIORITY = 7;
+    public static final int PROGRESS = 8;
+    public static final int REMINDER = 9;
+    public static final int TAGS = 10;
+    public static final int SUBTASKS = 11;
+    public static final int SUBCONDITION = 12;
+
 
     private SpecialList mList;
     private SpecialListsBaseProperty property;
@@ -171,7 +176,10 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
                 return SUBTASKS;
             } else if (property instanceof SpecialListsConjunctionList) {
                 return SUBCONDITION;
+            } else if (property instanceof SpecialListsListNameProperty) {
+                return LIST_NAME;
             }
+
         }
         throw new IllegalArgumentException("Could not get type of " + ((Object)
                                            property).getClass().getCanonicalName());
@@ -196,6 +204,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
 
 
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void handleNewFragment(int id) {
         BasePropertyFragement fragment;
         switch (id) {
@@ -249,6 +258,10 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             fragment = ConjunctionFragment.newInstance((SpecialListsConjunctionList) property, mList,
                        backStack);
             break;
+        case LIST_NAME:
+            property = new SpecialListsListNameProperty(property);
+            fragment = StringPropertyFragment.newInstance((SpecialListsStringProperty)property);
+            break;
         default:
             Log.wtf(TAG, "unknown type");
             return;
@@ -263,6 +276,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onClick(View v) {
         final SpecialListsBaseProperty property = ((BasePropertyFragement)

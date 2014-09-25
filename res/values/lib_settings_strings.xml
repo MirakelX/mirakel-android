@@ -385,6 +385,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
         <item>@string/special_lists_due_title</item>
         <item>@string/special_lists_file_title</item>
         <item>@string/special_lists_list_title</item>
+        <item>@string/special_list_list_name</item>
         <item>@string/special_lists_name_title</item>
         <item>@string/special_lists_priority_title</item>
         <item>@string/special_lists_progress_title</item>
