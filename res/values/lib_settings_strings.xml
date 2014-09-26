@@ -405,4 +405,5 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="Undo">Undo remove condition</string>
     <string name="add_condition">Add condition</string>
     <string name="undo_taskui_change">Undo remove of %s</string>
+    <string name="due_dialog_negated">Not after</string>
 </resources>

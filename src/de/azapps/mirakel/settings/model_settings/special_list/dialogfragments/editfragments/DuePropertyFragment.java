@@ -24,6 +24,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
@@ -58,6 +60,15 @@ public class DuePropertyFragment extends BasePropertyFragement<SpecialListsDuePr
                                        .findViewById(R.id.due_day_year);
         final NumberPicker pickerValue = (NumberPicker) this.dialogView
                                          .findViewById(R.id.due_val);
+        final CheckBox negated = (CheckBox)dialogView.findViewById(R.id.due_dialog_negated);
+        negated.setVisibility(View.VISIBLE);
+        negated.setChecked(property.isSet());
+        negated.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                property.setIsNegated(isChecked);
+            }
+        });
         final String dayYearValues[] = getDayYearValues(0, minuteHour);
         pickerDay.setDisplayedValues(dayYearValues);
         pickerDay.setMaxValue(dayYearValues.length - 1);
