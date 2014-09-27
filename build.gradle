@@ -103,13 +103,8 @@ android {
             assets.srcDirs = ['assets']
         }
 
-        androidTest.setRoot('tests')
         androidTest {
-            manifest.srcFile 'AndroidManifest.xml'
-            java { srcDirs = ['tests/src'] }
-            res.srcDirs = ['tests/res']
-            assets.srcDirs = ['tests/assets']
-            resources.srcDirs = ['tests/src']
+            java.srcDirs = ['tests/src']
         }
 
         //old { java.srcDirs = ['src-patched/src-old'] }
