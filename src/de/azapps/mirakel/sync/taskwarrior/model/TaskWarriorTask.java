@@ -21,6 +21,7 @@ package de.azapps.mirakel.sync.taskwarrior.model;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -36,14 +37,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 public class TaskWarriorTask {
+
+    private static final String TAG = "TaskWarriorTask";
 
     private enum Priority {
         H, M, L;
@@ -471,5 +480,116 @@ public class TaskWarriorTask {
             return new TaskWarriorRecurrence(recur.get(), until);
         }
         throw new IllegalStateException("There is no recurrence");
+    }
+
+    /**
+     * Use this only for testing
+     * @param t
+     */
+    public void setToTask(@NonNull final Task t) {
+
+        t.setName(description);
+        t.setCreatedAt(DateTimeHelper.createLocalCalendar(entry));
+        t.setUUID(UUID);
+        switch (status) {
+        case PENDING:
+            t.setDone(false);
+            break;
+        case DELETED:
+            t.setSyncState(DefinitionsHelper.SYNC_STATE.DELETE);
+            break;
+        case COMPLETED:
+            t.setDone(true);
+            break;
+        case WAITING:
+            t.addAdditionalEntry("status", "waiting");
+            break;
+        case RECURRING:
+            //cv.put(Task.RECURRING_SHOWN, false);
+            break;
+        }
+        if (priority.isPresent()) {
+            switch (priority.get()) {
+            case H:
+                t.setPriority(2);
+                break;
+            case M:
+                t.setPriority(1);
+                break;
+            case L:
+                if (priorityNumber.isPresent() && (priorityNumber.get() == -1 || priorityNumber.get() == -2)) {
+                    t.setPriority(priorityNumber.get());
+                } else {
+                    t.setPriority(-2);
+                }
+                break;
+            }
+        } else {
+            t.setPriority(0);
+        }
+        if (project.isPresent()) {
+            ListMirakel l;
+            try {
+                Optional<ListMirakel> l_t = ListMirakel.findByName(project.get());
+                if (l_t.isPresent()) {
+                    l = l_t.get();
+                } else {
+                    l = ListMirakel.newList(project.get(), ListMirakel.SORT_BY.DUE, AccountMirakel.getLocal());
+                }
+            } catch (ListMirakel.ListAlreadyExistsException e) {
+                Log.wtf(TAG, "this cannot happen");
+                throw new RuntimeException("Could not create List", e);
+            }
+            t.setList(l);
+        } else {
+            t.addAdditionalEntry(Task.NO_PROJECT, "true");
+            t.setList(ListMirakel.getInboxList(AccountMirakel.getLocal()));
+        }
+        if (due.isPresent()) {
+            t.setDue(of(DateTimeHelper.createLocalCalendar(due.get())));
+        } else {
+            t.setDue(Optional.<Calendar>absent());
+        }
+
+        if (reminder.isPresent()) {
+            t.setReminder(of(DateTimeHelper.createLocalCalendar(reminder.get())));
+        } else {
+            t.setReminder(Optional.<Calendar>absent());
+        }
+
+        if (progress.isPresent()) {
+            t.setProgress(progress.get());
+        } else {
+            t.setProgress(0);
+        }
+
+        if (modified.isPresent()) {
+            t.setUpdatedAt(DateTimeHelper.createLocalCalendar(modified.get()));
+        } else {
+            t.setUpdatedAt(new GregorianCalendar());
+        }
+
+        if (!tags.isEmpty()) {
+            t.getTags().addAll(Collections2.transform(tags, new Function<String, Tag>() {
+                @Override
+                public Tag apply(String input) {
+                    return Tag.newTag(input);
+                }
+            }));
+        }
+
+        t.setContent(TextUtils.join("\n", Collections2.transform(annotations,
+        new Function<Annotation, String>() {
+            @Override
+            public String apply(Annotation input) {
+                return input.description;
+            }
+        })));
+
+        for (Map.Entry<String, String> entry : uda.entrySet()) {
+            t.addAdditionalEntry(entry.getKey(), entry.getValue());
+
+        }
+
     }
 }
