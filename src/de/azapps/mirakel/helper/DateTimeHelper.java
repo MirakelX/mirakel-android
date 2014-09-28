@@ -103,12 +103,11 @@ public class DateTimeHelper {
 
     public static Calendar createLocalCalendar(final long time,
             final boolean isDue) {
-        final Calendar c = new GregorianCalendar();
+        final Calendar c = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
         c.setTimeInMillis(time * 1000);
         if (!isDue || c.get(Calendar.HOUR) != 0 && c.get(Calendar.HOUR) != 24
             || c.get(Calendar.MINUTE) != 0 || c.get(Calendar.SECOND) != 0) {
-            c.setTimeInMillis(c.getTimeInMillis()
-                              + DateTimeHelper.getTimeZoneOffset(true, c));
+            c.setTimeZone(TimeZone.getDefault());
         }
         return c;
     }
