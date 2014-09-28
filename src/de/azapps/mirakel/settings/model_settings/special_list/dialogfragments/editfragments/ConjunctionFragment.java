@@ -19,6 +19,8 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
@@ -72,6 +74,7 @@ public class ConjunctionFragment extends BasePropertyFragement<SpecialListsConju
     }
 
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
