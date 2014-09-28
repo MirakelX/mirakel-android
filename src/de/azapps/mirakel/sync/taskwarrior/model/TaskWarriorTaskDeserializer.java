@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarriorTask> {
 
@@ -209,8 +210,9 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
     private static Calendar parseDate(final String date) {
         final GregorianCalendar temp = new GregorianCalendar();
         try {
-            temp.setTime(new SimpleDateFormat(TW_DATE_FORMAT, Locale.getDefault())
-                         .parse(date));
+            SimpleDateFormat parser = new SimpleDateFormat(TW_DATE_FORMAT);
+            parser.setTimeZone(TimeZone.getTimeZone("UTC"));
+            temp.setTime(parser.parse(date));
             return temp;
         } catch (final ParseException e) {
             throw new JsonParseException("Date format is not valid");
