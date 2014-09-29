@@ -218,8 +218,8 @@ public class Recurring extends RecurringBase {
         return new MirakelQueryBuilder(context).getList(Recurring.class);
     }
 
-    public static List<Recurring> cursorToRecurringList(Cursor c) {
-        List<Recurring> ret = new ArrayList<>();
+    public static List<Recurring> cursorToList(final Cursor c) {
+        final List<Recurring> ret = new ArrayList<>(c.getCount());
         if (c.moveToFirst()) {
             do {
                 ret.add(new Recurring(c));
@@ -240,8 +240,8 @@ public class Recurring extends RecurringBase {
             return t;
         }
         long masterID = t.getId();
-        long offset = 0;
-        long offsetCount = 0;
+        long offset = 0L;
+        long offsetCount = 0L;
         Cursor c = new MirakelQueryBuilder(context).select(allTWColumns).and(CHILD,
                 Operation.EQ, t).query(MirakelInternalContentProvider.RECURRING_TW_URI);
         if (c.moveToFirst()) {// this is already a child-task
@@ -264,7 +264,7 @@ public class Recurring extends RecurringBase {
         }
         c.close();
         t.setDue(of(newDue));
-        Task newTask;
+        final Task newTask;
         try {
             newTask = t.create();
         } catch (final NoSuchListException e) {
@@ -293,7 +293,8 @@ public class Recurring extends RecurringBase {
     }
 
     @NonNull
-    private Optional<Calendar> addRecurring(@NonNull Optional<Calendar> cal, final boolean onlyOnce) {
+    private Optional<Calendar> addRecurring(@NonNull final Optional<Calendar> cal,
+                                            final boolean onlyOnce) {
         if (!cal.isPresent()) {
             return absent();
         }
@@ -305,7 +306,7 @@ public class Recurring extends RecurringBase {
         now.set(Calendar.SECOND, 0);
         now.add(Calendar.MINUTE, -1);
         final List<Integer> weekdays = getWeekdays();
-        if (weekdays.size() == 0) {
+        if (weekdays.isEmpty()) {
             if ((!getStartDate().isPresent() || now.after(getStartDate().get()))
                 && (!getEndDate().isPresent() || now.before(getEndDate().get()))) {
                 do {
@@ -339,13 +340,13 @@ public class Recurring extends RecurringBase {
     }
 
     public static List<Pair<Integer, String>> getForDialog(final boolean isDue) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(TEMPORARY,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(TEMPORARY,
                 Operation.EQ, false);
         if (isDue) {
             qb.and(FOR_DUE, Operation.EQ, true);
         }
         final Cursor c = qb.select(ID, LABEL).query(URI);
-        final List<Pair<Integer, String>> ret = new ArrayList<>();
+        final List<Pair<Integer, String>> ret = new ArrayList<>(c.getCount());
         c.moveToFirst();
         while (!c.isAfterLast()) {
             ret.add(new Pair<>(c.getInt(0), c.getString(1)));
@@ -363,7 +364,7 @@ public class Recurring extends RecurringBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(this.minutes);
         dest.writeInt(this.hours);
         dest.writeInt(this.days);
@@ -381,7 +382,7 @@ public class Recurring extends RecurringBase {
     }
 
     @SuppressWarnings("unchecked") // Unchecked cast
-    private Recurring(Parcel in) {
+    private Recurring(final Parcel in) {
         super();
         this.minutes = in.readInt();
         this.hours = in.readInt();
@@ -400,16 +401,18 @@ public class Recurring extends RecurringBase {
     }
 
     public static final Creator<Recurring> CREATOR = new Creator<Recurring>() {
-        public Recurring createFromParcel(Parcel source) {
+        @Override
+        public Recurring createFromParcel(final Parcel source) {
             return new Recurring(source);
         }
-        public Recurring[] newArray(int size) {
+        @Override
+        public Recurring[] newArray(final int size) {
             return new Recurring[size];
         }
     };
 
     public static Recurring getSafeFirst() {
-        List<Recurring> all = all();
+        final List<Recurring> all = all();
         if (all.isEmpty()) {
             return Recurring.newRecurring(context.getString(R.string.new_recurring), 0, 0,
                                           0, 0, 1, true, Optional.<Calendar>absent(), Optional.<Calendar>absent(), false, false,
