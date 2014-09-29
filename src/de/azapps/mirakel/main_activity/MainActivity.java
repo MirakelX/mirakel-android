@@ -1364,9 +1364,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                         // davdroid accounts should be there only from
                         // API>=14...
                         ContentResolver.requestSync(
-                            a.getAndroidAccount(),
-                            a.getType() == ACCOUNT_TYPES.TASKWARRIOR ? DefinitionsHelper.AUTHORITY_TYP
-                            : CalendarContract.AUTHORITY, bundle);
+                            a.getAndroidAccount(), DefinitionsHelper.AUTHORITY_TYP, bundle);
                     }
                 }
             }).start();
