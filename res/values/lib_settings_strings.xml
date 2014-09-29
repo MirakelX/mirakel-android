@@ -382,6 +382,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string-array name="special_lists_filter_type">
         <item>@string/special_lists_done_title</item>
         <item>@string/special_lists_content_title</item>
+        <item>@string/special_lists_due_exist_title</item>
         <item>@string/special_lists_due_title</item>
         <item>@string/special_lists_file_title</item>
         <item>@string/special_lists_list_title</item>
@@ -397,6 +398,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
 
     <string name="done_text">Only done tasks</string>
     <string name="file_text">Only tasks with files</string>
+    <string name="due_exist_text">Only tasks without due</string>
     <string name="reminder_text">Only tasks with reminder</string>
     <string name="is_subtask_parent">Is parent</string>
     <string name="has_subtasks">Has subtasks</string>

@@ -36,7 +36,8 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
-import de.azapps.mirakel.sync.SyncAdapter;
+
+import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
 import de.azapps.tools.Log;
 
 public class AccountDetailFragment extends GenericModelDetailFragment<AccountMirakel> {
