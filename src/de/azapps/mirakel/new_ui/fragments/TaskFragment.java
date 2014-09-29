@@ -277,7 +277,7 @@ public class TaskFragment extends DialogFragment {
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    task.setList(new ListMirakel((Cursor) adapter.getItem(i)));
+                    task.setList(adapter.getItem(i));
                     task.save();
                 }
             });
