@@ -43,6 +43,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList;
 import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDueExistsProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListNameProperty;
@@ -70,6 +71,8 @@ public class SpecialListsWhereDeserializer {
                          new NegatedDeserializer<>(SpecialListsFileProperty.class))
     .registerTypeAdapter(SpecialListsReminderProperty.class,
                          new NegatedDeserializer<>(SpecialListsReminderProperty.class))
+    .registerTypeAdapter(SpecialListsDueExistsProperty.class,
+                         new NegatedDeserializer<>(SpecialListsDueExistsProperty.class))
     .registerTypeAdapter(SpecialListsListProperty.class,
                          new SetDeserializer<>(SpecialListsListProperty.class))
     .registerTypeAdapter(SpecialListsTagProperty.class,
@@ -168,6 +171,9 @@ public class SpecialListsWhereDeserializer {
         } else if (obj.has(ListMirakel.TABLE + "." + ListMirakel.NAME)) {
             key = ListMirakel.TABLE + "." + ListMirakel.NAME;
             className = SpecialListsListNameProperty.class;
+        } else if (obj.has(Task.DUE + "_exists")) {
+            key = Task.DUE + "_exists";
+            className = SpecialListsDueExistsProperty.class;
         } else {
             Log.wtf(TAG, "unknown query object: " + obj.toString());
             Log.v(TAG, "implement this?");

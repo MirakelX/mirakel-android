@@ -193,6 +193,7 @@
     <string name="nothing">No recurrence</string>
     <string name="special_lists_content_title">Content</string>
     <string name="special_lists_done_title">Done</string>
+    <string name="special_lists_due_exist_title">Due existence</string>
     <string name="special_lists_due_title">Due</string>
     <string name="special_lists_file_title">File</string>
     <string name="special_lists_list_title">Lists</string>
@@ -208,6 +209,8 @@
     <string name="special_list_list_name">List Name</string>
     <string name="special_lists_due_negated">Not before today %s</string>
     <string name="special_lists_due">Before today %s</string>
+    <string name="due_exists">Due exists</string>
+    <string name="due_dont_exist">Due does not exist</string>
 
     <string-array name="demo_lists">
         <item>Work</item>
