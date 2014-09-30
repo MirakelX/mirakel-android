@@ -31,6 +31,8 @@ import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.common.base.Optional;
+
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper;
@@ -77,9 +79,18 @@ public class NotificationService extends Service {
             && !this.existsNotification) {
             return;
         }
-        final int listId = MirakelCommonPreferences.getNotificationsListId();
-        final int listIdToOpen = MirakelCommonPreferences
-                                 .getNotificationsListOpenId();
+
+        final Optional<ListMirakel> showList = ListMirakel.get(
+                MirakelCommonPreferences.getNotificationsListId());
+        Optional<ListMirakel> openList = ListMirakel.get(
+                                             MirakelCommonPreferences.getNotificationsListOpenId());
+        if (!showList.isPresent()) {
+            return;
+        }
+        if (!openList.isPresent()) {
+            openList = showList;
+        }
+
         // Set onClick Intent
         Intent openIntent;
         try {
@@ -90,17 +101,13 @@ public class NotificationService extends Service {
             return;
         }
         openIntent.setAction(DefinitionsHelper.SHOW_LIST);
-        openIntent.putExtra(DefinitionsHelper.EXTRA_ID, listIdToOpen);
+        openIntent.putExtra(DefinitionsHelper.EXTRA_LIST, openList.get());
         openIntent
         .setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0,
                                           openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        // Get the data
-        final ListMirakel todayList = ListMirakel.get(listId).orNull();
-        if (todayList == null) {
-            return;
-        }
-        final List<Task> todayTasks = todayList.tasks(false);
+
+        final List<Task> todayTasks = showList.get().tasks(false);
         String notificationTitle;
         String notificationText;
         if (todayTasks.size() == 0) {
@@ -110,11 +117,11 @@ public class NotificationService extends Service {
             if (todayTasks.size() == 1) {
                 notificationTitle = getString(
                                         R.string.notification_title_general_single,
-                                        todayList.getName());
+                                        showList.get().getName());
             } else {
                 notificationTitle = String.format(
                                         getString(R.string.notification_title_general),
-                                        todayTasks.size(), todayList.getName());
+                                        todayTasks.size(), showList.get().getName());
             }
             notificationText = todayTasks.get(0).getName();
         }

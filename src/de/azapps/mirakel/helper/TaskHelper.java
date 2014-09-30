@@ -35,20 +35,22 @@ import com.google.common.base.Optional;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+import static com.google.common.base.Optional.fromNullable;
 
 public class TaskHelper {
 
     @NonNull
     public static Optional<Task> getTaskFromIntent(final Intent intent) {
         if (intent == null) {
-            return Optional.absent();
+            return absent();
         }
-        long taskId = intent.getLongExtra(DefinitionsHelper.EXTRA_ID, 0);
-        if (taskId == 0) {
-            // ugly fix for show Task from Widget
-            taskId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
+        if (!intent.hasExtra(DefinitionsHelper.EXTRA_TASK)) {
+            return absent();
         }
-        return Task.get(taskId);
+        Task t = intent.getParcelableExtra(DefinitionsHelper.EXTRA_TASK);
+        return fromNullable(t);
     }
 
     /**
