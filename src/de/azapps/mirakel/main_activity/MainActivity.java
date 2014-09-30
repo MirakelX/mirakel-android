@@ -33,7 +33,6 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -104,8 +103,8 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
-import static de.azapps.tools.OptionalUtils.withOptional;
 import static com.google.common.base.Optional.of;
+import static de.azapps.tools.OptionalUtils.withOptional;
 
 /**
  * This is our main activity. Here happens nearly everything.
@@ -1523,8 +1522,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 if (this.mDrawerLayout != null) {
                     this.mDrawerLayout.postDelayed(new Runnable() {
                         @Override
-                        public void run () {
-                            setCurrentTask (task.get(), true);
+                        public void run() {
+                            setCurrentTask(task.get(), true);
                         }
                     }, 10);
                 }
@@ -1591,27 +1590,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)
                    || intent.getAction().contains(
                        DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
-            ListMirakel list;
             if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
-                list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
-            } else {
-                int listId;
-                if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)) {
-                    listId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
-                } else {
-                    listId = Integer.parseInt(intent.getAction().replace(
-                                                  DefinitionsHelper.SHOW_LIST_FROM_WIDGET, ""));
+                ListMirakel list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
+                setCurrentList (list);
+                Optional<Task> taskOptional = list.getFirstTask ();
+                if (taskOptional.isPresent()) {
+                    this.currentTask = taskOptional.get();
                 }
-                Log.v(MainActivity.TAG, "ListId: " + listId);
-                list = ListMirakel.get(listId).or(SpecialList.firstSpecialSafe());
-            }
-            setCurrentList (list);
-            Optional<Task> taskOptional = list.getFirstTask ();
-            if (taskOptional.isPresent()) {
-                this.currentTask = taskOptional.get();
-            }
-            if (getTaskFragment () != null) {
-                getTaskFragment().update(this.currentTask);
+                if (getTaskFragment () != null) {
+                    getTaskFragment().update(this.currentTask);
+                }
+            } else {
+                Log.d(TAG, "show_list does not pass list, so ignore this");
             }
         } else if (intent.getAction().equals(DefinitionsHelper.SHOW_LISTS)) {
             this.mDrawerLayout.openDrawer(DefinitionsHelper.GRAVITY_LEFT);
