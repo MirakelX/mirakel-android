@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -115,10 +117,11 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // Set the Click–Intent
         // We need to do so, because we can not start the Activity directly from
         // the Service
-        final Bundle extras = new Bundle();
-        extras.putInt(MainWidgetProvider.EXTRA_TASKID, (int) task.getId());
         final Intent fillInIntent = new Intent(MainWidgetProvider.CLICK_TASK);
-        fillInIntent.putExtras(extras);
+        Bundle b = new Bundle();
+        b.putParcelable(MainWidgetProvider.EXTRA_TASK, task);
+        // dirty workaround to pass parcelables in pending intents
+        fillInIntent.putExtra(MainWidgetProvider.BUNDLE_WRAPPER, b);
         rv.setOnClickFillInIntent(R.id.tasks_row, fillInIntent);
         return rv;
     }

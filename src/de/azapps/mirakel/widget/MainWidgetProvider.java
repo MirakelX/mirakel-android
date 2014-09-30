@@ -37,6 +37,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
+import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -48,17 +49,14 @@ import de.azapps.mirakel.model.task.Task;
 
 public class MainWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "MainWidgetProvider";
-    public static final String EXTRA_LISTID = "de.azapps.mirakel.EXTRA_LISTID",
-                               EXTRA_LISTSORT = "de.azapps.mirakel.EXTRA_LISTSORT",
-                               EXTRA_SHOWDONE = "de.azapps.mirakel.EXTRA_SHOWDONE",
-                               CLICK_TASK = "de.azapps.mirakel.CLICK_TASK",
-                               EXTRA_TASKID = "de.azapps.mirakel.EXTRA_TASKID",
+    public static final String CLICK_TASK = "de.azapps.mirakel.CLICK_TASK",
+                               EXTRA_TASK = "de.azapps.mirakel.WIDGET.EXTRA_TASK",
                                EXTRA_WIDGET_LAYOUT = "de.azapps.mirakel.EXTRA_WIDGET_LAYOUT",
-                               EXTRA_WIDGET_ID = "de.azapps.mirakel.EXTRA_WIDGET_ID";
+                               EXTRA_WIDGET_ID = "de.azapps.mirakel.EXTRA_WIDGET_ID",
+                               BUNDLE_WRAPPER = "de.azapps.mirakel.WIDGET.Bundle.Wrapper";
 
     public static final int MINIMAL_WIDGET = 1;
     public static final int NORMAL_WIDGET = 0;
-    private static final boolean oldAPI = VERSION.SDK_INT < VERSION_CODES.HONEYCOMB;
 
     @Override
     @SuppressLint("NewApi")
@@ -70,15 +68,35 @@ public class MainWidgetProvider extends AppWidgetProvider {
             boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
                                      widgetId);
             int layout_id;
-            if (isMinimalistic && !oldAPI) {
+            if (isMinimalistic) {
                 layout_id = R.layout.widget_minimal;
             } else {
                 isMinimalistic = false;
-                layout_id = oldAPI ? R.layout.widget_main_layout_v10
-                            : R.layout.widget_main;
+                layout_id = R.layout.widget_main;
             }
             final RemoteViews views = new RemoteViews(context.getPackageName(),
                     layout_id);
+            // Main Intent
+
+            final Intent intent = new Intent(context,
+                                             MainWidgetService.class);
+
+
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
+            final Intent toastIntent  = new Intent(context, MainWidgetProvider.class);
+
+            toastIntent.setData(Uri.parse(intent
+                                          .toUri(Intent.URI_INTENT_SCHEME)));
+            toastIntent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
+            toastIntent.setExtrasClassLoader(Task.class.getClassLoader());
+            final PendingIntent toastPendingIntent = PendingIntent
+                    .getBroadcast(context, 0, toastIntent,
+                                  PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_tasks_list,
+                                           toastPendingIntent);
+
             int widgetBackground;
             if (WidgetHelper.gethasGradient(context, widgetId)) {
                 if (isMinimalistic) {
@@ -97,21 +115,19 @@ public class MainWidgetProvider extends AppWidgetProvider {
                                        : R.drawable.widget_background_wo_gradient;
                 }
             }
-            if (!oldAPI) {
-                final GradientDrawable drawable = (GradientDrawable) context
-                                                  .getResources().getDrawable(widgetBackground);
-                drawable.setAlpha(WidgetHelper.getTransparency(context,
-                                  widgetId));
-                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-                final Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels,
-                                      Config.ARGB_8888);
-                final Canvas canvas = new Canvas(bitmap);
-                drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                drawable.draw(canvas);
-                views.setImageViewBitmap(R.id.widget_background, bitmap);
-                views.setTextColor(R.id.widget_list_name,
-                                   WidgetHelper.getFontColor(context, widgetId));
-            }
+            final GradientDrawable drawable = (GradientDrawable) context
+                                              .getResources().getDrawable(widgetBackground);
+            drawable.setAlpha(WidgetHelper.getTransparency(context,
+                              widgetId));
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            final Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels,
+                                  Config.ARGB_8888);
+            final Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            views.setImageViewBitmap(R.id.widget_background, bitmap);
+            views.setTextColor(R.id.widget_list_name,
+                               WidgetHelper.getFontColor(context, widgetId));
             final ListMirakel list = WidgetHelper.getList(context, widgetId);
             if (list == null) {
                 continue;
@@ -126,24 +142,22 @@ public class MainWidgetProvider extends AppWidgetProvider {
                     .getActivity(context, 0, settingsIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_preferences,
                                           settingsPendingIntent);
-            if (!oldAPI) {
-                views.setImageViewBitmap(
-                    R.id.widget_preferences,
-                    colorizeBitmap(
-                        WidgetHelper.getFontColor(context, widgetId),
-                        context.getResources().getDrawable(
-                            R.drawable.ic_action_overflow),
-                        new int[] { 52, 52, 52 }, 3));
-                views.setImageViewBitmap(
-                    R.id.widget_add_task,
-                    colorizeBitmap(
-                        WidgetHelper.getFontColor(context, widgetId),
-                        context.getResources().getDrawable(
-                            R.drawable.ic_action_new), new int[] {
-                            52, 52, 52
-                        }, 3));
-            }
-            if (!isMinimalistic && !oldAPI) {
+            views.setImageViewBitmap(
+                R.id.widget_preferences,
+                colorizeBitmap(
+                    WidgetHelper.getFontColor(context, widgetId),
+                    context.getResources().getDrawable(
+                        R.drawable.ic_action_overflow),
+                    new int[] { 52, 52, 52 }, 3));
+            views.setImageViewBitmap(
+                R.id.widget_add_task,
+                colorizeBitmap(
+                    WidgetHelper.getFontColor(context, widgetId),
+                    context.getResources().getDrawable(
+                        R.drawable.ic_action_new), new int[] {
+                        52, 52, 52
+                    }, 3));
+            if (!isMinimalistic) {
                 views.setImageViewBitmap(
                     R.id.widget_add_task,
                     colorizeBitmap(
@@ -161,8 +175,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
                 Log.wtf(TAG, "mainactivity not found");
                 return;
             }
-            mainIntent.setAction(DefinitionsHelper.SHOW_LIST_FROM_WIDGET
-                                 + list.getId());
+            mainIntent.setAction(DefinitionsHelper.SHOW_LIST_FROM_WIDGET);
+            mainIntent.putExtra(DefinitionsHelper.EXTRA_LIST, list);
             final PendingIntent mainPendingIntent = PendingIntent.getActivity(
                     context, 0, mainIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_list_name,
@@ -184,75 +198,18 @@ public class MainWidgetProvider extends AppWidgetProvider {
                     context, 0, addIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_add_task,
                                           addPendingIntent);
-            final boolean showDone = WidgetHelper.showDone(context, widgetId);
-            if (!oldAPI) {
-                final Intent intent = new Intent(context,
-                                                 MainWidgetService.class);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-                intent.putExtra(EXTRA_LISTID, list.getId());
-                intent.putExtra(EXTRA_SHOWDONE, showDone);
-                intent.putExtra(EXTRA_WIDGET_ID, widgetId);
-                intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-                views.setRemoteAdapter(R.id.widget_tasks_list, intent);
-                try {
-                    appWidgetManager.updateAppWidget(new int[] { widgetId },
-                                                     views);
-                } catch (final Exception e) {
-                    Log.d(TAG, "cannot create widget", e);
-                    return;
-                }
-                // Empty view
-                views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
-                // Main Intent
-                final Intent toastIntent = new Intent(context,
-                                                      MainWidgetProvider.class);
-                toastIntent.setData(Uri.parse(intent
-                                              .toUri(Intent.URI_INTENT_SCHEME)));
-                toastIntent.putExtra(EXTRA_WIDGET_LAYOUT, NORMAL_WIDGET);
-                final PendingIntent toastPendingIntent = PendingIntent
-                        .getBroadcast(context, 0, toastIntent,
-                                      PendingIntent.FLAG_UPDATE_CURRENT);
-                views.setPendingIntentTemplate(R.id.widget_tasks_list,
-                                               toastPendingIntent);
-            } else {
-                views.removeAllViews(R.id.widget_main_view);
-                final List<Task> tasks = list.tasks(showDone);
-                if (tasks.size() == 0) {
-                    views.setViewVisibility(R.id.empty_view, View.VISIBLE);
-                } else {
-                    final boolean darkTheme = WidgetHelper.isDark(context,
-                                              widgetId);
-                    views.setInt(R.id.widget_main, "setBackgroundResource",
-                                 darkTheme ? R.drawable.widget_background_dark
-                                 : R.drawable.widget_background);
-                    views.setTextColor(
-                        R.id.widget_list_name,
-                        context.getResources().getColor(
-                            darkTheme ? R.color.White : R.color.Black));
-                    views.setViewVisibility(R.id.empty_view, View.GONE);
-                    final int end = tasks.size() >= 7 ? 7 : tasks.size();
-                    try {
-                        final int row_id = isMinimalistic ? R.layout.widget_row_minimal
-                                           : R.layout.widget_row;
-                        for (final Task t : tasks.subList(0, end)) {
-                            views.addView(R.id.widget_main_view, WidgetHelper
-                                          .configureItem(
-                                              new RemoteViews(context
-                                                              .getPackageName(), row_id),
-                                              t, context, list.getId(), false,
-                                              widgetId));
-                        }
-                    } catch (final IndexOutOfBoundsException e) {
-                        Log.wtf(TAG,
-                                "The list has been shortened while processing it…");
-                    }
-                }
+            views.setRemoteAdapter(R.id.widget_tasks_list, intent);
+            try {
+                appWidgetManager.updateAppWidget(new int[] { widgetId },
+                                                 views);
+            } catch (final Exception e) {
+                Log.d(TAG, "cannot create widget", e);
+                return;
             }
+            // Empty view
+            views.setEmptyView(R.id.widget_tasks_list, R.id.empty_view);
             appWidgetManager.updateAppWidget(widgetId, views);
         }
-        // if (!oldAPI)
-        // appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
-        // R.id.tasks_list);
     }
 
     private static Bitmap colorizeBitmap(final int to, final Drawable c,
@@ -283,8 +240,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
     @SuppressLint("NewApi")
     @Override
     public void onReceive(final Context context, final Intent intent) {
-        if (intent.getAction().equals(CLICK_TASK)) {
-            final int taskId = intent.getIntExtra(EXTRA_TASKID, 0);
+        if (CLICK_TASK.equals(intent.getAction())) {
+            final Task task = intent.getBundleExtra(BUNDLE_WRAPPER).getParcelable(EXTRA_TASK);
             Intent startMainIntent;
             try {
                 startMainIntent = new Intent(context,
@@ -294,7 +251,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
                 return;
             }
             startMainIntent.setAction(DefinitionsHelper.SHOW_TASK_FROM_WIDGET);
-            startMainIntent.putExtra(DefinitionsHelper.EXTRA_ID, taskId);
+            startMainIntent.putExtra(DefinitionsHelper.EXTRA_TASK, task);
             startMainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startMainIntent.setData(Uri.parse(startMainIntent
                                               .toUri(Intent.URI_INTENT_SCHEME)));
