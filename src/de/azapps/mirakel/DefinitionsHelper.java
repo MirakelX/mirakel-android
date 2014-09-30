@@ -45,8 +45,8 @@ public class DefinitionsHelper {
     public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
     public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
     public static final String MAINWIDGET_CLASS = "de.azapps.mirakel.widget.MainWidgetProvider";
-    public static final String EXTRA_ID = "de.azapps.mirakel.EXTRA_TASKID";
     public static final String EXTRA_LIST = "de.azapps.mirakel.EXTRA_LIST";
+    public static final String EXTRA_TASK = "de.azapps.mirakel.EXTRA_TASK";
     public static final String EXTRA_MESSAGE = "de.azapps.mirakel.EXTRA_MESSAGE";
     public static final String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
     public static final String SHOW_LIST = "de.azapps.mirakel.SHOW_LIST";
