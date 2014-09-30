@@ -31,6 +31,7 @@ import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -39,6 +40,7 @@ import static de.azapps.tools.OptionalUtils.*;
 public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     OnListSelectedListener {
 
+    private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
 
@@ -174,7 +176,11 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         switch (intent.getAction()) {
         case DefinitionsHelper.SHOW_TASK:
         case DefinitionsHelper.SHOW_TASK_FROM_WIDGET:
-            // TODO
+            if (intent.hasExtra(DefinitionsHelper.EXTRA_TASK)) {
+                onTaskSelected((Task) intent.getParcelableExtra(DefinitionsHelper.EXTRA_TASK));
+            } else {
+                Log.d(TAG, "show_task does not pass task, so ignore this");
+            }
             break;
         case Intent.ACTION_SEND:
         case Intent.ACTION_SEND_MULTIPLE:
@@ -183,16 +189,9 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
         case DefinitionsHelper.SHOW_LIST:
         case DefinitionsHelper.SHOW_LIST_FROM_WIDGET:
             if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
-                //use this when possible
                 setList((ListMirakel) intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST));
             } else {
-                Optional<ListMirakel> listMirakelOptional = ListMirakel.get(intent.getIntExtra(
-                            DefinitionsHelper.EXTRA_ID, 0));
-                if (listMirakelOptional.isPresent()) {
-                    setList(listMirakelOptional.get());
-                } else {
-                    setList(SpecialList.firstSpecialSafe());
-                }
+                Log.d(TAG, "show_list does not pass list, so ignore this");
             }
             break;
         case Intent.ACTION_SEARCH:
