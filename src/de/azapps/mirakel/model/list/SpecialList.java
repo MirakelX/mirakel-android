@@ -435,7 +435,7 @@ public class SpecialList extends ListMirakel {
         this.color = in.readInt();
         this.accountID = in.readLong();
         this.isSpecial = in.readByte() != 0;
-        this.setId(in.readLong());
+        this.setId(-1 * in.readLong());
         this.setName(in.readString());
     }
 
