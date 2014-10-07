@@ -283,7 +283,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         return "";
     }
 
-    static void handleRecurrence(final JsonObject json, final Recurring r) {
+    public static void handleRecurrence(final JsonObject json, final Recurring r) {
         if (r == null) {
             Log.wtf(TAG, "recurring is null");
             return;
@@ -312,20 +312,21 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
             }
         }
         long interval = r.getInterval() / (1000 * 60);
-        if (interval >= 60 * 24 * 365) {
-            interval /= 60 * 24 * 365;
-            json.addProperty("recur", interval + "years");
-        } else if (interval >= 60 * 24 * 30) {
-            interval /= 60 * 24 * 30;
-            json.addProperty("recur", interval + "months");
-        } else if (interval >= 60 * 24) {
-            interval /= 60 * 24;
-            json.addProperty("recur", interval + "days");
-        } else if (interval >= 60) {
-            interval /= 60;
-            json.addProperty("recur", interval + "hours");
-        } else {
-            json.addProperty("recur", interval + "mins");
+        if (interval > 0) {
+            if (r.getMinutes() > 0) {
+                json.addProperty("recur", interval + "mins");
+            } else if (r.getHours() > 0) {
+                interval /= 60;
+                json.addProperty("recur", interval + "hours");
+            } else if (r.getDays() > 0) {
+                interval /= 60 * 24;
+                json.addProperty("recur", interval + "days");
+            } else if (r.getMonths() > 0) {
+                interval /= 60 * 24 * 30;
+                json.addProperty("recur", interval + "months");
+            } else {
+                json.addProperty("recur", r.getYears() + "years");
+            }
         }
     }
 
