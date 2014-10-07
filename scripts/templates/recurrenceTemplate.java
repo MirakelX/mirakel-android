@@ -16,41 +16,67 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.task;
+package de.azapps.mirakel.sync.taskwarrior.model.test;
+
+import android.test.suitebuilder.annotation.SmallTest;
+
+import com.google.common.base.Optional;
+import com.google.gson.JsonObject;
+
+import junit.framework.TestCase;
 
 import java.util.Calendar;
 
-import junit.framework.TestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 
 public class RecurrenceTest extends TestCase {
+
+    private void performBackCheck(String rec,Recurring r) {
+        final JsonObject e=new JsonObject();
+        TaskWarriorTaskSerializer.handleRecurrence(e, r);
+        String recur = e.get("recur").getAsString();
+        assertEquals("Recurring does not match: was <"+recur+"> expected <"+rec+">",r.getInterval(),parseRecurring(recur).getInterval());
+    }
+
+    private Recurring parseRecurring(String rec) {
+        final Recurring r;
+        try{
+           r = new TaskWarriorRecurrence(rec, Optional.<Calendar>absent());
+        }catch(Exception e){
+            fail("Parsing of " + rec + " failed: "+e.getMessage());
+            //this can not be reached stupid compiler
+            return null;
+        }
+        return r;
+    }
 
 	#foreach ($F in $FUNCTIONS)
 	@SmallTest
 	public void test_${F.get('name')}() {
-		final String recc = "${F.get('name')}";
-		final Recurring r = TaskDeserializer.parseTaskWarriorRecurrence(recc);
-		assertNotNull("Parsing " + recc + " failed", r);
+		final String rec = "${F.get('name')}";
+        final Recurring r = parseRecurring(rec);
 		assertEquals(
-				"Reccuring does not match:  ${F.get('function')}" + r.${F.get('function')}(),
+				"Recurring does not match:  ${F.get('function')}" + r.${F.get('function')}(),
 				${F.get('value')}, r.${F.get('function')}());
+        performBackCheck(rec, r);
 	}
 	#end
 	
 	@SmallTest
 	public void test_weekdays() {
-		final String recc = "weekdays";
-		final Recurring r = TaskDeserializer.parseTaskWarriorRecurrence(recc);
-		assertNotNull("Parsing " + recc + " failed", r);
+		final String rec = "weekdays";
+		final Recurring r = parseRecurring(rec);
 		for (Integer i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
 			if (i == Calendar.SATURDAY || i == Calendar.SUNDAY) {
-				assertTrue("Reccuring weekday contains  saturday or sunday", !r
+				assertTrue("Recurring weekday contains  saturday or sunday", !r
 						.getWeekdays().contains(i));
 			} else {
-				assertTrue("Reccuring weekday don't contain weekday " + i, r
+				assertTrue("Recurring weekday don't contain weekday " + i, r
 						.getWeekdays().contains(i));
 			}
 		}
+		performBackCheck(rec, r);
 	}
 }

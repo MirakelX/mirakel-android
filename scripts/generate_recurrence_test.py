@@ -11,7 +11,7 @@ if len(sys.argv)  != 2:
     print(sys.argv[0] + "  <pathToTestDir>")
     sys.exit()
 
-path="de/azapps/mirakel/templates/task"
+path="de/azapps/mirakel/sync/taskwarrior/model/test/"
 filename="RecurrenceTest.java"
 
 tests_single={
@@ -74,7 +74,7 @@ VARS={}
 VARS["FUNCTIONS"]=[]
 
 for key,value in tests_multi.items():
-    ranges={1,2,5,10}
+    ranges={1,2,5,6,10}
     for i in ranges:
         cmd=deepcopy(value)
         for k in cmd.keys():
