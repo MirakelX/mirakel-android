@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
-apply plugin: 'eclipse'
-//apply plugin: 'robolectric'
+apply plugin: 'robolectric'
 
 def getVersionCode() {
 	def manifestFile = file("AndroidManifest.xml")
@@ -31,7 +30,7 @@ android {
     }
     defaultConfig {
         testApplicationId "de.azapps.mirakelandroid.test"
-        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
         minSdkVersion 15
         targetSdkVersion 19
     }
@@ -106,7 +105,7 @@ android {
         androidTest {
             java.srcDirs = ['tests/src']
         }
-
+        instrumentTest.setRoot('tests/src')
         //old { java.srcDirs = ['src-patched/src-old'] }
         normal { java.srcDirs = ['src-patched/src-normal'] }
         l_test { java.srcDirs = ['src-patched/src-normal'] }
@@ -118,6 +117,26 @@ android {
     }
 }
 
+
+robolectric {
+    // configure the set of classes for JUnit tests
+    include '**/*Test.class'
+    exclude '**/espresso/**/*.class'
+
+    // configure max heap size of the test JVM
+    maxHeapSize = '2048m'
+
+    // configure the test JVM arguments
+    jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
+
+    // configure whether failing tests should fail the build
+    ignoreFailures true
+
+    // use afterTest to listen to the test execution results
+    afterTest { descriptor, result ->
+        println "Executing test for {$descriptor.name} with result: ${result.resultType}"
+    }
+}
 
 dependencies {
     compile project(':model')
@@ -135,8 +154,9 @@ dependencies {
 
     //for tests
     androidTestCompile files("$project.buildDir/classes/debug")
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
+    //androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
     androidTestCompile "junit:junit:$junitVersion"
+    androidTestCompile "org.robolectric:robolectric:$robolectricVersion"
 }
 
 task deploy(dependsOn: build) << {
