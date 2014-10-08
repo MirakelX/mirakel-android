@@ -9,7 +9,7 @@ buildscript {
         }
         classpath 'com.android.tools.build:gradle:0.13.0'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
-        classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
+        classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
     }
 }
 dependencies {
@@ -94,6 +94,7 @@ configure(allprojects) {
     ext.guavaVersion = "17.0"
     ext.butterknifeVersion = "5.1.1"
     ext.dashclockVersion = "2.0.0"
+    ext.robolectricVersion= "2.3"
 }
 
 allprojects {
@@ -107,3 +108,5 @@ allprojects {
     }
 
 }
+
+
