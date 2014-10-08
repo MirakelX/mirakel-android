@@ -88,7 +88,7 @@ with open(filename) as f:
             vars["SETTERS"].append({
                 "name": name,
                 "params":params,
-                "type": ptype["type"].replace("@Nullable","").replace("@NonNull",""),
+                "type": ptype,
                 "setterFunction":randomFunction("set"+name,params),
                 "randomFunction": getRandom(params[0]),
                 "getterFunction": getterFunction

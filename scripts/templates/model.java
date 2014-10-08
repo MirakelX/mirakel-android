@@ -20,6 +20,13 @@
 package $FULLPACKAGE;
 
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
+
 import java.util.List;
 import java.util.Random;
 
@@ -29,23 +36,28 @@ import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 
-import android.test.suitebuilder.annotation.MediumTest;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
-public class ${TESTCLASS}Test extends MirakelTestCase {
+@Config(emulateSdk = 18)
+@RunWith(RobolectricTestRunner.class)
+public class ${TESTCLASS}Test {
     private static SQLiteDatabase database;
 
-    @Override
+    @Before
     protected void setUp() throws Exception{
-        super.setUp();
-        database = DatabaseHelper.getDatabaseHelper(getContext()).getWritableDatabase();
-        RandomHelper.init(getContext());
+    	TestHelper.init(Robolectric.application);
+        database = DatabaseHelper.getDatabaseHelper(Robolectric.application).getWritableDatabase();
+        RandomHelper.init(Robolectric.application);
         // Create at least one item to have something to test with
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
         ${CREATEFUNCTION.function};
@@ -59,7 +71,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     }
 
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
-    @MediumTest
+    @Test
     public void testNewCount${CREATEFUNCTION.name}${foreach.count}() {
         final int countBefore = countElems();
 #if($CREATEFUNCTION.throw)
@@ -76,7 +88,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
                      countBefore + 1, countAfter);
     }
 
-    @MediumTest
+    @Test
     public void testNewInserted${CREATEFUNCTION.name}${foreach.count}() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
 #if($CREATEFUNCTION.throw)
@@ -94,7 +106,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
 #end
     }
 
-    @MediumTest
+    @Test
     public void testNewEquals${CREATEFUNCTION.name}${foreach.count}() {
 #if($CREATEFUNCTION.throw)
         try {
@@ -124,7 +136,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     }
 
 #foreach($UPDATEFUNCTION in $UPDATEFUNCTIONS)
-    @MediumTest
+    @Test
     public void test${UPDATEFUNCTION.name}${foreach.count}() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
         final int randomItem = new Random().nextInt(elems.size());
@@ -144,7 +156,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     }
 #end
 
-    @MediumTest
+    @Test
     public void testDestroy() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
         final int randomItem = new Random().nextInt(elems.size());

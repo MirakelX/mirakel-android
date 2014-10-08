@@ -7,7 +7,7 @@ if len(sys.argv) != 3:
     print(sys.argv[0]+" <taskList.json> <pathToTestDir>")
     sys.exit()
 
-path="de/azapps/mirakel/templates/task"
+path="de/azapps/mirakel/model/task/"
 filename="TaskDeserializerTest.java"
 
 vars = {}

@@ -19,6 +19,12 @@
 
 package $FULLPACKAGE;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.List;
 import java.util.Random;
@@ -45,22 +51,26 @@ import static de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import static de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
 import static de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
+import static org.junit.Assert.assertEquals;
 
-public class ${TESTCLASS}Test extends MirakelTestCase {
 
-    @Override
+@Config(emulateSdk = 18)
+@RunWith(RobolectricTestRunner.class)
+public class ${TESTCLASS}Test{
+    
+    @Before
     protected void setUp() throws Exception {
-        super.setUp();
-        RandomHelper.init(getContext());
+        TestHelper.init(Robolectric.application);
+        RandomHelper.init(Robolectric.application);
     }
 
 #foreach($SETTER in $SETTERS)
     // Test for getting and setting ${SETTER.name}
-    @SmallTest
+    @Test
     public void test${SETTER.name}${foreach.count}() {
     final List<${MODELNAME}> all= ${MODELNAME}.all();
     final ${MODELNAME} obj = RandomHelper.getRandomElem(all);
-    final ${SETTER.type} t = ${SETTER.randomFunction};
+    final ${SETTER.type.type} t = ${SETTER.randomFunction};
     obj.set${SETTER.name}(t);
     assertEquals("Getting and setting ${SETTER.name} does not match",t,obj.${SETTER.getterFunction});
     }

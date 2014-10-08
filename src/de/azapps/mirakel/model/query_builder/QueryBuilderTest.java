@@ -18,15 +18,19 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.query_builder;
 
-import android.database.Cursor;
-import android.test.suitebuilder.annotation.MediumTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
-import com.google.common.base.Optional;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 import java.util.List;
 
+import android.database.Cursor;
+import android.test.suitebuilder.annotation.MediumTest;
+import android.test.suitebuilder.annotation.SmallTest;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -35,27 +39,32 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 public class QueryBuilderTest extends MirakelTestCase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        RandomHelper.init(getContext());
-    }
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
-    @SmallTest
+@Config(emulateSdk = 18)
+@RunWith(RobolectricTestRunner.class)
+public class QueryBuilderTest {
+
+    @Test
     public void testBasicQuery() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         assertEquals("", qb.getSelection());
     }
 
-    @SmallTest
+    @Test
     public void testSingleAndArgument() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.EQ, 1);
         assertEquals(ModelBase.ID + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -63,9 +72,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testSingleOrArgument() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.or(ModelBase.ID, Operation.EQ, 1);
         assertEquals(ModelBase.ID + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -73,45 +82,45 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testEqual() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkOperation(qb, Operation.EQ, "=");
     }
 
-    @SmallTest
+    @Test
     public void testGreaterEqual() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkOperation(qb, Operation.GE, ">=");
     }
 
-    @SmallTest
+    @Test
     public void testLesserEqual() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkOperation(qb, Operation.LE, "<=");
     }
 
-    @SmallTest
+    @Test
     public void testGreater() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkOperation(qb, Operation.GT, ">");
     }
 
-    @SmallTest
+    @Test
     public void testLesser() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkOperation(qb, Operation.LT, "<");
     }
 
-    @SmallTest
+    @Test
     public void testLike() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkOperation(qb, Operation.LIKE, "LIKE");
     }
 
-    @SmallTest
+    @Test
     public void testIn() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.IN, 1);
         assertEquals(ModelBase.ID + " IN(?)", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -128,45 +137,45 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testNotEqual() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkNotOperation(qb, Operation.NOT_EQ, "=");
     }
 
-    @SmallTest
+    @Test
     public void testNotGreaterEqual() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkNotOperation(qb, Operation.NOT_GE, ">=");
     }
 
-    @SmallTest
+    @Test
     public void testNotLesserEqual() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkNotOperation(qb, Operation.NOT_LE, "<=");
     }
 
-    @SmallTest
+    @Test
     public void testNotGreater() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkNotOperation(qb, Operation.NOT_GT, ">");
     }
 
-    @SmallTest
+    @Test
     public void testNotLesser() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkNotOperation(qb, Operation.NOT_LT, "<");
     }
 
-    @SmallTest
+    @Test
     public void testNotLike() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         checkNotOperation(qb, Operation.NOT_LIKE, "LIKE");
     }
 
-    @SmallTest
+    @Test
     public void testNotIn() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.NOT_IN, 1);
         assertEquals("NOT " + ModelBase.ID + " IN(?)", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -183,9 +192,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testTwoAndConditions() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.EQ, 1).and(ModelBase.NAME, Operation.EQ,
                 "foo");
         assertEquals(ModelBase.ID + " = ? AND " + ModelBase.NAME + " = ?",
@@ -196,9 +205,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("foo", args.get(1));
     }
 
-    @SmallTest
+    @Test
     public void testTwoOrConditions() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.EQ, 1).or(ModelBase.NAME, Operation.EQ,
                 "foo");
         assertEquals(ModelBase.ID + " = ? OR " + ModelBase.NAME + " = ?",
@@ -209,13 +218,13 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("foo", args.get(1));
     }
 
-    @SmallTest
+    @Test
     public void testAndSubcondition() {
         final MirakelQueryBuilder qbInner = new MirakelQueryBuilder(
-            getContext());
+            Robolectric.application);
         qbInner.and(ModelBase.ID, Operation.EQ, 1).or(ModelBase.NAME,
                 Operation.EQ, "foo");
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(Task.DONE, Operation.EQ, false).and(qbInner);
         assertEquals(Task.DONE + " = ? AND (" + ModelBase.ID + " = ? OR "
                      + ModelBase.NAME + " = ?)", qb.getSelection());
@@ -226,13 +235,13 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("foo", args.get(2));
     }
 
-    @SmallTest
+    @Test
     public void testOrSubcondition() {
         final MirakelQueryBuilder qbInner = new MirakelQueryBuilder(
-            getContext());
+            Robolectric.application);
         qbInner.and(ModelBase.ID, Operation.EQ, 1).or(ModelBase.NAME,
                 Operation.EQ, "foo");
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.or(Task.DONE, Operation.EQ, false).or(qbInner);
         assertEquals(Task.DONE + " = ? OR (" + ModelBase.ID + " = ? OR "
                      + ModelBase.NAME + " = ?)", qb.getSelection());
@@ -243,11 +252,11 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("foo", args.get(2));
     }
 
-    @SmallTest
+    @Test
     public void testSubquery() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         final MirakelQueryBuilder qbInner = new MirakelQueryBuilder(
-            getContext()).select(ModelBase.ID);
+            Robolectric.application).select(ModelBase.ID);
         qb.and(ModelBase.ID, Operation.IN, qbInner, Task.URI);
         assertEquals(ModelBase.ID + " IN (SELECT " + ModelBase.ID + " FROM "
                      + Task.TABLE + ")", qb.getSelection());
@@ -255,9 +264,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals(0, args.size());
     }
 
-    @SmallTest
+    @Test
     public void testBooleanFilterTrue() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(Task.DONE, Operation.EQ, true);
         assertEquals(Task.DONE + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -265,9 +274,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testBooleanFilterFalse() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(Task.DONE, Operation.EQ, false);
         assertEquals(Task.DONE + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -275,9 +284,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("0", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testIntFilter() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.EQ, 1);
         assertEquals(ModelBase.ID + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -285,9 +294,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testDoubleFilter() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(Task.PROGRESS, Operation.EQ, 1.0);
         assertEquals(Task.PROGRESS + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -295,9 +304,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("1.0", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testStringFilter() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.NAME, Operation.EQ, "foo");
         assertEquals(ModelBase.NAME + " = ?", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -305,9 +314,9 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals("foo", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testModelBaseFilter() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         final Task t = RandomHelper.getRandomTask();
         qb.and(ModelBase.ID, Operation.EQ, t);
         assertEquals(ModelBase.ID + " = ?", qb.getSelection());
@@ -316,11 +325,11 @@ public class QueryBuilderTest extends MirakelTestCase {
         assertEquals(t.getId() + "", args.get(0));
     }
 
-    @SmallTest
+    @Test
     public void testListIntegerFilter() {
         final List<Integer> filter = Arrays
                                      .asList(new Integer[] { 1, 2, 3, 42 });
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.ID, Operation.IN, filter);
         assertEquals(ModelBase.ID + " IN(?,?,?,?)", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -330,12 +339,12 @@ public class QueryBuilderTest extends MirakelTestCase {
         }
     }
 
-    @SmallTest
+    @Test
     public void testListStringFilter() {
         final List<String> filter = Arrays.asList(new String[] { "foo", "bar",
                                     "don't do this"
                                                                });
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         qb.and(ModelBase.NAME, Operation.IN, filter);
         assertEquals(ModelBase.NAME + " IN(?,?,?)", qb.getSelection());
         final List<String> args = qb.getSelectionArguments();
@@ -346,89 +355,82 @@ public class QueryBuilderTest extends MirakelTestCase {
     }
 
     //test get
-    @MediumTest
+    @Test
     public void testGetTask() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<Task> res_qb = qb.get(Task.class);
-        Cursor c = getContext().getContentResolver().query(Task.URI, Task.allColumns, null,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        Task res_qb = qb.get(Task.class);
+        Cursor c = Robolectric.application.getContentResolver().query(Task.URI, Task.allColumns, null,
                    null, null);
         c.moveToFirst();
         Task res_raw = new Task(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
-    @MediumTest
+    @Test
     public void testGetAccount() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<AccountMirakel> res_qb = qb.get(AccountMirakel.class);
-        Cursor c = getContext().getContentResolver().query(
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        AccountMirakel res_qb = qb.get(AccountMirakel.class);
+        Cursor c = Robolectric.application.getContentResolver().query(
                        AccountMirakel.URI, AccountMirakel.allColumns, null, null, null);
         c.moveToFirst();
         AccountMirakel res_raw = new AccountMirakel(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
-    @MediumTest
+    @Test
     public void testGetFile() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<FileMirakel> res_qb = qb.get(FileMirakel.class);
-        Cursor c = getContext().getContentResolver().query(FileMirakel.URI,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        FileMirakel res_qb = qb.get(FileMirakel.class);
+        Cursor c = Robolectric.application.getContentResolver().query(FileMirakel.URI,
                    FileMirakel.allColumns, null, null, null);
         c.moveToFirst();
         FileMirakel res_raw = new FileMirakel(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
-    @MediumTest
+    @Test
     public void testGetRecurring() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<Recurring> res_qb = qb.get(Recurring.class);
-        Cursor c = getContext().getContentResolver().query(Recurring.URI,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        Recurring res_qb = qb.get(Recurring.class);
+        Cursor c = Robolectric.application.getContentResolver().query(Recurring.URI,
                    Recurring.allColumns, null, null, null);
         c.moveToFirst();
         Recurring res_raw = new Recurring(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
-    @MediumTest
+    @Test
     public void testGetSemantic() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<Semantic> res_qb = qb.get(Semantic.class);
-        Cursor c = getContext().getContentResolver().query(Semantic.URI,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        Semantic res_qb = qb.get(Semantic.class);
+        Cursor c = Robolectric.application.getContentResolver().query(Semantic.URI,
                    Semantic.allColumns, null, null, null);
         c.moveToFirst();
         Semantic res_raw = new Semantic(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
-    @MediumTest
+    @Test
     public void testGetList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<ListMirakel> res_qb = qb.get(ListMirakel.class);
-        Cursor c = getContext().getContentResolver().query(ListMirakel.URI,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        ListMirakel res_qb = qb.get(ListMirakel.class);
+        Cursor c = Robolectric.application.getContentResolver().query(ListMirakel.URI,
                    ListMirakel.allColumns, null, null, null);
         c.moveToFirst();
         ListMirakel res_raw = new ListMirakel(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
-    @MediumTest
+    @Test
     public void testGetMetaList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Optional<SpecialList> res_qb = qb.get(SpecialList.class);
-        Cursor c = getContext().getContentResolver().query(SpecialList.URI,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
+        SpecialList res_qb = qb.get(SpecialList.class);
+        Cursor c = Robolectric.application.getContentResolver().query(SpecialList.URI,
                    SpecialList.allColumns, null, null, null);
         c.moveToFirst();
         SpecialList res_raw = new SpecialList(c);
         c.close();
-        assertTrue(res_qb.isPresent());
-        assertEquals(res_raw, res_qb.get());
+        assertEquals(res_raw, res_qb);
     }
 
     //test getList
@@ -438,62 +440,62 @@ public class QueryBuilderTest extends MirakelTestCase {
             assertEquals(res_raw.get(i), res_qb.get(i));
         }
     }
-    @MediumTest
+    @Test
     public void testGetTaskList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(Task.class);
-        List res_raw = Task.cursorToTaskList(getContext().getContentResolver().query(Task.URI,
+        List res_raw = Task.cursorToTaskList(Robolectric.application.getContentResolver().query(Task.URI,
                                              Task.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
 
 
 
-    @MediumTest
+    @Test
     public void testGetAccountList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(AccountMirakel.class);
-        List res_raw = AccountMirakel.cursorToAccountList(getContext().getContentResolver().query(
+        List res_raw = AccountMirakel.cursorToAccountList(Robolectric.application.getContentResolver().query(
                            AccountMirakel.URI, AccountMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
-    @MediumTest
+    @Test
     public void testGetFileList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(FileMirakel.class);
-        List res_raw = FileMirakel.cursorToFileList(getContext().getContentResolver().query(FileMirakel.URI,
+        List res_raw = FileMirakel.cursorToFileList(Robolectric.application.getContentResolver().query(FileMirakel.URI,
                        FileMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
-    @MediumTest
+    @Test
     public void testGetRecurringList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(Recurring.class);
-        List res_raw = Recurring.cursorToList(getContext().getContentResolver().query(
+        List res_raw = Recurring.cursorToRecurringList(Robolectric.application.getContentResolver().query(
                            Recurring.URI, Recurring.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
-    @MediumTest
+    @Test
     public void testGetSemanticList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(Semantic.class);
-        List res_raw = Semantic.cursorToSemanticList(getContext().getContentResolver().query(Semantic.URI,
+        List res_raw = Semantic.cursorToSemanticList(Robolectric.application.getContentResolver().query(Semantic.URI,
                        Semantic.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
-    @MediumTest
+    @Test
     public void testGetListList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(ListMirakel.class);
-        List res_raw = ListMirakel.cursorToList(getContext().getContentResolver().query(ListMirakel.URI,
+        List res_raw = ListMirakel.cursorToList(Robolectric.application.getContentResolver().query(ListMirakel.URI,
                                                 ListMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
-    @MediumTest
+    @Test
     public void testGetMetaListList() {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(SpecialList.class);
-        List res_raw = SpecialList.cursorToSpecialLists(getContext().getContentResolver().query(
+        List res_raw = SpecialList.cursorToSpecialLists(Robolectric.application.getContentResolver().query(
                            SpecialList.URI, SpecialList.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }

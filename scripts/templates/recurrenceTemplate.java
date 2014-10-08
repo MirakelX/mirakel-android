@@ -16,14 +16,18 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.sync.taskwarrior.model.test;
+package de.azapps.mirakel.model.task;
 
-import android.test.suitebuilder.annotation.SmallTest;
+
 
 import com.google.common.base.Optional;
 import com.google.gson.JsonObject;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Calendar;
 
@@ -31,7 +35,13 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 
-public class RecurrenceTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+@Config(emulateSdk = 18)
+@RunWith(RobolectricTestRunner.class)
+public class RecurrenceTest {
 
     private void performBackCheck(String rec,Recurring r) {
         final JsonObject e=new JsonObject();
@@ -53,7 +63,7 @@ public class RecurrenceTest extends TestCase {
     }
 
 	#foreach ($F in $FUNCTIONS)
-	@SmallTest
+	@Test
 	public void test_${F.get('name')}() {
 		final String rec = "${F.get('name')}";
         final Recurring r = parseRecurring(rec);
@@ -64,7 +74,7 @@ public class RecurrenceTest extends TestCase {
 	}
 	#end
 	
-	@SmallTest
+	@Test
 	public void test_weekdays() {
 		final String rec = "weekdays";
 		final Recurring r = parseRecurring(rec);
