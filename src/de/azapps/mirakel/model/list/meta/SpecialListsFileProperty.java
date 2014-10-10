@@ -49,21 +49,24 @@ public class SpecialListsFileProperty extends SpecialListsBooleanProperty {
         return FileMirakel.TABLE;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder.Operation op = isSet ? Operation.IN :
                 Operation.NOT_IN;
         return new MirakelQueryBuilder(ctx).and(Task.ID, op,
                                                 new MirakelQueryBuilder(ctx).select(FileMirakel.TASK), FileMirakel.URI);
     }
 
+    @NonNull
     @Override
-    public String getSummary(Context ctx) {
+    public String getSummary(@NonNull Context ctx) {
         return ctx.getString(isSet ? R.string.has_file : R.string.no_file);
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_file_title);
     }
 

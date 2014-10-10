@@ -57,8 +57,9 @@ public class SpecialListsSubtaskProperty extends SpecialListsBooleanProperty {
         return Task.SUBTASK_TABLE;
     }
 
+    @NonNull
     @Override
-    public String getSummary(Context ctx) {
+    public String getSummary(@NonNull Context ctx) {
         if (isParent && isSet) {
             return ctx.getString(R.string.special_list_subtask_parent_not);
         } else if (isParent && !isSet) {
@@ -70,19 +71,22 @@ public class SpecialListsSubtaskProperty extends SpecialListsBooleanProperty {
         }
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_subtask_title);
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.ID,
                                                 isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
                                                 new MirakelQueryBuilder(ctx).distinct().select((isParent ? "parent_id" : "child_id")),
                                                 MirakelInternalContentProvider.SUBTASK_URI);
     }
 
+    @NonNull
     @Override
     public String serialize() {
         String ret = "{\"" + Task.SUBTASK_TABLE + "\":{";

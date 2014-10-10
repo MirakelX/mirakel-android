@@ -82,8 +82,9 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
 
 
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         for (SpecialListsBaseProperty c : childs) {
             if (type == CONJUNCTION.AND) {
@@ -95,6 +96,7 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
         return qb;
     }
 
+    @NonNull
     @Override
     public String serialize() {
         if (childs.size() > 1) {
@@ -113,8 +115,9 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
         }
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context ctx) {
+    public String getSummary(@NonNull final Context ctx) {
         return TextUtils.join(" " + getTitle(ctx) + " ", Collections2.transform(childs,
         new Function<SpecialListsBaseProperty, String>() {
             @Override
@@ -128,8 +131,9 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
 
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) throws NoSuchElementException {
+    public String getTitle(@NonNull Context ctx) throws NoSuchElementException {
         switch (type) {
         case AND:
             return ctx.getString(R.string.and);

@@ -49,9 +49,6 @@ public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
         super(negated);
         this.length = length;
         this.unit = unit;
-        if (this.unit == null) {
-            this.unit = Unit.DAY;
-        }
     }
 
     public SpecialListsDueProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
@@ -74,8 +71,8 @@ public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
 
     private SpecialListsDueProperty(final @NonNull Parcel in) {
         super(in);
-        int tmpUnit = in.readInt();
-        this.unit = tmpUnit == -1 ? null : Unit.values()[tmpUnit];
+        final int tmpUnit = in.readInt();
+        this.unit = Unit.values()[tmpUnit];
         this.length = in.readInt();
     }
 
@@ -96,11 +93,12 @@ public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
         this.unit = u;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
                 MirakelQueryBuilder.Operation.NOT_EQ, (String)null);
-        Calendar date = new GregorianCalendar();
+        final Calendar date = new GregorianCalendar();
         date.setTimeZone(TimeZone.getTimeZone(TimeZone.getAvailableIDs(0)[0]));
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MINUTE, 0);
@@ -116,14 +114,12 @@ public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
             date.add(Calendar.YEAR, length);
             break;
         }
-        return qb.and(Task.DUE, isSet ? Operation.GT : Operation.LT, date.getTimeInMillis() / 1000);
+        return qb.and(Task.DUE, isSet ? Operation.GT : Operation.LT, date.getTimeInMillis() / 1000L);
     }
 
+    @NonNull
     @Override
     public String serialize() {
-        if (this.unit == null) {
-            Log.wtf(TAG, "unit is null");
-        }
         String ret = "{\"" + Task.DUE + "\":{";
         ret += "\"negated\": " + (isSet ? "true" : "false");
         ret += ",\"unit\":" + this.unit.ordinal();
@@ -131,52 +127,51 @@ public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
         return ret + "} }";
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context mContext) {
+    public String getSummary(@NonNull final Context ctx) {
         String unit = "";
         switch (this.unit) {
         case DAY:
-            unit = mContext.getResources().getQuantityString(R.plurals.day, length);
+            unit = ctx.getResources().getQuantityString(R.plurals.day, length);
             break;
         case MONTH:
-            unit = mContext.getResources().getQuantityString(R.plurals.month, length);
+            unit = ctx.getResources().getQuantityString(R.plurals.month, length);
             break;
         case YEAR:
-            unit = mContext.getResources().getQuantityString(R.plurals.year, length);
+            unit = ctx.getResources().getQuantityString(R.plurals.year, length);
             break;
         }
-        String value = (length > 0 ? "+" : "") + length + " " + unit;
+        final String value = ((length > 0) ? "+" : "") + length + ' ' + unit;
         if (isSet) {
-            return mContext.getString(R.string.special_lists_due_negated, value);
+            return ctx.getString(R.string.special_lists_due_negated, value);
         } else {
-            return mContext.getString(R.string.special_lists_due, value);
+            return ctx.getString(R.string.special_lists_due, value);
         }
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull final Context ctx) {
         return ctx.getString(R.string.special_lists_due_title);
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeInt(this.unit == null ? -1 : this.unit.ordinal());
+        dest.writeInt(this.unit.ordinal());
         dest.writeInt(this.length);
     }
 
     public static final Creator<SpecialListsDueProperty> CREATOR = new
     Creator<SpecialListsDueProperty>() {
-        public SpecialListsDueProperty createFromParcel(Parcel source) {
+        @Override
+        public SpecialListsDueProperty createFromParcel(final Parcel source) {
             return new SpecialListsDueProperty(source);
         }
 
-        public SpecialListsDueProperty[] newArray(int size) {
+        @Override
+        public SpecialListsDueProperty[] newArray(final int size) {
             return new SpecialListsDueProperty[size];
         }
     };

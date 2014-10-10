@@ -46,19 +46,22 @@ public class SpecialListsDueExistsProperty extends SpecialListsBooleanProperty {
         return Task.DUE + "_exists";
     }
 
+    @NonNull
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.DUE, isSet ? Operation.EQ : Operation.NOT_EQ,
                                                 (String)null);
     }
 
+    @NonNull
     @Override
-    public String getSummary(Context ctx) {
+    public String getSummary(@NonNull Context ctx) {
         return isSet ? ctx.getString(R.string.due_dont_exist) : ctx.getString(R.string.due_exists);
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_due_exist_title);
     }
 

@@ -41,13 +41,15 @@ public class SpecialListsDoneProperty extends SpecialListsBooleanProperty {
         super(oldProperty);
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.DONE, MirakelQueryBuilder.Operation.EQ, isSet);
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context mContext) {
+    public String getSummary(@NonNull final Context mContext) {
         return this.isSet ? mContext.getString(R.string.done) : mContext
                .getString(R.string.undone);
     }
@@ -57,8 +59,9 @@ public class SpecialListsDoneProperty extends SpecialListsBooleanProperty {
         return Task.DONE;
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_done_title);
     }
 

@@ -32,7 +32,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 public abstract class SpecialListsSetProperty extends SpecialListsBooleanProperty {
 
     @NonNull
-    protected List<Integer> content = new ArrayList<>();
+    protected List<Integer> content = new ArrayList<>(5);
 
     public SpecialListsSetProperty(final boolean isNegated,
                                    final @NonNull List<Integer> content) {
@@ -41,24 +41,26 @@ public abstract class SpecialListsSetProperty extends SpecialListsBooleanPropert
     }
 
 
-    protected SpecialListsSetProperty(Parcel in) {
+    protected SpecialListsSetProperty(final Parcel in) {
         super(in);
-        this.content = new ArrayList<>();
+        this.content = new ArrayList<>(5);
         in.readList(this.content, Integer.class.getClassLoader());
     }
 
-    protected SpecialListsSetProperty(SpecialListsBaseProperty oldProperty) {
+    protected SpecialListsSetProperty(final SpecialListsBaseProperty oldProperty) {
         super(oldProperty);
         //converting between different setproperties like list or tag is evil
     }
 
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(getPropertyName(),
                                                 isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN, content);
     }
 
+    @NonNull
     @Override
     public String serialize() {
         String ret = "{\"" + getPropertyName() + "\":{";
@@ -79,7 +81,7 @@ public abstract class SpecialListsSetProperty extends SpecialListsBooleanPropert
 
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeByte(isSet ? (byte) 1 : (byte) 0);
         dest.writeList(this.content);
     }

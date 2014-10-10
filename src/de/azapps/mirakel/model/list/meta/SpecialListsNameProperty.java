@@ -52,8 +52,9 @@ public class SpecialListsNameProperty extends SpecialListsStringProperty {
         return ModelBase.NAME;
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_name_title);
     }
 

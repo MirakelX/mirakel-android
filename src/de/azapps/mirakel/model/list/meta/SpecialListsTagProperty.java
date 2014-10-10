@@ -64,16 +64,18 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
         return Tag.TABLE;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.ID,
                                                 isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
                                                 new MirakelQueryBuilder(ctx).distinct().select("task_id").and("tag_id",
                                                         MirakelQueryBuilder.Operation.IN, content), MirakelInternalContentProvider.TAG_CONNECTION_URI);
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context ctx) {
+    public String getSummary(@NonNull final Context ctx) {
         List<Tag> tags = new MirakelQueryBuilder(ctx).and(ModelBase.ID, MirakelQueryBuilder.Operation.IN,
                 content).getList(Tag.class);
         return (this.isSet ? ctx.getString(R.string.not_in) : "") + TextUtils.join(", ",
@@ -85,8 +87,9 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
         }));
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_tag_title);
     }
 

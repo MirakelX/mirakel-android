@@ -56,8 +56,9 @@ public class SpecialListsListNameProperty extends SpecialListsStringProperty {
         return ListMirakel.TABLE + "." + ListMirakel.NAME;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull Context ctx) {
         MirakelQueryBuilder qb = super.getWhereQueryBuilder(ctx).select(ListMirakel.ID);
         return new MirakelQueryBuilder(ctx).and(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, qb,
                                                 ListMirakel.URI);

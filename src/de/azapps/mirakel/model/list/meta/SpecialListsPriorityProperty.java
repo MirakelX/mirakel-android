@@ -55,14 +55,16 @@ public class SpecialListsPriorityProperty extends SpecialListsSetProperty {
         return Task.PRIORITY;
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context mContext) {
+    public String getSummary(@NonNull final Context mContext) {
         return (this.isSet ? mContext.getString(R.string.not_in)
                 : "") + " " + TextUtils.join(", ", content);
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_priority_title);
     }
 

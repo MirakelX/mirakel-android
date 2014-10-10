@@ -39,11 +39,8 @@ public abstract class SpecialListsBooleanProperty extends
     }
 
     protected SpecialListsBooleanProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
-        if (oldProperty instanceof SpecialListsBooleanProperty) {
-            isSet = ((SpecialListsBooleanProperty) oldProperty).isSet();
-        } else {
-            isSet = false;
-        }
+        isSet = oldProperty instanceof SpecialListsBooleanProperty &&
+                ((SpecialListsBooleanProperty) oldProperty).isSet;
     }
 
     public boolean isSet() {
@@ -54,6 +51,7 @@ public abstract class SpecialListsBooleanProperty extends
         this.isSet = isNegated;
     }
 
+    @NonNull
     @Override
     public String serialize() {
         String ret = "{\"" + getPropertyName() + "\":{";
@@ -67,7 +65,7 @@ public abstract class SpecialListsBooleanProperty extends
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeByte(isSet ? (byte) 1 : (byte) 0);
     }
 

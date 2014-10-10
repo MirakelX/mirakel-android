@@ -49,8 +49,9 @@ public class SpecialListsContentProperty extends SpecialListsStringProperty {
         return Task.CONTENT;
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_content_title);
     }
 

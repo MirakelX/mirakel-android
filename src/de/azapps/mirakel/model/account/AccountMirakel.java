@@ -113,7 +113,7 @@ public class AccountMirakel extends AccountBase {
             case TASKWARRIOR:
                 return ctx.getString(R.string.tw_account);
             default:
-                return "Unkown account type";
+                return "Unknown account type";
             }
         }
     }
@@ -136,12 +136,13 @@ public class AccountMirakel extends AccountBase {
 
     private static final String TAG = "Account";
 
+    @Override
     protected Uri getUri() {
         return URI;
     }
 
     public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
-        List<AccountMirakel> l = new ArrayList<>();
+        final List<AccountMirakel> l = new ArrayList<>(c.getCount());
         if (c.moveToFirst()) {
             do {
                 l.add(new AccountMirakel(c));
@@ -182,7 +183,7 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static AccountMirakel getLocal() {
-        AccountMirakel a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
+        final AccountMirakel a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
                 ACCOUNT_TYPES.LOCAL.toInt()).and(ENABLED, Operation.EQ,
                         true).get(AccountMirakel.class);
         if (a != null) {

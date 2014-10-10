@@ -56,7 +56,7 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         if (oldProperty instanceof SpecialListsListProperty) {
             content = ((SpecialListsListProperty) oldProperty).getContent();
         } else {
-            content = new ArrayList<>();
+            content = new ArrayList<>(5);
         }
     }
 
@@ -65,11 +65,12 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         return Task.LIST_ID;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
-        final List<Integer> special = new ArrayList<>();
-        final List<Integer> normal = new ArrayList<>();
+        final List<Integer> special = new ArrayList<>(content.size() / 2);
+        final List<Integer> normal = new ArrayList<>(content.size() / 2);
         for (final int c : this.content) {
             if (c > 0) {
                 normal.add(c);
@@ -80,13 +81,10 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         qb.and(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, normal);
         // TODO handle loops here
         for (final int p : special) {
-            final Optional<SpecialList> s = SpecialList.getSpecial(p);
-            OptionalUtils.withOptional(s, new OptionalUtils.Procedure<SpecialList>() {
+            OptionalUtils.withOptional(SpecialList.getSpecial(p), new OptionalUtils.Procedure<SpecialList>() {
                 @Override
-                public void apply(SpecialList input) {
-                    if (input.getWhereQueryForTasks() != null) {
-                        qb.or(input.getWhereQueryForTasks());
-                    }
+                public void apply(final SpecialList input) {
+                    qb.or(input.getWhereQueryForTasks());
                 }
             });
         }
@@ -97,9 +95,10 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         }
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context ctx) {
-        List <ListMirakel> lists = new MirakelQueryBuilder(ctx).and(ModelBase.ID,
+    public String getSummary(@NonNull final Context ctx) {
+        final List <ListMirakel> lists = new MirakelQueryBuilder(ctx).and(ModelBase.ID,
                 MirakelQueryBuilder.Operation.IN, content).getList(ListMirakel.class);
         lists.addAll(new MirakelQueryBuilder(ctx).and(ModelBase.ID,
                      MirakelQueryBuilder.Operation.IN,
@@ -124,8 +123,9 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         }));
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull final Context ctx) {
         return ctx.getString(R.string.special_lists_list_title);
     }
 
@@ -133,11 +133,13 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
 
     public static final Creator<SpecialListsListProperty> CREATOR = new
     Creator<SpecialListsListProperty>() {
-        public SpecialListsListProperty createFromParcel(Parcel source) {
+        @Override
+        public SpecialListsListProperty createFromParcel(final Parcel source) {
             return new SpecialListsListProperty(source);
         }
 
-        public SpecialListsListProperty[] newArray(int size) {
+        @Override
+        public SpecialListsListProperty[] newArray(final int size) {
             return new SpecialListsListProperty[size];
         }
     };

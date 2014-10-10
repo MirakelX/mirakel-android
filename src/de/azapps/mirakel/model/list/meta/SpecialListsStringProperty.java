@@ -87,8 +87,9 @@ public abstract class SpecialListsStringProperty extends
     }
 
 
+    @NonNull
     @Override
-    public String getSummary(final Context mContext) {
+    public String getSummary(@NonNull final Context mContext) {
         switch (this.type) {
         case END:
             return mContext.getString(R.string.where_like_end_text,
@@ -104,8 +105,9 @@ public abstract class SpecialListsStringProperty extends
         }
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         MirakelQueryBuilder.Operation op = isSet ? Operation.NOT_LIKE :
                                            Operation.LIKE;
@@ -124,6 +126,7 @@ public abstract class SpecialListsStringProperty extends
         }
     }
 
+    @NonNull
     @Override
     public String serialize() {
         String ret = "{\"" + getPropertyName() + "\":{";

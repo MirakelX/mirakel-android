@@ -48,12 +48,14 @@ public class SpecialListsReminderProperty extends SpecialListsBooleanProperty {
         return Task.REMINDER;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.REMINDER,
                                                 isSet ? MirakelQueryBuilder.Operation.NOT_EQ : MirakelQueryBuilder.Operation.EQ, (String)null);
     }
 
+    @NonNull
     @Override
     public String serialize() {
         String ret = "{\"" + Task.REMINDER + "\":{";
@@ -61,14 +63,16 @@ public class SpecialListsReminderProperty extends SpecialListsBooleanProperty {
         return ret + "} }";
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context mContext) {
+    public String getSummary(@NonNull final Context mContext) {
         return this.isSet ? mContext.getString(R.string.reminder_set)
                : mContext.getString(R.string.reminder_unset);
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull Context ctx) {
         return ctx.getString(R.string.special_lists_reminder_title);
     }
 

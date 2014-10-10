@@ -31,7 +31,7 @@ import de.azapps.mirakel.model.task.Task;
 public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
 
     public enum OPERATION {
-        GREATER_THAN, EQUAL, LESS_THAN;
+        GREATER_THAN, EQUAL, LESS_THAN
     }
 
     private int value;
@@ -45,8 +45,8 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
 
     private SpecialListsProgressProperty(final @NonNull Parcel in) {
         this.value = in.readInt();
-        int tmpOp = in.readInt();
-        this.op = tmpOp == -1 ? null : OPERATION.values()[tmpOp];
+        final int tmpOp = in.readInt();
+        this.op = OPERATION.values()[tmpOp];
     }
 
     public SpecialListsProgressProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
@@ -59,8 +59,9 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         }
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQueryBuilder(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         switch (op) {
         case EQUAL:
@@ -73,6 +74,7 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return qb;
     }
 
+    @NonNull
     @Override
     public String serialize() {
         String ret = "{\"" + Task.PROGRESS + "\":{";
@@ -81,8 +83,9 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return ret + "} }";
     }
 
+    @NonNull
     @Override
-    public String getSummary(Context ctx) {
+    public String getSummary(@NonNull final Context ctx) {
         switch (op) {
         case EQUAL:
             return ctx.getString(R.string.special_list_progress_equal, value);
@@ -96,8 +99,9 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return "";
     }
 
+    @NonNull
     @Override
-    public String getTitle(Context ctx) {
+    public String getTitle(@NonNull final Context ctx) {
         return ctx.getString(R.string.special_lists_progress_title);
     }
 
@@ -110,7 +114,7 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 
@@ -124,19 +128,21 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(this.value);
-        dest.writeInt(this.op == null ? -1 : this.op.ordinal());
+        dest.writeInt(this.op.ordinal());
     }
 
 
     public static final Creator<SpecialListsProgressProperty> CREATOR = new
     Creator<SpecialListsProgressProperty>() {
-        public SpecialListsProgressProperty createFromParcel(Parcel source) {
+        @Override
+        public SpecialListsProgressProperty createFromParcel(final Parcel source) {
             return new SpecialListsProgressProperty(source);
         }
 
-        public SpecialListsProgressProperty[] newArray(int size) {
+        @Override
+        public SpecialListsProgressProperty[] newArray(final int size) {
             return new SpecialListsProgressProperty[size];
         }
     };
