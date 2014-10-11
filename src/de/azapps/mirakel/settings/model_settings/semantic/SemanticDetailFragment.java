@@ -50,11 +50,12 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
     @NonNull
     @Override
     protected Semantic getDummyItem() {
-        Semantic s = Semantic.first();
-        if (s == null) {
-            s = Semantic.newSemantic("", null, null, Optional.<ListMirakel>absent(), null);
+        Optional<Semantic> s = Semantic.first();
+        if (!s.isPresent()) {
+            return Semantic.newSemantic("", null, null, Optional.<ListMirakel>absent(), null);
+        } else {
+            return s.get();
         }
-        return s;
     }
 
     @Override

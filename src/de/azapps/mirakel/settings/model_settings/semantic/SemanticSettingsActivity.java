@@ -44,11 +44,12 @@ public class SemanticSettingsActivity extends GenericModelListActivity<Semantic>
     @NonNull
     @Override
     protected Semantic getDefaultItem() {
-        Semantic s = Semantic.first();
-        if (s == null) {
-            s = Semantic.newSemantic("", null, null, Optional.<ListMirakel>absent(), null);
+        Optional<Semantic> semanticOptional = Semantic.first();
+        if (!semanticOptional.isPresent()) {
+            return Semantic.newSemantic("", null, null, Optional.<ListMirakel>absent(), null);
+        } else {
+            return semanticOptional.get();
         }
-        return s;
     }
 
     @NonNull
