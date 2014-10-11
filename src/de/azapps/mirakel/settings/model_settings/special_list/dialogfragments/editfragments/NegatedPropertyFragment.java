@@ -27,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDueExistsProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
@@ -53,6 +54,8 @@ public class NegatedPropertyFragment extends BasePropertyFragement<SpecialListsB
             negated.setText(R.string.reminder_text);
         } else if (property instanceof SpecialListsFileProperty) {
             negated.setText(R.string.file_text);
+        } else if (property instanceof SpecialListsDueExistsProperty) {
+            negated.setText(R.string.due_exist_text);
         } else {
             negated.setText("Someone implement something wrong????");
         }

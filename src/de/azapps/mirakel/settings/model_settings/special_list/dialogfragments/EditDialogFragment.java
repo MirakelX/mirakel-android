@@ -49,6 +49,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList;
 import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList.CONJUNCTION;
 import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsDueExistsProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListNameProperty;
@@ -95,17 +96,18 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
 
     public static final int DONE = 0;
     public static final int CONTENT = 1;
-    public static final int DUE = 2;
-    public static final int FILE = 3;
-    public static final int LISTS = 4;
-    public static final int LIST_NAME = 5;
-    public static final int NAME = 6;
-    public static final int PRIORITY = 7;
-    public static final int PROGRESS = 8;
-    public static final int REMINDER = 9;
-    public static final int TAGS = 10;
-    public static final int SUBTASKS = 11;
-    public static final int SUBCONDITION = 12;
+    public static final int DUE_EXIST = 2;
+    public static final int DUE = 3;
+    public static final int FILE = 4;
+    public static final int LISTS = 5;
+    public static final int LIST_NAME = 6;
+    public static final int NAME = 7;
+    public static final int PRIORITY = 8;
+    public static final int PROGRESS = 9;
+    public static final int REMINDER = 10;
+    public static final int TAGS = 11;
+    public static final int SUBTASKS = 12;
+    public static final int SUBCONDITION = 13;
 
 
     private SpecialList mList;
@@ -178,6 +180,8 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
                 return SUBCONDITION;
             } else if (property instanceof SpecialListsListNameProperty) {
                 return LIST_NAME;
+            } else if (property instanceof SpecialListsDueExistsProperty) {
+                return DUE_EXIST;
             }
 
         }
@@ -261,6 +265,10 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
         case LIST_NAME:
             property = new SpecialListsListNameProperty(property);
             fragment = StringPropertyFragment.newInstance((SpecialListsStringProperty)property);
+            break;
+        case DUE_EXIST:
+            property = new SpecialListsDueExistsProperty(property);
+            fragment = NegatedPropertyFragment.newInstance((SpecialListsDueExistsProperty) property);
             break;
         default:
             Log.wtf(TAG, "unknown type");
