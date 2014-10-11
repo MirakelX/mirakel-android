@@ -27,8 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ import de.azapps.tools.Log;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
-public class SpecialListsWhereDeserializer {
+public final class SpecialListsWhereDeserializer {
 
     private final static Gson gson = new GsonBuilder()
     .registerTypeAdapter(SpecialListsDoneProperty.class,
@@ -100,9 +100,9 @@ public class SpecialListsWhereDeserializer {
             return absent();
         }
         try {
-            JsonElement obj = new JsonParser().parse(whereQuery);
+            final JsonElement obj = new JsonParser().parse(whereQuery);
             return parseSpecialListWhere(obj, 0);
-        } catch (JsonParseException e) {
+        } catch (final JsonSyntaxException e) {
             Log.wtf(TAG, "cannot parse " + whereQuery, e);
             throw new IllegalArgumentException("cannot parse " + whereQuery, e);
         }
@@ -110,20 +110,20 @@ public class SpecialListsWhereDeserializer {
 
     @NonNull
     private static Optional<SpecialListsBaseProperty> parseSpecialListWhere(
-        final @NonNull JsonElement obj, int deep) throws IllegalArgumentException {
+        final @NonNull JsonElement obj, final int deep) throws IllegalArgumentException {
         if (obj.isJsonObject()) {
             return parseSpecialListsCondition(obj);
         } else if (obj.isJsonArray()) {
-            List<SpecialListsBaseProperty> childs = new ArrayList<>();
-            for (JsonElement el : obj.getAsJsonArray()) {
-                Optional<SpecialListsBaseProperty> child = parseSpecialListWhere(el, deep + 1);
+            final List<SpecialListsBaseProperty> childs = new ArrayList<>(obj.getAsJsonArray().size());
+            for (final JsonElement el : obj.getAsJsonArray()) {
+                final Optional<SpecialListsBaseProperty> child = parseSpecialListWhere(el, deep + 1);
                 if (child.isPresent()) {
                     childs.add(child.get());
                 }
             }
-            return of((SpecialListsBaseProperty) new SpecialListsConjunctionList(deep % 2 == 0 ?
-                      SpecialListsConjunctionList.CONJUNCTION.AND
-                      : SpecialListsConjunctionList.CONJUNCTION.OR, childs));
+            return of((SpecialListsBaseProperty) new SpecialListsConjunctionList(((
+                          deep % 2) == 0) ? SpecialListsConjunctionList.CONJUNCTION.AND :
+                      SpecialListsConjunctionList.CONJUNCTION.OR, childs));
         } else {
             throw new IllegalArgumentException("Unknown json type");
         }
@@ -133,8 +133,8 @@ public class SpecialListsWhereDeserializer {
     private static Optional<SpecialListsBaseProperty> parseSpecialListsCondition(
         final @NonNull JsonElement element) {
         final JsonObject obj = element.getAsJsonObject();
-        Class<? extends SpecialListsBaseProperty> className;
-        String key;
+        final Class<? extends SpecialListsBaseProperty> className;
+        final String key;
         if (obj.has(Task.LIST_ID)) {
             key = Task.LIST_ID;
             className = SpecialListsListProperty.class;
@@ -168,8 +168,8 @@ public class SpecialListsWhereDeserializer {
         } else if (obj.has(Tag.TABLE)) {
             key = Tag.TABLE;
             className = SpecialListsTagProperty.class;
-        } else if (obj.has(ListMirakel.TABLE + "." + ListMirakel.NAME)) {
-            key = ListMirakel.TABLE + "." + ListMirakel.NAME;
+        } else if (obj.has(ListMirakel.TABLE + '.' + ListMirakel.NAME)) {
+            key = ListMirakel.TABLE + '.' + ListMirakel.NAME;
             className = SpecialListsListNameProperty.class;
         } else if (obj.has(Task.DUE + "_exists")) {
             key = Task.DUE + "_exists";

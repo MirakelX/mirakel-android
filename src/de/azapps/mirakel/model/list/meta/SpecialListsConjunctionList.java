@@ -44,7 +44,7 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
     @NonNull
     private CONJUNCTION type = CONJUNCTION.AND;
     @NonNull
-    private List<SpecialListsBaseProperty> childs = new ArrayList<>();
+    private List<SpecialListsBaseProperty> childs = new ArrayList<>(3);
 
     public SpecialListsConjunctionList(final @NonNull SpecialListsBaseProperty property,
                                        final @NonNull CONJUNCTION conjunction) {
@@ -53,7 +53,7 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
             childs = ((SpecialListsConjunctionList) property).childs;
         } else {
             type = conjunction;
-            childs = new ArrayList<>();
+            childs = new ArrayList<>(3);
             childs.add(property);
         }
     }
@@ -79,7 +79,13 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
         this.childs = childs;
     }
 
+    public void addChild(final @NonNull SpecialListsBaseProperty child) {
+        this.childs.add(child);
+    }
 
+    public CONJUNCTION getOperation() {
+        return type;
+    }
 
 
     @NonNull
@@ -107,7 +113,7 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
                     return input.serialize();
                 }
             }));
-            return "[" + childList + "]";
+            return '[' + childList + ']';
         } else if (childs.size() == 1) {
             return childs.get(0).serialize() ;
         } else {
@@ -118,12 +124,12 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
     @NonNull
     @Override
     public String getSummary(@NonNull final Context ctx) {
-        return TextUtils.join(" " + getTitle(ctx) + " ", Collections2.transform(childs,
+        return TextUtils.join(' ' + getTitle(ctx) + ' ', Collections2.transform(childs,
         new Function<SpecialListsBaseProperty, String>() {
             @Override
             public String apply(SpecialListsBaseProperty input) {
                 if (input instanceof SpecialListsConjunctionList) {
-                    return "(" + input.getSummary(ctx) + ")";
+                    return '(' + input.getSummary(ctx) + ')';
                 }
                 return input.getSummaryForConjunction(ctx);
             }
@@ -150,16 +156,16 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
-        dest.writeParcelableArray(childs.toArray(new Parcelable[0]), 1);
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeInt(this.type.ordinal());
+        dest.writeParcelableArray(childs.toArray(new Parcelable[childs.size()]), 1);
     }
 
-    private SpecialListsConjunctionList(Parcel in) {
+    private SpecialListsConjunctionList(final Parcel in) {
         this.type = CONJUNCTION.values()[in.readInt()];
-        SpecialListsBaseProperty[] childs = (SpecialListsBaseProperty[])in.readParcelableArray(
-                                                ClassLoader.getSystemClassLoader());
-        this.childs = new ArrayList<>();
+        final SpecialListsBaseProperty[] childs = (SpecialListsBaseProperty[])in.readParcelableArray(
+                    ClassLoader.getSystemClassLoader());
+        this.childs = new ArrayList<>(3);
         for (SpecialListsBaseProperty c : childs) {
             this.childs.add(c);
         }
@@ -167,11 +173,13 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
 
     public static final Creator<SpecialListsConjunctionList> CREATOR = new
     Creator<SpecialListsConjunctionList>() {
-        public SpecialListsConjunctionList createFromParcel(Parcel source) {
+        @Override
+        public SpecialListsConjunctionList createFromParcel(final Parcel source) {
             return new SpecialListsConjunctionList(source);
         }
 
-        public SpecialListsConjunctionList[] newArray(int size) {
+        @Override
+        public SpecialListsConjunctionList[] newArray(final int size) {
             return new SpecialListsConjunctionList[size];
         }
     };
