@@ -135,10 +135,10 @@ public class SettingsActivity extends PreferenceActivity {
         public void restoreFragment(final @NonNull PreferenceActivity settingsActivity) {
             switch (this) {
             case TASKUI:
-                settingsActivity.startPreferenceFragment(new TaskFragmentSettingsFragment(), false);
+                settingsActivity.startPreferenceFragment(new TaskFragmentSettingsFragment(), true);
                 break;
             case CREDITS:
-                settingsActivity.startPreferenceFragment(new CreditsFragment(), false);
+                settingsActivity.startPreferenceFragment(new CreditsFragment(), true);
             case DONATE:
                 DonationsFragment donationsFragment;
                 if (BuildHelper.isForPlayStore()) {
@@ -428,18 +428,18 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
+        if (!onIsMultiPane() || (currentFragment != FRAGMENTS.TASKUI &&
+                                 currentFragment != FRAGMENTS.CREDITS)) {
+            super.onBackPressed();
+        }
         if (currentFragment == FRAGMENTS.TASKUI) {
             FRAGMENTS.UI.restoreFragment(this);
         } else if (currentFragment == FRAGMENTS.CREDITS) {
             FRAGMENTS.ABOUT.restoreFragment(this);
-        } else {
-            super.onBackPressed();
         }
     }
-
 
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
