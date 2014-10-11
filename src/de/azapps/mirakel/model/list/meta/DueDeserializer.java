@@ -39,6 +39,7 @@ public class DueDeserializer implements
         if (json.isJsonObject()) {
             Integer length = 0, unit = 0;// initialize with stuff to mute the
             // compiler
+            boolean negate = false; //set this as default to be backward compatible
             for (final Entry<String, JsonElement> entry : json
                  .getAsJsonObject().entrySet()) {
                 switch (entry.getKey()) {
@@ -53,13 +54,18 @@ public class DueDeserializer implements
                         length = entry.getValue().getAsInt();
                         break;
                     }
+                case "negated":
+                    if (entry.getValue().isJsonPrimitive()) {
+                        negate = entry.getValue().getAsBoolean();
+                        break;
+                    }
                 //$FALL-THROUGH$
                 default:
                     throw new JsonParseException("unknown format");
                 }
             }
             if (unit != null && length != null) {
-                return new SpecialListsDueProperty(Unit.values()[unit], length);
+                return new SpecialListsDueProperty(Unit.values()[unit], length, negate);
             }
         }
         throw new JsonParseException("unknown format");

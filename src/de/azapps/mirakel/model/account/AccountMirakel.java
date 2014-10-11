@@ -120,11 +120,12 @@ public class AccountMirakel extends AccountBase {
 
     public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
     public static final String ACCOUNT_TYPE_DAVDROID_MIRAKEL = "bitfire.at.davdroid.mirakel";
+    public static final String ACCOUNT_TYPE_DMFS = "org.dmfs.caldav.account";
 
     public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";
 
     private static final List<String> allowedAccounts = Arrays.asList(ACCOUNT_TYPE_DAVDROID_MIRAKEL,
-            ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL);
+            ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL, ACCOUNT_TYPE_DMFS);
 
     public static final String[] allColumns = { ModelBase.ID,
                                                 ModelBase.NAME, TYPE, ENABLED, SYNC_KEY

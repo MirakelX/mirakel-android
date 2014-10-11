@@ -27,13 +27,13 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
-public class SpecialListsDueProperty extends SpecialListsBaseProperty {
+public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
 
     public enum Unit {
         DAY, MONTH, YEAR
@@ -45,7 +45,8 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
     protected Unit unit = Unit.DAY;
     protected int length;
 
-    public SpecialListsDueProperty(final @NonNull Unit unit, final int length) {
+    public SpecialListsDueProperty(final @NonNull Unit unit, final int length, final  boolean negated) {
+        super(negated);
         this.length = length;
         this.unit = unit;
         if (this.unit == null) {
@@ -54,6 +55,7 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
     }
 
     public SpecialListsDueProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
         if (oldProperty instanceof SpecialListsDueProperty) {
             length = ((SpecialListsDueProperty) oldProperty).getLength();
             unit = ((SpecialListsDueProperty) oldProperty).getUnit();
@@ -63,7 +65,15 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
         }
     }
 
+    @NonNull
+    @Override
+    protected String getPropertyName() {
+        //not really used
+        return Task.DUE;
+    }
+
     private SpecialListsDueProperty(final @NonNull Parcel in) {
+        super(in);
         int tmpUnit = in.readInt();
         this.unit = tmpUnit == -1 ? null : Unit.values()[tmpUnit];
         this.length = in.readInt();
@@ -106,7 +116,7 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
             date.add(Calendar.YEAR, length);
             break;
         }
-        return qb.and(Task.DUE, MirakelQueryBuilder.Operation.LT, date.getTimeInMillis() / 1000);
+        return qb.and(Task.DUE, isSet ? Operation.GT : Operation.LT, date.getTimeInMillis() / 1000);
     }
 
     @Override
@@ -115,20 +125,32 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
             Log.wtf(TAG, "unit is null");
         }
         String ret = "{\"" + Task.DUE + "\":{";
-        ret += "\"unit\":" + this.unit.ordinal();
+        ret += "\"negated\": " + (isSet ? "true" : "false");
+        ret += ",\"unit\":" + this.unit.ordinal();
         ret += ",\"length\":" + this.length;
         return ret + "} }";
     }
 
     @Override
     public String getSummary(final Context mContext) {
-        return this.length
-               + " "
-               + mContext.getResources().getStringArray(
-                   this.length == 1 ? R.array.due_day_year_values
-                   : R.array.due_day_year_values_plural)[this.unit
-                           .ordinal()];
-        // TODO use plurals here
+        String unit = "";
+        switch (this.unit) {
+        case DAY:
+            unit = mContext.getResources().getQuantityString(R.plurals.day, length);
+            break;
+        case MONTH:
+            unit = mContext.getResources().getQuantityString(R.plurals.month, length);
+            break;
+        case YEAR:
+            unit = mContext.getResources().getQuantityString(R.plurals.year, length);
+            break;
+        }
+        String value = (length > 0 ? "+" : "") + length + " " + unit;
+        if (isSet) {
+            return mContext.getString(R.string.special_lists_due_negated, value);
+        } else {
+            return mContext.getString(R.string.special_lists_due, value);
+        }
     }
 
     @Override
@@ -143,6 +165,7 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeInt(this.unit == null ? -1 : this.unit.ordinal());
         dest.writeInt(this.length);
     }

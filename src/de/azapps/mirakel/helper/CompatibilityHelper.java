@@ -147,7 +147,7 @@ public class CompatibilityHelper {
                 p = p.replace("(", "").replace(")", "").trim();
                 final String[] parts = p.split(",");
                 if ((parts.length == 2) && parts[1].contains("localtime")) {
-                    return new SpecialListsDueProperty(Unit.DAY, 0);
+                    return new SpecialListsDueProperty(Unit.DAY, 0, true);
                 }
                 p = parts[1];
                 Unit unit;
@@ -166,7 +166,7 @@ public class CompatibilityHelper {
                 }
                 return new SpecialListsDueProperty(unit, Integer.parseInt(p
                                                    .replace("\"", "").replace("'", "").replace("+", "")
-                                                   .trim()));
+                                                   .trim()), true);
             }
             throw new TransformerException("cannot parse due");
         }

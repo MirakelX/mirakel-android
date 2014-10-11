@@ -88,12 +88,6 @@ public class Task extends TaskBase {
 
     private static final String TAG = "TasksDataSource";
 
-    // Wozu brauchen wir das hier und nicht in TaskBase?
-    private Pair<String, Integer> recurrenceParent;
-
-    public boolean hasRecurringParent() {
-        return this.recurrenceParent != null;
-    }
 
     private String dependencies[];
 
@@ -101,9 +95,6 @@ public class Task extends TaskBase {
         this.dependencies = dep;
     }
 
-    void addRecurringChild(final Pair<String, Integer> newRec) {
-        this.recurrenceParent = newRec;
-    }
 
     @Override
     protected Uri getUri() {
@@ -115,7 +106,7 @@ public class Task extends TaskBase {
 
     Task() {
         super();
-        this.recurrenceParent = null;
+        setId(-1);
     }
 
     public Task(@NonNull final String name, @NonNull final ListMirakel list,
@@ -143,7 +134,6 @@ public class Task extends TaskBase {
         super(id, uuid, list, name, content, done, due, reminder, priority,
               created_at, updated_at, sync_state, additionalEntriesString,
               recurring, recurring_reminder, progress, shown);
-        this.recurrenceParent = null;
     }
 
     public Task(@NonNull final Cursor cursor) {
@@ -202,7 +192,6 @@ public class Task extends TaskBase {
 
     public Task(@NonNull final String name, @NonNull final ListMirakel listMirakel) {
         super(name, listMirakel);
-        this.recurrenceParent = null;
     }
 
 
@@ -484,7 +473,6 @@ public class Task extends TaskBase {
         values.put(TaskBase.PROGRESS, getProgress());
         values.put(ADDITIONAL_ENTRIES, getAdditionalEntriesString());
         setId(insert(URI, values));
-        handleInsertTWRecurring();
         final Task newTask = get(getId()).get();
         if (!calledFromSync) {
             UndoHistory.logCreate(newTask, Task.context);
@@ -727,7 +715,6 @@ public class Task extends TaskBase {
         if (updateUpdatedAt && Task.context != null) {
             setUpdatedAt(new GregorianCalendar());
         }
-        handleInsertTWRecurring();
         final ContentValues values = getContentValues();
         if (log && !calledFromSync) {
             final Optional<Task> old = Task.get(getId());
@@ -857,37 +844,6 @@ public class Task extends TaskBase {
         update(URI, cv, ModelBase.ID + "=?", new String[] {String.valueOf(oldId)});
     }
 
-    private void handleInsertTWRecurring() {
-        if (this.recurrenceParent != null) {
-            final Optional<Task> master = Task.getByUUID(this.recurrenceParent.first);
-            if (!master.isPresent() || !master.get().getRecurrence().isPresent()) {
-                // Something is very strange
-                Log.wtf(TAG, this + " is null!?");
-                return;
-            }
-            final Cursor c = new MirakelQueryBuilder(context)
-            .select(Recurring.allTWColumns)
-            .and("parent", Operation.EQ, master.get())
-            .and("child", Operation.EQ, this)
-            .query(MirakelInternalContentProvider.RECURRING_TW_URI);
-            c.moveToFirst();
-            if (c.getCount() < 1) {
-                final ContentValues cv = new ContentValues();
-                cv.put("parent", master.get().getId());
-                cv.put("child", getId());
-                cv.put("offsetCount", this.recurrenceParent.second);
-                if (master.get().getRecurrence().isPresent()) {
-                    cv.put("offset", master.get().getRecurrence().get().getInterval());
-                    insert(MirakelInternalContentProvider.RECURRING_TW_URI, cv);
-                }
-            }
-            c.close();
-            setRecurrence(master.get().getRecurrenceId());
-        }
-        updateRecurringMaster();
-        // fix showing
-        fixRecurringShowing();
-    }
 
     public static void fixRecurringShowing() {
         final ContentValues cv = new ContentValues();
@@ -1023,13 +979,6 @@ public class Task extends TaskBase {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (this.recurrenceParent == null) {
-            dest.writeInt(0);
-        } else {
-            dest.writeInt(1);
-            dest.writeString(this.recurrenceParent.first);
-            dest.writeInt(this.recurrenceParent.second);
-        }
         dest.writeStringArray(this.dependencies);
         dest.writeString(this.additionalEntriesString);
         dest.writeString(this.content);
@@ -1053,13 +1002,6 @@ public class Task extends TaskBase {
     }
 
     private Task(Parcel in) {
-        if (in.readInt() == 0) {
-            recurrenceParent = null;
-        } else {
-            String first = in.readString();
-            Integer second = in.readInt();
-            this.recurrenceParent = new Pair<>(first, second);
-        }
         this.dependencies = in.createStringArray();
         this.additionalEntriesString = in.readString();
         this.content = in.readString();
