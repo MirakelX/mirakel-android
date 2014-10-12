@@ -175,6 +175,10 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
   <string name="special_lists_progress_title">Progresso</string>
   <string name="special_lists_reminder_title">Promemoria</string>
   <string name="special_lists_subtask_title">Attività secondarie</string>
+  <string name="special_lists_tag_title">Etichetta</string>
+  <string name="and">E</string>
+  <string name="or">O</string>
+  <string name="new_tag">Nuova etichetta</string>
   <string-array name="demo_lists">
     <item>Lavoro</item>
     <item>Casa</item>
