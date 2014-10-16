@@ -19,6 +19,15 @@
 
 package de.azapps.mirakel.model.semantic;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Parcel;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,15 +38,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Parcel;
-import android.support.annotation.NonNull;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -267,8 +267,8 @@ public class Semantic extends SemanticBase {
         return semantic.create();
     }
 
-    Semantic(final int id, final String condition, final Integer priority,
-             final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
+    public Semantic(final int id, final String condition, final Integer priority,
+                    final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
         super(id, condition, priority, due, list, weekday);
     }
 

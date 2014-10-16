@@ -29,6 +29,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.NotificationCompat;
 import android.util.Pair;
 
@@ -99,22 +101,24 @@ public class ReminderAlarm extends BroadcastReceiver {
             Log.wtf(TAG, "mainactivtity not found", e);
             return;
         }
-        openIntent.setAction(DefinitionsHelper.SHOW_TASK);
-        openIntent.putExtra(DefinitionsHelper.EXTRA_TASK, task);
+        final Bundle withTask = new Bundle();
+        withTask.putParcelable(DefinitionsHelper.EXTRA_TASK, task);
+        openIntent.setAction(DefinitionsHelper.SHOW_TASK_REMINDER);
+        openIntent.putExtra(DefinitionsHelper.EXTRA_TASK_REMINDER, task);
         openIntent
         .setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
                                           openIntent, 0);
         final Intent doneIntent = new Intent(context, TaskService.class);
         doneIntent.setAction(TaskService.TASK_DONE);
-        doneIntent.putExtra(DefinitionsHelper.EXTRA_TASK, task);
+        doneIntent.putExtra(DefinitionsHelper.BUNDLE_WRAPPER, withTask);
         doneIntent
         .setData(Uri.parse(doneIntent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pDoneIntent = PendingIntent.getService(context, 0,
                                           doneIntent, 0);
         final Intent laterIntent = new Intent(context, TaskService.class);
         laterIntent.setAction(TaskService.TASK_LATER);
-        laterIntent.putExtra(DefinitionsHelper.EXTRA_TASK, task);
+        laterIntent.putExtra(DefinitionsHelper.BUNDLE_WRAPPER, withTask);
         laterIntent.setData(Uri.parse(laterIntent
                                       .toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pLaterIntent = PendingIntent.getService(context, 0,
@@ -146,7 +150,7 @@ public class ReminderAlarm extends BroadcastReceiver {
             pLaterIntent);
 
         final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        final String priority = (task.getPriority() > 0 ? "+" + task.getPriority() : String.valueOf(task
+        final String priority = ((task.getPriority() > 0) ? ("+" + task.getPriority()) : String.valueOf(task
                                  .getPriority()));
         CharSequence due;
         if (!task.getDue().isPresent()) {

@@ -49,18 +49,18 @@ public class TaskService extends Service {
     }
 
     private void handleCommand(final Intent intent) {
-        Optional<Task> taskOptional = TaskHelper.getTaskFromIntent(intent);
+        final Optional<Task> taskOptional = TaskHelper.getTaskFromIntent(intent);
         if (!taskOptional.isPresent()) {
             return;
         }
         final Task task = taskOptional.get();
-        if (intent.getAction() == TASK_DONE) {
+        if (TASK_DONE.equals(intent.getAction())) {
             task.setDone(true);
             task.save();
             Toast.makeText(this,
                            getString(R.string.reminder_notification_done_confirm),
                            Toast.LENGTH_LONG).show();
-        } else if (intent.getAction() == TASK_LATER
+        } else if ((TASK_LATER.equals(intent.getAction()))
                    && !task.hasRecurringReminder()) {
             final Calendar reminder = new GregorianCalendar();
             final int addMinutes = MirakelCommonPreferences.getAlarmLater();
@@ -74,14 +74,13 @@ public class TaskService extends Service {
         }
         ReminderAlarm.closeNotificationFor(this, task.getId());
         ReminderAlarm.updateAlarms(this);
-        final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
-        sendBroadcast(i);
+        sendBroadcast(new Intent(DefinitionsHelper.SYNC_FINISHED));
         stopSelf();
     }
 
     @Override
     public int onStartCommand(final Intent intent, final int flags,
-                              final int startid) {
+                              final int startId) {
         handleCommand(intent);
         return START_STICKY;
     }

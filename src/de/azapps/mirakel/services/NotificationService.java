@@ -134,8 +134,8 @@ public class NotificationService extends Service {
         .setContentText(notificationText).setSmallIcon(icon)
         .setContentIntent(pOpenIntent).setOngoing(persistent);
         // Big View
-        if (todayTasks.size() > 1
-            && VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+        if ((todayTasks.size() > 1)
+            && (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)) {
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (final Task task : todayTasks) {
                 inboxStyle.addLine(task.getName());
@@ -146,7 +146,7 @@ public class NotificationService extends Service {
                     NOTIFICATION_SERVICE);
         notificationManager.notify(DefinitionsHelper.NOTIF_DEFAULT,
                                    noti.build());
-        if (todayTasks.size() == 0 || !MirakelCommonPreferences.useNotifications()) {
+        if ((todayTasks.size() == 0) || !MirakelCommonPreferences.useNotifications()) {
             notificationManager.cancel(DefinitionsHelper.NOTIF_DEFAULT);
             this.existsNotification = false;
         } else {
@@ -177,7 +177,7 @@ public class NotificationService extends Service {
             ReminderAlarm.updateAlarms(context);
         }
         // Widget update
-        Intent widgetIntent;
+        final Intent widgetIntent;
         try {
             widgetIntent = new Intent(context,
                                       Class.forName(DefinitionsHelper.MAINWIDGET_CLASS));

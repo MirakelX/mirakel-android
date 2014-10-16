@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.Debug;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -1042,7 +1043,7 @@ public class Task extends TaskBase {
         this.recurringReminder = in.readLong();
         this.isRecurringShown = in.readByte() != 0;
         this.reminder = fromNullable((Calendar) in.readSerializable());
-        int tmpSyncState = in.readInt();
+        final int tmpSyncState = in.readInt();
         this.syncState = tmpSyncState == -1 ? SYNC_STATE.NOTHING : SYNC_STATE.values()[tmpSyncState];
         this.updatedAt = (Calendar) in.readSerializable();
         this.uuid = in.readString();
@@ -1053,11 +1054,13 @@ public class Task extends TaskBase {
     }
 
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
-        public Task createFromParcel(Parcel source) {
+        @Override
+        public Task createFromParcel(final Parcel source) {
             return new Task(source);
         }
 
-        public Task[] newArray(int size) {
+        @Override
+        public Task[] newArray(final int size) {
             return new Task[size];
         }
     };
