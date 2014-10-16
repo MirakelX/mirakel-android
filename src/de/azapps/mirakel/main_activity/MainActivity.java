@@ -34,6 +34,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -57,6 +58,8 @@ import android.widget.Toast;
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,7 +92,6 @@ import de.azapps.mirakel.main_activity.task_fragment.TaskFragment;
 import de.azapps.mirakel.main_activity.tasks_fragment.TasksFragment;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
-import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
@@ -177,11 +179,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         final String action = intent.getAction();
         final String type = intent.getType();
         this.currentPosition = getTaskFragmentPosition();
-        if (Intent.ACTION_SEND.equals(action) && type != null) {
+        if (Intent.ACTION_SEND.equals(action) && (type != null)) {
             final Uri uri = intent
                             .getParcelableExtra(Intent.EXTRA_STREAM);
             t.addFile(this, uri);
-        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && (type != null)) {
             final List<Uri> imageUris = intent
                                         .getParcelableArrayListExtra(Intent.EXTRA_STREAM);
             for (final Uri uri : imageUris) {
@@ -196,7 +198,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         }
         final Task task = Semantic.createTask(this.newTaskSubject, Optional.fromNullable(list), true,
                                               this);
-        task.setContent(this.newTaskContent == null ? "" : this.newTaskContent);
+        task.setContent((this.newTaskContent == null) ? "" : this.newTaskContent);
         task.save();
         setCurrentTask(task);
         if (intent != null) {
@@ -302,7 +304,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 }
             });
         }
-        Optional<Task> taskOptional = currentList.getFirstTask ();
+        final Optional<Task> taskOptional = currentList.getFirstTask ();
         if (taskOptional.isPresent()) {
             this.currentTask = taskOptional.get();
         } else  {
@@ -319,7 +321,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (currentViewL != null
+                if ((currentViewL != null)
                     && MirakelCommonPreferences.highlightSelected()) {
                     clearHighlighted();
                     if (MainActivity.this.oldClickedList != null) {
@@ -340,8 +342,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    getActionBar().setTitle(
-                        MainActivity.this.currentList.getName());
+                    if (getActionBar() != null) {
+                        getActionBar().setTitle(
+                            MainActivity.this.currentList.getName());
+                    }
                 }
             });
         }
@@ -353,7 +357,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @return
      */
     public Task getCurrentTask () {
-        Optional<Task> taskOptional = this.currentList.getFirstTask ();
+        final Optional<Task> taskOptional = this.currentList.getFirstTask ();
         if (taskOptional.isPresent()) {
             this.currentTask = taskOptional.get();
         } else {
@@ -449,7 +453,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                                            .getTasksFragmentPosition());
         }
         // This must not happen
-        if (f == null && this.mPagerAdapter != null) {
+        if ((f == null) && (this.mPagerAdapter != null)) {
             f = this.mPagerAdapter.getItem(getTasksFragmentPosition());
             if (f == null) {
                 Log.wtf(MainActivity.TAG, "no taskfragment found");
@@ -459,14 +463,14 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         try {
             return (TasksFragment) f;
         } catch (final ClassCastException e) {
-            Log.wtf(MainActivity.TAG, "cannot cast fragment");
+            Log.wtf(MainActivity.TAG, "cannot cast fragment", e);
             forceRebuildLayout();
             return getTasksFragment();
         }
     }
 
     private void checkPageAdapter() {
-        if (this.mPagerAdapter == null && !MirakelCommonPreferences.isTablet()) {
+        if ((this.mPagerAdapter == null) && !MirakelCommonPreferences.isTablet()) {
             forceRebuildLayout();
             if (this.mPagerAdapter == null) {
                 // something terrible happened
@@ -481,21 +485,22 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param selectedLists
      */
     public void handleDestroyList(final List<ListMirakel> selectedLists) {
-        final List<ListMirakel> lists = new ArrayList<>();
-        for (ListMirakel l : selectedLists) {
-            if (l.getAccount().getType() != ACCOUNT_TYPES.CALDAV) {
-                lists.add(l);
+        final List<ListMirakel> lists = new ArrayList<>(Collections2.filter(selectedLists,
+        new Predicate<ListMirakel>() {
+            @Override
+            public boolean apply(final ListMirakel input) {
+                return input.getAccount().getType() != ACCOUNT_TYPES.CALDAV;
             }
-        }
+        }));
         if (lists.size() != selectedLists.size()) {
             Toast.makeText(this, R.string.delete_caldav_lists, Toast.LENGTH_LONG).show();
             if (lists.isEmpty()) {
                 return;
             }
         }
-        String names = "\"" + lists.get(0).getName() + "\"";
+        final StringBuilder names = new StringBuilder('"' + lists.get(0).getName() + '"');
         for (int i = 1; i < lists.size(); i++) {
-            names += ", \"" + lists.get(i).getName() + "\"";
+            names.append(", \"").append(lists.get(i).getName()).append('"');
         }
         new AlertDialog.Builder(this)
         .setTitle(
@@ -546,25 +551,25 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param tasks, List of all Tasks which should be destroyed
      */
     public void handleDestroyTask(final List<Task> tasks) {
-        if (tasks == null || tasks.size() == 0) {
+        if ((tasks == null) || (tasks.isEmpty())) {
             return;
         }
-        final List<Task> normalTasks = new ArrayList<>();
+        final List<Task> normalTasks = new ArrayList<>(tasks.size());
         // Tasks we should handle in a special way
         for (Task t : tasks) {
             if (t.getRecurrence().isPresent()) {
                 handleDestroyRecurringTask (t);
-            } else if (t.countSubtasks() > 0) {
+            } else if (t.countSubtasks() > 0L) {
                 handleDestroySubtasks(t);
             } else {
                 normalTasks.add(t);
             }
         }
         // This must then be a bug in a ROM
-        if (normalTasks.size() == 0) {
+        if (normalTasks.isEmpty()) {
             return;
         }
-        String names = TextUtils.join(", ", normalTasks);
+        final String names = TextUtils.join(", ", normalTasks);
         new AlertDialog.Builder(this)
         .setTitle(
             getResources().getQuantityString(R.plurals.task_delete,
@@ -594,7 +599,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         .setTitle(getString(R.string.destroy_recurring_task, task.getName()))
         .setItems(R.array.subtask_task_select, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface dialog, final int which) {
                 switch (which) {
                 case 0: // Only this task
                     task.destroy();
@@ -648,7 +653,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param task
      */
     public void handleDestroyTask(final Task task) {
-        final List<Task> t = new ArrayList<>();
+        final List<Task> t = new ArrayList<>(1);
         t.add(task);
         handleDestroyTask(t);
         setCurrentList(MainActivity.this.currentList);
@@ -662,19 +667,19 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param tasks, list of all tasks which should be moved
      */
     public void handleMoveTask(final List<Task> tasks) {
-        if (tasks == null || tasks.size() == 0) {
+        if ((tasks == null) || (tasks.isEmpty())) {
             return;
         }
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.dialog_move);
-        final List<CharSequence> items = new ArrayList<>();
-        final List<Long> list_ids = new ArrayList<>();
+        final List<CharSequence> items = new ArrayList<>(lists.size());
+        final List<Long> list_ids = new ArrayList<>(lists.size());
         int currentItem = 0, i = 0;
         for (final ListMirakel list : this.lists) {
-            if (list.getId() > 0) {
+            if (list.getId() > 0L) {
                 items.add(list.getName());
-                if (tasks.get(0).getList().getId() == list.getId()
-                    && tasks.size() == 1) {
+                if ((tasks.get(0).getList().getId() == list.getId())
+                    && (tasks.size() == 1)) {
                     currentItem = i;
                 }
                 list_ids.add(list.getId());
@@ -686,9 +691,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog,
-                                final int item) {
+                                final int which) {
                 for (final Task t : tasks) {
-                    Optional<ListMirakel> listMirakelOptional = ListMirakel.get(list_ids.get(item));
+                    Optional<ListMirakel> listMirakelOptional = ListMirakel.get(list_ids.get(which));
                     withOptional(listMirakelOptional, new OptionalUtils.Procedure<ListMirakel>() {
                         @Override
                         public void apply(ListMirakel input) {
@@ -732,7 +737,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param task, which should be moved
      */
     public void handleMoveTask(final Task task) {
-        final List<Task> t = new ArrayList<>();
+        final List<Task> t = new ArrayList<>(1);
         t.add(task);
         handleMoveTask(t);
     }
@@ -765,7 +770,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private int handleTaskFragmentMenu() {
-        if (getActionBar() != null && this.currentTask != null) {
+        if ((getActionBar() != null) && (this.currentTask != null)) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -784,11 +789,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private int handleTasksFragmentMenu() {
-        int newmenu;
         getListFragment().enableDrop(false);
         if (this.currentList == null) {
             return -1;
         }
+        final int newmenu;
         if (!MirakelCommonPreferences.isTablet()) {
             newmenu = R.menu.tasks;
         } else {
@@ -797,8 +802,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getActionBar().setTitle(
-                    MainActivity.this.currentList.getName());
+                if (getActionBar() != null) {
+                    getActionBar().setTitle(
+                        MainActivity.this.currentList.getName());
+                }
             }
         });
         return newmenu;
@@ -811,17 +818,17 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param multiselect
      */
     void highlightCurrentTask(final Task currentTask, final boolean multiselect) {
-        if (getTaskFragment() == null || getTasksFragment() == null
-            || getTasksFragment().getAdapter() == null
-            || currentTask == null) {
+        if ((getTaskFragment() == null) || (getTasksFragment() == null)
+            || (getTasksFragment().getAdapter() == null)
+            || (currentTask == null)) {
             return;
         }
-        Log.v(MainActivity.TAG, "switched to task " + currentTask.getId() + "("
-              + currentTask.getName() + ")");
+        Log.v(MainActivity.TAG, "switched to task " + currentTask.getId() + '('
+              + currentTask.getName() + ')');
         final View tmpView = getTasksFragment().getViewForTask(currentTask);
-        final View currentView = tmpView == null ? getTasksFragment()
+        final View currentView = (tmpView == null) ? getTasksFragment()
                                  .getListView().getChildAt(0) : tmpView;
-        if (currentView != null && MirakelCommonPreferences.highlightSelected()
+        if ((currentView != null) && MirakelCommonPreferences.highlightSelected()
             && !multiselect) {
             currentView.post(new Runnable() {
                 @Override
@@ -879,7 +886,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      */
     @SuppressLint("NewApi")
     private void initViewPager() {
-        final List<Fragment> fragments = new Vector<>();
+        final List<Fragment> fragments = new Vector<>(2);
         final TasksFragment tasksFragment = new TasksFragment();
         tasksFragment.setActivity(this);
         fragments.add(tasksFragment);
@@ -889,7 +896,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             .update(this.currentTask);
         }
         if (!MirakelCommonPreferences.isTablet() && !this.isResumed
-            && this.mPagerAdapter == null) {
+            && (this.mPagerAdapter == null)) {
             if (MainActivity.isRTL) {
                 Collections.reverse(fragments);
             }
@@ -903,17 +910,17 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             this.mViewPager.setOffscreenPageLimit(2);
             this.mViewPager.setAdapter(this.mPagerAdapter);
             this.mViewPager.setOnPageChangeListener(this);
-        } else if (this.fragmentManager != null
-                   && findViewById(R.id.tasks_fragment) != null
-                   && findViewById(R.id.task_fragment) != null) {
+        } else if ((this.fragmentManager != null)
+                   && (findViewById(R.id.tasks_fragment) != null)
+                   && (findViewById(R.id.task_fragment) != null)) {
             // add fragment to the fragment container layout
             this.fragmentManager.beginTransaction()
             .add(R.id.tasks_fragment, fragments.get(0), "tasks")
             .add(R.id.task_fragment, fragments.get(1), "task")
             .commitAllowingStateLoss();
         }
-        if (this.fragmentManager != null
-            && findViewById(R.id.navigate_fragment) != null) {
+        if ((this.fragmentManager != null)
+            && (findViewById(R.id.navigate_fragment) != null)) {
             final ListFragment listFragment = new ListFragment();
             // add fragment to the fragment container layout
             this.fragmentManager.beginTransaction()
@@ -929,7 +936,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     @Override
-    public void onRestoreInstanceState(final Bundle savedInstanceState) {
+    public void onRestoreInstanceState(@NonNull final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -946,7 +953,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      */
     public void loadMenu(final int position, final boolean setPosition,
                          final boolean fromShare) {
-        if (getTaskFragment() != null && getTaskFragment().getView() != null) {
+        if ((getTaskFragment() != null) && (getTaskFragment().getView() != null)) {
             final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getTaskFragment().getView()
                                         .getWindowToken(), 0);
@@ -955,13 +962,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             return;
         }
         final int newmenu;
-        if (MirakelCommonPreferences.isTablet() && position != -1) {
+        if (MirakelCommonPreferences.isTablet() && (position != -1)) {
             newmenu = R.menu.tablet_right;
         } else {
             switch (position) {
             case -1:
                 newmenu = R.menu.activity_list;
-                getActionBar().setTitle(getString(R.string.list_title));
+                if (getActionBar() != null) {
+                    getActionBar().setTitle(getString(R.string.list_title));
+                }
                 break;
             case RIGHT_FRAGMENT:
                 newmenu = MainActivity.isRTL ? handleTasksFragmentMenu()
@@ -1021,41 +1030,36 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
     @Override
     protected void onActivityResult(final int requestCode,
-                                    final int resultCode, final Intent intent) {
+                                    final int resultCode, final Intent data) {
         final boolean isOk = resultCode == Activity.RESULT_OK;
         Log.v(MainActivity.TAG, "Result:" + requestCode);
         switch (requestCode) {
         case RESULT_SPEECH_NAME:
-            if (intent != null) {
-                final List<String> text = intent
+            if (data != null) {
+                final List<String> text = data
                                           .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 ((EditText) findViewById(R.id.edit_name)).setText(text.get(0));
             }
             break;
         case RESULT_SPEECH:
-            if (intent != null) {
-                final List<String> text = intent
+            if (data != null) {
+                final List<String> text = data
                                           .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 ((EditText) getTasksFragment().getFragmentView().findViewById(
                      R.id.tasks_new)).setText(text.get(0));
             }
             break;
         case RESULT_ADD_FILE:
-            if (intent != null) {
+            if (data != null) {
                 Log.d(MainActivity.TAG,
                       "taskname " + this.currentTask.getName());
-                if (FileMirakel.newFile(this, this.currentTask,
-                                        intent.getData()) == null) {
-                    ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
-                } else {
-                    getTaskFragment().update(this.currentTask);
-                }
+                getTaskFragment().update(this.currentTask);
             }
             break;
         case RESULT_SETTINGS:
             forceRebuildLayout();
             if (!MirakelCommonPreferences.highlightSelected()
-                && (this.oldClickedList != null || this.oldClickedTask == null)) {
+                && ((this.oldClickedList != null) || (this.oldClickedTask == null))) {
                 clearAllHighlights();
             }
             if (this.darkTheme != MirakelCommonPreferences.isDark()) {
@@ -1084,7 +1088,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         case RESULT_CAMERA:
         case RESULT_ADD_PICTURE:
             if (isOk) {
-                Task task;
+                final Task task;
                 if (requestCode == MainActivity.RESULT_ADD_PICTURE) {
                     task = this.currentTask;
                 } else {
@@ -1109,8 +1113,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
     @Override
     public void onBackPressed() {
-        if (this.goBackTo.size() > 0
-            && this.currentPosition == getTaskFragmentPosition()) {
+        if ((!this.goBackTo.isEmpty())
+            && (this.currentPosition == getTaskFragmentPosition())) {
             final Task goBack = this.goBackTo.pop();
             setCurrentList(goBack.getList(), null, false, false);
             setCurrentTask(goBack, false, false);
@@ -1120,7 +1124,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             super.onBackPressed();
             return;
         }
-        if (!MirakelCommonPreferences.isTablet() && this.mViewPager != null) {
+        if (!MirakelCommonPreferences.isTablet() && (this.mViewPager != null)) {
             switch (this.mViewPager.getCurrentItem()) {
             case LEFT_FRAGMENT:
                 if (MainActivity.isRTL) {
@@ -1150,8 +1154,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         super.onConfigurationChanged(newConfig);
         this.mPagerAdapter = null;
         this.isResumed = false;
-        final boolean changed = this.mViewPager == null
-                                || this.mViewPager.getCurrentItem() == getTaskFragmentPosition();
+        final boolean changed = (this.mViewPager == null)
+                                || (this.mViewPager.getCurrentItem() == getTaskFragmentPosition());
         final Task t = this.currentTask;
         try {
             draw();
@@ -1161,10 +1165,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             // the restart
             ErrorReporter.report(ErrorType.MAINACTVITY_CRAZY_ERROR);
             Helpers.restartApp(this);
+            Log.d(TAG, "imposible error", e);
             return;
         }
-        if (getListFragment() != null && getTasksFragment() != null
-            && this.mDrawerToggle != null) {
+        if ((getListFragment() != null) && (getTasksFragment() != null)
+            && (this.mDrawerToggle != null)) {
             getListFragment().setActivity(this);
             getTasksFragment().setActivity(this);
             if (this.mDrawerLayout != null) {
@@ -1180,7 +1185,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 public void run() {
                     setCurrentTask(t, changed);
                 }
-            }, 1);
+            }, 1L);
         }
     }
 
@@ -1251,8 +1256,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else {
             setContentView(R.layout.pane_single);
         }
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
         setupLayout();
         this.isResumed = false;
         setCurrentItem(this.currentPosition);
@@ -1260,14 +1267,14 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private void setCurrentItem(final int pos) {
-        if (!MirakelCommonPreferences.isTablet() && this.mViewPager != null
-            && this.mViewPager.getCurrentItem() != pos) {
+        if (!MirakelCommonPreferences.isTablet() && (this.mViewPager != null)
+            && (this.mViewPager.getCurrentItem() != pos)) {
             this.mViewPager.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     MainActivity.this.mViewPager.setCurrentItem(pos);
                 }
-            }, 10);
+            }, 10L);
         }
     }
 
@@ -1385,15 +1392,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             updateCurrentListAndTask();
             if (this.currentPosition == getTaskFragmentPosition()) {
                 setCurrentTask(this.currentTask);
-            } else if (getListFragment() != null && getTasksFragment() != null
-                       && getListFragment().getAdapter() != null
-                       && getTasksFragment().getAdapter() != null) {
+            } else if ((getListFragment() != null) && (getTasksFragment() != null)
+                       && (getListFragment().getAdapter() != null)
+                       && (getTasksFragment().getAdapter() != null)) {
                 getListFragment().getAdapter().changeData(ListMirakel.all());
                 getListFragment().getAdapter().notifyDataSetChanged();
                 getTasksFragment().getAdapter().notifyDataSetChanged();
                 if (!MirakelCommonPreferences.isTablet()
-                    && this.currentPosition == MainActivity
-                    .getTasksFragmentPosition()) {
+                    && (this.currentPosition == MainActivity
+                        .getTasksFragmentPosition())) {
                     setCurrentList(getCurrentList());
                 }
             }
@@ -1486,13 +1493,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         if (!MirakelCommonPreferences.isTablet()) {
             setCurrentItem(MainActivity.getTasksFragmentPosition());
         }
-        getActionBar().setTitle(
-            getString(R.string.search_result_title, query));
+        if (getActionBar() != null) {
+            getActionBar().setTitle(
+                getString(R.string.search_result_title, query));
+        }
     }
 
     private View getCurrentView(final View currentView) {
-        if (currentView == null && getListFragment() != null
-            && getListFragment().getAdapter() != null) {
+        if ((currentView == null) && (getListFragment() != null)
+            && (getListFragment().getAdapter() != null)) {
             return getListFragment().getAdapter().getViewForList(
                        this.currentList);
         }
@@ -1514,9 +1523,10 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private void handleIntent(final Intent intent) {
-        if (intent == null || intent.getAction() == null) {
+        if ((intent == null) || (intent.getAction() == null)) {
             Log.d(MainActivity.TAG, "action null");
-        } else if (intent.getAction().equals(DefinitionsHelper.SHOW_TASK)
+        } else if (intent.getAction().contains(DefinitionsHelper.SHOW_TASK)
+                   || intent.getAction().contains(DefinitionsHelper.SHOW_TASK_REMINDER)
                    || intent.getAction().equals(
                        DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
             final Optional<Task> task = TaskHelper.getTaskFromIntent(intent);
@@ -1528,7 +1538,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                         public void run() {
                             setCurrentTask(task.get(), true);
                         }
-                    }, 10);
+                    }, 10L);
                 }
             } else {
                 Log.d(MainActivity.TAG, "task null");
@@ -1543,15 +1553,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             this.newTaskContent = intent.getStringExtra(Intent.EXTRA_TEXT);
             this.newTaskSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
             // If from google now, the content is the subject…
-            if (intent.getCategories() != null
+            if ((intent.getCategories() != null)
                 && intent.getCategories().contains(
                     "com.google.android.voicesearch.SELF_NOTE")
-                && !this.newTaskContent.equals("")) {
+                && !this.newTaskContent.isEmpty()) {
                 this.newTaskSubject = this.newTaskContent;
                 this.newTaskContent = "";
             }
-            if (!intent.getType().equals("text/plain")
-                && this.newTaskSubject == null) {
+            if (!"text/plain".equals(intent.getType())
+                && (this.newTaskSubject == null)) {
                 this.newTaskSubject = MirakelCommonPreferences
                                       .getImportFileTitle();
             }
@@ -1560,8 +1570,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             if (listFromSharing.isPresent()) {
                 addTaskFromSharing(listFromSharing.get(), intent);
             } else {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(
-                    this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.import_to);
                 final List<CharSequence> items = new ArrayList<>();
                 final List<Long> list_ids = new ArrayList<>();
@@ -1577,11 +1586,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 currentItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog,
-                                        final int item) {
-                        Optional<ListMirakel> listMirakelOptional = ListMirakel.get(list_ids.get(item));
+                                        final int which) {
+                        final Optional<ListMirakel> listMirakelOptional = ListMirakel.get(list_ids.get(which));
                         withOptional(listMirakelOptional, new OptionalUtils.Procedure<ListMirakel>() {
                             @Override
-                            public void apply(ListMirakel input) {
+                            public void apply(final ListMirakel input) {
                                 addTaskFromSharing(input, intent);
                                 dialog.dismiss();
                             }
@@ -1594,9 +1603,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                    || intent.getAction().contains(
                        DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
             if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
-                ListMirakel list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
+                final ListMirakel list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
                 setCurrentList (list);
-                Optional<Task> taskOptional = list.getFirstTask ();
+                final Optional<Task> taskOptional = list.getFirstTask ();
                 if (taskOptional.isPresent()) {
                     this.currentTask = taskOptional.get();
                 }
@@ -1615,7 +1624,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                        DefinitionsHelper.ADD_TASK_FROM_WIDGET)) {
             final int listId = Integer.parseInt(intent.getAction().replace(
                                                     DefinitionsHelper.ADD_TASK_FROM_WIDGET, ""));
-            Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
+            final Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
             if (listMirakelOptional.isPresent()) {
                 setCurrentList(listMirakelOptional.get());
             } else {
@@ -1624,7 +1633,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             this.mDrawerLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (getTasksFragment() != null
+                    if ((getTasksFragment() != null)
                         && getTasksFragment().isReady()) {
                         getTasksFragment().focusNew(true);
                     } else if (!MirakelCommonPreferences.isTablet()) {
@@ -1649,7 +1658,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 if (subject == null) {
                     subject = getString(R.string.message_notification);
                 }
-                TextView msg = (TextView) getLayoutInflater().inflate(R.layout.alertdialog_textview, null);
+                final TextView msg = (TextView) getLayoutInflater().inflate(R.layout.alertdialog_textview, null);
                 msg.setText(Html.fromHtml(message));
                 msg.setMovementMethod(LinkMovementMethod.getInstance());
                 msg.setClickable(true);
@@ -1659,9 +1668,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else {
             setCurrentItem(getTaskFragmentPosition());
         }
-        if ((intent == null || intent.getAction() == null || !intent
+        if (((intent == null) || (intent.getAction() == null) || !intent
              .getAction().contains(DefinitionsHelper.ADD_TASK_FROM_WIDGET))
-            && getTasksFragment() != null) {
+            && (getTasksFragment() != null)) {
             getTasksFragment().clearFocus();
         }
         setIntent(null);
@@ -1680,7 +1689,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         // clear tabletfragments
         final ViewGroup all = (ViewGroup) this
                               .findViewById(R.id.multi_pane_box);
-        if (all != null && MirakelCommonPreferences.isTablet()) {
+        if ((all != null) && MirakelCommonPreferences.isTablet()) {
             for (int i = 0; i < all.getChildCount(); i++) {
                 final ViewGroup group = (ViewGroup) all.getChildAt(i);
                 group.removeAllViews();
@@ -1703,11 +1712,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private void updateCurrentListAndTask() {
-        if (this.currentTask == null && this.currentList == null) {
+        if ((this.currentTask == null) && (this.currentList == null)) {
             return;
         }
         if (this.currentTask != null) {
-            Optional<Task> taskOptional = Task.get (this.currentTask.getId ());
+            final Optional<Task> taskOptional = Task.get (this.currentTask.getId ());
             if (taskOptional.isPresent()) {
                 this.currentTask = taskOptional.get();
             } else {
@@ -1716,7 +1725,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else {
             final List<Task> currentTasks = this.currentList
                                             .tasks(MirakelCommonPreferences.showDoneMain());
-            if (currentTasks.size () == 0) {
+            if (currentTasks.isEmpty()) {
                 this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
             } else {
                 this.currentTask = currentTasks.get (0);
@@ -1742,8 +1751,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
      * @param task
      */
     public void updatesForTask(final Task task) {
-        if (this.currentTask != null
-            && task.getId() == this.currentTask.getId()) {
+        if ((this.currentTask != null)
+            && (task.getId() == this.currentTask.getId())) {
             this.currentTask = task;
             getTaskFragment().update(task);
         }
@@ -1766,11 +1775,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                         }
                     }
                 });
-            } else if (this.currentPosition == MainActivity
-                       .getTasksFragmentPosition()
-                       && share_list == null
-                       && this.currentList != null
-                       && this.currentList.countTasks() > 0
+            } else if ((this.currentPosition == MainActivity
+                        .getTasksFragmentPosition())
+                       && (share_list == null)
+                       && (this.currentList != null)
+                       && (this.currentList.countTasks() > 0)
                        && !this.mDrawerLayout
                        .isDrawerOpen(DefinitionsHelper.GRAVITY_LEFT)) {
                 loadMenu(MainActivity.getTasksFragmentPosition(), true, true);
@@ -1782,8 +1791,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         if (getTasksFragment() != null) {
             getTasksFragment().updateList();
         }
-        if (getTaskFragment() != null && getTaskFragment().getTask() != null) {
-            Optional<Task> taskOptional = Task.get(getTaskFragment().getTask().getId());
+        if ((getTaskFragment() != null) && (getTaskFragment().getTask() != null)) {
+            final Optional<Task> taskOptional = Task.get(getTaskFragment().getTask().getId());
             if (taskOptional.isPresent()) {
                 getTaskFragment().update(taskOptional.get());
             } else {
@@ -1793,7 +1802,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     @Override
-    public void onPageScrolled(int i, float v, int i2) {
+    public void onPageScrolled(final int i, final float v, final int i2) {
 
     }
 
@@ -1808,7 +1817,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     @Override
-    public void onPageScrollStateChanged(int i) {
+    public void onPageScrollStateChanged(final int i) {
 
     }
 }

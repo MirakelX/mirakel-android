@@ -14,8 +14,8 @@ public class MainActivityBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive (final Context context, final Intent intent) {
-        if (intent.getAction ().equals (DefinitionsHelper.SYNC_FINISHED)) {
-            this.main.updateUI ();
+        if (intent.getAction().equals(DefinitionsHelper.SYNC_FINISHED)) {
+            this.main.updateUI();
         }
     }
 
