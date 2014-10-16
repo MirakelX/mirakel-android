@@ -74,7 +74,7 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
     private int preferencesCount;
 
     public SpecialListsConditionAdapter(final Context context, final int resource,
-                                        final List<SpecialListsViewHelper> objects) {
+                                        @NonNull final List<SpecialListsViewHelper> objects) {
         super(context, resource, objects);
         mInflater = (LayoutInflater)context.getSystemService
                     (Context.LAYOUT_INFLATER_SERVICE);
@@ -96,8 +96,8 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                 for (int i = 0; i < backStack.size(); i++) {
                     if (backStack.get(i) == NEW_PROPERTY) {
                         SpecialListsConjunctionList newList = new SpecialListsConjunctionList(
-                            currentProperty.getConjunction() ==
-                            SpecialListsConjunctionList.CONJUNCTION.AND ? SpecialListsConjunctionList.CONJUNCTION.OR :
+                            (currentProperty.getConjunction() ==
+                             SpecialListsConjunctionList.CONJUNCTION.AND) ? SpecialListsConjunctionList.CONJUNCTION.OR :
                             SpecialListsConjunctionList.CONJUNCTION.AND, new ArrayList<SpecialListsBaseProperty>());
                         backStack.set(i, currentProperty.getChilds().size());
                         currentProperty.getChilds().add(newList);
@@ -106,10 +106,10 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                     if (currentProperty.getChilds().get(backStack.get(i)) instanceof SpecialListsConjunctionList) {
                         currentProperty = (SpecialListsConjunctionList) currentProperty.getChilds().get(backStack.get(i));
                     } else {
-                        List<SpecialListsBaseProperty> childs = new ArrayList<>();
+                        List<SpecialListsBaseProperty> childs = new ArrayList<>(1);
                         childs.add(currentProperty.getChilds().get(backStack.get(i)));
-                        currentProperty = new SpecialListsConjunctionList(currentProperty.getConjunction() ==
-                                SpecialListsConjunctionList.CONJUNCTION.AND ? SpecialListsConjunctionList.CONJUNCTION.OR :
+                        currentProperty = new SpecialListsConjunctionList((currentProperty.getConjunction() ==
+                                SpecialListsConjunctionList.CONJUNCTION.AND) ? SpecialListsConjunctionList.CONJUNCTION.OR :
                                 SpecialListsConjunctionList.CONJUNCTION.AND, childs);
                         break;
                     }
@@ -121,7 +121,7 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
             }
         }
         return new SpecialListsConjunctionList(SpecialListsConjunctionList.CONJUNCTION.AND,
-                                               new ArrayList<SpecialListsBaseProperty>());
+                                               new ArrayList<SpecialListsBaseProperty>(0));
     }
 
     public static SpecialListsConditionAdapter setUpListView(final @NonNull SpecialList list,
@@ -134,7 +134,7 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
         final List<SpecialListsBaseProperty> conditions = new ArrayList<>();
         final SpecialListsConjunctionList rootProperty = getRootProperty(list.getWhere(), conditions,
                 backStack);
-        List<SpecialListsViewHelper> data = new ArrayList<>(Collections2.transform(topPrefernces,
+        final List<SpecialListsViewHelper> data = new ArrayList<>(Collections2.transform(topPrefernces,
         new Function<Preference, SpecialListsViewHelper>() {
             @Override
             public SpecialListsViewHelper apply(Preference input) {
@@ -152,10 +152,11 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                 adapter.cancleUndo(backStack);
                 final SpecialListsBaseProperty property = adapter.getData().get(
                             which).getCondition().get();// only conditions can be removed, so its safe to call this here
-                SpecialList listToSave = EditDialogFragment.execOnTree(list, backStack,
+                final SpecialList listToSave = EditDialogFragment.execOnTree(list, backStack,
                 new EditDialogFragment.WorkOnTree() {
                     @Override
-                    public void onTreeExists(int position, @NonNull SpecialListsConjunctionList currentProperty) {
+                    public void onTreeExists(final int position,
+                                             @NonNull final SpecialListsConjunctionList currentProperty) {
                         currentProperty.getChilds().remove(which - adapter.preferencesCount);
                     }
 
@@ -169,12 +170,12 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                 adapter.setNewList(listToSave, backStack);
                 backStack.add(which - adapter.preferencesCount);
 
-                UndoBarController.UndoBar undo = new UndoBarController.UndoBar(activity);
+                final UndoBarController.UndoBar undo = new UndoBarController.UndoBar(activity);
                 adapter.setUndo(of(undo));
                 undo.message(activity.getString(R.string.Undo)).listener(
                 new UndoBarController.AdvancedUndoListener() {
                     @Override
-                    public void onHide(Parcelable parcelable) {
+                    public void onHide(final Parcelable parcelable) {
                         adapter.cancleUndo(backStack);
                     }
 
@@ -184,16 +185,17 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                     }
 
                     @Override
-                    public void onUndo(Parcelable parcelable) {
-                        SpecialList listToSave = EditDialogFragment.execOnTree(list, backStack,
+                    public void onUndo(final Parcelable parcelable) {
+                        final SpecialList listToSave = EditDialogFragment.execOnTree(list, backStack,
                         new EditDialogFragment.WorkOnTree() {
                             @Override
-                            public void onTreeExists(int position, @NonNull SpecialListsConjunctionList currentProperty) {
-                                List<SpecialListsBaseProperty> childs = new ArrayList<>();
-                                List<SpecialListsBaseProperty> oldChilds = currentProperty.getChilds();
+                            public void onTreeExists(final int position,
+                                                     @NonNull final SpecialListsConjunctionList currentProperty) {
+                                final List<SpecialListsBaseProperty> childs = new ArrayList<>();
+                                final List<SpecialListsBaseProperty> oldChilds = currentProperty.getChilds();
                                 boolean added = false;
                                 for (int j = 0; j < oldChilds.size(); j++) {
-                                    if (!added && j == backStack.get(position)) {
+                                    if (!added && (j == backStack.get(position))) {
                                         childs.add(property);
                                         added = true;
                                     }
@@ -223,15 +225,15 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SpecialListsViewHelper item = adapter.getItem(position);
+                final SpecialListsViewHelper item = adapter.getItem(position);
                 if (item.getType() == SpecialListsViewHelper.Type.CONDITION) {
                     adapter.cancleUndo(backStack);
                     backStack.add(position - adapter.preferencesCount);
-                    SpecialListsBaseProperty property = item.getCondition().get();
+                    final SpecialListsBaseProperty property = item.getCondition().get();
                     EditDialogFragment.newInstance(list, property, backStack, listener, rootProperty).show(fm,
                             "editdialog");
                 } else {
-                    Preference pref = item.getPreference().get();
+                    final Preference pref = item.getPreference().get();
                     pref.getOnPreferenceClickListener().onPreferenceClick(pref);
                 }
             }
@@ -242,7 +244,7 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
             @Override
             public void onClick(View v) {
                 adapter.cancleUndo(backStack);
-                SpecialListsDoneProperty property = new SpecialListsDoneProperty(false);
+                final SpecialListsDoneProperty property = new SpecialListsDoneProperty(false);
                 backStack.add(NEW_PROPERTY);
                 EditDialogFragment.newInstance(list, property, backStack, listener, rootProperty).show(fm,
                         "editdialog");
@@ -265,8 +267,8 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
 
     private void cancleUndo(final @NonNull List<Integer> backStack) {
         if (isUndo()) {
-            getUndo().get().clear();
-            setUndo(Optional.<UndoBarController.UndoBar>absent());
+            undo.get().clear();
+            undo = absent();
             backStack.remove(backStack.size() - 1);
         }
     }
@@ -274,9 +276,10 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
 
     public SpecialListsConjunctionList setNewList(@NonNull final SpecialList list,
             @NonNull final List<Integer> backStack) {
-        List<SpecialListsBaseProperty> conditions = new ArrayList<>();
-        SpecialListsConjunctionList rootProperty = getRootProperty(list.getWhere(), conditions, backStack);
-        List<SpecialListsViewHelper> newData = new ArrayList<>(Collections2.filter(data,
+        final List<SpecialListsBaseProperty> conditions = new ArrayList<>();
+        final SpecialListsConjunctionList rootProperty = getRootProperty(list.getWhere(), conditions,
+                backStack);
+        final List<SpecialListsViewHelper> newData = new ArrayList<>(Collections2.filter(data,
         new Predicate<SpecialListsViewHelper>() {
             @Override
             public boolean apply(SpecialListsViewHelper input) {
@@ -292,11 +295,11 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
         if (position >= getCount()) {
             return new View(getContext());
         }
-        SpecialListsViewHelper item = getItem(position);
+        final SpecialListsViewHelper item = getItem(position);
         return item.getView(convertView, mInflater, parent);
     }
 
@@ -306,13 +309,10 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
     }
 
     @Override
-    public boolean isEnabled(int position) {
-        SpecialListsViewHelper item = getItem(position);
-        if (item.getType() == SpecialListsViewHelper.Type.PREFERENCE &&
-            item.getPreference().get() instanceof PreferenceCategory) {
-            return false;
-        }
-        return true;
+    public boolean isEnabled(final int position) {
+        final SpecialListsViewHelper item = getItem(position);
+        return !((item.getType() == SpecialListsViewHelper.Type.PREFERENCE) &&
+                 (item.getPreference().get() instanceof PreferenceCategory));
     }
 
     public void setUndo(@NonNull final Optional<UndoBarController.UndoBar> undo) {

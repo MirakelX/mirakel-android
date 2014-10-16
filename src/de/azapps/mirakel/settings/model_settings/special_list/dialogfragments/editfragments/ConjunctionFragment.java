@@ -52,8 +52,8 @@ public class ConjunctionFragment extends BasePropertyFragement<SpecialListsConju
 
     public static ConjunctionFragment newInstance(@NonNull final SpecialListsConjunctionList property,
             @NonNull final SpecialList list, @NonNull final ArrayList<Integer> backstack) {
-        ConjunctionFragment fragment = new ConjunctionFragment();
-        Bundle args = new Bundle();
+        final ConjunctionFragment fragment = new ConjunctionFragment();
+        final Bundle args = new Bundle();
         args.putParcelable(PROPERTY_KEY, property);
         args.putIntegerArrayList(BACKSTACK_KEY, backstack);
         args.putParcelable(LIST_KEY, list);
@@ -64,7 +64,7 @@ public class ConjunctionFragment extends BasePropertyFragement<SpecialListsConju
     @Override
     public void onCreate(@NonNull final Bundle extras) {
         super.onCreate(extras);
-        if (getArguments() != null && getArguments().containsKey(LIST_KEY) &&
+        if ((getArguments() != null) && getArguments().containsKey(LIST_KEY) &&
             getArguments().containsKey(BACKSTACK_KEY)) {
             mList = getArguments().getParcelable(LIST_KEY);
             mBackstack = getArguments().getIntegerArrayList(BACKSTACK_KEY);
@@ -76,12 +76,12 @@ public class ConjunctionFragment extends BasePropertyFragement<SpecialListsConju
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.speciallist_condition_list, null);
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
+                             @Nullable final Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.speciallist_condition_list, null);
 
-        DragSortListView listView = (DragSortListView)rootView.findViewById(R.id.speciallist_items);
-        Button add = (Button)rootView.findViewById(R.id.speciallist_add_condition);
+        final DragSortListView listView = (DragSortListView)rootView.findViewById(R.id.speciallist_items);
+        final Button add = (Button)rootView.findViewById(R.id.speciallist_add_condition);
 
         mAdapter = SpecialListsConditionAdapter.setUpListView(mList, listView, getActivity(),
                    getChildFragmentManager(), mBackstack, this, add, new ArrayList<Preference>());
@@ -89,7 +89,7 @@ public class ConjunctionFragment extends BasePropertyFragement<SpecialListsConju
     }
 
     @Override
-    public void onEditFinish(@NonNull SpecialList list) {
+    public void onEditFinish(@NonNull final SpecialList list) {
         mBackstack.remove(mBackstack.size() - 1);
         property = mAdapter.setNewList(list, mBackstack);
     }

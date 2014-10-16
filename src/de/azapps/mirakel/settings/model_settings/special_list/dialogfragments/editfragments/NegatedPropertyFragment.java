@@ -26,12 +26,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsDueExistsProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
 import de.azapps.mirakel.settings.R;
+
 
 public class NegatedPropertyFragment extends BasePropertyFragement<SpecialListsBooleanProperty> {
 
