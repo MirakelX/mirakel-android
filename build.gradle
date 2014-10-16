@@ -11,7 +11,7 @@ def getVersionCode() {
 	return Integer.parseInt(matcher.group(1))
 }
 
-android {
+android { 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -19,6 +19,8 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
+	    exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
         exclude 'LICENSE.txt'
@@ -121,16 +123,16 @@ android {
 robolectric {
     // configure the set of classes for JUnit tests
     include '**/*Test.class'
-    exclude '**/espresso/**/*.class'
+    //exclude '**/espresso/**/*.class'
 
     // configure max heap size of the test JVM
-    maxHeapSize = '2048m'
+    //maxHeapSize = '2048m'
 
     // configure the test JVM arguments
-    jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
+     //jvmArgs '-Xmx1024m', '-XX:MaxPermSize=256m', '-XX:+HeapDumpOnOutOfMemoryError' 
 
     // configure whether failing tests should fail the build
-    ignoreFailures true
+    //ignoreFailures false
 
     // use afterTest to listen to the test execution results
     afterTest { descriptor, result ->
@@ -153,10 +155,33 @@ dependencies {
     normalCompile project(path: ':new_ui', configuration: 'normalRelease')
 
     //for tests
-    androidTestCompile files("$project.buildDir/classes/debug")
+    //androidTestCompile files("$project.buildDir/classes/debug")
     //androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
-    androidTestCompile "junit:junit:$junitVersion"
-    androidTestCompile "org.robolectric:robolectric:$robolectricVersion"
+    androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
+    
+	androidTestCompile("junit:junit:4.11"){
+        exclude module: 'hamcrest-core'
+    }
+	
+	androidTestCompile("org.robolectric:robolectric:2.3") {
+		exclude module: 'classworlds'
+		exclude module: 'commons-logging'
+		exclude module: 'httpclient'
+		exclude module: 'maven-artifact'
+		exclude module: 'maven-artifact-manager'
+		exclude module: 'maven-error-diagnostics'
+		exclude module: 'maven-model'
+		exclude module: 'maven-project'
+		exclude module: 'maven-settings'
+		exclude module: 'plexus-container-default'
+		exclude module: 'plexus-interpolation'
+		exclude module: 'plexus-utils'
+		exclude module: 'wagon-file'
+		exclude module: 'wagon-http-lightweight'
+		exclude module: 'wagon-provider-api'
+	}
 }
 
 task deploy(dependsOn: build) << {
@@ -167,6 +192,13 @@ task deploy(dependsOn: build) << {
 		script.err.eachLine {line -> println "ERROR: " + line}
 		script.out.each {line -> println line}
 	    script.waitFor()
+	}
+}
+
+apply plugin: 'idea'
+idea {
+	module {
+		testOutputDir = file('build/test-classes/debug')
 	}
 }
 
