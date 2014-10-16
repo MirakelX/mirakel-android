@@ -121,7 +121,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         Bundle b = new Bundle();
         b.putParcelable(MainWidgetProvider.EXTRA_TASK, task);
         // dirty workaround to pass parcelables in pending intents
-        fillInIntent.putExtra(MainWidgetProvider.BUNDLE_WRAPPER, b);
+        fillInIntent.putExtra(DefinitionsHelper.BUNDLE_WRAPPER, b);
         rv.setOnClickFillInIntent(R.id.tasks_row, fillInIntent);
         return rv;
     }

@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -45,7 +46,7 @@ public class WidgetHelper {
     public static RemoteViews configureItem(final RemoteViews rv,
                                             final Task task, final Context context, final long listId,
                                             final boolean isMinimal, final int widgetId) {
-        Intent openIntent;
+        final Intent openIntent;
         try {
             openIntent = new Intent(context,
                                     Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
@@ -55,7 +56,9 @@ public class WidgetHelper {
         }
 
         openIntent.setAction(DefinitionsHelper.SHOW_TASK);
-        openIntent.putExtra(DefinitionsHelper.EXTRA_TASK, task);
+        final Bundle wrapper = new Bundle();
+        wrapper.putParcelable(DefinitionsHelper.EXTRA_TASK, task);
+        openIntent.putExtra(DefinitionsHelper.BUNDLE_WRAPPER, wrapper);
         openIntent
         .setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
@@ -63,7 +66,7 @@ public class WidgetHelper {
         rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
         rv.setOnClickPendingIntent(R.id.tasks_row_name, pOpenIntent);
         if (isMinimal) {
-            if (task.getDue() != null) {
+            if (!task.getDue().isPresent()) {
                 rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
                 rv.setTextViewText(R.id.tasks_row_due,
                                    DateTimeHelper.formatDate(context, task.getDue()));
@@ -88,16 +91,9 @@ public class WidgetHelper {
         if (task.isDone()) {
             rv.setTextColor(R.id.tasks_row_name, context.getResources()
                             .getColor(R.color.Grey));
-        } else {
-            /*
-             * Is this meaningful? I mean the widget is transparent…
-             * rv.setTextColor( R.id.tasks_row_name, context.getResources()
-             * .getColor( preferences.getBoolean("darkWidget", false) ?
-             * R.color.White : R.color.Black));
-             */
         }
         if (!isMinimal) {
-            rv.setTextViewText(R.id.tasks_row_priority, task.getPriority() + "");
+            rv.setTextViewText(R.id.tasks_row_priority, String.valueOf(task.getPriority()));
             rv.setTextColor(R.id.tasks_row_priority, context.getResources()
                             .getColor(R.color.Black));
             final GradientDrawable drawable = (GradientDrawable) context
@@ -115,25 +111,19 @@ public class WidgetHelper {
             } else {
                 rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
             }
-            if (task.getContent().length() != 0 || task.countSubtasks() > 0
-                || task.getFiles().size() > 0) {
+            if ((!task.getContent().isEmpty()) || (task.countSubtasks() > 0L)
+                || (!task.getFiles().isEmpty())) {
                 rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
             } else {
                 rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);
             }
-            if (task.getDue() != null) {
-                rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-                rv.setTextViewText(R.id.tasks_row_due,
-                                   DateTimeHelper.formatDate(context, task.getDue()));
-                if (!isMinimal) {
-                    rv.setTextColor(
-                        R.id.tasks_row_due,
-                        TaskHelper.getTaskDueColor(context, task.getDue(),
-                                                   task.isDone()));
-                }
-            } else {
-                rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
-            }
+            rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
+            rv.setTextViewText(R.id.tasks_row_due,
+                               DateTimeHelper.formatDate(context, task.getDue()));
+            rv.setTextColor(
+                R.id.tasks_row_due,
+                TaskHelper.getTaskDueColor(context, task.getDue(),
+                                           task.isDone()));
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             rv.setTextColor(
@@ -160,7 +150,7 @@ public class WidgetHelper {
     }
 
     private static String getKey(final int widgetId, final String key) {
-        return PREF_PREFIX + widgetId + "_" + key;
+        return PREF_PREFIX + widgetId + '_' + key;
     }
 
     private static boolean getBoolean(final Context context,
@@ -202,7 +192,7 @@ public class WidgetHelper {
     public static ListMirakel getList(final Context context, final int widgetId) {
         final int listId = getSettings(context).getInt(
                                getKey(widgetId, "list_id"), 0);
-        Optional<ListMirakel> list = ListMirakel.get(listId);
+        final Optional<ListMirakel> list = ListMirakel.get(listId);
         if (!list.isPresent()) {
             return SpecialList.firstSpecialSafe();
         } else {
