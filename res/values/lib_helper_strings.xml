@@ -47,6 +47,7 @@ Device: %3$s\n]]>
     <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">We don\'t know how to fix this bug. Mirakel is restarting.</string>
     <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">List name already exist. Choose another one.</string>
     <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Please update DAVdroid</string>
+    <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Wunderlist fileformate changed. Please report this to the Mirakel team.</string>
     <!-- 
     <string name="error_" tools:ignore="UnusedResources"></string>
     <string name="error_" tools:ignore="UnusedResources"></string>
