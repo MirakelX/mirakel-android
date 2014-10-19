@@ -278,15 +278,15 @@ public class Task extends TaskBase {
             qb.and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
                    SYNC_STATE.DELETE.toInt());
         }
-        return fromNullable(qb.get(Task.class));
+        return qb.get(Task.class);
     }
 
     @NonNull
     public static Optional<Task> getByUUID(final String uuid) {
-        return fromNullable(new MirakelQueryBuilder(context)
-                            .and(UUID, Operation.EQ, uuid)
-                            .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
-                                 SYNC_STATE.DELETE.toInt()).get(Task.class));
+        return new MirakelQueryBuilder(context)
+               .and(UUID, Operation.EQ, uuid)
+               .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                    SYNC_STATE.DELETE.toInt()).get(Task.class);
     }
 
     public static Task getDummy(@NonNull final Context ctx, @NonNull final ListMirakel list) {

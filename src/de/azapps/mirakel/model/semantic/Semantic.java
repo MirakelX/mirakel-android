@@ -55,7 +55,6 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 public class Semantic extends SemanticBase {
@@ -228,7 +227,7 @@ public class Semantic extends SemanticBase {
     }
 
     public static Optional<Semantic> first() {
-        return fromNullable(new MirakelQueryBuilder(context).get(Semantic.class));
+        return new MirakelQueryBuilder(context).get(Semantic.class);
     }
 
     /**
@@ -238,8 +237,7 @@ public class Semantic extends SemanticBase {
      * @return
      */
     public static Optional<Semantic> get(final long id) {
-        return fromNullable(new MirakelQueryBuilder(context).and(ID, Operation.EQ, id).get(
-                                Semantic.class));
+        return new MirakelQueryBuilder(context).and(ID, Operation.EQ, id).get(Semantic.class);
     }
 
     /**

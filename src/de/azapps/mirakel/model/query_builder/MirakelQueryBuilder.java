@@ -22,11 +22,13 @@ package de.azapps.mirakel.model.query_builder;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.google.common.base.Optional;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -39,6 +41,9 @@ import java.util.List;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 /**
  * Created by az on 15.07.14.
@@ -456,16 +461,19 @@ public class MirakelQueryBuilder {
         return l;
     }
 
-    public <T extends ModelBase> T get(final Class<T> clazz, final long id) {
+    @NonNull
+    public <T extends ModelBase> Optional<T> get(final Class<T> clazz, final long id) {
         and (ModelBase.ID, Operation.EQ, id);
         return get(clazz);
     }
 
-    public <T extends ModelBase> T get(final Class<T> clazz) {
-        T a = null;
+
+    @NonNull
+    public <T extends ModelBase> Optional<T> get(final Class<T> clazz) {
+        Optional<T> a = absent();
         final Cursor c = query(setupQueryBuilder(clazz));
         if (c.moveToFirst()) {
-            a = cursorToObject(c, clazz);
+            a = of(cursorToObject(c, clazz));
         }
         c.close();
         return a;

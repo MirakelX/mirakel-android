@@ -19,13 +19,6 @@
 
 package de.azapps.mirakel.model.file;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -38,6 +31,13 @@ import android.support.annotation.NonNull;
 import android.util.TypedValue;
 
 import com.google.common.base.Optional;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -125,7 +125,7 @@ public class FileMirakel extends FileBase {
      */
     @NonNull
     public static Optional<FileMirakel> get(final long id) {
-        return fromNullable(new MirakelQueryBuilder(context).get(FileMirakel.class, id));
+        return new MirakelQueryBuilder(context).get(FileMirakel.class, id);
     }
 
     @NonNull

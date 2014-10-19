@@ -332,8 +332,7 @@ public class SpecialList extends ListMirakel {
      * @return List
      */
     public static Optional<SpecialList> getSpecial(final long listId) {
-        SpecialList l = new MirakelQueryBuilder(context).get(SpecialList.class, Math.abs(listId));
-        return fromNullable(l);
+        return new MirakelQueryBuilder(context).get(SpecialList.class, Math.abs(listId));
     }
 
     /**
@@ -342,9 +341,9 @@ public class SpecialList extends ListMirakel {
      * @return List
      */
     public static Optional<SpecialList> firstSpecial() {
-        return fromNullable(new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
-                            Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
-                                    Sorting.ASC).get(SpecialList.class));
+        return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
+                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
+                        Sorting.ASC).get(SpecialList.class);
     }
 
     public static SpecialList firstSpecialSafe() {

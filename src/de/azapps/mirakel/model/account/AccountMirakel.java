@@ -159,12 +159,12 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static Optional<AccountMirakel> get(final Account account) {
-        return fromNullable(new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
-                            account.name).get(AccountMirakel.class));
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
+                account.name).get(AccountMirakel.class);
     }
 
     public static Optional<AccountMirakel> get(final long id) {
-        return fromNullable(new MirakelQueryBuilder(context).get(AccountMirakel.class, id));
+        return new MirakelQueryBuilder(context).get(AccountMirakel.class, id);
     }
 
     public static long countRemoteAccounts() {
@@ -183,11 +183,11 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static AccountMirakel getLocal() {
-        final AccountMirakel a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
+        final Optional<AccountMirakel> a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
                 ACCOUNT_TYPES.LOCAL.toInt()).and(ENABLED, Operation.EQ,
                         true).get(AccountMirakel.class);
-        if (a != null) {
-            return a;
+        if (a.isPresent()) {
+            return a.get();
         }
         return newAccount(context.getString(R.string.local_account),
                           ACCOUNT_TYPES.LOCAL, true);

@@ -41,7 +41,6 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 public class Tag extends TagBase {
 
@@ -73,7 +72,7 @@ public class Tag extends TagBase {
 
     @NonNull
     public static Optional<Tag> get(final long id) {
-        return Optional.fromNullable(new MirakelQueryBuilder(context).get(Tag.class, id));
+        return new MirakelQueryBuilder(context).get(Tag.class, id);
     }
 
     @NonNull
@@ -155,7 +154,7 @@ public class Tag extends TagBase {
 
     @NonNull
     private static Optional<Tag> getByName(final String name) {
-        return fromNullable(new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class));
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class);
     }
 
     /**

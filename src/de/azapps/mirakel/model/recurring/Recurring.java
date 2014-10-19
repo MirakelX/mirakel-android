@@ -163,7 +163,7 @@ public class Recurring extends RecurringBase {
      */
     @NonNull
     public static Optional<Recurring> get(final long id) {
-        return fromNullable(new MirakelQueryBuilder(context).get(Recurring.class, id));
+        return new MirakelQueryBuilder(context).get(Recurring.class, id);
     }
 
     @NonNull
@@ -184,7 +184,7 @@ public class Recurring extends RecurringBase {
         } else {
             qb.and(END_DATE, Operation.EQ, (String)null);
         }
-        return fromNullable(qb.get(Recurring.class));
+        return qb.get(Recurring.class);
     }
 
     @NonNull
@@ -194,7 +194,7 @@ public class Recurring extends RecurringBase {
 
 
     public static void destroyTemporary(final long recurrenceId) {
-        delete(URI, TEMPORARY + "=1 AND " + ID + "=" + recurrenceId, null);
+        delete(URI, TEMPORARY + "=1 AND " + ID + '=' + recurrenceId, null);
     }
 
     public void destroy() {
