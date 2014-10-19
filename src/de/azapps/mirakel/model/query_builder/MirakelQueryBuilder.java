@@ -53,8 +53,8 @@ public class MirakelQueryBuilder {
     private boolean distinct = false;
 
 
-    public CursorLoader toSupportCursorLoader(final Uri uri) {
-        return new CursorLoader(
+    public android.support.v4.content.CursorLoader toSupportCursorLoader(final Uri uri) {
+        return new android.support.v4.content.CursorLoader(
                    this.context,
                    uri,
                    this.projection.toArray(new String[this.projection.size()]),
