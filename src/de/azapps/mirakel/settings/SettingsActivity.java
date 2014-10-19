@@ -365,8 +365,7 @@ public class SettingsActivity extends PreferenceActivity {
                             return true;
                         }
                     case FILE_WUNDERLIST:
-                        return WunderlistImport.exec(SettingsActivity.this,
-                                                     SettingsActivity.this.stream);
+                        return WunderlistImport.exec(SettingsActivity.this.stream);
                     default:
                         return false;
                     }

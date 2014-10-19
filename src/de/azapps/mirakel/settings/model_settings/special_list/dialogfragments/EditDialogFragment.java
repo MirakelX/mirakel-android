@@ -120,28 +120,20 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             @NonNull final SpecialListsBaseProperty property, @NonNull final ArrayList<Integer> backStack,
             @NonNull final OnPropertyEditListener listener,
             @NonNull final SpecialListsConjunctionList rootProperty) {
-        EditDialogFragment fragment = new EditDialogFragment();
-        Bundle args = new Bundle();
+        final EditDialogFragment fragment = new EditDialogFragment();
+        final Bundle args = new Bundle();
         args.putParcelable(LIST_KEY, list);
         args.putParcelable(PROPERTY_KEY, property);
         args.putParcelable(ROOT_PROPERTY_KEY, rootProperty);
         args.putIntegerArrayList(BACK_STACK_KEY, backStack);
         fragment.setArguments(args);
-        fragment.setOnPropertyEditListener(listener);
+        fragment.onEditListener = listener;
 
         return fragment;
     }
 
-    private void setOnPropertyEditListener(@NonNull OnPropertyEditListener listener) {
-        onEditListener = listener;
-    }
-
-    public EditDialogFragment() {
-
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mList = getArguments().getParcelable(LIST_KEY);
         property = getArguments().getParcelable(PROPERTY_KEY);
@@ -150,9 +142,9 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     }
 
     /**
-     * @throws java.lang.IllegalArgumentException if unkown property type
+     * @throws java.lang.IllegalArgumentException if unknown property type
      */
-    private static int propertyToType(SpecialListsBaseProperty property) {
+    private static int propertyToType(final SpecialListsBaseProperty property) {
         if (property != null) {
             if (property instanceof SpecialListsDoneProperty) {
                 return DONE;
@@ -190,17 +182,18 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.special_lists_edit_dialog_fragment, null);
-        ArrayAdapter<CharSequence> spinnerArrayAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.special_lists_filter_type, android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinner = (Spinner)rootView.findViewById(R.id.property_spinner);
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container,
+                             @Nullable final Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.special_lists_edit_dialog_fragment, null);
+        final ArrayAdapter<CharSequence> spinnerArrayAdapter = ArrayAdapter.createFromResource(
+                    getActivity(),
+                    R.array.special_lists_filter_type, android.R.layout.simple_spinner_dropdown_item);
+        final Spinner spinner = (Spinner)rootView.findViewById(R.id.property_spinner);
         spinner.setAdapter(spinnerArrayAdapter);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(propertyToType(property), false);
         handleNewFragment(propertyToType(property));
-        Button ok = (Button)rootView.findViewById(R.id.saveButton);
+        final Button ok = (Button)rootView.findViewById(R.id.saveButton);
         ok.setOnClickListener(this);
         ((LinearLayout)rootView).setShowDividers(LinearLayout.SHOW_DIVIDER_END);
         return rootView;
@@ -209,8 +202,8 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void handleNewFragment(int id) {
-        BasePropertyFragement fragment;
+    private void handleNewFragment(final int id) {
+        final BasePropertyFragement fragment;
         switch (id) {
         case DONE:
             property = new SpecialListsDoneProperty(property);
@@ -258,7 +251,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             break;
         case SUBCONDITION:
             property = new SpecialListsConjunctionList(property,
-                    rootProperty.getConjunction() == CONJUNCTION.AND ? CONJUNCTION.OR : CONJUNCTION.AND);
+                    (rootProperty.getConjunction() == CONJUNCTION.AND) ? CONJUNCTION.OR : CONJUNCTION.AND);
             fragment = ConjunctionFragment.newInstance((SpecialListsConjunctionList) property, mList,
                        backStack);
             break;
@@ -274,8 +267,8 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             Log.wtf(TAG, "unknown type");
             return;
         }
-        if (getView() != null && getView().findViewById(R.id.property_dialog_container) != null) {
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        if ((getView() != null) && (getView().findViewById(R.id.property_dialog_container) != null)) {
+            final FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.property_dialog_container, fragment, "dialog");
             transaction.commit();
         }
@@ -286,12 +279,13 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         final SpecialListsBaseProperty property = ((BasePropertyFragement)
                 getChildFragmentManager().findFragmentById(R.id.property_dialog_container)).getProperty();
         mList = execOnTree(mList, backStack, new WorkOnTree() {
             @Override
-            public void onTreeExists(int position, @NonNull SpecialListsConjunctionList currentProperty) {
+            public void onTreeExists(final int position,
+                                     @NonNull final SpecialListsConjunctionList currentProperty) {
                 if (backStack.get(position) != SpecialListsConditionAdapter.NEW_PROPERTY) {
                     currentProperty.getChilds().set(backStack.get(position), property);
                 } else {
@@ -299,6 +293,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
                 }
             }
 
+            @NonNull
             @Override
             public Optional<SpecialListsBaseProperty> onTreeNotExists() {
                 return of(property);
@@ -309,18 +304,19 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(final DialogInterface dialog) {
         super.onDismiss(dialog);
         onEditListener.onEditFinish(mList);
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelected(final AdapterView<?> parent, final View view, final int position,
+                               final long id) {
         handleNewFragment(position);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(final AdapterView<?> parent) {
 
     }
 

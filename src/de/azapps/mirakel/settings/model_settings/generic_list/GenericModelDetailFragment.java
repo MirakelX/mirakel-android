@@ -66,7 +66,7 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
             mItem = getDummyItem();
         }
         getActivity().getActionBar().setTitle(mItem.getName());
-        int preferencesResource = getResourceId();
+        final int preferencesResource = getResourceId();
         if (preferencesResource != NO_PREFERENCES) {
             addPreferencesFromResource(getResourceId());
             setUp();

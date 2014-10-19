@@ -95,7 +95,7 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                 SpecialListsConjunctionList currentProperty = (SpecialListsConjunctionList) where.get();
                 for (int i = 0; i < backStack.size(); i++) {
                     if (backStack.get(i) == NEW_PROPERTY) {
-                        SpecialListsConjunctionList newList = new SpecialListsConjunctionList(
+                        final SpecialListsConjunctionList newList = new SpecialListsConjunctionList(
                             (currentProperty.getConjunction() ==
                              SpecialListsConjunctionList.CONJUNCTION.AND) ? SpecialListsConjunctionList.CONJUNCTION.OR :
                             SpecialListsConjunctionList.CONJUNCTION.AND, new ArrayList<SpecialListsBaseProperty>());
@@ -106,7 +106,7 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                     if (currentProperty.getChilds().get(backStack.get(i)) instanceof SpecialListsConjunctionList) {
                         currentProperty = (SpecialListsConjunctionList) currentProperty.getChilds().get(backStack.get(i));
                     } else {
-                        List<SpecialListsBaseProperty> childs = new ArrayList<>(1);
+                        final List<SpecialListsBaseProperty> childs = new ArrayList<>(1);
                         childs.add(currentProperty.getChilds().get(backStack.get(i)));
                         currentProperty = new SpecialListsConjunctionList((currentProperty.getConjunction() ==
                                 SpecialListsConjunctionList.CONJUNCTION.AND) ? SpecialListsConjunctionList.CONJUNCTION.OR :
