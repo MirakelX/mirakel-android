@@ -105,7 +105,8 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
     @NonNull
     @Override
     public String serialize() {
-        if (childs.size() > 1) {
+        if ((childs.size() > 1) || (!childs.isEmpty() &&
+                                    (childs.get(0) instanceof SpecialListsConjunctionList))) {
             final String childList = TextUtils.join(",", Collections2.transform(childs,
             new Function<SpecialListsBaseProperty, String>() {
                 @Override
