@@ -1791,7 +1791,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         if (getTasksFragment() != null) {
             getTasksFragment().updateList();
         }
-        if ((getTaskFragment() != null) && (getTaskFragment().getTask() != null)) {
+        if ((getTaskFragment() != null) && (getTaskFragment().getTask() != null) &&
+            (getTaskFragment().getTask().getId() != 0)) {
             final Optional<Task> taskOptional = Task.get(getTaskFragment().getTask().getId());
             if (taskOptional.isPresent()) {
                 getTaskFragment().update(taskOptional.get());
