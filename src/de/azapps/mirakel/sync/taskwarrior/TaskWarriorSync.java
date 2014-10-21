@@ -18,6 +18,22 @@
  ******************************************************************************/
 package de.azapps.mirakel.sync.taskwarrior;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.OperationApplicationException;
+import android.database.Cursor;
+import android.os.Looper;
+import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,22 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.content.ContentProviderOperation;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.OperationApplicationException;
-import android.database.Cursor;
-import android.os.Looper;
-import android.os.RemoteException;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -64,15 +64,15 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
-import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTask;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.mirakel.sync.taskwarrior.network_helper.Msg;
 import de.azapps.mirakel.sync.taskwarrior.network_helper.TLSClient;
 import de.azapps.mirakel.sync.taskwarrior.network_helper.TLSClient.NoSuchCertificateException;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TW_ERRORS;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorAccount;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorSyncFailedException;
-import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
@@ -155,34 +155,34 @@ public class TaskWarriorSync {
             }
         }
         // parse tasks
-        if (remotes.getPayload() == null || remotes.getPayload().isEmpty()) {
+        if ((remotes.getPayload() == null) || remotes.getPayload().isEmpty()) {
             Log.i(TAG, "there is no Payload");
         } else {
-            Map<String, TaskWarriorTask> remoteTasks = new HashMap<>();
+            final Map<String, TaskWarriorTask> remoteTasks = new HashMap<>();
 
-            Optional<String> newSyncKey = parseTasks(remotes, remoteTasks);
+            final Optional<String> newSyncKey = parseTasks(remotes, remoteTasks);
 
             // lookup tables
-            Map<String, Long> projectMapping = createProjects(taskWarriorAccount, remoteTasks);
-            Map<String, Long> tagMapping = createTags(remoteTasks);
-            Map<String, Long> idMapping = new HashMap<>();
+            final Map<String, Long> projectMapping = createProjects(taskWarriorAccount, remoteTasks);
+            final Map<String, Long> tagMapping = createTags(remoteTasks);
+            final Map<String, Long> idMapping = new HashMap<>();
 
             ListMirakel inbox = ListMirakel.getInboxList(taskWarriorAccount.getAccountMirakel());
 
             // lists for deletion
-            List<Long> allUpdatedTasks = new ArrayList<>();
-            List<Long> allDeletedTasks = new ArrayList<>();
+            final List<Long> allUpdatedTasks = new ArrayList<>();
+            final List<Long> allDeletedTasks = new ArrayList<>();
 
-            List<String> uuids = new ArrayList<>(remoteTasks.keySet());
+            final List<String> uuids = new ArrayList<>(remoteTasks.keySet());
             if (!uuids.isEmpty()) {
                 for (int i = 0; i < (remoteTasks.size() / MAX_TASKS_PER_TRANSAKTION) + 1; i++) {
-                    int end = (i + 1) * MAX_TASKS_PER_TRANSAKTION >= remoteTasks.size() ? remoteTasks.size() :
-                              (i + 1) * MAX_TASKS_PER_TRANSAKTION;
-                    List<String> transaction_uuids = uuids.subList(i * MAX_TASKS_PER_TRANSAKTION, end);
-                    List<String> newUUIDS = new ArrayList<>();
+                    int end = (((i + 1) * MAX_TASKS_PER_TRANSAKTION) >= remoteTasks.size()) ? remoteTasks.size() : ((
+                                  i + 1) * MAX_TASKS_PER_TRANSAKTION);
+                    final List<String> transaction_uuids = uuids.subList(i * MAX_TASKS_PER_TRANSAKTION, end);
+                    final List<String> newUUIDS = new ArrayList<>();
 
                     // updated tasks
-                    ArrayList<ContentProviderOperation> pendingOperations = handleUpdatedTasks(remoteTasks,
+                    final ArrayList<ContentProviderOperation> pendingOperations = handleUpdatedTasks(remoteTasks,
                             projectMapping, inbox, allUpdatedTasks, allDeletedTasks, transaction_uuids, idMapping);
 
                     handleInsertNewTasks(remoteTasks, projectMapping, inbox, transaction_uuids, newUUIDS,
@@ -195,10 +195,11 @@ public class TaskWarriorSync {
                         throw new TaskWarriorSyncFailedException(TW_ERRORS.CANNOT_PARSE_MESSAGE, e);
                     }
                     if (!newUUIDS.isEmpty()) {
-                        Cursor c = new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID).and(Task.UUID, Operation.IN,
+                        final Cursor c = new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID).and(Task.UUID,
+                                Operation.IN,
                                 newUUIDS).query(Task.URI);
-                        int uuid_column = c.getColumnIndex(Task.UUID);
-                        int id_column = c.getColumnIndex(Task.ID);
+                        final int uuid_column = c.getColumnIndex(Task.UUID);
+                        final int id_column = c.getColumnIndex(Task.ID);
                         while (c.moveToNext()) {
                             idMapping.put(c.getString(uuid_column), c.getLong(id_column));
                         }
@@ -207,7 +208,7 @@ public class TaskWarriorSync {
                 }
                 // delete deleted tasks
                 mContext.getContentResolver().delete(Task.URI, Task.ID + " IN (" + TextUtils.join(",",
-                                                     allDeletedTasks) + ")", null);
+                                                     allDeletedTasks) + ')', null);
                 handleReferences(remoteTasks, tagMapping, allUpdatedTasks, idMapping);
             }
             taskWarriorAccount.setSyncKey(newSyncKey);
@@ -253,7 +254,8 @@ public class TaskWarriorSync {
         return remotes;
     }
 
-    private TLSClient setupConnection(TaskWarriorAccount taskWarriorAccount) throws
+    @NonNull
+    private TLSClient setupConnection(@NonNull final TaskWarriorAccount taskWarriorAccount) throws
         TaskWarriorSyncFailedException {
         final TLSClient client = new TLSClient();
         try {
@@ -283,7 +285,9 @@ public class TaskWarriorSync {
         return client;
     }
 
-    private Optional<String> parseTasks(Msg remotes, Map<String, TaskWarriorTask> remoteTasks) {
+    @NonNull
+    private Optional<String> parseTasks(final @NonNull Msg remotes,
+                                        final @NonNull Map<String, TaskWarriorTask> remoteTasks) {
         Optional<String> newSyncKey = absent();
         final String tasksString[] = remotes.getPayload().split("\n");
         final Gson gson = new GsonBuilder().registerTypeAdapter(TaskWarriorTask.class,
@@ -296,39 +300,39 @@ public class TaskWarriorSync {
                 newSyncKey = of(taskString);
                 continue;
             }
-            TaskWarriorTask t = gson.fromJson(taskString, TaskWarriorTask.class);
+            final TaskWarriorTask t = gson.fromJson(taskString, TaskWarriorTask.class);
             remoteTasks.put(t.getUUID(), t);
         }
         return newSyncKey;
     }
 
-    private void handleReferences(Map<String, TaskWarriorTask> remoteTasks,
-                                  Map<String, Long> tagMapping, List<Long> allUpdatedTasks,
-                                  Map<String, Long> idMapping) throws TaskWarriorSyncFailedException {
-        String taskList = TextUtils.join(",", allUpdatedTasks);
+    private void handleReferences(final @NonNull Map<String, TaskWarriorTask> remoteTasks,
+                                  final @NonNull Map<String, Long> tagMapping, @NonNull final List<Long> allUpdatedTasks,
+                                  final @NonNull Map<String, Long> idMapping) throws TaskWarriorSyncFailedException {
+        final String taskList = TextUtils.join(",", allUpdatedTasks);
         // delete all subtasks
         mContext.getContentResolver().delete(MirakelInternalContentProvider.SUBTASK_URI,
-                                             "child_id IN(" + taskList + ")", null);
+                                             "child_id IN(" + taskList + ')', null);
         // delete all tags
         mContext.getContentResolver().delete(MirakelInternalContentProvider.TAG_CONNECTION_URI,
-                                             "task_id IN(" + taskList + ")", null);
+                                             "task_id IN(" + taskList + ')', null);
         // delete recurring
         mContext.getContentResolver().delete(MirakelInternalContentProvider.RECURRING_TW_URI,
-                                             Recurring.CHILD + " IN(" + taskList + ")", null);
+                                             Recurring.CHILD + " IN(" + taskList + ')', null);
 
-        ArrayList<ContentProviderOperation> pendingOperations = new ArrayList<>();
-        Map<String, Long> recurringMapping = new HashMap<>();
-        for (TaskWarriorTask t : remoteTasks.values()) {
+        final ArrayList<ContentProviderOperation> pendingOperations = new ArrayList<>();
+        final Map<String, Long> recurringMapping = new HashMap<>();
+        for (final TaskWarriorTask t : remoteTasks.values()) {
             if (t.isNotDeleted()) {
-                for (String tag : t.getTags()) {
-                    ContentValues cv = new ContentValues();
+                for (final String tag : t.getTags()) {
+                    final ContentValues cv = new ContentValues();
                     cv.put("task_id", idMapping.get(t.getUUID()));
                     cv.put("tag_id", tagMapping.get(tag));
                     pendingOperations.add(ContentProviderOperation.newInsert(
                                               MirakelInternalContentProvider.TAG_CONNECTION_URI).withValues(cv).build());
                 }
-                for (String child : t.getDependencies()) {
-                    ContentValues cv = new ContentValues();
+                for (final String child : t.getDependencies()) {
+                    final ContentValues cv = new ContentValues();
                     cv.put("parent_id", idMapping.get(t.getUUID()));
                     cv.put("child_id", idMapping.get(child));
                     pendingOperations.add(ContentProviderOperation.newInsert(
@@ -336,9 +340,9 @@ public class TaskWarriorSync {
                 }
                 if (t.isRecurringMaster()) {
                     try {
-                        Recurring r = t.getRecurrence().create();
+                        final Recurring r = t.getRecurrence().create();
                         recurringMapping.put(t.getUUID(), r.getId());
-                        ContentValues cv = new ContentValues();
+                        final ContentValues cv = new ContentValues();
                         cv.put(Task.RECURRING, r.getId());
                         pendingOperations.add(ContentProviderOperation.newUpdate(Task.URI).withSelection(Task.UUID + "=?",
                                               new String[] {t.getUUID()}).withValues(cv).build());
@@ -356,8 +360,8 @@ public class TaskWarriorSync {
                 return input.isRecurringChild();
             }
         });
-        for (TaskWarriorTask t : recurringChilds) {
-            String parentUUID = t.getParent();
+        for (final TaskWarriorTask t : recurringChilds) {
+            final String parentUUID = t.getParent();
             final ContentValues updateCV = new ContentValues();
             updateCV.put(Task.RECURRING, recurringMapping.get(parentUUID));
             pendingOperations.add(ContentProviderOperation.newUpdate(Task.URI).withSelection(Task.UUID + "=?",
@@ -381,7 +385,7 @@ public class TaskWarriorSync {
                                       final @NonNull Map<String, Long> projectMapping, final @NonNull ListMirakel inbox,
                                       final @NonNull List<String> uuids, final @NonNull List<String> newUUIDS,
                                       final @NonNull ArrayList<ContentProviderOperation> pendingOperations) {
-        for (String uuid : uuids) {
+        for (final String uuid : uuids) {
             pendingOperations.add(remoteTasks.get(uuid).getInsert(inbox.getId(), projectMapping));
             newUUIDS.add(uuid);
         }
@@ -395,17 +399,17 @@ public class TaskWarriorSync {
             final @NonNull Map<String, Long> idMapping) {
         Cursor c = new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID,
                 Task.ADDITIONAL_ENTRIES).and(Task.UUID, Operation.IN, uuids).query(Task.URI);
-        ArrayList<ContentProviderOperation> pendingOperations = new ArrayList<>();
+        final ArrayList<ContentProviderOperation> pendingOperations = new ArrayList<>();
 
-        int uuid_column = c.getColumnIndex(Task.UUID);
-        int id_column = c.getColumnIndex(Task.ID);
-        int additional_column = c.getColumnIndex(Task.ADDITIONAL_ENTRIES);
+        final int uuid_column = c.getColumnIndex(Task.UUID);
+        final int id_column = c.getColumnIndex(Task.ID);
+        final int additional_column = c.getColumnIndex(Task.ADDITIONAL_ENTRIES);
 
         while (c.moveToNext()) {
-            String uuid = c.getString(uuid_column);
-            long local_id = c.getLong(id_column);
-            String additionals = c.getString(additional_column);
-            TaskWarriorTask remoteTask = remoteTasks.get(uuid);
+            final String uuid = c.getString(uuid_column);
+            final long local_id = c.getLong(id_column);
+            final String additionals = c.getString(additional_column);
+            final TaskWarriorTask remoteTask = remoteTasks.get(uuid);
             if (remoteTask.isNotDeleted()) {
                 pendingOperations.add(remoteTask.getUpdate(local_id, additionals, projectMapping, inbox.getId()));
                 allUpdatedTasks.add(local_id);
@@ -422,7 +426,7 @@ public class TaskWarriorSync {
     private Map<String, Long> createProjects(final @NonNull TaskWarriorAccount taskWarriorAccount,
             final @NonNull Map<String, TaskWarriorTask> remoteTasks) {
         final Set<String> projects = new HashSet<>();
-        for (TaskWarriorTask t : remoteTasks.values()) {
+        for (final TaskWarriorTask t : remoteTasks.values()) {
             if (t.hasProject()) {
                 projects.add(t.getProject());
             }
@@ -432,46 +436,46 @@ public class TaskWarriorSync {
                 new ArrayList<>(projects))
         .and(ListMirakel.ACCOUNT_ID, Operation.EQ, taskWarriorAccount.getAccountMirakel().getId())
         .select(Arrays.asList(new String[] {ListMirakel.ID, ListMirakel.NAME})).query(ListMirakel.URI);
-        int id_column = c.getColumnIndex(ListMirakel.ID);
-        int name_column = c.getColumnIndex(ListMirakel.NAME);
+        final int id_column = c.getColumnIndex(ListMirakel.ID);
+        final int name_column = c.getColumnIndex(ListMirakel.NAME);
         while (c.moveToNext()) {
-            String name = c.getString(name_column);
+            final String name = c.getString(name_column);
             projectMapping.put(name, c.getLong(id_column));
             projects.remove(name);
         }
-        for (String project : projects) {
+        for (final String project : projects) {
             try {
-                ListMirakel l = ListMirakel.newList(project, ListMirakel.SORT_BY.DUE,
-                                                    taskWarriorAccount.getAccountMirakel());
+                final ListMirakel l = ListMirakel.newList(project, ListMirakel.SORT_BY.DUE,
+                                      taskWarriorAccount.getAccountMirakel());
                 projectMapping.put(l.getName(), l.getId());
-            } catch (ListMirakel.ListAlreadyExistsException e) {
+            } catch (final ListMirakel.ListAlreadyExistsException e) {
                 // how ever this could happen???
-                throw new IllegalStateException("List wasn't there but here is this list???");
+                throw new IllegalStateException("List wasn't there but here is this list???", e);
             }
         }
         return projectMapping;
     }
 
     private Map<String, Long> createTags(final @NonNull Map<String, TaskWarriorTask> remoteTasks) {
-        Set<String> tagList = new HashSet<>();
-        for (TaskWarriorTask t : remoteTasks.values()) {
-            for (String tag : t.getTags()) {
+        final Set<String> tagList = new HashSet<>();
+        for (final TaskWarriorTask t : remoteTasks.values()) {
+            for (final String tag : t.getTags()) {
                 tagList.add(tag.replace("_", " "));
             }
         }
 
         final Map<String, Long> tagMapping = new HashMap<>();
-        Cursor c = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
+        final Cursor c = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
                 new ArrayList<>(tagList)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI);
-        int id_column = c.getColumnIndex(Tag.ID);
-        int name_column = c.getColumnIndex(Tag.NAME);
+        final int id_column = c.getColumnIndex(Tag.ID);
+        final int name_column = c.getColumnIndex(Tag.NAME);
         while (c.moveToNext()) {
-            String name = c.getString(name_column);
+            final String name = c.getString(name_column);
             tagMapping.put(name.replace(" ", "_"), c.getLong(id_column));
             tagList.remove(name);
         }
-        for (String tag : tagList) {
-            Tag t = Tag.newTag(tag);
+        for (final String tag : tagList) {
+            final Tag t = Tag.newTag(tag);
             tagMapping.put(t.getName().replace(" ", "_"), t.getId());
         }
         return tagMapping;
@@ -483,8 +487,8 @@ public class TaskWarriorSync {
                                     Helpers.getLocal(this.mContext)).format(new Date());
     }
 
-    public void sync(final TaskWarriorAccount taskWarriorAccount,
-                     boolean couldNotFindCommonAncestorWorkaround) throws TaskWarriorSyncFailedException {
+    public void sync(final @NonNull TaskWarriorAccount taskWarriorAccount,
+                     final boolean couldNotFindCommonAncestorWorkaround) throws TaskWarriorSyncFailedException {
         final Msg sync = new Msg();
         sync.set("protocol", TW_PROTOCOL_VERSION);
         sync.set("type", "sync");
@@ -516,7 +520,7 @@ public class TaskWarriorSync {
                                                         FileUtils.getLogDir(), getTime() + ".tw_up.log"));
                 f.write(payload.toString());
                 f.close();
-            } catch (final Exception e) {
+            } catch (final IOException e) {
                 Log.e(TAG, "Eat it", e);
                 // eat it
             }

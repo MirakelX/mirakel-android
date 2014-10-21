@@ -132,7 +132,7 @@ public class TaskWarriorRecurrence extends Recurring {
         case "weekdays":
             final SparseBooleanArray weekdays = new SparseBooleanArray(7);
             for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
-                weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
+                weekdays.put(i, (i != Calendar.SATURDAY) && (i != Calendar.SUNDAY));
             }
             setWeekdays(weekdays);
             break;
@@ -150,7 +150,8 @@ public class TaskWarriorRecurrence extends Recurring {
         }
         setForDue(true);
         setEndDate(end);
-        setExact(true);
+        setExact(false);
         setName(recur);
+        setTemporary(true);
     }
 }
