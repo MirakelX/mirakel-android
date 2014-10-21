@@ -163,8 +163,8 @@ public class RecurrencePickerDialog extends DialogFragment implements
         this.ctx = getDialog().getContext();
         try {
             getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        } catch (final Exception e) {
-            e.printStackTrace();
+        } catch (final RuntimeException e) {
+            Log.wtf(TAG, "failed to create dialog", e);
         }
         final List<Pair<Integer, String>> recurring = Recurring
                 .getForDialog(this.mForDue);
@@ -174,7 +174,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
         // there is a button...
         items[0] = this.ctx.getString(R.string.recurrence_custom);
         this.mPosition = 0;
-        for (int i = this.extraItems; i < recurring.size() + this.extraItems; i++) {
+        for (int i = this.extraItems; i < (recurring.size() + this.extraItems); i++) {
             items[i] = recurring.get(i - this.extraItems).second;
             if (this.mRecurring.isPresent()
                 && items[i].equals(this.mRecurring.get().getLabel())) {
@@ -210,11 +210,11 @@ public class RecurrencePickerDialog extends DialogFragment implements
         this.mRecurrenceSelection
         .setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
-            public void onItemSelected(final AdapterView<?> arg0,
-                                       final View arg1, final int pos, final long id) {
-                RecurrencePickerDialog.this.mPosition = pos;
-                if (pos < RecurrencePickerDialog.this.extraItems) {
-                    switch (pos) {
+            public void onItemSelected(final AdapterView<?> parent,
+                                       final View view, final int position, final long id) {
+                RecurrencePickerDialog.this.mPosition = position;
+                if (position < RecurrencePickerDialog.this.extraItems) {
+                    switch (position) {
                     case 0:// CUSTOM
                         RecurrencePickerDialog.this.mOptions
                         .setVisibility(View.VISIBLE);
@@ -228,13 +228,13 @@ public class RecurrencePickerDialog extends DialogFragment implements
                     RecurrencePickerDialog.this.mIsCustom = false;
                     RecurrencePickerDialog.this.mOptions
                     .setVisibility(View.GONE);
-                    RecurrencePickerDialog.this.mRecurring = Recurring.get(recurring.get(pos -
+                    RecurrencePickerDialog.this.mRecurring = Recurring.get(recurring.get(position -
                             RecurrencePickerDialog.this.extraItems).first);
                 }
             }
             @Override
-            public void onNothingSelected(final AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
+            public void onNothingSelected(final AdapterView<?> parent) {
+                //nothing
             }
         });
         final String[] dayOfWeekString = new DateFormatSymbols()
@@ -253,7 +253,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
             weekdays = this.mRecurring.get().getWeekdays();
         }
         final int startDay = DateTimeHelper.getFirstDayOfWeek();
-        for (int i = startDay; i < startDay + 7; i++) {
+        for (int i = startDay; i < (startDay + 7); i++) {
             final int day = i % 7;
             // Create Button
             final WeekButton item = new WeekButton(this.ctx);
@@ -271,7 +271,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
             item.setChecked(weekdays.contains(day + 1));
             // Add to view
             final ViewGroup root;
-            if (i - startDay >= this.numOfButtonsInRow1) {
+            if ((i - startDay) >= this.numOfButtonsInRow1) {
                 root = this.mWeekGroup2;
             } else {
                 root = this.mWeekGroup;
@@ -290,13 +290,14 @@ public class RecurrencePickerDialog extends DialogFragment implements
         this.mUseExact = (CheckBox) view.findViewById(R.id.recurrence_is_exact);
         Log.w(TAG, "exact: " + this.mInitialExact);
         this.mUseExact.setChecked(this.mInitialExact);
+        mUseExact.setVisibility(mForDue ? View.GONE : View.VISIBLE);
         this.mToggle = (CompoundButton) view.findViewById(R.id.repeat_switch);
         if (this.mToggle == null) {
             this.mToggle = (CheckBox) view.findViewById(R.id.repeat_checkbox);
             this.toggleIsSwitch = false;
         }
         this.mToggle.setChecked(this.mRecurring.isPresent()
-                                && this.mRecurring.get().getId() != -1);
+                                && (this.mRecurring.get().getId() != -1));
         this.mToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView,
@@ -330,14 +331,14 @@ public class RecurrencePickerDialog extends DialogFragment implements
                                 RecurrencePickerDialog.this.mUseExact
                                 .isChecked());
                         } else {
-                            int intervalMonths = 0;
-                            int intervalYears = 0;
-                            int intervalDays = 0;
-                            int intervalMinutes = 0;
-                            int intervalHours = 0;
                             final int type = RecurrencePickerDialog.this.mIntervalType
                                              .getSelectedItemPosition();
                             Log.d(TAG, "TYPE: " + type);
+                            int intervalMonths = 0;
+                            int intervalYears = 0;
+                            int intervalDays = 0;
+                            int intervalHours = 0;
+                            int intervalMinutes = 0;
                             if (type == 0) {
                                 if (RecurrencePickerDialog.this.mForDue) {
                                     intervalDays = RecurrencePickerDialog.this.mIntervalValue;
