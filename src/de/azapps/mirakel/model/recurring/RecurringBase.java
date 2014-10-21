@@ -256,6 +256,7 @@ abstract class RecurringBase extends ModelBase {
                 + this.months * month + this.years * year) * 1000;
     }
 
+    @NonNull
     @Override
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();

@@ -92,11 +92,11 @@ abstract class TaskBase extends ModelBase {
     protected String uuid = "";
     @NonNull
     protected Optional<List<Tag>> tags = absent();
-    private boolean isStub = false;
+    private boolean isStub;
 
     TaskBase() {
         // nothing
-        super(0, "");
+        super(0L, "");
     }
 
     TaskBase(final long newId, @NonNull final String newUuid, @NonNull final ListMirakel newList,
@@ -116,20 +116,21 @@ abstract class TaskBase extends ModelBase {
         setDue(newDue);
         setReminder(newReminder);
         setPriority(newPriority);
-        this.setCreatedAt(newCreatedAt);
-        this.setUpdatedAt(newUpdatedAt);
-        setSyncState(newSyncState);
+        this.createdAt = newCreatedAt;
+        this.updatedAt = newUpdatedAt;
+        syncState = newSyncState;
         this.additionalEntriesString = newAdditionalEntriesString;
         this.recurrence = recurring;
         this.recurringReminder = newRecurringReminder;
         this.progress = newProgress;
         clearEdited();
         this.tags = absent();
-        setIsRecurringShown(shown);
+        isRecurringShown = shown;
     }
 
+
     TaskBase(@NonNull final String newName, @NonNull final ListMirakel list) {
-        super(0, newName);
+        super(0L, newName);
         this.uuid = java.util.UUID.randomUUID().toString();
         setList(list, false);
         setContent("");
@@ -137,19 +138,19 @@ abstract class TaskBase extends ModelBase {
         setDue(Optional.<Calendar>absent());
         setReminder(Optional.<Calendar>absent());
         this.priority = 0;
-        this.setCreatedAt(new GregorianCalendar());
-        this.setUpdatedAt(new GregorianCalendar());
-        setSyncState(SYNC_STATE.NOTHING);
-        this.recurrence = -1;
-        this.recurringReminder = -1;
+        this.createdAt = new GregorianCalendar();
+        this.updatedAt = new GregorianCalendar();
+        syncState = SYNC_STATE.NOTHING;
+        this.recurrence = -1L;
+        this.recurringReminder = -1L;
         this.progress = 0;
-        setIsRecurringShown(true);
+        isRecurringShown = true;
         clearEdited();
     }
 
     public void addAdditionalEntry(@NonNull final String key, final String value) {
         initAdditionalEntries();
-        Log.d(TaskBase.TAG, "add: " + key + ":" + value);
+        Log.d(TaskBase.TAG, "add: " + key + ':' + value);
         this.additionalEntries.put(key, value);
     }
 
@@ -217,22 +218,18 @@ abstract class TaskBase extends ModelBase {
         return this.additionalEntriesString;
     }
 
-    public void clearAdditionalEntries() {
-        this.additionalEntries = new HashMap<>();
-        this.additionalEntriesString = "";
-    }
 
     @NonNull
     public static String serializeAdditionalEntries(
         @NonNull final Map<String, String> additionalEntries) {
-        String additionalEntriesStr = "{";
+        final StringBuilder additionalEntriesStr = new StringBuilder("{");
         boolean first = true;
         for (final Entry<String, String> p : additionalEntries.entrySet()) {
-            additionalEntriesStr += (first ? "" : ",") + "\"" + p.getKey()
-                                    + "\":" + p.getValue();
+            additionalEntriesStr.append(first ? "" : ",").append('"').append(p.getKey()).append("\":").append(
+                p.getValue());
             first = false;
         }
-        return additionalEntriesStr + "}";
+        return additionalEntriesStr.toString() + '}';
     }
 
     @NonNull
@@ -249,10 +246,10 @@ abstract class TaskBase extends ModelBase {
         cv.put(TaskBase.CONTENT, this.content);
         cv.put(TaskBase.DONE, this.done);
         if (this.due.isPresent()) {
-            if (this.due.get().get(Calendar.HOUR) == 0
-                && this.due.get().get(Calendar.MINUTE) == 0
-                && this.due.get().get(Calendar.SECOND) == 0) {
-                cv.put(TaskBase.DUE, this.due.get().getTimeInMillis() / 1000);
+            if ((this.due.get().get(Calendar.HOUR) == 0)
+                && (this.due.get().get(Calendar.MINUTE) == 0)
+                && (this.due.get().get(Calendar.SECOND) == 0)) {
+                cv.put(TaskBase.DUE, this.due.get().getTimeInMillis() / 1000L);
             } else {
                 cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(this.due));
             }
@@ -262,9 +259,9 @@ abstract class TaskBase extends ModelBase {
         cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(this.reminder));
         cv.put(TaskBase.PRIORITY, this.priority);
         cv.put(DatabaseHelper.CREATED_AT,
-               this.createdAt.getTimeInMillis() / 1000);
+               this.createdAt.getTimeInMillis() / 1000L);
         cv.put(DatabaseHelper.UPDATED_AT,
-               this.updatedAt.getTimeInMillis() / 1000);
+               this.updatedAt.getTimeInMillis() / 1000L);
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(TaskBase.RECURRING, this.recurrence);
         cv.put(TaskBase.RECURRING_REMINDER, this.recurringReminder);
@@ -360,7 +357,7 @@ abstract class TaskBase extends ModelBase {
     public static Map<String, String> parseAdditionalEntries(
         @NonNull final String additionalEntriesString) {
         final Map<String, String> ret = new HashMap<>();
-        if (additionalEntriesString != null
+        if ((additionalEntriesString != null)
             && !additionalEntriesString.trim().equals("")
             && !additionalEntriesString.trim().equals("null")) {
             final String t = additionalEntriesString.substring(1,
@@ -374,8 +371,8 @@ abstract class TaskBase extends ModelBase {
                     key = keyValue[0];
                     key = key.replaceAll("\"", "");
                     ret.put(key, keyValue[1]);
-                } else if (keyValue.length == 1 && key != null) {
-                    ret.put(key, ret.get(key) + "," + keyValue[0]);
+                } else if ((keyValue.length == 1) && (key != null)) {
+                    ret.put(key, ret.get(key) + ',' + keyValue[0]);
                 }
             }
         }
@@ -410,9 +407,9 @@ abstract class TaskBase extends ModelBase {
 
     public void setCreatedAt(@NonNull final String created_at) {
         try {
-            setCreatedAt(DateTimeHelper.parseDateTime(created_at));
-        } catch (final ParseException e) {
-            setCreatedAt(new GregorianCalendar());
+            createdAt = DateTimeHelper.parseDateTime(created_at);
+        } catch (final ParseException ignored) {
+            createdAt = new GregorianCalendar();
         }
     }
 
@@ -427,7 +424,7 @@ abstract class TaskBase extends ModelBase {
         }
         this.done = newDone;
         this.edited.put(TaskBase.DONE, true);
-        if (newDone && this.recurrence != -1 && this.due.isPresent()) {
+        if (newDone && (this.recurrence != -1) && this.due.isPresent()) {
             if (getRecurrence().isPresent()) {
                 final Optional<Task> oldTask = Task.get(getId());
                 if (!oldTask.isPresent()) {
@@ -456,7 +453,7 @@ abstract class TaskBase extends ModelBase {
         this.due = newDue;
         this.edited.put(TaskBase.DUE, true);
         if (!newDue.isPresent()) {
-            setRecurrence(-1);
+            setRecurrence(-1L);
         }
     }
 
@@ -476,7 +473,7 @@ abstract class TaskBase extends ModelBase {
 
     public void setList(@NonNull final ListMirakel newList,
                         final boolean removeNoListFlag) {
-        if (this.list != null && this.list.getId() == newList.getId()) {
+        if ((this.list != null) && (this.list.getId() == newList.getId())) {
             return;
         }
         if (newList.isSpecial()) {
@@ -500,7 +497,7 @@ abstract class TaskBase extends ModelBase {
         }
         super.setName(newName);
         // This can not happen (it's final!! – but we are in a constructor), but hey, that's java
-        if (this.edited != null) {
+        if (edited != null) {
             this.edited.put(ModelBase.NAME, true);
         }
     }
@@ -509,7 +506,7 @@ abstract class TaskBase extends ModelBase {
         if (this.priority == priority) {
             return;
         }
-        if (priority > 2 || priority < -2) {
+        if ((priority > 2) || (priority < -2)) {
             throw new IllegalArgumentException(
                 "Priority is not in Range [-2,2]");
         }
@@ -553,7 +550,7 @@ abstract class TaskBase extends ModelBase {
         this.reminder = newReminder;
         this.edited.put(TaskBase.REMINDER, true);
         if (!newReminder.isPresent()) {
-            setRecurringReminder(-1);
+            setRecurringReminder(-1L);
         }
     }
 
@@ -567,9 +564,9 @@ abstract class TaskBase extends ModelBase {
 
     public void setUpdatedAt(@NonNull final String updated_at) {
         try {
-            setUpdatedAt(DateTimeHelper.parseDateTime(updated_at));
-        } catch (final ParseException e) {
-            setUpdatedAt((Calendar) null);
+            updatedAt = DateTimeHelper.parseDateTime(updated_at);
+        } catch (final ParseException ignored) {
+            updatedAt = null;
         }
     }
 
@@ -591,7 +588,7 @@ abstract class TaskBase extends ModelBase {
     private void checkTags() {
         if (!this.tags.isPresent()) {
             if (this.getId() == 0) {
-                this.tags = of((List<Tag>) new ArrayList<Tag>());
+                this.tags = of((List<Tag>) new ArrayList<Tag>(0));
             } else {
                 this.tags = of(Tag.getTagsForTask(this.getId()));
             }
@@ -612,7 +609,7 @@ abstract class TaskBase extends ModelBase {
         return isStub;
     }
 
-    public void setStub(boolean isStub) {
+    public void setStub(final boolean isStub) {
         this.isStub = isStub;
     }
 
@@ -622,7 +619,7 @@ abstract class TaskBase extends ModelBase {
         int result = 1;
         result = prime
                  * result
-                 + (this.additionalEntries == null ? 0 : this.additionalEntries
+                 + ((this.additionalEntries == null) ? 0 : this.additionalEntries
                     .hashCode());
         result = prime * result + (this.additionalEntriesString.hashCode());
         result = prime * result + this.content.hashCode();
@@ -630,7 +627,7 @@ abstract class TaskBase extends ModelBase {
         result = prime * result + (this.done ? 1231 : 1237);
         result = prime * result + (this.due.isPresent() ? this.due.get().hashCode() : 0);
         result = prime * result + (this.edited.hashCode());
-        result = prime * result + (int) (this.getId() ^ this.getId() >>> 32);
+        result = prime * result + (int) (this.getId() ^ (this.getId() >>> 32));
         result = prime * result + (this.isRecurringShown ? 1231 : 1237);
         result = prime * result + (this.list.hashCode());
         result = prime * result + (getName().hashCode());
@@ -649,17 +646,17 @@ abstract class TaskBase extends ModelBase {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if (obj == null) {
+        if (o == null) {
             return false;
         }
-        if (((Object) this).getClass() != obj.getClass()) {
+        if (((Object) this).getClass() != o.getClass()) {
             return false;
         }
-        final TaskBase other = (TaskBase) obj;
+        final TaskBase other = (TaskBase) o;
         if (this.additionalEntries == null) {
             if (other.additionalEntries != null) {
                 return false;

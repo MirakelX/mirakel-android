@@ -67,6 +67,7 @@ abstract class AccountBase extends ModelBase {
         this.type = type;
     }
 
+    @NonNull
     public ContentValues getContentValues() {
         final ContentValues cv;
         try {

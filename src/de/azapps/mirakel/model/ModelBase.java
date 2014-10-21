@@ -48,8 +48,8 @@ abstract public class ModelBase implements Parcelable {
 
     public ModelBase(final Cursor c) {}
 
-    protected ModelBase(long newId, String newName) {
-        setId(newId);
+    protected ModelBase(final long newId, String newName) {
+        id = newId;
         if (newName == null) {
             newName = "";
         }
@@ -92,7 +92,7 @@ abstract public class ModelBase implements Parcelable {
 
     @NonNull
     public ContentValues getContentValues()throws DefinitionsHelper.NoSuchListException {
-        ContentValues cv = new ContentValues();
+        final ContentValues cv = new ContentValues();
         cv.put(ID, id);
         cv.put(NAME, name);
         return cv;
@@ -118,31 +118,38 @@ abstract public class ModelBase implements Parcelable {
     }
 
     protected static long insert(final Uri uri, final ContentValues values) {
-        Uri u = context.getContentResolver().insert(uri, values);
+        final Uri u = context.getContentResolver().insert(uri, values);
         try {
             return ContentUris.parseId(u);
-        } catch (NullPointerException e) {
-            return -1;
+        } catch (final NullPointerException ignored) {
+            return -1L;
         }
     }
 
     protected abstract Uri getUri();
 
     public void destroy() {
-        delete(getUri(), ID + "=?", new String[] {getId() + ""});
+        delete(getUri(), ID + "=?", new String[] {String.valueOf(getId())});
     }
     public void save() {
         try {
-            update(getUri(), getContentValues(), ID + "=?", new String[] {getId() + ""});
-        } catch (DefinitionsHelper.NoSuchListException e) {
+            update(getUri(), getContentValues(), ID + "=?", new String[] {String.valueOf(getId())});
+        } catch (final DefinitionsHelper.NoSuchListException e) {
             Log.wtf(TAG, "this could not happen because task has his own implementation", e);
         }
     }
 
-    public static String[] addPrefix(final String[] columns, final String prefix) {
-        String[] ret = new String[columns.length];
+    @NonNull
+    public static String[] addPrefix(@NonNull final String[] columns, @NonNull final String prefix) {
+        return addPrefix(columns, prefix, columns.length);
+    }
+
+    @NonNull
+    public static String[] addPrefix(@NonNull final String[] columns, @NonNull final String prefix,
+                                     final int newSize) {
+        final String[] ret = new String[(newSize > columns.length) ? newSize : columns.length];
         for (int i = 0; i < columns.length; i++) {
-            ret[i] = prefix + "." + columns[i];
+            ret[i] = prefix + '.' + columns[i];
         }
         return ret;
     }

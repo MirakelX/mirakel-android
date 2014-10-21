@@ -82,6 +82,7 @@ abstract class FileBase extends ModelBase {
     }
 
 
+    @NonNull
     public ContentValues getContentValues() {
         final ContentValues cv;
         try {

@@ -78,6 +78,7 @@ public class SpecialList extends ListMirakel {
         return URI;
     }
 
+    @NonNull
     @Override
     public long getId() {
         return -1 * super.getId();
@@ -281,6 +282,7 @@ public class SpecialList extends ListMirakel {
         });
     }
 
+    @NonNull
     @Override
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();
