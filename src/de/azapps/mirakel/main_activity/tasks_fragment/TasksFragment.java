@@ -19,7 +19,6 @@
 package de.azapps.mirakel.main_activity.tasks_fragment;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
@@ -96,11 +94,8 @@ public class TasksFragment extends Fragment implements
     private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
     protected TaskAdapter adapter;
     protected boolean created = false;
-    protected boolean finishLoad;
-    protected int ItemCount;
     protected long listId;
     protected ListView listView;
-    protected boolean loadMore;
     protected ActionMode mActionMode = null;
     protected MainActivity main;
 
@@ -240,9 +235,6 @@ public class TasksFragment extends Fragment implements
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container, final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        this.finishLoad = false;
-        this.loadMore = false;
-        this.ItemCount = 0;
         this.main = (MainActivity) getActivity();
         this.listId = this.main.getCurrentList().getId();
         this.view = inflater.inflate(R.layout.layout_tasks_fragment, container,
