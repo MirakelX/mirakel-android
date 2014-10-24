@@ -3,8 +3,8 @@
     package="de.azapps.mirakel.settings" >
 
     <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
 
     <application>
         <activity
