@@ -5,7 +5,7 @@
 
     <uses-sdk
         tools:node="replace"
-        android:targetSdkVersion="L"
+        android:targetSdkVersion="21"
         android:minSdkVersion="14"/>
     <application>
         <activity
