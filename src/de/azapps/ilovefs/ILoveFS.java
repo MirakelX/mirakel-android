@@ -1,8 +1,5 @@
 package de.azapps.ilovefs;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +10,9 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class ILoveFS {
     /**
@@ -79,7 +79,7 @@ public class ILoveFS {
                                       .getString(R.string.ilovefs_message)));
         if (Build.VERSION.SDK_INT < 11) {
             message.setTextColor(this.context.getResources().getColor(
-                                     R.color.white));
+                                     R.color.ilovefs_white));
         }
         final int padding = 10;
         message.setPadding(padding, padding, padding, padding);
