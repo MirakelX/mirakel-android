@@ -1,16 +1,35 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.new_ui.activities;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,7 +57,7 @@ import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
-public class MirakelActivity extends Activity implements OnTaskSelectedListener,
+public class MirakelActivity extends ActionBarActivity implements OnTaskSelectedListener,
     OnListSelectedListener {
 
     private static final String TAG = "MirakelActivity";
@@ -48,11 +67,11 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Getter / Setter
     private TasksFragment getTasksFragment() {
-        return (TasksFragment) getFragmentManager().findFragmentById(R.id.tasks_fragment);
+        return (TasksFragment) getSupportFragmentManager().findFragmentById(R.id.tasks_fragment);
     }
 
     private ListsFragment getListsFragment() {
-        return (ListsFragment) getFragmentManager().findFragmentById(R.id.lists_fragment);
+        return (ListsFragment) getSupportFragmentManager().findFragmentById(R.id.lists_fragment);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,15 +81,12 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
-        if (getActionBar() != null) {
-            getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                    R.color.colorPrimary)));
-        }
+        Toolbar actionbar = (Toolbar) findViewById(R.id.actionbar);
         initDrawer();
         handleIntent(getIntent());
-        if ((getTasksFragment() != null) && (getTasksFragment().getList() != null) &&
-            (getActionBar() != null)) {
-            getActionBar().setTitle(getTasksFragment().getList().getName());
+        if ((getTasksFragment() != null) && (getTasksFragment().getList() != null)) {
+            actionbar.setTitle(getTasksFragment().getList().getName());
+            setSupportActionBar(actionbar);
         }
     }
 
@@ -148,7 +164,7 @@ public class MirakelActivity extends Activity implements OnTaskSelectedListener,
     @Override
     public void onTaskSelected(final Task task) {
         final DialogFragment newFragment = TaskFragment.newInstance(task);
-        newFragment.show(getFragmentManager(), "dialog");
+        newFragment.show(getSupportFragmentManager(), "dialog");
     }
 
     @Override

@@ -1,21 +1,39 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -30,7 +48,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final String ARGUMENT_LIST = "list";
 
     private TaskAdapter mAdapter;
-    private ListView mListView;
+    private RecyclerView mListView;
     private View layout;
     private OnTaskSelectedListener mListener;
 
@@ -56,19 +74,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new TaskAdapter(getActivity(), null, 0, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onTaskSelected(((TaskAdapter.ViewHolder) v.getTag()).getTask());
-            }
-        });
+        mAdapter = new TaskAdapter(getActivity(), null, 0, mListener);
         mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mListener.onTaskSelected(((TaskAdapter.ViewHolder) view.getTag()).getTask());
-            }
-        });
+        mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
 
@@ -88,7 +96,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.fragment_tasks, container, false);
-        mListView = (ListView) layout.findViewById(R.id.task_listview);
+        mListView = (RecyclerView) layout.findViewById(R.id.task_listview);
         initFab();
         return layout;
     }
@@ -122,7 +130,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader onCreateLoader(int i, Bundle arguments) {
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
-        return listMirakel.getTasksCursorLoader();
+        return listMirakel.getTasksSupportCursorLoader();
     }
 
     @Override

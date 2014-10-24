@@ -1,15 +1,33 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +41,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
 import java.util.Calendar;
@@ -48,7 +66,7 @@ import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils.Procedure;
-import de.azapps.widgets.DateTimeDialog;
+import de.azapps.widgets.SupportDateTimeDialog;
 
 import static com.google.common.base.Optional.of;
 
@@ -248,7 +266,7 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener dueEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new
+            SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(new
             DatePicker.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
@@ -287,8 +305,8 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            DateTimeDialog dateTimeDialog = DateTimeDialog.newInstance(new
-            DateTimeDialog.OnDateTimeSetListener() {
+            SupportDateTimeDialog dateTimeDialog = SupportDateTimeDialog.newInstance(
+            new SupportDateTimeDialog.OnDateTimeSetListener() {
                 @Override
                 public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
                     task.setReminder(of((Calendar) new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
