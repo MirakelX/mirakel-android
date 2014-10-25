@@ -49,12 +49,11 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
-import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
+import de.azapps.mirakel.model.task.Task;
 
 import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 /**
@@ -217,6 +216,12 @@ public class ListMirakel extends ListBase {
     @NonNull
     public static CursorLoader allWithSpecialCursorLoader() {
         return new MirakelQueryBuilder(context).toCursorLoader(
+                   MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
+    }
+
+    @NonNull
+    public static android.support.v4.content.CursorLoader allWithSpecialSupportCursorLoader() {
+        return new MirakelQueryBuilder(context).toSupportCursorLoader(
                    MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
 
@@ -644,6 +649,11 @@ public class ListMirakel extends ListBase {
     @NonNull
     public CursorLoader getTasksCursorLoader() {
         return getTasksQueryBuilder().toCursorLoader(MirakelInternalContentProvider.TASK_URI);
+    }
+
+    @NonNull
+    public android.support.v4.content.CursorLoader getTasksSupportCursorLoader() {
+        return getTasksQueryBuilder().toSupportCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 
     @NonNull
