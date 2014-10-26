@@ -64,4 +64,10 @@
     <color name="dialog_dark_gray">#70000000</color>
     <color name="recurrence_bubble_text_normal">#ff737373</color>
 
+    <!--new ui-->
+
+    <color name="colorPrimary">#8C2E58</color>
+    <color name="colorPrimaryDark">#400725</color>
+    <color name="colorAccent">#144F59</color>
+
 </resources>
