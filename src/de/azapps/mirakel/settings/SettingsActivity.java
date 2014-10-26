@@ -189,11 +189,15 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (MirakelCommonPreferences.isDark()) {
+        if (MirakelCommonPreferences.useNewUI()) {
+            setTheme(R.style.MirakelSettingsTheme);
+        } else if (MirakelCommonPreferences.isDark()) {
             setTheme(R.style.AppBaseThemeDARK);
         }
         super.onCreate(savedInstanceState);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         isTablet = MirakelCommonPreferences.isTablet();
         if (getIntent() != null && getIntent().getBooleanExtra(SHOW_DONATE, false)) {
             FRAGMENTS.DONATE.restoreFragment(this);
