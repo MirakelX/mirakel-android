@@ -124,9 +124,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
             views.setTextColor(R.id.widget_list_name,
                                WidgetHelper.getFontColor(context, widgetId));
             final ListMirakel list = WidgetHelper.getList(context, widgetId);
-            if (list == null) {
-                continue;
-            }
             // Create an Intent to launch SettingsActivity
             final Intent settingsIntent = new Intent(context,
                     MainWidgetSettingsActivity.class);

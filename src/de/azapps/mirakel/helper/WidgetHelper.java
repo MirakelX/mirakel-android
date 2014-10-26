@@ -30,6 +30,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -189,6 +190,7 @@ public class WidgetHelper {
         return getInt(context, widgetId, "widgetTransparency", 100);
     }
 
+    @NonNull
     public static ListMirakel getList(final Context context, final int widgetId) {
         final int listId = getSettings(context).getInt(
                                getKey(widgetId, "list_id"), 0);

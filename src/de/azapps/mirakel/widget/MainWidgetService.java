@@ -21,6 +21,8 @@ package de.azapps.mirakel.widget;
 import java.util.List;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -63,7 +65,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             Log.wtf(TAG, "wrong provider");
         }
         this.mContext = context;
-        this.widgetId = intent.getIntExtra(MainWidgetProvider.EXTRA_WIDGET_ID,
+        this.widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                                            0);
     }
 
@@ -76,7 +78,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     private void updateList() {
-        long identityToken = Binder.clearCallingIdentity();
+        final long identityToken = Binder.clearCallingIdentity();
         this.list = WidgetHelper.getList(this.mContext, this.widgetId);
         Binder.restoreCallingIdentity(identityToken);
         getCount();
@@ -89,7 +91,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        long identityToken = Binder.clearCallingIdentity();
+        final long identityToken = Binder.clearCallingIdentity();
         // get the tasks here because sometimes this returns a wrong value, if
         // the count is not refreshed
         this.tasks = Task.getTasks(this.list, this.list.getSortBy(),
@@ -118,7 +120,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // We need to do so, because we can not start the Activity directly from
         // the Service
         final Intent fillInIntent = new Intent(MainWidgetProvider.CLICK_TASK);
-        Bundle b = new Bundle();
+        final Bundle b = new Bundle();
         b.putParcelable(MainWidgetProvider.EXTRA_TASK, task);
         // dirty workaround to pass parcelables in pending intents
         fillInIntent.putExtra(DefinitionsHelper.BUNDLE_WRAPPER, b);
@@ -135,10 +137,6 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public int getViewTypeCount() {
         return 1;
-    }
-
-    public int getItemViewType(final int position) {
-        return 0;
     }
 
     @Override
