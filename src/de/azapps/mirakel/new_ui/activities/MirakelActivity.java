@@ -19,16 +19,16 @@
 
 package de.azapps.mirakel.new_ui.activities;
 
-import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -63,6 +63,8 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
+    @NonNull
+    private Toolbar actionbar;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Getter / Setter
@@ -81,7 +83,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
-        Toolbar actionbar = (Toolbar) findViewById(R.id.actionbar);
+        actionbar = (Toolbar) findViewById(R.id.actionbar);
         initDrawer();
         handleIntent(getIntent());
         if ((getTasksFragment() != null) && (getTasksFragment().getList() != null)) {
@@ -172,7 +174,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
         setList(list);
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
-            public void apply(DrawerLayout input) {
+            public void apply(final DrawerLayout input) {
                 input.closeDrawer(Gravity.START);
             }
         });
@@ -231,36 +233,29 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
         mDrawerLayout = fromNullable((DrawerLayout) findViewById(R.id.drawer_layout));
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
-            public void apply(DrawerLayout mDrawerLayout) {
-                final ActionBar actionBar = MirakelActivity.this.getActionBar();
+            public void apply(final DrawerLayout mDrawerLayout) {
                 final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(MirakelActivity.this,
                         mDrawerLayout,
-                        R.drawable.ic_drawer,
+                        actionbar,
                         R.string.list_title, /* "open drawer" description */
                 R.string.list_title /* "close drawer" description */) {
                     /** Called when a drawer has settled in a completely closed state. */
+                    @Override
                     public void onDrawerClosed(final View drawerView) {
                         super.onDrawerClosed(drawerView);
-                        if (actionBar != null) {
-                            actionBar.setTitle(getTasksFragment().getList().getName());
-                        }
+                        actionbar.setTitle(getTasksFragment().getList().getName());
                         invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                     /** Called when a drawer has settled in a completely open state. */
+                    @Override
                     public void onDrawerOpened(final View drawerView) {
                         super.onDrawerOpened(drawerView);
-                        if (actionBar != null) {
-                            actionBar.setTitle(R.string.list_title);
-                        }
+                        actionbar.setTitle(R.string.list_title);
                         invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
                     }
                 };
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
                 MirakelActivity.this.mDrawerToggle = Optional.of(mDrawerToggle);
-                if (actionBar != null) {
-                    actionBar.setDisplayHomeAsUpEnabled(true);
-                    actionBar.setHomeButtonEnabled(true);
-                }
             }
         });
     }
