@@ -19,15 +19,15 @@
 
 package de.azapps.mirakel.services;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
 
 import com.google.common.base.Optional;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -49,19 +49,24 @@ public class TaskService extends Service {
     }
 
     private void handleCommand(final Intent intent) {
+        if (intent == null || intent.getAction() == null) {
+            return;
+        }
         final Optional<Task> taskOptional = TaskHelper.getTaskFromIntent(intent);
         if (!taskOptional.isPresent()) {
             return;
         }
-        final Task task = taskOptional.get();
+        final Task task = Task.get(taskOptional.get().getId()).orNull();
+        if (task == null) {
+            return;
+        }
         if (TASK_DONE.equals(intent.getAction())) {
             task.setDone(true);
             task.save();
             Toast.makeText(this,
                            getString(R.string.reminder_notification_done_confirm),
                            Toast.LENGTH_LONG).show();
-        } else if ((TASK_LATER.equals(intent.getAction()))
-                   && !task.hasRecurringReminder()) {
+        } else if (TASK_LATER.equals(intent.getAction()) && !task.hasRecurringReminder()) {
             final Calendar reminder = new GregorianCalendar();
             final int addMinutes = MirakelCommonPreferences.getAlarmLater();
             reminder.add(Calendar.MINUTE, addMinutes);
