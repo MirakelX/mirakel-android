@@ -18,6 +18,14 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.text.format.DateUtils;
+import android.text.format.Time;
+
+import com.google.common.base.Optional;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,15 +34,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import android.content.Context;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
-import android.text.format.Time;
-import android.util.Log;
-
-import com.google.common.base.Optional;
 
 public class DateTimeHelper {
 
@@ -280,14 +279,11 @@ public class DateTimeHelper {
     public static boolean is24HourLocale(final Locale l) {
         final String output = DateFormat.getTimeInstance(DateFormat.SHORT, l)
                               .format(new Date());
-        if (output.contains(" AM") || output.contains(" PM")) {
-            return false;
-        }
-        return true;
+        return !(output.contains(" AM") || output.contains(" PM"));
     }
 
     public static Calendar parseCalDav(final String date) throws ParseException {
-        if (date == null || date.equals("")) {
+        if ((date == null) || date.equals("")) {
             return null;
         }
         final GregorianCalendar temp = new GregorianCalendar();
