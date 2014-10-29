@@ -179,14 +179,12 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         this.mIs24HourMode = is24HourMode;
         this.mDark = dark;
         this.mHideAmPm = Utils
-                         .isTouchExplorationEnabled(this.mAccessibilityManager) ? true
-                         : this.mIs24HourMode;
+                         .isTouchExplorationEnabled(this.mAccessibilityManager) || this.mIs24HourMode;
         // Initialize the circle and AM/PM circles if applicable.
         this.mCircleView.initialize(context, this.mHideAmPm, dark);
         this.mCircleView.invalidate();
         if (!this.mHideAmPm) {
-            this.mAmPmCirclesView.initialize(context,
-                                             initialHoursOfDay < 12 ? AM : PM, dark);
+            this.mAmPmCirclesView.initialize(context, (initialHoursOfDay < 12) ? AM : PM, dark);
             this.mAmPmCirclesView.invalidate();
         }
         // Initialize the hours and minutes numbers.
@@ -213,8 +211,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         // Initialize the currently-selected hour and minute.
         setValueForItem(HOUR_INDEX, initialHoursOfDay);
         setValueForItem(MINUTE_INDEX, initialMinutes);
-        final int hourDegrees = initialHoursOfDay % 12
-                                * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
+        final int hourDegrees = (initialHoursOfDay % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
         this.mHourRadialSelectorView.initialize(context, this.mHideAmPm,
                                                 is24HourMode, true, hourDegrees,
                                                 isHourInnerCircle(initialHoursOfDay), this.mDark);
@@ -237,8 +234,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private void setItem(final int index, final int value) {
         if (index == HOUR_INDEX) {
             setValueForItem(HOUR_INDEX, value);
-            final int hourDegrees = value % 12
-                                    * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
+            final int hourDegrees = (value % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
             this.mHourRadialSelectorView.setSelection(hourDegrees,
                     isHourInnerCircle(value), false);
             this.mHourRadialSelectorView.invalidate();
@@ -259,7 +255,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      */
     private boolean isHourInnerCircle(final int hourOfDay) {
         // We'll have the 00 hours on the outside circle.
-        return this.mIs24HourMode && hourOfDay <= 12 && hourOfDay != 0;
+        return this.mIs24HourMode && (hourOfDay <= 12) && (hourOfDay != 0);
     }
 
     public int getHours() {

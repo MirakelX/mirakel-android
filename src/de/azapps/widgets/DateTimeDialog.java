@@ -42,6 +42,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.date_time.R;
+import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers;
+import de.azapps.tools.Log;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DateTimeDialog extends DialogFragment {
@@ -54,7 +57,7 @@ public class DateTimeDialog extends DialogFragment {
 
     public static DateTimeDialog newInstance(final OnDateTimeSetListener callback,
             final Optional<Calendar> dateTime, final boolean dark) {
-        Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
+        final Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
         final int year = notNullDateTime.get(Calendar.YEAR);
         final int month = notNullDateTime.get(Calendar.MONTH);
         final int day = notNullDateTime.get(Calendar.DAY_OF_MONTH);
@@ -69,9 +72,7 @@ public class DateTimeDialog extends DialogFragment {
         final int minute, final boolean vibrate, final boolean dark) {
         final DateTimeDialog dt = new DateTimeDialog();
         dt.init(year, month, dayOfMonth, hourOfDay, minute);
-        dt.setOnDateTimeSetListner(callback);
-        // dt.initialize(callback, year, month, dayOfMonth, hourOfDay, minute,
-        // vibrate, dark);
+        dt.mCallback = callback;
         return dt;
     }
 
@@ -95,8 +96,6 @@ public class DateTimeDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
     }
 
-    float startX;
-    float startY;
     protected ViewSwitcher viewSwitcher;
     protected TimePicker tp;
     protected DatePicker dp;
@@ -113,9 +112,8 @@ public class DateTimeDialog extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         try {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        } catch (final Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (final RuntimeException e) {
+            Log.wtf(TAG, "could not remove title bar", e);
         }
         final View v = inflater.inflate(R.layout.date_time_picker, container);
         final Button switchToDate = (Button) v
@@ -126,7 +124,7 @@ public class DateTimeDialog extends DialogFragment {
                             .findViewById(R.id.datetime_picker_animator);
         this.dp = (DatePicker) v.findViewById(R.id.date_picker);
         this.tp = (TimePicker) v.findViewById(R.id.time_picker);
-        this.tp.set24HourMode(true);
+        this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocal(getActivity())));
         this.tp.setTime(this.mInitialHour, this.mInitialMinute);
         this.tp.setOnKeyListener(this.tp.getNewKeyboardListner(getDialog()));
         this.tp.setOnTimeSetListener(new OnTimeSetListener() {
@@ -211,10 +209,10 @@ public class DateTimeDialog extends DialogFragment {
             onCreateView(LayoutInflater.from(getDialog().getContext()),
                          null, null));
         if (this.isCurrentDatepicker
-            && this.viewSwitcher.getCurrentView().getId() != R.id.date_picker) {
+            && (this.viewSwitcher.getCurrentView().getId() != R.id.date_picker)) {
             this.viewSwitcher.showPrevious();
         } else if (!this.isCurrentDatepicker
-                   && this.viewSwitcher.getCurrentView().getId() != R.id.time_picker) {
+                   && (this.viewSwitcher.getCurrentView().getId() != R.id.time_picker)) {
             this.viewSwitcher.showNext();
         }
         this.dp.onRestoreInstanceState(date);
