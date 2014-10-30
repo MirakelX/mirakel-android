@@ -225,6 +225,9 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     public void setTime(final int hours, final int minutes) {
         setItem(HOUR_INDEX, hours);
         setItem(MINUTE_INDEX, minutes);
+        if (!mIs24HourMode) {
+            mAmPmCirclesView.setAmOrPm(((hours / 12) > 0) ? PM : AM);
+        }
     }
 
     /**
