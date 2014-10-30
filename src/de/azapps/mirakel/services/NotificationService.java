@@ -40,7 +40,6 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class NotificationService extends Service {
@@ -170,12 +169,7 @@ public class NotificationService extends Service {
      *
      * @param context
      */
-    public static void updateServices(final Context context,
-                                      final boolean updateReminder) {
-        // Reminder update
-        if (updateReminder) {
-            ReminderAlarm.updateAlarms(context);
-        }
+    public static void updateServices(final Context context) {
         // Widget update
         final Intent widgetIntent;
         try {

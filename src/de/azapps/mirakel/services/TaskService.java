@@ -29,33 +29,30 @@ import com.google.common.base.Optional;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class TaskService extends Service {
-    public static final String TASK_ID = "de.azapps.mirakel.services.TaskService.TASK_ID",
-                               ACTION_ID = "de.azapps.mirakel.services.TaskService.ACTION_ID";
-    public static final String TASK_DONE = "de.azapps.mirakel.services.TaskService.TASK_DONE",
-                               TASK_LATER = "de.azapps.mirakel.services.TaskService.TASK_LATER";
+    public static final String TASK_DONE = "de.azapps.mirakel.services.TaskService.TASK_DONE";
+    public static final String TASK_LATER = "de.azapps.mirakel.services.TaskService.TASK_LATER";
 
     @Override
     public IBinder onBind(final Intent intent) {
-        // TODO Auto-generated method stub
+        // nothing
         return null;
     }
 
     private void handleCommand(final Intent intent) {
-        if (intent == null || intent.getAction() == null) {
+        if ((intent == null) || (intent.getAction() == null)) {
             return;
         }
         final Optional<Task> taskOptional = TaskHelper.getTaskFromIntent(intent);
         if (!taskOptional.isPresent()) {
             return;
         }
+        //reload the task to get the current version
         final Task task = Task.get(taskOptional.get().getId()).orNull();
         if (task == null) {
             return;
@@ -77,9 +74,6 @@ public class TaskService extends Service {
                 getString(R.string.reminder_notification_later_confirm,
                           addMinutes), Toast.LENGTH_LONG).show();
         }
-        ReminderAlarm.closeNotificationFor(this, task.getId());
-        ReminderAlarm.updateAlarms(this);
-        sendBroadcast(new Intent(DefinitionsHelper.SYNC_FINISHED));
         stopSelf();
     }
 

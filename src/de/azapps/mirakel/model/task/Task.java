@@ -22,11 +22,9 @@ package de.azapps.mirakel.model.task;
 import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.os.Debug;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -35,12 +33,10 @@ import android.util.Pair;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -251,7 +247,7 @@ public class Task extends TaskBase {
                        + " AND done=1", null);
             }
         });
-        NotificationService.updateServices(context, false);
+        NotificationService.updateServices(context);
     }
 
     /**
@@ -458,7 +454,7 @@ public class Task extends TaskBase {
         final Task newTask = get(getId()).get();
         if (!calledFromSync) {
             UndoHistory.logCreate(newTask, Task.context);
-            NotificationService.updateServices(context, getReminder().isPresent());
+            NotificationService.updateServices(context);
         }
         return newTask;
     }
@@ -564,7 +560,7 @@ public class Task extends TaskBase {
             delete(MirakelInternalContentProvider.FILE_URI, "task_id = " + id
                    + " OR task_id " + subWhereQuery, null);
         }
-        NotificationService.updateServices(context, getReminder().isPresent());
+        NotificationService.updateServices(context);
     }
 
     public void destroyGarbage() {
@@ -748,7 +744,7 @@ public class Task extends TaskBase {
             || isEdited(TaskBase.RECURRING_REMINDER)) {
             updateReminders = true;
         }
-        NotificationService.updateServices(Task.context, updateReminders);
+        NotificationService.updateServices(Task.context);
     }
 
     @NonNull
@@ -812,8 +808,6 @@ public class Task extends TaskBase {
                         old = child;
                     } while (c.moveToNext());
                     c.close();
-                    final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
-                    context.sendBroadcast(i);
                 }
             }).start();
         }
