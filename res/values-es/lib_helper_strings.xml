@@ -14,4 +14,6 @@ Device: %3$s\n]]>
     </string>
   <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Yikes, the list of the task has vanished. I\'m sorry&#8230;</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">No se pudo descargar el archivo de configuración</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">La URL no es correcta. Realmente has escaneado el código correcto?</string>
 </resources>
