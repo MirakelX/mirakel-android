@@ -39,6 +39,10 @@
   <string name="search_result_title">Buscar %s</string>
   <string name="task_empty">No hay ninguna tarea seleccionada&#8230;</string>
   <string name="no_lists">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
+  <string name="import_any_do_click">Importar desde Any.Do</string>
+  <string name="any_do_import_title">Seleccionar archivo de copia de resguardo de Any.Do</string>
+  <string name="any_do_this_file">Importar desde %s?\nSi no, por favor selecciona tú mismo un archivo</string>
+  <string name="any_do_how_to">Por favor, primero haz una copia de resguardo de los datos de tu Any.Do. Para eso, ve a Any.Do → Configuración → Copia de resguardo → Crear copia de resguardo. Después vuelve aquí y haz clic en OK.\nO selecciona el archivo tú mismo.</string>
   <string name="select_file">Selecciona un archivo</string>
   <string name="wait">Por favor, espera...</string>
   <string name="backup_export_ok">Exportado a %s</string>

@@ -179,6 +179,9 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
   <string name="and">E</string>
   <string name="or">O</string>
   <string name="new_tag">Nuova etichetta</string>
+  <string name="special_list_list_name">Nome elenco</string>
+  <string name="special_lists_due_negated">Non prima di oggi %s</string>
+  <string name="special_lists_due">Prima di oggi %s</string>
   <string-array name="demo_lists">
     <item>Lavoro</item>
     <item>Casa</item>
@@ -192,4 +195,16 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
     <item>Latte</item>
     <item>Formaggio</item>
   </string-array>
+  <plurals name="day">
+    <item quantity="one">giorno</item>
+    <item quantity="other">giorni</item>
+  </plurals>
+  <plurals name="month">
+    <item quantity="one">mese</item>
+    <item quantity="other">mesi</item>
+  </plurals>
+  <plurals name="year">
+    <item quantity="one">anno</item>
+    <item quantity="other">anni</item>
+  </plurals>
 </resources>
