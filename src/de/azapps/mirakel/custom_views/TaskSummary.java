@@ -39,7 +39,6 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class TaskSummary extends TaskDetailSubListBase<Task> implements
@@ -105,7 +104,6 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
     @Override
     public void onClick(final View v) {
         final Optional<Task> task = this.task.toggleDone();
-        ReminderAlarm.updateAlarms(TaskSummary.this.context);
         save();
         if (task.isPresent()) {
             this.task = task.get();

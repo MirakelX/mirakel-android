@@ -47,7 +47,6 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.of;
@@ -118,8 +117,6 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                     public void onTaskChanged(final Task newTask) {
                         save();
                         update(TaskDetailDueReminder.this.task);
-                        ReminderAlarm
-                        .updateAlarms(TaskDetailDueReminder.this.context);
                     }
                 });
             }

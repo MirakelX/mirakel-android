@@ -40,7 +40,6 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class TaskDetailHeader extends BaseTaskDetailRow {
@@ -174,7 +173,6 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
                     // recurring, task changed, plug new task in
                     TaskDetailHeader.this.task = newTask.get();
                 }
-                ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
                 if (TaskDetailHeader.this.doneChanged != null) {
                     TaskDetailHeader.this.doneChanged
                     .onDoneChanged(TaskDetailHeader.this.task);
