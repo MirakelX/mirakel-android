@@ -21,7 +21,6 @@ package de.azapps.mirakel.sync.taskwarrior.model;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 

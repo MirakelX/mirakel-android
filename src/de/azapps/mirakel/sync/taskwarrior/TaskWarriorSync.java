@@ -218,7 +218,7 @@ public class TaskWarriorSync {
             Log.v(TAG, "Message from Server: " + message.get());
         }
         client.close();
-        NotificationService.updateServices(this.mContext, true);
+        NotificationService.updateServices(this.mContext);
     }
 
     @NonNull
