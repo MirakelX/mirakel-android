@@ -18,38 +18,29 @@
  ******************************************************************************/
 package de.azapps.mirakel;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Looper;
+
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.export_import.ExportImport;
-import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelContentProvider;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
-import de.azapps.mirakel.model.account.AccountMirakel;
-import de.azapps.mirakel.model.file.FileMirakel;
-import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.model.recurring.Recurring;
-import de.azapps.mirakel.model.semantic.Semantic;
-import de.azapps.mirakel.model.tags.Tag;
-import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -85,7 +76,7 @@ public class Mirakel extends Application {
     public void onCreate () {
         super.onCreate ();
         init (this);
-        NotificationService.updateServices (this, true);
+        NotificationService.updateServices (this);
         // And now, after the Database initialization!!! We init ACRA
         ACRA.init (this);
         // Stuff we can do in another thread
@@ -95,17 +86,18 @@ public class Mirakel extends Application {
             public void run () {
                 Looper.prepare ();
                 // Notifications
-                if (!MirakelCommonPreferences.useNotifications ()
-                    && startService (new Intent (that,
-                                                 NotificationService.class)) != null) {
+                if (!MirakelCommonPreferences.useNotifications()
+                    && (startService(new Intent(that,
+                                                NotificationService.class)) != null)) {
                     stopService (new Intent (Mirakel.this,
                                              NotificationService.class));
                 }
+                ReminderAlarm.init(Mirakel.this);
                 // Auto Backup?
                 final Calendar nextBackup = MirakelCommonPreferences
                                             .getNextAutoBackup ();
-                if (nextBackup != null
-                    && nextBackup.compareTo (new GregorianCalendar ()) < 0) {
+                if ((nextBackup != null)
+                    && (nextBackup.compareTo(new GregorianCalendar()) < 0)) {
                     ExportImport.exportDB (that);
                     final Calendar nextB = new GregorianCalendar ();
                     nextB.add (Calendar.DATE,
@@ -117,6 +109,12 @@ public class Mirakel extends Application {
                 }
             }
         }).start ();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        ReminderAlarm.destroy(this);
     }
 
     public static void init (final Context ctx) {

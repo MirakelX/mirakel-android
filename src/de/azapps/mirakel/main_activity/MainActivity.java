@@ -97,7 +97,6 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
@@ -159,10 +158,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     protected Menu menu;
     private PagerAdapter mPagerAdapter;
 
-    protected MainActivityBroadcastReceiver mSyncReceiver;
 
     // Layout variables
-    ViewPager mViewPager;
+    private ViewPager mViewPager;
 
     private String newTaskContent, newTaskSubject;
 
@@ -617,7 +615,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
     private void updateAfterDestroy() {
         setCurrentList(MainActivity.this.currentList);
-        ReminderAlarm.updateAlarms(MainActivity.this);
         updateShare();
     }
 
@@ -657,7 +654,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         t.add(task);
         handleDestroyTask(t);
         setCurrentList(MainActivity.this.currentList);
-        ReminderAlarm.updateAlarms(this);
         updateShare();
     }
 
@@ -1293,15 +1289,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        try {
-            BackgroundTasks.onDestroy(this);
-        } catch (final Exception e) {
-            // eat it
-        }
-        super.onDestroy();
-    }
 
     // TODO Fix Intent-behavior
     // default is not return new Intent by calling getIntent
@@ -1404,7 +1391,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                     setCurrentList(getCurrentList());
                 }
             }
-            ReminderAlarm.updateAlarms(this);
             break;
         case R.id.mark_as_subtask:
             TaskDialogHelpers.handleSubtask(this, this.currentTask, null, true);
@@ -1758,7 +1744,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         }
         getTasksFragment().updateList();
         getListFragment().update();
-        NotificationService.updateServices(this, true);
+        NotificationService.updateServices(this);
     }
 
     public void updateShare() {
