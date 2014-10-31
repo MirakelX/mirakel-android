@@ -136,8 +136,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.wtf(TAG, "mainactivity not found", e);
             return;
         }
-        final Intent syncFinishedIntent = new Intent(DefinitionsHelper.SYNC_FINISHED);
-        this.mContext.sendBroadcast(syncFinishedIntent);
     }
 
     private void showSyncNotification(final boolean showNotification) throws ClassNotFoundException {
