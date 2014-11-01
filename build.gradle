@@ -25,7 +25,7 @@ android {
             keyAlias keyProps["alias"]
             storePassword keyProps["storePass"]
             keyPassword keyProps["pass"]
-    	}   
+    	}
         debug {
             storeFile file("debug.keystore")
             storePassword "android"
@@ -36,9 +36,12 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFile 'proguard-android.txt'
         }
 	    debug {
             signingConfig signingConfigs.debug
+            minifyEnabled false
         }
     }
     sourceSets {
@@ -60,4 +63,3 @@ dependencies {
     compile project(':model')
     compile project(':helper')
 }
-
