@@ -26,7 +26,7 @@
                 android:layout_margin="6dip"
                 android:clickable="true"
                 android:contentDescription="@string/credits_github_description"
-                android:onClick="onOpenGithubClick"
+                android:id="@+id/img_github"
                 android:src="@drawable/webicon_github" />
 
             <ImageView
@@ -35,14 +35,14 @@
                 android:layout_margin="6dip"
                 android:clickable="true"
                 android:contentDescription="@string/credits_googleplus_description"
-                android:onClick="onOpenGooglePlusClick"
+                android:id="@+id/img_gplus"
                 android:src="@drawable/webicon_googleplus" />
         </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="sendFeedback"
+            android:id="@+id/send_feedback"
             android:text="@string/feedback" />
 
         <TextView
