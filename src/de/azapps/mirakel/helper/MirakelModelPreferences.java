@@ -58,9 +58,11 @@ public class MirakelModelPreferences extends MirakelPreferences {
 
     public static Optional<ListMirakel> getImportDefaultList() {
         if (settings.getBoolean("importDefaultList", false)) {
-            final int listId = settings.getInt("defaultImportList", 0);
-            if (listId == 0) {
-                return absent();
+            long listId;
+            try {
+                listId = (long) settings.getInt("defaultImportList", 0);
+            } catch (final ClassCastException e) {
+                listId = settings.getLong("defaultImportList", 0L);
             }
             return ListMirakel.get(listId);
         }
