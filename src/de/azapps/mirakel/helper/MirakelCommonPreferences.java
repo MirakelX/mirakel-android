@@ -54,11 +54,11 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     private static Calendar getCalendar(final String name,
-                                        final String default_string) {
-        Calendar ret;
+                                        final String defaultString) {
+        final Calendar ret;
         try {
             ret = DateTimeHelper.parseDate(settings.getString(name,
-                                           default_string));
+                                           defaultString));
         } catch (final ParseException e) {
             return null;
         }
@@ -92,18 +92,18 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static void setNotificationsListId(final String listId) {
-        getEditor().putString("notificationsList", listId).commit();
+        getEditor().putString("notificationsList", listId).apply();
     }
 
     public static void setNotificationsListOpenId(final String listId) {
-        getEditor().putString("notificationsListOpen", listId).commit();
+        getEditor().putString("notificationsListOpen", listId).apply();
     }
 
     public static int getNotificationsListOpenId() {
         int listId = getNotificationsListId();
         final String listOpen = settings.getString("notificationsListOpen",
                                 "default");
-        if (!listOpen.equals("default")) {
+        if (!"default".equals(listOpen)) {
             listId = Integer.parseInt(listOpen);
         }
         return listId;
@@ -139,9 +139,9 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static void setIsDark(boolean isDark) {
-        Editor editor = getEditor();
+        final Editor editor = getEditor();
         editor.putBoolean("DarkTheme", isDark);
-        editor.commit();
+        editor.apply();
     }
 
     public static boolean isDebug() {
@@ -196,9 +196,9 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         final String serialized = settings.getString(arrayName, null);
         final List<Integer> items = new ArrayList<Integer>();
         if (serialized != null) {
-            final String[] string_items = serialized.split("_");
-            for (final String item : string_items) {
-                if (item.length() == 0) {
+            final String[] stringItems = serialized.split("_");
+            for (final String item : stringItems) {
+                if (item.isEmpty()) {
                     continue;
                 }
                 items.add(Integer.valueOf(item));
@@ -211,31 +211,31 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("lockDrawerInTaskFragment", false);
     }
 
-    public static boolean saveIntArray(final String preferenceName,
-                                       final List<Integer> items) {
+    public static void saveIntArray(final String preferenceName,
+                                    final List<Integer> items) {
         final SharedPreferences.Editor editor = getEditor();
-        String pref = "";
+        final StringBuilder pref = new StringBuilder(items.size() * 3);
         for (final Integer item : items) {
-            pref += String.valueOf(item) + "_";
+            pref.append(String.valueOf(item) + '_');
         }
-        editor.putString(preferenceName, pref);
-        return editor.commit();
+        editor.putString(preferenceName, pref.toString());
+        editor.apply();
     }
 
     public static void setAutoBackupInterval(final int val) {
         final Editor ed = settings.edit();
         ed.putInt("autoBackupInterval", val);
-        ed.commit();
+        ed.apply();
     }
 
     public static void setNextBackup(final Calendar val) {
         final Editor ed = settings.edit();
         ed.putString("autoBackupNext", DateTimeHelper.formatDate(val));
-        ed.commit();
+        ed.apply();
     }
 
-    public static void setShowAccountName(final boolean b) {
-        settings.edit().putBoolean("show_account_name", b).commit();
+    public static void setShowAccountName(final boolean showAccountName) {
+        settings.edit().putBoolean("show_account_name", showAccountName).apply();
     }
 
     public static void setTaskFragmentLayout(final List<Integer> newV) {
@@ -251,7 +251,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         settings.edit()
         .putBoolean("enableDebugMenu",
                     !MirakelCommonPreferences.isEnabledDebugMenu())
-        .commit();
+        .apply();
     }
 
     public static boolean useBtnAudioRecord() {
@@ -279,36 +279,27 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static boolean isDemoMode() {
-        if (settings == null) {
-            return false;
-        }
-        return settings.getBoolean("demoMode", false);
+        return settings != null && settings.getBoolean("demoMode", false);
     }
 
     public static void setDemoMode(final boolean val) {
         final Editor ed = settings.edit();
         ed.putBoolean("demoMode", val);
-        ed.commit();
+        ed.apply();
     }
 
     public static boolean writeLogsToFile() {
-        if (settings == null) {
-            return false;
-        }
-        return settings.getBoolean("writeLogsToFile", false);
+        return settings != null && settings.getBoolean("writeLogsToFile", false);
     }
 
     public static boolean useNewUI() {
-        if (settings == null) {
-            return false;
-        }
-        return settings.getBoolean("newUI", false);
+        return settings != null && settings.getBoolean("newUI", false);
     }
 
     public static void setUseNewUI(final boolean val) {
         final Editor ed = settings.edit();
         ed.putBoolean("newUI", val);
-        ed.commit();
+        ed.commit(); // Use commit here because we are restarting the app afterwards
     }
 
 }
