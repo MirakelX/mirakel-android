@@ -50,7 +50,7 @@ public class AccountSettingsActivity extends GenericModelListActivity<AccountMir
         .setTitle(R.string.sync_caldav)
         .setMessage(
             Html.fromHtml(this
-                          .getString(R.string.sync_caldav_howto_)))
+                          .getString(R.string.sync_caldav_howto)))
         .setNegativeButton(R.string.download,
         new DialogInterface.OnClickListener() {
             @Override
