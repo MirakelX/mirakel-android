@@ -50,11 +50,12 @@ import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 public class TaskDetailDueReminder extends BaseTaskDetailRow {
     public enum Type {
-        Combined, Due, Reminder
+        COMBINED, DUE, REMINDER
     }
 
     public static final int MIN_DUE_NEXT_TO_REMINDER_SIZE = 800;
@@ -68,7 +69,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
     private static void setupRecurrenceDrawable(final ImageButton recurrence,
             @NonNull final Optional<Recurring> recurring) {
-        int id;
+        final int id;
         if (!recurring.isPresent() || recurring.get().getId() == -1) {
             id = android.R.drawable.ic_menu_mylocation;
         } else {
@@ -88,14 +89,14 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
 
     private final LinearLayout reminderWrapper;
 
-    private TextView taskDue;
+    private final TextView taskDue;
 
     private final TextView taskReminder;
 
     private Type type;
 
     private void updateTask() {
-        Optional<Task> taskOptional = Task.get(task.getId());
+        final Optional<Task> taskOptional = Task.get(task.getId());
         if (taskOptional.isPresent()) {
             task = taskOptional.get();
         } else {
@@ -202,12 +203,12 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                         TaskDetailDueReminder.this.task
                         .setDue(Optional.<Calendar>absent());
                         TaskDetailDueReminder.this.task
-                        .setRecurrence(-1);
+                        .setRecurrence(-1L);
                         save();
                         setDue();
                         setupRecurrenceDrawable(
                             TaskDetailDueReminder.this.recurrenceDue,
-                            null);
+                            Optional.<Recurring>absent());
                     }
                 }, dueLocal.get(Calendar.YEAR), dueLocal
                 .get(Calendar.MONTH), dueLocal
@@ -227,7 +228,7 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
     }
 
     private void handleMultiline(final int width) {
-        if (this.type == null || this.type != Type.Combined) {
+        if (this.type == null || this.type != Type.COMBINED) {
             return;
         }
         setLayoutParams(new LayoutParams(
@@ -238,11 +239,11 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
             final android.view.ViewGroup.LayoutParams dueParams = this.dueWrapper
                     .getLayoutParams();
             this.dueWrapper.setLayoutParams(new LayoutParams(dueParams.width,
-                                            dueParams.height, 1));
+                                            dueParams.height, 1.0F));
             final android.view.ViewGroup.LayoutParams reminderParams = this.reminderWrapper
                     .getLayoutParams();
             this.reminderWrapper.setLayoutParams(new LayoutParams(
-                    reminderParams.width, reminderParams.height, 1));
+                    reminderParams.width, reminderParams.height, 1.0F));
         } else {
             this.mainWrapper.setOrientation(LinearLayout.HORIZONTAL);
             final android.view.ViewGroup.LayoutParams dueParams = this.dueWrapper
@@ -301,20 +302,17 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
     public void setType(final Type t) {
         this.type = t;
         switch (t) {
-        case Combined:
+        case COMBINED:
             this.dueWrapper.setVisibility(View.VISIBLE);
             this.reminderWrapper.setVisibility(View.VISIBLE);
             break;
-        case Due:
+        case DUE:
             this.dueWrapper.setVisibility(View.VISIBLE);
             this.reminderWrapper.setVisibility(View.GONE);
             break;
-        case Reminder:
+        case REMINDER:
             this.dueWrapper.setVisibility(View.GONE);
             this.reminderWrapper.setVisibility(View.VISIBLE);
-            break;
-        default:
-            Log.d(TaskDetailDueReminder.TAG, "where are the dragons");
             break;
         }
     }
@@ -322,9 +320,9 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
     @SuppressLint("NewApi")
     @Override
     protected void updateView() {
-        final Drawable reminder_img = this.context.getResources().getDrawable(
-                                          android.R.drawable.ic_menu_recent_history);
-        reminder_img.setBounds(0, 1, 42, 42);
+        final Drawable reminderImg = this.context.getResources().getDrawable(
+                                         android.R.drawable.ic_menu_recent_history);
+        reminderImg.setBounds(0, 1, 42, 42);
         final Drawable dueImg = this.context.getResources().getDrawable(
                                     android.R.drawable.ic_menu_today);
         dueImg.setBounds(0, 1, 42, 42);
@@ -332,11 +330,11 @@ public class TaskDetailDueReminder extends BaseTaskDetailRow {
                                      .getConfiguration();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
             && config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            this.taskReminder.setCompoundDrawables(null, null, reminder_img,
+            this.taskReminder.setCompoundDrawables(null, null, reminderImg,
                                                    null);
             this.taskDue.setCompoundDrawables(null, null, dueImg, null);
         } else {
-            this.taskReminder.setCompoundDrawables(reminder_img, null, null,
+            this.taskReminder.setCompoundDrawables(reminderImg, null, null,
                                                    null);
             this.taskDue.setCompoundDrawables(dueImg, null, null, null);
         }

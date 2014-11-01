@@ -246,7 +246,7 @@ public class TaskDetailView extends BaseTaskDetailRow implements
                     && this.items.get(this.items.size() - 2) != TYPE.DUE) {
                     final TaskDetailDueReminder t = new TaskDetailDueReminder(
                         this.context);
-                    t.setType(Type.Reminder);
+                    t.setType(Type.REMINDER);
                     item = t;
                     break;
                 }
@@ -258,9 +258,9 @@ public class TaskDetailView extends BaseTaskDetailRow implements
                     && this.items.get(position - 1) == TYPE.REMINDER
                     || position < this.items.size() - 1
                     && this.items.get(position + 1) == TYPE.REMINDER) {
-                    t.setType(Type.Combined);
+                    t.setType(Type.COMBINED);
                 } else {
-                    t.setType(Type.Due);
+                    t.setType(Type.DUE);
                 }
                 item = t;
                 break;
