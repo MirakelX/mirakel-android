@@ -87,6 +87,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="startup_title">Startvorgang</string>
   <string name="startup_show_lists">Alle Listen anzeigen</string>
   <string name="startup_show_lists_summary">Beim Start alle Listen anzeigen</string>
+  <string name="startup_list">Wähle Startliste</string>
   <string name="startup_list_summary">Zeige Aufgaben aus \"%s\"</string>
   <string name="special_lists_click">Meta-Listen verwalten</string>
   <string name="special_lists_new">Neue Meta-Liste</string>
@@ -292,6 +293,17 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="no_semantic_selected">Keine Aufgabenvorlage ausgewählt</string>
   <string name="no_special_list_selected">Keine Meta-Liste ausgewählt</string>
   <string name="no_tag_selected">Kein Tag ausgewählt</string>
+  <string name="sharing_title">Teilen</string>
   <string name="backup_title">Backup</string>
   <string name="title_settings">Einstellungen</string>
+  <string name="done_text">Nur erledigte Aufgaben</string>
+  <string name="file_text">Nur Aufgaben mit Datei</string>
+  <string name="reminder_text">Nur Aufgaben mit Erinnerung</string>
+  <string name="is_subtask_parent">Ist Hauptaufgabe</string>
+  <string name="has_subtasks">Besitzt Unteraufgaben</string>
+  <string name="has_parent">Ist Unteraufgabe</string>
+  <string name="special_lists_condition_title">Bedingung</string>
+  <string name="Undo">Bedingung entfernen rückgängig machen</string>
+  <string name="add_condition">Bedingung hinzufügen</string>
+  <string name="undo_taskui_change">Entfernen von %s rückgängig machen</string>
 </resources>

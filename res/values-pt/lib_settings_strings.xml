@@ -298,4 +298,32 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="backup_title">Backup</string>
   <string name="third_party_title">Aplicações de terceiros</string>
   <string name="title_settings">Definições</string>
+  <string-array name="special_lists_filter_type">
+    <item>@string/special_lists_done_title</item>
+    <item>@string/special_lists_content_title</item>
+    <item>@string/special_lists_due_exist_title</item>
+    <item>@string/special_lists_due_title</item>
+    <item>@string/special_lists_file_title</item>
+    <item>@string/special_lists_list_title</item>
+    <item>@string/special_list_list_name</item>
+    <item>@string/special_lists_name_title</item>
+    <item>@string/special_lists_priority_title</item>
+    <item>@string/special_lists_progress_title</item>
+    <item>@string/special_lists_reminder_title</item>
+    <item>@string/special_lists_tag_title</item>
+    <item>@string/special_lists_subtask_title</item>
+    <item>Subcondição</item>
+  </string-array>
+  <string name="done_text">Apenas tarefas terminadas</string>
+  <string name="file_text">Apenas tarefas com ficheiros</string>
+  <string name="due_exist_text">Apenas tarefas sem data limite</string>
+  <string name="reminder_text">Apenas tarefas com lembretes</string>
+  <string name="is_subtask_parent">É ascendente</string>
+  <string name="has_subtasks">Tem subtarefas</string>
+  <string name="has_parent">Tem tarefa ascendente</string>
+  <string name="special_lists_condition_title">Condições</string>
+  <string name="Undo">Anular remoção de condição</string>
+  <string name="add_condition">Adicionar condição</string>
+  <string name="undo_taskui_change">Anular remoção de %s</string>
+  <string name="due_dialog_negated">Não após</string>
 </resources>

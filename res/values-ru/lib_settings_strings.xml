@@ -19,6 +19,7 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="account_title">Учетные записи</string>
   <string name="sync_use">Применить синхронизацию</string>
   <string name="sync_warning">Синхронизация ещё нестабильная</string>
   <string name="sync_warning_message">Синхронизация протекает ещё очень нестабильно. Но на свой страх и риск Вы можете её испробовать (сделайте предварительно резервную копию!) - Вы уверены?</string>
@@ -51,6 +52,7 @@
   <string name="startup_title">Запуск приложения</string>
   <string name="startup_show_lists">Показать все списки</string>
   <string name="startup_show_lists_summary">Показать все списки при запуске</string>
+  <string name="startup_list">Выберите список автозагрузки</string>
   <string name="startup_list_summary">Показать задачи \"%s\"</string>
   <string name="special_lists_click">Управление метасписками</string>
   <string name="special_lists_new">Новый метасписок</string>
@@ -164,6 +166,7 @@
   <string name="title_donations">Пожертвовать</string>
   <string name="add">Добавить</string>
   <string name="action_credits">Авторы</string>
+  <string name="action_credits_summary">О нас</string>
   <string name="title_activity_credits">Об авторах</string>
   <string name="credits_github_description">Найдите нас на github</string>
   <string name="credits_googleplus_description">Вступите в наше сообщество G+</string>
@@ -204,6 +207,22 @@
     <item>Не имеет прикреплённого файла</item>
   </string-array>
   <string name="remove">Удалить</string>
+  <string name="no_account_selected">Учетная запись не выбрана</string>
+  <string name="no_semantic_selected">Шаблон задачи не выбран</string>
+  <string name="no_special_list_selected">Мета список не выбран</string>
+  <string name="no_tag_selected">Тег не выбран</string>
+  <string name="sharing_title">Поделится</string>
   <string name="backup_title">Резервная копия</string>
+  <string name="third_party_title">Приложения сторонних разработчиков</string>
   <string name="title_settings">Параметры</string>
+  <string name="done_text">Только завершенные задачи</string>
+  <string name="file_text">Только задачи с файлами</string>
+  <string name="reminder_text">Только задачи с напоминанием</string>
+  <string name="is_subtask_parent">Является родителем</string>
+  <string name="has_subtasks">Имеет подзадачи</string>
+  <string name="has_parent">Имеет задачу родителя</string>
+  <string name="special_lists_condition_title">Условия</string>
+  <string name="Undo">Отменить удаление условия</string>
+  <string name="add_condition">Добавить условие</string>
+  <string name="undo_taskui_change">Отменить удаление %s</string>
 </resources>

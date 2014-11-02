@@ -121,6 +121,7 @@
   <string name="hide_keyboard_summary">Skrýt klávesnici pokud je vytvářen nový úkol</string>
   <string name="undo_number">Počet uložených změn</string>
   <string name="undo_number_summary">Vrátit %s změn</string>
+  <string name="semantic_new_task_config_summary">Konfigurovat podmínky pro vytváření nových úkolů</string>
   <string name="swipeBehavior_title">Zobrazit detail úkolu tažením</string>
   <string name="swipeBehavior_summary">Zobrazit detail taženého nebo naposledy vybraného úkolu</string>
   <string name="lock_drawer_in_task_fragment_summary">Takže nedojde k jeho nechtěnému otevření z detailu úkolu</string>
@@ -193,13 +194,17 @@
   <string name="tag_click">Štítky</string>
   <string name="settings_subtask">Podúkoly</string>
   <string name="settings_subtask_default_new">Standardně zobrazit nový úkol</string>
+  <string name="settings_subtask_add_to_same_list">Přidat podúkol do seznamu úkolů</string>
   <string name="settings_subtask_add_to_same_list_summary">Nebo do seznamu vyhrazeného pro podúkoly?</string>
   <string name="settings_subtask_add_to_list_summary">Přidat podúkol pro %s</string>
   <string name="settings_use_btn_speak">Zobrazit tlačítko mikrofonu</string>
   <string name="settings_use_btn_camera">Zobrazit tlačítko pro fotoaparát</string>
   <string name="preferences_colorize_subtasks">Obarvit podúkoly?</string>
   <string name="settings_tasks_title">Úkoly</string>
+  <string name="settings_dev">Vývojářská nastavení</string>
   <string name="settings_dev_sync">Synchronizace</string>
+  <string name="settings_dev_dump_tw_summary">Zapsat přijatý text do /sdcard/mirakel</string>
+  <string name="settings_dev_dump_tw">Zapsat přijaté TW-zprávy</string>
   <string name="enable">povoluji</string>
   <string name="disable">zakazuji</string>
   <string name="enabled">povoleno</string>
@@ -222,6 +227,7 @@
   <string name="write_logs_to_file">Zapisovat logy do souboru</string>
   <string name="alert_caldav"><![CDATA[CalDAV synchronizace není 100%% stabilní. Testujte prosím pečlivě a hlašte nalezené chyby!]]></string>
   <string name="alert_caldav_title">Informace pro CalDAV</string>
+  <string name="alert_taskwarrior"><![CDATA[Synchronizace pro taskwarrior vypadá funkční, zálohujte prosím svá data! Hlašte nalezené problémy a chyby, abychom je mohli odstranit!]]></string>
   <string name="alert_taskwarrior_title">Informace pro Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Podúkoly</string>
   <string name="special_list_where_tag_title_text">Štítky</string>
@@ -229,7 +235,7 @@
   <string name="special_list_where_file_title_text">Soubor</string>
   <string-array name="special_lists_subtask_options">
     <item>Prohodit výběr</item>
-    <item>Search for tasks with subtasks or which are subtasks</item>
+    <item>Hledat úkoly s podúkoly, nebo podúkoly samotné</item>
   </string-array>
   <string-array name="file_choice">
     <item>Nenastaveno</item>
@@ -239,9 +245,20 @@
   <string name="remove">Odstranit</string>
   <string name="no_account_selected">Není vybrán žádný účet</string>
   <string name="no_recurrence_selected">Opakování nebylo vybráno</string>
+  <string name="no_semantic_selected">Nebyla vybrána předloha pro úkol</string>
   <string name="no_tag_selected">Nebyl vybrán štítek</string>
   <string name="sharing_title">Sdílení</string>
   <string name="backup_title">Zálohovat</string>
   <string name="third_party_title">Aplikace třetích stran</string>
   <string name="title_settings">Nastavení</string>
+  <string name="done_text">Pouze hotové úkoly</string>
+  <string name="file_text">Pouze úkoly obsahující soubor</string>
+  <string name="reminder_text">Pouze úkoly s připomínkou</string>
+  <string name="is_subtask_parent">Je nadřazen</string>
+  <string name="has_subtasks">Obsahuje podkúkoly</string>
+  <string name="has_parent">Má nadřazený úkol</string>
+  <string name="special_lists_condition_title">Podmínky</string>
+  <string name="Undo">Vrátit odstranění podmínky</string>
+  <string name="add_condition">Přidat podmínku</string>
+  <string name="undo_taskui_change">Vrátit odstranění %s</string>
 </resources>
