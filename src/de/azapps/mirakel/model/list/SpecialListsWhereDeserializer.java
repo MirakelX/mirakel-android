@@ -87,7 +87,6 @@ public final class SpecialListsWhereDeserializer {
                          new StringDeserializer<>(SpecialListsNameProperty.class))
     .registerTypeAdapter(SpecialListsListNameProperty.class,
                          new StringDeserializer<>(SpecialListsListNameProperty.class))
-
     .registerTypeAdapter(SpecialListsProgressProperty.class,
                          new ProgressDeserializer()).create();
 
@@ -174,6 +173,8 @@ public final class SpecialListsWhereDeserializer {
         } else if (obj.has(Task.DUE + "_exists")) {
             key = Task.DUE + "_exists";
             className = SpecialListsDueExistsProperty.class;
+        } else if ("{}".equals(element.toString())) {
+            return absent();
         } else {
             Log.wtf(TAG, "unknown query object: " + obj.toString());
             Log.v(TAG, "implement this?");
