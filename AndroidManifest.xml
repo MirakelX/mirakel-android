@@ -23,7 +23,6 @@
     package="de.azapps.mirakel.new_ui" >
 
     <uses-sdk
-        tools:node="replace"
         android:targetSdkVersion="21"
         android:minSdkVersion="14"/>
     <application>
