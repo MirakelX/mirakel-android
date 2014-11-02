@@ -1511,10 +1511,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     private void handleIntent(final Intent intent) {
         if ((intent == null) || (intent.getAction() == null)) {
             Log.d(MainActivity.TAG, "action null");
-        } else if (intent.getAction().contains(DefinitionsHelper.SHOW_TASK)
-                   || intent.getAction().contains(DefinitionsHelper.SHOW_TASK_REMINDER)
-                   || intent.getAction().equals(
-                       DefinitionsHelper.SHOW_TASK_FROM_WIDGET)) {
+        } else if (DefinitionsHelper.SHOW_TASK.equals(intent.getAction())
+                   || DefinitionsHelper.SHOW_TASK_REMINDER.equals(intent.getAction())
+                   || DefinitionsHelper.SHOW_TASK_FROM_WIDGET.equals(intent.getAction())) {
             final Optional<Task> task = TaskHelper.getTaskFromIntent(intent);
             if (task.isPresent()) {
                 this.currentList = task.get().getList();
