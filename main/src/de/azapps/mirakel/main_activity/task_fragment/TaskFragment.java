@@ -33,12 +33,18 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.util.LongSparseArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.custom_views.TaskDetailFilePart.OnFileClickListener;
@@ -59,7 +65,8 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
-public abstract class TaskFragment extends Fragment {
+public class TaskFragment extends Fragment {
+
     protected enum ActionbarState {
         CONTENT, FILE, SUBTASK;
     }
@@ -86,10 +93,59 @@ public abstract class TaskFragment extends Fragment {
 
     private boolean saveContent = true;
 
-    abstract protected void changeVisiblity (final boolean visible,
-            final MenuItem item);
+    private ActionMode mActionMode;
+    private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback () {
+        // Called when the user selects a
+        // contextual menu item
+        @Override
+        public boolean onActionItemClicked (final ActionMode mode,
+                                            final MenuItem item) {
+            final boolean b = handleActionBarClick (item);
+            if (!b) {
+                mode.finish ();
+            }
+            return b;
+        }
+        // Called when the action mode is
+        // created; startActionMode() was
+        // called
+        @Override
+        public boolean onCreateActionMode (final ActionMode mode, final Menu menu) {
+            // Inflate a menu resource
+            // providing context menu items
+            final MenuInflater inflater = mode.getMenuInflater ();
+            final boolean b = handleCabCreateMenu (inflater, menu);
+            if (b) {
+                TaskFragment.this.mActionMode = mode;
+                TaskFragment.this.mMenu = menu;
+            }
+            return b;
+        }
+        // Called when the user exits the
+        // action mode
+        @Override
+        public void onDestroyActionMode (final ActionMode mode) {
+            handleCloseCab ();
+            TaskFragment.this.mActionMode = null;
+        }
+        // Called each time the action mode
+        // is shown. Always called after
+        // onCreateActionMode, but
+        // may be called multiple times if
+        // the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode (final ActionMode mode,
+                                            final Menu menu) {
+            return false; // Return false if
+            // nothing is
+            // done
+        }
+    };
 
-    abstract public void closeActionMode ();
+    //abstract protected void changeVisiblity (final boolean visible,
+    //        final MenuItem item);
+
+    //abstract public void closeActionMode ();
 
     protected boolean handleActionBarClick (final MenuItem item) {
         this.saveContent = true;
@@ -151,15 +207,21 @@ public abstract class TaskFragment extends Fragment {
                 }
             }
             update (TaskFragment.this.task);
-            TaskFragment.this.main.getTasksFragment ().updateList (false);
-            TaskFragment.this.main.getListFragment ().update ();
+            TaskFragment.this.main.getTasksFragment().updateList();
+            TaskFragment.this.main.getListFragment().update();
             break;
         default:
             return false;
         }
         Log.i (TaskFragment.TAG, "item clicked");
-        closeActionMode ();
+        closeActionMode();
         return true;
+    }
+
+    public void closeActionMode() {
+        if (this.mActionMode != null) {
+            this.mActionMode.finish ();
+        }
     }
 
     protected boolean handleCabCreateMenu (final MenuInflater inflater,
@@ -211,7 +273,7 @@ public abstract class TaskFragment extends Fragment {
         try {
             view = inflater.inflate (R.layout.task_fragment, container, false);
         } catch (final Exception e) {
-            Log.w(TaskFragment.TAG, "Failed do infalte layout", e);
+            Log.w(TaskFragment.TAG, "Failed do inflate layout", e);
             return null;
         }
         this.detailView = (TaskDetailView) view
@@ -221,7 +283,7 @@ public abstract class TaskFragment extends Fragment {
             public void onTaskChanged (final Task newTask) {
                 if (TaskFragment.this.main.getTasksFragment () != null
                     && TaskFragment.this.main.getListFragment () != null) {
-                    TaskFragment.this.main.getTasksFragment ().updateList (false);
+                    TaskFragment.this.main.getTasksFragment ().updateList ();
                     TaskFragment.this.main.getListFragment ().update ();
                 }
             }
@@ -293,7 +355,9 @@ public abstract class TaskFragment extends Fragment {
                 }
                 if (marked) {
                     TaskFragment.this.cabState = ActionbarState.SUBTASK;
-                    startCab ();
+                    if (mActionMode == null) {
+                        main.startActionMode (mActionModeCallback);
+                    }
                     v.setBackgroundColor (Helpers
                                           .getHighlightedColor (getActivity ()));
                     TaskFragment.this.markedSubtasks.put (t.getId (), t);
@@ -302,15 +366,16 @@ public abstract class TaskFragment extends Fragment {
                     v.setBackgroundColor(getActivity().getResources().getColor(
                                              android.R.color.transparent));
                     TaskFragment.this.markedSubtasks.remove(t.getId());
-                    if (TaskFragment.this.markedSubtasks.size() == 0) {
-                        closeActionMode();
+                    if (TaskFragment.this.markedSubtasks.size() == 0 && mActionMode != null) {
+                        mActionMode.finish ();
                     }
                 }
                 if (TaskFragment.this.mMenu != null) {
                     final MenuItem item = TaskFragment.this.mMenu
                                           .findItem (R.id.edit_task);
-                    changeVisiblity (
-                        TaskFragment.this.markedSubtasks.size () == 1, item);
+                    if (mActionMode != null && item != null) {
+                        item.setVisible (TaskFragment.this.markedSubtasks.size () == 1);
+                    }
                 }
             }
         });
@@ -324,7 +389,9 @@ public abstract class TaskFragment extends Fragment {
                 }
                 if (marked) {
                     TaskFragment.this.cabState = ActionbarState.FILE;
-                    startCab ();
+                    if (mActionMode == null) {
+                        main.startActionMode (mActionModeCallback);
+                    }
                     v.setBackgroundColor (Helpers
                                           .getHighlightedColor (getActivity ()));
                     TaskFragment.this.markedFiles.put (e.getId (), e);
@@ -332,8 +399,8 @@ public abstract class TaskFragment extends Fragment {
                     v.setBackgroundColor (getActivity ().getResources ().getColor (
                                               android.R.color.transparent));
                     TaskFragment.this.markedFiles.remove (e.getId ());
-                    if (TaskFragment.this.markedFiles.size () == 0) {
-                        closeActionMode ();
+                    if (TaskFragment.this.markedFiles.size () == 0 && mActionMode != null) {
+                        mActionMode.finish ();
                     }
                 }
             }
@@ -374,10 +441,9 @@ public abstract class TaskFragment extends Fragment {
         return view;
     }
 
-    abstract protected void startCab ();
 
     public void update (final Task t) {
-        closeActionMode ();
+        closeActionMode();
         this.task = t;
         if (this.detailView != null && this.updateThread != null) {
             new Thread (this.updateThread).start ();

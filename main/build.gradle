@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
-apply plugin: 'eclipse'
 apply plugin: 'robolectric'
 
 def getVersionCode() {
@@ -20,20 +19,22 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
+	    exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
         exclude 'LICENSE.txt'
     }
-    flavorDimensions "stores", "apis"
+    flavorDimensions "stores"
     lintOptions {
-        disable 'MissingTranslation'
+        disable 'MissingTranslation','AppCompatResource'
         enable 'NewerVersionAvailable'
     }
     defaultConfig {
         testApplicationId "de.azapps.mirakelandroid.test"
-        testInstrumentationRunner "android.test.InstrumentationTestRunner"
-        minSdkVersion 15
-        targetSdkVersion 19
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        minSdkVersion 14
+        targetSdkVersion 21
     }
     signingConfigs {
     	release {
@@ -46,7 +47,7 @@ android {
             keyAlias keyProps["alias"]
             storePassword keyProps["storePass"]
             keyPassword keyProps["pass"]
-    	}    
+    	}
         debug {
             storeFile file("debug.keystore")
             storePassword "android"
@@ -57,11 +58,11 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            runProguard true
+            minifyEnabled true
             proguardFile 'proguard-android.txt'
         }
         debug {
-            runProguard false
+            minifyEnabled false
             signingConfig signingConfigs.debug
         }
     }
@@ -72,24 +73,6 @@ android {
         fdroid {
             flavorDimension "stores"
         }
-        normal {
-            flavorDimension "apis"
-            compileSdkVersion rootProject.ext.compileSdkVersion
-        }
-        old {
-            flavorDimension "apis"
-            minSdkVersion 8
-            targetSdkVersion 19
-            versionCode getVersionCode()-1
-            compileSdkVersion rootProject.ext.compileSdkVersion
-        }
-        //for some reasons this is buggy
-        //l_test {
-            //flavorDimension "apis"
-            //minSdkVersion "L"
-            //targetSdkVersion "L"
-            //compileSdkVersion "android-L"
-        //}
     }
 
     sourceSets {
@@ -99,22 +82,14 @@ android {
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
+            res.srcDirs = ['merged-res']
             assets.srcDirs = ['assets']
         }
 
-        androidTest.setRoot('tests')
         androidTest {
-            manifest.srcFile 'AndroidManifest.xml'
-            java { srcDirs = ['tests/src'] }
-            res.srcDirs = ['tests/res']
-            assets.srcDirs = ['tests/assets']
-            resources.srcDirs = ['tests/src']
+            java.srcDirs = ['tests/src']
         }
-
-        old { java.srcDirs = ['src-patched/src-old'] }
-        normal { java.srcDirs = ['src-patched/src-normal'] }
-        l_test { java.srcDirs = ['src-patched/src-normal'] }
+        instrumentTest.setRoot('tests/src')
 
         google {
             manifest.srcFile  "res-google/AndroidManifest.xml"
@@ -123,6 +98,26 @@ android {
     }
 }
 
+
+robolectric {
+    // configure the set of classes for JUnit tests
+    include '**/*Test.class'
+    //exclude '**/espresso/**/*.class'
+
+    // configure max heap size of the test JVM
+    //maxHeapSize = '2048m'
+
+    // configure the test JVM arguments
+     //jvmArgs '-Xmx1024m', '-XX:MaxPermSize=256m', '-XX:+HeapDumpOnOutOfMemoryError'
+
+    // configure whether failing tests should fail the build
+    //ignoreFailures false
+
+    // use afterTest to listen to the test execution results
+    afterTest { descriptor, result ->
+        println "Executing test for {$descriptor.name} with result: ${result.resultType}"
+    }
+}
 
 dependencies {
     compile project(':model')
@@ -135,13 +130,52 @@ dependencies {
     compile project(':custom_views')
     compile project(':acra')
     compile project(':drag-sort-listview')
-    //l_testCompile project(path: ':new_ui', configuration: 'l_testRelease')
-    normalCompile project(path: ':new_ui', configuration: 'normalRelease')
+    compile project(':new_ui')
 
     //for tests
-    androidTestCompile files("$project.buildDir/classes/debug")
-    androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
-    androidTestCompile "junit:junit:$junitVersion"
+    //androidTestCompile files("$project.buildDir/classes/debug")
+    //androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
+    androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
+
+	androidTestCompile("junit:junit:4.11"){
+        exclude module: 'hamcrest-core'
+    }
+
+	androidTestCompile("org.robolectric:robolectric:2.3") {
+		exclude module: 'classworlds'
+		exclude module: 'commons-logging'
+		exclude module: 'httpclient'
+		exclude module: 'maven-artifact'
+		exclude module: 'maven-artifact-manager'
+		exclude module: 'maven-error-diagnostics'
+		exclude module: 'maven-model'
+		exclude module: 'maven-project'
+		exclude module: 'maven-settings'
+		exclude module: 'plexus-container-default'
+		exclude module: 'plexus-interpolation'
+		exclude module: 'plexus-utils'
+		exclude module: 'wagon-file'
+		exclude module: 'wagon-http-lightweight'
+		exclude module: 'wagon-provider-api'
+	}
 }
 
+task deploy(dependsOn: build) << {
+	println "Do you realy want to deploy Mirakel?"
+	def c=System.console().readLine().toLowerCase();
+	if ( c== 'y'||c=='j'){
+		def script = (rootDir.toString()+"/build/scripts/deploy.sh").execute()
+		script.err.eachLine {line -> println "ERROR: " + line}
+		script.out.each {line -> println line}
+	    script.waitFor()
+	}
+}
 
+apply plugin: 'idea'
+idea {
+	module {
+		testOutputDir = file('build/test-classes/debug')
+	}
+}

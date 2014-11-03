@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Mirakel is an Android App for Managing your ToDo-Lists
-  
+
   Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
-  
+
       This program is free software: you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
       the Free Software Foundation, either version 3 of the License, or
       any later version.
-  
+
       This program is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
-  
+
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="68"
-    android:versionName="2.7.1" >
+    android:versionCode="70"
+    android:versionName="2.8-beta2" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -71,11 +71,11 @@
         android:permissionGroup="de.azapps.mirakel.PERMISSION"
         android:protectionLevel="signatureOrSystem" />
 
-    <uses-sdk
-        tools:node="replace" />
+    <uses-sdk />
 
 
         <instrumentation
+            tools:replace="android:label"
             android:name="android.test.InstrumentationTestRunner"
             android:label="your tests label"
             android:targetPackage="de.azapps.mirakelandroid" />
@@ -143,7 +143,7 @@
         </activity>
 
         <service
-            android:name="de.azapps.mirakel.sync.AuthenticationService"
+            android:name="de.azapps.mirakel.sync.taskwarrior.services.AuthenticationService"
             android:exported="true"
             android:permission="de.azapps.mirakel.SYNC" >
             <intent-filter>
@@ -155,7 +155,7 @@
                 android:resource="@xml/authenticator" />
         </service>
         <service
-            android:name="de.azapps.mirakel.sync.SyncService"
+            android:name="de.azapps.mirakel.sync.taskwarrior.services.SyncService"
             android:exported="true"
             android:permission="de.azapps.mirakel.SYNC" >
             <intent-filter>
@@ -173,11 +173,6 @@
             android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustPan" >
-        </activity>
-        <activity
-            android:name="de.azapps.mirakel.settings.activities.CreditsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits" >
         </activity>
         <activity
             android:name="org.acra.CrashReportDialog"

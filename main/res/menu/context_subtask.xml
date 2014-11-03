@@ -17,23 +17,22 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/menu_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:title="@string/menu_delete_task"/>
     <item
         android:id="@+id/edit_task"
         android:icon="@android:drawable/ic_menu_edit"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:title="@string/menu_edit_task"/>
     <item
         android:id="@+id/done_task"
         android:icon="@drawable/ic_checkmark_holo_light"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:title="@string/menu_do_task"/>
 
 </menu>

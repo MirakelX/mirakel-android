@@ -16,8 +16,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" 
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     
     <!--
     Move
@@ -35,23 +34,23 @@
     <item
         android:id="@+id/menu_move"
         android:icon="@android:drawable/ic_menu_set_as"
-        mirakel:showAsAction="ifRoom|withText"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/menu_move_task"/>
     <item
         android:id="@+id/menu_undo"
-        mirakel:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/action_undo"/>
     
     <item
         android:id="@+id/share_task"
         android:icon="@android:drawable/ic_menu_share"
-        mirakel:showAsAction="ifRoom|withText"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/share_task"/>
     
     <item
         android:id="@+id/search"
         android:icon="@android:drawable/ic_menu_search"
-        mirakel:showAsAction="ifRoom|withText"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/search">
     </item>
     <!--  -->
@@ -59,29 +58,29 @@
     <item
         android:id="@+id/task_sorting"
         android:icon="@android:drawable/ic_menu_sort_alphabetically"
-        mirakel:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/task_menu_sorting">
     </item>
     <item
         android:id="@+id/menu_sync_now"
-        mirakel:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/action_sync_now"/>
     <item
         android:id="@+id/menu_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        mirakel:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/menu_delete_task"/>
     <item
         android:id="@+id/menu_contact"
         android:title="@string/action_contact"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
     <item
         android:id="@+id/menu_new_ui"
         android:title="@string/use_new_ui"
-        mirakel:showAsAction="never"/>
+        android:showAsAction="never"/>
     <item
         android:id="@+id/menu_settings"
-        mirakel:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/menu_settings"/>
 
 </menu>

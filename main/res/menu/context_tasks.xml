@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:mirakel="http://schemas.android.com/apk/res-auto"
     tools:ignore="missingTitle" >
         <item
         android:id="@+id/menu_delete"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/menu_delete_task"/>
     <item
         android:id="@+id/menu_move"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_set_as"
         android:title="@string/menu_move_task"/>
     <item
         android:id="@+id/menu_set_due"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_today"
         android:title="@string/menu_set_due"/>
     <item
         android:id="@+id/edit_task"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/menu_edit_task"/>
     <item
         android:id="@+id/done_task"
-        mirakel:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:icon="@drawable/ic_checkmark_holo_light"
         android:title="@string/menu_do_task"/>
 

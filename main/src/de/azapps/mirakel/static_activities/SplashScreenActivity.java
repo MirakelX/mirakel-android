@@ -16,7 +16,6 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
 package de.azapps.mirakel.static_activities;
 
 import android.annotation.SuppressLint;
@@ -28,7 +27,9 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.main_activity.MainActivity;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakelandroid.R;
@@ -57,14 +58,19 @@ public class SplashScreenActivity extends Activity {
             setTheme(R.style.Theme_SplashScreen);
         }
         // Intents
-        final Class startActivity = MainActivity.class;
+        final Class startActivity;
+        if (MirakelCommonPreferences.useNewUI()) {
+            startActivity = MirakelActivity.class;
+        } else {
+            startActivity = MainActivity.class;
+        }
         // Create a meta list if not existent
         SpecialList.firstSpecialSafe();
-        final long listId = MirakelModelPreferences.getStartupList().getId();
+        final ListMirakel listId = MirakelModelPreferences.getStartupList();
         final Intent intent = new Intent(SplashScreenActivity.this,
                                          startActivity);
         intent.setAction(DefinitionsHelper.SHOW_LIST);
-        intent.putExtra(DefinitionsHelper.EXTRA_ID, listId);
+        intent.putExtra(DefinitionsHelper.EXTRA_LIST, listId);
         finish();
         startActivityForResult(intent, 1);
     }
