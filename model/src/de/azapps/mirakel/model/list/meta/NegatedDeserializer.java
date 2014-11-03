@@ -19,43 +19,55 @@
 
 package de.azapps.mirakel.model.list.meta;
 
+import android.support.annotation.NonNull;
+
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Map.Entry;
+import java.util.Map;
 
-import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty.OPERATION;
+public class NegatedDeserializer<T extends SpecialListsBooleanProperty> implements
+    JsonDeserializer<T> {
 
-public class ProgressDeserializer implements
-    JsonDeserializer<SpecialListsProgressProperty> {
+    private static final String TAG = "NegatedDeserializer";
 
-    private static final String TAG = "ProgressDeserializer";
+    private Class clazz;
+
+    public NegatedDeserializer(@NonNull final Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     @Override
-    public SpecialListsProgressProperty deserialize(final JsonElement json,
-            final Type typeOfT, final JsonDeserializationContext context)
-    throws JsonParseException {
+    public T deserialize(final JsonElement json,
+                         final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
         if (json.isJsonObject()) {
-            Integer value = null, op = null;// initialize with stuff to mute the
+            Boolean negated = null;// initialize with stuff to mute the
             // compiler
-            for (final Entry<String, JsonElement> entry : json
+            for (final Map.Entry<String, JsonElement> entry : json
                  .getAsJsonObject().entrySet()) {
+
+
                 if (entry.getValue().isJsonPrimitive()
-                    && "value".equals(entry.getKey())) {
-                    value = entry.getValue().getAsInt();
-                } else if (entry.getValue().isJsonPrimitive()
-                           && "op".equals(entry.getKey())) {
-                    op = entry.getValue().getAsInt();
+                    && ("done".equals(entry.getKey()) || "isSet".equals(entry.getKey()) ||
+                        "isset".equals(entry.getKey()))) {
+                    negated = entry.getValue().getAsBoolean();
                 } else {
                     throw new JsonParseException("unknown format");
                 }
             }
-            if (value != null && op != null) {
-                return new SpecialListsProgressProperty(value,
-                                                        OPERATION.values()[op]);
+            if (negated != null) {
+                try {
+                    return (T)clazz.getConstructor(boolean.class).newInstance(negated);
+                } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
+                             InvocationTargetException e) {
+                    throw new JsonParseException("Could not create new SetProperty", e);
+                }
+
             }
         }
         throw new JsonParseException("unknown format");

@@ -163,6 +163,16 @@
     <item>Jaren</item>
   </string-array>
   <string name="nothing">Geen herhaling</string>
+  <string name="special_lists_content_title">Inhoud</string>
+  <string name="special_lists_done_title">Afgerond</string>
+  <string name="special_lists_due_title">Vervaldatum</string>
+  <string name="special_lists_file_title">Bestand</string>
+  <string name="special_lists_list_title">Lijsten</string>
+  <string name="special_lists_name_title">Naam</string>
+  <string name="special_lists_priority_title">Prioriteit</string>
+  <string name="special_lists_progress_title">Voortgang</string>
+  <string name="special_lists_reminder_title">Herinnnering</string>
+  <string name="special_lists_subtask_title">Subtaken</string>
   <string-array name="demo_lists">
     <item>Werk</item>
     <item>Thuis</item>

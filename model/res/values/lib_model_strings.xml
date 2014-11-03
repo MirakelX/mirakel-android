@@ -191,7 +191,27 @@
     </string-array>
 
     <string name="nothing">No recurrence</string>
-    
+    <string name="special_lists_content_title">Content</string>
+    <string name="special_lists_done_title">Done</string>
+    <string name="special_lists_due_exist_title">Due existence</string>
+    <string name="special_lists_due_title">Due</string>
+    <string name="special_lists_file_title">File</string>
+    <string name="special_lists_list_title">Lists</string>
+    <string name="special_lists_name_title">Name</string>
+    <string name="special_lists_priority_title">Priority</string>
+    <string name="special_lists_progress_title">Progress</string>
+    <string name="special_lists_reminder_title">Reminder</string>
+    <string name="special_lists_subtask_title">Subtasks</string>
+    <string name="special_lists_tag_title">Tag</string>
+    <string name="and">AND</string>
+    <string name="or">OR</string>
+    <string name="new_tag">New tag</string>
+    <string name="special_list_list_name">List Name</string>
+    <string name="special_lists_due_negated">Not before today %s</string>
+    <string name="special_lists_due">Before today %s</string>
+    <string name="due_exists">Due exists</string>
+    <string name="due_dont_exist">Due does not exist</string>
+
     <string-array name="demo_lists">
         <item>Work</item>
         <item>Home</item>
@@ -206,4 +226,19 @@
         <item>Milk</item>
         <item>Cheese</item>
     </string-array>
+
+    <plurals name="day">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+
+    <plurals name="month">
+        <item quantity="one">month</item>
+        <item quantity="other">months</item>
+    </plurals>
+
+    <plurals name="year">
+        <item quantity="one">year</item>
+        <item quantity="other">years</item>
+    </plurals>
 </resources>

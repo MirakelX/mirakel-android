@@ -143,6 +143,7 @@
   <string name="where_like_begin_text">Commence avec %s</string>
   <string name="where_like_end_text">Finit avec %s</string>
   <string name="delete">Supprimer</string>
+  <string name="delete_model_title">Voulez-vous supprimer \"%s\" ?</string>
   <string name="special_list_progress_equal">Égale à %d</string>
   <string name="special_list_progress_less_than">Inférieur à %d</string>
   <string name="special_list_progress_greater_than">Supérieur à %d</string>
@@ -163,16 +164,26 @@
     <item>Années</item>
   </string-array>
   <string name="nothing">Pas de répétition</string>
+  <string name="special_lists_content_title">Contenu</string>
+  <string name="special_lists_done_title">Fini</string>
+  <string name="special_lists_due_title">Échéance</string>
+  <string name="special_lists_file_title">Fichier</string>
+  <string name="special_lists_list_title">Listes</string>
+  <string name="special_lists_name_title">Nom</string>
+  <string name="special_lists_priority_title">Priorité</string>
+  <string name="special_lists_progress_title">Progrès</string>
+  <string name="special_lists_reminder_title">Rappel</string>
+  <string name="special_lists_subtask_title">Tâches subordonnées</string>
   <string-array name="demo_lists">
     <item>Travail</item>
     <item>Accueil</item>
     <item>Achats</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>Buy birthday present for grandpa</item>
+    <item>Acheter un cadeau d\'anniversaire pour Papy</item>
     <item>Musique</item>
-    <item>Organize the party</item>
-    <item>Finish presentation</item>
+    <item>Organiser la fête</item>
+    <item>Finir la présentation</item>
     <item>Lait</item>
     <item>Fromage</item>
   </string-array>

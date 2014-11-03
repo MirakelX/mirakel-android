@@ -20,22 +20,37 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
-public abstract class SpecialListsBaseProperty {
+public abstract class SpecialListsBaseProperty implements Parcelable {
 
     public SpecialListsBaseProperty() {
         // nothing
     }
 
+    public SpecialListsBaseProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        // nothing
+    }
+
     // for wherequery
-    abstract public MirakelQueryBuilder getWhereQuery(final Context ctx);
+    @NonNull
+    abstract public MirakelQueryBuilder getWhereQueryBuilder(final @NonNull Context ctx);
 
     // for db
+    @NonNull
     abstract public String serialize();
 
     // for meta-lists-settings
-    abstract public String getSummary(final Context ctx);
+    @NonNull
+    abstract public String getSummary(final @NonNull Context ctx);
+    @NonNull
+    abstract public String getTitle(final @NonNull Context ctx);
+
+    public String getSummaryForConjunction(final @NonNull Context ctx) {
+        return getTitle(ctx) + " : " + getSummary(ctx);
+    }
 
 }

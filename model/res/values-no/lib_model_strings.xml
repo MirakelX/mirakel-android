@@ -94,4 +94,12 @@
     <item>Måneder</item>
     <item>År</item>
   </string-array>
+  <string name="special_lists_content_title">Innhold</string>
+  <string name="special_lists_done_title">Ferdig</string>
+  <string name="special_lists_due_title">Forfall</string>
+  <string name="special_lists_list_title">Lister</string>
+  <string name="special_lists_name_title">Navn</string>
+  <string name="special_lists_priority_title">Prioritet</string>
+  <string name="special_lists_reminder_title">Påminnelse</string>
+  <string name="special_lists_subtask_title">Deloppgave</string>
 </resources>

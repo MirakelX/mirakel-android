@@ -20,12 +20,19 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -36,20 +43,34 @@ import de.azapps.tools.OptionalUtils;
 public class SpecialListsListProperty extends SpecialListsSetProperty {
 
     public SpecialListsListProperty(final boolean isNegated,
-                                    final List<Integer> content) {
+                                    final @NonNull List<Integer> content) {
         super(isNegated, content);
     }
 
-    @Override
-    public String propertyName() {
-        return Task.LIST_ID;
+    private SpecialListsListProperty(final @NonNull Parcel p) {
+        super(p);
+    }
+
+    public SpecialListsListProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        if (oldProperty instanceof SpecialListsListProperty) {
+            content = ((SpecialListsListProperty) oldProperty).getContent();
+        } else {
+            content = new ArrayList<>(5);
+        }
     }
 
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    protected String getPropertyName() {
+        return Task.LIST_ID;
+    }
+
+    @NonNull
+    @Override
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
-        final List<Integer> special = new ArrayList<>();
-        final List<Integer> normal = new ArrayList<>();
+        final List<Integer> special = new ArrayList<>(content.size() / 2);
+        final List<Integer> normal = new ArrayList<>(content.size() / 2);
         for (final int c : this.content) {
             if (c > 0) {
                 normal.add(c);
@@ -60,38 +81,66 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         qb.and(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, normal);
         // TODO handle loops here
         for (final int p : special) {
-            final Optional<SpecialList> s = SpecialList.getSpecial(p);
-            OptionalUtils.withOptional(s, new OptionalUtils.Procedure<SpecialList>() {
+            OptionalUtils.withOptional(SpecialList.getSpecial(p), new OptionalUtils.Procedure<SpecialList>() {
                 @Override
-                public void apply(SpecialList input) {
-                    if (input.getWhereQueryForTasks() != null) {
-                        qb.or(input.getWhereQueryForTasks());
-                    }
+                public void apply(final SpecialList input) {
+                    qb.or(input.getWhereQueryForTasks());
                 }
             });
         }
-        if (isNegated) {
+        if (isSet) {
             return new MirakelQueryBuilder(ctx).not(qb);
         } else {
             return qb;
         }
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context mContext) {
-        String summary = this.isNegated ? mContext.getString(R.string.not_in)
-                         : "";
-        boolean first = true;
-        for (final int p : this.content) {
-            final Optional<ListMirakel> l = ListMirakel.get(p);
-            if (!l.isPresent()) {
-                continue;
+    public String getSummary(@NonNull final Context ctx) {
+        final List <ListMirakel> lists = new MirakelQueryBuilder(ctx).and(ModelBase.ID,
+                MirakelQueryBuilder.Operation.IN, content).getList(ListMirakel.class);
+        lists.addAll(new MirakelQueryBuilder(ctx).and(ModelBase.ID,
+                     MirakelQueryBuilder.Operation.IN,
+        new ArrayList<>(Collections2.transform(Collections2.filter(content, new Predicate<Integer>() {
+            @Override
+            public boolean apply(Integer input) {
+                return input < 0;
             }
-            summary += (first ? "" : ",") + l.get();
-            if (first) {
-                first = false;
+        }), new Function<Integer, Integer>() {
+            @Override
+            public Integer apply(Integer input) {
+                return input * -1;
             }
-        }
-        return summary;
+        }))).getList(SpecialList.class));
+
+        return (this.isSet ? ctx.getString(R.string.not_in) : "") + TextUtils.join(", ",
+        Collections2.transform(lists, new Function<ListMirakel, String>() {
+            @Override
+            public String apply(ListMirakel input) {
+                return input.getName();
+            }
+        }));
     }
+
+    @NonNull
+    @Override
+    public String getTitle(@NonNull final Context ctx) {
+        return ctx.getString(R.string.special_lists_list_title);
+    }
+
+
+
+    public static final Creator<SpecialListsListProperty> CREATOR = new
+    Creator<SpecialListsListProperty>() {
+        @Override
+        public SpecialListsListProperty createFromParcel(final Parcel source) {
+            return new SpecialListsListProperty(source);
+        }
+
+        @Override
+        public SpecialListsListProperty[] newArray(final int size) {
+            return new SpecialListsListProperty[size];
+        }
+    };
 }

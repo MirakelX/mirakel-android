@@ -26,7 +26,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,25 +47,21 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
+
 public class AccountMirakel extends AccountBase {
     public enum ACCOUNT_TYPES {
         CALDAV, LOCAL, TASKWARRIOR;
-        public static ACCOUNT_TYPES getSyncType(final String type) {
-            if (type.equals("Taskwarrior")) {
-                return TASKWARRIOR;
-            } else if (type.equals("CalDav")) {
-                return CALDAV;
-            } else {
-                return LOCAL;
-            }
-        }
 
         public static ACCOUNT_TYPES parseAccountType(final String type) {
-            if (ACCOUNT_TYPE_DAVDROID.equals(type) || ACCOUNT_TYPE_DAVDROID_MIRAKEL.equals(type)) {
+            switch (type) {
+            case ACCOUNT_TYPE_DAVDROID:
+            case ACCOUNT_TYPE_DAVDROID_MIRAKEL:
                 return CALDAV;
-            } else if (ACCOUNT_TYPE_MIRAKEL.equals(type)) {
+            case ACCOUNT_TYPE_MIRAKEL:
                 return TASKWARRIOR;
-            } else {
+            default:
                 return LOCAL;
             }
         }
@@ -115,17 +113,19 @@ public class AccountMirakel extends AccountBase {
             case TASKWARRIOR:
                 return ctx.getString(R.string.tw_account);
             default:
-                return "Unkown account type";
+                return "Unknown account type";
             }
         }
     }
 
     public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
     public static final String ACCOUNT_TYPE_DAVDROID_MIRAKEL = "bitfire.at.davdroid.mirakel";
+    public static final String ACCOUNT_TYPE_DMFS = "org.dmfs.caldav.account";
 
     public static final String ACCOUNT_TYPE_MIRAKEL = "de.azapps.mirakel";
 
-    private static final List<String> allowedAccounts = Arrays.asList(new String[] {ACCOUNT_TYPE_DAVDROID_MIRAKEL, ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL});
+    private static final List<String> allowedAccounts = Arrays.asList(ACCOUNT_TYPE_DAVDROID_MIRAKEL,
+            ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL, ACCOUNT_TYPE_DMFS);
 
     public static final String[] allColumns = { ModelBase.ID,
                                                 ModelBase.NAME, TYPE, ENABLED, SYNC_KEY
@@ -136,12 +136,13 @@ public class AccountMirakel extends AccountBase {
 
     private static final String TAG = "Account";
 
+    @Override
     protected Uri getUri() {
         return URI;
     }
 
     public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
-        List<AccountMirakel> l = new ArrayList<>();
+        final List<AccountMirakel> l = new ArrayList<>(c.getCount());
         if (c.moveToFirst()) {
             do {
                 l.add(new AccountMirakel(c));
@@ -154,15 +155,15 @@ public class AccountMirakel extends AccountBase {
     public AccountMirakel(final Cursor c) {
         super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
               ACCOUNT_TYPES.parseInt(c.getInt(c.getColumnIndex(TYPE))), c.getInt(c.getColumnIndex(ENABLED)) == 1,
-              c.getString(c.getColumnIndex(SYNC_KEY)));
+              fromNullable(c.getString(c.getColumnIndex(SYNC_KEY))));
     }
 
-    public static AccountMirakel get(final Account account) {
+    public static Optional<AccountMirakel> get(final Account account) {
         return new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
                 account.name).get(AccountMirakel.class);
     }
 
-    public static AccountMirakel get(final long id) {
+    public static Optional<AccountMirakel> get(final long id) {
         return new MirakelQueryBuilder(context).get(AccountMirakel.class, id);
     }
 
@@ -182,11 +183,11 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static AccountMirakel getLocal() {
-        AccountMirakel a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
+        final Optional<AccountMirakel> a = new MirakelQueryBuilder(context).and(TYPE, Operation.EQ,
                 ACCOUNT_TYPES.LOCAL.toInt()).and(ENABLED, Operation.EQ,
                         true).get(AccountMirakel.class);
-        if (a != null) {
-            return a;
+        if (a.isPresent()) {
+            return a.get();
         }
         return newAccount(context.getString(R.string.local_account),
                           ACCOUNT_TYPES.LOCAL, true);
@@ -199,6 +200,7 @@ public class AccountMirakel extends AccountBase {
     }
 
 
+    @NonNull
     public static AccountMirakel newAccount(final String name,
                                             final ACCOUNT_TYPES type, final boolean enabled) {
         final ContentValues cv = new ContentValues();
@@ -206,7 +208,7 @@ public class AccountMirakel extends AccountBase {
         cv.put(TYPE, type.toInt());
         cv.put(ENABLED, enabled);
         final long id = insert(URI, cv);
-        return get(id);
+        return get(id).get();
     }
 
     public static void update(final Account[] accounts) {
@@ -255,7 +257,7 @@ public class AccountMirakel extends AccountBase {
 
     public AccountMirakel(final int id, final String name,
                           final ACCOUNT_TYPES type, final boolean enabled,
-                          final String syncKey) {
+                          @NonNull final Optional<String> syncKey) {
         super(id, name, type, enabled, syncKey);
     }
 
@@ -307,18 +309,18 @@ public class AccountMirakel extends AccountBase {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.type);
+        dest.writeInt(this.type.toInt());
         dest.writeByte(enabled ? (byte) 1 : (byte) 0);
-        dest.writeString(this.syncKey);
+        dest.writeString(this.syncKey.orNull());
         dest.writeLong(getId());
         dest.writeString(getName());
     }
 
     private AccountMirakel(Parcel in) {
         super();
-        this.type = in.readInt();
+        this.type = ACCOUNT_TYPES.parseInt(in.readInt());
         this.enabled = in.readByte() != 0;
-        this.syncKey = in.readString();
+        this.syncKey = fromNullable(in.readString());
         setId(in.readLong());
         setName(in.readString());
     }

@@ -19,29 +19,36 @@
 
 package de.azapps.mirakel.helper.export_import;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Pair;
+import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 
 import com.google.common.base.Optional;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
@@ -49,10 +56,12 @@ import static com.google.common.base.Optional.of;
 
 public class WunderlistImport {
     private static final String TAG = "WunderlistImport";
-    private static Map<String, Integer> taskMapping;
 
-    public static boolean exec(final Context ctx, final FileInputStream stream) {
-        JsonObject i;
+    private static SparseArray<Task> taskMapping;
+    private static SparseArray<ListMirakel> listMapping;
+
+    public static boolean exec(final FileInputStream stream) {
+        final JsonObject i;
         try {
             i = new JsonParser().parse(new InputStreamReader(stream))
             .getAsJsonObject();
@@ -61,34 +70,15 @@ public class WunderlistImport {
             return false;
         }
         final Set<Entry<String, JsonElement>> f = i.entrySet();
-        Map<String, Long> listMapping = new HashMap<>();
-        List<Pair<Integer, String>> contents = new ArrayList<>();
-        taskMapping = new HashMap<>();
-        for (final Entry<String, JsonElement> e : f) {
-            if (e.getKey().equals("lists")) {
-                final Iterator<JsonElement> iter = e.getValue()
-                                                   .getAsJsonArray().iterator();
-                while (iter.hasNext()) {
-                    listMapping = parseList(iter.next().getAsJsonObject(),
-                                            listMapping);
-                }
-            } else if (e.getKey().equals("tasks")) {
-                final Iterator<JsonElement> iter = e.getValue()
-                                                   .getAsJsonArray().iterator();
-                while (iter.hasNext()) {
-                    contents = parseTask(iter.next().getAsJsonObject(),
-                                         listMapping, contents, ctx);
-                }
-            } else {
-                Log.d(TAG, e.getKey());
-            }
+        listMapping = new SparseArray<>();
+        taskMapping = new SparseArray<>();
+        if (!parseLoop(f)) {
+            return false;
         }
-        for (final Pair<Task, String> pair : subtasks) {
+        for (final Pair<Task, Integer> pair : subtasks) {
             try {
-                final Task parent = Task.get(Long.valueOf(taskMapping
-                                             .get(pair.second)));
-                parent.addSubtask(pair.first);
-            } catch (final Exception e) {
+                taskMapping.get(pair.second).addSubtask(pair.first);
+            } catch (final RuntimeException e) {
                 Log.e(TAG, "Blame yourself… ", e);
                 // Blame yourself…
             }
@@ -96,48 +86,162 @@ public class WunderlistImport {
         return true;
     }
 
-    private static Map<String, Long> parseList(final JsonObject jsonList,
-            final Map<String, Long> listMapping) {
+    private static boolean parseLoop(@NonNull final Set<Entry<String, JsonElement>> f) {
+        for (final Entry<String, JsonElement> e : f) {
+            switch (e.getKey().toLowerCase()) {
+            case "data":
+                if (e.getValue().isJsonObject()) {
+                    parseLoop(e.getValue().getAsJsonObject().entrySet());
+                } else {
+                    throw new JsonParseException("data is no jsonobject");
+                }
+                break;
+            case "lists":
+                if (e.getValue().isJsonArray()) {
+                    for (final JsonElement jsonElement : e.getValue()
+                         .getAsJsonArray()) {
+                        listMapping = parseList(jsonElement.getAsJsonObject());
+                    }
+                } else {
+                    throw new JsonParseException("lists is no jsonarray");
+                }
+                break;
+            case "tasks":
+                if (e.getValue().isJsonArray()) {
+                    for (JsonElement jsonElement : e.getValue()
+                         .getAsJsonArray()) {
+                        parseTask(jsonElement.getAsJsonObject());
+                    }
+                } else {
+                    throw new JsonParseException("tasks is no jsonarry");
+                }
+                break;
+            case "reminders":
+                handleReminder(e);
+                break;
+            case "notes":
+                handleNote(e);
+                break;
+            case "subtasks":
+                handleSubtask(e);
+                break;
+            default:
+                Log.d(TAG, e.getKey());
+                ErrorReporter.report(ErrorType.IMPORT_WUNDERLIST);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void handleReminder(final @NonNull Entry<String, JsonElement> e) {
+        if (e.getValue().isJsonArray()) {
+            final JsonArray reminders = e.getValue().getAsJsonArray();
+            for (final JsonElement reminder : reminders) {
+                if (reminder.isJsonObject()) {
+                    final int taskID = reminder.getAsJsonObject().get("task_id").getAsInt();
+                    final String time = reminder.getAsJsonObject().get("date").getAsString();
+                    final Calendar reminderDate = new GregorianCalendar();
+                    try {
+                        reminderDate.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.Sz").parse(time));
+                    } catch (final ParseException e1) {
+                        Log.wtf(TAG, "invalid timeformat", e1);
+                        continue;
+                    }
+                    final Task t = taskMapping.get(taskID);
+                    if (t != null) {
+                        t.setReminder(of(reminderDate));
+                        t.save();
+                    }
+                } else {
+                    throw new JsonParseException("reminder is no jsonobject");
+                }
+            }
+        }
+    }
+
+    private static void handleNote(final @NonNull Entry<String, JsonElement> e) {
+        if (e.getValue().isJsonArray()) {
+            final JsonArray notes = e.getValue().getAsJsonArray();
+            for (final JsonElement note : notes) {
+                if (note.isJsonObject()) {
+                    final int taskID = note.getAsJsonObject().get("task_id").getAsInt();
+                    final String noteText = note.getAsJsonObject().get("content").getAsString();
+                    final Task t = taskMapping.get(taskID);
+                    if (t != null) {
+                        t.setContent(noteText);
+                        t.save();
+                    }
+                } else {
+                    throw new JsonParseException("note is no jsonobject");
+                }
+            }
+        }
+    }
+
+    private static void handleSubtask(final @NonNull Entry<String, JsonElement> e) {
+        if (e.getValue().isJsonArray()) {
+            final JsonArray subtasks = e.getValue().getAsJsonArray();
+            for (final JsonElement subtask : subtasks) {
+                if (subtask.isJsonObject()) {
+                    final int taskID = subtask.getAsJsonObject().get("task_id").getAsInt();
+                    final String subtaskName = subtask.getAsJsonObject().get("title").getAsString();
+                    final boolean done = subtask.getAsJsonObject().has("completed") &&
+                                         subtask.getAsJsonObject().get("completed").getAsBoolean();
+                    final Task t = taskMapping.get(taskID);
+                    if (t != null) {
+                        final ListMirakel list = MirakelModelPreferences
+                                                 .getListForSubtask(t);
+                        final Task subtaskTask = Task.newTask(subtaskName, list);
+                        t.addSubtask(subtaskTask);
+                        t.setDone(done);
+                        t.save();
+                    }
+                } else {
+                    throw new JsonParseException("subtask is no jsonobject");
+                }
+            }
+        }
+    }
+
+    private static SparseArray<ListMirakel> parseList(final JsonObject jsonList) {
         final String name = jsonList.get("title").getAsString();
-        final String id = jsonList.get("id").getAsString();
+        final int id = jsonList.get("id").getAsInt();
         final ListMirakel l = ListMirakel.saveNewList(name);
         l.setCreatedAt(jsonList.get("created_at").getAsString());
-        l.setUpdatedAt(jsonList.get("updated_at").getAsString());
+        if (jsonList.get("updated_at") != null) {
+            l.setUpdatedAt(jsonList.get("updated_at").getAsString());
+        }
         l.save(false);
-        listMapping.put(id, l.getId());
+        listMapping.put(id, l);
         return listMapping;
     }
 
     /**
      * <Subtask, id of parent>
      */
-    private static List<Pair<Task, String>> subtasks = new ArrayList<Pair<Task, String>>();
+    private static List<Pair<Task, Integer>> subtasks = new ArrayList<>();
 
-    private static List<Pair<Integer, String>> parseTask(
-        final JsonObject jsonTask, final Map<String, Long> listMapping,
-        final List<Pair<Integer, String>> contents, final Context ctx) {
+    private static void parseTask(final JsonObject jsonTask) {
         final String name = jsonTask.get("title").getAsString();
-        final String list_id_string = jsonTask.get("list_id").getAsString();
-        final Long listId = listMapping.get(list_id_string);
-        Optional<ListMirakel> listMirakelOptional = Optional.absent();
+        final int list_id_string = jsonTask.get("list_id").getAsInt();
+        final Long listId = listMapping.get(list_id_string).getId();
+        Optional<ListMirakel> listMirakelOptional  = ListMirakel.get(listId);
         final ListMirakel list;
-        if (listId != null) {
-            listMirakelOptional = ListMirakel.get(listId);
-        }
         if (listMirakelOptional.isPresent()) {
             list = listMirakelOptional.get();
         } else {
-            list = ListMirakel.safeFirst(ctx);
+            list = ListMirakel.safeFirst();
         }
         final Task t = Task.newTask(name, list);
-        taskMapping.put(jsonTask.get("id").getAsString(), (int) t.getId());
+        taskMapping.put(jsonTask.get("id").getAsInt(), t);
         if (jsonTask.has("due_date")) {
             try {
                 final Calendar due = DateTimeHelper.parseDate(jsonTask.get(
                                          "due_date").getAsString());
                 t.setDue(of(due));
             } catch (final ParseException e) {
-                Log.e(TAG, "cannot parse date");
+                Log.e(TAG, "cannot parse date", e);
             }
         }
         if (jsonTask.has("note")) {
@@ -150,17 +254,42 @@ public class WunderlistImport {
                                            .get("completed_at").getAsString());
                 t.setUpdatedAt(completed);
             } catch (final ParseException e) {
-                Log.e(TAG, "cannot parse date");
+                Log.e(TAG, "cannot parse date", e);
             }
         }
         if (jsonTask.has("starred") && jsonTask.get("starred").getAsBoolean()) {
             t.setPriority(2);
         }
         if (jsonTask.has("parent_id")) {
-            subtasks.add(new Pair<Task, String>(t, jsonTask.get("parent_id")
-                                                .getAsString()));
+            subtasks.add(new Pair<>(t, jsonTask.get("parent_id")
+                                    .getAsInt()));
+        }
+        if (jsonTask.has("recurrence_type") && jsonTask.has("recurrence_count")) {
+            final int rec_count = jsonTask.get("recurrence_count").getAsInt();
+            final Recurring r;
+            final String type = jsonTask.get("recurrence_type").getAsString();
+            switch (type) {
+            case "year":
+                r = Recurring.newRecurring(type, 0, 0, 0, 0, rec_count, true, Optional.<Calendar>absent(),
+                                           Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                break;
+            case "month":
+                r = Recurring.newRecurring(type, 0, 0, 0, rec_count, 0, true, Optional.<Calendar>absent(),
+                                           Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                break;
+            case "week":
+                r = Recurring.newRecurring(type, 0, 0, rec_count * 7, 0, rec_count, true,
+                                           Optional.<Calendar>absent(), Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                break;
+            case "day":
+                r = Recurring.newRecurring(type, 0, 0, rec_count, 0, 0, true, Optional.<Calendar>absent(),
+                                           Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                break;
+            default:
+                throw new JsonParseException("Unknown recurring " + type);
+            }
+            t.setRecurrence(r.getId());
         }
         t.save(false);
-        return contents;
     }
 }

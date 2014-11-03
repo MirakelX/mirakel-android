@@ -20,7 +20,14 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
@@ -37,34 +44,66 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
         super(isNegated, content);
     }
 
-    @Override
-    protected String propertyName() {
-        return Tag.TABLE;
+    private SpecialListsTagProperty(final @NonNull Parcel in) {
+        super(in);
+    }
+
+    public SpecialListsTagProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        if (oldProperty instanceof SpecialListsTagProperty) {
+            content = ((SpecialListsTagProperty) oldProperty).getContent();
+            isSet = ((SpecialListsTagProperty) oldProperty).isSet();
+        } else {
+            content = new ArrayList<>();
+            isSet = false;
+        }
     }
 
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    protected String getPropertyName() {
+        return Tag.TABLE;
+    }
+
+    @NonNull
+    @Override
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         return new MirakelQueryBuilder(ctx).and(Task.ID,
-                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
+                                                isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
                                                 new MirakelQueryBuilder(ctx).distinct().select("task_id").and("tag_id",
                                                         MirakelQueryBuilder.Operation.IN, content), MirakelInternalContentProvider.TAG_CONNECTION_URI);
     }
 
+    @NonNull
     @Override
-    public String getSummary(final Context ctx) {
-        String summary = this.isNegated ? ctx.getString(R.string.not_in) : "";
-        boolean first = true;
-        for (final int p : this.content) {
-            final Tag t = Tag.get(p);
-            if (t == null) {
-                continue;
+    public String getSummary(@NonNull final Context ctx) {
+        List<Tag> tags = new MirakelQueryBuilder(ctx).and(ModelBase.ID, MirakelQueryBuilder.Operation.IN,
+                content).getList(Tag.class);
+        return (this.isSet ? ctx.getString(R.string.not_in) : "") + TextUtils.join(", ",
+        Collections2.transform(tags, new Function<Tag, String>() {
+            @Override
+            public String apply(Tag input) {
+                return input.getName();
             }
-            summary += (first ? "" : ",") + t;
-            if (first) {
-                first = false;
-            }
-        }
-        return summary;
+        }));
     }
 
+    @NonNull
+    @Override
+    public String getTitle(@NonNull Context ctx) {
+        return ctx.getString(R.string.special_lists_tag_title);
+    }
+
+
+
+
+    public static final Creator<SpecialListsTagProperty> CREATOR = new
+    Creator<SpecialListsTagProperty>() {
+        public SpecialListsTagProperty createFromParcel(Parcel source) {
+            return new SpecialListsTagProperty(source);
+        }
+
+        public SpecialListsTagProperty[] newArray(int size) {
+            return new SpecialListsTagProperty[size];
+        }
+    };
 }

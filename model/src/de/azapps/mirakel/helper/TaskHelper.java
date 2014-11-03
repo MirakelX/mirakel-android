@@ -19,38 +19,44 @@
 
 package de.azapps.mirakel.helper;
 
-import java.util.Calendar;
-
-import org.joda.time.LocalDate;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.google.common.base.Optional;
+
+import org.joda.time.LocalDate;
+
+import java.util.Calendar;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
+
 public class TaskHelper {
 
-    public static Task getTaskFromIntent(final Intent intent) {
-        Task task = null;
+    @NonNull
+    public static Optional<Task> getTaskFromIntent(final Intent intent) {
         if (intent == null) {
-            return task;
+            return absent();
         }
-        long taskId = intent.getLongExtra(DefinitionsHelper.EXTRA_ID, 0);
-        if (taskId == 0) {
-            // ugly fix for show Task from Widget
-            taskId = intent.getIntExtra(DefinitionsHelper.EXTRA_ID, 0);
+        final Bundle b = intent.getBundleExtra(DefinitionsHelper.BUNDLE_WRAPPER);
+        if (b != null) {
+            return fromNullable((Task)b.getParcelable(DefinitionsHelper.EXTRA_TASK));
+        } else if (intent.hasExtra(DefinitionsHelper.EXTRA_TASK)) {
+            return fromNullable((Task)intent.getParcelableExtra(DefinitionsHelper.EXTRA_TASK));
+        } else if (intent.hasExtra(DefinitionsHelper.EXTRA_TASK_REMINDER)) {
+            return fromNullable((Task)intent.getParcelableExtra(DefinitionsHelper.EXTRA_TASK_REMINDER));
+        } else {
+            return absent();
         }
-        if (taskId != 0) {
-            task = Task.get(taskId);
-        }
-        return task;
     }
 
     /**
@@ -61,7 +67,7 @@ public class TaskHelper {
      * @return
      */
     static String getTaskName(final Context ctx, final Task t) {
-        String subject;
+        final String subject;
         if (!t.getDue().isPresent()) {
             subject = ctx.getString(R.string.share_task_title, t.getName());
         } else {
@@ -85,7 +91,7 @@ public class TaskHelper {
      */
     public static int getTaskDueColor(final Context context, final Optional<Calendar> origDue,
                                       final boolean isDone) {
-        int colorResource;
+        final int colorResource;
         if (!origDue.isPresent()) {
             colorResource = R.color.Grey;
         } else {
@@ -124,7 +130,7 @@ public class TaskHelper {
     }
 
     public static void setPrio(final TextView taskPrio, final Task task) {
-        taskPrio.setText("" + task.getPriority());
+        taskPrio.setText(String.valueOf(task.getPriority()));
         final GradientDrawable bg = (GradientDrawable) taskPrio.getBackground();
         bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
     }

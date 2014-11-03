@@ -20,27 +20,48 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
 public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
 
     public enum OPERATION {
-        GREATER_THAN, EQUAL, LESS_THAN;
+        GREATER_THAN, EQUAL, LESS_THAN
     }
 
-    int value;
-    OPERATION op;
+    private int value;
+    @NonNull
+    private OPERATION op = OPERATION.LESS_THAN;
 
-    public SpecialListsProgressProperty(int value, OPERATION op) {
+    public SpecialListsProgressProperty(final int value, final @NonNull OPERATION op) {
         this.value = value;
         this.op = op;
     }
 
+    private SpecialListsProgressProperty(final @NonNull Parcel in) {
+        this.value = in.readInt();
+        final int tmpOp = in.readInt();
+        this.op = OPERATION.values()[tmpOp];
+    }
+
+    public SpecialListsProgressProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        if (oldProperty instanceof SpecialListsProgressProperty) {
+            value = ((SpecialListsProgressProperty) oldProperty).getValue();
+            op = ((SpecialListsProgressProperty) oldProperty).getOperation();
+        } else {
+            value = 50;
+            op = OPERATION.GREATER_THAN;
+        }
+    }
+
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
         switch (op) {
         case EQUAL:
@@ -53,16 +74,18 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return qb;
     }
 
+    @NonNull
     @Override
     public String serialize() {
-        String ret = "\"" + Task.PROGRESS + "\":{";
+        String ret = "{\"" + Task.PROGRESS + "\":{";
         ret += "\"value\":" + value;
         ret += ",\"op\":" + op.ordinal();
-        return ret + "}";
+        return ret + "} }";
     }
 
+    @NonNull
     @Override
-    public String getSummary(Context ctx) {
+    public String getSummary(@NonNull final Context ctx) {
         switch (op) {
         case EQUAL:
             return ctx.getString(R.string.special_list_progress_equal, value);
@@ -76,6 +99,13 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return "";
     }
 
+    @NonNull
+    @Override
+    public String getTitle(@NonNull final Context ctx) {
+        return ctx.getString(R.string.special_lists_progress_title);
+    }
+
+    @NonNull
     public OPERATION getOperation() {
         return op;
     }
@@ -84,12 +114,36 @@ public class SpecialListsProgressProperty extends SpecialListsBaseProperty {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 
-    public void setOperation(OPERATION op) {
+    public void setOperation(final @NonNull OPERATION op) {
         this.op = op;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeInt(this.value);
+        dest.writeInt(this.op.ordinal());
+    }
+
+
+    public static final Creator<SpecialListsProgressProperty> CREATOR = new
+    Creator<SpecialListsProgressProperty>() {
+        @Override
+        public SpecialListsProgressProperty createFromParcel(final Parcel source) {
+            return new SpecialListsProgressProperty(source);
+        }
+
+        @Override
+        public SpecialListsProgressProperty[] newArray(final int size) {
+            return new SpecialListsProgressProperty[size];
+        }
+    };
 }

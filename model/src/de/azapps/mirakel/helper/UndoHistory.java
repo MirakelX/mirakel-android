@@ -27,7 +27,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -64,7 +63,12 @@ public class UndoHistory {
                     final long id = Long.parseLong(last.substring(1));
                     switch (type) {
                     case TASK:
-                        Task.get(id).destroy(true);
+                        withOptional(Task.get(id), new OptionalUtils.Procedure<Task>() {
+                            @Override
+                            public void apply(Task input) {
+                                input.destroy(true);
+                            }
+                        });
                         break;
                     case LIST:
                         withOptional(ListMirakel.get(id), new OptionalUtils.Procedure<ListMirakel>() {
@@ -87,11 +91,9 @@ public class UndoHistory {
                 switch (type) {
                 case TASK:
                     final Gson gson = new GsonBuilder().registerTypeAdapter(
-                        Task.class,
-                        new TaskDeserializer(false, AccountMirakel
-                                             .getLocal(), ctx)).create();
+                        Task.class, new TaskDeserializer()).create();
                     final Task t = gson.fromJson(json, Task.class);
-                    if (Task.get(t.getId()) != null) {
+                    if (!Task.get(t.getId()).isPresent()) {
                         t.save(false);
                     } else {
                         try {
@@ -103,8 +105,8 @@ public class UndoHistory {
                     }
                     break;
                 case LIST:
-                    final ListMirakel l = ListMirakel.parseJson(json);
-                    if (ListMirakel.get(l.getId()) != null) {
+                    final ListMirakel l = ListMirakel.unsafeParseJson(json);
+                    if (ListMirakel.get(l.getId()).isPresent()) {
                         l.save(false);
                     } else {
                         try {

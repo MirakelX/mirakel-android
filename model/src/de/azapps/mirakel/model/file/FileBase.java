@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.file;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +30,7 @@ import java.io.FileNotFoundException;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -38,12 +40,17 @@ abstract class FileBase extends ModelBase {
     public static final String PATH = "path";
 
     private static final String TAG = "FileBase";
+    @NonNull
     protected Task task;
+    @NonNull
     protected Uri fileUri;
 
     public FileBase(final long id, final String name, final Task task,
-                    final Uri uri) {
+                    @NonNull final Uri uri) throws TaskVanishedException {
         super(id, name);
+        if (task == null) {
+            throw new TaskVanishedException("While creating file");
+        }
         this.task = task;
         this.fileUri = uri;
     }
@@ -53,19 +60,19 @@ abstract class FileBase extends ModelBase {
     }
 
 
-    public Task getTask() {
+    public @NonNull Task getTask() {
         return this.task;
     }
 
-    public void setTask(final Task task) {
+    public void setTask(@NonNull final Task task) {
         this.task = task;
     }
 
-    public Uri getFileUri() {
+    public @NonNull Uri getFileUri() {
         return this.fileUri;
     }
 
-    public void setUri(final Uri path) {
+    public void setFileUri(@NonNull final Uri path) {
         this.fileUri = path;
     }
 
@@ -75,6 +82,7 @@ abstract class FileBase extends ModelBase {
     }
 
 
+    @NonNull
     public ContentValues getContentValues() {
         final ContentValues cv;
         try {
@@ -84,7 +92,7 @@ abstract class FileBase extends ModelBase {
             return new ContentValues();
         }
         cv.put("task_id", this.task.getId());
-        cv.put("path", this.fileUri != null ? this.fileUri.toString() : "");
+        cv.put("path", this.fileUri.toString());
         return cv;
     }
 
@@ -93,11 +101,9 @@ abstract class FileBase extends ModelBase {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int)this.getId();
-        result = prime * result
-                 + (this.getName() == null ? 0 : this.getName().hashCode());
-        result = prime * result
-                 + (this.task == null ? 0 : this.task.hashCode());
-        result = prime * result + (this.fileUri == null ? 0 : this.fileUri.hashCode());
+        result = prime * result + (this.getName().hashCode());
+        result = prime * result + (this.task.hashCode());
+        result = prime * result + (this.fileUri.hashCode());
         return result;
     }
 
@@ -116,25 +122,13 @@ abstract class FileBase extends ModelBase {
         if (this.getId() != other.getId()) {
             return false;
         }
-        if (this.getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!this.getName().equals(other.getName())) {
+        if (!this.getName().equals(other.getName())) {
             return false;
         }
-        if (this.task == null) {
-            if (other.task != null) {
-                return false;
-            }
-        } else if (!this.task.equals(other.task)) {
+        if (!this.task.equals(other.task)) {
             return false;
         }
-        if (this.fileUri == null) {
-            if (other.fileUri != null) {
-                return false;
-            }
-        } else if (!this.fileUri.equals(other.fileUri)) {
+        if (!this.fileUri.equals(other.fileUri)) {
             return false;
         }
         return true;

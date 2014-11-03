@@ -24,65 +24,55 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.R;
-import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 
-public class SpecialListsFileProperty extends SpecialListsBooleanProperty {
-
-    public SpecialListsFileProperty(boolean hasFile) {
-        super(hasFile);
+public class SpecialListsDueExistsProperty extends SpecialListsBooleanProperty {
+    public SpecialListsDueExistsProperty(final boolean exists) {
+        super(exists);
     }
 
-    private SpecialListsFileProperty(final @NonNull Parcel in) {
-        super(in);
+    private SpecialListsDueExistsProperty(final @NonNull Parcel p) {
+        super(p);
     }
 
-    public SpecialListsFileProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+    public SpecialListsDueExistsProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
         super(oldProperty);
     }
 
     @Override
-    //not used here
     protected String getPropertyName() {
-        return FileMirakel.TABLE;
+        return Task.DUE + "_exists";
     }
 
     @NonNull
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
-        final MirakelQueryBuilder.Operation op = isSet ? Operation.IN :
-                Operation.NOT_IN;
-        return new MirakelQueryBuilder(ctx).and(Task.ID, op,
-                                                new MirakelQueryBuilder(ctx).select(FileMirakel.TASK), FileMirakel.URI);
+        return new MirakelQueryBuilder(ctx).and(Task.DUE, isSet ? Operation.EQ : Operation.NOT_EQ,
+                                                (String)null);
     }
 
     @NonNull
     @Override
     public String getSummary(@NonNull Context ctx) {
-        return ctx.getString(isSet ? R.string.has_file : R.string.no_file);
+        return isSet ? ctx.getString(R.string.due_dont_exist) : ctx.getString(R.string.due_exists);
     }
 
     @NonNull
     @Override
     public String getTitle(@NonNull Context ctx) {
-        return ctx.getString(R.string.special_lists_file_title);
+        return ctx.getString(R.string.special_lists_due_exist_title);
     }
 
-    @Override
-    public String getSummaryForConjunction(@NonNull Context ctx) {
-        return getSummary(ctx);
-    }
-
-    public static final Creator<SpecialListsFileProperty> CREATOR = new
-    Creator<SpecialListsFileProperty>() {
-        public SpecialListsFileProperty createFromParcel(Parcel source) {
-            return new SpecialListsFileProperty(source);
+    public static final Creator<SpecialListsDueExistsProperty> CREATOR = new
+    Creator<SpecialListsDueExistsProperty>() {
+        public SpecialListsDueExistsProperty createFromParcel(Parcel source) {
+            return new SpecialListsDueExistsProperty(source);
         }
 
-        public SpecialListsFileProperty[] newArray(int size) {
-            return new SpecialListsFileProperty[size];
+        public SpecialListsDueExistsProperty[] newArray(int size) {
+            return new SpecialListsDueExistsProperty[size];
         }
     };
 }

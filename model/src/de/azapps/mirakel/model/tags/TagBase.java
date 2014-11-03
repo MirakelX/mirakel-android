@@ -21,6 +21,7 @@ package de.azapps.mirakel.model.tags;
 
 import android.content.ContentValues;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.ModelBase;
@@ -36,7 +37,7 @@ abstract class TagBase extends ModelBase {
     // Color as specified in android.graphics.Color
     protected int backgroundColor;
 
-    public TagBase(final long id, final String name, final int backColor, final boolean dark) {
+    public TagBase(final long id, @NonNull final String name, final int backColor, final boolean dark) {
         super(id, name);
         setBackgroundColor(backColor);
         setDarkText(dark);
@@ -47,6 +48,7 @@ abstract class TagBase extends ModelBase {
     }
 
     @Override
+    @NonNull
     public ContentValues getContentValues() {
         final ContentValues cv;
         try {
@@ -83,8 +85,7 @@ abstract class TagBase extends ModelBase {
         result = prime * result + (int)this.getId();
         result = prime * result + this.backgroundColor;
         result = prime * result + (this.isDarkText ? 1231 : 1237);
-        result = prime * result
-                 + (this.getName() == null ? 0 : this.getName().hashCode());
+        result = prime * result + (this.getName().hashCode());
         return result;
     }
 
@@ -109,11 +110,7 @@ abstract class TagBase extends ModelBase {
         if (this.isDarkText != other.isDarkText) {
             return false;
         }
-        if (this.getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!this.getName().equals(other.getName())) {
+        if (!this.getName().equals(other.getName())) {
             return false;
         }
         return true;

@@ -127,6 +127,7 @@
   <string name="where_like_begin_text">Начинается с %s</string>
   <string name="where_like_end_text">Заканчивается на %s</string>
   <string name="delete">Удалить</string>
+  <string name="delete_model_title">Вы хотите удалить \"%s\"?</string>
   <string name="special_list_progress_equal">Равен %d</string>
   <string name="special_list_progress_less_than">Меньше %d</string>
   <string name="special_list_progress_greater_than">Больше, чем %d</string>
@@ -147,16 +148,29 @@
     <item>Года</item>
   </string-array>
   <string name="nothing">Без повтора</string>
+  <string name="special_lists_content_title">Комментарий</string>
+  <string name="special_lists_done_title">Выполнено</string>
+  <string name="special_lists_due_title">Срок</string>
+  <string name="special_lists_file_title">Файл</string>
+  <string name="special_lists_list_title">Списки</string>
+  <string name="special_lists_name_title">Имя</string>
+  <string name="special_lists_priority_title">Приоритет</string>
+  <string name="special_lists_reminder_title">Напоминание</string>
+  <string name="special_lists_subtask_title">Подзадачи</string>
+  <string name="special_lists_tag_title">Тег</string>
+  <string name="and">И</string>
+  <string name="or">ИЛИ</string>
+  <string name="new_tag">Новый тег</string>
   <string-array name="demo_lists">
     <item>Работа</item>
     <item>Дом</item>
     <item>Покупки</item>
   </string-array>
   <string-array name="demo_tasks">
-    <item>Buy birthday present for grandpa</item>
+    <item>Купить подарок на день рождение дедушки</item>
     <item>Музыка</item>
-    <item>Organize the party</item>
-    <item>Finish presentation</item>
+    <item>Организовать вечеринку</item>
+    <item>Закончить презентацию</item>
     <item>Молоко</item>
     <item>Сыр</item>
   </string-array>

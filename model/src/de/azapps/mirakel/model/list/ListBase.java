@@ -20,16 +20,21 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountVanishedException;
 import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
 import de.azapps.tools.Log;
 
-abstract class ListBase  extends ModelBase {
+abstract class ListBase extends ModelBase {
     // db-columns
     public final static String LFT = "lft";
     public final static String RGT = "rgt";
@@ -38,15 +43,19 @@ abstract class ListBase  extends ModelBase {
     public final static String ACCOUNT_ID = "account_id";
 
 
-
+    @NonNull
     protected SORT_BY sortBy;
+    @NonNull
     protected String createdAt;
+    @NonNull
     protected String updatedAt;
+    @NonNull
     protected SYNC_STATE syncState;
     protected int lft;
     protected int rgt;
     protected int color;
     protected long accountID;
+    @Nullable
     private AccountMirakel accountMirakel;
     protected boolean isSpecial = false;
 
@@ -56,10 +65,10 @@ abstract class ListBase  extends ModelBase {
         super(0, "");
     }
 
-    ListBase(final long id, final String name, final SORT_BY sortBy,
-             final String createdAt, final String updatedAt,
-             final SYNC_STATE syncState, final int lft, final int rgt,
-             final int color, final AccountMirakel a) {
+    ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
+             @NonNull final String createdAt, @NonNull final String updatedAt,
+             @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
+             final int color, @NonNull final AccountMirakel a) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -71,13 +80,13 @@ abstract class ListBase  extends ModelBase {
         this.setAccount(a);
     }
 
-    ListBase(final long id, final String name) {
+    ListBase(final long id, @NonNull final String name) {
         super(id, name);
     }
 
-    protected ListBase(final long id, final String name, final SORT_BY sortBy,
-                       final String createdAt, final String updatedAt,
-                       final SYNC_STATE syncState, final int lft, final int rgt,
+    protected ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
+                       @NonNull final String createdAt, @NonNull final String updatedAt,
+                       @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
                        final int color, final int account) {
         super(id, name);
         this.setCreatedAt(createdAt);
@@ -90,11 +99,11 @@ abstract class ListBase  extends ModelBase {
         this.setAccount(account);
     }
 
-    public void setListName(final String name) throws ListMirakel.ListAlreadyExistsException {
-        ListMirakel listMirakel = ListMirakel.getByName(name, getAccount());
-        if (listMirakel != null && listMirakel.getId() != getId()) {
+    public void setListName(@NonNull final String name) throws ListMirakel.ListAlreadyExistsException {
+        Optional<ListMirakel> listMirakel = ListMirakel.getByName(name, getAccount());
+        if (listMirakel.isPresent() && listMirakel.get().getId() != getId()) {
             throw new ListMirakel.ListAlreadyExistsException("List " + getName() + " already exists as ID: " +
-                    listMirakel.getId());
+                    listMirakel.get().getId());
         }
         setName(name);
     }
@@ -103,23 +112,27 @@ abstract class ListBase  extends ModelBase {
         return this.createdAt;
     }
 
-    public void setCreatedAt(final String createdAt) {
+    public void setCreatedAt(@NonNull final String createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public
+    @NonNull
+    String getUpdatedAt() {
         return this.updatedAt;
     }
 
-    public void setUpdatedAt(final String updatedAt) {
+    public void setUpdatedAt(@NonNull final String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public SORT_BY getSortBy() {
+    public
+    @NonNull
+    SORT_BY getSortBy() {
         return this.sortBy;
     }
 
-    public void setSortBy(final SORT_BY sortBy) {
+    public void setSortBy(@NonNull final SORT_BY sortBy) {
         this.sortBy = sortBy;
     }
 
@@ -147,15 +160,21 @@ abstract class ListBase  extends ModelBase {
         this.color = color;
     }
 
+    @NonNull
     public AccountMirakel getAccount() {
-        if (this.accountMirakel != null) {
-            return this.accountMirakel;
+        if (this.accountMirakel == null) {
+            Optional<AccountMirakel> accountMirakelOptional = AccountMirakel.get(this.accountID);
+            if (accountMirakelOptional.isPresent()) {
+                this.accountMirakel = accountMirakelOptional.get();
+            } else {
+                throw new AccountVanishedException(accountID);
+            }
         }
-        return AccountMirakel.get(this.accountID);
+        return this.accountMirakel;
     }
 
-    public void setAccount(final AccountMirakel a) {
-        setAccount(a.getId());
+    public void setAccount(@NonNull final AccountMirakel a) {
+        accountID = a.getId();
         this.accountMirakel = a;
     }
 
@@ -169,6 +188,7 @@ abstract class ListBase  extends ModelBase {
     }
 
 
+    @NonNull
     public ContentValues getContentValues() {
         final ContentValues cv;
         try {
@@ -188,11 +208,12 @@ abstract class ListBase  extends ModelBase {
         return cv;
     }
 
+    @NonNull
     public SYNC_STATE getSyncState() {
         return this.syncState;
     }
 
-    public void setSyncState(final SYNC_STATE syncState) {
+    public void setSyncState(@NonNull final SYNC_STATE syncState) {
         this.syncState = syncState;
     }
 
@@ -200,25 +221,19 @@ abstract class ListBase  extends ModelBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int)this.accountID;
-        result = prime
-                 * result
-                 + (this.getAccount() == null ? 0 : this.getAccount()
-                    .hashCode());
+        result = prime * result + (int) this.accountID;
+        result = prime * result + (this.getAccount()
+                                   .hashCode());
         result = prime * result + this.color;
-        result = prime * result
-                 + (this.createdAt == null ? 0 : this.createdAt.hashCode());
-        result = prime * result + (int)getId();
+        result = prime * result + (this.createdAt.hashCode());
+        result = prime * result + (int) getId();
         result = prime * result + (this.isSpecial ? 1231 : 1237);
         result = prime * result + this.lft;
-        result = prime * result
-                 + (getName() == null ? 0 : getName().hashCode());
+        result = prime * result + (getName().hashCode());
         result = prime * result + this.rgt;
         result = prime * result + this.sortBy.getShort();
-        result = prime * result
-                 + (this.syncState == null ? 0 : this.syncState.hashCode());
-        result = prime * result
-                 + (this.updatedAt == null ? 0 : this.updatedAt.hashCode());
+        result = prime * result + (this.syncState.hashCode());
+        result = prime * result + (this.updatedAt.hashCode());
         return result;
     }
 
@@ -237,21 +252,13 @@ abstract class ListBase  extends ModelBase {
         if (this.accountID != other.accountID) {
             return false;
         }
-        if (this.getAccount() == null) {
-            if (other.getAccount() != null) {
-                return false;
-            }
-        } else if (!this.getAccount().equals(other.getAccount())) {
+        if (!this.getAccount().equals(other.getAccount())) {
             return false;
         }
         if (this.color != other.color) {
             return false;
         }
-        if (this.createdAt == null) {
-            if (other.createdAt != null) {
-                return false;
-            }
-        } else if (!this.createdAt.equals(other.createdAt)) {
+        if (!this.createdAt.equals(other.createdAt)) {
             return false;
         }
         if (this.getId() != other.getId()) {
@@ -263,11 +270,7 @@ abstract class ListBase  extends ModelBase {
         if (this.lft != other.lft) {
             return false;
         }
-        if (getName() == null) {
-            if (other.getName() != null) {
-                return false;
-            }
-        } else if (!this.getName().equals(other.getName())) {
+        if (!this.getName().equals(other.getName())) {
             return false;
         }
         if (this.rgt != other.rgt) {

@@ -19,6 +19,16 @@
 
 package de.azapps.mirakel.model.semantic;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,14 +39,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Parcel;
-
-import com.google.common.base.Optional;
-
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -45,6 +47,7 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
@@ -69,14 +72,16 @@ public class Semantic extends SemanticBase {
         return URI;
     }
 
+    @NonNull
     public static List<Semantic> all() {
         return new MirakelQueryBuilder(context).getList(Semantic.class);
     }
 
     // Static
 
+    @NonNull
     public static List<Semantic> cursorToSemanticList(final Cursor c) {
-        List<Semantic> ret = new ArrayList<>();
+        final List<Semantic> ret = new ArrayList<>(c.getCount());
         if (c.moveToFirst()) {
             do {
                 ret.add(new Semantic(c));
@@ -86,7 +91,8 @@ public class Semantic extends SemanticBase {
         return ret;
     }
 
-    public static Task createTask(String taskName, Optional<ListMirakel> currentList,
+    @NonNull
+    public static Task createTask(final String taskName, final Optional<ListMirakel> currentList,
                                   final boolean useSemantic, final Context context) {
         Task stubTask = createStubTask(taskName, currentList, useSemantic, context);
         try {
@@ -94,10 +100,12 @@ public class Semantic extends SemanticBase {
         } catch (final DefinitionsHelper.NoSuchListException e) {
             ErrorReporter.report(ErrorType.TASKS_NO_LIST);
             Log.e(TAG, "NoSuchListException", e);
-            return null;
+            // This could only happen if the list vanishes while calling this function
+            throw new IllegalStateException("This can never ever happen", e);
         }
     }
 
+    @NonNull
     public static Task createStubTask(String taskName, Optional<ListMirakel> currentList,
                                       final boolean useSemantic, final Context context) {
         Optional<Calendar> due = absent();
@@ -110,10 +118,16 @@ public class Semantic extends SemanticBase {
                     due = of((Calendar)new GregorianCalendar());
                     due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
                 }
-                if (slist.getWhere().containsKey(Task.PRIORITY)) {
+                if (slist.getWhere().isPresent() &&
+                slist.getWhere().transform(new Function<SpecialListsBaseProperty, Boolean>() {
+                @Override
+                public Boolean apply(SpecialListsBaseProperty input) {
+                        return input instanceof  SpecialListsPriorityProperty;
+                    }
+                }).or(Boolean.FALSE)) {
                     final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) slist
-                            .getWhere().get(Task.PRIORITY);
-                    final boolean not = prop.isNegated();
+                            .getWhere().get();
+                    final boolean not = prop.isSet();
                     prio = not ? -2 : 2;
                     final List<Integer> content = prop.getContent();
                     Collections.sort(content);
@@ -128,7 +142,7 @@ public class Semantic extends SemanticBase {
                     }
                 }
             } catch (final NullPointerException e) {
-                currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
+                currentList = Optional.fromNullable(ListMirakel.safeFirst());
             }
         }
         if (useSemantic) {
@@ -180,7 +194,7 @@ public class Semantic extends SemanticBase {
             }
         }
         if (!currentList.isPresent()) {
-            currentList = Optional.fromNullable(ListMirakel.safeFirst(context));
+            currentList = Optional.fromNullable(ListMirakel.safeFirst());
         }
         final Task t = new Task(taskName, currentList.get(), due, prio);
         t.setStub(true);
@@ -188,7 +202,7 @@ public class Semantic extends SemanticBase {
     }
 
     public Semantic(final Cursor c) {
-        super(c.getInt(c.getColumnIndex(ID)), c.getString(c
+        super(c.getLong(c.getColumnIndex(ID)), c.getString(c
                 .getColumnIndex(CONDITION)));
         Integer priority = null;
         if (!c.isNull(c.getColumnIndex(PRIORITY))) {
@@ -202,7 +216,7 @@ public class Semantic extends SemanticBase {
         setDue(due);
         Optional<ListMirakel> list = absent();
         if (!c.isNull(c.getColumnIndex(LIST))) {
-            list = ListMirakel.get(c.getInt(c.getColumnIndex(LIST)));
+            list = ListMirakel.get(c.getLong(c.getColumnIndex(LIST)));
         }
         setList(list);
         Integer weekday = null;
@@ -212,7 +226,7 @@ public class Semantic extends SemanticBase {
         setWeekday(weekday);
     }
 
-    public static Semantic first() {
+    public static Optional<Semantic> first() {
         return new MirakelQueryBuilder(context).get(Semantic.class);
     }
 
@@ -222,9 +236,8 @@ public class Semantic extends SemanticBase {
      * @param id
      * @return
      */
-    public static Semantic get(final long id) {
-        return new MirakelQueryBuilder(context).and(ID, Operation.EQ, id).get(
-                   Semantic.class);
+    public static Optional<Semantic> get(final long id) {
+        return new MirakelQueryBuilder(context).and(ID, Operation.EQ, id).get(Semantic.class);
     }
 
     /**
@@ -247,13 +260,13 @@ public class Semantic extends SemanticBase {
     public static Semantic newSemantic(final String condition,
                                        final Integer priority, final Integer due, final Optional<ListMirakel> list,
                                        final Integer weekday) {
-        final Semantic m = new Semantic(0, condition, priority, due, list,
-                                        weekday);
-        return m.create();
+        final Semantic semantic = new Semantic(0, condition, priority, due, list,
+                                               weekday);
+        return semantic.create();
     }
 
-    Semantic(final int id, final String condition, final Integer priority,
-             final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
+    public Semantic(final int id, final String condition, final Integer priority,
+                    final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
         super(id, condition, priority, due, list, weekday);
     }
 
@@ -262,7 +275,7 @@ public class Semantic extends SemanticBase {
         values.remove(ID);
         final long insertId = insert(URI, values);
         initAll();
-        return Semantic.get(insertId);
+        return Semantic.get(insertId).get();
     }
 
     @Override
@@ -285,7 +298,7 @@ public class Semantic extends SemanticBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeValue(this.priority);
         dest.writeValue(this.due);
         dest.writeSerializable(this.list);
@@ -294,7 +307,8 @@ public class Semantic extends SemanticBase {
         dest.writeString(getName());
     }
 
-    private Semantic(Parcel in) {
+    @SuppressWarnings("unchecked")
+    private Semantic(final Parcel in) {
         super();
         this.priority = (Integer) in.readValue(Integer.class.getClassLoader());
         this.due = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -305,10 +319,12 @@ public class Semantic extends SemanticBase {
     }
 
     public static final Creator<Semantic> CREATOR = new Creator<Semantic>() {
-        public Semantic createFromParcel(Parcel source) {
+        @Override
+        public Semantic createFromParcel(final Parcel source) {
             return new Semantic(source);
         }
-        public Semantic[] newArray(int size) {
+        @Override
+        public Semantic[] newArray(final int size) {
             return new Semantic[size];
         }
     };

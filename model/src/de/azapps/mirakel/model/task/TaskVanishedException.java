@@ -17,18 +17,21 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.receivers;
+package de.azapps.mirakel.model.task;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.model.ModelVanishedException;
 
-public class BootUpReceiver extends BroadcastReceiver {
+public class TaskVanishedException extends ModelVanishedException {
+    public TaskVanishedException() {
+        super();
+    }
 
-    @Override
-    public void onReceive(final Context context, final Intent arg1) {
-        NotificationService.updateServices(context);
+    public TaskVanishedException(String message) {
+        super(message);
+    }
+
+    public TaskVanishedException(long id) {
+        super(id);
     }
 
 }

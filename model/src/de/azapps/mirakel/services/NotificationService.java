@@ -31,6 +31,8 @@ import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.common.base.Optional;
+
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper;
@@ -38,7 +40,6 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class NotificationService extends Service {
@@ -77,9 +78,18 @@ public class NotificationService extends Service {
             && !this.existsNotification) {
             return;
         }
-        final int listId = MirakelCommonPreferences.getNotificationsListId();
-        final int listIdToOpen = MirakelCommonPreferences
-                                 .getNotificationsListOpenId();
+
+        final Optional<ListMirakel> showList = ListMirakel.get(
+                MirakelCommonPreferences.getNotificationsListId());
+        Optional<ListMirakel> openList = ListMirakel.get(
+                                             MirakelCommonPreferences.getNotificationsListOpenId());
+        if (!showList.isPresent()) {
+            return;
+        }
+        if (!openList.isPresent()) {
+            openList = showList;
+        }
+
         // Set onClick Intent
         Intent openIntent;
         try {
@@ -90,17 +100,13 @@ public class NotificationService extends Service {
             return;
         }
         openIntent.setAction(DefinitionsHelper.SHOW_LIST);
-        openIntent.putExtra(DefinitionsHelper.EXTRA_ID, listIdToOpen);
+        openIntent.putExtra(DefinitionsHelper.EXTRA_LIST, openList.get());
         openIntent
         .setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0,
                                           openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        // Get the data
-        final ListMirakel todayList = ListMirakel.get(listId).orNull();
-        if (todayList == null) {
-            return;
-        }
-        final List<Task> todayTasks = todayList.tasks(false);
+
+        final List<Task> todayTasks = showList.get().tasks(false);
         String notificationTitle;
         String notificationText;
         if (todayTasks.size() == 0) {
@@ -110,11 +116,11 @@ public class NotificationService extends Service {
             if (todayTasks.size() == 1) {
                 notificationTitle = getString(
                                         R.string.notification_title_general_single,
-                                        todayList.getName());
+                                        showList.get().getName());
             } else {
                 notificationTitle = String.format(
                                         getString(R.string.notification_title_general),
-                                        todayTasks.size(), todayList.getName());
+                                        todayTasks.size(), showList.get().getName());
             }
             notificationText = todayTasks.get(0).getName();
         }
@@ -127,8 +133,8 @@ public class NotificationService extends Service {
         .setContentText(notificationText).setSmallIcon(icon)
         .setContentIntent(pOpenIntent).setOngoing(persistent);
         // Big View
-        if (todayTasks.size() > 1
-            && VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
+        if ((todayTasks.size() > 1)
+            && (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)) {
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (final Task task : todayTasks) {
                 inboxStyle.addLine(task.getName());
@@ -139,7 +145,7 @@ public class NotificationService extends Service {
                     NOTIFICATION_SERVICE);
         notificationManager.notify(DefinitionsHelper.NOTIF_DEFAULT,
                                    noti.build());
-        if (todayTasks.size() == 0 || !MirakelCommonPreferences.useNotifications()) {
+        if ((todayTasks.size() == 0) || !MirakelCommonPreferences.useNotifications()) {
             notificationManager.cancel(DefinitionsHelper.NOTIF_DEFAULT);
             this.existsNotification = false;
         } else {
@@ -163,14 +169,9 @@ public class NotificationService extends Service {
      *
      * @param context
      */
-    public static void updateServices(final Context context,
-                                      final boolean updateReminder) {
-        // Reminder update
-        if (updateReminder) {
-            ReminderAlarm.updateAlarms(context);
-        }
+    public static void updateServices(final Context context) {
         // Widget update
-        Intent widgetIntent;
+        final Intent widgetIntent;
         try {
             widgetIntent = new Intent(context,
                                       Class.forName(DefinitionsHelper.MAINWIDGET_CLASS));

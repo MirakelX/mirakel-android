@@ -47,12 +47,13 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                          final JsonDeserializationContext context) throws JsonParseException {
         if (json.isJsonObject()) {
             Integer type = null;// initialize with stuff to quite compiler
-            String serachString = null;
+            String searchString = null;
             Boolean negated = null;
             for (final Entry<String, JsonElement> entry : json
                  .getAsJsonObject().entrySet()) {
                 switch (entry.getKey()) {
                 case "isNegated":
+                case "isSet":
                     if (entry.getValue().isJsonPrimitive()) {
                         negated = entry.getValue().getAsBoolean();
                         break;
@@ -64,31 +65,32 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                         break;
                     }
                 //$FALL-THROUGH$
-                case "serachString":
+                case "searchString":
+                case "serachString"://this must be here
                     if (entry.getValue().isJsonPrimitive()) {
-                        serachString = entry.getValue().getAsString();
+                        searchString = entry.getValue().getAsString();
                         break;
                     }
                 //$FALL-THROUGH$
                 default:
-                    throw new JsonParseException("unkown format");
+                    throw new JsonParseException("unknown format");
                 }
             }
-            if (serachString != null & type != null && negated != null) {
+            if (searchString != null & type != null && negated != null) {
                 T ret;
                 try {
                     ret = this.clazz.newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
                     Log.wtf(TAG, "cannot create new string-class");
-                    throw new JsonParseException("create string-class faild", e);
+                    throw new JsonParseException("create string-class failed", e);
                 }
-                ret.setNegated(negated);
+                ret.setIsNegated(negated);
                 ret.setType(Type.values()[type]);
-                ret.setSearchString(serachString);
+                ret.setSearchString(searchString);
                 return ret;
             }
         }
-        throw new JsonParseException("unkown format");
+        throw new JsonParseException("unknown format");
     }
 
 }

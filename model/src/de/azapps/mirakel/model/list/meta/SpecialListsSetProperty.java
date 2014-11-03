@@ -20,54 +20,71 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
-public abstract class SpecialListsSetProperty extends SpecialListsBaseProperty {
-    protected boolean isNegated;
-    protected List<Integer> content;
+public abstract class SpecialListsSetProperty extends SpecialListsBooleanProperty {
+
+    @NonNull
+    protected List<Integer> content = new ArrayList<>(5);
 
     public SpecialListsSetProperty(final boolean isNegated,
-                                   final List<Integer> content) {
-        this.isNegated = isNegated;
+                                   final @NonNull List<Integer> content) {
+        super(isNegated);
         this.content = content;
     }
 
-    @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
-        return new MirakelQueryBuilder(ctx).and(propertyName(),
-                                                isNegated ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN, content);
+
+    protected SpecialListsSetProperty(final Parcel in) {
+        super(in);
+        this.content = new ArrayList<>(5);
+        in.readList(this.content, Integer.class.getClassLoader());
     }
 
+    protected SpecialListsSetProperty(final SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        //converting between different setproperties like list or tag is evil
+    }
+
+
+    @NonNull
+    @Override
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
+        return new MirakelQueryBuilder(ctx).and(getPropertyName(),
+                                                isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN, content);
+    }
+
+    @NonNull
     @Override
     public String serialize() {
-        String ret = "\"" + propertyName() + "\":{";
-        ret += "\"isNegated\":" + (this.isNegated ? "true" : "false");
+        String ret = "{\"" + getPropertyName() + "\":{";
+        ret += "\"isSet\":" + (this.isSet ? "true" : "false");
         ret += ",\"content\":[";
         ret += TextUtils.join(",", content);
-        return ret + "]}";
+        return ret + "]} }";
     }
 
-
-    public boolean isNegated() {
-        return this.isNegated;
-    }
-
+    @NonNull
     public List<Integer> getContent() {
         return this.content;
     }
 
-    public void setNegated(final boolean negated) {
-        this.isNegated = negated;
-    }
-
-    public void setContent(final List<Integer> content) {
+    public void setContent(final @NonNull List<Integer> content) {
         this.content = content;
     }
 
-    abstract protected String propertyName();
+
+    @Override
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeByte(isSet ? (byte) 1 : (byte) 0);
+        dest.writeList(this.content);
+    }
+
 
 }

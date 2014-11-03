@@ -19,9 +19,6 @@
 
 package de.azapps.mirakel.services;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -29,38 +26,44 @@ import android.widget.Toast;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.DefinitionsHelper;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 
 public class TaskService extends Service {
-    public static final String TASK_ID = "de.azapps.mirakel.services.TaskService.TASK_ID",
-                               ACTION_ID = "de.azapps.mirakel.services.TaskService.ACTION_ID";
-    public static final String TASK_DONE = "de.azapps.mirakel.services.TaskService.TASK_DONE",
-                               TASK_LATER = "de.azapps.mirakel.services.TaskService.TASK_LATER";
+    public static final String TASK_DONE = "de.azapps.mirakel.services.TaskService.TASK_DONE";
+    public static final String TASK_LATER = "de.azapps.mirakel.services.TaskService.TASK_LATER";
 
     @Override
     public IBinder onBind(final Intent intent) {
-        // TODO Auto-generated method stub
+        // nothing
         return null;
     }
 
     private void handleCommand(final Intent intent) {
-        final Task task = TaskHelper.getTaskFromIntent(intent);
+        if ((intent == null) || (intent.getAction() == null)) {
+            return;
+        }
+        final Optional<Task> taskOptional = TaskHelper.getTaskFromIntent(intent);
+        if (!taskOptional.isPresent()) {
+            return;
+        }
+        //reload the task to get the current version
+        final Task task = Task.get(taskOptional.get().getId()).orNull();
         if (task == null) {
             return;
         }
-        if (intent.getAction() == TASK_DONE) {
+        if (TASK_DONE.equals(intent.getAction())) {
             task.setDone(true);
             task.save();
             Toast.makeText(this,
                            getString(R.string.reminder_notification_done_confirm),
                            Toast.LENGTH_LONG).show();
-        } else if (intent.getAction() == TASK_LATER
-                   && !task.hasRecurringReminder()) {
+        } else if (TASK_LATER.equals(intent.getAction()) && !task.hasRecurringReminder()) {
             final Calendar reminder = new GregorianCalendar();
             final int addMinutes = MirakelCommonPreferences.getAlarmLater();
             reminder.add(Calendar.MINUTE, addMinutes);
@@ -71,16 +74,12 @@ public class TaskService extends Service {
                 getString(R.string.reminder_notification_later_confirm,
                           addMinutes), Toast.LENGTH_LONG).show();
         }
-        ReminderAlarm.closeNotificationFor(this, task.getId());
-        ReminderAlarm.updateAlarms(this);
-        final Intent i = new Intent(DefinitionsHelper.SYNC_FINISHED);
-        sendBroadcast(i);
         stopSelf();
     }
 
     @Override
     public int onStartCommand(final Intent intent, final int flags,
-                              final int startid) {
+                              final int startId) {
         handleCommand(intent);
         return START_STICKY;
     }

@@ -44,6 +44,7 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
@@ -63,6 +64,10 @@ public class Recurring extends RecurringBase {
     public final static String[] allTWColumns = { ID, PARENT, CHILD, OFFSET, OFFSET_COUNT};
     public static final String TW_TABLE = "recurring_tw_mask";
 
+    protected Recurring() {
+        // nothing
+    }
+
     protected Uri getUri() {
         return URI;
     }
@@ -78,106 +83,6 @@ public class Recurring extends RecurringBase {
         super(_id, label, minutes, hours, days, months, years, forDue,
               startDate, endDate, temporary, isExact, weekdays, derivedFrom);
     }
-
-
-    // Static
-    public static List<Recurring> cursorToRecurringList(final Cursor c) {
-        List<Recurring> ret = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new Recurring(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
-    }
-
-
-    public static Recurring createTemporayCopy(final Recurring r) {
-        final Recurring newR = new Recurring(0, r.getLabel(), r.getMinutes(),
-                                             r.getHours(), r.getDays(), r.getMonths(), r.getYears(),
-                                             r.isForDue(), r.getStartDate(), r.getEndDate(), true,
-                                             r.isExact(), r.getWeekdaysRaw(), Optional.of(r.getId()));
-        return newR.create();
-    }
-
-    public static Recurring newRecurring(final String label, final int minutes,
-                                         final int hours, final int days, final int months, final int years,
-                                         final boolean forDue, final Optional<Calendar> startDate,
-                                         final Optional<Calendar> endDate, final boolean temporary,
-                                         final boolean isExact, final SparseBooleanArray weekdays) {
-        final Recurring r = new Recurring(0, label, minutes, hours, days,
-                                          months, years, forDue, startDate, endDate, temporary, isExact,
-                                          weekdays, Optional.<Long>absent());
-        return r.create();
-    }
-
-    public Recurring create() {
-        final ContentValues values = getContentValues();
-        values.remove(ModelBase.ID);
-        setId(insert(URI, values));
-        return Recurring.get(getId());
-    }
-
-    /**
-     * Get a Semantic by id
-     *
-     * @param id
-     * @return
-     */
-    public static Recurring get(final long id) {
-        return new MirakelQueryBuilder(context).get(Recurring.class, id);
-    }
-
-    public static Recurring get(final int minutes, final int hours,
-                                final int days, final int month, final int years,
-                                final Calendar start, final Calendar end) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(MINUTES,
-                Operation.EQ, minutes).and(HOURS, Operation.EQ, hours)
-        .and(DAYS, Operation.EQ, days).and(MONTHS, Operation.EQ,
-                                           month).and(YEARS, Operation.EQ, years);
-        if (start != null) {
-            qb.and(START_DATE, Operation.EQ, DateTimeHelper.formatDateTime(start));
-        } else {
-            qb.and(START_DATE, Operation.EQ, (String)null);
-        }
-        if (end != null) {
-            qb.and(END_DATE, Operation.EQ, DateTimeHelper.formatDateTime(end));
-        } else {
-            qb.and(END_DATE, Operation.EQ, (String)null);
-        }
-        return qb.get(Recurring.class);
-    }
-
-    public static Recurring get(final int days, final int month, final int years) {
-        return get(0, 0, days, month, years, null, null);
-    }
-
-
-    public static void destroyTemporary(final long recurrenceId) {
-        delete(URI, TEMPORARY + "=1 AND " + ID + "=" + recurrenceId, null);
-    }
-
-    public void destroy() {
-        MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
-            @Override
-            public void exec() {
-                delete(URI, ID + "=" + getId(), null);
-                // Fix recurring onDelete in TaskTable
-                ContentValues cv = new ContentValues();
-                cv.put(Task.RECURRING, -1);
-                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING + "=" + getId(), null);
-                cv = new ContentValues();
-                cv.put(Task.RECURRING_REMINDER, -1);
-                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING_REMINDER + "=" + getId(), null);
-            }
-        });
-    }
-
-    public static List<Recurring> all() {
-        return new MirakelQueryBuilder(context).getList(Recurring.class);
-    }
-
 
     public Recurring(final Cursor c) {
         super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(LABEL)));
@@ -219,6 +124,113 @@ public class Recurring extends RecurringBase {
         setDerivedFrom(fromNullable(derivedFrom));
     }
 
+    // Static
+
+    @NonNull
+    public static Recurring createTemporaryCopy(final Recurring r) {
+        final Recurring newR = new Recurring(0, r.getLabel(), r.getMinutes(),
+                                             r.getHours(), r.getDays(), r.getMonths(), r.getYears(),
+                                             r.isForDue(), r.getStartDate(), r.getEndDate(), true,
+                                             r.isExact(), r.getWeekdaysRaw(), Optional.of(r.getId()));
+        return newR.create();
+    }
+
+    @NonNull
+    public static Recurring newRecurring(final String label, final int minutes,
+                                         final int hours, final int days, final int months, final int years,
+                                         final boolean forDue, final Optional<Calendar> startDate,
+                                         final Optional<Calendar> endDate, final boolean temporary,
+                                         final boolean isExact, final SparseBooleanArray weekdays) {
+        final Recurring r = new Recurring(0, label, minutes, hours, days,
+                                          months, years, forDue, startDate, endDate, temporary, isExact,
+                                          weekdays, Optional.<Long>absent());
+        return r.create();
+    }
+
+    @NonNull
+    public Recurring create() {
+        final ContentValues values = getContentValues();
+        values.remove(ModelBase.ID);
+        setId(insert(URI, values));
+        return Recurring.get(getId()).get();
+    }
+
+    /**
+     * Get a Semantic by id
+     *
+     * @param id
+     * @return
+     */
+    @NonNull
+    public static Optional<Recurring> get(final long id) {
+        return new MirakelQueryBuilder(context).get(Recurring.class, id);
+    }
+
+    @NonNull
+    public static Optional<Recurring> get(final int minutes, final int hours,
+                                          final int days, final int month, final int years,
+                                          final Calendar start, final Calendar end) {
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(MINUTES,
+                Operation.EQ, minutes).and(HOURS, Operation.EQ, hours)
+        .and(DAYS, Operation.EQ, days).and(MONTHS, Operation.EQ,
+                                           month).and(YEARS, Operation.EQ, years);
+        if (start != null) {
+            qb.and(START_DATE, Operation.EQ, DateTimeHelper.formatDateTime(start));
+        } else {
+            qb.and(START_DATE, Operation.EQ, (String)null);
+        }
+        if (end != null) {
+            qb.and(END_DATE, Operation.EQ, DateTimeHelper.formatDateTime(end));
+        } else {
+            qb.and(END_DATE, Operation.EQ, (String)null);
+        }
+        return qb.get(Recurring.class);
+    }
+
+    @NonNull
+    public static Optional<Recurring> get(final int days, final int month, final int years) {
+        return get(0, 0, days, month, years, null, null);
+    }
+
+
+    public static void destroyTemporary(final long recurrenceId) {
+        delete(URI, TEMPORARY + "=1 AND " + ID + '=' + recurrenceId, null);
+    }
+
+    public void destroy() {
+        MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+            @Override
+            public void exec() {
+                delete(URI, ID + '=' + getId(), null);
+                // Fix recurring onDelete in TaskTable
+                final ContentValues cv = new ContentValues();
+                cv.put(Task.RECURRING, -1);
+                update(MirakelInternalContentProvider.TASK_URI, cv, Task.RECURRING + '=' + getId(), null);
+                final ContentValues contentValues = new ContentValues();
+                contentValues.put(Task.RECURRING_REMINDER, -1);
+                update(MirakelInternalContentProvider.TASK_URI, contentValues,
+                       Task.RECURRING_REMINDER + '=' + getId(), null);
+            }
+        });
+    }
+
+    public static List<Recurring> all() {
+        return new MirakelQueryBuilder(context).getList(Recurring.class);
+    }
+
+    public static List<Recurring> cursorToList(final Cursor c) {
+        final List<Recurring> ret = new ArrayList<>(c.getCount());
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new Recurring(c));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
+    }
+
+
+    @NonNull
     public Task incrementRecurringDue(final Task t) {
         if (!t.getDue().isPresent()) {
             return t;
@@ -228,8 +240,8 @@ public class Recurring extends RecurringBase {
             return t;
         }
         long masterID = t.getId();
-        long offset = 0;
-        long offsetCount = 0;
+        long offset = 0L;
+        long offsetCount = 0L;
         Cursor c = new MirakelQueryBuilder(context).select(allTWColumns).and(CHILD,
                 Operation.EQ, t).query(MirakelInternalContentProvider.RECURRING_TW_URI);
         if (c.moveToFirst()) {// this is already a child-task
@@ -244,15 +256,15 @@ public class Recurring extends RecurringBase {
                 masterID).and(OFFSET_COUNT, Operation.EQ,
                               offsetCount).query(MirakelInternalContentProvider.RECURRING_TW_URI);
         if (c.moveToFirst()) {
-            final Task task = Task.get(c.getLong(0));
+            final Optional<Task> task = Task.get(c.getLong(0));
             c.close();
-            if (task != null) {
-                return task;
+            if (task.isPresent()) {
+                return task.get();
             }
         }
         c.close();
         t.setDue(of(newDue));
-        Task newTask;
+        final Task newTask;
         try {
             newTask = t.create();
         } catch (final NoSuchListException e) {
@@ -281,7 +293,8 @@ public class Recurring extends RecurringBase {
     }
 
     @NonNull
-    private Optional<Calendar> addRecurring(@NonNull Optional<Calendar> cal, final boolean onlyOnce) {
+    private Optional<Calendar> addRecurring(@NonNull final Optional<Calendar> cal,
+                                            final boolean onlyOnce) {
         if (!cal.isPresent()) {
             return absent();
         }
@@ -293,11 +306,9 @@ public class Recurring extends RecurringBase {
         now.set(Calendar.SECOND, 0);
         now.add(Calendar.MINUTE, -1);
         final List<Integer> weekdays = getWeekdays();
-        if (weekdays.size() == 0) {
-            if ((!getStartDate().isPresent() || getStartDate().isPresent()
-                 && now.after(getStartDate().get()))
-                && (!getEndDate().isPresent() || getEndDate().isPresent()
-                    && now.before(getEndDate().get()))) {
+        if (weekdays.isEmpty()) {
+            if ((!getStartDate().isPresent() || now.after(getStartDate().get()))
+                && (!getEndDate().isPresent() || now.before(getEndDate().get()))) {
                 do {
                     c.add(Calendar.DAY_OF_MONTH, getDays());
                     c.add(Calendar.MONTH, getMonths());
@@ -329,13 +340,13 @@ public class Recurring extends RecurringBase {
     }
 
     public static List<Pair<Integer, String>> getForDialog(final boolean isDue) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(TEMPORARY,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(TEMPORARY,
                 Operation.EQ, false);
         if (isDue) {
             qb.and(FOR_DUE, Operation.EQ, true);
         }
         final Cursor c = qb.select(ID, LABEL).query(URI);
-        final List<Pair<Integer, String>> ret = new ArrayList<>();
+        final List<Pair<Integer, String>> ret = new ArrayList<>(c.getCount());
         c.moveToFirst();
         while (!c.isAfterLast()) {
             ret.add(new Pair<>(c.getInt(0), c.getString(1)));
@@ -353,7 +364,7 @@ public class Recurring extends RecurringBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(this.minutes);
         dest.writeInt(this.hours);
         dest.writeInt(this.days);
@@ -370,7 +381,8 @@ public class Recurring extends RecurringBase {
         dest.writeString(getName());
     }
 
-    private Recurring(Parcel in) {
+    @SuppressWarnings("unchecked") // Unchecked cast
+    private Recurring(final Parcel in) {
         super();
         this.minutes = in.readInt();
         this.hours = in.readInt();
@@ -389,11 +401,24 @@ public class Recurring extends RecurringBase {
     }
 
     public static final Creator<Recurring> CREATOR = new Creator<Recurring>() {
-        public Recurring createFromParcel(Parcel source) {
+        @Override
+        public Recurring createFromParcel(final Parcel source) {
             return new Recurring(source);
         }
-        public Recurring[] newArray(int size) {
+        @Override
+        public Recurring[] newArray(final int size) {
             return new Recurring[size];
         }
     };
+
+    public static Recurring getSafeFirst() {
+        final List<Recurring> all = all();
+        if (all.isEmpty()) {
+            return Recurring.newRecurring(context.getString(R.string.new_recurring), 0, 0,
+                                          0, 0, 1, true, Optional.<Calendar>absent(), Optional.<Calendar>absent(), false, false,
+                                          new SparseBooleanArray());
+        } else {
+            return all.get(0);
+        }
+    }
 }

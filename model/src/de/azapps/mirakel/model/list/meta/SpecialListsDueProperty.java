@@ -20,13 +20,20 @@
 package de.azapps.mirakel.model.list.meta;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
-public class SpecialListsDueProperty extends SpecialListsBaseProperty {
+public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
 
     public enum Unit {
         DAY, MONTH, YEAR
@@ -34,83 +41,138 @@ public class SpecialListsDueProperty extends SpecialListsBaseProperty {
 
     private static final String TAG = "SpecialListsDueProperty";
 
-    protected Unit unit;
-    protected int lenght;
+    @NonNull
+    protected Unit unit = Unit.DAY;
+    protected int length;
 
-    public SpecialListsDueProperty(final Unit unit, final int length) {
-        this.lenght = length;
+    public SpecialListsDueProperty(final @NonNull Unit unit, final int length, final  boolean negated) {
+        super(negated);
+        this.length = length;
         this.unit = unit;
-        if (this.unit == null) {
-            this.unit = Unit.DAY;
+    }
+
+    public SpecialListsDueProperty(final @NonNull SpecialListsBaseProperty oldProperty) {
+        super(oldProperty);
+        if (oldProperty instanceof SpecialListsDueProperty) {
+            length = ((SpecialListsDueProperty) oldProperty).getLength();
+            unit = ((SpecialListsDueProperty) oldProperty).getUnit();
+        } else {
+            length = 0;
+            unit = Unit.DAY;
         }
     }
 
+    @NonNull
+    @Override
+    protected String getPropertyName() {
+        //not really used
+        return Task.DUE;
+    }
+
+    private SpecialListsDueProperty(final @NonNull Parcel in) {
+        super(in);
+        final int tmpUnit = in.readInt();
+        this.unit = Unit.values()[tmpUnit];
+        this.length = in.readInt();
+    }
+
+    @NonNull
     public Unit getUnit() {
         return this.unit;
     }
 
-    public int getLenght() {
-        return this.lenght;
+    public int getLength() {
+        return this.length;
     }
 
-    public void setLenght(final int l) {
-        this.lenght = l;
+    public void setLength(final int l) {
+        this.length = l;
     }
 
-    public void setUnit(final Unit u) {
+    public void setUnit(final @NonNull Unit u) {
         this.unit = u;
     }
 
+    @NonNull
     @Override
-    public MirakelQueryBuilder getWhereQuery(final Context ctx) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
+    public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
                 MirakelQueryBuilder.Operation.NOT_EQ, (String)null);
-        String query = "date('now','";
-        if (this.lenght == 0) {
-            return qb.and("date(" + Task.DUE
-                          + ",'unixepoch','localtime') <= date('now','localtime')");
-        }
-        if (this.lenght > 0) {
-            query += "+";
-        }
-        query += this.lenght + " ";
+        final Calendar date = new GregorianCalendar();
+        date.setTimeZone(TimeZone.getTimeZone(TimeZone.getAvailableIDs(0)[0]));
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.HOUR, 0);
         switch (this.unit) {
         case DAY:
-            query += "day";
+            date.add(Calendar.DAY_OF_MONTH, length);
             break;
         case MONTH:
-            query += "month";
+            date.add(Calendar.MONTH, length);
             break;
         case YEAR:
-            query += "year";
+            date.add(Calendar.YEAR, length);
             break;
-        default:
-            return new MirakelQueryBuilder(ctx);
         }
-        return qb.and("date(" + Task.DUE
-                      + ",'unixepoch','localtime') <= " + query + "')");
+        return qb.and(Task.DUE, isSet ? Operation.GT : Operation.LT, date.getTimeInMillis() / 1000L);
     }
 
+    @NonNull
     @Override
     public String serialize() {
-        if (this.unit == null) {
-            Log.wtf(TAG, "unit is null");
+        String ret = "{\"" + Task.DUE + "\":{";
+        ret += "\"negated\": " + (isSet ? "true" : "false");
+        ret += ",\"unit\":" + this.unit.ordinal();
+        ret += ",\"length\":" + this.length;
+        return ret + "} }";
+    }
+
+    @NonNull
+    @Override
+    public String getSummary(@NonNull final Context ctx) {
+        String unit = "";
+        switch (this.unit) {
+        case DAY:
+            unit = ctx.getResources().getQuantityString(R.plurals.day, length);
+            break;
+        case MONTH:
+            unit = ctx.getResources().getQuantityString(R.plurals.month, length);
+            break;
+        case YEAR:
+            unit = ctx.getResources().getQuantityString(R.plurals.year, length);
+            break;
         }
-        String ret = "\"" + Task.DUE + "\":{";
-        ret += "\"unit\":" + this.unit.ordinal();
-        ret += ",\"length\":" + this.lenght;
-        return ret + "}";
+        final String value = ((length > 0) ? "+" : "") + length + ' ' + unit;
+        if (isSet) {
+            return ctx.getString(R.string.special_lists_due_negated, value);
+        } else {
+            return ctx.getString(R.string.special_lists_due, value);
+        }
+    }
+
+    @NonNull
+    @Override
+    public String getTitle(@NonNull final Context ctx) {
+        return ctx.getString(R.string.special_lists_due_title);
     }
 
     @Override
-    public String getSummary(final Context mContext) {
-        return this.lenght
-               + " "
-               + mContext.getResources().getStringArray(
-                   this.lenght == 1 ? R.array.due_day_year_values
-                   : R.array.due_day_year_values_plural)[this.unit
-                           .ordinal()];
-        // TODO use plurals here
+    public void writeToParcel(final Parcel dest, final int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(this.unit.ordinal());
+        dest.writeInt(this.length);
     }
 
+    public static final Creator<SpecialListsDueProperty> CREATOR = new
+    Creator<SpecialListsDueProperty>() {
+        @Override
+        public SpecialListsDueProperty createFromParcel(final Parcel source) {
+            return new SpecialListsDueProperty(source);
+        }
+
+        @Override
+        public SpecialListsDueProperty[] newArray(final int size) {
+            return new SpecialListsDueProperty[size];
+        }
+    };
 }

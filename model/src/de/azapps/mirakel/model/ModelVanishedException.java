@@ -17,32 +17,19 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.model.list.meta;
+package de.azapps.mirakel.model;
 
+public class ModelVanishedException extends RuntimeException {
 
-public abstract class SpecialListsNegatedProperty extends
-    SpecialListsBaseProperty {
-    protected boolean done;
-
-    abstract protected String propertyName();
-
-    public SpecialListsNegatedProperty(final boolean done) {
-        this.done = done;
+    public ModelVanishedException() {
+        super();
     }
 
-    public boolean getDone() {
-        return this.done;
+    public ModelVanishedException(String message) {
+        super(message);
     }
 
-    public void setDone(final boolean done) {
-        this.done = done;
+    public ModelVanishedException(long id) {
+        super("TaskId:" + id);
     }
-
-    @Override
-    public String serialize() {
-        String ret = "\"" + propertyName() + "\":{";
-        ret += "\"done\":" + (this.done ? "true" : "false");
-        return ret + "}";
-    }
-
 }

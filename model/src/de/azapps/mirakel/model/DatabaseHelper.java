@@ -30,6 +30,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+
+import com.google.common.base.Optional;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +81,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 45;
+    public static final int DATABASE_VERSION = 46;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -134,7 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper databaseHelperSingleton;
 
-    public static DatabaseHelper getDatabaseHelper(Context context) {
+    public static DatabaseHelper getDatabaseHelper(final Context context) {
         if (databaseHelperSingleton == null) {
             databaseHelperSingleton = new DatabaseHelper(context);
         }
@@ -166,30 +169,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + SpecialList.DEFAULT_DUE + " INTEGER," + ListMirakel.COLOR
                    + " INTEGER, " + ListMirakel.LFT + " INTEGER ,"
                    + ListMirakel.RGT + " INTEGER)");
-        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ","
-                   + SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
-                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ") VALUES (" + "'"
+        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ','
+                   + SpecialList.ACTIVE + ',' + SpecialList.WHERE_QUERY + ','
+                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ") VALUES (" + '\''
                    + this.context.getString(R.string.list_all) + "',1,'"
                    + Task.DONE + "=0',1,2)");
-        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ","
-                   + SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
-                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ","
-                   + SpecialList.DEFAULT_DUE + ") VALUES (" + "'"
+        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ','
+                   + SpecialList.ACTIVE + ',' + SpecialList.WHERE_QUERY + ','
+                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ','
+                   + SpecialList.DEFAULT_DUE + ") VALUES (" + '\''
                    + this.context.getString(R.string.list_today) + "',1,'"
                    + Task.DUE + " not null and " + Task.DONE + "=0 and date("
                    + Task.DUE + ")<=date(\"now\",\"localtime\")',3,4,0)");
-        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ","
-                   + SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
-                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ","
-                   + SpecialList.DEFAULT_DUE + ") VALUES (" + "'"
+        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ','
+                   + SpecialList.ACTIVE + ',' + SpecialList.WHERE_QUERY + ','
+                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ','
+                   + SpecialList.DEFAULT_DUE + ") VALUES (" + '\''
                    + this.context.getString(R.string.list_week) + "',1,'"
                    + Task.DUE + " not null and " + Task.DONE + "=0 and date("
                    + Task.DUE
                    + ")<=date(\"now\",\"+7 day\",\"localtime\")',5,6,7)");
-        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ","
-                   + SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ","
-                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ","
-                   + SpecialList.DEFAULT_DUE + ") VALUES (" + "'"
+        db.execSQL("INSERT INTO " + SpecialList.TABLE + " (" + ModelBase.NAME + ','
+                   + SpecialList.ACTIVE + "," + SpecialList.WHERE_QUERY + ','
+                   + ListMirakel.LFT + ", " + ListMirakel.RGT + ','
+                   + SpecialList.DEFAULT_DUE + ") VALUES (" + '\''
                    + this.context.getString(R.string.list_overdue) + "',1,'"
                    + Task.DUE + " not null and " + Task.DONE + "=0 and date("
                    + Task.DUE
@@ -262,8 +265,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                       R.array.weekdays);
         for (int i = 1; i < weekdays.length; i++) { // Ignore first element
             db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
-                       + Semantic.CONDITION + "," + Semantic.WEEKDAY
-                       + ") VALUES (?, " + i + ")", new String[] { weekdays[i] });
+                       + Semantic.CONDITION + ',' + Semantic.WEEKDAY
+                       + ") VALUES (?, " + i + ')', new String[] { weekdays[i] });
         }
     }
 
@@ -273,11 +276,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createRecurringTable(db);
         createSemanticTable(db);
         createAccountTable(db);
-        final ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
         final String accountname = this.context
                                    .getString(R.string.local_account);
         ContentValues cv = new ContentValues();
         cv.put(ModelBase.NAME, accountname);
+        final ACCOUNT_TYPES type = ACCOUNT_TYPES.LOCAL;
         cv.put(AccountMirakel.TYPE, type.toInt());
         cv.put(AccountMirakel.ENABLED, true);
         final long accountId = db.insert(AccountMirakel.TABLE, null, cv);
@@ -287,19 +290,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createFileTable(db);
         createCalDavExtraTable(db);
         // Add defaults
-        db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + ModelBase.NAME + ","
-                   + ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
+        db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + ModelBase.NAME + ','
+                   + ListMirakel.LFT + ',' + ListMirakel.RGT + ") VALUES ('"
                    + this.context.getString(R.string.inbox) + "',0,1)");
-        db.execSQL("INSERT INTO " + Task.TABLE + " (" + Task.LIST_ID + ","
+        db.execSQL("INSERT INTO " + Task.TABLE + " (" + Task.LIST_ID + ','
                    + ModelBase.NAME + ") VALUES (1,'"
                    + this.context.getString(R.string.first_task) + "')");
         createSpecialListsTable(db);
         final String[] lists = this.context.getResources().getStringArray(
                                    R.array.demo_lists);
         for (int i = 0; i < lists.length; i++) {
-            db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + ModelBase.NAME + ","
-                       + ListMirakel.LFT + "," + ListMirakel.RGT + ") VALUES ('"
-                       + lists[i] + "'," + (i + 2) + "," + (i + 3) + ")");
+            db.execSQL("INSERT INTO " + ListMirakel.TABLE + " (" + ModelBase.NAME + ','
+                       + ListMirakel.LFT + ',' + ListMirakel.RGT + ") VALUES ('"
+                       + lists[i] + "'," + (i + 2) + ',' + (i + 3) + ')');
         }
         MirakelInternalContentProvider.init(db);
         onUpgrade(db, 32, DATABASE_VERSION);
@@ -310,7 +313,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             final String[] task_lists = { lists[1], lists[1], lists[1],
                                           lists[0], lists[2], lists[2]
                                         };
-            Calendar[] dues = new Calendar[6];
+            final Calendar[] dues = new Calendar[6];
             dues[0] = new GregorianCalendar();
             dues[1] = null;
             dues[2] = new GregorianCalendar();
@@ -322,10 +325,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             dues[5] = null;
             final int[] priorities = { 2, -1, 1, 2, 0, 0 };
             for (int i = 0; i < tasks.length; i++) {
-                final Task t = new Task(tasks[i]);
+                final Task t = new Task(tasks[i], ListMirakel.findByName(task_lists[i]).get());
                 t.setDue(fromNullable(dues[i]));
                 t.setPriority(priorities[i]);
-                t.setList(ListMirakel.findByName(task_lists[i]).get());
                 t.setSyncState(SYNC_STATE.ADD);
                 try {
                     cv = t.getContentValues();
@@ -353,7 +355,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + ListMirakel.ACCOUNT_ID + " REFERENCES "
                    + AccountMirakel.TABLE + " (" + ModelBase.ID
                    + ") ON DELETE CASCADE ON UPDATE CASCADE DEFAULT " + accountId
-                   + ")");
+                   + ')');
     }
 
     @Override
@@ -364,7 +366,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // use a database with a higher version.
     }
 
-    @SuppressWarnings({ "fallthrough" })
+    @SuppressWarnings("fallthrough")
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
                           final int newVersion) {
@@ -373,7 +375,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
               + newVersion);
         try {
             ExportImport.exportDB(this.context);
-        } catch (final Exception e) {
+        } catch (final RuntimeException e) {
             Log.w(TAG, "Cannot backup database", e);
         }
         switch (oldVersion) {
@@ -382,14 +384,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Add sync-state
             db.execSQL("Alter Table " + Task.TABLE + " add column "
                        + SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
-                       + ";");
+                       + ';');
             db.execSQL("Alter Table " + ListMirakel.TABLE + " add column "
                        + SYNC_STATE_FIELD + " INTEGER DEFAULT " + SYNC_STATE.ADD
-                       + ";");
+                       + ';');
             db.execSQL("CREATE TABLE settings (" + ModelBase.ID
                        + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                        + "server TEXT NOT NULL," + "user TEXT NOT NULL,"
-                       + "password TEXT NOT NULL" + ")");
+                       + "password TEXT NOT NULL" + ')');
             db.execSQL("INSERT INTO settings (" + ModelBase.ID
                        + ",server,user,password)VALUES ('0','localhost','','')");
         case 3:
@@ -403,13 +405,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 this.context.getString(R.string.dateTimeFormat), Locale.US)
             .format(new Date());
             db.execSQL("UPDATE " + Task.TABLE + " set " + CREATED_AT + "='"
-                       + newDate + "'");
+                       + newDate + '\'');
             db.execSQL("UPDATE " + Task.TABLE + " set " + UPDATED_AT + "='"
-                       + newDate + "'");
+                       + newDate + '\'');
             db.execSQL("UPDATE " + ListMirakel.TABLE + " set " + CREATED_AT
-                       + "='" + newDate + "'");
+                       + "='" + newDate + '\'');
             db.execSQL("UPDATE " + ListMirakel.TABLE + " set " + UPDATED_AT
-                       + "='" + newDate + "'");
+                       + "='" + newDate + '\'');
             db.execSQL("Drop TABLE IF EXISTS settings");
         case 4:
             /*
@@ -418,8 +420,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
             createTasksTableOLD(db);
             String cols = ModelBase.ID + ", " + Task.LIST_ID + ", " + ModelBase.NAME + ", "
-                          + Task.DONE + "," + Task.PRIORITY + "," + Task.DUE + ","
-                          + CREATED_AT + "," + UPDATED_AT + "," + SYNC_STATE_FIELD;
+                          + Task.DONE + ',' + Task.PRIORITY + ',' + Task.DUE + ','
+                          + CREATED_AT + ',' + UPDATED_AT + ',' + SYNC_STATE_FIELD;
             db.execSQL("INSERT INTO " + Task.TABLE + " (" + cols + ") " + cols
                        + "FROM tmp_tasks;");
             db.execSQL("DROP TABLE tmp_tasks");
@@ -438,10 +440,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("update " + ListMirakel.TABLE + " set "
                        + ListMirakel.LFT
                        + "=(select count(*) from (select * from "
-                       + ListMirakel.TABLE + ") as a where a." + ModelBase.ID + "<"
-                       + ListMirakel.TABLE + "." + ModelBase.ID + ")*2 +1;");
+                       + ListMirakel.TABLE + ") as a where a." + ModelBase.ID + '<'
+                       + ListMirakel.TABLE + '.' + ModelBase.ID + ")*2 +1;");
             db.execSQL("update " + ListMirakel.TABLE + " set "
-                       + ListMirakel.RGT + "=" + ListMirakel.LFT + "+1;");
+                       + ListMirakel.RGT + '=' + ListMirakel.LFT + "+1;");
         case 6:
             /*
              * Remove NOT NULL
@@ -449,8 +451,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + Task.TABLE + " RENAME TO tmp_tasks;");
             createTasksTableOLD(db);
             cols = ModelBase.ID + ", " + Task.LIST_ID + ", " + ModelBase.NAME + ", " + Task.DONE
-                   + "," + Task.PRIORITY + "," + Task.DUE + "," + CREATED_AT
-                   + "," + UPDATED_AT + "," + SYNC_STATE_FIELD;
+                   + ',' + Task.PRIORITY + ',' + Task.DUE + ',' + CREATED_AT
+                   + ',' + UPDATED_AT + ',' + SYNC_STATE_FIELD;
             db.execSQL("INSERT INTO " + Task.TABLE + " (" + cols + ") "
                        + "SELECT " + cols + "FROM tmp_tasks;");
             db.execSQL("DROP TABLE tmp_tasks");
@@ -529,10 +531,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("update " + SpecialList.TABLE + " set "
                        + ListMirakel.LFT
                        + "=(select count(*) from (select * from "
-                       + SpecialList.TABLE + ") as a where a." + ModelBase.ID + "<"
-                       + SpecialList.TABLE + "." + ModelBase.ID + ")*2 +1;");
+                       + SpecialList.TABLE + ") as a where a." + ModelBase.ID + '<'
+                       + SpecialList.TABLE + '.' + ModelBase.ID + ")*2 +1;");
             db.execSQL("update " + SpecialList.TABLE + " set "
-                       + ListMirakel.RGT + "=" + ListMirakel.LFT + "+1;");
+                       + ListMirakel.RGT + '=' + ListMirakel.LFT + "+1;");
         case 20:// Add Recurring
             db.execSQL("CREATE TABLE " + Recurring.TABLE + " (" + ModelBase.ID
                        + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -621,8 +623,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                       .getStringArray(R.array.weekdays);
             for (int i = 1; i < weekdays.length; i++) { // Ignore first element
                 db.execSQL("INSERT INTO " + Semantic.TABLE + " ("
-                           + Semantic.CONDITION + "," + Semantic.WEEKDAY
-                           + ") VALUES (?, " + i + ")",
+                           + Semantic.CONDITION + ',' + Semantic.WEEKDAY
+                           + ") VALUES (?, " + i + ')',
                            new String[] { weekdays[i] });
             }
         // add some options to reccuring
@@ -647,7 +649,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + " add column derived_from INTEGER DEFAULT NULL");
         // also save the time of a due-date
         case 30:
-            db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + "="
+            db.execSQL("UPDATE " + Task.TABLE + " set " + Task.DUE + '='
                        + Task.DUE + "||' 00:00:00'");
         // save all times in tasktable as utc-unix-seconds
         case 31:
@@ -687,13 +689,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     final Account account = a.getAndroidAccount(this.context);
                     if (account == null) {
                         db.delete(AccountMirakel.TABLE, ModelBase.ID + "=?",
-                                  new String[] { a.getId() + "" });
+                                  new String[] {String.valueOf(a.getId())});
                         continue;
                     }
-                    a.setSyncKey(accountManager.getPassword(account));
+                    a.setSyncKey(fromNullable(accountManager.getPassword(account)));
                     db.update(AccountMirakel.TABLE, a.getContentValues(), ModelBase.ID
-                              + "=?", new String[] { a.getId() + "" });
-                    if (ca != null && client != null && clientKey != null) {
+                              + "=?", new String[] {String.valueOf(a.getId())});
+                    if ((ca != null) && (client != null) && (clientKey != null)) {
                         accountManager.setUserData(account,
                                                    DefinitionsHelper.BUNDLE_CERT, ca);
                         accountManager.setUserData(account,
@@ -718,7 +720,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 final ContentValues contentValues = new ContentValues();
                 final String[] where = cursor.getString(1).toLowerCase()
                                        .split("and");
-                final Map<String, SpecialListsBaseProperty> whereMap = new HashMap<>();
+                final Map<String, SpecialListsBaseProperty> whereMap = new HashMap<>(where.length);
                 for (final String p : where) {
                     try {
                         if (p.contains(Task.LIST_ID)) {
@@ -756,9 +758,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 contentValues.put(SpecialList.WHERE_QUERY,
-                                  SpecialList.serializeWhere(whereMap));
+                                  CompatibilityHelper.serializeWhereSpecialLists(whereMap));
                 db.update(SpecialList.TABLE, contentValues, ModelBase.ID + "=?",
-                          new String[] { id + "" });
+                          new String[] {String.valueOf(id)});
             }
             cursor.close();
         case 35:
@@ -767,7 +769,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                  .getAccountsByType(AccountMirakel.ACCOUNT_TYPE_MIRAKEL)) {
                 clientKey = am.getUserData(a,
                                            DefinitionsHelper.BUNDLE_KEY_CLIENT);
-                if (clientKey != null && clientKey.trim().length() != 0) {
+                if ((clientKey != null) && !clientKey.trim().isEmpty()) {
                     am.setPassword(a, clientKey
                                    + "\n:" + am.getPassword(a));
                 }
@@ -821,8 +823,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                               "additional_entries LIKE '%\"tags\":[\"%'", null, null,
                               null, null);
             if (cursor.getCount() > 0) {
-                int count = 0;
                 cursor.moveToFirst();
+                int count = 0;
                 do {
                     final int taskId = cursor.getInt(0);
                     final Map<String, String> entryMap = Task
@@ -835,7 +837,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     for (final String tag : tags) {
                         c = db.query(Tag.TABLE, new String[] { ModelBase.ID }, ModelBase.NAME
                                      + "=?", new String[] { tag }, null, null, null);
-                        int tagId;
+                        final int tagId;
                         if (c.getCount() > 0) {
                             c.moveToFirst();
                             tagId = c.getInt(0);
@@ -860,7 +862,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cv.put(Task.ADDITIONAL_ENTRIES,
                                Task.serializeAdditionalEntries(entryMap));
                         db.update(Task.TABLE, cv, ModelBase.ID + "=?",
-                                  new String[] { taskId + "" });
+                                  new String[] {String.valueOf(taskId)});
                     }
                 } while (cursor.moveToNext());
             }
@@ -881,36 +883,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                          "additional_entries LIKE ?",
                          new String[] { "%\"status\":\"recurring\"%" }, null, null,
                          null);
-            final Map<Task, List<Task>> recurring = new HashMap<>();
+            final Map<Task, List<Task>> recurring = new HashMap<>(c.getCount());
             for (c.moveToFirst(); c.moveToNext();) {
-                final Task t = Task.cursorToTask(c);
+                final Task t = new Task(c);
                 final String recurString = t.getAdditionalString("recur");
                 if (recurString == null) {
                     continue;
                 }
                 // check if is childtask
                 if (t.existAdditional("parent")) {
-                    final Task master = Task.getByUUID(t
-                                                       .getAdditionalString("parent"));
-                    List<Task> list;
-                    if (recurring.containsKey(master)) {
-                        list = recurring.get(master);
-                    } else {
-                        list = new ArrayList<>();
+                    final Optional<Task> masterOptional = Task.getByUUID(t
+                                                          .getAdditionalString("parent"));
+
+                    if (masterOptional.isPresent()) {
+                        final Task master = masterOptional.get();
+                        final List<Task> list;
+                        if (recurring.containsKey(master)) {
+                            list = recurring.get(master);
+                        } else {
+                            list = new ArrayList<>(1);
+                        }
+                        list.add(t);
+                        recurring.put(master, list);
                     }
-                    list.add(t);
-                    recurring.put(master, list);
                 } else if (!recurring.containsKey(t)) {// its recurring master
-                    recurring.put(t, new ArrayList<Task>());
+                    recurring.put(t, new ArrayList<Task>(0));
                 }
-                t.setRecurrence(TaskDeserializer.parseTaskWarriorRecurrence(
+                t.setRecurrence(CompatibilityHelper.parseTaskWarriorRecurrence(
                                     recurString).getId());
                 t.save();
             }
-            String idsToHidde = "";
+            StringBuilder idsToHidde = new StringBuilder();
             boolean first = true;
             for (final Entry<Task, List<Task>> rec : recurring.entrySet()) {
-                if (rec.getValue().size() == 0) {
+                if (rec.getValue().isEmpty()) {
                     continue;
                 }
                 Task newest = rec.getValue().get(0);
@@ -920,7 +926,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cv.put("child", t.getId());
                     final int counter = t.getAdditionalInt("imask");
                     cv.put("offsetCount", counter);
-                    cv.put("offset", counter * t.getRecurring().getInterval());
+                    final Optional<Recurring> recurringOptional = t.getRecurrence();
+                    if (recurringOptional.isPresent()) {
+                        cv.put("offset", counter * recurringOptional.get().getInterval());
+                    } else {
+                        continue;
+                    }
                     db.insert(Recurring.TW_TABLE, null, cv);
                     final int newestOffset = newest.getAdditionalInt("imask");
                     final int currentOffset = t.getAdditionalInt("imask");
@@ -928,18 +939,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         if (first) {
                             first = false;
                         } else {
-                            idsToHidde += ",";
+                            idsToHidde.append(',');
                         }
-                        idsToHidde += newest.getId();
+                        idsToHidde.append(newest.getId());
                         newest = t;
                     }
                 }
             }
-            if (!idsToHidde.equals("")) {
+            if (!idsToHidde.toString().isEmpty()) {
                 cv = new ContentValues();
                 cv.put(Task.RECURRING_SHOWN, false);
                 db.update(Task.TABLE, cv, "_id IN (?)",
-                          new String[] { idsToHidde });
+                          new String[] { idsToHidde.toString() });
             }
             c.close();
         case 40:
@@ -954,24 +965,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + Tag.BACKGROUND_COLOR + " INTEGER NOT NULL DEFAULT 0);");
             db.execSQL("INSERT INTO " + Tag.TABLE +
                        " (_id,name,dark_text) SELECT _id,name,dark_text FROM tmp_tags;");
-            String[] tagColumns = new String[] {"_id", "color_a", "color_r", "color_g", "color_b"};
-            Cursor tagCursor = db.query("tmp_tags", tagColumns, null, null, null, null, null);
+            final String[] tagColumns = new String[] {"_id", "color_a", "color_r", "color_g", "color_b"};
+            final Cursor tagCursor = db.query("tmp_tags", tagColumns, null, null, null, null, null);
             if (tagCursor.moveToFirst()) {
                 do {
                     int i = 0;
-                    int id = tagCursor.getInt(i++);
-                    int rgba = tagCursor.getInt(i++);
-                    int rgbr = tagCursor.getInt(i++);
-                    int rgbg = tagCursor.getInt(i++);
-                    int rgbb = tagCursor.getInt(i);
-                    int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
-                    Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
-                                           + "=?", new String[] {id + ""}, null, null, null);
+                    final int id = tagCursor.getInt(i++);
+                    final int rgba = tagCursor.getInt(i++);
+                    final int rgbr = tagCursor.getInt(i++);
+                    final int rgbg = tagCursor.getInt(i++);
+                    final int rgbb = tagCursor.getInt(i);
+                    final int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
+                    final Cursor tagC = db.query(Tag.TABLE, Tag.allColumns, ModelBase.ID
+                                                 + "=?", new String[] {String.valueOf(id)}, null, null, null);
                     if (tagC.moveToFirst()) {
-                        Tag newTag = new Tag(tagC);
+                        final Tag newTag = new Tag(tagC);
                         tagC.close();
                         newTag.setBackgroundColor(newColor);
-                        db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {newTag.getId() + ""});
+                        db.update(Tag.TABLE, newTag.getContentValues(), ModelBase.ID + "=?", new String[] {String.valueOf(newTag.getId())});
                     }
                 } while (tagCursor.moveToNext());
             }
@@ -988,12 +999,80 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             createCaldavTasksTrigger(db);
         case 44:
             createCaldavPropertyView(db);
+        case 45:
+            updateSpecialLists(db);
         default:
             break;
         }
     }
 
-    private static void createCaldavListsTrigger(SQLiteDatabase db) {
+    private void updateSpecialLists(final SQLiteDatabase db) {
+        final Cursor updateSpecial = db.query(SpecialList.TABLE, new String[] {SpecialList.WHERE_QUERY, ModelBase.ID},
+                                              null,
+                                              null, null, null, null);
+        while (updateSpecial.moveToNext()) {
+            final String query = updateSpecial.getString(0);
+            StringBuilder newQuery = new StringBuilder();
+            int counter = 0;
+            boolean isMultiPart = false;
+            boolean isArgument = false;
+            boolean lastIsBracket = false;
+            for (int i = 0; i < query.length(); i++) {
+                char p = query.charAt(i);
+                switch (p) {
+                case '"':
+                    lastIsBracket = false;
+                    isArgument = !isArgument;
+                    newQuery.append(p);
+                    break;
+                case '{':
+                    if (!lastIsBracket) {
+                        newQuery.append(p);
+                    }
+                    if (!isArgument) {
+                        if (!lastIsBracket) {
+                            counter++;
+                        }
+                        lastIsBracket = true;
+                    }
+                    break;
+                case '}':
+                    lastIsBracket = false;
+                    if (counter > 0) {
+                        newQuery.append(p);
+                        if (!isArgument) {
+                            counter--;
+                        }
+                    }
+                    break;
+                case ',':
+                    lastIsBracket = false;
+                    if (DefinitionsHelper.freshInstall && (counter == 0)) {
+                        isMultiPart = true;
+                        newQuery.append(p);
+                        break;
+                    } else if (!DefinitionsHelper.freshInstall && (counter == 1)) {
+                        isMultiPart = true;
+                        newQuery.append('}').append(p).append('{');
+                        break;
+                    }
+                default:
+                    lastIsBracket = false;
+                    newQuery.append(p);
+                }
+            }
+            final ContentValues newWhere = new ContentValues();
+            if (isMultiPart) {
+                newQuery = new StringBuilder("[" + newQuery + ']');
+            }
+            newWhere.put(SpecialList.WHERE_QUERY, newQuery.toString());
+            db.update(SpecialList.TABLE, newWhere, ModelBase.ID + "=?", new String[] {String.valueOf(updateSpecial.getLong(1))});
+        }
+    }
+
+
+
+    private static void createCaldavListsTrigger(final SQLiteDatabase db) {
         db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
                    +
                    "a.enabled AS sync_enabled, owner AS list_owner\n"
@@ -1026,7 +1105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "END;\n");
     }
 
-    private void updateListTable(SQLiteDatabase db) {
+    private void updateListTable(final SQLiteDatabase db) {
         db.execSQL("ALTER TABLE " + ListMirakel.TABLE + " RENAME TO tmp_lists;");
         db.execSQL("CREATE TABLE " + ListMirakel.TABLE + " (" + ModelBase.ID
                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + ModelBase.NAME
@@ -1040,28 +1119,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + ListMirakel.ACCOUNT_ID + " INTEGER REFERENCES "
                    + AccountMirakel.TABLE + " (" + ModelBase.ID
                    + ") ON DELETE CASCADE ON UPDATE CASCADE "
-                   + ")");
+                   + ')');
         db.execSQL("INSERT INTO " + ListMirakel.TABLE + " SELECT * FROM tmp_lists");
         db.execSQL("DROP TABLE tmp_lists;");
     }
 
 
     private void updateSettings() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settingsIntToLong(settings, "defaultAccountID");
         settingsIntToLong(settings, "subtaskAddToList");
     }
-    private void settingsIntToLong(SharedPreferences settings, String key) {
+    private void settingsIntToLong(final SharedPreferences settings, final String key) {
         try {
             final int i = settings.getInt(key, -1);
             if (i != -1) {
-                SharedPreferences.Editor editor = settings.edit();
+                final SharedPreferences.Editor editor = settings.edit();
                 editor.putLong(key, Long.valueOf(i));
                 editor.commit();
             }
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
             Log.i(TAG, "The setting was already a long", e);
-            return;
         }
     }
 
@@ -1130,7 +1208,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createCaldavTasksTrigger(db);
     }
 
-    private static void createCaldavTasksTrigger(SQLiteDatabase db) {
+    private static void createCaldavTasksTrigger(final SQLiteDatabase db) {
         // View
         db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
                    "e._sync_id,\n" +
@@ -1353,6 +1431,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private static void createCaldavPropertyView(final SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS caldav_property_view;");
         db.execSQL("CREATE VIEW caldav_property_view AS\n" +
                    "SELECT\n" +
                    "property_id,\n" +
@@ -1416,7 +1495,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "null AS data15\n" +
                    "FROM tag AS TAG\n" +
                    "INNER JOIN task_tag as task ON tag._id=task.tag_id\n" +
-                   ";");
+                   ';');
         db.execSQL("Create TRIGGER caldav_property_insert_tag_trigger INSTEAD OF INSERT ON caldav_property_view\n"
                    +
                    "WHEN new.mimetype = 'vnd.android.cursor.item/category'\n" +
@@ -1496,7 +1575,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static void createTableRecurrenceTW(final SQLiteDatabase db) {
         db.execSQL("CREATE TABLE "
                    + Recurring.TW_TABLE
-                   + "("
+                   + '('
                    + ModelBase.ID
                    + " INTEGER PRIMARY KEY,"
                    + "parent INTEGER REFERENCES "
@@ -1522,7 +1601,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + FileMirakel.TABLE + " (" + ModelBase.ID
                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + "task" + ModelBase.ID
                    + " INTEGER NOT NULL DEFAULT 0, " + "name TEXT, " + "path TEXT"
-                   + ")");
+                   + ')');
     }
 
     private static void createSubtaskTable(final SQLiteDatabase db) {

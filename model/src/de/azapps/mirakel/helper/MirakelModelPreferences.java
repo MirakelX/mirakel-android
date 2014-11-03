@@ -22,6 +22,7 @@ package de.azapps.mirakel.helper;
 import java.util.List;
 
 import android.content.SharedPreferences.Editor;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
@@ -35,6 +36,7 @@ import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class MirakelModelPreferences extends MirakelPreferences {
     private static final String TAG = "MirakelModelPreferences";
@@ -43,28 +45,31 @@ public class MirakelModelPreferences extends MirakelPreferences {
         settings.edit().putLong("defaultAccountID", a.getId()).commit();
     }
 
+    @NonNull
     public static AccountMirakel getDefaultAccount() {
         final long id = settings.getLong("defaultAccountID", AccountMirakel
                                          .getLocal().getId());
-        final AccountMirakel a = AccountMirakel.get(id);
-        if (a != null) {
-            return a;
+        final Optional<AccountMirakel> a = AccountMirakel.get(id);
+        if (a.isPresent()) {
+            return a.get();
         }
         return AccountMirakel.getLocal();
     }
 
     public static Optional<ListMirakel> getImportDefaultList() {
         if (settings.getBoolean("importDefaultList", false)) {
-            final int listId = settings.getInt("defaultImportList", 0);
-            if (listId == 0) {
-                return absent();
+            long listId;
+            try {
+                listId = (long) settings.getInt("defaultImportList", 0);
+            } catch (final ClassCastException e) {
+                listId = settings.getLong("defaultImportList", 0L);
             }
             return ListMirakel.get(listId);
         }
         return absent();
     }
     public static ListMirakel getSafeImportDefaultList() {
-        return getImportDefaultList().or(ListMirakel.safeFirst(context));
+        return getImportDefaultList().or(ListMirakel.safeFirst());
     }
 
     public static ListMirakel getListForSubtask(final Task parent) {
@@ -80,12 +85,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
             String listName = context.getString(R.string.subtask_list_name);
             list = ListMirakel.findByName(listName);
             if (!list.isPresent()) {
-                try {
-                    list = fromNullable(ListMirakel.newList(listName));
-                } catch (ListMirakel.ListAlreadyExistsException e) {
-                    // This could never ever happen!
-                    throw new RuntimeException("ListAlreadyExistsException. This is not possible…", e);
-                }
+                list = of(ListMirakel.saveNewList(listName));
             }
             setSubtaskAddToList(list.get());
         }
@@ -100,7 +100,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
             list = fromNullable((ListMirakel) SpecialList.firstSpecial().orNull());
         }
         if (!list.isPresent()) {
-            return ListMirakel.safeFirst(context);
+            return ListMirakel.safeFirst();
         } else {
             return list.get();
         }
@@ -121,7 +121,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
             return ListMirakel.safeGet(Integer.parseInt(settings.getString(
                                            "startupList", "-1")));
         } catch (final NumberFormatException E) {
-            return ListMirakel.safeFirst(context);
+            return ListMirakel.safeFirst();
         }
     }
 

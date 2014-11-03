@@ -164,6 +164,20 @@
     <item>Jahre</item>
   </string-array>
   <string name="nothing">Keine Wiederholung</string>
+  <string name="special_lists_content_title">Notiz</string>
+  <string name="special_lists_done_title">Erledigt</string>
+  <string name="special_lists_due_title">Fällig</string>
+  <string name="special_lists_file_title">Datei</string>
+  <string name="special_lists_list_title">Listen</string>
+  <string name="special_lists_name_title">Name</string>
+  <string name="special_lists_priority_title">Priorität</string>
+  <string name="special_lists_progress_title">Fortschritt</string>
+  <string name="special_lists_reminder_title">Erinnerung</string>
+  <string name="special_lists_subtask_title">Unteraufgaben</string>
+  <string name="special_lists_tag_title">Tag</string>
+  <string name="and">UND</string>
+  <string name="or">ODER</string>
+  <string name="new_tag">Neuer Tag</string>
   <string-array name="demo_lists">
     <item>Auf Arbeit</item>
     <item>Zu Hause</item>

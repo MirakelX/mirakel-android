@@ -31,6 +31,7 @@ import java.util.List;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.ModelBase;
+import static com.google.common.base.Optional.absent;
 
 abstract class RecurringBase extends ModelBase {
     public final static String LABEL = "label";
@@ -65,15 +66,15 @@ abstract class RecurringBase extends ModelBase {
     protected int years;
     protected boolean forDue;
     @NonNull
-    protected Optional<Calendar> startDate;
+    protected Optional<Calendar> startDate = absent();
     @NonNull
-    protected Optional<Calendar> endDate;
+    protected Optional<Calendar> endDate = absent();
     protected boolean temporary;
     protected boolean isExact;
     @NonNull
     protected SparseBooleanArray weekdays = new SparseBooleanArray();
     @NonNull
-    protected Optional<Long> derivedFrom;
+    protected Optional<Long> derivedFrom = absent();
 
     public RecurringBase(final long id, @NonNull final String label, final int minutes,
                          final int hours, final int days, final int months, final int years,
@@ -255,6 +256,7 @@ abstract class RecurringBase extends ModelBase {
                 + this.months * month + this.years * year) * 1000;
     }
 
+    @NonNull
     @Override
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();

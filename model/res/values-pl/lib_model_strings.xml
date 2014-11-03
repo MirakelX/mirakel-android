@@ -162,6 +162,16 @@
     <item>Lat</item>
   </string-array>
   <string name="nothing">Brak powtarzania</string>
+  <string name="special_lists_content_title">Zawartość</string>
+  <string name="special_lists_done_title">Zrobione</string>
+  <string name="special_lists_due_title">Termin</string>
+  <string name="special_lists_file_title">Plik</string>
+  <string name="special_lists_list_title">Listy</string>
+  <string name="special_lists_name_title">Nazwa</string>
+  <string name="special_lists_priority_title">Priorytet</string>
+  <string name="special_lists_progress_title">Postęp</string>
+  <string name="special_lists_reminder_title">Przypomnienie</string>
+  <string name="special_lists_subtask_title">Podzadania</string>
   <string-array name="demo_lists">
     <item>Praca</item>
     <item>Dom</item>

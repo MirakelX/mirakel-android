@@ -19,23 +19,31 @@
 
 package de.azapps.mirakel.model.query_builder;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.google.common.base.Optional;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 /**
  * Created by az on 15.07.14.
@@ -43,9 +51,9 @@ import de.azapps.tools.Log;
 public class MirakelQueryBuilder {
     private static final String TAG = "MirakelQueryBuilder";
     private final Context context;
-    private List<String> projection = new ArrayList<>();
+    private List<String> projection = new ArrayList<>(5);
     private final StringBuilder selection = new StringBuilder();
-    private final List<String> selectionArgs = new ArrayList<>();
+    private final List<String> selectionArgs = new ArrayList<>(2);
     private final StringBuilder sortOrder = new StringBuilder();
     private boolean distinct = false;
 
@@ -82,7 +90,7 @@ public class MirakelQueryBuilder {
 
     private void appendConjunction(final Conjunction conjunction) {
         if (this.selection.length() != 0) {
-            this.selection.append(" " + conjunction.toString() + " ");
+            this.selection.append(' ').append(conjunction.toString()).append(' ');
         }
     }
 
@@ -99,7 +107,7 @@ public class MirakelQueryBuilder {
     public long count(final Uri uri) {
         select("count(*)");
         final Cursor c = query(uri);
-        long count = 0;
+        long count = 0L;
         if (c.moveToFirst()) {
             count = c.getLong(0);
         }
@@ -118,7 +126,7 @@ public class MirakelQueryBuilder {
      */
     private MirakelQueryBuilder appendCondition(final Conjunction conjunction,
             final String selection) {
-        if (selection.trim().length() == 0) {
+        if (selection.trim().isEmpty()) {
             return this;
         }
         appendConjunction(conjunction);
@@ -147,7 +155,7 @@ public class MirakelQueryBuilder {
             final String selection, final MirakelQueryBuilder subQuery,
             final Uri u) {
         appendCondition(conjunction, selection + " (" + subQuery.getQuery(u)
-                        + ")", subQuery.getSelectionArguments());
+                        + ')', subQuery.getSelectionArguments());
         return this;
     }
 
@@ -162,9 +170,9 @@ public class MirakelQueryBuilder {
         }
         final boolean isNull = filterInput.get(0) == null;
         final Class clazz = isNull ? null : filterInput.get(0).getClass();
-        final boolean isModel = !isNull && filterInput.get(0) instanceof ModelBase;
-        final boolean isBoolean = !isNull && (clazz == boolean.class
-                                              || clazz == Boolean.class);
+        final boolean isModel = !isNull && (filterInput.get(0) instanceof ModelBase);
+        final boolean isBoolean = !isNull && ((clazz.equals(boolean.class))
+                                              || (clazz.equals(Boolean.class)));
         Method getId = null;
         if (isModel) {
             try {
@@ -173,24 +181,24 @@ public class MirakelQueryBuilder {
                 Log.wtf(TAG,
                         "go and implement getId in " + clazz.getCanonicalName());
                 throw new IllegalArgumentException("go and implement getId in "
-                                                   + clazz.getCanonicalName());
+                                                   + clazz.getCanonicalName(), e);
             }
         }
         final List<String> filter = new ArrayList<>(filterInput.size());
         for (final T el : filterInput) {
             if (isModel) {
                 try {
-                    filter.add("" + getId.invoke(el));
+                    filter.add(String.valueOf(getId.invoke(el)));
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     Log.wtf(TAG,
                             "go and make getId in " + clazz.getCanonicalName()
                             + " accessible");
                     throw new IllegalArgumentException(
                         "go and implement getId in "
-                        + clazz.getCanonicalName());
+                        + clazz.getCanonicalName(), e);
                 }
             } else if (isBoolean) {
-                filter.add((Boolean) el == true ? "1" : "0");
+                filter.add((Boolean) el ? "1" : "0");
             } else if (!isNull) {
                 filter.add(el.toString());
             } else {
@@ -204,18 +212,18 @@ public class MirakelQueryBuilder {
         }
         if (op == Operation.IN || op == Operation.NOT_IN) {
             appendConjunction(conjunction);
-            this.selection.append(not).append(field).append(" ")
-            .append(op.toString()).append("(");
+            this.selection.append(not).append(field).append(' ')
+            .append(op.toString()).append('(');
             for (final String f : filter) {
                 this.selectionArgs.add(f);
                 this.selection.append("?,");
             }
             this.selection.deleteCharAt(this.selection.length() - 1);
-            this.selection.append(")");
+            this.selection.append(')');
         } else {
             for (final String a : filter) {
                 if (a != null) {
-                    appendCondition(conjunction, not + field + " " + op + " " + a);
+                    appendCondition(conjunction, not + field + ' ' + op + ' ' + a);
                 } else {
                     appendCondition(conjunction, field + " IS " + not + "NULL ");
                 }
@@ -237,7 +245,7 @@ public class MirakelQueryBuilder {
      */
     public String getQuery(final Uri uri) {
         final StringBuilder query = new StringBuilder(this.selection.length()
-                + this.projection.size() * 15 + this.selectionArgs.size() * 15
+                + (this.projection.size() * 15) + (this.selectionArgs.size() * 15)
                 + 100);
         query.append("SELECT ");
         if (this.distinct) {
@@ -282,7 +290,7 @@ public class MirakelQueryBuilder {
 
     public <T extends ModelBase> MirakelQueryBuilder and (final String field,
             final Operation op, final T filter) {
-        return and (field, op, filter.getId() + "");
+        return and (field, op, String.valueOf(filter.getId()));
     }
 
     public MirakelQueryBuilder and (final String field, final Operation op,
@@ -294,13 +302,13 @@ public class MirakelQueryBuilder {
                                     final String filter) {
         if (filter == null) {
             return and (field, op, Arrays.asList(new String[] { null }),
-                        new ArrayList<String>());
+                        new ArrayList<String>(0));
         } else if (op == Operation.IN || op == Operation.NOT_IN) {
-            return appendCondition(Conjunction.AND, field, op, Arrays.asList(filter.toString()),
-                                   new ArrayList<String>());
+            return appendCondition(Conjunction.AND, field, op, Collections.singletonList(filter),
+                                   new ArrayList<String>(0));
         }
         return and (field, op, Arrays.asList(new String[] { "?" }),
-                    Arrays.asList(new String[] { filter }));
+                    Collections.singletonList(filter));
     }
 
     /*
@@ -309,7 +317,7 @@ public class MirakelQueryBuilder {
      */
     public <T> MirakelQueryBuilder and (final String field, final Operation op,
                                         final List<T> filter) {
-        return and (field, op, filter, new ArrayList<String>());
+        return and (field, op, filter, new ArrayList<String>(0));
     }
 
     /*
@@ -318,7 +326,7 @@ public class MirakelQueryBuilder {
      */
     private <T> MirakelQueryBuilder and (final String field, final Operation op,
                                          final List<T> filter, final List<String> selectionArgs) {
-        if (op == Operation.IN && selectionArgs.size() != 0) {
+        if (op == Operation.IN && !selectionArgs.isEmpty()) {
             throw new IllegalArgumentException("Call condition with in is only without selectionags supported");
         }
         return appendCondition(Conjunction.AND, field, op, filter,
@@ -326,8 +334,8 @@ public class MirakelQueryBuilder {
     }
 
     public MirakelQueryBuilder and (final MirakelQueryBuilder other) {
-        return appendCondition(Conjunction.AND, "(" + other.getSelection()
-                               + ")", other.getSelectionArguments());
+        return appendCondition(Conjunction.AND, '(' + other.getSelection()
+                               + ')', other.selectionArgs);
     }
 
     public MirakelQueryBuilder and (final String field, final Operation op,
@@ -336,7 +344,7 @@ public class MirakelQueryBuilder {
         if (NOT.contains(op)) {
             not = " NOT ";
         }
-        return appendCondition(Conjunction.AND, not + field + " " + op,
+        return appendCondition(Conjunction.AND, not + field + ' ' + op,
                                subQuery, subqueryUri);
     }
 
@@ -352,7 +360,7 @@ public class MirakelQueryBuilder {
 
     public <T extends ModelBase> MirakelQueryBuilder or (final String field,
             final Operation op, final T filter) {
-        return or (field, op, filter.getId() + "");
+        return or (field, op, String.valueOf(filter.getId()));
     }
 
     public <T extends Number> MirakelQueryBuilder or (final String field,
@@ -362,11 +370,13 @@ public class MirakelQueryBuilder {
 
     /*
      * Do not call this with something other then T extends Number, T extends
-     * ModelBase or T=String java does not allow to define functions in this way
+     * ModelBase or T=String
+     *
+     * java does not allow to define functions in this way
      */
     public <T> MirakelQueryBuilder or (final String field, final Operation op,
                                        final List<T> filter) {
-        return or (field, op, filter, new ArrayList<String>());
+        return or (field, op, filter, new ArrayList<String>(0));
     }
 
 
@@ -374,30 +384,32 @@ public class MirakelQueryBuilder {
                                    final String filter) {
         if (filter == null) {
             return or (field, op, Arrays.asList(new String[] { null }),
-                       new ArrayList<String>());
+                       new ArrayList<String>(0));
         } else if (op == Operation.IN) {
-            return appendCondition(Conjunction.OR, field, op, Arrays.asList(filter.toString()),
-                                   new ArrayList<String>());
+            return appendCondition(Conjunction.OR, field, Operation.IN, Collections.singletonList(filter),
+                                   new ArrayList<String>(0));
         }
         return or (field, op, Arrays.asList(new String[] {"?"}),
-                   Arrays.asList(new String[] {filter}));
+                   Collections.singletonList(filter));
     }
 
     /*
      * Do not call this with something other then T extends Number, T extends
-     * ModelBase or T=String java does not allow to define functions in this way
+     * ModelBase or T=String
+     *
+     * java does not allow to define functions in this way
      */
     private <T> MirakelQueryBuilder or (final String field, final Operation op,
                                         final List<T> filter, final List<String> selectionArgs) {
-        if (op == Operation.IN && selectionArgs.size() != 0) {
-            throw new IllegalArgumentException("Call condition with in is only without selectionags supported");
+        if ((op == Operation.IN) && (!selectionArgs.isEmpty())) {
+            throw new IllegalArgumentException("Call condition with in is only without selectionargs supported");
         }
         return appendCondition(Conjunction.OR, field, op, filter, selectionArgs);
     }
 
     public MirakelQueryBuilder or (final MirakelQueryBuilder other) {
         return appendCondition(Conjunction.OR,
-                               "(" + other.getSelection() + ")", other.getSelectionArguments());
+                               '(' + other.getSelection() + ')', other.selectionArgs);
     }
 
     public MirakelQueryBuilder or (final String field, final Operation op,
@@ -406,7 +418,7 @@ public class MirakelQueryBuilder {
         if (NOT.contains(op)) {
             not = " NOT ";
         }
-        return appendCondition(Conjunction.OR, not + field + " " + op,
+        return appendCondition(Conjunction.OR, not + field + ' ' + op,
                                subQuery, subqueryUri);
     }
 
@@ -416,7 +428,7 @@ public class MirakelQueryBuilder {
 
     public MirakelQueryBuilder not(final MirakelQueryBuilder other) {
         this.selection.append(" NOT (").append(other.getSelection())
-        .append(")");
+        .append(')');
         this.selectionArgs.addAll(other.selectionArgs);
         return this;
     }
@@ -425,7 +437,7 @@ public class MirakelQueryBuilder {
         try {
             final Constructor<T> constructor = clazz.getConstructor(Cursor.class);
             return constructor.newInstance(c);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             Log.wtf(TAG, "go and implement a the constructor " + clazz.getCanonicalName() + "(Cursor)");
             throw new IllegalArgumentException("go and implement a the constructor " + clazz.getCanonicalName()
                                                + "(Cursor)", e);
@@ -437,8 +449,8 @@ public class MirakelQueryBuilder {
     }
 
     public <T extends ModelBase> List<T> getList(final Class<T> clazz) {
-        final List<T> l = new ArrayList<>();
         final Cursor c = query(setupQueryBuilder(clazz));
+        final List<T> l = new ArrayList<>(c.getCount());
         if (c.moveToFirst()) {
             do {
                 final T obj = cursorToObject(c, clazz);
@@ -449,30 +461,33 @@ public class MirakelQueryBuilder {
         return l;
     }
 
-    public <T extends ModelBase> T get(final Class<T> clazz, final long id) {
+    @NonNull
+    public <T extends ModelBase> Optional<T> get(final Class<T> clazz, final long id) {
         and (ModelBase.ID, Operation.EQ, id);
         return get(clazz);
     }
 
-    public <T extends ModelBase> T get(final Class<T> clazz) {
-        T a = null;
+
+    @NonNull
+    public <T extends ModelBase> Optional<T> get(final Class<T> clazz) {
+        Optional<T> a = absent();
         final Cursor c = query(setupQueryBuilder(clazz));
         if (c.moveToFirst()) {
-            a = cursorToObject(c, clazz);
+            a = of(cursorToObject(c, clazz));
         }
         c.close();
         return a;
     }
 
     private <T> Uri setupQueryBuilder(final Class<T> clazz) {
-        Uri uri;
+        final Uri uri;
         try {
             uri = (Uri) clazz.getField("URI").get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             Log.wtf(TAG,
                     "go and implement a URI  for" + clazz.getCanonicalName());
             throw new IllegalArgumentException("go and implement a URI for "
-                                               + clazz.getCanonicalName());
+                                               + clazz.getCanonicalName(), e);
         }
         if (this.projection.isEmpty()) {
             try {
@@ -485,7 +500,7 @@ public class MirakelQueryBuilder {
                         + clazz.getCanonicalName());
                 throw new IllegalArgumentException(
                     "go and implement allColumns for "
-                    + clazz.getCanonicalName());
+                    + clazz.getCanonicalName(), e);
             }
         }
         return uri;
@@ -502,7 +517,7 @@ public class MirakelQueryBuilder {
         if (this.sortOrder.length() > 0) {
             this.sortOrder.append(", ");
         }
-        this.sortOrder.append(field).append(" ").append(s);
+        this.sortOrder.append(field).append(' ').append(s);
         if (selectionArgs != null) {
             this.selectionArgs.addAll(selectionArgs);
         }
@@ -549,7 +564,7 @@ public class MirakelQueryBuilder {
             case NOT_IN:
                 return "IN";
             default:
-                throw new IllegalArgumentException("Unkown Operation "
+                throw new IllegalArgumentException("Unknown Operation "
                 + super.toString());
             }
         }

@@ -57,6 +57,7 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 import static de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -99,15 +100,15 @@ public class AnyDoImport {
             }
         }
         for (final Pair<Integer, String> pair : contents) {
-            final Task t = Task.get(taskMapping.get(pair.first));
-            if (t == null) {
+            final Optional<Task> taskOptional = Task.get(taskMapping.get(pair.first));
+            if (!taskOptional.isPresent()) {
                 Log.d(TAG, "Task not found");
                 continue;
             }
-            final String oldContent = t.getContent();
-            t.setContent(oldContent == null || oldContent.equals("") ? pair.second
-                         : oldContent + "\n" + pair.second);
-            t.save(false);
+            final String oldContent = taskOptional.get().getContent();
+            taskOptional.get().setContent("".equals(oldContent) ? pair.second : (oldContent + "\n" +
+                                          pair.second));
+            taskOptional.get().save(false);
         }
         return true;
     }
@@ -256,42 +257,42 @@ public class AnyDoImport {
         if (jsonTask.has("repeatMethod")) {
             final String repeat = jsonTask.get("repeatMethod").getAsString();
             if (!repeat.equals("TASK_REPEAT_OFF")) {
-                Recurring r = null;
+                Optional<Recurring> recurringOptional = absent();
                 if (repeat.equals("TASK_REPEAT_DAY")) {
-                    r = Recurring.get(1, 0, 0);
-                    if (r == null) {
-                        r = Recurring.newRecurring(
-                                ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-                                true, null, null, false, false,
-                                new SparseBooleanArray());
+                    recurringOptional = Recurring.get(1, 0, 0);
+                    if (!recurringOptional.isPresent()) {
+                        recurringOptional = of(Recurring.newRecurring(
+                                                   ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
+                                                   true, null, null, false, false,
+                                                   new SparseBooleanArray()));
                     }
                 } else if (repeat.equals("TASK_REPEAT_WEEK")) {
-                    r = Recurring.get(7, 0, 0);
-                    if (r == null) {
-                        r = Recurring.newRecurring(
-                                ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-                                true, null, null, false, false,
-                                new SparseBooleanArray());
+                    recurringOptional = Recurring.get(7, 0, 0);
+                    if (!recurringOptional.isPresent()) {
+                        recurringOptional = of(Recurring.newRecurring(
+                                                   ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
+                                                   true, null, null, false, false,
+                                                   new SparseBooleanArray()));
                     }
                 } else if (repeat.equals("TASK_REPEAT_MONTH")) {
-                    r = Recurring.get(0, 1, 0);
-                    if (r == null) {
-                        r = Recurring.newRecurring(
-                                ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-                                true, null, null, false, false,
-                                new SparseBooleanArray());
+                    recurringOptional = Recurring.get(0, 1, 0);
+                    if (!recurringOptional.isPresent()) {
+                        recurringOptional = of(Recurring.newRecurring(
+                                                   ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
+                                                   true, null, null, false, false,
+                                                   new SparseBooleanArray()));
                     }
                 } else if (repeat.equals("TASK_REPEAT_YEAR")) {
-                    r = Recurring.get(0, 0, 1);
-                    if (r == null) {
-                        r = Recurring.newRecurring(
-                                ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-                                true, null, null, false, false,
-                                new SparseBooleanArray());
+                    recurringOptional = Recurring.get(0, 0, 1);
+                    if (!recurringOptional.isPresent()) {
+                        recurringOptional = of(Recurring.newRecurring(
+                                                   ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
+                                                   true, null, null, false, false,
+                                                   new SparseBooleanArray()));
                     }
                 }
-                if (r != null) {
-                    t.setRecurrence(r.getId());
+                if (recurringOptional.isPresent()) {
+                    t.setRecurrence(recurringOptional.get().getId());
                 } else {
                     Log.d(TAG, repeat);
                 }

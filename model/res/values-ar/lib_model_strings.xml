@@ -162,6 +162,15 @@
     <item>سنوات</item>
   </string-array>
   <string name="nothing">لا يوجد تكرار</string>
+  <string name="special_lists_content_title">المحتوى</string>
+  <string name="special_lists_done_title">منجز</string>
+  <string name="special_lists_due_title">الواجب</string>
+  <string name="special_lists_list_title">القوائم</string>
+  <string name="special_lists_name_title">الإسم</string>
+  <string name="special_lists_priority_title">أولوية</string>
+  <string name="special_lists_progress_title">التقدم</string>
+  <string name="special_lists_reminder_title">تذكير</string>
+  <string name="special_lists_subtask_title">المهام الفرعية</string>
   <string-array name="demo_lists">
     <item>العمل</item>
     <item>الصفحة الرئيسية</item>
