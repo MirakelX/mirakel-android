@@ -64,7 +64,6 @@
   <string name="no_barcode_app_install">Installer</string>
   <string name="menu_edit_listaccount">Compte</string>
   <string name="change_account">Changer le compte</string>
-  <string name="version">Version de l\'application</string>
   <string name="no">Non</string>
   <string name="not">Ne pas</string>
   <string name="notification_title">Notifications</string>
@@ -111,7 +110,6 @@
   <string name="importing">Importation en cours</string>
   <string name="astrid_import_title">Sélectionner un fichier Astrid</string>
   <string name="import_any_do_click">Importation de Any.Do</string>
-  <string name="any_do_import_title">Sélectionner le fichier de sauvegarde Any.do</string>
   <string name="any_do_this_file">Importation de %s?\nsi non s\'il vous plaît sélectionner un fichier vous-même</string>
   <string name="any_do_how_to">Sauvegardez  vos données Any.do en premier. Pour ce faire, aller dans l\'application Any.do → Configuration → Sauvegarde → Créer une sauvegarde. Puis revenez et appuyez sur OK.\n Ou sélectionnez le fichier par vous même.</string>
   <string name="select_file">Sélectionnez un fichier</string>
@@ -202,7 +200,6 @@
   <string name="settings_file_default_title">Nom de la tâche pour les fichiers importés</string>
   <string name="semantic_new">Modèle</string>
   <string name="tag_new">Nouvelle étiquette</string>
-  <string name="tag_settings">Configuration des étiquettes</string>
   <string name="color">Couleur</string>
   <string name="tag_name">Nom</string>
   <string name="tag_dark_text">Est-ce-que le texte doit être noir ?</string>
@@ -271,7 +268,7 @@
   <string-array name="file_choice">
     <item>Pas configuré</item>
     <item>A un fichier</item>
-    <item>N\'a pas de fichier</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Enlever</string>
   <string name="backup_title">Sauvegarde</string>

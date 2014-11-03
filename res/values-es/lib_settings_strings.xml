@@ -38,7 +38,7 @@
     <item>Sincronización de Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Sincronización CalDav</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[Tienes que instalar una aplicación de sincronización por CalDAV que sea compatible con Mirakel. Por ahora, es necesario instalar la versión modificada de DAVdroid de nuestra página.<br /><br />
 Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a trabajar junto con otros para que sea posible sincronizar con Mirakel.
 ]]>
@@ -66,7 +66,6 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="no_barcode_app_install">Instalar</string>
   <string name="menu_edit_listaccount">Cuenta</string>
   <string name="change_account">Cambiar cuenta</string>
-  <string name="version">Versión de la aplicación</string>
   <string name="no">No</string>
   <string name="not">No</string>
   <string name="notification_title">Notificaciones</string>
@@ -105,7 +104,6 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="importing">Importando</string>
   <string name="astrid_import_title">Seleccione archivo Astrid</string>
   <string name="import_any_do_click">Importar desde Any.Do</string>
-  <string name="any_do_import_title">Seleccionar archivo de copia de resguardo de Any.Do</string>
   <string name="any_do_this_file">Importar desde %s?\nSi no, por favor selecciona tú mismo un archivo</string>
   <string name="any_do_how_to">Por favor, primero haz una copia de resguardo de los datos de tu Any.Do. Para eso, ve a Any.Do → Configuración → Copia de resguardo → Crear copia de resguardo. Después vuelve aquí y haz clic en OK.\nO selecciona el archivo tú mismo.</string>
   <string name="select_file">Selecciona un archivo</string>

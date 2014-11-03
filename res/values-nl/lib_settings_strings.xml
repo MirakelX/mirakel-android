@@ -40,7 +40,7 @@
     <item>Taskwarrior syngronisatie</item>
   </string-array>
   <string name="sync_caldav">CalDAV synchronisatie</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app. Currently you have to install our modified DAVdroid version from our page.<br /><br />
 Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we samen met enkele anderen om ook een sync met Mirakel mogelijk te maken.
         ]]>
@@ -69,7 +69,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="no_barcode_app_install">Installeren</string>
   <string name="menu_edit_listaccount">Account</string>
   <string name="change_account">Account wijzigen</string>
-  <string name="version">Applicatie versie</string>
   <string name="no">nee</string>
   <string name="not">niet</string>
   <string name="notification_title">Meldingen</string>
@@ -116,7 +115,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="importing">Importeren</string>
   <string name="astrid_import_title">Astrid bestand selecteren</string>
   <string name="import_any_do_click">Any.Do importeren</string>
-  <string name="any_do_import_title">Any.Do reservekopie selecteren</string>
   <string name="any_do_this_file">Importeren uit %s?\nWanneer niet selecteer zelf een bestand</string>
   <string name="any_do_how_to">Maak eerst uw reservekopie van de Any.Do gegevens . Om dit te doen, ga naar Any.Do → instellingen → Backup → reservekopie maken. Kom dan terug en druk op OK.\nSelecteer het bestand zelf.</string>
   <string name="select_file">bestand selecteren</string>
@@ -215,7 +213,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="settings_file_default_title">Taaknaam bij geïmporteerd bestand</string>
   <string name="semantic_new">sjabloon</string>
   <string name="tag_new">Nieuwe Tag</string>
-  <string name="tag_settings">Instellingen voor tags</string>
   <string name="color">Kleur</string>
   <string name="tag_name">Naam</string>
   <string name="tag_dark_text">Moet de tekst zwart zijn?</string>
@@ -285,7 +282,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string-array name="file_choice">
     <item>Niet actief</item>
     <item>Heeft bestand</item>
-    <item>Heeft geen bestand</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Verwijder</string>
   <string name="backup_title">Reservekopie</string>

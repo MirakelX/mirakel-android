@@ -63,7 +63,6 @@
   <string name="no_barcode_app_install">Zainstaluj</string>
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Zmień konto</string>
-  <string name="version">Wersja aplikacji</string>
   <string name="no">nie</string>
   <string name="not">nie</string>
   <string name="notification_title">Powiadomienia</string>
@@ -110,7 +109,6 @@
   <string name="importing">Importowanie</string>
   <string name="astrid_import_title">Wybierz plik Astrida</string>
   <string name="import_any_do_click">Importuj z Any.Do</string>
-  <string name="any_do_import_title">Wybierz plik kopi zapasowej Any.Do</string>
   <string name="any_do_this_file">Importować z %s?\nJeśli nie, wybierz plik samodzielnie</string>
   <string name="any_do_how_to">Zrób najpierw kopię zapasową Twoich danych Any.Do. Aby to uczynić idź do Any.Do → Ustawienia → Kopia zapasowa → Utwórz kopię zapasową. Następnie wróć i naciśnij OK.\nAlbo wybierz plik samodzielnie.</string>
   <string name="select_file">Wybierz plik</string>
@@ -206,7 +204,6 @@
   <string name="settings_file_default_title">Nazwa zadania dla importowanych plików</string>
   <string name="semantic_new">Szablon</string>
   <string name="tag_new">Nowy tag</string>
-  <string name="tag_settings">Ustawienia tagów</string>
   <string name="color">Kolor</string>
   <string name="tag_name">Nazwa</string>
   <string name="tag_dark_text">Czy tekst powinien być czarny?</string>
@@ -275,7 +272,7 @@
   <string-array name="file_choice">
     <item>Nie ustawiono</item>
     <item>Ma plik</item>
-    <item>Nie ma pliku</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Usuń</string>
   <string name="backup_title">Kopia zapasowa</string>

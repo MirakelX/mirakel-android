@@ -34,7 +34,6 @@
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
-  <string name="version">Версия</string>
   <string name="no">нет</string>
   <string name="not">не</string>
   <string name="notification_title">Оповещения</string>
@@ -137,7 +136,6 @@
   <string name="semantics_no_due">Не устанавливайте срок</string>
   <string name="settings_file_default_title">Название дела для импортированных файлов</string>
   <string name="tag_new">Новый тег</string>
-  <string name="tag_settings">Настройки Тегов</string>
   <string name="color">Цвет</string>
   <string name="tag_name">Имя</string>
   <string name="tag_dark_text">Должен ли текст быть чёрным?</string>
@@ -204,7 +202,7 @@
   <string-array name="file_choice">
     <item>Не задано</item>
     <item>Имеет прикреплённый файл</item>
-    <item>Не имеет прикреплённого файла</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Удалить</string>
   <string name="no_account_selected">Учетная запись не выбрана</string>

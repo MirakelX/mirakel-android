@@ -40,7 +40,7 @@
     <item>Sincronizzazione Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Sincronizzazione CalDAV</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[È necessario configurare un\'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
 Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e stiamo lavorando insieme ad altri per ampliare le possibilità di sincronizzazione con Mirakel.
         ]]>
@@ -69,7 +69,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="no_barcode_app_install">Installa</string>
   <string name="menu_edit_listaccount">Account</string>
   <string name="change_account">Cambia account</string>
-  <string name="version">Verione applicazione</string>
   <string name="no">no</string>
   <string name="not">no</string>
   <string name="notification_title">Notifiche</string>
@@ -117,7 +116,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="importing">Importazione</string>
   <string name="astrid_import_title">Seleziona il file Astrid</string>
   <string name="import_any_do_click">Importa da Any.Do</string>
-  <string name="any_do_import_title">Seleziona il file di backup di Any.Do</string>
   <string name="any_do_this_file">Importare da %s?\nIn caso contrario selezionare manualmente un file</string>
   <string name="any_do_how_to">Fai prima il backup dei dati di Any.Do. Per farlo, vai a Any.Do → Impostazioni → Backup → Crea Backup. Poi ritorna indietro e premi OK.\nOppure seleziona tu stesso un file.</string>
   <string name="select_file">Seleziona file</string>
@@ -216,7 +214,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="settings_file_default_title">Nome attività per file importati</string>
   <string name="semantic_new">Modello</string>
   <string name="tag_new">Nuova etichetta</string>
-  <string name="tag_settings">Impostazioni etichette</string>
   <string name="color">Colore</string>
   <string name="tag_name">Nome</string>
   <string name="tag_dark_text">Usa colore nero per il testo</string>
@@ -286,7 +283,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string-array name="file_choice">
     <item>Non impostato</item>
     <item>Contiene file</item>
-    <item>Non contiene file</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Rimuovi</string>
   <string name="no_account_selected">Nessun account selezionato</string>
@@ -298,22 +295,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="backup_title">Backup</string>
   <string name="third_party_title">Applicazioni di terze parti</string>
   <string name="title_settings">Impostazioni</string>
-  <string-array name="special_lists_filter_type">
-    <item>@string/special_lists_done_title</item>
-    <item>@string/special_lists_content_title</item>
-    <item>@string/special_lists_due_exist_title</item>
-    <item>@string/special_lists_due_title</item>
-    <item>@string/special_lists_file_title</item>
-    <item>@string/special_lists_list_title</item>
-    <item>@string/special_list_list_name</item>
-    <item>@string/special_lists_name_title</item>
-    <item>@string/special_lists_priority_title</item>
-    <item>@string/special_lists_progress_title</item>
-    <item>@string/special_lists_reminder_title</item>
-    <item>@string/special_lists_tag_title</item>
-    <item>@string/special_lists_subtask_title</item>
-    <item>Condizione secondaria</item>
-  </string-array>
   <string name="done_text">Solo attività completate</string>
   <string name="file_text">Solo attività con file</string>
   <string name="due_exist_text">Solo attività senza scadenza</string>

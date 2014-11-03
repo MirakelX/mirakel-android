@@ -57,7 +57,6 @@
   <string name="no_barcode_app_install">Nainstalovat</string>
   <string name="menu_edit_listaccount">Účet</string>
   <string name="change_account">Změnit účet</string>
-  <string name="version">Verze aplikace</string>
   <string name="no">Ne</string>
   <string name="not">Ne</string>
   <string name="notification_title">Upozornění v horní liště</string>
@@ -103,7 +102,6 @@
   <string name="importing">Probíhá import</string>
   <string name="astrid_import_title">Vyberte soubor Astrid</string>
   <string name="import_any_do_click">Importovat z Any.Do</string>
-  <string name="any_do_import_title">Vyberte soubor se zálohou ve formátu Any.Do</string>
   <string name="select_file">Vybrat soubor</string>
   <string name="wait">Počkejte prosím&#8230;</string>
   <string name="highlightSelected_summary">Zvýraznit seznamy a úkoly po klepnutí</string>
@@ -187,7 +185,6 @@
   <string name="semantics_no_due">Nenastavovat termín</string>
   <string name="settings_file_default_title">Název úkolu pro importované soubory</string>
   <string name="tag_new">Nový štítek</string>
-  <string name="tag_settings">Nastavení štítků</string>
   <string name="color">Barva</string>
   <string name="tag_name">Jméno</string>
   <string name="tag_dark_text">Měl by být text černý?</string>
@@ -240,7 +237,7 @@
   <string-array name="file_choice">
     <item>Nenastaveno</item>
     <item>Má soubor</item>
-    <item>Nemá soubor</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Odstranit</string>
   <string name="no_account_selected">Není vybrán žádný účet</string>

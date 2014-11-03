@@ -40,7 +40,7 @@
     <item>Sincronização Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Sincronização CalDAV</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[Tem que instalar e configurar uma aplicação compatível com o Mirakel para a sincronização CalDAV. Atualmente tem que instalar, através da nossa página web, uma versão modificada da aplicação DAVdroid.<br /><br />
 Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além disso, estamos a trabalhar em conjunto com outros programadores para que mais aplicações possam ser utilizadas em conjunto com o Mirakel.
 ]]>
@@ -69,7 +69,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="no_barcode_app_install">Instalar</string>
   <string name="menu_edit_listaccount">Conta</string>
   <string name="change_account">Mudar conta</string>
-  <string name="version">Versão</string>
   <string name="no">nenhuma</string>
   <string name="not">não</string>
   <string name="notification_title">Notificações</string>
@@ -117,7 +116,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="importing">Importação</string>
   <string name="astrid_import_title">Selecione o ficheiro Astrid</string>
   <string name="import_any_do_click">Importar de Any.Do</string>
-  <string name="any_do_import_title">Selecione o ficheiro Any.Do</string>
   <string name="any_do_this_file">Importar de %s?\nSe não, escolha manualmente o ficheiro</string>
   <string name="any_do_how_to">Por favor, faça um backup dos seus dados Any.Do. Para o fazer, aceda a Any.Do -> Definições -> Backup -> Criar backup. Volte à aplicação e clique OK.\nOu então, escolha o ficheiro.</string>
   <string name="select_file">Selecionar ficheiro</string>
@@ -216,7 +214,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
   <string name="tag_new">Nova etiqueta</string>
-  <string name="tag_settings">Definições de etiquetas</string>
   <string name="color">Cor</string>
   <string name="tag_name">Nome</string>
   <string name="tag_dark_text">Deve o texto ser preto?</string>
@@ -286,7 +283,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string-array name="file_choice">
     <item>Não definido</item>
     <item>Tem ficheiro</item>
-    <item>Não tem ficheiro</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Remover</string>
   <string name="no_account_selected">Nenhuma conta selecionada</string>
@@ -298,22 +295,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="backup_title">Backup</string>
   <string name="third_party_title">Aplicações de terceiros</string>
   <string name="title_settings">Definições</string>
-  <string-array name="special_lists_filter_type">
-    <item>@string/special_lists_done_title</item>
-    <item>@string/special_lists_content_title</item>
-    <item>@string/special_lists_due_exist_title</item>
-    <item>@string/special_lists_due_title</item>
-    <item>@string/special_lists_file_title</item>
-    <item>@string/special_lists_list_title</item>
-    <item>@string/special_list_list_name</item>
-    <item>@string/special_lists_name_title</item>
-    <item>@string/special_lists_priority_title</item>
-    <item>@string/special_lists_progress_title</item>
-    <item>@string/special_lists_reminder_title</item>
-    <item>@string/special_lists_tag_title</item>
-    <item>@string/special_lists_subtask_title</item>
-    <item>Subcondição</item>
-  </string-array>
   <string name="done_text">Apenas tarefas terminadas</string>
   <string name="file_text">Apenas tarefas com ficheiros</string>
   <string name="due_exist_text">Apenas tarefas sem data limite</string>

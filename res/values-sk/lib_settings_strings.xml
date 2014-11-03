@@ -52,7 +52,6 @@
   <string name="type">Typ</string>
   <string name="menu_edit_listaccount">Účet</string>
   <string name="change_account">Zmeniť účet</string>
-  <string name="version">Verzia</string>
   <string name="no">nie</string>
   <string name="notification_title">Oznámenia</string>
   <string name="notifications_use">Používať oznámenia</string>
@@ -171,7 +170,7 @@
   <string-array name="file_choice">
     <item>Not set</item>
     <item>Má súbor</item>
-    <item>Nemá súbor</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Odstrániť</string>
   <string name="sharing_title">Zdieľanie</string>
