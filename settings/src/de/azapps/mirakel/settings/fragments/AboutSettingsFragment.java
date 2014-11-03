@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
@@ -32,8 +33,7 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.CreditsActivity;
-import de.azapps.mirakel.settings.activities.SettingsActivity;
+import de.azapps.mirakel.settings.SettingsActivity;
 
 public class AboutSettingsFragment extends PreferenceFragment {
 
@@ -68,9 +68,13 @@ public class AboutSettingsFragment extends PreferenceFragment {
 
         final Preference credits = findPreference("credits");
         if (credits != null) {
-            final Intent startCreditsIntent = new Intent(getActivity(),
-                    CreditsActivity.class);
-            credits.setIntent(startCreditsIntent);
+            credits.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ((PreferenceActivity)getActivity()).startPreferenceFragment(new CreditsFragment(), false);
+                    return true;
+                }
+            });
         }
         final Preference contact = findPreference("contact");
         if (contact != null) {

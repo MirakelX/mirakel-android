@@ -17,7 +17,7 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools"  tools:ignore="MissingTranslation">
 
     <!-- Sync -->
     <string name="sync_add">Add account</string>
@@ -43,8 +43,7 @@
     </string-array>
 
     <string name="sync_caldav">CalDAV sync</string>
-    <string name="sync_caldav_howto"></string>
-    <string name="sync_caldav_howto_">
+    <string name="sync_caldav_howto">
 <![CDATA[You have to setup a Mirakel-compatible CalDAV-syncing app. Currently you have to install our modified DAVdroid version from our page.<br /><br />
 Soon the official DAVdroid app will also support Mirakel and we are working together with some others to make it possible to sync with Mirakel.
         ]]>
@@ -75,7 +74,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="change_account">Change Account</string>
 
     <!-- Other stuff -->
-    <string name="version">Appversion</string>
+    <string name="version">App version</string>
     <string name="no">no</string>
     <string name="not">not</string>
 
@@ -135,7 +134,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="astrid_import_title">Select Astrid File</string>
     <!-- Any.Do -->
     <string name="import_any_do_click">Import from Any.Do</string>
-    <string name="any_do_import_title">Select Any.Do backupfile</string>
+    <string name="any_do_import_title">Select Any.Do backup file</string>
     <string name="any_do_this_file">Import from %s?\nIf not please select a file yourself</string>
     <string name="any_do_how_to">Please backup first your Any.Do data. To do so, go to Any.Do → Settings → Backup → Create Backup. Then come back and press OK.\nOr select the file yourself.</string>
     <string name="select_file">Select file</string>
@@ -163,7 +162,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="undo_number_summary">Undo %s changes</string>
     <string name="settings_semantic">Task templates</string>
     <string name="semantic_new_task">New task template</string>
-    <string name="semantic_new_task_summary"></string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
     <string name="semantic_new_task_config">Configure task templates</string>
     <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
@@ -288,7 +286,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="settings_file_default_title">Task name for imported files</string>
     <string name="semantic_new">Template</string>
     <string name="tag_new">New Tag</string>
-    <string name="tag_settings">Tagsettings</string>
+    <string name="tag_settings">Tag settings</string>
     <string name="color">Color</string>
     <string name="tag_name">Name</string>
     <string name="tag_dark_text">Should the text be black?</string>
@@ -347,25 +345,25 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="demo_mode">Demo mode</string>
     <string name="demo_drop_db">Reset demo database</string>
     <string name="write_logs_to_file">Write logs to file</string>
-    
+
     <string name="alert_caldav"><![CDATA[The CalDAV sync is not 100%% stable. Please try it carefully and report bugs!]]></string>
     <string name="alert_caldav_title">Informations for CalDAV</string>
     <string name="alert_taskwarrior"><![CDATA[The taskwarrior sync seems to work but please make a backup of your data! Please report issues and bugs so we can fix them!]]></string>
     <string name="alert_taskwarrior_title">Informations for Taskwarrior</string>
-    
+
     <string name="special_list_where_subtask_title_text">Subtasks</string>
     <string name="special_list_where_tag_title_text">Tags</string>
     <string name="special_list_where_progress_title_text">Progress</string>
     <string name="special_list_where_file_title_text">File</string>
     <string-array name="special_lists_subtask_options">
-        <item >Negate selection</item>
-        <item >Search for tasks with subtasks or which are subtasks</item>
+        <item>Negate selection</item>
+        <item>Search for tasks with subtasks or which are subtasks</item>
     </string-array>
-    
+
     <string-array name="file_choice">
-        <item >Not set</item>
-        <item >Has file</item>
-        <item >Hasn\'t file</item>
+        <item>Not set</item>
+        <item>Has file</item>
+        <item>Has no file</item>
     </string-array>
 
     <string name="remove">Remove</string>
@@ -378,4 +376,35 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="backup_title">Backup</string>
     <string name="third_party_title">Third party apps</string>
     <string name="title_settings">Settings</string>
+    <string name="subcondition">Subcondition</string>
+
+    <string-array name="special_lists_filter_type" translatable="false">
+        <item>@string/special_lists_done_title</item>
+        <item>@string/special_lists_content_title</item>
+        <item>@string/special_lists_due_exist_title</item>
+        <item>@string/special_lists_due_title</item>
+        <item>@string/special_lists_file_title</item>
+        <item>@string/special_lists_list_title</item>
+        <item>@string/special_list_list_name</item>
+        <item>@string/special_lists_name_title</item>
+        <item>@string/special_lists_priority_title</item>
+        <item>@string/special_lists_progress_title</item>
+        <item>@string/special_lists_reminder_title</item>
+        <item>@string/special_lists_tag_title</item>
+        <item>@string/special_lists_subtask_title</item>
+        <item>@string/subcondition</item>
+    </string-array>
+
+    <string name="done_text">Only done tasks</string>
+    <string name="file_text">Only tasks with files</string>
+    <string name="due_exist_text">Only tasks without due</string>
+    <string name="reminder_text">Only tasks with reminder</string>
+    <string name="is_subtask_parent">Is parent</string>
+    <string name="has_subtasks">Has subtasks</string>
+    <string name="has_parent">Has parent task</string>
+    <string name="special_lists_condition_title">Conditions</string>
+    <string name="Undo">Undo remove condition</string>
+    <string name="add_condition">Add condition</string>
+    <string name="undo_taskui_change">Undo remove of %s</string>
+    <string name="due_dialog_negated">Not after</string>
 </resources>

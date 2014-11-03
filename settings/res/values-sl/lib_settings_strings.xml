@@ -39,7 +39,7 @@
     <item>Usklajevanje preko strežnika Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Usklajevanje CalDAV</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[Nastaviti je treba program za usklajevanje CalDAV, ki deluje v povezavi s programom Mirakel. Trenutno je na voljo le predelana različica programa DAVdroid z naše spletne strani.<br /><br />
 Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje programa Mirakel. Trenutno potekajo usklajevanja z razvojnima skupinama za čim boljše delovanje.
         ]]>
@@ -68,7 +68,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="no_barcode_app_install">Namesti</string>
   <string name="menu_edit_listaccount">Račun</string>
   <string name="change_account">Spremeni račun</string>
-  <string name="version">Različica programa</string>
   <string name="no">ne</string>
   <string name="not">ne</string>
   <string name="notification_title">Obvestila</string>
@@ -87,7 +86,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="startup_title">Zagon programa</string>
   <string name="startup_show_lists">Pokaži vse sezname</string>
   <string name="startup_show_lists_summary">Ob zagonu pokaži vse sezname</string>
-  <string name="startup_list">Izbor seznama</string>
   <string name="startup_list_summary">Pokaži nalogo \"%s\"</string>
   <string name="special_lists_click">Upravljanje meta-seznamov</string>
   <string name="special_lists_new">Nov meta-seznam</string>
@@ -116,7 +114,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="importing">Poteka uvažanje</string>
   <string name="astrid_import_title">Izberite datoteko programa Astrid</string>
   <string name="import_any_do_click">Uvozi iz Any.Do</string>
-  <string name="any_do_import_title">Izbor datoteke Any.Do</string>
   <string name="any_do_this_file">Uvozi iz %s?\nČe želite podatke uvoziti ročno, izberite datoteko</string>
   <string name="any_do_how_to">Najprej naredite varnostno kopijo podatkov Any.Do. To storite v programu Any.Do v meniju Nastavitve → Varnostna kopija → Ustvari varnostno kopijo. Ko to storite, odprite spet program Mirakel in pritisnite gumb V redu.\n Ali pa seveda, izberite datoteko sami.</string>
   <string name="select_file">Izbor datoteke</string>
@@ -215,7 +212,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="settings_file_default_title">Ime seznama uvoženih datotek</string>
   <string name="semantic_new">predloga</string>
   <string name="tag_new">Nova oznaka</string>
-  <string name="tag_settings">Nastavitve oznak</string>
   <string name="color">Barva</string>
   <string name="tag_name">Ime</string>
   <string name="tag_dark_text">Ali naj bo besedilo črno?</string>
@@ -283,7 +279,9 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string-array name="file_choice">
     <item>Ni nastavljeno</item>
     <item>Ima priložene datoteke</item>
-    <item>Je brez priloženih datotek</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Odstrani</string>
+  <string name="backup_title">Varnostna kopija</string>
+  <string name="title_settings">Nastavitve</string>
 </resources>

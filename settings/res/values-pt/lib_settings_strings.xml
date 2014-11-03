@@ -40,7 +40,7 @@
     <item>Sincronização Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Sincronização CalDAV</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[Tem que instalar e configurar uma aplicação compatível com o Mirakel para a sincronização CalDAV. Atualmente tem que instalar, através da nossa página web, uma versão modificada da aplicação DAVdroid.<br /><br />
 Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além disso, estamos a trabalhar em conjunto com outros programadores para que mais aplicações possam ser utilizadas em conjunto com o Mirakel.
 ]]>
@@ -69,7 +69,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="no_barcode_app_install">Instalar</string>
   <string name="menu_edit_listaccount">Conta</string>
   <string name="change_account">Mudar conta</string>
-  <string name="version">Versão</string>
   <string name="no">nenhuma</string>
   <string name="not">não</string>
   <string name="notification_title">Notificações</string>
@@ -88,7 +87,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="startup_title">Ao iniciar</string>
   <string name="startup_show_lists">Mostrar todas as listas</string>
   <string name="startup_show_lists_summary">Mostrar todas as listas ao iniciar</string>
-  <string name="startup_list">Seleção de lista</string>
+  <string name="startup_list">Selecione a lista de arranque</string>
   <string name="startup_list_summary">Mostrar tarefas de \"%s\"</string>
   <string name="special_lists_click">Gerir meta-listas</string>
   <string name="special_lists_new">Nova meta-lista</string>
@@ -117,7 +116,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="importing">Importação</string>
   <string name="astrid_import_title">Selecione o ficheiro Astrid</string>
   <string name="import_any_do_click">Importar de Any.Do</string>
-  <string name="any_do_import_title">Selecione o ficheiro Any.Do</string>
   <string name="any_do_this_file">Importar de %s?\nSe não, escolha manualmente o ficheiro</string>
   <string name="any_do_how_to">Por favor, faça um backup dos seus dados Any.Do. Para o fazer, aceda a Any.Do -> Definições -> Backup -> Criar backup. Volte à aplicação e clique OK.\nOu então, escolha o ficheiro.</string>
   <string name="select_file">Selecionar ficheiro</string>
@@ -216,7 +214,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
   <string name="tag_new">Nova etiqueta</string>
-  <string name="tag_settings">Definições de etiquetas</string>
   <string name="color">Cor</string>
   <string name="tag_name">Nome</string>
   <string name="tag_dark_text">Deve o texto ser preto?</string>
@@ -286,7 +283,28 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string-array name="file_choice">
     <item>Não definido</item>
     <item>Tem ficheiro</item>
-    <item>Não tem ficheiro</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Remover</string>
+  <string name="no_account_selected">Nenhuma conta selecionada</string>
+  <string name="no_recurrence_selected">Nenhuma recorrência selecionada</string>
+  <string name="no_semantic_selected">Nenhum modelo de tarefa selecionado</string>
+  <string name="no_special_list_selected">Nenhuma meta-lista selecionada</string>
+  <string name="no_tag_selected">Nenhuma etiqueta selecionada</string>
+  <string name="sharing_title">Partilha</string>
+  <string name="backup_title">Backup</string>
+  <string name="third_party_title">Aplicações de terceiros</string>
+  <string name="title_settings">Definições</string>
+  <string name="done_text">Apenas tarefas terminadas</string>
+  <string name="file_text">Apenas tarefas com ficheiros</string>
+  <string name="due_exist_text">Apenas tarefas sem data limite</string>
+  <string name="reminder_text">Apenas tarefas com lembretes</string>
+  <string name="is_subtask_parent">É ascendente</string>
+  <string name="has_subtasks">Tem subtarefas</string>
+  <string name="has_parent">Tem tarefa ascendente</string>
+  <string name="special_lists_condition_title">Condições</string>
+  <string name="Undo">Anular remoção de condição</string>
+  <string name="add_condition">Adicionar condição</string>
+  <string name="undo_taskui_change">Anular remoção de %s</string>
+  <string name="due_dialog_negated">Não após</string>
 </resources>

@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.settings.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -30,7 +29,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 
 import com.google.common.base.Optional;
 
@@ -45,7 +43,7 @@ import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.SettingsActivity;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.tools.FileUtils;
 
 public class BackupSettingsFragment extends PreferenceFragment {
@@ -224,13 +222,11 @@ public class BackupSettingsFragment extends PreferenceFragment {
                 final int min = 0;
                 final NumberPicker numberPicker = new NumberPicker(
                     getActivity());
-                ((NumberPicker) numberPicker).setMaxValue(max);
-                ((NumberPicker) numberPicker).setMinValue(min);
-                ((NumberPicker) numberPicker)
-                .setWrapSelectorWheel(false);
-                ((NumberPicker) numberPicker).setValue(old_val);
-                ((NumberPicker) numberPicker)
-                .setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                numberPicker.setMaxValue(max);
+                numberPicker.setMinValue(min);
+                numberPicker.setWrapSelectorWheel(false);
+                numberPicker.setValue(old_val);
+                numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
                 new AlertDialog.Builder(
                     getActivity())
                 .setTitle(R.string.auto_backup_interval)
@@ -242,28 +238,14 @@ public class BackupSettingsFragment extends PreferenceFragment {
                     public void onClick(
                         final DialogInterface dialog,
                         final int whichButton) {
-                        int val;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                            val = ((NumberPicker) numberPicker)
-                                  .getValue();
-                        } else {
-                            val = Integer
-                                  .parseInt(((TextView) numberPicker
-                                             .findViewById(R.id.dialog_num_pick_val))
-                                            .getText()
-                                            .toString());
-                        }
-                        MirakelCommonPreferences
-                        .setAutoBackupInterval(val);
-                        autoBackupInterval
-                        .setSummary(getActivity()
-                                    .getString(
-                                        R.string.auto_backup_interval_summary,
-                                        val));
+                        int val = numberPicker.getValue();
+                        MirakelCommonPreferences.setAutoBackupInterval(val);
+                        autoBackupInterval.setSummary(getActivity()
+                                                      .getString(
+                                                          R.string.auto_backup_interval_summary,
+                                                          val));
                     }
-                })
-                .setNegativeButton(
-                    android.R.string.cancel, null).show();
+                }).setNegativeButton(android.R.string.cancel, null).show();
                 return false;
             }
         });

@@ -64,7 +64,6 @@
   <string name="no_barcode_app_install">تثبيت</string>
   <string name="menu_edit_listaccount">حساب</string>
   <string name="change_account">تغيير حساب</string>
-  <string name="version">إصدار التطبيق</string>
   <string name="no">لا</string>
   <string name="not">لا</string>
   <string name="notification_title">الإشعارات</string>
@@ -83,7 +82,6 @@
   <string name="startup_title">بدء التطبيق</string>
   <string name="startup_show_lists">إظهار كل القوائم</string>
   <string name="startup_show_lists_summary">إظهار كافة القوائم في بدء التشغيل</string>
-  <string name="startup_list">تحديد قائمة</string>
   <string name="startup_list_summary">إظهار المهام من \"%s\"</string>
   <string name="special_lists_click">إدارة القوائم الوصفيَّة</string>
   <string name="special_lists_new">قائمة وصفيَّة جديدة</string>
@@ -112,7 +110,6 @@
   <string name="importing">جاري  الإستيراد</string>
   <string name="astrid_import_title">حدد ملف Astrid</string>
   <string name="import_any_do_click">استيراد من Any.Do</string>
-  <string name="any_do_import_title">اختر ملف النسخة الاحتياطية لـ Any.Do</string>
   <string name="any_do_this_file">استيراد من %s?\nIf في حال تم الرفض, يرجى تحديد الملف بنفسك</string>
   <string name="any_do_how_to">يرجى أولاً النسخ الاحتياطي لبيانات Any.Do.  لفعل هذا اذهب إلى  Any.Do → Settings → Backup → Create Backup ثم ارجع هنا واضغط OK.\n أو اختر الملف بنفسك.</string>
   <string name="select_file">حدد الملف</string>
@@ -246,6 +243,8 @@
   <string-array name="file_choice">
     <item>Not set</item>
     <item>يحوي ملفاً</item>
-    <item>ليس لديه ملف</item>
+    <item>Has no file</item>
   </string-array>
+  <string name="backup_title">النسخ الاحتياطية</string>
+  <string name="title_settings">إعدادات</string>
 </resources>

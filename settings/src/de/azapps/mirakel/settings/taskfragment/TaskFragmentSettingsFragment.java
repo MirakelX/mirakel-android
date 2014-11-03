@@ -24,17 +24,26 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cocosw.undobar.UndoBarController;
+import com.google.common.base.Optional;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 import com.mobeta.android.dslv.DragSortListView.RemoveListener;
 
+import de.azapps.mirakel.custom_views.TaskDetailView;
 import de.azapps.mirakel.helper.MirakelViewPreferences;
 import de.azapps.mirakel.settings.R;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+
 
 @SuppressLint("NewApi")
 public class TaskFragmentSettingsFragment extends Fragment {
@@ -42,6 +51,7 @@ public class TaskFragmentSettingsFragment extends Fragment {
     private final static String TAG = "de.azapps.mirakel.settings.taskfragment.TaskFragmentSettings";
     protected TaskFragmentSettingsAdapter adapter;
     protected DragSortListView listView;
+    private Optional<UndoBarController.UndoBar> undoBar = absent();
 
     public TaskFragmentSettingsFragment() {
         super();
@@ -106,11 +116,42 @@ public class TaskFragmentSettingsFragment extends Fragment {
             public void remove(final int which) {
                 if (which != TaskFragmentSettingsFragment.this.adapter
                     .getCount() - 1) {
+                    final Pair<Integer, Integer> removed = new Pair(which, adapter.getItem(which));
                     TaskFragmentSettingsFragment.this.adapter.onRemove(which);
+                    if (undoBar.isPresent()) {
+                        undoBar.get().clear();
+                    }
+                    undoBar = of(new UndoBarController.UndoBar(getActivity()));
+
+                    try {
+                        undoBar.get().listener(new UndoBarController.AdvancedUndoListener() {
+                            @Override
+                            public void onUndo(Parcelable parcelable) {
+                                adapter.addToData(removed.first, removed.second);
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onHide(Parcelable parcelable) {
+
+                            }
+
+                            @Override
+                            public void onClear() {
+                                undoBar = absent();
+                            }
+                        }).message(getActivity().getString(R.string.undo_taskui_change,
+                                                           TaskDetailView.TYPE.getTranslatedName(getActivity(), removed.second))).show();
+                    } catch (TaskDetailView.TYPE.NoSuchItemException e) {
+                        Log.wtf(TAG, "unknown item removed");
+                        throw new IllegalArgumentException("This can never ever happen, because item has in list already called this and must be valid",
+                                                           e);
+                    }
                 }
             }
         });
         this.listView.setOnItemClickListener(null);
     }
+
 
 }

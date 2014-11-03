@@ -40,7 +40,7 @@
     <item>Sincronizzazione Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Sincronizzazione CalDAV</string>
-  <string name="sync_caldav_howto_">
+  <string name="sync_caldav_howto">
 <![CDATA[È necessario configurare un\'applicazione compatibile con Mirakel e sincronizzabile con CalDAV. Per il momento è necessario installare la versione modificata di DAVdroid dalla nostra pagina web.<br /><br />
 Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e stiamo lavorando insieme ad altri per ampliare le possibilità di sincronizzazione con Mirakel.
         ]]>
@@ -69,7 +69,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="no_barcode_app_install">Installa</string>
   <string name="menu_edit_listaccount">Account</string>
   <string name="change_account">Cambia account</string>
-  <string name="version">Verione applicazione</string>
   <string name="no">no</string>
   <string name="not">no</string>
   <string name="notification_title">Notifiche</string>
@@ -88,7 +87,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="startup_title">Avvio applicazione</string>
   <string name="startup_show_lists">Mostra tutti gli elenchi</string>
   <string name="startup_show_lists_summary">Mostra tutti gli elenchi all\'avvio</string>
-  <string name="startup_list">Seleziona elenco</string>
+  <string name="startup_list">Selezionare l\'elenco d\'avvio</string>
   <string name="startup_list_summary">Mostra le attività di \"%s\"</string>
   <string name="special_lists_click">Gestione meta-elenchi</string>
   <string name="special_lists_new">Nuovo meta-elenco</string>
@@ -117,7 +116,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="importing">Importazione</string>
   <string name="astrid_import_title">Seleziona il file Astrid</string>
   <string name="import_any_do_click">Importa da Any.Do</string>
-  <string name="any_do_import_title">Seleziona il file di backup di Any.Do</string>
   <string name="any_do_this_file">Importare da %s?\nIn caso contrario selezionare manualmente un file</string>
   <string name="any_do_how_to">Fai prima il backup dei dati di Any.Do. Per farlo, vai a Any.Do → Impostazioni → Backup → Crea Backup. Poi ritorna indietro e premi OK.\nOppure seleziona tu stesso un file.</string>
   <string name="select_file">Seleziona file</string>
@@ -216,7 +214,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="settings_file_default_title">Nome attività per file importati</string>
   <string name="semantic_new">Modello</string>
   <string name="tag_new">Nuova etichetta</string>
-  <string name="tag_settings">Impostazioni etichette</string>
   <string name="color">Colore</string>
   <string name="tag_name">Nome</string>
   <string name="tag_dark_text">Usa colore nero per il testo</string>
@@ -286,7 +283,28 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string-array name="file_choice">
     <item>Non impostato</item>
     <item>Contiene file</item>
-    <item>Non contiene file</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Rimuovi</string>
+  <string name="no_account_selected">Nessun account selezionato</string>
+  <string name="no_recurrence_selected">Nessuna ricorrenza selezionata</string>
+  <string name="no_semantic_selected">Nessun modello di attvità selezionato</string>
+  <string name="no_special_list_selected">Nessun meta-elenco selezionato</string>
+  <string name="no_tag_selected">Nessuna etichetta selezionata</string>
+  <string name="sharing_title">Condivisione</string>
+  <string name="backup_title">Backup</string>
+  <string name="third_party_title">Applicazioni di terze parti</string>
+  <string name="title_settings">Impostazioni</string>
+  <string name="done_text">Solo attività completate</string>
+  <string name="file_text">Solo attività con file</string>
+  <string name="due_exist_text">Solo attività senza scadenza</string>
+  <string name="reminder_text">Solo attività con promemoria</string>
+  <string name="is_subtask_parent">È genitore</string>
+  <string name="has_subtasks">Contiene attività secondarie</string>
+  <string name="has_parent">Ha attività genitore</string>
+  <string name="special_lists_condition_title">Condizioni</string>
+  <string name="Undo">Annulla la rimozione della condizione</string>
+  <string name="add_condition">Aggiungi condizione</string>
+  <string name="undo_taskui_change">Annulla la rimozione di %s</string>
+  <string name="due_dialog_negated">Non dopo</string>
 </resources>

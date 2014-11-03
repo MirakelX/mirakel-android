@@ -40,5 +40,6 @@ dependencies {
     compile project(':donationslib')
     compile project(':drag-sort-listview')
     compile project(':colorpickerpreference')
+    compile 'com.cocosw:undobar:1.4@aar'
 }
 

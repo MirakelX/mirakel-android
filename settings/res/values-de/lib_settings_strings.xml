@@ -27,22 +27,21 @@
   <string name="sync_warning_message">Die Synchronisierung läuft noch sehr instabil. Du kannst sie aber gerne Ausprobieren (Mach vorher aber ein Backup!) – Bist du sicher?</string>
   <string name="sync_use_summary_taskwarrior">Sync mit Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Sync mit Mirakel als %s</string>
-  <string name="sync_use_summary_nothing">Benutzen sie nicht die Synchronisierung</string>
+  <string name="sync_use_summary_nothing">Benutze die Synchronisierung nicht</string>
   <string name="sync_user">Nutzername</string>
-  <string name="sync_user_summary">Nutzername auf dem Server</string>
+  <string name="sync_user_summary">Benutzername auf dem Server</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Sync mit %s</string>
   <string name="sync_frequency">Häufigkeit</string>
   <string name="sync_frequency_summary">Synchronisiere alle %s min</string>
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
   <string-array name="sync_types">
-    <item>CalDAV synchronisieren</item>
+    <item>CalDAV Synchronisierung</item>
     <item>Taskwarrior-Sync</item>
   </string-array>
-  <string name="sync_caldav">CalDAV synchronisieren</string>
-  <string name="sync_caldav_howto_">
-<![CDATA[Eine Mirakel-kompatible CalDAV-syncing App muss installiert werden. Derzeit muss eine von uns modifizierte Version von DAVdroid installiert werden die man auf unserer Webseite findet.<br /><br />
-In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wir arbeiten zusammen mit anderen um eine Synchronisation mit Mirakel zu ermöglichen.
+  <string name="sync_caldav">CalDAV Synchronisierung</string>
+  <string name="sync_caldav_howto"><![CDATA[Eine Mirakel-kompatible App zur Synchronisierung per CalDAV muss installiert werden. Derzeit muss eine von uns modifizierte Version von DAVdroid installiert werden die man auf unserer Webseite findet.<br /><br />
+In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wir arbeiten mit Anderen zusammen, um eine Synchronisation mit Mirakel zu ermöglichen.
         ]]>
     </string>
   <string name="download">Herunterladen</string>
@@ -51,25 +50,24 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="sync_taskwarrior_scan_qr">QR-Code scannen</string>
   <string name="sync_taskwarrior_select_file">Konfiguration auswählen</string>
   <string name="sync_taskwarrior_how_to">Wie installiert man seinen eigenen Server</string>
-  <string name="sync_taskwarrior_own_server">oder nutzen Sie Ihren eigenen Server</string>
+  <string name="sync_taskwarrior_own_server">oder nutze deinen eigenen Server</string>
   <string name="sync_taskwarrior_url_error">Die URL ist nicht korrekt. Wurde der Code richtig eingescannt?</string>
   <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein&#8230;</string>
-  <string name="sync_taskwarrior_about">Wenn Sie bereits ein Taskwarrior-Konto besitzen:</string>
-  <string name="sync_taskwarrior_register">Wenn nicht, können Sie ein Konto auf unserem Server erstellen:</string>
+  <string name="sync_taskwarrior_about">Wenn Du bereits ein Taskwarrior-Konto besitzt:</string>
+  <string name="sync_taskwarrior_register">Wenn nicht, kannst Du ein Konto auf unserem Server erstellen:</string>
   <string name="sync_taskwarrior_register_button">Registrieren</string>
-  <string name="sync_taskwarrior_setup_success">Einrichtung war Erfolgreich</string>
-  <string name="sync_taskwarrior_error_download">Konnte Konfiguration nicht herunterladen</string>
+  <string name="sync_taskwarrior_setup_success">Einrichtung des Kontos war erfolgreich</string>
+  <string name="sync_taskwarrior_error_download">Konnte Konfigurationsdatei nicht herunterladen</string>
   <string name="sync_taskwarrior_select_file_not_exists">Datei ist nicht vorhanden</string>
   <string name="sync_defaultAccount">Als Standardkonto verwenden?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="type">Typ</string>
-  <string name="no_barcode_app">Kein Barcodescanner installiert</string>
-  <string name="no_barcode_app_message">Wir empfehlen den Barcode-Scanner:</string>
+  <string name="no_barcode_app">Keine Barcodescanner-Anwendung installiert</string>
+  <string name="no_barcode_app_message">Wir empfehlen die Barcodescanner-Anwendung:</string>
   <string name="no_barcode_app_install">Installieren</string>
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Konto ändern</string>
-  <string name="version">Version</string>
   <string name="no">Nein</string>
   <string name="not">nicht</string>
   <string name="notification_title">Benachrichtigungen</string>
@@ -84,11 +82,11 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="notifications_zero_show">Leere Benachrichtigungen ausblenden</string>
   <string name="reminder">Erinnerung</string>
   <string name="reminders_persistent">Dauerhafte Erinnerungen</string>
-  <string name="reminders_persistent_summary">Mache es unmöglich die Erinnerung zu schließen</string>
+  <string name="reminders_persistent_summary">Mache es unmöglich, die Erinnerung zu schließen</string>
   <string name="startup_title">Startvorgang</string>
   <string name="startup_show_lists">Alle Listen anzeigen</string>
   <string name="startup_show_lists_summary">Beim Start alle Listen anzeigen</string>
-  <string name="startup_list">Wähle eine Liste</string>
+  <string name="startup_list">Wähle Startliste</string>
   <string name="startup_list_summary">Zeige Aufgaben aus \"%s\"</string>
   <string name="special_lists_click">Meta-Listen verwalten</string>
   <string name="special_lists_new">Neue Meta-Liste</string>
@@ -116,8 +114,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="astrid_success">Alle Daten erfolgreich importiert!</string>
   <string name="importing">Importiere</string>
   <string name="astrid_import_title">Astrid Datei auswählen</string>
-  <string name="import_any_do_click">Any.Do import</string>
-  <string name="any_do_import_title">Any.Do Backup-Datei auswählen</string>
+  <string name="import_any_do_click">Any.Do Import</string>
   <string name="any_do_this_file">Soll ich von %s importieren?\nWenn nicht, dann wähle eine Datei aus</string>
   <string name="any_do_how_to">Bitte erstelle zuerst ein Backup deiner Any.Do Daten. Öffne Any.Do → Einstellungen → Backup → Backup erstellen. Dann komm zurück und klicke OK.\nOder wähle die Datei händisch aus.</string>
   <string name="select_file">Datei auswählen</string>
@@ -125,7 +122,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="import_wunderlist_click">Importiere aus Wunderlist</string>
   <string name="import_wunderlist_title">Wunderlist-Datei auswählen</string>
   <string name="import_wunderlist_howto">Wie importiere ich die Wunderlist-Daten?</string>
-  <string name="import_wunderlist_howto_text">Die Android App unterstützt kein Backup.\n\nBitte logge dich im Webinterface an. Dann gehe zu Einstellungen → Account → Backup erstellen → Herunterladen. Kopiere die Datei auf dein Gerät und komm zurück.</string>
+  <string name="import_wunderlist_howto_text">Die Android App unterstützt kein Backup.\n\nBitte melde dich im Webinterface an. Dann gehe zu Einstellungen → Account → Backup erstellen → Herunterladen. Kopiere die Datei auf dein Gerät und komm zurück.</string>
   <string name="highlightSelected_summary">Listen/Aufgaben beim Klick markieren</string>
   <string name="highlightSelected">Ausgewählte hervorheben</string>
   <string name="settings_date_format_relative">Relative Datumsanzeige</string>
@@ -135,32 +132,32 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="kill_button">Schließen-Button</string>
   <string name="kill_app">App schließen</string>
   <string name="kill_sure">Bist du wirklich sicher???</string>
-  <string name="kill_sure_message">Wenn du die App schließt, bekommst du auch keine Benachrichtigungen! Vielleicht solltest du einfach die Benachrichtigungen deaktivieren (oder sie nicht-persistent machen)</string>
+  <string name="kill_sure_message">Wenn Du die App schließt, bekommst du auch keine Benachrichtigungen! Vielleicht solltest Du einfach die Benachrichtigungen deaktivieren (oder sie nicht-persistent machen, damit Du sie entfernen kannst)</string>
   <string name="ui_settings_title">Benutzeroberfläche</string>
   <string name="hide_keyboard">Tastatur ausblenden</string>
-  <string name="hide_keyboard_summary">Tastatur ausblenden nachdem eine Aufgabe erstellt wurde</string>
+  <string name="hide_keyboard_summary">Tastatur ausblenden, nachdem eine Aufgabe erstellt wurde</string>
   <string name="undo_number">Anzahl der Änderungen im Log</string>
   <string name="undo_number_summary">%s Änderungen rückgängig machen</string>
   <string name="settings_semantic">Aufgabenvorlagen</string>
   <string name="semantic_new_task">Neue Aufgabenvorlage</string>
   <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das Erstellen neuer Aufgaben</string>
   <string name="semantic_new_task_config">Aufgabenvorlagen konfigurieren</string>
-  <string name="swipeBehavior_title">Mit wischen zur Aufgabe wechseln</string>
-  <string name="swipeBehavior_summary">Wechsle beim wischen zur Aufgabe, die du gerade berührst</string>
-  <string name="lock_drawer_in_task_fragment_summary">Damit du sie nicht ausversehen öffnest</string>
+  <string name="swipeBehavior_title">Mit Wischen zur Aufgabe wechseln</string>
+  <string name="swipeBehavior_summary">Wechsle beim Wischen zur Aufgabe, die Du gerade berührst</string>
+  <string name="lock_drawer_in_task_fragment_summary">Damit Du sie nicht aus Versehen öffnest</string>
   <string name="lock_drawer_in_task_fragment">Sperre die Listenübersicht in der Aufgabenansicht</string>
   <string name="useTabletLayout">Tabletlayout benutzen</string>
   <string name="general">Allgemein</string>
   <string name="tasks_fragment">Aufgaben-Übersicht</string>
-  <string name="task_fragment">Aufgabe-Details</string>
+  <string name="task_fragment">Aufgabendetails</string>
   <string name="do_not_touch">Bitte nicht berühren</string>
   <string name="list_fragment">Übersicht</string>
   <string name="show_account_name">Kontoname anzeigen</string>
   <string-array name="tablet_options">
     <item>nie</item>
-    <item>querformat</item>
-    <item>hochformat</item>
-    <item>hochformat &amp; querformat</item>
+    <item>Querformat</item>
+    <item>Hochformat</item>
+    <item>Hochformat &amp; Querformat</item>
   </string-array>
   <string name="delete_done">Erledigte Aufgaben löschen</string>
   <string name="delete_done_summary">Löscht alle erledigten Aufgaben</string>
@@ -168,7 +165,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="delete_done_warning_message">Du kannst das nicht rückgängig machen. Mach ein Backup!</string>
   <string name="delete_done_success">Die erledigten Aufgaben wurden erfolgreich gelöscht.</string>
   <string name="menu_color">Farbe ändern</string>
-  <string name="howto_setup_server">Wie man einen Server einrichtest</string>
+  <string name="howto_setup_server">Wie man einen Server einrichtet</string>
   <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
   <string name="special_lists_title">Meta-Listen</string>
   <string name="register">Registrieren</string>
@@ -215,16 +212,15 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="semantics_no_due">Kein Fälligkeitsdatum setzen</string>
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
   <string name="semantic_new">Vorlage</string>
-  <string name="tag_new">Neuer Tag</string>
-  <string name="tag_settings">Tageinstellungen</string>
+  <string name="tag_new">Neues Tag</string>
   <string name="color">Farbe</string>
   <string name="tag_name">Name</string>
   <string name="tag_dark_text">Soll der Text schwarz sein?</string>
   <string name="tag_click">Tags</string>
   <string name="settings_subtask">Unteraufgaben</string>
   <string name="settings_subtask_default_new">Standardmäßig neue Aufgabe anzeigen</string>
-  <string name="settings_subtask_add_to_same_list">Füge eine Unteraufgabe zur Liste der Aufgabe hinzu</string>
-  <string name="settings_subtask_add_to_same_list_summary">Oder wähle eine Standardliste aus, wo die Unteraufgaben erstellt werden</string>
+  <string name="settings_subtask_add_to_same_list">Füge eine Unteraufgabe zur Liste dieser Aufgabe hinzu</string>
+  <string name="settings_subtask_add_to_same_list_summary">Oder wähle eine Standardliste aus, in welche Unteraufgaben hinzugefügt werden</string>
   <string name="settings_subtask_add_to_list_summary">Füge Unteraufgabe zu %s  hinzu</string>
   <string name="settings_use_btn_speak">Zeige Spracherkennungs-Knopf</string>
   <string name="settings_use_btn_audio">Aufnehmen-Knopf anzeigen</string>
@@ -236,37 +232,41 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="settings_dev_sync">Sync</string>
   <string name="settings_dev_dump_tw_summary">Speichere die empfangene Nachricht in /sdcard/mirakel/</string>
   <string name="settings_dev_dump_tw">Speichere die empfangenen Nachrichten auf die SD-Karte</string>
-  <string name="enable">Aktivieren</string>
-  <string name="disable">Deaktivieren</string>
-  <string name="enabled">Aktiviert</string>
+  <string name="enable">Aktiviere</string>
+  <string name="disable">Deaktiviere</string>
+  <string name="enabled">aktiviert</string>
   <string name="disabled">deaktiviert</string>
   <string name="change_dev_mode">Du hast die Entwicklungseinstellungen %s!</string>
   <string name="enableDebugLog">Aktiviere Logcat fürs debugging?</string>
   <string name="action_contact">Kontakt / Fehler melden</string>
   <string name="action_contact_summary">Schreib uns eine E-Mail!</string>
-  <string name="title_donations">Spenden</string>
+  <string name="title_donations">Spende</string>
   <string name="add">Hinzufügen</string>
   <string name="action_credits">Credits</string>
   <string name="action_credits_summary">Über uns</string>
   <string name="title_activity_credits">Über uns</string>
-  <string name="credits_github_description">Finde uns auf GitHub</string>
-  <string name="credits_googleplus_description">Trete unserer G+ Gruppe bei</string>
-  <string name="credits_text_head"><![CDATA[
-<h3>Mirakel ist freie (und open source) Software, du kannst uns gerne helfen Mirakel zu verbessern.</h3>
+  <string name="credits_github_description">Forke uns auf GitHub</string>
+  <string name="credits_googleplus_description">Trete unserer G+ Community bei</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel ist freie (und open source) Software, du kannst uns gerne helfen, Mirakel zu verbessern.</h3>
 <p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
 <p>Icon und Designverbesserungen <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>Das ist freie Software (Lizensiert unter der <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Dies ist freie Software (lizensiert unter der <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
 <p>Besuch uns auf</p>
-]]></string>
-  <string name="credits_license"><![CDATA[<p>This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>]]></string>
+]]>
+    </string>
+  <string name="credits_license">
+<![CDATA[<p>This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>]]>
+    </string>
   <string name="credits_translations">Übersetzungen</string>
   <string name="feedback">Feedback geben</string>
   <string name="credits_libraries">Verwendete Bibliotheken</string>
   <string name="credits_license_title">Lizenz</string>
   <string name="demo_mode">Demo-Modus</string>
   <string name="demo_drop_db">Demo-Datenbank zurücksetzen</string>
-  <string name="write_logs_to_file">Protokoll in der Datei speichern</string>
+  <string name="write_logs_to_file">Log in Datei speichern</string>
   <string name="alert_caldav"><![CDATA[Die CalDAV-Synchronisierung ist noch nicht 100%% stabil. Bitte sei vorsichtig beim Probieren und melde Fehler!]]></string>
   <string name="alert_caldav_title">CalDAV-Informationen</string>
   <string name="alert_taskwarrior"><![CDATA[Die Synchronisation mit Taskwarrior sollte funktionieren, mach bitte trotzdem eine Sicherung deiner Daten! Bitte melde Auffälligkeiten und Fehler, damit wir diese beheben können!]]></string>
@@ -277,12 +277,30 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen, wi
   <string name="special_list_where_file_title_text">Datei</string>
   <string-array name="special_lists_subtask_options">
     <item>Auswahl umkehren</item>
-    <item>Suche nach Aufgaben mit Unteraufgaben oder nach Unteraufgaben</item>
+    <item>Suche nach Unteraufgaben oder nach Aufgaben mit Unteraufgaben</item>
   </string-array>
   <string-array name="file_choice">
     <item>Nicht festgelegt</item>
     <item>Hat Datei</item>
-    <item>Hat keine Datei</item>
+    <item>Has no file</item>
   </string-array>
   <string name="remove">Entfernen</string>
+  <string name="no_account_selected">Kein Konto ausgewählt</string>
+  <string name="no_recurrence_selected">Keine Wiederholung ausgewählt</string>
+  <string name="no_semantic_selected">Keine Aufgabenvorlage ausgewählt</string>
+  <string name="no_special_list_selected">Keine Meta-Liste ausgewählt</string>
+  <string name="no_tag_selected">Kein Tag ausgewählt</string>
+  <string name="sharing_title">Teilen</string>
+  <string name="backup_title">Backup</string>
+  <string name="title_settings">Einstellungen</string>
+  <string name="done_text">Nur erledigte Aufgaben</string>
+  <string name="file_text">Nur Aufgaben mit Datei</string>
+  <string name="reminder_text">Nur Aufgaben mit Erinnerung</string>
+  <string name="is_subtask_parent">Ist Hauptaufgabe</string>
+  <string name="has_subtasks">Besitzt Unteraufgaben</string>
+  <string name="has_parent">Ist Unteraufgabe</string>
+  <string name="special_lists_condition_title">Bedingung</string>
+  <string name="Undo">Bedingung entfernen rückgängig machen</string>
+  <string name="add_condition">Bedingung hinzufügen</string>
+  <string name="undo_taskui_change">Entfernen von %s rückgängig machen</string>
 </resources>

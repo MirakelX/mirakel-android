@@ -20,9 +20,11 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Pridať účet</string>
+  <string name="account_title">Účty</string>
   <string name="sync_new">Nový účet</string>
   <string name="sync_use">Použiť synchronizáciu</string>
   <string name="sync_warning">Synchronizácia je experimentálna</string>
+  <string name="sync_use_summary_nothing">Nepoužívať synchronizáciu</string>
   <string name="sync_user">Užívateľské meno</string>
   <string name="sync_server">Server</string>
   <string name="sync_frequency">Plán synchronizácie</string>
@@ -50,23 +52,30 @@
   <string name="type">Typ</string>
   <string name="menu_edit_listaccount">Účet</string>
   <string name="change_account">Zmeniť účet</string>
-  <string name="version">Verzia</string>
   <string name="no">nie</string>
   <string name="notification_title">Oznámenia</string>
+  <string name="notifications_use">Používať oznámenia</string>
+  <string name="notifications_persistent">Trvalé oznámenia</string>
   <string name="notifications_list">Zobraziť zoznam</string>
   <string name="notifications_list_summary">Zobraziť  \"%s\"</string>
   <string name="notifications_list_open_summary">Otvoriť \"%s\"</string>
   <string name="default_list">Predvolený zoznam</string>
+  <string name="notifications_big">Zobraziť veľké oznámenia</string>
   <string name="reminder">Pripomenutie</string>
+  <string name="reminders_persistent">Trvalé pripomienky</string>
   <string name="startup_title">Spustenie aplikácie</string>
   <string name="startup_show_lists">Zobraziť všetky zoznamy</string>
-  <string name="startup_list">Vyberte zoznam</string>
+  <string name="startup_show_lists_summary">Po spustení zobraziť všetky zoznamy</string>
+  <string name="startup_list">Vyberte zoznam pri spustení</string>
+  <string name="startup_list_summary">Zobraziť úlohy z \"%s\"</string>
   <string name="settings_misc">Rôzne</string>
   <string name="settings_backup">Zálohovanie a import dát</string>
+  <string name="backup_click_summary">Zálohovať databázu na SD kartu (%s)</string>
   <string name="backup_click">Zálohovanie</string>
   <string name="import_click_summary">Importovať databázu</string>
   <string name="import_click">Importovať</string>
   <string name="import_sure">Naozaj?</string>
+  <string name="no_filemanager">Nainštalujte správcu súborov</string>
   <string name="import_default_list_summary">Importovať do \"%s\"</string>
   <string name="import_to">Importovať do</string>
   <string name="changelog_click_summary">Zobraziť zoznam zmien</string>
@@ -80,7 +89,10 @@
   <string name="settings_date_format_relative">Zobraziť relatívny dátum</string>
   <string name="showDone">Zobraziť hotové úlohy</string>
   <string name="dark_theme">Tmavý motív</string>
+  <string name="kill_app">Zavrieť aplikáciu</string>
   <string name="ui_settings_title">Používateľské rozhranie</string>
+  <string name="hide_keyboard">Skryť klávesnicu</string>
+  <string name="hide_keyboard_summary">Skryť klávesnicu po vytvorení novej novej úlohy</string>
   <string name="useTabletLayout">Použiť rozloženie pre tablet</string>
   <string name="general">Všeobecné</string>
   <string name="do_not_touch">Nedotýkajte sa</string>
@@ -96,10 +108,14 @@
   <string name="delete_done_warning">Naozaj?</string>
   <string name="delete_done_warning_message">Následujúci krok sa nedá vrátiť. Vytvorte si zálohu!</string>
   <string name="delete_done_success">Hotové úlohy boli úspešne odstránené.</string>
+  <string name="menu_color">Zmeniť farbu</string>
+  <string name="howto_setup_server">Ako nastaviť server</string>
   <string name="register">Registrovať</string>
   <string name="auto_backup_interval_summary">Zálohovať databázu každých %s dní</string>
   <string name="preferences_colorize">Farby</string>
   <string name="settings_semantics_actions">Akcie</string>
+  <string name="settings_semantics_list">Nastaviť zoznam</string>
+  <string name="settings_semantics_priority">Nastaviť prioritu</string>
   <string-array name="weekdays">
     <item>Don\'t set</item>
     <item>Pondelok</item>
@@ -126,13 +142,19 @@
     <item>1</item>
     <item>2</item>
   </string-array>
+  <string name="tag_new">Nová značka</string>
+  <string name="color">Farba</string>
   <string name="tag_name">Názov</string>
+  <string name="tag_click">Značky</string>
   <string name="settings_subtask">Podúlohy</string>
+  <string name="settings_use_btn_camera">Zobraziť tlačidlo fotoaparátu</string>
   <string name="settings_tasks_title">Úlohy</string>
   <string name="settings_dev_sync">Synchronizácia</string>
+  <string name="action_contact_summary">Napíšte nám e-mail!</string>
   <string name="title_donations">Podporte</string>
   <string name="add">Pridať</string>
   <string name="action_credits">Poďakovania</string>
+  <string name="action_credits_summary">O nás</string>
   <string name="title_activity_credits">O autoroch</string>
   <string name="credits_github_description">Foknite nás na github-e</string>
   <string name="credits_googleplus_description">Pripojte sa k našej komunite G+</string>
@@ -140,7 +162,19 @@
   <string name="feedback">Odoslať spätnú väzbu</string>
   <string name="credits_libraries">Použité knižnice</string>
   <string name="credits_license_title">Licencia</string>
+  <string name="demo_mode">Ukážkový režim</string>
   <string name="special_list_where_subtask_title_text">Podúlohy</string>
+  <string name="special_list_where_tag_title_text">Značky</string>
   <string name="special_list_where_progress_title_text">Pokrok</string>
   <string name="special_list_where_file_title_text">Súbor</string>
+  <string-array name="file_choice">
+    <item>Not set</item>
+    <item>Má súbor</item>
+    <item>Has no file</item>
+  </string-array>
+  <string name="remove">Odstrániť</string>
+  <string name="sharing_title">Zdieľanie</string>
+  <string name="backup_title">Zálohovanie</string>
+  <string name="third_party_title">Aplikácie tretích strán</string>
+  <string name="title_settings">Nastavenia</string>
 </resources>

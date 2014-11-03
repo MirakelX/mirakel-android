@@ -42,8 +42,8 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.activities.RecurringSettingsActivity;
-import de.azapps.mirakel.settings.activities.TagsSettingsActivity;
+import de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity;
+import de.azapps.mirakel.settings.model_settings.tag.TagSettingsActivity;
 import de.azapps.tools.FileUtils;
 
 public class DevSettingsFragment extends PreferenceFragment {
@@ -109,16 +109,13 @@ public class DevSettingsFragment extends PreferenceFragment {
                                     .getUndoNumber();
                 final int max = 25;
                 final int min = 1;
-                final View numberPicker;
-                numberPicker = new NumberPicker(
-                    getActivity());
-                ((NumberPicker) numberPicker).setMaxValue(max);
-                ((NumberPicker) numberPicker).setMinValue(min);
-                ((NumberPicker) numberPicker)
-                .setWrapSelectorWheel(false);
-                ((NumberPicker) numberPicker).setValue(old_val);
-                ((NumberPicker) numberPicker)
-                .setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                final NumberPicker numberPicker;
+                numberPicker = new NumberPicker(getActivity());
+                numberPicker.setMaxValue(max);
+                numberPicker.setMinValue(min);
+                numberPicker.setWrapSelectorWheel(false);
+                numberPicker.setValue(old_val);
+                numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
                 new AlertDialog.Builder(
                     getActivity())
                 .setTitle(R.string.undo_number)
@@ -138,19 +135,8 @@ public class DevSettingsFragment extends PreferenceFragment {
                         final int whichButton) {
                         final SharedPreferences.Editor editor = MirakelPreferences
                                                                 .getEditor();
-                        int val;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                            val = ((NumberPicker) numberPicker)
-                                  .getValue();
-                        } else {
-                            val = Integer
-                                  .parseInt(((TextView) numberPicker
-                                             .findViewById(R.id.dialog_num_pick_val))
-                                            .getText()
-                                            .toString());
-                        }
-                        editor.putInt("UndoNumber",
-                                      val);
+                        int val = numberPicker.getValue();
+                        editor.putInt("UndoNumber", val);
                         undoNumber
                         .setSummary(getActivity()
                                     .getString(
@@ -166,9 +152,7 @@ public class DevSettingsFragment extends PreferenceFragment {
                         }
                         editor.commit();
                     }
-                })
-                .setNegativeButton(
-                    android.R.string.cancel, null).show();
+                }).setNegativeButton(android.R.string.cancel, null).show();
                 return true;
             }
         });
@@ -206,7 +190,7 @@ public class DevSettingsFragment extends PreferenceFragment {
         recurring.setIntent(startRecurringIntent);
 
         final Intent startTagIntent = new Intent(getActivity(),
-                TagsSettingsActivity.class);
+                TagSettingsActivity.class);
         final Preference tag = findPreference("tags");
         tag.setIntent(startTagIntent);
     }

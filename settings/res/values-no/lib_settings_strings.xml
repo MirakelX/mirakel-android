@@ -42,7 +42,6 @@
   <string name="reminder">Påminnelse</string>
   <string name="startup_title">App Start</string>
   <string name="startup_show_lists">Vis alle lister</string>
-  <string name="startup_list">Velg liste</string>
   <string name="settings_misc">Diverse</string>
   <string name="settings_backup">Sikkerhetskopi og importering</string>
   <string name="backup_click">Sikkerhetskopi</string>
@@ -105,4 +104,6 @@
   <string name="action_credits">Medvirkende</string>
   <string name="title_activity_credits">Medvirkende og om</string>
   <string name="special_list_where_subtask_title_text">Deloppgave</string>
+  <string name="backup_title">Sikkerhetskopi</string>
+  <string name="title_settings">Innstillinger</string>
 </resources>

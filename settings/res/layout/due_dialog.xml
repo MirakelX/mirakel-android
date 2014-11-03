@@ -17,27 +17,42 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="horizontal"
-    tools:ignore="NewApi" >
+    android:layout_height="match_parent">
 
-    <NumberPicker
-        android:id="@+id/due_val"
-        style="@android:style/Theme.Holo.Light"
+    <CheckBox
+        android:id="@+id/due_dialog_negated"
+        android:visibility="gone"
+        android:text="@string/due_dialog_negated"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:width="100dip" />
+        android:layout_height="40dp"/>
 
-    <NumberPicker
-        android:id="@+id/due_day_year"
-        style="@android:style/Theme.Holo.Light"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:width="100dip" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="NewApi" >
+
+        <NumberPicker
+            android:id="@+id/due_val"
+            style="@android:style/Theme.Holo.Light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:width="100dip" />
+
+        <NumberPicker
+            android:id="@+id/due_day_year"
+            style="@android:style/Theme.Holo.Light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="100dip" />
+
+    </LinearLayout>
 </LinearLayout>
