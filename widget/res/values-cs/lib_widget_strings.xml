@@ -25,7 +25,10 @@
   <string name="fontcolor">Barva písma</string>
   <string name="widget_transparency">Průhlednost</string>
   <string name="widget_transparency_summary">%s %% průhledné</string>
+  <string name="widget_due_colors">Obarvit termíny ukončení</string>
+  <string name="dark_theme">Tmavý vzhled</string>
   <string name="notifications_list_summary">Zobrazit  \"%s\"</string>
   <string name="empty_list">Žádné úkoly</string>
   <string name="preferences">Nastavení</string>
+  <string name="widget_use_gradient">Použít přechod</string>
 </resources>
