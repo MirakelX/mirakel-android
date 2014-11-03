@@ -2,8 +2,5 @@
 <resources
      xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
        <!-- Changelog -->
-    <string name="changelog_full_title">Changelog</string>
-    <string name="changelog_title">What\'s new</string>
-    <string name="changelog_ok_button">OK</string>
     <string name="changelog_show_full">more…</string>
 </resources>
