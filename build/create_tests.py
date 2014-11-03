@@ -3,7 +3,7 @@ import os;
 
 
 models=[
-      ("account", "AccountBase", None)
+      ("account", "AccountBase", "AccountMirakel")
     , ("file", "FileBase", "FileMirakel")
     , ("list", "ListBase","ListMirakel")
     , ("list", "ListBase","SpecialList")
@@ -20,9 +20,7 @@ def get_file_name(name,inst):
     return "model/" + models_path + name +"/" + inst +".java"
 
 for (name,base,inst) in models:
-    os.system("main/tests/scripts/generate_base_model_tests.py " + get_file_name(name,base)+" "+ tests_path)
-    if inst==None:
-        continue
+    os.system("main/tests/scripts/generate_base_model_tests.py " + get_file_name(name,inst)+" "+ tests_path)        
     os.system("main/tests/scripts/generate_model_tests.py " + get_file_name(name,inst) + " " + get_file_name(name,base) + " "+tests_path)
     
 os.system("./main/tests/scripts/generate_json_tests.py main/tests/scripts/tasks.json "+tests_path);
