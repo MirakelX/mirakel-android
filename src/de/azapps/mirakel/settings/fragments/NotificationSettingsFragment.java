@@ -94,8 +94,7 @@ public class NotificationSettingsFragment extends PreferenceFragment {
                 final SharedPreferences.Editor e = preference.getEditor();
                 e.putBoolean("notificationsUse", (Boolean) newValue);
                 e.commit();
-                NotificationService.updateServices(
-                    getActivity(), false);
+                NotificationService.updateServices(getActivity());
                 return true;
             }
         });
@@ -111,7 +110,7 @@ public class NotificationSettingsFragment extends PreferenceFragment {
                 final SharedPreferences.Editor e = preference.getEditor();
                 e.putBoolean("notificationsPersistent", (Boolean) newValue);
                 e.commit();
-                NotificationService.updateServices(getActivity(), false);
+                NotificationService.updateServices(getActivity());
                 return true;
             }
         });
@@ -157,8 +156,7 @@ public class NotificationSettingsFragment extends PreferenceFragment {
                 .setNotificationsListId((String) newValue);
                 notificationsListPreference
                 .setValue((String) newValue);
-                NotificationService.updateServices(
-                    getActivity(), false);
+                NotificationService.updateServices(getActivity());
                 return false;
             }
         });
@@ -201,8 +199,7 @@ public class NotificationSettingsFragment extends PreferenceFragment {
                 .setNotificationsListOpenId((String) newValue);
                 notificationsListOpenPreference
                 .setValue((String) newValue);
-                NotificationService.updateServices(
-                    getActivity(), false);
+                NotificationService.updateServices(getActivity());
                 return false;
             }
         });
@@ -222,8 +219,6 @@ public class NotificationSettingsFragment extends PreferenceFragment {
                 e.commit();
                 ReminderAlarm
                 .stopAll(getActivity());
-                ReminderAlarm
-                .updateAlarms(getActivity());
                 return true;
             }
         });
