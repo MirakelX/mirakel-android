@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.sync.taskwarrior;
+package de.azapps.mirakel.sync.taskwarrior.model;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -29,6 +29,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Pair;
 
+import com.google.common.base.Optional;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,18 +57,15 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         this.mContext = ctx;
     }
 
-    private String formatCal(final Calendar c) {
+    private String formatCal(final Calendar calendar) {
         final SimpleDateFormat df = new SimpleDateFormat(
             this.mContext.getString(R.string.TWDateFormat));
-        if (c.getTimeInMillis() < 0) {
-            c.setTimeInMillis(10);
+        if (calendar.getTimeInMillis() < 0L) {
+            calendar.setTimeInMillis(10L);
         }
-        return df.format(c.getTime());
+        return df.format(calendar.getTime());
     }
 
-    private static String escape(final String string) {
-        return string.replace("\"", "\\\"");
-    }
 
     private static String cleanQuotes(String str) {
         // call this only if string starts and ands with "
@@ -82,22 +80,22 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
     }
 
     @Override
-    public JsonElement serialize(final Task task, final Type arg1,
-                                 final JsonSerializationContext arg2) {
+    public JsonElement serialize(final Task src, final Type typeOfSrc,
+                                 final JsonSerializationContext context) {
         final JsonObject json = new JsonObject();
-        final Map<String, String> additionals = task.getAdditionalEntries();
+        final Map<String, String> additionals = src.getAdditionalEntries();
         boolean isMaster = false;
-        if (task.getRecurring() != null) {
+        if (src.getRecurrence().isPresent()) {
             if (new MirakelQueryBuilder(mContext).and(Recurring.CHILD, Operation.EQ,
-                    task).count(MirakelInternalContentProvider.RECURRING_TW_URI) == 0) {
+                    src).count(MirakelInternalContentProvider.RECURRING_TW_URI) == 0) {
                 isMaster = true;
             }
         }
-        final Pair<String, String> s = getStatus(task, additionals, isMaster);
-        final String status = s.second;
-        final String end = s.first;
+        final Pair<String, String> statusEnd = getStatus(src, additionals, isMaster);
+        final String status = statusEnd.second;
+        final String end = statusEnd.first;
         String priority = null;
-        switch (task.getPriority()) {
+        switch (src.getPriority()) {
         case -2:
         case -1:
             priority = "L";
@@ -111,45 +109,42 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         default:
             break;
         }
-        String uuid = task.getUUID();
-        if (uuid == null || uuid.trim().equals("")) {
+        String uuid = src.getUUID();
+        if (uuid.trim().isEmpty()) {
             uuid = java.util.UUID.randomUUID().toString();
-            task.setUUID(uuid);
-            task.save(false);
+            src.setUUID(uuid);
+            src.save(false);
         }
         json.addProperty("uuid", uuid);
         json.addProperty("status", status);
-        json.addProperty("entry", formatCalUTC(task.getCreatedAt()));
-        json.addProperty("description", escape(task.getName()));
-        if (task.getDue().isPresent()) {
-            json.addProperty("due", formatCalUTC(task.getDue().get()));
+        json.addProperty("entry", formatCalUTC(src.getCreatedAt()));
+        json.addProperty("description", src.getName());
+        if (src.getDue().isPresent()) {
+            json.addProperty("due", formatCalUTC(src.getDue().get()));
         }
-        if (task.getList() != null
-            && !additionals.containsKey(TaskWarriorSync.NO_PROJECT)) {
-            json.addProperty("project", task.getList().getName());
+        if (!additionals.containsKey(Task.NO_PROJECT)) {
+            json.addProperty("project", src.getList().getName());
         }
         if (priority != null) {
             json.addProperty("priority", priority);
-            if ("L".equals(priority) && task.getPriority() != -2) {
-                json.addProperty("priorityNumber", task.getPriority());
+            if ("L".equals(priority) && (src.getPriority() != -2)) {
+                json.addProperty("priorityNumber", src.getPriority());
             }
         }
-        if (task.getUpdatedAt() != null) {
-            json.addProperty("modified", formatCalUTC(task.getUpdatedAt()));
-        }
-        if (task.getReminder().isPresent()) {
-            json.addProperty("reminder", formatCalUTC(task.getReminder().get()));
+        json.addProperty("modified", formatCalUTC(src.getUpdatedAt()));
+        if (src.getReminder().isPresent()) {
+            json.addProperty("reminder", formatCalUTC(src.getReminder().get()));
         }
         if (end != null) {
             json.addProperty("end", end);
         }
-        if (task.getProgress() != 0) {
-            json.addProperty("progress", task.getProgress());
+        if (src.getProgress() != 0) {
+            json.addProperty("progress", src.getProgress());
         }
         // Tags
-        if (task.getTags().size() > 0) {
+        if (!src.getTags().isEmpty()) {
             final JsonArray tags = new JsonArray();
-            for (final Tag t : task.getTags()) {
+            for (final Tag t : src.getTags()) {
                 // taskwarrior does not like whitespaces
                 tags.add(new JsonPrimitive(t.getName().trim().replace(" ", "_")));
             }
@@ -157,60 +152,60 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         }
         // End Tags
         // Annotations
-        if (task.getContent() != null && !task.getContent().equals("")) {
+        if (!src.getContent().isEmpty()) {
             final JsonArray annotations = new JsonArray();
             /*
              * An annotation in taskd is a line of content in Mirakel!
              */
-            final String annotationsList[] = escape(task.getContent()).split(
-                                                 "\n");
-            final Calendar d = task.getUpdatedAt();
+            final String annotationsList[] = src.getContent().split("\n");
+            final Calendar updatedAt = src.getUpdatedAt();
             for (final String a : annotationsList) {
                 final JsonObject line = new JsonObject();
-                line.addProperty("entry", formatCalUTC(task.getUpdatedAt()));
+                line.addProperty("entry", formatCalUTC(src.getUpdatedAt()));
                 line.addProperty("description", a.replace("\n", ""));
                 annotations.add(line);
-                d.add(Calendar.SECOND, 1);
+                updatedAt.add(Calendar.SECOND, 1);
             }
             json.add("annotations", annotations);
         }
         // Anotations end
         // TW.depends==Mirakel.subtasks!
         // Dependencies
-        if (task.countSubtasks() > 0) {
+        if (src.countSubtasks() > 0L) {
             boolean first1 = true;
-            String depends = "";
-            for (final Task subtask : task.getSubtasks()) {
+            final List<Task> subTasks = src.getSubtasks();
+            final StringBuilder depends = new StringBuilder(subTasks.size() * 10);
+            for (final Task subtask : subTasks) {
                 if (first1) {
                     first1 = false;
                 } else {
-                    depends += ",";
+                    depends.append(',');
                 }
-                depends += subtask.getUUID();
+                depends.append(subtask.getUUID());
             }
-            json.addProperty("depends", depends);
+            json.addProperty("depends", depends.toString());
         }
         // recurring tasks must have a due
-        if (task.getRecurring() != null && task.getDue() != null) {
-            handleRecurrence(json, task.getRecurring());
+        if (src.getRecurrence().isPresent() && src.getDue().isPresent()) {
+            handleRecurrence(json, src.getRecurrence().get());
             if (isMaster) {
-                String mask = "";
-                final Cursor c = mContext.getContentResolver()
-                                 .query(MirakelInternalContentProvider.RECURRING_TW_URI,
-                                        new String[] { "child", "offsetCount" },
-                                        "parent=?", new String[] { task.getId() + "" },
-                                        "offsetCount ASC");
-                c.moveToFirst();
-                if (c.getCount() > 0) {
+                final Cursor cursor = mContext.getContentResolver()
+                                      .query(MirakelInternalContentProvider.RECURRING_TW_URI,
+                                             new String[] { "child", "offsetCount" },
+                                             "parent=?", new String[] {String.valueOf(src.getId())},
+                                             "offsetCount ASC");
+                final StringBuilder mask = new StringBuilder(cursor.getCount());
+                cursor.moveToFirst();
+                if (cursor.getCount() > 0) {
                     int oldOffset = -1;
                     do {
-                        final int currentOffset = c.getInt(1);
+                        final int currentOffset = cursor.getInt(1);
                         if (currentOffset <= oldOffset) {
-                            final long childId = c.getLong(0);
+                            final long childId = cursor.getLong(0);
                             // This should not happen – it means that one offset is twice in the DB
-                            final Task child = Task.get(childId, true);
-                            if (child != null) {
-                                child.destroy(true);
+                            final Optional<Task> child = Task.get(childId, true);
+                            if (child.isPresent()) {
+                                child.get().destroy(true);
                             } else {
                                 // Whoa there is some garbage which we should destroy!
                                 Task.destroyRecurrenceGarbageForTask(childId);
@@ -218,51 +213,49 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                             continue;
                         }
                         while (++oldOffset < currentOffset) {
-                            mask += "X";
+                            mask.append('X');
                         }
-                        final Task child = Task.get(c.getLong(0));
-                        if (child == null) {
+                        final Optional<Task> child = Task.get(cursor.getLong(0));
+                        if (!child.isPresent()) {
                             Log.wtf(TAG, "childtask is null");
-                            mask += "X";
+                            mask.append('X');
                         } else {
-                            mask += getRecurrenceStatus(getStatus(child,
-                                                                  child.getAdditionalEntries(), false).second);
+                            mask.append(getRecurrenceStatus(getStatus(child.get(),
+                                                            child.get().getAdditionalEntries(), false).second));
                         }
-                    } while (c.moveToNext());
+                    } while (cursor.moveToNext());
                 }
-                c.close();
-                json.addProperty("mask", mask);
+                cursor.close();
+                json.addProperty("mask", mask.toString());
             } else {
-                final Cursor c = mContext.getContentResolver()
-                                 .query(MirakelInternalContentProvider.RECURRING_TW_URI,
-                                        new String[] { "parent", "offsetCount" },
-                                        "child=?", new String[] { task.getId() + "" },
-                                        null);
-                c.moveToFirst();
-                if (c.getCount() > 0) {
-                    final Task master = Task.get(c.getLong(0));
-                    if (master == null) {
+                final Cursor cursor = mContext.getContentResolver()
+                                      .query(MirakelInternalContentProvider.RECURRING_TW_URI,
+                                             new String[] { "parent", "offsetCount" },
+                                             "child=?", new String[] {String.valueOf(src.getId())},
+                                             null);
+                cursor.moveToFirst();
+                if (cursor.getCount() > 0) {
+                    final Optional<Task> master = Task.get(cursor.getLong(0));
+                    if (!master.isPresent()) {
                         // The parent is gone. This should not happen and we
                         // should delete the child then
-                        task.destroy();
+                        src.destroy();
                     } else {
-                        json.addProperty("parent", master.getUUID());
-                        json.addProperty("imask", c.getInt(1));
+                        json.addProperty("parent", master.get().getUUID());
+                        json.addProperty("imask", cursor.getInt(1));
                     }
                 } else {
                     Log.wtf(TAG, "no master found, but there must be a master");
                 }
-                c.close();
+                cursor.close();
             }
         }
         // end Dependencies
         // Additional Strings
-        if (additionals != null) {
-            for (final String key : additionals.keySet()) {
-                if (!key.equals(TaskWarriorSync.NO_PROJECT)
-                    && !key.equals("status")) {
-                    json.addProperty(key, cleanQuotes(additionals.get(key)));
-                }
+        for (final Map.Entry<String, String> entry : additionals.entrySet()) {
+            if (!entry.getKey().equals(Task.NO_PROJECT)
+                && !"status".equals(entry.getKey())) {
+                json.addProperty(entry.getKey(), cleanQuotes(entry.getValue()));
             }
         }
         // end Additional Strings
@@ -286,12 +279,12 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         return "";
     }
 
-    static void handleRecurrence(final JsonObject json, final Recurring r) {
+    public static void handleRecurrence(final JsonObject json, final Recurring r) {
         if (r == null) {
             Log.wtf(TAG, "recurring is null");
             return;
         }
-        if (r.getWeekdays().size() > 0) {
+        if (!r.getWeekdays().isEmpty()) {
             switch (r.getWeekdays().size()) {
             case 1:
                 json.addProperty("recur", "weekly");
@@ -314,31 +307,32 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                 return;
             }
         }
-        long interval = r.getInterval() / (1000 * 60);
-        if (interval >= 60 * 24 * 365) {
-            interval /= 60 * 24 * 365;
-            json.addProperty("recur", interval + "years");
-        } else if (interval >= 60 * 24 * 30) {
-            interval /= 60 * 24 * 30;
-            json.addProperty("recur", interval + "months");
-        } else if (interval >= 60 * 24) {
-            interval /= 60 * 24;
-            json.addProperty("recur", interval + "days");
-        } else if (interval >= 60) {
-            interval /= 60;
-            json.addProperty("recur", interval + "hours");
-        } else {
-            json.addProperty("recur", interval + "mins");
+        long interval = r.getInterval() / (1000L * 60L);
+        if (interval > 0L) {
+            if (r.getMinutes() > 0) {
+                json.addProperty("recur", interval + "mins");
+            } else if (r.getHours() > 0) {
+                interval /= 60L;
+                json.addProperty("recur", interval + "hours");
+            } else if (r.getDays() > 0) {
+                interval /= 60L * 24L;
+                json.addProperty("recur", interval + "days");
+            } else if (r.getMonths() > 0) {
+                interval /= 60L * 24L * 30L;
+                json.addProperty("recur", interval + "months");
+            } else {
+                json.addProperty("recur", r.getYears() + "years");
+            }
         }
     }
 
     private Pair<String, String> getStatus(final Task task,
                                            final Map<String, String> additionals, final boolean isMaster) {
-        String end = null;
-        String status = "pending";
         final Calendar now = new GregorianCalendar();
         now.setTimeInMillis(now.getTimeInMillis()
                             - DateTimeHelper.getTimeZoneOffset(true, now));
+        String end = null;
+        String status = "pending";
         if (task.getSyncState() == SYNC_STATE.DELETE) {
             status = "deleted";
             end = formatCal(now);
@@ -349,15 +343,15 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
             } else {
                 end = formatCal(now);
             }
-        } else if (task.getRecurring() != null && isMaster) {
+        } else if (task.getRecurrence().isPresent() && isMaster) {
             status = "recurring";
-        } else if (task.getAdditionalEntries().containsKey("status")) {
-            status = cleanQuotes(task.getAdditionalEntries().get("status"));
+        } else if (task.containsAdditional("status")) {
+            status = cleanQuotes(task.getAdditionalString("status"));
         }
-        return new Pair<String, String>(end, status);
+        return new Pair<>(end, status);
     }
 
-    private String formatCalUTC(final Calendar c) {
-        return formatCal(DateTimeHelper.getUTCCalendar(c));
+    private String formatCalUTC(final Calendar calendar) {
+        return formatCal(DateTimeHelper.getUTCCalendar(calendar));
     }
 }

@@ -71,4 +71,5 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="message_parse_message">Cannot parse tasks – please write how this happened</string>
     <string name="message_message_error">Unknown response from the server – please write how this happened</string>
     <string name="finish_sync">Finish sync</string>
+    <string name="account_vanished">Account vanished. This should never, ever happen</string>
 </resources>

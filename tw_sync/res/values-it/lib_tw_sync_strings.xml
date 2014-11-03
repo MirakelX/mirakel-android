@@ -50,6 +50,10 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="change_account">Cambia account</string>
   <string name="wrong_config">Sembra che sia stato utilizzato un file di configurazione errato</string>
   <string name="cert_not_found">Il certificato è scomparso. Creare nuovamente un account</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[
+        Si è verificato un errore durante la sincronizzazione. Esiste un metodo alternativo, ma alcuni dati potrebbero andare perduti. È stato eseguito un backup del database. Verificare che non ci siano errori. <br /><br />
+        Per ulteriori informazioni consultare <a href="https://mirakel.atlassian.net/browse/MIR-453">questa pagina</a>
+        ]]></string>
   <string name="client_sync_key_not_found">Chiave di sincronizzazione client non trovata. Controllare la configurazione di Taskwarrior.</string>
   <string name="config_404">File di configurazione non trovato</string>
   <string name="config_error_empty">Non è presente la voce %s nel file di configurazione</string>
@@ -62,4 +66,5 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="message_parse_message">Impossibile analizzare le attivita. Scrivere come questo si è verificato</string>
   <string name="message_message_error">Rsposta sconosciuta dal server. Scrivere come questo si è verificato</string>
   <string name="finish_sync">Sincronizzazione completata</string>
+  <string name="account_vanished">Account scomparso. Questo non dovrebbe mai accadere</string>
 </resources>

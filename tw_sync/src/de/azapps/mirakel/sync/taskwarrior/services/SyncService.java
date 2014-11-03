@@ -30,36 +30,35 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations under
  * the License.
- *
- * Modified by weiznich 2013
  */
-
-package de.azapps.mirakel.sync;
+package de.azapps.mirakel.sync.taskwarrior.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
 /**
- * Service to handle Account authentication. It instantiates the authenticator
- * and returns its IBinder.
+ * Service to handle Account sync. This is invoked with an intent with action
+ * ACTION_AUTHENTICATOR_INTENT. It instantiates the syncadapter and returns its
+ * IBinder.
  */
-public class AuthenticationService extends Service {
+public class SyncService extends Service {
 
-    private Authenticator mAuthenticator;
+    private static final Object sSyncAdapterLock = new Object();
+
+    private static SyncAdapter sSyncAdapter = null;
 
     @Override
     public void onCreate() {
-        this.mAuthenticator = new Authenticator(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        // Do nothing
+        synchronized (sSyncAdapterLock) {
+            if (sSyncAdapter == null) {
+                sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
+            }
+        }
     }
 
     @Override
     public IBinder onBind(final Intent intent) {
-        return this.mAuthenticator.getIBinder();
+        return sSyncAdapter.getSyncAdapterBinder();
     }
 }

@@ -50,6 +50,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="change_account">Mudar conta</string>
   <string name="wrong_config">Parece que está a utilizar um ficheiro de configuração inválido</string>
   <string name="cert_not_found">O certificado desapareceu. Por favor recrie a sua conta.</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[Ocorreu um erro durante a sincronização. O problema foi contornado mas podem ter sido perdidos alguns dados. Foi efetuada um backup da base de dados. Analise se existem alguns erros.<br /><br />Para mais informações, consulte <a href="https://mirakel.atlassian.net/browse/MIR-453">isto</a>.]]></string>
   <string name="client_sync_key_not_found">Chave de sincronização não encontrada. Verifique as suas definições TaskWarrior.</string>
   <string name="config_404">Ficheiro de configuração não encontrado</string>
   <string name="config_error_empty">%s não existe no ficheiro de configuração</string>
@@ -62,4 +63,5 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="message_parse_message">Tarefas não processadas. Indique-nos como é que o erro ocorreu</string>
   <string name="message_message_error">Resposta desconhecida do servidor. Indique-nos como é que o erro ocorreu</string>
   <string name="finish_sync">Terminar sincronização</string>
+  <string name="account_vanished">A conta desapareceu. Isto nunca, mas mesmo nunca, deveria acontecer.</string>
 </resources>
