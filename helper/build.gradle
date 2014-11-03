@@ -8,7 +8,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion 
+    buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE.txt'
@@ -31,8 +31,8 @@ android {
     }
 }
 dependencies {
+    compile "com.android.support:support-v4:$androidSupportVersion"
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
     compile "joda-time:joda-time:$jodaLibraryVersion"
     compile "com.google.guava:guava:$guavaVersion"
 }
-

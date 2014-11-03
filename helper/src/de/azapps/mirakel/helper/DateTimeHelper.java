@@ -18,6 +18,14 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
+import android.content.Context;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.text.format.DateUtils;
+import android.text.format.Time;
+
+import com.google.common.base.Optional;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,15 +34,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import android.content.Context;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
-import android.text.format.Time;
-import android.util.Log;
-
-import com.google.common.base.Optional;
 
 public class DateTimeHelper {
 
@@ -54,7 +53,7 @@ public class DateTimeHelper {
         "yyyyMMdd'T'kkmmss'Z'", Locale.getDefault());
 
     public static String formatDate(final Calendar c) {
-        return c == null ? null : dateFormat.format(c.getTime());
+        return (c == null) ? null : dateFormat.format(c.getTime());
     }
 
     /**
@@ -104,11 +103,11 @@ public class DateTimeHelper {
     public static Calendar createLocalCalendar(final long time,
             final boolean isDue) {
         final Calendar c = new GregorianCalendar();
-        c.setTimeInMillis(time * 1000);
-        if (!isDue || c.get(Calendar.HOUR) != 0 && c.get(Calendar.HOUR) != 24
-            || c.get(Calendar.MINUTE) != 0 || c.get(Calendar.SECOND) != 0) {
-            c.setTimeInMillis(c.getTimeInMillis()
-                              + DateTimeHelper.getTimeZoneOffset(true, c));
+        c.setTimeInMillis(time * 1000L);
+
+        if (!isDue || ((c.get(Calendar.HOUR) != 0) && (c.get(Calendar.HOUR) != 24))
+            || (c.get(Calendar.MINUTE) != 0) || (c.get(Calendar.SECOND) != 0)) {
+            c.add(Calendar.SECOND, DateTimeHelper.getTimeZoneOffset(false, c));
         }
         return c;
     }
@@ -123,7 +122,7 @@ public class DateTimeHelper {
         if (!c.isPresent()) {
             return null;
         }
-        return c.get().getTimeInMillis() / 1000
+        return (c.get().getTimeInMillis() / 1000)
                - DateTimeHelper.getTimeZoneOffset(false, c.get());
     }
 
@@ -154,7 +153,7 @@ public class DateTimeHelper {
         if (c == null) {
             return 0;
         }
-        return c.getTimeInMillis() / 1000
+        return (c.getTimeInMillis() / 1000)
                - DateTimeHelper.getTimeZoneOffset(false, c);
     }
 
@@ -216,7 +215,7 @@ public class DateTimeHelper {
             final Calendar date, final boolean reminder) {
         final GregorianCalendar now = new GregorianCalendar();
         now.setTime(new Date());
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1
+        if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1)
             || !(now.get(Calendar.YEAR) == date.get(Calendar.YEAR)
                  && now.get(Calendar.DAY_OF_MONTH) == date
                  .get(Calendar.DAY_OF_MONTH) && now
@@ -230,7 +229,7 @@ public class DateTimeHelper {
     }
 
     public static String formatDateTime(final Calendar c) {
-        return c == null ? null : dateTimeFormat.format(c.getTime());
+        return (c == null) ? null : dateTimeFormat.format(c.getTime());
     }
 
     public static String formatDateTime(final Optional<Calendar> c) {
@@ -242,15 +241,15 @@ public class DateTimeHelper {
     }
 
     public static String formatDBDateTime(final Calendar c) {
-        return c == null ? null : dbDateTimeFormat.format(c.getTime());
+        return (c == null) ? null : dbDateTimeFormat.format(c.getTime());
     }
 
     public static String formateCalDav(final Calendar c) {
-        return c == null ? null : caldavFormat.format(c.getTime());
+        return (c == null) ? null : caldavFormat.format(c.getTime());
     }
 
     public static String formateCalDavDue(final Calendar c) {
-        return c == null ? null : caldavDueFormat.format(c.getTime());
+        return (c == null) ? null : caldavDueFormat.format(c.getTime());
     }
 
     public static CharSequence formatReminder(final Context ctx,
@@ -259,7 +258,7 @@ public class DateTimeHelper {
     }
 
     public static String formatTaskWarrior(final Calendar c) {
-        return c == null ? null : taskwarriorFormat.format(c.getTime());
+        return (c == null) ? null : taskwarriorFormat.format(c.getTime());
     }
 
     /**
@@ -281,14 +280,11 @@ public class DateTimeHelper {
     public static boolean is24HourLocale(final Locale l) {
         final String output = DateFormat.getTimeInstance(DateFormat.SHORT, l)
                               .format(new Date());
-        if (output.contains(" AM") || output.contains(" PM")) {
-            return false;
-        }
-        return true;
+        return !(output.contains(" AM") || output.contains(" PM"));
     }
 
     public static Calendar parseCalDav(final String date) throws ParseException {
-        if (date == null || date.equals("")) {
+        if ((date == null) || date.isEmpty()) {
             return null;
         }
         final GregorianCalendar temp = new GregorianCalendar();
@@ -298,7 +294,7 @@ public class DateTimeHelper {
 
     private static Calendar parseDate(final String date,
                                       final SimpleDateFormat format) throws ParseException {
-        if (date == null || date.equals("")) {
+        if ((date == null) || date.isEmpty()) {
             return null;
         }
         final GregorianCalendar temp = new GregorianCalendar();
@@ -338,30 +334,29 @@ public class DateTimeHelper {
      * @return
      */
     @Deprecated
-    public static boolean equalsCalendar(Calendar a, Calendar b) {
-        if (a == null || b == null) {
+    public static boolean equalsCalendar(final Calendar a, final Calendar b) {
+        if ((a == null) || (b == null)) {
             if (a != b) {
                 return false;
             }
         } else {
-            long ta = a.getTimeInMillis() / 1000;
-            long tb = b.getTimeInMillis() / 1000;
-            boolean ret = Math.abs(ta - tb) < 1;
-            return ret;
+            final long ta = a.getTimeInMillis() / 1000L;
+            final long tb = b.getTimeInMillis() / 1000L;
+            return Math.abs(ta - tb) < 1L;
         }
         return true;
     }
 
-    public static boolean equalsCalendar(@NonNull Optional<Calendar> a, @NonNull Optional<Calendar> b) {
+    public static boolean equalsCalendar(@NonNull final Optional<Calendar> a,
+                                         @NonNull final Optional<Calendar> b) {
         if (!a.isPresent() || !b.isPresent()) {
             if (a.isPresent() != b.isPresent()) {
                 return false;
             }
         } else {
-            long ta = a.get().getTimeInMillis() / 1000;
-            long tb = b.get().getTimeInMillis() / 1000;
-            boolean ret = Math.abs(ta - tb) < 1;
-            return ret;
+            final long ta = a.get().getTimeInMillis() / 1000L;
+            final long tb = b.get().getTimeInMillis() / 1000L;
+            return Math.abs(ta - tb) < 1L;
         }
         return true;
     }

@@ -39,4 +39,6 @@ Device: %3$s\n]]>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Fichier protégé non accessible</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Houlà! la liste a disparu...</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Ce bug ne peut être réparé. Mirakel redémarre.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Il y a déjà une liste avec ce nom. Veuillez en choisir un autre.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Veuillez mettre à jour DAVdroid</string>
 </resources>
