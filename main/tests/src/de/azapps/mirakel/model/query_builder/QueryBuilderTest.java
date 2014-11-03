@@ -454,7 +454,7 @@ public class QueryBuilderTest extends MirakelTestCase {
     public void testGetRecurringList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
         List res_qb = qb.getList(Recurring.class);
-        List res_raw = Recurring.cursorToRecurringList(getContext().getContentResolver().query(
+        List res_raw = Recurring.cursorToList(getContext().getContentResolver().query(
                            Recurring.URI, Recurring.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
