@@ -19,6 +19,9 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
+    <version name="2.8-beta2" date="2014-11-03" code="70">
+        <feature>Many bugfixes</feature>
+     </version>
     <version name="2.8-beta1" date="2014-09-24" code="69">
         <feature>Bugfixes</feature>
         <feature>New Meta list settings</feature>
