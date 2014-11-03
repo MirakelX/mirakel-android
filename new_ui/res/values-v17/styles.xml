@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
@@ -19,19 +18,14 @@
   ~      along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
+    <style name="task_name">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/task_tags"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_tags_wrapper"
-        android:orientation="vertical">
-    </LinearLayout>
-
-</merge>
+    <style name="task_header" >
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="DialogStyle" parent="@style/Theme.AppCompat.Light"></style>
+</resources>

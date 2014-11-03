@@ -19,12 +19,17 @@
 
 package de.azapps.mirakel.new_ui.views;
 
-import android.content.Context;
-import android.util.TypedValue;
 
-public class ViewHelper {
-    public static float dpToPx(final float dp, final Context ctx) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                                         ctx.getResources().getDisplayMetrics());
+import android.content.Context;
+import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+
+import de.azapps.mirakel.new_ui.R;
+
+public class MirakelActionBar extends Toolbar {
+
+    public MirakelActionBar(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        inflateMenu(R.menu.mirakel);
     }
 }

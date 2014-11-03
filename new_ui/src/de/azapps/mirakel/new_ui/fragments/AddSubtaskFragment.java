@@ -1,33 +1,33 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.LoaderManager;
 import android.content.DialogInterface;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -43,7 +43,7 @@ import com.google.common.base.Optional;
 
 import java.util.Set;
 
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.adapter.MultiSelectModelAdapter;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -51,7 +51,6 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
-import de.azapps.mirakel.adapter.MultiSelectModelAdapter;
 
 public class AddSubtaskFragment extends DialogFragment implements LoaderManager.LoaderCallbacks {
     public static final String ARGUMENT_PARENT_TASK = "PARENT_TASK";
@@ -133,12 +132,12 @@ public class AddSubtaskFragment extends DialogFragment implements LoaderManager.
         MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(getActivity());
         Task.addBasicFiler(mirakelQueryBuilder);
         mirakelQueryBuilder.and(Task.DONE, MirakelQueryBuilder.Operation.EQ, false);
-        if (searchString.length() > 0) {
-            mirakelQueryBuilder.and(Task.NAME, MirakelQueryBuilder.Operation.LIKE, "%" + searchString + "%");
+        if (!searchString.isEmpty()) {
+            mirakelQueryBuilder.and(Task.NAME, MirakelQueryBuilder.Operation.LIKE, '%' + searchString + '%');
         }
         mirakelQueryBuilder.and(ModelBase.ID, MirakelQueryBuilder.Operation.NOT_IN, task.getSubtasks());
         mirakelQueryBuilder.and(ModelBase.ID, MirakelQueryBuilder.Operation.NOT_EQ, task);
-        return mirakelQueryBuilder.toCursorLoader(Task.URI);
+        return mirakelQueryBuilder.toSupportCursorLoader(Task.URI);
     }
 
     @Override

@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package com.faizmalkani.floatingactionbutton;
 
 import android.animation.ObjectAnimator;
@@ -42,12 +61,12 @@ public class FloatingActionButton extends View {
         this(context, attributeSet, 0);
     }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public FloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FloatingActionButton);
-        mColor = a.getColor(R.styleable.FloatingActionButton_color, Color.WHITE);
+        mColor = a.getColor(R.styleable.FloatingActionButton_btnColor, Color.WHITE);
         mButtonPaint.setStyle(Paint.Style.FILL);
         mButtonPaint.setColor(mColor);
         float radius, dx, dy;
@@ -65,10 +84,10 @@ public class FloatingActionButton extends View {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         WindowManager mWindowManager = (WindowManager)
-                context.getSystemService(Context.WINDOW_SERVICE);
+                                       context.getSystemService(Context.WINDOW_SERVICE);
         Display display = mWindowManager.getDefaultDisplay();
         Point size = new Point();
-		// TODO support older android versions
+        // TODO support older android versions
         display.getSize(size);
         mScreenHeight = size.y;
     }
@@ -90,7 +109,7 @@ public class FloatingActionButton extends View {
         canvas.drawCircle(getWidth() / 2, getHeight() / 2, (float) (getWidth() / 2.6), mButtonPaint);
         if (null != mBitmap) {
             canvas.drawBitmap(mBitmap, (getWidth() - mBitmap.getWidth()) / 2,
-                    (getHeight() - mBitmap.getHeight()) / 2, mDrawablePaint);
+                              (getHeight() - mBitmap.getHeight()) / 2, mDrawablePaint);
         }
     }
 

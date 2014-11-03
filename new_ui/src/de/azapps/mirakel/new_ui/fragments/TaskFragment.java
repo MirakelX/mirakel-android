@@ -1,15 +1,33 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *
+ *      This program is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      any later version.
+ *
+ *      This program is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +41,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.fourmob.datetimepicker.date.DatePicker;
-import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
 import java.util.Calendar;
@@ -31,11 +49,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
-import de.azapps.mirakel.custom_views.BaseTaskDetailRow;
-import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
@@ -50,12 +65,9 @@ import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.Log;
-import de.azapps.widgets.DateTimeDialog;
+import de.azapps.tools.OptionalUtils.Procedure;
+import de.azapps.widgets.SupportDateTimeDialog;
 
-
-
-import static com.google.common.base.Optional.fromNullable;
-import static de.azapps.tools.OptionalUtils.Procedure;
 import static com.google.common.base.Optional.of;
 
 public class TaskFragment extends DialogFragment {
@@ -96,6 +108,15 @@ public class TaskFragment extends DialogFragment {
         return f;
     }
 
+    private void updateTask() {
+        Optional<Task> taskOptional = Task.get(task.getId());
+        if (taskOptional.isPresent()) {
+            task = taskOptional.get();
+        } // else do nothing
+        updateAll();
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,13 +127,12 @@ public class TaskFragment extends DialogFragment {
         callBackMap.put(Task.URI, new MirakelContentObserver.ObserverCallBack() {
             @Override
             public void handleChange() {
-                task = Task.get(task.getId());
-                updateAll();
+                updateTask();
             }
+
             @Override
             public void handleChange(long id) {
-                task = Task.get(task.getId());
-                updateAll();
+                updateTask();
             }
         });
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(),
@@ -120,7 +140,7 @@ public class TaskFragment extends DialogFragment {
     }
 
     @Override
-    public void onDismiss (DialogInterface dialog) {
+    public void onDismiss(DialogInterface dialog) {
         if (observer != null && getActivity() != null && getActivity().getContentResolver() != null) {
             getActivity().getContentResolver().unregisterContentObserver(observer);
         }
@@ -226,6 +246,7 @@ public class TaskFragment extends DialogFragment {
                 }
             });
         }
+
         private void updateName() {
             task.setName(taskNameEdit.getText().toString());
             taskName.setText(task.getName());
@@ -245,13 +266,14 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener dueEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(new
+            SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(new
             DatePicker.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
-                    task.setDue(of((Calendar)new GregorianCalendar(year, month, day)));
+                    task.setDue(of((Calendar) new GregorianCalendar(year, month, day)));
                     task.save();
                 }
+
                 @Override
                 public void onNoDateSet() {
                     task.setDue(Optional.<Calendar>absent());
@@ -265,14 +287,15 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final SimpleModelAdapter adapter = new SimpleModelAdapter(getActivity(), ListMirakel.getAllCursor(),
+            final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>(getActivity(),
+                    ListMirakel.getAllCursor(),
                     0, ListMirakel.class);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.task_move_to);
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    task.setList(new ListMirakel((Cursor) adapter.getItem(i)));
+                    task.setList(adapter.getItem(i));
                     task.save();
                 }
             });
@@ -282,13 +305,14 @@ public class TaskFragment extends DialogFragment {
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            DateTimeDialog dateTimeDialog = DateTimeDialog.newInstance(new
-            DateTimeDialog.OnDateTimeSetListener() {
+            SupportDateTimeDialog dateTimeDialog = SupportDateTimeDialog.newInstance(
+            new SupportDateTimeDialog.OnDateTimeSetListener() {
                 @Override
                 public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-                    task.setReminder(of((Calendar)new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
+                    task.setReminder(of((Calendar) new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
                     task.save();
                 }
+
                 @Override
                 public void onNoTimeSet() {
                     task.setReminder(Optional.<Calendar>absent());
@@ -303,7 +327,7 @@ public class TaskFragment extends DialogFragment {
     private Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
         @Override
         public void apply(Task task) {
-            task.setDone(!task.isDone());
+            task.toggleDone();
             task.save();
         }
     };
