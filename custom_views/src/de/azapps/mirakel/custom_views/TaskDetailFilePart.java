@@ -26,11 +26,17 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 
 public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
 
@@ -107,28 +113,28 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
         Log.d(TAG, "update");
         this.file = f;
         new Thread(new Runnable() {
-            private Bitmap preview;
+            private Optional<Bitmap> preview = absent();
             @Override
             public void run() {
                 if (FileUtils.isAudio(TaskDetailFilePart.this.file.getFileUri())) {
-                    final int resource_id = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
-                                            : R.drawable.ic_action_play;
-                    this.preview = BitmapFactory.decodeResource(
-                                       TaskDetailFilePart.this.context.getResources(),
-                                       resource_id);
+                    final int resourceId = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
+                                           : R.drawable.ic_action_play;
+                    this.preview = fromNullable(BitmapFactory.decodeResource(
+                                                    TaskDetailFilePart.this.context.getResources(),
+                                                    resourceId));
                 } else {
                     this.preview = TaskDetailFilePart.this.file.getPreview();
                 }
-                if (this.preview != null) {
+                if (this.preview.isPresent()) {
                     Log.i(TAG, "preview not null");
                     TaskDetailFilePart.this.fileImage.post(new Runnable() {
                         @Override
                         public void run() {
                             TaskDetailFilePart.this.fileImage
-                            .setImageBitmap(preview);
+                            .setImageBitmap(preview.get());
                             final LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
                                                         .getLayoutParams();
-                            params.height = preview.getHeight();
+                            params.height = preview.get().getHeight();
                             TaskDetailFilePart.this.fileImage
                             .setLayoutParams(params);
                         }

@@ -31,13 +31,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.customviews.R;
 import de.azapps.mirakel.helper.Helpers.ExecInterface;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class TaskDetailHeader extends BaseTaskDetailRow {
@@ -164,14 +166,13 @@ public class TaskDetailHeader extends BaseTaskDetailRow {
             public void onCheckedChanged(final CompoundButton buttonView,
                                          final boolean isChecked) {
                 Log.d(TAG, "check " + isChecked);
-                final long newID = TaskDetailHeader.this.task
-                                   .setDone(isChecked);
+                final Optional<Task> newTask = TaskDetailHeader.this.task
+                                               .setDone(isChecked);
                 save();
-                if (TaskDetailHeader.this.task.getId() != newID) {
-                    // recurring, id changed, plug new task in
-                    TaskDetailHeader.this.task = Task.get(newID);
+                if (newTask.isPresent()) {
+                    // recurring, task changed, plug new task in
+                    TaskDetailHeader.this.task = newTask.get();
                 }
-                ReminderAlarm.updateAlarms(TaskDetailHeader.this.context);
                 if (TaskDetailHeader.this.doneChanged != null) {
                     TaskDetailHeader.this.doneChanged
                     .onDoneChanged(TaskDetailHeader.this.task);

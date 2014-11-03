@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.common.base.Optional;
 import com.todddavies.components.progressbar.ProgressWheel;
 
 import de.azapps.mirakel.customviews.R;
@@ -38,7 +39,6 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.ViewHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.tools.Log;
 
 public class TaskSummary extends TaskDetailSubListBase<Task> implements
@@ -103,11 +103,10 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
 
     @Override
     public void onClick(final View v) {
-        final long id = this.task.toggleDone();
-        ReminderAlarm.updateAlarms(TaskSummary.this.context);
+        final Optional<Task> task = this.task.toggleDone();
         save();
-        if (id != this.task.getId()) {
-            this.task = Task.get(id);
+        if (task.isPresent()) {
+            this.task = task.get();
         }
         TaskSummary.this.taskRowDone.setChecked(this.task.isDone());
         updateName();
@@ -177,7 +176,7 @@ public class TaskSummary extends TaskDetailSubListBase<Task> implements
         this.task = newValue;
         if (this.task == null) {
             this.task = Task.getDummy(this.context,
-                                      ListMirakel.safeFirst(this.context));
+                                      ListMirakel.safeFirst());
         }
         // Done
         this.taskRowDone.setChecked(this.task.isDone());

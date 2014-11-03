@@ -33,8 +33,9 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -56,7 +57,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
-import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListner;
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListener;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
@@ -271,29 +272,30 @@ public class TaskDialogHelpers {
     }
 
     @SuppressWarnings("boxing")
-    public static void handleRecurrence(final ActionBarActivity activity,
+    public static void handleRecurrence(final FragmentActivity activity,
                                         final Task task, final boolean isDue, final ExecInterface callback) {
         final FragmentManager fm = activity.getSupportFragmentManager();
-        Recurring r = isDue ? task.getRecurring() : task.getRecurringReminder();
+        Optional<Recurring> recurringOptional = isDue ? task.getRecurrence() : task.getRecurringReminder();
         boolean isExact = false;
-        if (r != null) {
-            isExact = r.isExact();
+        if (recurringOptional.isPresent()) {
+            Recurring recurring = recurringOptional.get();
+            isExact = recurring.isExact();
             Log.d(TAG, "exact: " + isExact);
-            if (r.getDerivedFrom().isPresent()) {
-                final Recurring master = Recurring.get(r.getDerivedFrom().get());
-                if (master != null) {
-                    r = master;
+            if (recurring.getDerivedFrom().isPresent()) {
+                final Optional<Recurring> master = Recurring.get(recurring.getDerivedFrom().get());
+                if (master.isPresent()) {
+                    recurring = master.get();
                 }
             }
         }
         final RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(
-        new OnRecurrenceSetListner() {
+        new OnRecurrenceSetListener() {
             @Override
             public void onCustomRecurrenceSetInterval(
                 final boolean isDue, final int intervalYears,
                 final int intervalMonths, final int intervalDays,
                 final int intervalHours, final int intervalMinutes,
-                final Optional<Calendar> startDate, final Optional<Calendar> endDate,
+                @NonNull final Optional<Calendar> startDate, @NonNull final Optional<Calendar> endDate,
                 final boolean isExact) {
                 final Recurring r = Recurring.newRecurring("",
                                     intervalMinutes, intervalHours, intervalDays,
@@ -304,8 +306,8 @@ public class TaskDialogHelpers {
             }
             @Override
             public void onCustomRecurrenceSetWeekdays(
-                final boolean isDue, final List<Integer> weekdays,
-                final Optional<Calendar> startDate, final Optional<Calendar> endDate,
+                final boolean isDue, @NonNull final List<Integer> weekdays,
+                @NonNull final Optional<Calendar> startDate, @NonNull final Optional<Calendar> endDate,
                 final boolean isExact) {
                 final SparseBooleanArray weekdaysArray = new SparseBooleanArray();
                 for (final int day : weekdays) {
@@ -324,11 +326,11 @@ public class TaskDialogHelpers {
             public void onRecurrenceSet(final Recurring r) {
                 setRecurence(task, isDue, r.getId(), callback);
             }
-        }, r, isDue, MirakelCommonPreferences.isDark(), isExact);
+        }, recurringOptional, isDue, MirakelCommonPreferences.isDark(), isExact);
         rp.show(fm, "reccurence");
     }
 
-    public static void handleReminder(final ActionBarActivity ctx,
+    public static void handleReminder(final FragmentActivity ctx,
                                       final Task task, final OnTaskChangedListner onSuccess) {
         final Calendar reminder = task.getReminder().or(new GregorianCalendar());
         final FragmentManager fm = ctx.getSupportFragmentManager();
