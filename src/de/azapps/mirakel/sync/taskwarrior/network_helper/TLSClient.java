@@ -1,5 +1,6 @@
 package de.azapps.mirakel.sync.taskwarrior.network_helper;
 
+import android.annotation.SuppressLint;
 import android.util.Base64;
 
 import java.io.DataOutputStream;
@@ -28,6 +29,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -96,7 +100,6 @@ public class TLSClient {
     private static byte[] parseDERFromPEM(final String pem,
                                           final String beginDelimiter, final String endDelimiter)
     throws ParseException {
-        Log.w(TAG, pem);
         String[] tokens = pem.split(beginDelimiter);
         if (tokens.length < 2) {
             Log.wtf(TAG, pem);
@@ -146,7 +149,66 @@ public class TLSClient {
         }
     }
 
+    @SuppressLint("DefaultLocale")
+    // copied form davdroid, 04.11.14
+    private static void setReasonableEncryption(final SSLSocket ssl) {
+        // set reasonable SSL/TLS settings before the handshake:
 
+        // - enable all supported protocols (enables TLSv1.1 and TLSv1.2 on Android <4.4.3, if available)
+        // - remove all SSL versions (especially SSLv3) because they're insecure now
+        final List<String> protocols = new LinkedList<>();
+        for (final String protocol : ssl.getSupportedProtocols()) {
+            if (!protocol.toUpperCase().contains("SSL")) {
+                protocols.add(protocol);
+            }
+        }
+        //Log.v(TAG, "Setting allowed TLS protocols: " + TextUtils.join(", ", protocols));
+        ssl.setEnabledProtocols(protocols.toArray(new String[protocols.size()]));
+
+        // choose secure cipher suites
+        final List<String> allowedCiphers = Arrays.asList(
+                                                // allowed secure ciphers according to NIST.SP.800-52r1.pdf Section 3.3.1 (see docs directory)
+                                                // TLS 1.2
+                                                "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+                                                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+                                                "TLS_ECHDE_RSA_WITH_AES_128_GCM_SHA256",
+                                                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+                                                "TLS_RSA_WITH_AES_256_GCM_SHA384",
+                                                "TLS_RSA_WITH_AES_128_GCM_SHA256",
+                                                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+
+                                                // maximum interoperability
+                                                "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+                                                "TLS_RSA_WITH_AES_128_CBC_SHA",
+                                                // additionally
+                                                "TLS_RSA_WITH_AES_256_CBC_SHA",
+                                                "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
+                                                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                                                "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
+                                                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+                                            );
+
+        final List<String> availableCiphers = Arrays.asList(ssl.getSupportedCipherSuites());
+
+        // preferred ciphers = allowed Ciphers \ availableCiphers
+        final HashSet<String> preferredCiphers = new HashSet<>(allowedCiphers);
+        preferredCiphers.retainAll(availableCiphers);
+
+        // add preferred ciphers to enabled ciphers
+        // for maximum security, preferred ciphers should *replace* enabled ciphers,
+        // but I guess for the security level of DAVdroid, disabling of insecure
+        // ciphers should be a server-side task
+        final HashSet<String> enabledCiphers = new HashSet<>(Arrays.asList(
+                    ssl.getEnabledCipherSuites()));
+        enabledCiphers.addAll(preferredCiphers);
+
+        //Log.v(TAG, "Setting allowed TLS ciphers: " + TextUtils.join( ", ", enabledCiphers));
+        if (preferredCiphers.isEmpty()) {
+            ssl.setEnabledCipherSuites(enabledCiphers.toArray(new String[enabledCiphers.size()]));
+        } else {
+            ssl.setEnabledCipherSuites(preferredCiphers.toArray(new String[preferredCiphers.size()]));
+        }
+    }
 
     // //////////////////////////////////////////////////////////////////////////////
     public void connect(final String host, final int port) throws IOException {
@@ -161,6 +223,7 @@ public class TLSClient {
         try {
             Log.d(TAG, "connected to " + host + ':' + port);
             this._socket = (SSLSocket) this.sslFact.createSocket();
+            setReasonableEncryption(this._socket);
             this._socket.setUseClientMode(true);
             this._socket.setEnableSessionCreation(true);
             this._socket.setNeedClientAuth(true);
@@ -185,22 +248,25 @@ public class TLSClient {
     public void init(final String root, final String user_ca,
                      final String user_key) throws ParseException, CertificateException,
         NoSuchCertificateException {
-        Log.i(TAG, "init");
         try {
 
-            List<X509Certificate> ROOT = generateCertificateFromPEM(root);
-            X509Certificate USER_CERT = (X509Certificate) CertificateFactory.getInstance("X.509")
-                                        .generateCertificate(new StringBufferInputStream(user_ca));
+            final List<X509Certificate> ROOT = generateCertificateFromPEM(root);
+            final X509Certificate USER_CERT = (X509Certificate) CertificateFactory.getInstance("X.509")
+                                              .generateCertificate(new StringBufferInputStream(user_ca));
             final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(user_key);
             final KeyStore trusted = KeyStore.getInstance(KeyStore
                                      .getDefaultType());
             trusted.load(null);
-            for (X509Certificate aROOT : ROOT) {
-                trusted.setCertificateEntry("taskwarrior-ROOT", aROOT);
+            final Certificate[] chain = new Certificate[ROOT.size() + 1];
+            int i = chain.length - 1;
+            for (final X509Certificate cert : ROOT) {
+                trusted.setCertificateEntry("taskwarrior-ROOT", cert);
+                chain[i--] = cert;
             }
             trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
-            ROOT.add(USER_CERT);
-            final Certificate[] chain = ROOT.toArray(new Certificate[ROOT.size()]);//{ USER_CERT., ROOT };
+            chain[0] = USER_CERT;
+
+
             final KeyManagerFactory keyManagerFactory = KeyManagerFactory
                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
             // Hack to get it working on android 2.2
@@ -262,15 +328,14 @@ public class TLSClient {
 
     // //////////////////////////////////////////////////////////////////////////////
     public void send(final String data) {
-        final DataOutputStream dos = new DataOutputStream(this.out);
-        Log.i(TAG, "send data");
+        final DataOutputStream dos = new DataOutputStream(out);
         if (!this._socket.isConnected()) {
             Log.e(TAG, "socket not connected");
             return;
         }
         try {
-            dos.writeInt(data.getBytes().length);
-            dos.write(data.getBytes());
+            dos.writeInt(data.length());
+            dos.writeBytes(data);
         } catch (final IOException e) {
             Log.e(TAG, "cannot write data to outputstream", e);
         }
