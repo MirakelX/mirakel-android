@@ -132,7 +132,7 @@ public class TaskWarriorAccount {
                 userId = pwds[0].trim();
                 userPassword = pwds[1].trim();
             }
-            if (!userPassword.isEmpty() && userPassword.length() != 36) {
+            if (!userPassword.isEmpty() && (userPassword.length() != 36)) {
                 Log.wtf(TAG, "Key is not valid");
                 throw new TaskWarriorSyncFailedException(
                     TW_ERRORS.CONFIG_PARSE_ERROR, "Key is not valid");

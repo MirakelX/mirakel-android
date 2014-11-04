@@ -18,17 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.sync.taskwarrior;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -43,6 +32,19 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -56,6 +58,7 @@ import de.azapps.tools.Log;
 
 public class TaskWarriorSetupActivity extends Activity {
     private final static String TAG = "TaskWarriorSetupActivity";
+    private static final Pattern DELIMITER = Pattern.compile(":");
 
     private class DownloadTask extends AsyncTask<URL, Integer, Integer> {
         private final static String TAG = "DownloadTask";
@@ -70,9 +73,8 @@ public class TaskWarriorSetupActivity extends Activity {
         @Override
         protected Integer doInBackground(final URL... sUrl) {
             final URL url = sUrl[0];
-            HttpURLConnection connection = null;
             try {
-                connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(true);
                 connection.connect();
@@ -82,6 +84,8 @@ public class TaskWarriorSetupActivity extends Activity {
                     return RESULT_ERROR;
                 }
                 setupTaskWarrior(connection.getInputStream(), false);
+            } catch (IOException e) {
+                e.printStackTrace();
             } catch (final Exception e) {
                 Log.e(TAG, "Could not download config", e);
                 return RESULT_ERROR;
@@ -133,9 +137,8 @@ public class TaskWarriorSetupActivity extends Activity {
             setupTaskwarriorFromURL(inputUrl);
             break;
         case CONFIG_TASKWARRIOR:
-            InputStream stream;
             try {
-                stream = FileUtils.getStreamFromUri(this, data.getData());
+                final InputStream stream = FileUtils.getStreamFromUri(this, data.getData());
                 setupTaskWarrior(stream, true);
             } catch (final FileNotFoundException e) {
                 Log.e(TAG, "File not found", e);
@@ -165,7 +168,7 @@ public class TaskWarriorSetupActivity extends Activity {
                     intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
                     startActivityForResult(intent,
                                            TaskWarriorSetupActivity.CONFIG_QR);
-                } catch (final Exception e) {
+                } catch (final RuntimeException ignored) {
                     new AlertDialog.Builder(TaskWarriorSetupActivity.this)
                     .setTitle(R.string.no_barcode_app)
                     .setMessage(R.string.no_barcode_app_message)
@@ -186,14 +189,13 @@ public class TaskWarriorSetupActivity extends Activity {
                 }
             }
         });
-        final Activity that = this;
         final Button select_config_file = (Button) findViewById(R.id.sync_taskwarrior_select_file);
         select_config_file.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Helpers.showFileChooser(
                     TaskWarriorSetupActivity.CONFIG_TASKWARRIOR,
-                    getString(R.string.select_config), that);
+                    getString(R.string.select_config), TaskWarriorSetupActivity.this);
             }
         });
         final Button register = (Button) findViewById(R.id.sync_taskwarrior_register);
@@ -224,23 +226,28 @@ public class TaskWarriorSetupActivity extends Activity {
     throws IOException {
         final BufferedReader r = new BufferedReader(new InputStreamReader(
                     stream));
-        final Map<String, String> values = new HashMap<String, String>();
+        final Map<String, String> values = new HashMap<>();
         PARSE_STATE state = PARSE_STATE.ONE_LINER;
         String line;
-        String tkey = null, tvalue = "";
+        String tkey = null;
+        StringBuilder tvalue = new StringBuilder();
         // General parsing
         while ((line = r.readLine()) != null) {
+            if ("ca.cert".equals(tkey) && line.contains(":")) {
+                values.put(tkey, tvalue.toString());
+                state = PARSE_STATE.ONE_LINER;
+            }
             switch (state) {
             case ONE_LINER:
-                final String[] splitted = line.split(":", 2);
+                final String[] splitted = DELIMITER.split(line, 2);
                 if (splitted.length != 2) {
                     continue;
                 }
                 final String key = splitted[0].trim().toLowerCase();
                 final String value = splitted[1].trim();
-                if (value.equals("")) {
+                if (value.isEmpty()) {
                     tkey = key;
-                    tvalue = "";
+                    tvalue = new StringBuilder();
                     state = PARSE_STATE.MULTI;
                 } else {
                     values.put(key, value);
@@ -248,18 +255,21 @@ public class TaskWarriorSetupActivity extends Activity {
                 break;
             case MULTI:
                 // Yeah, there is an \n at the end of the file
-                tvalue += line + "\n";
-                if (line.startsWith("-----END")) {
-                    values.put(tkey, tvalue);
+                tvalue.append(line).append('\n');
+                if (line.startsWith("-----END") && !"ca.cert".equals(tkey)) {
+                    values.put(tkey, tvalue.toString());
                     state = PARSE_STATE.ONE_LINER;
                 }
                 break;
             }
         }
+        if (state == PARSE_STATE.MULTI) {
+            values.put(tkey, tvalue.toString());
+        }
         return values;
     }
 
-    private class ParseException extends Exception {
+    private static class ParseException extends Exception {
         private static final long serialVersionUID = -5931298406798881507L;
 
         public ParseException(final String message) {
@@ -340,7 +350,7 @@ public class TaskWarriorSetupActivity extends Activity {
             }, new Exec() {
                 @Override
                 public void execute(final Integer result) {
-                    if (result != RESULT_SUCCESS) {
+                    if (!RESULT_SUCCESS.equals(result)) {
                         ErrorReporter
                         .report(ErrorType.TASKWARRIOR_COULD_NOT_DOWNLOAD);
                     } else {
