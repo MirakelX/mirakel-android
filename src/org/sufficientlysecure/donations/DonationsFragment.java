@@ -16,20 +16,16 @@
 
 package org.sufficientlysecure.donations;
 
-import org.sufficientlysecure.donations.google.util.IabHelper;
-import org.sufficientlysecure.donations.google.util.IabResult;
-import org.sufficientlysecure.donations.google.util.Purchase;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,6 +41,11 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.sufficientlysecure.donations.google.util.IabHelper;
+import org.sufficientlysecure.donations.google.util.IabResult;
+import org.sufficientlysecure.donations.google.util.Purchase;
+
 import de.azapps.mirakel.donationslib.R;
 
 public class DonationsFragment extends Fragment {
@@ -79,21 +80,21 @@ public class DonationsFragment extends Fragment {
     // Google Play helper object
     protected IabHelper mHelper;
 
-    protected static boolean mDebug = false;
+    private static boolean mDebug = false;
 
-    protected static boolean mGoogleEnabled = false;
-    protected static String mGooglePubkey = "";
-    protected static String[] mGoogleCatalog = new String[] {};
-    protected static String[] mGoogleCatalogValues = new String[] {};
+    private static boolean mGoogleEnabled = false;
+    private static String mGooglePubkey = "";
+    private static String[] mGoogleCatalog = new String[] {};
+    private static String[] mGoogleCatalogValues = new String[] {};
 
-    protected static boolean mPaypalEnabled = false;
-    protected static String mPaypalUser = "";
-    protected static String mPaypalCurrencyCode = "";
-    protected static String mPaypalItemName = "";
+    private static boolean mPaypalEnabled = false;
+    private static String mPaypalUser = "";
+    private static String mPaypalCurrencyCode = "";
+    private static String mPaypalItemName = "";
 
-    protected static boolean mFlattrEnabled = false;
-    protected static String mFlattrProjectUrl = "";
-    protected static String mFlattrUrl = "";
+    private static boolean mFlattrEnabled = false;
+    private static String mFlattrProjectUrl = "";
+    private static String mFlattrUrl = "";
 
     public DonationsFragment() {
         super();
@@ -178,22 +179,23 @@ public class DonationsFragment extends Fragment {
                                          ARG_FLATTR_PROJECT_URL);
             this.mFlattrUrl = getArguments().getString(ARG_FLATTR_URL);
         }
-        getActivity().getActionBar().setTitle(R.string.title_donations);
+        if ((getActivity() != null) && (getActivity().getActionBar() != null)) {
+            getActivity().getActionBar().setTitle(R.string.title_donations);
+        }
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container, final Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.donations__fragment,
-                                           container, false);
-        return view;
+        return inflater.inflate(R.layout.donations__fragment,
+                                container, false);
     }
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         /* Flattr */
-        if (this.mFlattrEnabled) {
+        if (mFlattrEnabled) {
             // inflate flattr view into stub
             final ViewStub flattrViewStub = (ViewStub) getActivity()
                                             .findViewById(R.id.donations__flattr_stub);
@@ -201,7 +203,7 @@ public class DonationsFragment extends Fragment {
             buildFlattrView();
         }
         /* Google */
-        if (this.mGoogleEnabled) {
+        if (mGoogleEnabled) {
             // inflate google view into stub
             final ViewStub googleViewStub = (ViewStub) getActivity()
                                             .findViewById(R.id.donations__google_stub);
@@ -211,7 +213,7 @@ public class DonationsFragment extends Fragment {
                                       R.id.donations__google_android_market_spinner);
             final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
                 getActivity(), android.R.layout.simple_spinner_item,
-                this.mGoogleCatalogValues);
+                mGoogleCatalogValues);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             this.mGoogleSpinner.setAdapter(adapter);
             final Button btGoogle = (Button) getActivity().findViewById(
@@ -224,22 +226,22 @@ public class DonationsFragment extends Fragment {
             });
             // Create the helper, passing it our context and the public key to
             // verify signatures with
-            if (this.mDebug) {
+            if (mDebug) {
                 Log.d(TAG, "Creating IAB helper.");
             }
-            this.mHelper = new IabHelper(getActivity(), this.mGooglePubkey);
+            this.mHelper = new IabHelper(getActivity(), mGooglePubkey);
             // enable debug logging (for a production application, you should
             // set this to false).
-            this.mHelper.enableDebugLogging(this.mDebug);
+            this.mHelper.enableDebugLogging(mDebug);
             // Start setup. This is asynchronous and the specified listener
             // will be called once setup completes.
-            if (this.mDebug) {
+            if (mDebug) {
                 Log.d(TAG, "Starting setup.");
             }
             this.mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
                 @Override
                 public void onIabSetupFinished(final IabResult result) {
-                    if (DonationsFragment.this.mDebug) {
+                    if (mDebug) {
                         Log.d(TAG, "Setup finished.");
                     }
                     if (!result.isSuccess()) {
@@ -258,7 +260,7 @@ public class DonationsFragment extends Fragment {
             });
         }
         /* PayPal */
-        if (this.mPaypalEnabled) {
+        if (mPaypalEnabled) {
             // inflate paypal view into stub
             final ViewStub paypalViewStub = (ViewStub) getActivity()
                                             .findViewById(R.id.donations__paypal_stub);
@@ -305,19 +307,18 @@ public class DonationsFragment extends Fragment {
      * @param view
      */
     public void donateGoogleOnClick(final View view) {
-        final int index;
-        index = this.mGoogleSpinner.getSelectedItemPosition();
-        if (this.mDebug) {
+        final int index = this.mGoogleSpinner.getSelectedItemPosition();
+        if (mDebug) {
             Log.d(TAG, "selected item in spinner: " + index);
         }
-        if (this.mDebug) {
+        if (mDebug) {
             // when debugging, choose android.test.x item
             this.mHelper.launchPurchaseFlow(getActivity(),
                                             CATALOG_DEBUG[index], IabHelper.ITEM_TYPE_INAPP, 0,
                                             this.mPurchaseFinishedListener, null);
         } else {
             this.mHelper.launchPurchaseFlow(getActivity(),
-                                            this.mGoogleCatalog[index], IabHelper.ITEM_TYPE_INAPP, 0,
+                                            mGoogleCatalog[index], IabHelper.ITEM_TYPE_INAPP, 0,
                                             this.mPurchaseFinishedListener, null);
         }
     }
@@ -328,7 +329,7 @@ public class DonationsFragment extends Fragment {
         @Override
         public void onIabPurchaseFinished(final IabResult result,
                                           final Purchase purchase) {
-            if (DonationsFragment.this.mDebug) {
+            if (mDebug) {
                 Log.d(TAG, "Purchase finished: " + result + ", purchase: "
                       + purchase);
             }
@@ -337,7 +338,7 @@ public class DonationsFragment extends Fragment {
                 return;
             }
             if (result.isSuccess()) {
-                if (DonationsFragment.this.mDebug) {
+                if (mDebug) {
                     Log.d(TAG, "Purchase successful.");
                 }
                 // directly consume in-app purchase, so that people can donate
@@ -358,7 +359,7 @@ public class DonationsFragment extends Fragment {
         @Override
         public void onConsumeFinished(final Purchase purchase,
                                       final IabResult result) {
-            if (DonationsFragment.this.mDebug) {
+            if (mDebug) {
                 Log.d(TAG, "Consumption finished. Purchase: " + purchase
                       + ", result: " + result);
             }
@@ -367,11 +368,11 @@ public class DonationsFragment extends Fragment {
                 return;
             }
             if (result.isSuccess()) {
-                if (DonationsFragment.this.mDebug) {
+                if (mDebug) {
                     Log.d(TAG, "Consumption successful. Provisioning.");
                 }
             }
-            if (DonationsFragment.this.mDebug) {
+            if (mDebug) {
                 Log.d(TAG, "End consumption flow.");
             }
         }
@@ -380,9 +381,9 @@ public class DonationsFragment extends Fragment {
     @Override
     public void onActivityResult(final int requestCode, final int resultCode,
                                  final Intent data) {
-        if (this.mDebug) {
-            Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode
-                  + "," + data);
+        if (mDebug) {
+            Log.d(TAG, "onActivityResult(" + requestCode + ',' + resultCode
+                  + ',' + data);
         }
         if (this.mHelper == null) {
             return;
@@ -394,7 +395,7 @@ public class DonationsFragment extends Fragment {
             // billing...
             super.onActivityResult(requestCode, resultCode, data);
         } else {
-            if (this.mDebug) {
+            if (mDebug) {
                 Log.d(TAG, "onActivityResult handled by IABUtil.");
             }
         }
@@ -414,17 +415,16 @@ public class DonationsFragment extends Fragment {
         uriBuilder.scheme("https").authority("www.paypal.com")
         .path("cgi-bin/webscr");
         uriBuilder.appendQueryParameter("cmd", "_donations");
-        uriBuilder.appendQueryParameter("business", this.mPaypalUser);
+        uriBuilder.appendQueryParameter("business", mPaypalUser);
         uriBuilder.appendQueryParameter("lc", "US");
-        uriBuilder.appendQueryParameter("item_name", this.mPaypalItemName);
+        uriBuilder.appendQueryParameter("item_name", mPaypalItemName);
         uriBuilder.appendQueryParameter("no_note", "1");
         // uriBuilder.appendQueryParameter("no_note", "0");
         // uriBuilder.appendQueryParameter("cn", "Note to the developer");
         uriBuilder.appendQueryParameter("no_shipping", "1");
-        uriBuilder.appendQueryParameter("currency_code",
-                                        this.mPaypalCurrencyCode);
+        uriBuilder.appendQueryParameter("currency_code", mPaypalCurrencyCode);
         final Uri payPalUri = uriBuilder.build();
-        if (this.mDebug) {
+        if (mDebug) {
             Log.d(TAG,
                   "Opening the browser with the url: " + payPalUri.toString());
         }
@@ -446,12 +446,10 @@ public class DonationsFragment extends Fragment {
     @SuppressLint("SetJavaScriptEnabled")
     @TargetApi(11)
     private void buildFlattrView() {
-        final FrameLayout mLoadingFrame;
-        final WebView mFlattrWebview;
-        mFlattrWebview = (WebView) getActivity().findViewById(
-                             R.id.donations__flattr_webview);
-        mLoadingFrame = (FrameLayout) getActivity().findViewById(
-                            R.id.donations__loading_frame);
+        final WebView mFlattrWebview = (WebView) getActivity().findViewById(
+                                           R.id.donations__flattr_webview);
+        final FrameLayout mLoadingFrame = (FrameLayout) getActivity().findViewById(
+                                              R.id.donations__loading_frame);
         // disable hardware acceleration for this webview to get transparent
         // background working
         if (Build.VERSION.SDK_INT >= 11) {
@@ -487,7 +485,7 @@ public class DonationsFragment extends Fragment {
             public void onLoadResource(final WebView view, final String url) {
                 if (url.contains("flattr")) {
                     final HitTestResult result = view.getHitTestResult();
-                    if (result != null && result.getType() > 0) {
+                    if ((result != null) && (result.getType() > 0)) {
                         try {
                             view.getContext().startActivity(
                                 new Intent(Intent.ACTION_VIEW, Uri
@@ -515,41 +513,32 @@ public class DonationsFragment extends Fragment {
             }
         });
         // get flattr values from xml config
-        final String projectUrl = this.mFlattrProjectUrl;
-        final String flattrUrl = this.mFlattrUrl;
+        final String projectUrl = mFlattrProjectUrl;
+        final String flattrUrl = mFlattrUrl;
         // make text white and background transparent
-        final String htmlStart =
-            "<html> <head><style type='text/css'>*{color: #FFFFFF; background-color: transparent;}</style>";
-        // https is not working in android 2.1 and 2.2
-        String flattrScheme;
-        if (Build.VERSION.SDK_INT >= 9) {
-            flattrScheme = "https://";
-        } else {
-            flattrScheme = "http://";
-        }
         // set url of flattr link
         this.mFlattrUrlTextView = (TextView) getActivity().findViewById(
                                       R.id.donations__flattr_url);
-        this.mFlattrUrlTextView.setText(flattrScheme + flattrUrl);
+        this.mFlattrUrlTextView.setText("https://" + flattrUrl);
         final String flattrJavascript = "<script type='text/javascript'>"
                                         + "/* <![CDATA[ */"
                                         + "(function() {"
                                         + "var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];"
                                         + "s.type = 'text/javascript';" + "s.async = true;"
-                                        + "s.src = '" + flattrScheme
+                                        + "s.src = 'https://"
                                         + "api.flattr.com/js/0.6/load.js?mode=auto';"
                                         + "t.parentNode.insertBefore(s, t);" + "})();" + "/* ]]> */"
                                         + "</script>";
         final String htmlMiddle = "</head> <body> <div align='center'>";
         final String flattrHtml = "<a class='FlattrButton' style='display:none;' href='"
                                   + projectUrl
-                                  + "' target='_blank'></a> <noscript><a href='"
-                                  + flattrScheme
+                                  + "' target='_blank'></a> <noscript><a href='https://"
                                   + flattrUrl
-                                  + "' target='_blank'> <img src='"
-                                  + flattrScheme
+                                  + "' target='_blank'> <img src='https://"
                                   + "api.flattr.com/button/flattr-badge-large.png' alt='Flattr this' title='Flattr this' border='0' /></a></noscript>";
         final String htmlEnd = "</div> </body> </html>";
+        final String htmlStart =
+            "<html> <head><style type='text/css'>*{color: #FFFFFF; background-color: transparent;}</style>";
         final String flattrCode = htmlStart + flattrJavascript + htmlMiddle
                                   + flattrHtml + htmlEnd;
         mFlattrWebview.getSettings().setJavaScriptEnabled(true);
