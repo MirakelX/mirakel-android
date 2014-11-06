@@ -20,6 +20,6 @@
 package de.azapps.mirakel.sync.taskwarrior.utilities;
 
 
-public class TaskWarriorTaskDeleted extends Exception {
+public class TaskWarriorTaskDeletedException extends Exception {
 
 }

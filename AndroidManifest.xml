@@ -1,8 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.azapps.mirakel.sync">
-        <uses-sdk android:minSdkVersion="14"
-                 android:targetSdkVersion="21" />
-                         <!-- need to build with gradle-->
-                                 <application />
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~      This program is free software: you can redistribute it and/or modify
+  ~      it under the terms of the GNU General Public License as published by
+  ~      the Free Software Foundation, either version 3 of the License, or
+  ~      any later version.
+  ~
+  ~      This program is distributed in the hope that it will be useful,
+  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~      GNU General Public License for more details.
+  ~
+  ~      You should have received a copy of the GNU General Public License
+  ~      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<manifest
+    package="de.azapps.mirakel.sync"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21"/>
+    <!-- need to build with gradle-->
+    <application>
+        <service
+            android:name="de.azapps.mirakel.sync.taskwarrior.services.SyncService"
+            android:exported="true"
+            android:permission="de.azapps.mirakel.SYNC">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter">
+                </action>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/adapter_sync">
+            </meta-data>
+        </service>
+        <activity
+            android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:label="@string/sync_taskwarrior_configure">
+            <intent-filter android:icon="@drawable/mirakel"
+                           android:label="@string/create_account"
+                           android:priority="999">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.taskdconfig" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="de.azapps.mirakel.sync.taskwarrior.services.AuthenticationService"
+            android:exported="true"
+            android:permission="de.azapps.mirakel.SYNC">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator"/>
+        </service>
+    </application>
 </manifest>

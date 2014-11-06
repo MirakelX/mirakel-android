@@ -73,7 +73,7 @@ import de.azapps.mirakel.sync.taskwarrior.network_helper.TLSClient.NoSuchCertifi
 import de.azapps.mirakel.sync.taskwarrior.utilities.TW_ERRORS;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorAccount;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorSyncFailedException;
-import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeleted;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeletedException;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
@@ -390,8 +390,8 @@ public class TaskWarriorSync {
         for (final String uuid : uuids) {
             try {
                 pendingOperations.add(remoteTasks.get(uuid).getInsert(inbox.getId(), projectMapping));
-            } catch (TaskWarriorTaskDeleted taskWarriorTaskDeleted) {
-                Log.d(TAG, "task is deleted, we do not need to handle this here");
+            } catch (final TaskWarriorTaskDeletedException e) {
+                Log.d(TAG, "task is deleted, we do not need to handle this here", e);
             }
             newUUIDS.add(uuid);
         }
@@ -421,8 +421,8 @@ public class TaskWarriorSync {
                     pendingOperations.add(remoteTask.getUpdate(local_id, additionals, projectMapping, inbox.getId()));
                     allUpdatedTasks.add(local_id);
                     idMapping.put(uuid, local_id);
-                } catch (TaskWarriorTaskDeleted taskWarriorTaskDeleted) {
-                    Log.w(TAG, "however this task can be deleted here, anyway delete it");
+                } catch (final TaskWarriorTaskDeletedException e) {
+                    Log.w(TAG, "however this task can be deleted here, anyway delete it", e);
                     allDeletedTasks.add(local_id);
                 }
             } else {

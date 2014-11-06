@@ -102,14 +102,12 @@ public class TLSClient {
     throws ParseException {
         String[] tokens = pem.split(beginDelimiter);
         if (tokens.length < 2) {
-            Log.wtf(TAG, pem);
             throw new ParseException("Wrong PEM format", 0);
         }
         tokens = tokens[1].split(endDelimiter);
         try {
             return Base64.decode(tokens[0], Base64.NO_PADDING);
         } catch (final IllegalArgumentException e) {
-            Log.e(TAG, "bad base-64", e);
             throw new ParseException("bad base-64", 0);
         }
     }

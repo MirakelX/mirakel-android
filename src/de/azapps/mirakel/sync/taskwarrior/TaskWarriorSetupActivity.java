@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -84,9 +85,7 @@ public class TaskWarriorSetupActivity extends Activity {
                     return RESULT_ERROR;
                 }
                 setupTaskWarrior(connection.getInputStream(), false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (final Exception e) {
+            } catch (final IOException e) {
                 Log.e(TAG, "Could not download config", e);
                 return RESULT_ERROR;
             }
@@ -120,6 +119,7 @@ public class TaskWarriorSetupActivity extends Activity {
 
     private static final int CONFIG_QR = 0, CONFIG_TASKWARRIOR = 1;
 
+    @NonNull
     private AccountManager mAccountManager;
 
     private ProgressDialog progressDialog;
@@ -137,16 +137,20 @@ public class TaskWarriorSetupActivity extends Activity {
             setupTaskwarriorFromURL(inputUrl);
             break;
         case CONFIG_TASKWARRIOR:
-            try {
-                final InputStream stream = FileUtils.getStreamFromUri(this, data.getData());
-                setupTaskWarrior(stream, true);
-            } catch (final FileNotFoundException e) {
-                Log.e(TAG, "File not found", e);
-                ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
-            }
+            handleFileIntent(data);
             break;
         default:
             break;
+        }
+    }
+
+    private void handleFileIntent(final Intent data) {
+        try {
+            final InputStream stream = FileUtils.getStreamFromUri(this, data.getData());
+            setupTaskWarrior(stream, true);
+        } catch (final FileNotFoundException e) {
+            Log.e(TAG, "File not found", e);
+            ErrorReporter.report(ErrorType.TASKWARRIOR_FILE_NOT_FOUND);
         }
     }
 
@@ -154,9 +158,15 @@ public class TaskWarriorSetupActivity extends Activity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mAccountManager = AccountManager.get(this);
+        final Intent intent = getIntent();
+        if ((intent != null) && Intent.ACTION_VIEW.equals(intent.getAction()) &&
+            (intent.getData() != null)) {
+            handleFileIntent(intent);
+        }
         if (MirakelCommonPreferences.isDark()) {
             setTheme(R.style.AppBaseThemeDARK);
         }
+
         setContentView(R.layout.activity_sync_taskwarrior);
         final Button scanQR = (Button) findViewById(R.id.sync_taskwarrior_scan_qr);
         scanQR.setOnClickListener(new OnClickListener() {

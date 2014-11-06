@@ -43,7 +43,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeleted;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeletedException;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
@@ -272,14 +272,14 @@ public class TaskWarriorTask {
     @NonNull
     public ContentProviderOperation getUpdate(final long local_id,
             final @NonNull String additional_column, final @NonNull Map<String, Long> projectMapping,
-            final long inboxID) throws TaskWarriorTaskDeleted {
+            final long inboxID) throws TaskWarriorTaskDeletedException {
         return ContentProviderOperation.newUpdate(Task.URI).withValues(getContentValues(projectMapping,
                 of(additional_column), inboxID)).withSelection(Task.ID + "=?", new String[] {String.valueOf(local_id)}).build();
     }
 
     @NonNull
     public ContentProviderOperation getInsert(final long inboxID,
-            @NonNull final Map<String, Long> projectMapping) throws TaskWarriorTaskDeleted {
+            @NonNull final Map<String, Long> projectMapping) throws TaskWarriorTaskDeletedException {
         return ContentProviderOperation.newInsert(Task.URI).withValues(getContentValues(projectMapping,
                 Optional.<String>absent(), inboxID)).build();
     }
@@ -287,7 +287,7 @@ public class TaskWarriorTask {
     @NonNull
     private ContentValues getContentValues(final @NonNull Map<String, Long> projectMapping,
                                            final @NonNull Optional<String> additional_string,
-                                           final long inboxID) throws TaskWarriorTaskDeleted {
+                                           final long inboxID) throws TaskWarriorTaskDeletedException {
         Map<String, String> additionalEntries = OptionalUtils.withOptional(additional_string,
         new Function<String, Map<String, String>>() {
             @Override
@@ -306,7 +306,7 @@ public class TaskWarriorTask {
             break;
         case DELETED:
             // must be handled elsewhere
-            throw new TaskWarriorTaskDeleted();
+            throw new TaskWarriorTaskDeletedException();
         case COMPLETED:
             cv.put(Task.DONE, true);
             break;
@@ -326,7 +326,7 @@ public class TaskWarriorTask {
                 cv.put(Task.PRIORITY, 1);
                 break;
             case L:
-                if (priorityNumber.isPresent() && (priorityNumber.get() == -1 || priorityNumber.get() == -2)) {
+                if (priorityNumber.isPresent() && ((priorityNumber.get() == -1) || (priorityNumber.get() == -2))) {
                     cv.put(Task.PRIORITY, priorityNumber.get());
                 } else {
                     cv.put(Task.PRIORITY, -2);
