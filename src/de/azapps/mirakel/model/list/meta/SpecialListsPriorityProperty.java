@@ -46,7 +46,7 @@ public class SpecialListsPriorityProperty extends SpecialListsSetProperty {
         if (oldProperty instanceof SpecialListsPriorityProperty) {
             content = ((SpecialListsPriorityProperty) oldProperty).getContent();
         } else {
-            content = new ArrayList<>();
+            content = new ArrayList<>(5);
         }
     }
 
@@ -57,9 +57,9 @@ public class SpecialListsPriorityProperty extends SpecialListsSetProperty {
 
     @NonNull
     @Override
-    public String getSummary(@NonNull final Context mContext) {
-        return (this.isSet ? mContext.getString(R.string.not_in)
-                : "") + " " + TextUtils.join(", ", content);
+    public String getSummary(@NonNull final Context ctx) {
+        return (this.isSet ? ctx.getString(R.string.not_in)
+                : "") + ' ' + TextUtils.join(", ", content);
     }
 
     @NonNull
@@ -70,11 +70,13 @@ public class SpecialListsPriorityProperty extends SpecialListsSetProperty {
 
     public static final Creator<SpecialListsPriorityProperty> CREATOR = new
     Creator<SpecialListsPriorityProperty>() {
-        public SpecialListsPriorityProperty createFromParcel(Parcel source) {
+        @Override
+        public SpecialListsPriorityProperty createFromParcel(final Parcel source) {
             return new SpecialListsPriorityProperty(source);
         }
 
-        public SpecialListsPriorityProperty[] newArray(int size) {
+        @Override
+        public SpecialListsPriorityProperty[] newArray(final int size) {
             return new SpecialListsPriorityProperty[size];
         }
     };
