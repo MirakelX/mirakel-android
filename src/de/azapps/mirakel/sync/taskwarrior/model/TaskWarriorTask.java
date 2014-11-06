@@ -43,6 +43,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeleted;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
@@ -271,21 +272,22 @@ public class TaskWarriorTask {
     @NonNull
     public ContentProviderOperation getUpdate(final long local_id,
             final @NonNull String additional_column, final @NonNull Map<String, Long> projectMapping,
-            final long inboxID) {
+            final long inboxID) throws TaskWarriorTaskDeleted {
         return ContentProviderOperation.newUpdate(Task.URI).withValues(getContentValues(projectMapping,
                 of(additional_column), inboxID)).withSelection(Task.ID + "=?", new String[] {String.valueOf(local_id)}).build();
     }
 
     @NonNull
     public ContentProviderOperation getInsert(final long inboxID,
-            @NonNull final Map<String, Long> projectMapping) {
+            @NonNull final Map<String, Long> projectMapping) throws TaskWarriorTaskDeleted {
         return ContentProviderOperation.newInsert(Task.URI).withValues(getContentValues(projectMapping,
                 Optional.<String>absent(), inboxID)).build();
     }
 
     @NonNull
     private ContentValues getContentValues(final @NonNull Map<String, Long> projectMapping,
-                                           final @NonNull Optional<String> additional_string, final long inboxID) {
+                                           final @NonNull Optional<String> additional_string,
+                                           final long inboxID) throws TaskWarriorTaskDeleted {
         Map<String, String> additionalEntries = OptionalUtils.withOptional(additional_string,
         new Function<String, Map<String, String>>() {
             @Override
@@ -304,7 +306,7 @@ public class TaskWarriorTask {
             break;
         case DELETED:
             // must be handled elsewhere
-            throw new IllegalStateException("Task is deleted, cannot get the contetvalues");
+            throw new TaskWarriorTaskDeleted();
         case COMPLETED:
             cv.put(Task.DONE, true);
             break;

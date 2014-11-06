@@ -73,6 +73,7 @@ import de.azapps.mirakel.sync.taskwarrior.network_helper.TLSClient.NoSuchCertifi
 import de.azapps.mirakel.sync.taskwarrior.utilities.TW_ERRORS;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorAccount;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorSyncFailedException;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeleted;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
@@ -175,7 +176,7 @@ public class TaskWarriorSync {
 
             final List<String> uuids = new ArrayList<>(remoteTasks.keySet());
             if (!uuids.isEmpty()) {
-                for (int i = 0; i < (remoteTasks.size() / MAX_TASKS_PER_TRANSAKTION) + 1; i++) {
+                for (int i = 0; i < ((remoteTasks.size() / MAX_TASKS_PER_TRANSAKTION) + 1); i++) {
                     int end = (((i + 1) * MAX_TASKS_PER_TRANSAKTION) >= remoteTasks.size()) ? remoteTasks.size() : ((
                                   i + 1) * MAX_TASKS_PER_TRANSAKTION);
                     final List<String> transaction_uuids = uuids.subList(i * MAX_TASKS_PER_TRANSAKTION, end);
@@ -255,7 +256,8 @@ public class TaskWarriorSync {
     }
 
     @NonNull
-    private TLSClient setupConnection(@NonNull final TaskWarriorAccount taskWarriorAccount) throws
+    private static TLSClient setupConnection(@NonNull final TaskWarriorAccount taskWarriorAccount)
+    throws
         TaskWarriorSyncFailedException {
         final TLSClient client = new TLSClient();
         try {
@@ -286,8 +288,8 @@ public class TaskWarriorSync {
     }
 
     @NonNull
-    private Optional<String> parseTasks(final @NonNull Msg remotes,
-                                        final @NonNull Map<String, TaskWarriorTask> remoteTasks) {
+    private static Optional<String> parseTasks(final @NonNull Msg remotes,
+            final @NonNull Map<String, TaskWarriorTask> remoteTasks) {
         Optional<String> newSyncKey = absent();
         final String tasksString[] = remotes.getPayload().split("\n");
         final Gson gson = new GsonBuilder().registerTypeAdapter(TaskWarriorTask.class,
@@ -386,7 +388,11 @@ public class TaskWarriorSync {
                                       final @NonNull List<String> uuids, final @NonNull List<String> newUUIDS,
                                       final @NonNull ArrayList<ContentProviderOperation> pendingOperations) {
         for (final String uuid : uuids) {
-            pendingOperations.add(remoteTasks.get(uuid).getInsert(inbox.getId(), projectMapping));
+            try {
+                pendingOperations.add(remoteTasks.get(uuid).getInsert(inbox.getId(), projectMapping));
+            } catch (TaskWarriorTaskDeleted taskWarriorTaskDeleted) {
+                Log.d(TAG, "task is deleted, we do not need to handle this here");
+            }
             newUUIDS.add(uuid);
         }
     }
@@ -411,9 +417,14 @@ public class TaskWarriorSync {
             final String additionals = c.getString(additional_column);
             final TaskWarriorTask remoteTask = remoteTasks.get(uuid);
             if (remoteTask.isNotDeleted()) {
-                pendingOperations.add(remoteTask.getUpdate(local_id, additionals, projectMapping, inbox.getId()));
-                allUpdatedTasks.add(local_id);
-                idMapping.put(uuid, local_id);
+                try {
+                    pendingOperations.add(remoteTask.getUpdate(local_id, additionals, projectMapping, inbox.getId()));
+                    allUpdatedTasks.add(local_id);
+                    idMapping.put(uuid, local_id);
+                } catch (TaskWarriorTaskDeleted taskWarriorTaskDeleted) {
+                    Log.w(TAG, "however this task can be deleted here, anyway delete it");
+                    allDeletedTasks.add(local_id);
+                }
             } else {
                 allDeletedTasks.add(local_id);
             }
@@ -431,8 +442,8 @@ public class TaskWarriorSync {
                 projects.add(t.getProject());
             }
         }
-        final Map<String, Long> projectMapping = new HashMap<>();
-        Cursor c = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
+        final Map<String, Long> projectMapping = new HashMap<>(projects.size());
+        final Cursor c = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
                 new ArrayList<>(projects))
         .and(ListMirakel.ACCOUNT_ID, Operation.EQ, taskWarriorAccount.getAccountMirakel().getId())
         .select(Arrays.asList(new String[] {ListMirakel.ID, ListMirakel.NAME})).query(ListMirakel.URI);
@@ -464,7 +475,7 @@ public class TaskWarriorSync {
             }
         }
 
-        final Map<String, Long> tagMapping = new HashMap<>();
+        final Map<String, Long> tagMapping = new HashMap<>(tagList.size());
         final Cursor c = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
                 new ArrayList<>(tagList)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI);
         final int id_column = c.getColumnIndex(Tag.ID);
