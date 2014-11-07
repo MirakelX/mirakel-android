@@ -382,7 +382,7 @@ public class ReminderAlarm extends BroadcastReceiver {
         allReminders.remove(taskId);
     }
 
-    public static void stopAll(final Context context) {
+    public static void restart(final Context context) {
         final NotificationManager nm = (NotificationManager) context
                                        .getSystemService(Context.NOTIFICATION_SERVICE);
         // This hack is a must because otherwise we get a
@@ -392,5 +392,6 @@ public class ReminderAlarm extends BroadcastReceiver {
             nm.cancel(DefinitionsHelper.NOTIF_REMINDER + id.intValue());
             cancelAlarm(context, Task.get(id).orNull());
         }
+        updateAlarms(context);
     }
 }
