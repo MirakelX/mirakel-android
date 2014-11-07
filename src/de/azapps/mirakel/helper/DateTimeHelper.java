@@ -21,6 +21,7 @@ package de.azapps.mirakel.helper;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 
@@ -118,6 +119,7 @@ public class DateTimeHelper {
      *            the local Calendar
      * @return utc time in s, 0 if calendar is null
      */
+    @Nullable
     public static Long getUTCTime(final @NonNull Optional<Calendar> c) {
         if (!c.isPresent()) {
             return null;
