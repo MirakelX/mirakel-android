@@ -36,7 +36,7 @@ public class NegatedDeserializer<T extends SpecialListsBooleanProperty> implemen
 
     private static final String TAG = "NegatedDeserializer";
 
-    private Class clazz;
+    private final Class clazz;
 
     public NegatedDeserializer(@NonNull final Class<T> clazz) {
         this.clazz = clazz;

@@ -57,8 +57,8 @@ public class SetDeserializer<T extends SpecialListsSetProperty> implements
 
                 if (entry.getValue().isJsonArray()
                     && "content".equals(entry.getKey())) {
-                    content = new ArrayList<>();
-                    for (JsonElement el : ((JsonArray)entry.getValue())) {
+                    content = new ArrayList<>(entry.getValue().getAsJsonArray().size());
+                    for (final JsonElement el : ((JsonArray)entry.getValue())) {
                         if (el.isJsonPrimitive() && el.getAsJsonPrimitive().isNumber()) {
                             content.add(el.getAsInt());
                         }
@@ -70,7 +70,7 @@ public class SetDeserializer<T extends SpecialListsSetProperty> implements
                     throw new JsonParseException("unknown format");
                 }
             }
-            if (content != null && negated != null) {
+            if ((content != null) && (negated != null)) {
                 try {
                     return (T)clazz.getConstructor(boolean.class, List.class).newInstance(negated, content);
                 } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
