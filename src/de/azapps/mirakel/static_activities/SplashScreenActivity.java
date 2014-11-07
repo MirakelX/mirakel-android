@@ -42,9 +42,9 @@ public class SplashScreenActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Setup splashscreen
-        if (getIntent() != null && getIntent().getAction() == EXIT) {
+        if ((getIntent() != null) && (EXIT.equals(getIntent().getAction()))) {
             NotificationService.stop(this);
-            ReminderAlarm.stopAll(this);
+            ReminderAlarm.restart(this);
             if (startService(new Intent(SplashScreenActivity.this,
                                         NotificationService.class)) != null) {
                 stopService(new Intent(SplashScreenActivity.this,
