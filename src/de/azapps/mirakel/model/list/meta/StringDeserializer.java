@@ -82,7 +82,7 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                             searchString, Type.values()[type]);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                              NoSuchMethodException e) {
-                    throw new JsonParseException("Could not create new StringDeserializer", e);
+                    throw new JsonParseException("Could not create new StringProperty", e);
                 }
             }
         }
