@@ -21,7 +21,9 @@ public class ErrorReporter {
         if (context == null) {
             return;
         }
-        Looper.prepare();
+        if (Looper.myLooper() == null) { // check already Looper is associated or not.
+            Looper.prepare(); // No Looper is defined So define a new one
+        }
         if (toast != null) {
             toast.cancel();
         }
