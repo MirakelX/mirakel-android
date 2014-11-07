@@ -445,7 +445,9 @@ public class ListMirakel extends ListBase {
         }
         j = el.get("sort_by");
         if (j != null) {
-            t.setSortBy(SORT_BY.fromShort(j.getAsShort()));
+            if (j.getAsJsonPrimitive().isNumber()) {
+                t.setSortBy(SORT_BY.fromShort(j.getAsShort()));
+            }
         }
         return t;
     }
@@ -666,7 +668,7 @@ public class ListMirakel extends ListBase {
         json += "\"lft\":" + getLft() + ',';
         json += "\"rgt\":" + getRgt() + ',';
         json += "\"sort_by\":" + getSortBy() + ',';
-        json += "\"sync_state\":" + getSyncState();
+        json += "\"sync_state\":" + getSyncState().toInt();
         json += "}";
         return json;
     }
