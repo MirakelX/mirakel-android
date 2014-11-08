@@ -47,6 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchTaskException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -139,12 +140,12 @@ public class ReminderAlarm extends BroadcastReceiver {
         // Build Notification
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(
             context);
-        final int icon = R.drawable.mirakel;
         builder.setContentTitle(
             context.getString(R.string.reminder_notification_title,
                               task.getName()))
         .setContentText(task.getContent())
-        .setSmallIcon(icon)
+        .setSmallIcon(R.drawable.ic_mirakel)
+        .setLargeIcon(Helpers.getBitmap(R.drawable.mirakel, context))
         .setContentIntent(pOpenIntent)
         .setLights(Color.BLUE, 1500, 300)
         .setOngoing(persistent)
@@ -243,6 +244,7 @@ public class ReminderAlarm extends BroadcastReceiver {
                                           AlarmManager.INTERVAL_DAY, pendingIntent);
                 // Alarms
                 final List<Task> tasks = Task.getTasksWithReminders();
+                final Calendar now = new GregorianCalendar();
                 for (final Pair<Task, PendingIntent> p : activeAlarms) {
                     final Task t = p.first;
                     final Task newTask = Task.get(t.getId()).orNull();
@@ -253,7 +255,6 @@ public class ReminderAlarm extends BroadcastReceiver {
                             new GregorianCalendar())) {
                         cancelAlarm(ctx, t, newTask, p, p.second);
                     } else if (newTask.getReminder().isPresent()) {
-                        final Calendar now = new GregorianCalendar();
                         if (newTask.getReminder().get().after(now)
                             && !newTask.getRecurringReminder().isPresent()) {
                             closeNotificationFor(ctx, t.getId());

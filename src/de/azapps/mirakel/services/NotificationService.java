@@ -36,6 +36,7 @@ import com.google.common.base.Optional;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -126,11 +127,11 @@ public class NotificationService extends Service {
         }
         final boolean persistent = MirakelCommonPreferences
                                    .usePersistentNotifications();
-        final int icon = R.drawable.mirakel;
         // Build notification
         final NotificationCompat.Builder noti = new NotificationCompat.Builder(
             this).setContentTitle(notificationTitle)
-        .setContentText(notificationText).setSmallIcon(icon)
+        .setContentText(notificationText).setSmallIcon(R.drawable.ic_mirakel)
+        .setLargeIcon(Helpers.getBitmap(R.drawable.mirakel, getBaseContext()))
         .setContentIntent(pOpenIntent).setOngoing(persistent);
         // Big View
         if ((todayTasks.size() > 1)
