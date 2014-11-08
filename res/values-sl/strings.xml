@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Omogoči branje in zapisovanje podatkov</string>
   <string name="permission_read_write_desc">Dovoljenje za branje in zapisovanje podatkov v programu Mirakel</string>
   <string name="title_settings">Nastavitve</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Poišči naloge</string>
   <string name="search">Poišči</string>
   <string name="search_result_title">Poišči %s</string>

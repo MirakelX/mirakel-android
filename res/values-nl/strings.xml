@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Lezen/schrijven Mirakel gegevens</string>
   <string name="permission_read_write_desc">Toestemming om gegevens te lezen en schrijven naar Mirakel</string>
   <string name="title_settings">Instellingen</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Zoek taken</string>
   <string name="search">Zoeken</string>
   <string name="search_result_title">Zoeken voor %s</string>

@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Carregar/Gravar dados Mirakel</string>
   <string name="permission_read_write_desc">Permissão para ler e escrever dados no Mirakel</string>
   <string name="title_settings">Definições</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Procurar tarefas</string>
   <string name="search">Procurar</string>
   <string name="search_result_title">Procurar %s</string>

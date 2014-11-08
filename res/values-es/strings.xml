@@ -7,7 +7,6 @@
   <string name="permission_write_desc">Permiso para escribir datos en Mirakel</string>
   <string name="permission_read_write_lbl">Leer/Escribir datos de Mirakel</string>
   <string name="title_settings">Configuración</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Buscar tareas</string>
   <string name="search">Buscar</string>
   <string name="search_result_title">Buscar %s</string>

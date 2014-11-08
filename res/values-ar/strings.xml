@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">القراءة/الكتابة Mirakel-البيانات</string>
   <string name="permission_read_write_desc">إذن قراءة البيانات من وكتابة البيانات إلى Mirakel</string>
   <string name="title_settings">إعدادات</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">البحث في المهام</string>
   <string name="search">بحث</string>
   <string name="search_result_title">البحث عن %s</string>
