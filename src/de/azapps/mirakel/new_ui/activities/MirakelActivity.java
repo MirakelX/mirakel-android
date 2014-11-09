@@ -80,7 +80,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     // Override functions
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         actionbar = (Toolbar) findViewById(R.id.actionbar);
@@ -150,7 +150,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
                 return true;
             }
         }
-        int id = item.getItemId();
+        final int id = item.getItemId();
         if (id == R.id.action_settings) {
             final Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);

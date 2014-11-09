@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -46,8 +45,6 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
@@ -65,10 +62,10 @@ import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.tools.Log;
-import de.azapps.tools.OptionalUtils.Procedure;
 import de.azapps.widgets.SupportDateTimeDialog;
 
 import static com.google.common.base.Optional.of;
+import static de.azapps.tools.OptionalUtils.Procedure;
 
 public class TaskFragment extends DialogFragment {
 
@@ -94,22 +91,23 @@ public class TaskFragment extends DialogFragment {
     private Button doneButton;
 
     private MirakelContentObserver observer;
+    private InputMethodManager inputMethodManager;
 
 
     public TaskFragment() {
     }
 
-    public static TaskFragment newInstance(Task task) {
-        TaskFragment f = new TaskFragment();
+    public static TaskFragment newInstance(final Task task) {
+        final TaskFragment taskFragment = new TaskFragment();
         // Supply num input as an argument.
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_TASK, task);
-        f.setArguments(args);
-        return f;
+        taskFragment.setArguments(args);
+        return taskFragment;
     }
 
     private void updateTask() {
-        Optional<Task> taskOptional = Task.get(task.getId());
+        final Optional<Task> taskOptional = Task.get(task.getId());
         if (taskOptional.isPresent()) {
             task = taskOptional.get();
         } // else do nothing
@@ -118,43 +116,44 @@ public class TaskFragment extends DialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
-        Bundle arguments = getArguments();
+        final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
-        Map<Uri, MirakelContentObserver.ObserverCallBack> callBackMap = new HashMap<>();
-        callBackMap.put(Task.URI, new MirakelContentObserver.ObserverCallBack() {
+        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
+        new MirakelContentObserver.ObserverCallBack() {
             @Override
             public void handleChange() {
                 updateTask();
             }
 
             @Override
-            public void handleChange(long id) {
+            public void handleChange(final long id) {
                 updateTask();
             }
         });
-        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(),
-                                              callBackMap);
+        inputMethodManager = (InputMethodManager) getActivity().getSystemService(
+                                 Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(final DialogInterface dialog) {
+        super.onDismiss(dialog);
         if (observer != null && getActivity() != null && getActivity().getContentResolver() != null) {
             getActivity().getContentResolver().unregisterContentObserver(observer);
         }
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(final Activity activity) {
         super.onAttach(activity);
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
         ////////////////////////////////////////
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.fragment_task, container, false);
@@ -170,14 +169,12 @@ public class TaskFragment extends DialogFragment {
         addMoreButton = (Button) layout.findViewById(R.id.task_button_add_more);
         doneButton = (Button) layout.findViewById(R.id.task_button_done);
         updateAll();
-        if (task.isStub()) {
-            taskNameViewSwitcher.showNext();
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                                         Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(taskNameEdit, InputMethodManager.SHOW_IMPLICIT);
-            taskNameEdit.selectAll();
-        }
+
         return layout;
+    }
+
+    private void toggleKeyboard() {
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void updateAll() {
@@ -187,13 +184,13 @@ public class TaskFragment extends DialogFragment {
         progressDoneView.setChecked(task.isDone());
         progressDoneView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 task.setDone(isChecked);
                 task.save();
             }
         });
         taskName.setText(task.getName());
-        taskNameEdit.setText(task.getName());
+        initTaskNameEdit();
         taskName.setOnClickListener(onEditName);
         progressView.setProgress(task.getProgress());
         progressView.setOnProgressChangeListener(progressChangedListener);
@@ -207,69 +204,92 @@ public class TaskFragment extends DialogFragment {
         doneButton.setOnClickListener(onDoneButtonClickListener);
     }
 
-    private Procedure<Integer> progressChangedListener = new
+    private final Procedure<Integer> progressChangedListener = new
     Procedure<Integer>() {
         @Override
-        public void apply(Integer input) {
+        public void apply(final Integer input) {
             task.setProgress(input);
             task.save();
         }
     };
 
-    private View.OnClickListener onEditName = new View.OnClickListener() {
+    private void initTaskNameEdit() {
+        taskNameEdit.setText(task.getName());
+        // Show Keyboard if stub
+        if (task.isStub()) {
+            taskNameViewSwitcher.showNext();
+            taskNameEdit.selectAll();
+            taskNameEdit.requestFocus();
+            toggleKeyboard();
+        }
+        taskNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(final View v, final boolean hasFocus) {
+                if (hasFocus) {
+                    toggleKeyboard();
+                }
+            }
+        });
+        taskNameEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
+                switch (actionId) {
+                case EditorInfo.IME_ACTION_DONE:
+                case EditorInfo.IME_ACTION_SEND:
+                    updateName();
+                    return true;
+                }
+                return false;
+            }
+        });
+        taskNameEdit.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    updateName();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void updateName() {
+        toggleKeyboard();
+        taskNameEdit.clearFocus();
+        task.setName(taskNameEdit.getText().toString());
+        taskName.setText(task.getName());
+        task.save();
+        taskNameViewSwitcher.showPrevious();
+    }
+
+    private final View.OnClickListener onEditName = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             taskNameViewSwitcher.showNext();
             taskNameEdit.setText(task.getName());
             taskNameEdit.requestFocus();
-            taskNameEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    switch (actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                    case EditorInfo.IME_ACTION_SEND:
-                        updateName();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            taskNameEdit.setOnKeyListener(new View.OnKeyListener() {
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    // If the event is a key-down event on the "enter" button
-                    if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        updateName();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-        }
-
-        private void updateName() {
-            task.setName(taskNameEdit.getText().toString());
-            taskName.setText(task.getName());
-            task.save();
-            taskNameViewSwitcher.showNext();
         }
     };
 
-    private Procedure<String> noteChangedListener = new
+    private final Procedure<String> noteChangedListener = new
     Procedure<String>() {
         @Override
-        public void apply(String input) {
+        public void apply(final String input) {
             task.setContent(input);
             task.save();
         }
     };
     private final View.OnClickListener dueEditListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
-            SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(new
+        public void onClick(final View v) {
+            final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(new
             DatePicker.OnDateSetListener() {
                 @Override
-                public void onDateSet(DatePicker datePickerDialog, int year, int month, int day) {
+                public void onDateSet(final DatePicker datePickerDialog, final int year, final int month,
+                                      final int day) {
                     task.setDue(of((Calendar) new GregorianCalendar(year, month, day)));
                     task.save();
                 }
@@ -286,15 +306,15 @@ public class TaskFragment extends DialogFragment {
 
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>(getActivity(),
                     ListMirakel.getAllCursor(),
                     0, ListMirakel.class);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.task_move_to);
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                public void onClick(final DialogInterface dialogInterface, final int i) {
                     task.setList(adapter.getItem(i));
                     task.save();
                 }
@@ -304,11 +324,12 @@ public class TaskFragment extends DialogFragment {
     };
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
-            SupportDateTimeDialog dateTimeDialog = SupportDateTimeDialog.newInstance(
+        public void onClick(final View v) {
+            final SupportDateTimeDialog dateTimeDialog = SupportDateTimeDialog.newInstance(
             new SupportDateTimeDialog.OnDateTimeSetListener() {
                 @Override
-                public void onDateTimeSet(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
+                public void onDateTimeSet(final int year, final int month, final int dayOfMonth,
+                                          final int hourOfDay, final int minute) {
                     task.setReminder(of((Calendar) new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
                     task.save();
                 }
@@ -324,32 +345,32 @@ public class TaskFragment extends DialogFragment {
     };
 
 
-    private Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
+    private final Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
         @Override
-        public void apply(Task task) {
+        public void apply(final Task task) {
             task.toggleDone();
             task.save();
         }
     };
-    private View.OnClickListener onSubtaskAddListener = new View.OnClickListener() {
+    private final View.OnClickListener onSubtaskAddListener = new View.OnClickListener() {
         @Override
-        public void onClick(View view) {
-            AddSubtaskFragment addSubtaskFragment = AddSubtaskFragment.newInstance(task);
+        public void onClick(final View view) {
+            final AddSubtaskFragment addSubtaskFragment = AddSubtaskFragment.newInstance(task);
             addSubtaskFragment.show(getFragmentManager(), "subtaskAddDialog");
         }
     };
 
-    private OnTaskSelectedListener onSubtaskClickListener = new OnTaskSelectedListener() {
+    private final OnTaskSelectedListener onSubtaskClickListener = new OnTaskSelectedListener() {
         @Override
-        public void onTaskSelected(Task task) {
-            DialogFragment newFragment = TaskFragment.newInstance(task);
+        public void onTaskSelected(final Task task) {
+            final DialogFragment newFragment = TaskFragment.newInstance(task);
             newFragment.show(getFragmentManager(), "dialog");
         }
     };
 
-    private View.OnClickListener onDoneButtonClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onDoneButtonClickListener = new View.OnClickListener() {
         @Override
-        public void onClick(View view) {
+        public void onClick(final View view) {
             if (task.isStub()) {
                 try {
                     task.create();
