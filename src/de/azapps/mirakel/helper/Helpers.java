@@ -31,7 +31,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -199,6 +201,19 @@ public class Helpers {
         } catch (final android.content.ActivityNotFoundException ex) {
             ErrorReporter.report(ErrorType.NO_FILEMANAGER);
         }
+    }
+
+    public static Bitmap getBitmap(int resId, Context ctx) {
+        int mLargeIconWidth = (int) ctx.getResources().getDimension(
+                                  android.R.dimen.notification_large_icon_width);
+        int mLargeIconHeight = (int) ctx.getResources().getDimension(
+                                   android.R.dimen.notification_large_icon_height);
+        Drawable d = ctx.getResources().getDrawable(resId);
+        Bitmap b = Bitmap.createBitmap(mLargeIconWidth, mLargeIconHeight, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        d.setBounds(0, 0, mLargeIconWidth, mLargeIconHeight);
+        d.draw(c);
+        return b;
     }
 
 }
