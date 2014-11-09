@@ -105,7 +105,6 @@ public class Task extends TaskBase {
 
     Task() {
         super();
-        setId(-1L);
     }
 
     public Task(@NonNull final String name, @NonNull final ListMirakel list,
@@ -888,18 +887,23 @@ public class Task extends TaskBase {
         json += "\"content\":\"" + getContent() + "\",";
         json += "\"done\":" + (isDone() ? "true" : "false") + ',';
         json += "\"priority\":" + getPriority() + ',';
+        json += "\"progress\":" + getProgress() + ',';
         json += "\"list_id\":" + getList().getId() + ',';
+        json += "\"sync_state\":" + getSyncState().toInt() + ',';
         String s = "";
         if (getDue().isPresent()) {
-            s = DateTimeHelper.formatDate(getDue().get());
+            s = String.valueOf(DateTimeHelper.getUTCTime(getDue()));
         }
         json += "\"due\":\"" + s + "\",";
-        s = DateTimeHelper.formatDateTime(getReminder());
-        json += "\"reminder\":\"" + s + "\",";
+        if (getReminder().isPresent()) {
+            s = String.valueOf(DateTimeHelper.getUTCTime(getReminder()));
+            json += "\"reminder\":\"" + s + "\",";
+        }
         json += "\"sync_state\":" + getSyncState() + ',';
         json += Tag.serialize(getId()) + ',';
         json += "\"created_at\":\""
                 + DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
+        json += "\"show_recurring\":" + (isRecurringShown ? "true" : "false") + ',';
         return json + "\"updated_at\":\""
                + DateTimeHelper.formatDateTime(getUpdatedAt()) + "\"}";
     }

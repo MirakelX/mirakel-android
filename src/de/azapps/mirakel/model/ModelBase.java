@@ -38,8 +38,9 @@ abstract public class ModelBase implements Parcelable {
 
     public static final String ID = "_id";
     public static final String NAME = "name";
+    public static final long INVALID_ID = -1L;
 
-    private long id;
+    private long id = INVALID_ID;
     private String name = "";
 
     protected static Context context;

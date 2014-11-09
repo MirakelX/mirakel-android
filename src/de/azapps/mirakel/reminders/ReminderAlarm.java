@@ -179,9 +179,12 @@ public class ReminderAlarm extends BroadcastReceiver {
                                R.string.reminder_notification_due, due));
         builder.setStyle(inboxStyle);
         // Build notification
-        allReminders.add(task.getId());
-        nm.notify(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId(),
-                  builder.build());
+        if (!allReminders.contains(task.getId())) {
+            allReminders.add(task.getId());
+
+            nm.notify(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId(),
+                      builder.build());
+        }
     }
 
     private static AlarmManager alarmManager;
