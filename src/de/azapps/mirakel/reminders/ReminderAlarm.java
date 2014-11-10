@@ -147,6 +147,7 @@ public class ReminderAlarm extends BroadcastReceiver {
         .setSmallIcon(R.drawable.ic_mirakel)
         .setLargeIcon(Helpers.getBitmap(R.drawable.mirakel, context))
         .setContentIntent(pOpenIntent)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setLights(Color.BLUE, 1500, 300)
         .setOngoing(persistent)
         .setDefaults(Notification.DEFAULT_VIBRATE)
