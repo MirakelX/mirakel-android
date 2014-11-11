@@ -45,6 +45,10 @@ public class DefinitionsHelper {
     public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
     public static final String MAINWIDGET_CLASS = "de.azapps.mirakel.widget.MainWidgetProvider";
     public static final String EXTRA_LIST = "de.azapps.mirakel.EXTRA_LIST";
+    /**
+     * Do not use this for Intents. It is only for inter app communication
+     */
+    public static final String EXTRA_LIST_ID = "de.azapps.mirakel.EXTRA_LIST_ID";
     public static final String EXTRA_TASK = "de.azapps.mirakel.EXTRA_TASK";
     public static final String EXTRA_TASK_REMINDER = "de.azapps.mirakel.reminder.EXTRA_TASK";
     public static final String SHOW_TASK = "de.azapps.mirakel.SHOW_TASK";
