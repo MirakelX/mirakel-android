@@ -105,6 +105,7 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
