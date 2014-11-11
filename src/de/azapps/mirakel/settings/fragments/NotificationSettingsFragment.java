@@ -217,8 +217,7 @@ public class NotificationSettingsFragment extends PreferenceFragment {
                 e.putBoolean("remindersPersistent",
                              (Boolean) newValue);
                 e.commit();
-                ReminderAlarm
-                .stopAll(getActivity());
+                ReminderAlarm.restart(getActivity());
                 return true;
             }
         });
