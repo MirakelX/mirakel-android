@@ -20,6 +20,7 @@
 package de.azapps.mirakel.settings.model_settings.account;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,14 +28,17 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.Html;
 
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity;
+
+import static com.google.common.base.Optional.of;
 
 public class AccountSettingsActivity extends GenericModelListActivity<AccountMirakel> {
 
@@ -71,10 +75,21 @@ public class AccountSettingsActivity extends GenericModelListActivity<AccountMir
         }).show();
     }
 
+    @Override
+    protected boolean isSupport() {
+        return false;
+    }
+
     @NonNull
     @Override
-    protected GenericModelDetailFragment<AccountMirakel> getDetailFragment() {
-        return new AccountDetailFragment();
+    protected Optional<android.app.Fragment> getDetailFragment() {
+        return of((Fragment)new AccountDetailFragment());
+    }
+
+    @NonNull
+    @Override
+    protected Class<? extends GenericModelListActivity> getSelf() {
+        return AccountSettingsActivity.class;
     }
 
     @NonNull

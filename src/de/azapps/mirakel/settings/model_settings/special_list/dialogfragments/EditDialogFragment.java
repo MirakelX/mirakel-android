@@ -25,8 +25,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +38,12 @@ import android.widget.Spinner;
 
 import com.google.common.base.Optional;
 
-import static com.google.common.base.Optional.of;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList;
 import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList.CONJUNCTION;
 import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
@@ -55,7 +54,6 @@ import de.azapps.mirakel.model.list.meta.SpecialListsFileProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
-import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsReminderProperty;
@@ -76,9 +74,12 @@ import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.ed
 import de.azapps.mirakel.settings.model_settings.special_list.helper.SpecialListsConditionAdapter;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.of;
+
 public class EditDialogFragment extends DialogFragment implements Spinner.OnItemSelectedListener,
     View.OnClickListener {
 
+    public static final String DIALOG = "dialog";
     private OnPropertyEditListener onEditListener;
 
 
@@ -201,7 +202,6 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
 
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void handleNewFragment(final int id) {
         final BasePropertyFragement fragment;
         switch (id) {
@@ -267,11 +267,14 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             Log.wtf(TAG, "unknown type");
             return;
         }
-        if ((getView() != null) && (getView().findViewById(R.id.property_dialog_container) != null)) {
-            final FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.replace(R.id.property_dialog_container, fragment, "dialog");
-            transaction.commit();
-        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.replace(R.id.property_dialog_container, fragment, DIALOG);
+                transaction.commit();
+            }
+        });
         if (getDialog() != null) {
             getDialog().setTitle(property.getTitle(getActivity()));
         }
@@ -281,7 +284,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     @Override
     public void onClick(final View v) {
         final SpecialListsBaseProperty property = ((BasePropertyFragement)
-                getChildFragmentManager().findFragmentById(R.id.property_dialog_container)).getProperty();
+                getChildFragmentManager().findFragmentByTag(DIALOG)).getProperty();
         mList = execOnTree(mList, backStack, new WorkOnTree() {
             @Override
             public void onTreeExists(final int position,

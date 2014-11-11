@@ -21,6 +21,7 @@ package de.azapps.mirakel.settings.model_settings.special_list;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import com.google.common.base.Optional;
 
@@ -31,14 +32,27 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
 
+import static com.google.common.base.Optional.of;
+
 public class SpecialListListActivity extends GenericModelListActivity<SpecialList> {
+    @Override
+    protected boolean isSupport() {
+        return true;
+    }
+
+
     @NonNull
     @Override
-    protected GenericModelDetailFragment<SpecialList> getDetailFragment() {
-        return new SpecialListDetailFragment();
+    protected Optional<Fragment> getSupportDetailFragment() {
+        return of((Fragment)new SpecialListDetailFragment());
+    }
+
+    @NonNull
+    @Override
+    protected Class<? extends GenericModelListActivity> getSelf() {
+        return SpecialListListActivity.class;
     }
 
     @NonNull

@@ -19,43 +19,72 @@
 
 package de.azapps.mirakel.settings.model_settings.generic_list;
 
-import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.app.FragmentTransaction;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.special_list.SpecialListDetailFragment;
 
-public abstract class GenericModelListActivity<T extends ModelBase> extends Activity implements
+import static com.google.common.base.Optional.absent;
+
+public abstract class GenericModelListActivity<T extends ModelBase> extends FragmentActivity
+    implements
     GenericModelListFragment.Callbacks<T> {
 
     private static final int RESULT_ITEM = 0;
 
     private FrameLayout mDetailContainer;
-    private boolean mTwoPane = false;
+    private boolean mTwoPane;
+
+    protected abstract boolean isSupport();
 
     @NonNull
-    protected abstract GenericModelDetailFragment<T> getDetailFragment();
+    protected Optional<android.app.Fragment> getDetailFragment() {
+        return absent();
+    }
 
-    private GenericModelDetailFragment<T> instanceDetail(final @NonNull T item) {
-        Bundle arguments = new Bundle();
-        arguments.putParcelable(SpecialListDetailFragment.ARG_ITEM, item);
-        GenericModelDetailFragment<T> fragment = getDetailFragment();
-        fragment.setArguments(arguments);
-        return fragment;
+    @NonNull
+    protected  Optional<android.support.v4.app.Fragment> getSupportDetailFragment() {
+        return absent();
+    }
+
+    @NonNull
+    protected abstract Class<? extends GenericModelListActivity> getSelf();
+
+
+    private android.app.Fragment instanceDetail(final @NonNull T item) {
+        final Optional<android.app.Fragment> fragment = getDetailFragment();
+        if (!fragment.isPresent()) {
+            throw new IllegalStateException("Activity claims to have fragment, but do not have one. Please implement getDetailFragment().");
+        }
+        final Bundle arguments = new Bundle();
+        arguments.putParcelable(GenericModelDetailFragment.ARG_ITEM, item);
+        fragment.get().setArguments(arguments);
+        return fragment.get();
+    }
+
+    private android.support.v4.app.Fragment instanceSupportDetail(final @NonNull T item) {
+        final Optional<android.support.v4.app.Fragment> fragment = getSupportDetailFragment();
+        if (!fragment.isPresent()) {
+            throw new IllegalStateException("Activity claims to have fragment, but do not have one. Please implement getSupportDetailFragment().");
+        }
+        final Bundle arguments = new Bundle();
+        arguments.putParcelable(GenericModelDetailFragment.ARG_ITEM, item);
+        fragment.get().setArguments(arguments);
+        return fragment.get();
     }
 
     @NonNull
@@ -82,10 +111,15 @@ public abstract class GenericModelListActivity<T extends ModelBase> extends Acti
 
         mTwoPane = MirakelCommonPreferences.isTablet();
         mDetailContainer.setVisibility(mTwoPane ? View.VISIBLE : View.GONE);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction().replace(
-                                              R.id.generic_model_list_container, new GenericModelListFragment<T>());
+        final FragmentTransaction transaction = getFragmentManager().beginTransaction().replace(
+                R.id.generic_model_list_container, new GenericModelListFragment<T>());
         if (mTwoPane) {
-            transaction.replace(R.id.generic_model_detail_container, instanceDetail(getDefaultItem()));
+            if (!isSupport()) {
+                transaction.replace(R.id.generic_model_detail_container, instanceDetail(getDefaultItem()));
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                        instanceSupportDetail(getDefaultItem())).commit();
+            }
         }
         transaction.commit();
     }
@@ -104,8 +138,13 @@ public abstract class GenericModelListActivity<T extends ModelBase> extends Acti
             mDetailContainer.setVisibility(mTwoPane ? View.VISIBLE : View.GONE);
             invalidateOptionsMenu();
             if (mTwoPane) {
-                getFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
-                        instanceDetail(getDefaultItem())).commitAllowingStateLoss();
+                if (!isSupport()) {
+                    getFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                            instanceDetail(getDefaultItem())).commitAllowingStateLoss();
+                } else {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                            instanceSupportDetail(getDefaultItem())).commitAllowingStateLoss();
+                }
             } else if (oldItem != null) {
                 onItemSelected(oldItem);
             }
@@ -121,9 +160,15 @@ public abstract class GenericModelListActivity<T extends ModelBase> extends Acti
                 break;
             case GenericModelDetailActivity.SWITCH_LAYOUT:
                 if (mTwoPane && data != null) {
-                    getFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
-                            instanceDetail((T) data.getParcelableExtra(
-                                               GenericModelDetailFragment.ARG_ITEM))).commitAllowingStateLoss();
+                    if (!isSupport()) {
+                        getFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                                instanceDetail((T) data.getParcelableExtra(
+                                                   GenericModelDetailFragment.ARG_ITEM))).commitAllowingStateLoss();
+                    } else {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                                instanceSupportDetail((T) data.getParcelableExtra(
+                                                          GenericModelDetailFragment.ARG_ITEM))).commitAllowingStateLoss();
+                    }
                 }
             }
         }
@@ -178,15 +223,26 @@ public abstract class GenericModelListActivity<T extends ModelBase> extends Acti
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
-            getFragmentManager().beginTransaction()
-            .replace(R.id.generic_model_detail_container, instanceDetail(item)).commit();
+            if (!isSupport()) {
+                getFragmentManager().beginTransaction()
+                .replace(R.id.generic_model_detail_container, instanceDetail(item)).commit();
+            } else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                        instanceSupportDetail(item)).commit();
+            }
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, GenericModelDetailActivity.class);
             detailIntent.putExtra(GenericModelDetailFragment.ARG_ITEM, item);
-            detailIntent.putExtra(GenericModelDetailActivity.FRAGMENT,
-                                  ((Object) instanceDetail(item)).getClass());
+            if (!isSupport()) {
+                detailIntent.putExtra(GenericModelDetailActivity.FRAGMENT,
+                                      ((Object) instanceDetail(item)).getClass());
+            } else {
+                detailIntent.putExtra(GenericModelDetailActivity.FRAGMENT,
+                                      ((Object) instanceSupportDetail(item)).getClass());
+            }
+            detailIntent.putExtra(GenericModelDetailActivity.BACK_ACTIVITY, getSelf());
             startActivityForResult(detailIntent, RESULT_ITEM);
         }
     }

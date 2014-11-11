@@ -19,23 +19,39 @@
 
 package de.azapps.mirakel.settings.model_settings.tag;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
+
+import com.google.common.base.Optional;
 
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
+
+import static com.google.common.base.Optional.of;
 
 public class TagSettingsActivity extends GenericModelListActivity<Tag> {
 
+    @Override
+    protected boolean isSupport() {
+        return false;
+    }
+
     @NonNull
     @Override
-    protected GenericModelDetailFragment<Tag> getDetailFragment() {
-        return new TagDetailFragment();
+    protected Optional<Fragment> getDetailFragment() {
+        return of((android.app.Fragment)new TagDetailFragment());
     }
+
+    @NonNull
+    @Override
+    protected Class<? extends GenericModelListActivity> getSelf() {
+        return TagSettingsActivity.class;
+    }
+
 
     @NonNull
     @Override
