@@ -131,7 +131,7 @@ public class MirakelExtension extends DashClockExtension implements
                 final Task task = MirakelQueryBuilder.cursorToObject(cursor, Task.class);
                 final Optional<Calendar> dueOptional = task.getDue();
                 final StringBuilder taskRow = new StringBuilder();
-                if (dueOptional.isPresent()) {
+                if (dueOptional.isPresent() && showDue) {
                     taskRow.append(dateFormat.format(dueOptional.get().getTime())).append(": ");
                 }
                 taskRow.append(task.getName());
