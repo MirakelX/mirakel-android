@@ -44,11 +44,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.model.MirakelContentObserver;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -60,16 +58,16 @@ public class MirakelExtension extends DashClockExtension implements
     private static int notifId = 0;
 
     public static void reportError(final Context context, final String title, final String message) {
-        Notification notification = new NotificationCompat.Builder(context)
+        final Notification notification = new NotificationCompat.Builder(context)
         .setContentText(message)
         .setContentTitle(title)
         .setSmallIcon(R.drawable.mirakel).build();
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(
+        final NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(
                     Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notifId++, notification);
     }
 
-    public static void init(Context ctx) {
+    public static void init(final Context ctx) {
         DefinitionsHelper.init(ctx);
         MirakelPreferences.init(ctx);
         ErrorReporter.init(ctx);
@@ -84,10 +82,10 @@ public class MirakelExtension extends DashClockExtension implements
 
         init(this);
 
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         settings.registerOnSharedPreferenceChangeListener(this);
 
-        Map<Uri, MirakelContentObserver.ObserverCallBack> observerCallBackMap = new HashMap<>();
+        final Map<Uri, MirakelContentObserver.ObserverCallBack> observerCallBackMap = new HashMap<>(2);
         observerCallBackMap.put(Task.URI, this);
         observerCallBackMap.put(ListMirakel.URI, this);
         new MirakelContentObserver(new Handler(Looper.getMainLooper()), this, observerCallBackMap);
@@ -95,7 +93,7 @@ public class MirakelExtension extends DashClockExtension implements
 
 
     @Override
-    protected void onUpdateData(int reason) {
+    protected void onUpdateData(final int reason) {
         // Get values from Settings
         final Optional<ListMirakel> listMirakelOptional = SettingsHelper.getList();
         if (!listMirakelOptional.isPresent()) {
@@ -108,10 +106,10 @@ public class MirakelExtension extends DashClockExtension implements
         final Cursor cursor;
         try {
             cursor = mirakelQueryBuilder.query(Task.URI);
-        } catch (SecurityException e) {
+        } catch (final SecurityException ignored) {
             reportError(this, getString(R.string.no_permission_title), getString(R.string.no_permission));
             return;
-        } catch (Exception e) {
+        } catch (final RuntimeException e) {
             reportError(this, getString(R.string.cannot_communicate), getString(R.string.unexpected_error));
             Log.e(TAG, "Cannot communicate to Mirakel", e);
             return;
@@ -130,11 +128,11 @@ public class MirakelExtension extends DashClockExtension implements
             final String tasks[] = new String[Math.min(maxTasks, cursor.getCount())];
             int i = 0;
             while (cursor.moveToNext() && i < maxTasks) {
-                Task task = MirakelQueryBuilder.cursorToObject(cursor, Task.class);
-                Optional<Calendar> dueOptional = task.getDue();
-                StringBuilder taskRow = new StringBuilder();
+                final Task task = MirakelQueryBuilder.cursorToObject(cursor, Task.class);
+                final Optional<Calendar> dueOptional = task.getDue();
+                final StringBuilder taskRow = new StringBuilder();
                 if (dueOptional.isPresent()) {
-                    taskRow.append(dateFormat.format(dueOptional.get().getTime()) + ": ");
+                    taskRow.append(dateFormat.format(dueOptional.get().getTime())).append(": ");
                 }
                 taskRow.append(task.getName());
                 tasks[i] = taskRow.toString();
@@ -143,22 +141,22 @@ public class MirakelExtension extends DashClockExtension implements
             cursor.close();
 
             // Add click-event
-            Intent intent = new Intent(Intent.ACTION_MAIN);
+            final Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setComponent(new ComponentName("de.azapps.mirakelandroid",
                                                   "de.azapps.mirakel.main_activity.MainActivity"));
             intent.setAction("de.azapps.mirakel.SHOW_LIST");
-            intent.putExtra("de.azapps.mirakel.EXTRA_TASKID", listMirakel.getId());
+            intent.putExtra("de.azapps.mirakel.EXTRA_LIST_ID", listMirakel.getId());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             // Set Content
             publishUpdate(new ExtensionData().visible(true)
-                          .icon(R.drawable.bw_mirakel).status(status)
+                          .icon(R.drawable.ic_mirakel).status(status)
                           .expandedBody(TextUtils.join("\n", tasks)).clickIntent(intent));
         }
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
         onUpdateData(UPDATE_REASON_SETTINGS_CHANGED);
     }
 
@@ -168,7 +166,7 @@ public class MirakelExtension extends DashClockExtension implements
     }
 
     @Override
-    public void handleChange(long id) {
+    public void handleChange(final long id) {
         onUpdateData(UPDATE_REASON_CONTENT_CHANGED);
     }
 }

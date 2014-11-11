@@ -21,7 +21,6 @@ package de.azapps.mirakel.dashclock;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -35,7 +34,6 @@ import com.google.common.base.Optional;
 
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
@@ -44,14 +42,14 @@ public class MirakelSettingsActivity extends PreferenceActivity {
     private NumberPicker numberPicker;
 
     @SuppressWarnings("deprecation") // because we use the PreferenceActivity
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         // Init stuff
         super.onCreate(savedInstanceState);
         MirakelExtension.init(this);
 
         // Set ActionBar stuff
-        Drawable d = getResources().getDrawable(R.drawable.bw_mirakel);
-        getActionBar().setIcon(d);
+        final Drawable drawable = getResources().getDrawable(R.drawable.ic_mirakel);
+        getActionBar().setIcon(drawable);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getListView().setDividerHeight(0);
         addPreferencesFromResource(R.xml.pref_xml);
@@ -61,7 +59,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
         final Preference showTasksPreference = findPreference("showTasks");
 
         // List preference
-        Optional<ListMirakel> listMirakelOptional = SettingsHelper.getList();
+        final Optional<ListMirakel> listMirakelOptional = SettingsHelper.getList();
         if (listMirakelOptional.isPresent()) {
             startupListPreference.setSummary(listMirakelOptional.get().getName());
         } else {
@@ -70,15 +68,15 @@ public class MirakelSettingsActivity extends PreferenceActivity {
         startupListPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Cursor cursor = new MirakelQueryBuilder(MirakelSettingsActivity.this).query(
+                final Cursor cursor = new MirakelQueryBuilder(MirakelSettingsActivity.this).query(
                     MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
                 final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>
                 (MirakelSettingsActivity.this, cursor, 0, ListMirakel.class);
-                AlertDialog.Builder builder = new AlertDialog.Builder(MirakelSettingsActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MirakelSettingsActivity.this);
                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ListMirakel list = adapter.getItem(which);
+                        final ListMirakel list = adapter.getItem(which);
                         SettingsHelper.setList(list);
                         startupListPreference.setSummary(list.getName());
                     }
@@ -89,7 +87,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
             }
         });
         // Show tasks
-        int maxTasks = SettingsHelper.getMaxTasks();
+        final int maxTasks = SettingsHelper.getMaxTasks();
         showTasksPreference.setSummary(getResources().getQuantityString(R.plurals.how_many,
                                        maxTasks, maxTasks));
         final Context ctx = this;
@@ -111,7 +109,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,
                                         int whichButton) {
-                        int count = numberPicker.getValue();
+                        final int count = numberPicker.getValue();
                         SettingsHelper.setMaxTasks(count);
                         showTasksPreference.setSummary(getResources()
                                                        .getQuantityString(
@@ -132,7 +130,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
