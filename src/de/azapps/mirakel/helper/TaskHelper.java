@@ -40,7 +40,7 @@ import de.azapps.mirakel.model.task.Task;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 
-public class TaskHelper {
+public final class TaskHelper {
 
     @NonNull
     public static Optional<Task> getTaskFromIntent(final Intent intent) {
