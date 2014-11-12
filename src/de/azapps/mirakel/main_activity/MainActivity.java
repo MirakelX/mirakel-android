@@ -79,6 +79,7 @@ import de.azapps.mirakel.custom_views.TaskSummary;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
+import de.azapps.mirakel.helper.ListHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
@@ -1587,8 +1588,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)
                    || intent.getAction().contains(
                        DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
-            if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
-                final ListMirakel list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
+            final Optional<ListMirakel> listMirakelOptional = ListHelper.getListMirakelFromIntent(intent);
+            if (listMirakelOptional.isPresent()) {
+                final ListMirakel list = listMirakelOptional.get();
                 setCurrentList (list);
                 final Optional<Task> taskOptional = list.getFirstTask ();
                 if (taskOptional.isPresent()) {
