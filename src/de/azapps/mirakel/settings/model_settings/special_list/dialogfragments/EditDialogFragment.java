@@ -251,7 +251,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             break;
         case SUBCONDITION:
             property = new SpecialListsConjunctionList(property,
-                    (rootProperty.getConjunction() == CONJUNCTION.AND) ? CONJUNCTION.OR : CONJUNCTION.AND);
+                    ((backStack.size() % 2) == 0) ? CONJUNCTION.OR : CONJUNCTION.AND);
             fragment = ConjunctionFragment.newInstance((SpecialListsConjunctionList) property, mList,
                        backStack);
             break;
