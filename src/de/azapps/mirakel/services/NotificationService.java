@@ -92,14 +92,11 @@ public class NotificationService extends Service {
         }
 
         // Set onClick Intent
-        Intent openIntent;
-        try {
-            openIntent = new Intent(this,
-                                    Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-        } catch (final ClassNotFoundException e) {
-            Log.wtf(TAG, "mainactivity not found", e);
+        final Optional<Class<?>> main = Helpers.getMainActivity();
+        if (!main.isPresent()) {
             return;
         }
+        final Intent openIntent = new Intent(this, main.get());
         openIntent.setAction(DefinitionsHelper.SHOW_LIST);
         openIntent.putExtra(DefinitionsHelper.EXTRA_LIST, openList.get());
         openIntent
@@ -108,9 +105,9 @@ public class NotificationService extends Service {
                                           openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final List<Task> todayTasks = showList.get().tasks(false);
-        String notificationTitle;
-        String notificationText;
-        if (todayTasks.size() == 0) {
+        final String notificationTitle;
+        final String notificationText;
+        if (todayTasks.isEmpty()) {
             notificationTitle = getString(R.string.notification_title_empty);
             notificationText = "";
         } else {
@@ -146,7 +143,7 @@ public class NotificationService extends Service {
                     NOTIFICATION_SERVICE);
         notificationManager.notify(DefinitionsHelper.NOTIF_DEFAULT,
                                    noti.build());
-        if ((todayTasks.size() == 0) || !MirakelCommonPreferences.useNotifications()) {
+        if ((todayTasks.isEmpty()) || !MirakelCommonPreferences.useNotifications()) {
             notificationManager.cancel(DefinitionsHelper.NOTIF_DEFAULT);
             this.existsNotification = false;
         } else {

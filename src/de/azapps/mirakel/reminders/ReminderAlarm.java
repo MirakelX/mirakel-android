@@ -102,14 +102,12 @@ public class ReminderAlarm extends BroadcastReceiver {
         Log.w(TAG, task.getName());
         final NotificationManager nm = (NotificationManager) context
                                        .getSystemService(Context.NOTIFICATION_SERVICE);
-        final Intent openIntent;
-        try {
-            openIntent = new Intent(context,
-                                    Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-        } catch (final ClassNotFoundException e) {
-            Log.wtf(TAG, "mainactivtity not found", e);
+        final Optional<Class<?>> main = Helpers.getMainActivity();
+        if (!main.isPresent()) {
             return;
         }
+        final Intent openIntent = new Intent(context, main.get());
+
         final Bundle withTask = new Bundle();
         withTask.putParcelable(DefinitionsHelper.EXTRA_TASK, task);
         openIntent.setAction(DefinitionsHelper.SHOW_TASK_REMINDER);
