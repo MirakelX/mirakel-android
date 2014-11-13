@@ -47,7 +47,9 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
         super(context, c, flags);
         mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
+        setHasStableIds(true);
     }
+
 
 
     @Override
