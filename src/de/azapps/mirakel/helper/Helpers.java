@@ -18,9 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -35,9 +32,19 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
+import com.google.common.base.Optional;
+
+import java.util.List;
+import java.util.Locale;
+
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 public class Helpers {
     /**
@@ -214,6 +221,18 @@ public class Helpers {
         d.setBounds(0, 0, mLargeIconWidth, mLargeIconHeight);
         d.draw(c);
         return b;
+    }
+
+    public static Optional<Class<?>> getMainActivity() {
+        try {
+            if (MirakelCommonPreferences.useNewUI()) {
+                return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
+            } else {
+                return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+            }
+        } catch (ClassNotFoundException e) {
+            return absent();
+        }
     }
 
 }
