@@ -1705,21 +1705,25 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             if (taskOptional.isPresent()) {
                 this.currentTask = taskOptional.get();
             } else {
-                throw new TaskVanishedException(this.currentTask.getId());
+                updateCurrentTaskMissing();
             }
         } else {
-            final List<Task> currentTasks = this.currentList
-                                            .tasks(MirakelCommonPreferences.showDoneMain());
-            if (currentTasks.isEmpty()) {
-                this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
-            } else {
-                this.currentTask = currentTasks.get (0);
-            }
+            updateCurrentTaskMissing();
         }
         if (this.currentList != null) {
             this.currentList = ListMirakel.get(this.currentList.getId()).get();
         } else {
             this.currentList = this.currentTask.getList();
+        }
+    }
+
+    private void updateCurrentTaskMissing() {
+        final List<Task> currentTasks = this.currentList
+                                        .tasks(MirakelCommonPreferences.showDoneMain());
+        if (currentTasks.isEmpty()) {
+            this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
+        } else {
+            this.currentTask = currentTasks.get (0);
         }
     }
 
