@@ -15,6 +15,7 @@ import de.azapps.tools.Log;
 
 public class DefinitionsHelper {
 
+
     public static class NoSuchListException extends Exception {
         static final long serialVersionUID = 1374828057L;
 
@@ -43,6 +44,8 @@ public class DefinitionsHelper {
     public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
     public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
     public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
+    public static final String MIRAKEL_ACTIVITY_CLASS =
+        "de.azapps.mirakel.new_ui.activities.MirakelActivity";
     public static final String MAINWIDGET_CLASS = "de.azapps.mirakel.widget.MainWidgetProvider";
     public static final String EXTRA_LIST = "de.azapps.mirakel.EXTRA_LIST";
     /**
