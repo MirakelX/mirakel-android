@@ -38,7 +38,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.WidgetHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
@@ -159,14 +162,11 @@ public class MainWidgetProvider extends AppWidgetProvider {
                         new int[] { 250, 250, 250 }, 200));
             }
             // Create an Intent to launch MainActivity and show the List
-            final Intent mainIntent;
-            try {
-                mainIntent = new Intent(context,
-                                        Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-            } catch (final ClassNotFoundException e) {
-                Log.wtf(TAG, "mainactivity not found", e);
+            final Optional<Class<?>> main = Helpers.getMainActivity();
+            if (!main.isPresent()) {
                 return;
             }
+            final Intent mainIntent = new Intent(context, main.get());
             mainIntent.setAction(DefinitionsHelper.SHOW_LIST_FROM_WIDGET);
             mainIntent.putExtra(DefinitionsHelper.EXTRA_LIST, list);
             final PendingIntent mainPendingIntent = PendingIntent.getActivity(
@@ -176,14 +176,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
             // ListName
             views.setTextViewText(R.id.widget_list_name, list.getName());
             // Create an Intent to launch MainActivity and create a new Task
-            final Intent addIntent;
-            try {
-                addIntent = new Intent(context,
-                                       Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-            } catch (final ClassNotFoundException e) {
-                Log.wtf(TAG, "mainactivity not found");
-                return;
-            }
+
+            final Intent addIntent = new Intent(context, main.get());
             addIntent.setAction(DefinitionsHelper.ADD_TASK_FROM_WIDGET
                                 + list.getId());
             final PendingIntent addPendingIntent = PendingIntent.getActivity(
@@ -234,14 +228,12 @@ public class MainWidgetProvider extends AppWidgetProvider {
     public void onReceive(@NonNull final Context context, @NonNull final Intent intent) {
         if (CLICK_TASK.equals(intent.getAction())) {
             final Task task = intent.getBundleExtra(DefinitionsHelper.BUNDLE_WRAPPER).getParcelable(EXTRA_TASK);
-            final Intent startMainIntent;
-            try {
-                startMainIntent = new Intent(context,
-                                             Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-            } catch (final ClassNotFoundException e) {
-                Log.wtf(TAG, "mainactivity not found", e);
+            final Optional<Class<?>> main = Helpers.getMainActivity();
+            if (!main.isPresent()) {
                 return;
             }
+
+            final Intent startMainIntent = new Intent(context, main.get());
             startMainIntent.setAction(DefinitionsHelper.SHOW_TASK_FROM_WIDGET);
             startMainIntent.putExtra(DefinitionsHelper.EXTRA_TASK, task);
             startMainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

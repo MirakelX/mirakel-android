@@ -41,20 +41,18 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.widget.R;
-import de.azapps.tools.Log;
 
 public class WidgetHelper {
     public static RemoteViews configureItem(final RemoteViews rv,
                                             final Task task, final Context context, final long listId,
                                             final boolean isMinimal, final int widgetId) {
-        final Intent openIntent;
-        try {
-            openIntent = new Intent(context,
-                                    Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-        } catch (final ClassNotFoundException e) {
-            Log.wtf(TAG, "no mainactivity found");
+
+        final Optional<Class<?>> main = Helpers.getMainActivity();
+        if (!main.isPresent()) {
             return null;
         }
+        final Intent openIntent = new Intent(context, main.get());
+
 
         openIntent.setAction(DefinitionsHelper.SHOW_TASK);
         final Bundle wrapper = new Bundle();
@@ -105,7 +103,7 @@ public class WidgetHelper {
             drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
             drawable.draw(canvas);
             rv.setImageViewBitmap(R.id.label_bg, bitmap);
-            if (listId <= 0) {
+            if (listId <= 0L) {
                 rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);
                 rv.setTextViewText(R.id.tasks_row_list_name, task.getList()
                                    .getName());
