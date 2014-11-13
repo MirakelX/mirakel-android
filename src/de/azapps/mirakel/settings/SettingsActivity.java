@@ -34,6 +34,7 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -424,7 +425,10 @@ public class SettingsActivity extends PreferenceActivity {
         switch (item.getItemId()) {
         // Respond to the action bar's Up/Home button
         case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
+            final Optional<Class<?>> main = Helpers.getMainActivity();
+            if (main.isPresent()) {
+                NavUtils.navigateUpTo(this, new Intent(this, main.get()));
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
