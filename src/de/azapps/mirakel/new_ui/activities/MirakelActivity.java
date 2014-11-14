@@ -115,6 +115,12 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
@@ -201,6 +207,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
         case DefinitionsHelper.SHOW_TASK_REMINDER:
             final Optional<Task> task = TaskHelper.getTaskFromIntent(intent);
             if (task.isPresent()) {
+                setList(task.get().getList());
                 onTaskSelected(task.get());
             }
             break;
