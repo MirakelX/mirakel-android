@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class TaskWarriorSetupActivity extends Activity {
         protected Integer doInBackground(final URL... sUrl) {
             final URL url = sUrl[0];
             try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(true);
                 connection.connect();
@@ -85,6 +86,9 @@ public class TaskWarriorSetupActivity extends Activity {
                     return RESULT_ERROR;
                 }
                 setupTaskWarrior(connection.getInputStream(), false);
+            } catch (final ProtocolException e) {
+                Log.e(TAG, "Could not download config", e);
+                return RESULT_ERROR;
             } catch (final IOException e) {
                 Log.e(TAG, "Could not download config", e);
                 return RESULT_ERROR;
@@ -199,8 +203,8 @@ public class TaskWarriorSetupActivity extends Activity {
                 }
             }
         });
-        final Button select_config_file = (Button) findViewById(R.id.sync_taskwarrior_select_file);
-        select_config_file.setOnClickListener(new OnClickListener() {
+        final Button selectConfigFile = (Button) findViewById(R.id.sync_taskwarrior_select_file);
+        selectConfigFile.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Helpers.showFileChooser(
@@ -236,7 +240,7 @@ public class TaskWarriorSetupActivity extends Activity {
     throws IOException {
         final BufferedReader r = new BufferedReader(new InputStreamReader(
                     stream));
-        final Map<String, String> values = new HashMap<>();
+        final Map<String, String> values = new HashMap<>(7);
         PARSE_STATE state = PARSE_STATE.ONE_LINER;
         String line;
         String tkey = null;
@@ -348,7 +352,6 @@ public class TaskWarriorSetupActivity extends Activity {
         }
         try {
             final URL url = new URL(inputUrl);
-            final Activity that = this;
             final DownloadTask dlTask = new DownloadTask(new Exec() {
                 @Override
                 public void execute(final Integer status) {
@@ -365,7 +368,7 @@ public class TaskWarriorSetupActivity extends Activity {
                         .report(ErrorType.TASKWARRIOR_COULD_NOT_DOWNLOAD);
                     } else {
                         Toast.makeText(
-                            that,
+                            TaskWarriorSetupActivity.this,
                             getString(R.string.sync_taskwarrior_setup_success),
                             Toast.LENGTH_LONG).show();
                     }
@@ -374,7 +377,7 @@ public class TaskWarriorSetupActivity extends Activity {
                 }
             });
             dlTask.execute(url);
-        } catch (final MalformedURLException e) {
+        } catch (final MalformedURLException ignore) {
             this.progressDialog.dismiss();
             ErrorReporter.report(ErrorType.TASKWARRIOR_URL_NOT_FOUND);
             this.progressDialog.dismiss();

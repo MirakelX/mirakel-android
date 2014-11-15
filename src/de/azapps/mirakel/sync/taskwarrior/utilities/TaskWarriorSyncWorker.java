@@ -21,13 +21,12 @@ package de.azapps.mirakel.sync.taskwarrior.utilities;
 
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.sync.taskwarrior.network_helper.Msg;
-import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
 
 public class TaskWarriorSyncWorker {
 
     private final AccountMirakel account;
 
-    public TaskWarriorSyncWorker(AccountMirakel account) {
+    public TaskWarriorSyncWorker(final AccountMirakel account) {
         this.account = account;
     }
 

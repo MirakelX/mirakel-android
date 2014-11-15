@@ -52,7 +52,7 @@ public class TaskWarriorAccount {
     private String userId;
     private String userPassword;
 
-    public TaskWarriorAccount(final AccountMirakel accountMirakel, final Context context) {
+    public TaskWarriorAccount(@NonNull final AccountMirakel accountMirakel, final Context context) {
         this.accountMirakel = accountMirakel;
         accountManager = AccountManager.get(context);
         account = accountMirakel.getAndroidAccount();
@@ -89,7 +89,7 @@ public class TaskWarriorAccount {
     public Optional<String> getSyncKey() {
         return accountMirakel.getSyncKey();
     }
-    public void setSyncKey(@NonNull Optional<String> syncKey) {
+    public void setSyncKey(@NonNull final Optional<String> syncKey) {
         accountMirakel.setSyncKey(syncKey);
         accountMirakel.save();
     }
@@ -151,6 +151,7 @@ public class TaskWarriorAccount {
         return userPassword;
     }
 
+    @NonNull
     public AccountMirakel getAccountMirakel() {
         return accountMirakel;
     }

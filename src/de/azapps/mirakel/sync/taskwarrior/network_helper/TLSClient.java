@@ -107,7 +107,7 @@ public class TLSClient {
         tokens = tokens[1].split(endDelimiter);
         try {
             return Base64.decode(tokens[0], Base64.NO_PADDING);
-        } catch (final IllegalArgumentException e) {
+        } catch (final IllegalArgumentException ignored) {
             throw new ParseException("bad base-64", 0);
         }
     }
@@ -243,15 +243,15 @@ public class TLSClient {
     }
 
     // //////////////////////////////////////////////////////////////////////////////
-    public void init(final String root, final String user_ca,
-                     final String user_key) throws ParseException, CertificateException,
+    public void init(final String root, final String userCA,
+                     final String userKey) throws ParseException, CertificateException,
         NoSuchCertificateException {
         try {
 
             final List<X509Certificate> ROOT = generateCertificateFromPEM(root);
             final X509Certificate USER_CERT = (X509Certificate) CertificateFactory.getInstance("X.509")
-                                              .generateCertificate(new StringBufferInputStream(user_ca));
-            final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(user_key);
+                                              .generateCertificate(new StringBufferInputStream(userCA));
+            final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(userKey);
             final KeyStore trusted = KeyStore.getInstance(KeyStore
                                      .getDefaultType());
             trusted.load(null);

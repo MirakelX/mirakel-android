@@ -18,13 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.sync.taskwarrior.model;
 
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Pair;
@@ -36,6 +29,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
+import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -91,7 +91,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                 isMaster = true;
             }
         }
-        final Pair<String, String> statusEnd = getStatus(src, additionals, isMaster);
+        final Pair<String, String> statusEnd = getStatus(src, isMaster);
         final String status = statusEnd.second;
         final String end = statusEnd.first;
         String priority = null;
@@ -122,7 +122,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         if (src.getDue().isPresent()) {
             json.addProperty("due", formatCalUTC(src.getDue().get()));
         }
-        if (!additionals.containsKey(Task.NO_PROJECT)) {
+        if (!src.containsAdditional(Task.NO_PROJECT)) {
             json.addProperty("project", src.getList().getName());
         }
         if (priority != null) {
@@ -221,7 +221,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                             mask.append('X');
                         } else {
                             mask.append(getRecurrenceStatus(getStatus(child.get(),
-                                                            child.get().getAdditionalEntries(), false).second));
+                                                            false).second));
                         }
                     } while (cursor.moveToNext());
                 }
@@ -327,7 +327,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
     }
 
     private Pair<String, String> getStatus(final Task task,
-                                           final Map<String, String> additionals, final boolean isMaster) {
+                                           final boolean isMaster) {
+
         final Calendar now = new GregorianCalendar();
         now.setTimeInMillis(now.getTimeInMillis()
                             - DateTimeHelper.getTimeZoneOffset(true, now));
@@ -338,8 +339,8 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
             end = formatCal(now);
         } else if (task.isDone()) {
             status = "completed";
-            if (additionals.containsKey("end")) {
-                end = cleanQuotes(additionals.get("end"));
+            if (task.containsAdditional("end")) {
+                end = cleanQuotes(task.getAdditionalRaw("end"));
             } else {
                 end = formatCal(now);
             }
