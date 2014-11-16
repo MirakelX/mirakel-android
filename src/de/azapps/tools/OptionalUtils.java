@@ -19,36 +19,65 @@
 
 package de.azapps.tools;
 
+import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
-public class OptionalUtils {
+
+public final class OptionalUtils {
+
     public static interface Procedure<F> {
         public void apply(F input);
     }
-    public static <F> void withOptional(@NonNull Optional<F> optional,
-                                        @NonNull Procedure<F> procedure) {
+
+    public static <F> void withOptional(@NonNull final Optional<F> optional,
+                                        @NonNull final Procedure<F> procedure) {
         if (optional.isPresent()) {
             procedure.apply(optional.get());
         }
     }
-    public static <F, V> V withOptional(@NonNull Optional<F> optional, @NonNull Function<F, V> function,
-                                        V alternative) {
+
+    @Nullable
+    public static <F, V> V withOptional(@NonNull final Optional<F> optional,
+                                        @NonNull final Function<F, V> function,
+                                        final V alternative) {
         if (optional.isPresent()) {
             return function.apply(optional.get());
         } else {
             return alternative;
         }
     }
-    public static <F, V> V transformOrNull(@NonNull Optional<F> optional,
-                                           @NonNull Function<F, V> transformation) {
+
+    @Nullable
+    public static <F, V> V transformOrNull(@NonNull final Optional<F> optional,
+                                           @NonNull final Function<F, V> transformation) {
         if (optional.isPresent()) {
             return transformation.apply(optional.get());
         } else {
             return null;
+        }
+    }
+
+    public static <T> void writeToParcel(final @NonNull Parcel dest, final @NonNull Optional<T> value) {
+        dest.writeValue(value.isPresent());
+        if (value.isPresent()) {
+            dest.writeValue(value.get());
+        }
+    }
+
+    @NonNull
+    public static <T> Optional<T> readFromParcel(final @NonNull Parcel in,
+            final @NonNull Class<T> clazz) {
+        if ((Boolean) in.readValue(Boolean.class.getClassLoader())) {
+            return of((T) in.readValue(clazz.getClassLoader()));
+        } else {
+            return absent();
         }
     }
 }
