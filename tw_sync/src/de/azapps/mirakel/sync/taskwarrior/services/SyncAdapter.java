@@ -72,7 +72,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static CharSequence last_message = null;
     private final Context mContext;
     private final NotificationManager mNotificationManager;
-    private static final int notifyID = 1;
+    private static final int NOTIFY_ID = 1;
 
     public SyncAdapter(final Context context, final boolean autoInitialize) {
         super(context, autoInitialize);
@@ -116,9 +116,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (type.equals(TaskWarriorSync.TYPE)) {
             TW_ERRORS error = TW_ERRORS.NO_ERROR;
             try {
-                Optional<AccountMirakel> accountMirakel = AccountMirakel.get(account);
+                final Optional<AccountMirakel> accountMirakel = AccountMirakel.get(account);
                 if (accountMirakel.isPresent()) {
-                    TaskWarriorAccount taskWarriorAccount = new TaskWarriorAccount(accountMirakel.get(), getContext());
+                    final TaskWarriorAccount taskWarriorAccount = new TaskWarriorAccount(accountMirakel.get(),
+                            getContext());
                     new TaskWarriorSync(this.mContext).sync(taskWarriorAccount, false);
                 }
             } catch (final TaskWarriorSyncFailedException e) {
@@ -129,12 +130,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } else {
             Log.wtf(TAG, "Unknown SyncType");
         }
-        this.mNotificationManager.cancel(SyncAdapter.notifyID);
+        this.mNotificationManager.cancel(SyncAdapter.NOTIFY_ID);
         try {
             handleError(showNotification, success);
         } catch (final ClassNotFoundException e) {
-            Log.wtf(TAG, "mainactivity not found", e);
-            return;
+            throw new RuntimeException(e);
         }
     }
 
@@ -151,7 +151,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         .setWhen(System.currentTimeMillis()).setOngoing(true)
         .setContentIntent(p);
         if (showNotification) {
-            this.mNotificationManager.notify(SyncAdapter.notifyID, mNB.build());
+            this.mNotificationManager.notify(SyncAdapter.NOTIFY_ID, mNB.build());
         }
     }
 
@@ -248,7 +248,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             .setContentIntent(pOpenIntent).build();
             notification.flags = Notification.FLAG_AUTO_CANCEL;
             this.mNotificationManager
-            .notify(SyncAdapter.notifyID, notification);
+            .notify(SyncAdapter.NOTIFY_ID, notification);
         }
     }
 

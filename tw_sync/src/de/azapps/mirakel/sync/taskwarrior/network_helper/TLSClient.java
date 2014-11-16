@@ -1,12 +1,16 @@
 package de.azapps.mirakel.sync.taskwarrior.network_helper;
 
-import java.io.ByteArrayInputStream;
+import android.annotation.SuppressLint;
+import android.util.Base64;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringBufferInputStream;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.KeyFactory;
 import java.security.KeyManagementException;
@@ -24,6 +28,11 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -32,8 +41,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
-import android.os.Build;
-import android.util.Base64;
 import de.azapps.tools.Log;
 
 public class TLSClient {
@@ -44,27 +51,26 @@ public class TLSClient {
 
     private static final String TAG = "TLSClient";
 
-    private static X509Certificate generateCertificateFromPEM(final String cert)
-    throws ParseException, NoSuchCertificateException {
+    private static List<X509Certificate> generateCertificateFromPEM(final String cert)
+    throws  NoSuchCertificateException {
         if (cert == null) {
             throw new NoSuchCertificateException();
         }
-        final byte[] certBytes = parseDERFromPEM(cert,
-                                 "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
-        CertificateFactory factory;
-        try {
-            factory = CertificateFactory.getInstance("X.509");
-        } catch (final CertificateException e) {
-            Log.w(TAG, "Parsing failed", e);
-            return null;
+        final String[] parts  = cert.split("-----END CERTIFICATE-----");
+        final List<X509Certificate> certs = new ArrayList<>(parts.length);
+        for (final String part : parts) {
+            if (part.trim().isEmpty()) {
+                continue;
+            }
+            try {
+                certs.add((X509Certificate) CertificateFactory.getInstance("X.509")
+                          .generateCertificate(new StringBufferInputStream(part.trim() + "\n-----END CERTIFICATE-----")));
+            } catch (final CertificateException e) {
+                Log.wtf(TAG, "parsing failed:" + part, e);
+                return certs;
+            }
         }
-        try {
-            return (X509Certificate) factory
-                   .generateCertificate(new ByteArrayInputStream(certBytes));
-        } catch (final CertificateException e) {
-            Log.wtf(TAG, "parsing failed", e);
-            return null;
-        }
+        return certs;
     }
 
     private static RSAPrivateKey generatePrivateKeyFromPEM(final String key)
@@ -73,7 +79,7 @@ public class TLSClient {
                                                 "-----BEGIN RSA PRIVATE KEY-----",
                                                 "-----END RSA PRIVATE KEY-----");
         final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory factory;
+        final KeyFactory factory;
         try {
             factory = KeyFactory.getInstance("RSA", "BC");
         } catch (final NoSuchAlgorithmException e) {
@@ -101,8 +107,7 @@ public class TLSClient {
         tokens = tokens[1].split(endDelimiter);
         try {
             return Base64.decode(tokens[0], Base64.NO_PADDING);
-        } catch (final IllegalArgumentException e) {
-            Log.e(TAG, "bad base-64", e);
+        } catch (final IllegalArgumentException ignored) {
             throw new ParseException("bad base-64", 0);
         }
     }
@@ -142,6 +147,67 @@ public class TLSClient {
         }
     }
 
+    @SuppressLint("DefaultLocale")
+    // copied form davdroid, 04.11.14
+    private static void setReasonableEncryption(final SSLSocket ssl) {
+        // set reasonable SSL/TLS settings before the handshake:
+
+        // - enable all supported protocols (enables TLSv1.1 and TLSv1.2 on Android <4.4.3, if available)
+        // - remove all SSL versions (especially SSLv3) because they're insecure now
+        final List<String> protocols = new LinkedList<>();
+        for (final String protocol : ssl.getSupportedProtocols()) {
+            if (!protocol.toUpperCase().contains("SSL")) {
+                protocols.add(protocol);
+            }
+        }
+        //Log.v(TAG, "Setting allowed TLS protocols: " + TextUtils.join(", ", protocols));
+        ssl.setEnabledProtocols(protocols.toArray(new String[protocols.size()]));
+
+        // choose secure cipher suites
+        final List<String> allowedCiphers = Arrays.asList(
+                                                // allowed secure ciphers according to NIST.SP.800-52r1.pdf Section 3.3.1 (see docs directory)
+                                                // TLS 1.2
+                                                "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+                                                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+                                                "TLS_ECHDE_RSA_WITH_AES_128_GCM_SHA256",
+                                                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+                                                "TLS_RSA_WITH_AES_256_GCM_SHA384",
+                                                "TLS_RSA_WITH_AES_128_GCM_SHA256",
+                                                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+
+                                                // maximum interoperability
+                                                "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+                                                "TLS_RSA_WITH_AES_128_CBC_SHA",
+                                                // additionally
+                                                "TLS_RSA_WITH_AES_256_CBC_SHA",
+                                                "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
+                                                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                                                "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
+                                                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+                                            );
+
+        final List<String> availableCiphers = Arrays.asList(ssl.getSupportedCipherSuites());
+
+        // preferred ciphers = allowed Ciphers \ availableCiphers
+        final HashSet<String> preferredCiphers = new HashSet<>(allowedCiphers);
+        preferredCiphers.retainAll(availableCiphers);
+
+        // add preferred ciphers to enabled ciphers
+        // for maximum security, preferred ciphers should *replace* enabled ciphers,
+        // but I guess for the security level of DAVdroid, disabling of insecure
+        // ciphers should be a server-side task
+        final HashSet<String> enabledCiphers = new HashSet<>(Arrays.asList(
+                    ssl.getEnabledCipherSuites()));
+        enabledCiphers.addAll(preferredCiphers);
+
+        //Log.v(TAG, "Setting allowed TLS ciphers: " + TextUtils.join( ", ", enabledCiphers));
+        if (preferredCiphers.isEmpty()) {
+            ssl.setEnabledCipherSuites(enabledCiphers.toArray(new String[enabledCiphers.size()]));
+        } else {
+            ssl.setEnabledCipherSuites(preferredCiphers.toArray(new String[preferredCiphers.size()]));
+        }
+    }
+
     // //////////////////////////////////////////////////////////////////////////////
     public void connect(final String host, final int port) throws IOException {
         Log.i(TAG, "connect");
@@ -153,13 +219,9 @@ public class TLSClient {
             }
         }
         try {
-            Log.d(TAG, "connected to " + host + ":" + port);
+            Log.d(TAG, "connected to " + host + ':' + port);
             this._socket = (SSLSocket) this.sslFact.createSocket();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                this._socket.setEnabledProtocols(new String[] { "TLSv1.2",
-                                                 "TLSv1.1"
-                                                              });
-            }
+            setReasonableEncryption(this._socket);
             this._socket.setUseClientMode(true);
             this._socket.setEnableSessionCreation(true);
             this._socket.setNeedClientAuth(true);
@@ -168,33 +230,41 @@ public class TLSClient {
             this._socket.startHandshake();
             this.out = this._socket.getOutputStream();
             this.in = this._socket.getInputStream();
-            Log.d(TAG, "connected to " + host + ":" + port);
+            Log.d(TAG, "connected to " + host + ':' + port);
             return;
         } catch (final UnknownHostException e) {
-            Log.e(TAG, "Unkown Host", e);
+            Log.e(TAG, "Unknown Host", e);
         } catch (final ConnectException e) {
             Log.e(TAG, "Cannot connect to Host", e);
-        } catch (final IOException e) {
+        } catch (final SocketException e) {
             Log.e(TAG, "IO Error", e);
         }
         throw new IOException();
     }
 
     // //////////////////////////////////////////////////////////////////////////////
-    public void init(final String root, final String user_ca,
-                     final String user_key) throws ParseException, CertificateException,
+    public void init(final String root, final String userCA,
+                     final String userKey) throws ParseException, CertificateException,
         NoSuchCertificateException {
-        Log.i(TAG, "init");
         try {
-            final X509Certificate ROOT = generateCertificateFromPEM(root);
-            final X509Certificate USER_CERT = generateCertificateFromPEM(user_ca);
-            final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(user_key);
+
+            final List<X509Certificate> ROOT = generateCertificateFromPEM(root);
+            final X509Certificate USER_CERT = (X509Certificate) CertificateFactory.getInstance("X.509")
+                                              .generateCertificate(new StringBufferInputStream(userCA));
+            final RSAPrivateKey USER_KEY = generatePrivateKeyFromPEM(userKey);
             final KeyStore trusted = KeyStore.getInstance(KeyStore
                                      .getDefaultType());
             trusted.load(null);
-            trusted.setCertificateEntry("taskwarrior-ROOT", ROOT);
+            final Certificate[] chain = new Certificate[ROOT.size() + 1];
+            int i = chain.length - 1;
+            for (final X509Certificate cert : ROOT) {
+                trusted.setCertificateEntry("taskwarrior-ROOT", cert);
+                chain[i--] = cert;
+            }
             trusted.setCertificateEntry("taskwarrior-USER", USER_CERT);
-            final Certificate[] chain = { USER_CERT, ROOT };
+            chain[0] = USER_CERT;
+
+
             final KeyManagerFactory keyManagerFactory = KeyManagerFactory
                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
             // Hack to get it working on android 2.2
@@ -220,7 +290,7 @@ public class TLSClient {
             Log.w(TAG, "cannot handle keystore");
             throw new CertificateException(e);
         } catch (final NoSuchAlgorithmException e) {
-            Log.w(TAG, "no matching algorithm founr");
+            Log.w(TAG, "no matching algorithm found");
             throw new CertificateException(e);
         } catch (final CertificateException e) {
             Log.w(TAG, "certificat not readable");
@@ -233,7 +303,7 @@ public class TLSClient {
 
     // //////////////////////////////////////////////////////////////////////////////
     public String recv() {
-        Log.i(TAG, "reveive data from " + this._socket.getLocalAddress() + ":"
+        Log.i(TAG, "reveive data from " + this._socket.getLocalAddress() + ':'
               + this._socket.getLocalPort());
         if (!this._socket.isConnected()) {
             Log.e(TAG, "not connected");
@@ -256,15 +326,14 @@ public class TLSClient {
 
     // //////////////////////////////////////////////////////////////////////////////
     public void send(final String data) {
-        final DataOutputStream dos = new DataOutputStream(this.out);
-        Log.i(TAG, "send data");
+        final DataOutputStream dos = new DataOutputStream(out);
         if (!this._socket.isConnected()) {
             Log.e(TAG, "socket not connected");
             return;
         }
         try {
-            dos.writeInt(data.getBytes().length);
-            dos.write(data.getBytes());
+            dos.writeInt(data.length());
+            dos.writeBytes(data);
         } catch (final IOException e) {
             Log.e(TAG, "cannot write data to outputstream", e);
         }

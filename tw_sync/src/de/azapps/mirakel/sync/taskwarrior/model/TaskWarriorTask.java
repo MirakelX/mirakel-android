@@ -43,6 +43,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorTaskDeletedException;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
@@ -108,13 +109,13 @@ public class TaskWarriorTask {
 
     //requried fields
     @NonNull
-    private String UUID;
+    private final String UUID;
     @NonNull
     private Status status = Status.PENDING;
+
+    private final long entry;
     @NonNull
-    private long entry;
-    @NonNull
-    private String description;
+    private final String description;
 
 
 
@@ -124,9 +125,9 @@ public class TaskWarriorTask {
     @NonNull
     private Optional<String> project = absent();
     @NonNull
-    private List<String> tags = new ArrayList<>();
+    private final List<String> tags = new ArrayList<>();
     @NonNull
-    private List<String> depends = new ArrayList<>();
+    private final List<String> depends = new ArrayList<>();
     @NonNull
     private Optional<Long> due = absent();
     @NonNull
@@ -142,7 +143,7 @@ public class TaskWarriorTask {
     @NonNull
     private Optional<Long> modified = absent();
     @NonNull
-    private List<Annotation> annotations = new ArrayList<>();
+    private final List<Annotation> annotations = new ArrayList<>();
 
     //recurring
     @NonNull
@@ -164,14 +165,14 @@ public class TaskWarriorTask {
 
     //udas
     @NonNull
-    private Map<String, String> uda = new HashMap<>();
+    private final Map<String, String> uda = new HashMap<>();
 
     public TaskWarriorTask(@NonNull final String uuid, @NonNull final String status,
                            final @NonNull Calendar entry,
                            @NonNull final String description) {
         this.UUID = uuid;
         this.status = Status.fromString(status);
-        this.entry = entry.getTimeInMillis() / 1000;
+        this.entry = entry.getTimeInMillis() / 1000L;
         this.description = description;
     }
 
@@ -192,19 +193,19 @@ public class TaskWarriorTask {
     }
 
     public void setDue(@NonNull final Calendar due) {
-        this.due = of(due.getTimeInMillis() / 1000);
+        this.due = of(due.getTimeInMillis() / 1000L);
     }
 
     public void setStart(@NonNull final Calendar start) {
-        this.start = of(start.getTimeInMillis() / 1000);
+        this.start = of(start.getTimeInMillis() / 1000L);
     }
 
     public void setEnd(@NonNull final Calendar end) {
-        this.end = of(end.getTimeInMillis() / 1000);
+        this.end = of(end.getTimeInMillis() / 1000L);
     }
 
     public void setUntil(@NonNull final Calendar until) {
-        this.until = of(until.getTimeInMillis() / 1000);
+        this.until = of(until.getTimeInMillis() / 1000L);
     }
 
     public void setWait(@NonNull final Calendar wait) {
@@ -212,11 +213,11 @@ public class TaskWarriorTask {
     }
 
     public void setScheduled(@NonNull final Calendar scheduled) {
-        this.scheduled = of(scheduled.getTimeInMillis() / 1000);
+        this.scheduled = of(scheduled.getTimeInMillis() / 1000L);
     }
 
     public void setModified(@NonNull final Calendar modified) {
-        this.modified = of(modified.getTimeInMillis() / 1000);
+        this.modified = of(modified.getTimeInMillis() / 1000L);
     }
 
     public void setMask(@NonNull final String mask) {
@@ -251,7 +252,7 @@ public class TaskWarriorTask {
         annotations.add(new Annotation(description, entry.getTimeInMillis()));
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(final int progress) {
         this.progress = of(progress);
     }
 
@@ -269,24 +270,25 @@ public class TaskWarriorTask {
     }
 
     @NonNull
-    public ContentProviderOperation getUpdate(final long local_id,
-            final @NonNull String additional_column, final @NonNull Map<String, Long> projectMapping,
-            final long inboxID) {
+    public ContentProviderOperation getUpdate(final long localId,
+            final @NonNull String additionalColumn, final @NonNull Map<String, Long> projectMapping,
+            final long inboxID) throws TaskWarriorTaskDeletedException {
         return ContentProviderOperation.newUpdate(Task.URI).withValues(getContentValues(projectMapping,
-                of(additional_column), inboxID)).withSelection(Task.ID + "=?", new String[] {String.valueOf(local_id)}).build();
+                of(additionalColumn), inboxID)).withSelection(Task.ID + "=?", new String[] {String.valueOf(localId)}).build();
     }
 
     @NonNull
     public ContentProviderOperation getInsert(final long inboxID,
-            @NonNull final Map<String, Long> projectMapping) {
+            @NonNull final Map<String, Long> projectMapping) throws TaskWarriorTaskDeletedException {
         return ContentProviderOperation.newInsert(Task.URI).withValues(getContentValues(projectMapping,
                 Optional.<String>absent(), inboxID)).build();
     }
 
     @NonNull
     private ContentValues getContentValues(final @NonNull Map<String, Long> projectMapping,
-                                           final @NonNull Optional<String> additional_string, final long inboxID) {
-        Map<String, String> additionalEntries = OptionalUtils.withOptional(additional_string,
+                                           final @NonNull Optional<String> additionalString,
+                                           final long inboxID) throws TaskWarriorTaskDeletedException {
+        final Map<String, String> additionalEntries = OptionalUtils.withOptional(additionalString,
         new Function<String, Map<String, String>>() {
             @Override
             public Map<String, String> apply(String input) {
@@ -304,7 +306,7 @@ public class TaskWarriorTask {
             break;
         case DELETED:
             // must be handled elsewhere
-            throw new IllegalStateException("Task is deleted, cannot get the contetvalues");
+            throw new TaskWarriorTaskDeletedException();
         case COMPLETED:
             cv.put(Task.DONE, true);
             break;
@@ -324,7 +326,7 @@ public class TaskWarriorTask {
                 cv.put(Task.PRIORITY, 1);
                 break;
             case L:
-                if (priorityNumber.isPresent() && (priorityNumber.get() == -1 || priorityNumber.get() == -2)) {
+                if (priorityNumber.isPresent() && ((priorityNumber.get() == -1) || (priorityNumber.get() == -2))) {
                     cv.put(Task.PRIORITY, priorityNumber.get());
                 } else {
                     cv.put(Task.PRIORITY, -2);
@@ -378,7 +380,7 @@ public class TaskWarriorTask {
         return cv;
     }
 
-    private void handleAdditionalEntries(Map<String, String> additionalEntries) {
+    private void handleAdditionalEntries(final Map<String, String> additionalEntries) {
         // add missing fields as uda/additional entry
         if (start.isPresent()) {
             additionalEntries.put("start", String.valueOf(start.get()));
@@ -465,15 +467,15 @@ public class TaskWarriorTask {
     }
 
     public TaskWarriorRecurrence getRecurrence() throws
-        TaskWarriorRecurrence.NotSupportedRecurrenceExeption {
+        TaskWarriorRecurrence.NotSupportedRecurrenceException {
         if (recur.isPresent()) {
-            Optional<Calendar> until = OptionalUtils.withOptional(this.until,
+            final Optional<Calendar> until = OptionalUtils.withOptional(this.until,
             new Function<Long, Optional<Calendar>>() {
                 @Override
-                public Optional<Calendar> apply(Long input) {
-                    Calendar c = new GregorianCalendar();
-                    c.setTimeInMillis(input);
-                    return of(c);
+                public Optional<Calendar> apply(final Long input) {
+                    final Calendar calendar = new GregorianCalendar();
+                    calendar.setTimeInMillis(input);
+                    return of(calendar);
                 }
             }, Optional.<Calendar>absent());
             return new TaskWarriorRecurrence(recur.get(), until);
@@ -483,25 +485,25 @@ public class TaskWarriorTask {
 
     /**
      * Use this only for testing
-     * @param t
+     * @param task
      */
-    public void setToTask(@NonNull final Task t) {
+    public void setToTask(@NonNull final Task task) {
 
-        t.setName(description);
-        t.setCreatedAt(DateTimeHelper.createLocalCalendar(entry));
-        t.setUUID(UUID);
+        task.setName(description);
+        task.setCreatedAt(DateTimeHelper.createLocalCalendar(entry));
+        task.setUUID(UUID);
         switch (status) {
         case PENDING:
-            t.setDone(false);
+            task.setDone(false);
             break;
         case DELETED:
-            t.setSyncState(DefinitionsHelper.SYNC_STATE.DELETE);
+            task.setSyncState(DefinitionsHelper.SYNC_STATE.DELETE);
             break;
         case COMPLETED:
-            t.setDone(true);
+            task.setDone(true);
             break;
         case WAITING:
-            t.addAdditionalEntry("status", "waiting");
+            task.addAdditionalEntry("status", "waiting");
             break;
         case RECURRING:
             //cv.put(Task.RECURRING_SHOWN, false);
@@ -510,85 +512,81 @@ public class TaskWarriorTask {
         if (priority.isPresent()) {
             switch (priority.get()) {
             case H:
-                t.setPriority(2);
+                task.setPriority(2);
                 break;
             case M:
-                t.setPriority(1);
+                task.setPriority(1);
                 break;
             case L:
                 if (priorityNumber.isPresent() && (priorityNumber.get() == -1 || priorityNumber.get() == -2)) {
-                    t.setPriority(priorityNumber.get());
+                    task.setPriority(priorityNumber.get());
                 } else {
-                    t.setPriority(-2);
+                    task.setPriority(-2);
                 }
                 break;
             }
         } else {
-            t.setPriority(0);
+            task.setPriority(0);
         }
         if (project.isPresent()) {
-            ListMirakel l;
+            ListMirakel listMirakel;
             try {
-                Optional<ListMirakel> l_t = ListMirakel.findByName(project.get());
-                if (l_t.isPresent()) {
-                    l = l_t.get();
+                Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(project.get());
+                if (listMirakelOptional.isPresent()) {
+                    listMirakel = listMirakelOptional.get();
                 } else {
-                    l = ListMirakel.newList(project.get(), ListMirakel.SORT_BY.DUE, AccountMirakel.getLocal());
+                    listMirakel = ListMirakel.newList(project.get(), ListMirakel.SORT_BY.DUE,
+                                                      AccountMirakel.getLocal());
                 }
             } catch (ListMirakel.ListAlreadyExistsException e) {
                 Log.wtf(TAG, "this cannot happen");
                 throw new RuntimeException("Could not create List", e);
             }
-            t.setList(l);
+            task.setList(listMirakel);
         } else {
-            t.addAdditionalEntry(Task.NO_PROJECT, "true");
-            t.setList(ListMirakel.getInboxList(AccountMirakel.getLocal()));
+            task.addAdditionalEntry(Task.NO_PROJECT, "true");
+            task.setList(ListMirakel.getInboxList(AccountMirakel.getLocal()));
         }
         if (due.isPresent()) {
-            t.setDue(of(DateTimeHelper.createLocalCalendar(due.get())));
+            task.setDue(of(DateTimeHelper.createLocalCalendar(due.get())));
         } else {
-            t.setDue(Optional.<Calendar>absent());
+            task.setDue(Optional.<Calendar>absent());
         }
 
         if (reminder.isPresent()) {
-            t.setReminder(of(DateTimeHelper.createLocalCalendar(reminder.get())));
+            task.setReminder(of(DateTimeHelper.createLocalCalendar(reminder.get())));
         } else {
-            t.setReminder(Optional.<Calendar>absent());
-        }
-
-        if (progress.isPresent()) {
-            t.setProgress(progress.get());
-        } else {
-            t.setProgress(0);
+            task.setReminder(Optional.<Calendar>absent());
         }
 
         if (modified.isPresent()) {
-            t.setUpdatedAt(DateTimeHelper.createLocalCalendar(modified.get()));
+            task.setUpdatedAt(DateTimeHelper.createLocalCalendar(modified.get()));
         } else {
-            t.setUpdatedAt(new GregorianCalendar());
+            task.setUpdatedAt(new GregorianCalendar());
         }
 
         if (!tags.isEmpty()) {
-            t.getTags().addAll(Collections2.transform(tags, new Function<String, Tag>() {
+            task.getTags().addAll(Collections2.transform(tags, new Function<String, Tag>() {
                 @Override
-                public Tag apply(String input) {
+                public Tag apply(final String input) {
                     return Tag.newTag(input);
                 }
             }));
         }
 
-        t.setContent(TextUtils.join("\n", Collections2.transform(annotations,
+        task.setContent(TextUtils.join("\n", Collections2.transform(annotations,
         new Function<Annotation, String>() {
             @Override
-            public String apply(Annotation input) {
+            public String apply(final Annotation input) {
                 return input.description;
             }
         })));
 
         for (Map.Entry<String, String> entry : uda.entrySet()) {
-            t.addAdditionalEntry(entry.getKey(), entry.getValue());
+            task.addAdditionalEntry(entry.getKey(), entry.getValue());
 
         }
 
     }
+
 }

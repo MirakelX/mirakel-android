@@ -50,6 +50,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="change_account">Account wijzigen</string>
   <string name="wrong_config">Het lijkt erop dat het verkeerde configuratie bestand gebruikt is</string>
   <string name="cert_not_found">Het certificaat is verdwenen. Activeer gelieve opnieuw uw account.</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[         Er is een fout opgetreden bij het synchroniseren. Maar we hebben een tijdelijke oplossing en sommige gegevens zouden verloren kunnen zijn :(. Er is een backup van uw database gemaakt. Controleer of er iets mis is. <br /> <br /> voor meer informatie, Kijk <a href="https://mirakel.atlassian.net/browse/MIR-453"> hier</a>         ]]></string>
   <string name="client_sync_key_not_found">Client sync sleutel niet gevonden. Controleer uw taskwarrior configuratie.</string>
   <string name="config_404">Kan het configuratiebestand niet vinden</string>
   <string name="config_error_empty">Er is geen %s vermelding in de config</string>
@@ -62,4 +63,5 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="message_parse_message">Kan de taak niet parsen – schrijf alstublieft hoe dit gebeurde</string>
   <string name="message_message_error">Onbekende reactie van de server – schrijf alstublieft hoe dit gebeurde</string>
   <string name="finish_sync">Synchronisatie afgerond</string>
+  <string name="account_vanished">Account is verdwenen. Dit zou nooit mogen gebeuren</string>
 </resources>

@@ -3,15 +3,13 @@ package de.azapps.mirakel.sync.taskwarrior.network_helper;
 import com.google.common.base.Optional;
 
 import java.nio.charset.MalformedInputException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper;
 
 public class Msg {
-    private Map<String, String> _header = new HashMap<>();
+    private final Map<String, String> _header = new HashMap<>(5);
     private String _payload;
 
     public Msg() {
@@ -57,15 +55,15 @@ public class Msg {
 
 
     public String serialize() {
-        StringBuilder output = new StringBuilder();
-        for (final Map.Entry<String, String> i : this._header.entrySet()) {
-            output.append(i.getKey() + ": " + i.getValue() + "\n");
+        final StringBuilder output = new StringBuilder();
+        for (final Map.Entry<String, String> entry : this._header.entrySet()) {
+            output.append(entry.getKey() + ": " + entry.getValue() + '\n');
         }
-        output.append("\n" + this._payload + "\n");
+        output.append('\n' + this._payload + '\n');
         return output.toString();
     }
 
-    public boolean parse(final String input) throws MalformedInputException {
+    public void parse(final String input) throws MalformedInputException {
         this._header.clear();
         this._payload = "";
         final int separator = input.indexOf("\n\n");
@@ -83,7 +81,6 @@ public class Msg {
                              .trim(), s.substring(delimiter + 1).trim());
         }
         this._payload = input.substring(separator + 2).trim();
-        return true;
     }
 
 }

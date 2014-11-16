@@ -36,15 +36,15 @@ public class TaskWarriorRecurrence extends Recurring {
 
     private static final String TAG = "TaskWarriorRecurrence";
 
-    public class NotSupportedRecurrenceExeption extends TaskWarriorSyncFailedException {
+    public static class NotSupportedRecurrenceException extends TaskWarriorSyncFailedException {
 
-        public NotSupportedRecurrenceExeption() {
-            super(TW_ERRORS.NOT_SUPPORTED_SECONED_RECURRING);
+        public NotSupportedRecurrenceException(final String message) {
+            super(TW_ERRORS.NOT_SUPPORTED_SECONED_RECURRING, message);
         }
     }
 
     public TaskWarriorRecurrence(final @NonNull String recur,
-                                 final @NonNull Optional<Calendar> end) throws NotSupportedRecurrenceExeption {
+                                 final @NonNull Optional<Calendar> end) throws NotSupportedRecurrenceException {
         super();
         final Scanner in = new Scanner(recur);
         in.useDelimiter("[^0-9]+");
@@ -122,13 +122,13 @@ public class TaskWarriorRecurrence extends Recurring {
         case "q":
             setMonths(3 * number);
             break;
-        default:
+        default: // Was genau soll das sein? Default hat doch hier nichts verloren…
         case "seconds":
         case "secs":
         case "sec":
         case "s":
             Log.w(TAG, "mirakel des not support " + recur);
-            throw new NotSupportedRecurrenceExeption();
+            throw new NotSupportedRecurrenceException("mirakel des not support " + recur);
         case "weekdays":
             final SparseBooleanArray weekdays = new SparseBooleanArray(7);
             for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {

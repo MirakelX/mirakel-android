@@ -33,7 +33,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
@@ -41,15 +40,16 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
 
     private static final String TAG = "TaskWarriorTaskDeserializer";
     private static final String TW_DATE_FORMAT = "yyyyMMdd'T'HHmmss'Z'" ;
+    public static final SimpleDateFormat TW_PARSER = new SimpleDateFormat(TW_DATE_FORMAT);
 
     @Override
     public TaskWarriorTask deserialize(final JsonElement json, final Type type,
                                        final JsonDeserializationContext ctx) throws JsonParseException {
         final JsonObject el = json.getAsJsonObject();
-        JsonElement uuid = el.get("uuid");
-        JsonElement status = el.get("status");
-        JsonElement entry = el.get("entry");
-        JsonElement description = el.get("description");
+        final JsonElement uuid = el.get("uuid");
+        final JsonElement status = el.get("status");
+        final JsonElement entry = el.get("entry");
+        final JsonElement description = el.get("description");
         if (uuid == null || status == null || entry == null || description == null
             || !uuid.isJsonPrimitive() || !status.isJsonPrimitive() || !entry.isJsonPrimitive() ||
             !description.isJsonPrimitive() || !uuid.getAsJsonPrimitive().isString() ||
@@ -57,7 +57,7 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
             !description.getAsJsonPrimitive().isString()) {
             throw new JsonParseException("Invalid syntax, missing required field");
         }
-        TaskWarriorTask task = new TaskWarriorTask(uuid.getAsString(), status.getAsString(),
+        final TaskWarriorTask task = new TaskWarriorTask(uuid.getAsString(), status.getAsString(),
                 parseDate(entry.getAsString()), description.getAsString());
         for (final Entry<String, JsonElement> element : el.entrySet()) {
             switch (element.getKey()) {
@@ -84,7 +84,7 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
             case "progress":
                 // taskd does not handle numbers in the right way
                 if (element.getValue().isJsonPrimitive()) {
-                    task.setProgress((int)element.getValue().getAsDouble());
+                    task.setProgress((int) element.getValue().getAsDouble());
                 } else {
                     throw new JsonParseException("progress is not a json primitive");
                 }
@@ -120,17 +120,17 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
                 break;
             case "annotations":
                 if (element.getValue().isJsonArray()) {
-                    JsonArray annotations = element.getValue().getAsJsonArray();
+                    final JsonArray annotations = element.getValue().getAsJsonArray();
                     for (int i = 0; i < annotations.size(); i++) {
                         if (annotations.get(i).isJsonObject()) {
-                            JsonElement descr = annotations.get(i).getAsJsonObject().get("description");
-                            JsonElement annotation_entry = annotations.get(i).getAsJsonObject().get("entry");
-                            if (descr == null || annotation_entry == null || !descr.isJsonPrimitive() ||
-                                !annotation_entry.isJsonPrimitive() || !descr.getAsJsonPrimitive().isString() ||
-                                !annotation_entry.getAsJsonPrimitive().isString()) {
+                            final JsonElement descr = annotations.get(i).getAsJsonObject().get("description");
+                            final JsonElement annotationEntry = annotations.get(i).getAsJsonObject().get("entry");
+                            if (descr == null || annotationEntry == null || !descr.isJsonPrimitive() ||
+                                !annotationEntry.isJsonPrimitive() || !descr.getAsJsonPrimitive().isString() ||
+                                !annotationEntry.getAsJsonPrimitive().isString()) {
                                 throw new JsonParseException("Annotation is not valid");
                             } else {
-                                task.addAnnotation(descr.getAsString(), parseDate(annotation_entry.getAsString()));
+                                task.addAnnotation(descr.getAsString(), parseDate(annotationEntry.getAsString()));
                             }
                         } else {
                             throw new JsonParseException("Annotation is not a json object");
@@ -142,7 +142,7 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
                 break;
             case "depends":
                 if (element.getValue().isJsonPrimitive() && element.getValue().getAsJsonPrimitive().isString()) {
-                    String depends = element.getValue().getAsString();
+                    final String depends = element.getValue().getAsString();
                     task.addDepends(depends.split(","));
                 } else {
                     throw new JsonParseException("depends is not a json primitive");
@@ -150,7 +150,7 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
                 break;
             case "tags":
                 if (element.getValue().isJsonArray()) {
-                    JsonArray tags = element.getValue().getAsJsonArray();
+                    final JsonArray tags = element.getValue().getAsJsonArray();
                     for (int i = 0; i < tags.size(); i++) {
                         if (tags.get(i).isJsonPrimitive() && tags.get(i).getAsJsonPrimitive().isString()) {
                             task.addTags(tags.get(i).getAsString());
@@ -210,11 +210,10 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
     private static Calendar parseDate(final String date) {
         final GregorianCalendar temp = new GregorianCalendar();
         try {
-            SimpleDateFormat parser = new SimpleDateFormat(TW_DATE_FORMAT);
-            parser.setTimeZone(TimeZone.getTimeZone("UTC"));
-            temp.setTime(parser.parse(date));
+            TW_PARSER.setTimeZone(TimeZone.getTimeZone("UTC"));
+            temp.setTime(TW_PARSER.parse(date));
             return temp;
-        } catch (final ParseException e) {
+        } catch (final ParseException ignored) {
             throw new JsonParseException("Date format is not valid");
         }
     }

@@ -64,4 +64,5 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="message_message_error">Resposta desconhecida do servidor. Indique-nos como é que o erro ocorreu</string>
   <string name="finish_sync">Terminar sincronização</string>
   <string name="account_vanished">A conta desapareceu. Isto nunca, mas mesmo nunca, deveria acontecer.</string>
+  <string name="create_account">Criar conta</string>
 </resources>
