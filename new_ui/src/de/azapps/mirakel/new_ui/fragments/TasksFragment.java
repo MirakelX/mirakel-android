@@ -40,12 +40,14 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.R;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
+import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.fromNullable;
 
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks {
 
     public static final String ARGUMENT_LIST = "list";
+    private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
 
     private TaskAdapter mAdapter;
     private RecyclerView mListView;
@@ -58,10 +60,10 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Required empty public constructor
     }
 
-    public static TasksFragment newInstance(ListMirakel listMirakel) {
-        TasksFragment f = new TasksFragment();
+    public static TasksFragment newInstance(final ListMirakel listMirakel) {
+        final TasksFragment f = new TasksFragment();
         // Supply num input as an argument.
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_LIST, listMirakel);
         f.setArguments(args);
         return f;
@@ -72,7 +74,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter = new TaskAdapter(getActivity(), null, 0, mListener);
         mListView.setAdapter(mAdapter);
@@ -81,19 +83,20 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(final Activity activity) {
         super.onAttach(activity);
         try {
             mListener = (OnTaskSelectedListener) activity;
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
+            Log.e(TAG, activity.toString() + " must implement OnArticleSelectedListener", e);
             throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
         }
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         mListView = (RecyclerView) layout.findViewById(R.id.task_listview);
@@ -102,7 +105,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void initFab() {
-        FloatingActionButton mFab = (FloatingActionButton) layout.findViewById(R.id.fabbutton);
+        final FloatingActionButton mFab = (FloatingActionButton) layout.findViewById(R.id.fabbutton);
         mFab.setColor(getResources().getColor(R.color.colorAccent));
         mFab.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
         mFab.hide(false);
@@ -115,31 +118,32 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void clickFAB(View v) {
-        Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel), true,
-                                            getActivity());
+        final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
+                          true,
+                          getActivity());
         mListener.onTaskSelected(task);
     }
 
-    public void setList(ListMirakel listMirakel) {
+    public void setList(final ListMirakel listMirakel) {
         this.listMirakel = listMirakel;
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_LIST, listMirakel);
         getLoaderManager().restartLoader(0, args, this);
     }
 
     @Override
-    public Loader onCreateLoader(int i, Bundle arguments) {
+    public Loader onCreateLoader(final int i, final Bundle arguments) {
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
         return listMirakel.getTasksSupportCursorLoader();
     }
 
     @Override
-    public void onLoadFinished(Loader loader, Object o) {
+    public void onLoadFinished(final Loader loader, final Object o) {
         mAdapter.swapCursor((Cursor) o);
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(final Loader loader) {
         mAdapter.swapCursor(null);
     }
 }

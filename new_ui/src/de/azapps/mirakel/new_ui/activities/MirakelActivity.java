@@ -80,7 +80,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     // Override functions
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         actionbar = (Toolbar) findViewById(R.id.actionbar);
@@ -113,6 +113,12 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
                 input.onConfigurationChanged(newConfig);
             }
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
@@ -150,7 +156,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
                 return true;
             }
         }
-        int id = item.getItemId();
+        final int id = item.getItemId();
         if (id == R.id.action_settings) {
             final Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
@@ -201,6 +207,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
         case DefinitionsHelper.SHOW_TASK_REMINDER:
             final Optional<Task> task = TaskHelper.getTaskFromIntent(intent);
             if (task.isPresent()) {
+                setList(task.get().getList());
                 onTaskSelected(task.get());
             }
             break;

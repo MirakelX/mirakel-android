@@ -39,15 +39,17 @@ import de.azapps.mirakel.new_ui.views.TaskNameView;
 
 public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
 
-    private LayoutInflater mInflater;
-    private OnTaskSelectedListener itemClickListener;
+    private final LayoutInflater mInflater;
+    private final OnTaskSelectedListener itemClickListener;
 
-    public TaskAdapter(final Context context, final Cursor c, final int flags,
+    public TaskAdapter(final Context context, final Cursor cursor, final int flags,
                        final OnTaskSelectedListener itemClickListener) {
-        super(context, c, flags);
+        super(context, cursor, flags);
         mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
+        setHasStableIds(true);
     }
+
 
 
     @Override
@@ -82,9 +84,10 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
         holder.priorityDone.setProgress(task.getProgress());
         holder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                holder.getTask().setDone(isChecked);
-                holder.getTask().save();
+            public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+                final Task task = holder.getTask();
+                task.setDone(isChecked);
+                task.save();
             }
         });
     }
@@ -112,7 +115,7 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(final View v) {
             itemClickListener.onTaskSelected(task);
         }
     }
