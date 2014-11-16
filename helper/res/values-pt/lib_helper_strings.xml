@@ -40,4 +40,5 @@ Dispositivo: %3$s\n]]>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Não sabemos como corrigir este erro. A reiniciar...</string>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Este nome de lista já existe. Escolha outro nome.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Por favor atualize o DAVdroid</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Formato do ficheiro Wunderlist alterado. Reporte esta situação à equipa Mirakel.</string>
 </resources>

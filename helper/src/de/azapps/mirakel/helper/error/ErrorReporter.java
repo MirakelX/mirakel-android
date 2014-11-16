@@ -1,19 +1,29 @@
 package de.azapps.mirakel.helper.error;
 
 import android.content.Context;
+import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
+
 import de.azapps.mirakel.helper.R;
 
 public class ErrorReporter {
-    private static Context context;
-    private static Toast toast;
+    @Nullable
+    private static Context context = null;
+    @Nullable
+    private static Toast toast = null;
 
     public static void init(final Context context) {
         ErrorReporter.context = context;
     }
 
     public static void report(final ErrorType errorType) {
-        // ErrorReporter.report(ErrorType.);
+        if (context == null) {
+            return;
+        }
+        if (Looper.myLooper() == null) { // check already Looper is associated or not.
+            Looper.prepare(); // No Looper is defined So define a new one
+        }
         if (toast != null) {
             toast.cancel();
         }
@@ -25,6 +35,7 @@ public class ErrorReporter {
         } catch (final Exception e) {
             text = errorName;
         }
+
         toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
         toast.show();
     }
