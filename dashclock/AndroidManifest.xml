@@ -26,7 +26,7 @@
 
     <uses-sdk
         android:minSdkVersion="17"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
 
     <application
         android:allowBackup="true"
@@ -35,7 +35,7 @@
         android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
 
         <service android:name="de.azapps.mirakel.dashclock.MirakelExtension"
-                 android:icon="@drawable/bw_mirakel"
+                 android:icon="@drawable/ic_mirakel"
                  android:label="@string/extension_title"
                  android:permission="com.google.android.apps.dashclock.permission.READ_EXTENSION_DATA">
             <intent-filter>

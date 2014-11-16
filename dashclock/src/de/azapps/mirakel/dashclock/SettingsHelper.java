@@ -34,11 +34,11 @@ public class SettingsHelper {
     }
 
     public static Optional<ListMirakel> getList() {
-        long list_id = Long.parseLong(settings.getString("startupList", "-1000"));
+        final long list_id = Long.parseLong(settings.getString("startupList", "-1000"));
         return ListMirakel.get(list_id);
     }
-    public static void setList(ListMirakel listMirakel) {
-        SharedPreferences.Editor editor = settings.edit();
+    public static void setList(final ListMirakel listMirakel) {
+        final SharedPreferences.Editor editor = settings.edit();
         editor.putString("startupList", String.valueOf(listMirakel.getId()));
         editor.apply();
     }
@@ -46,11 +46,11 @@ public class SettingsHelper {
         return settings.getInt("showTaskNumber", 1);
     }
 
-    public static void setMaxTasks(int maxTasks) {
-        SharedPreferences.Editor editor = settings
-                                          .edit();
+    public static void setMaxTasks(final int maxTasks) {
+        final SharedPreferences.Editor editor = settings
+                                                .edit();
         editor.putInt("showTaskNumber", maxTasks);
-        editor.commit();
+        editor.apply();
     }
 
     public static boolean showEmpty() {
@@ -58,7 +58,7 @@ public class SettingsHelper {
     }
 
     public static boolean showDue() {
-        return settings.getBoolean("showDue", true);
+        return settings.getBoolean("showDueDate", true);
     }
 
 }
