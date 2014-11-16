@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -53,6 +54,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
@@ -63,9 +65,43 @@ public class Semantic extends SemanticBase {
                                                 LIST, WEEKDAY
                                               };
     private static final String TAG = "de.azapps.mirakel.model.semantic.Semantic";
+    private static final Pattern SPLIT_BY_WHITESPACE = Pattern.compile("\\s+");
     private static Map<String, Semantic> semantics = new HashMap<>();
     public static final String TABLE = "semantic_conditions";
     public static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
+
+    public Semantic(final Cursor c) {
+        super(c.getLong(c.getColumnIndex(ID)), c.getString(c
+                .getColumnIndex(CONDITION)));
+        if (!c.isNull(c.getColumnIndex(PRIORITY))) {
+            priority = of(c.getInt(c.getColumnIndex(PRIORITY)));
+        }
+        if (!c.isNull(c.getColumnIndex(DUE))) {
+            due = of(c.getInt(c.getColumnIndex(DUE)));
+        }
+        if (!c.isNull(c.getColumnIndex(LIST))) {
+            list = ListMirakel.get(c.getLong(c.getColumnIndex(LIST)));
+        }
+        if (!c.isNull(c.getColumnIndex(WEEKDAY))) {
+            weekday = of(c.getInt(c.getColumnIndex(WEEKDAY)));
+        }
+
+    }
+
+    private Semantic(final Parcel in) {
+        super();
+        setId(in.readLong());
+        setName(in.readString());
+        priority = OptionalUtils.readFromParcel(in, Integer.class);
+        due = OptionalUtils.readFromParcel(in, Integer.class);
+        list = OptionalUtils.readFromParcel(in, ListMirakel.class);
+        weekday = OptionalUtils.readFromParcel(in, Integer.class);
+    }
+
+    public Semantic(final int id, final String condition, final Integer priority,
+                    final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
+        super(id, condition, priority, due, list, weekday);
+    }
 
     @Override
     protected Uri getUri() {
@@ -121,7 +157,7 @@ public class Semantic extends SemanticBase {
                 if (slist.getWhere().isPresent() &&
                 slist.getWhere().transform(new Function<SpecialListsBaseProperty, Boolean>() {
                 @Override
-                public Boolean apply(SpecialListsBaseProperty input) {
+                public Boolean apply(final SpecialListsBaseProperty input) {
                         return input instanceof  SpecialListsPriorityProperty;
                     }
                 }).or(Boolean.FALSE)) {
@@ -132,24 +168,22 @@ public class Semantic extends SemanticBase {
                     final List<Integer> content = prop.getContent();
                     Collections.sort(content);
                     final int length = prop.getContent().size();
-                    for (int i = not ? 0 : length - 1; not ? i < length
-                         : i >= 0; i += not ? 1 : -1) {
-                        if (not && prio == content.get(i)) {
+                    for (int i = not ? 0 : (length - 1); not ? (i < length) : (i >= 0); i += not ? 1 : -1) {
+                        if (not && (prio == content.get(i))) {
                             --prio;
-                        } else if (!not && prio == content.get(i)) {
+                        } else if (!not && (prio == content.get(i))) {
                             prio = content.get(i);
                         }
                     }
                 }
-            } catch (final NullPointerException e) {
+            } catch (final NullPointerException ignored) {
                 currentList = Optional.fromNullable(ListMirakel.safeFirst());
             }
         }
         if (useSemantic) {
             Calendar tempdue = new GregorianCalendar();
             final String lowername = taskName.toLowerCase(Locale.getDefault());
-            final List<String> words = new ArrayList<String>(
-                Arrays.asList(lowername.split("\\s+")));
+            final List<String> words = new ArrayList<>(Arrays.asList(SPLIT_BY_WHITESPACE.split(lowername)));
             while (words.size() > 1) {
                 final String word = words.get(0);
                 final Semantic s = semantics.get(word);
@@ -201,31 +235,6 @@ public class Semantic extends SemanticBase {
         return t;
     }
 
-    public Semantic(final Cursor c) {
-        super(c.getLong(c.getColumnIndex(ID)), c.getString(c
-                .getColumnIndex(CONDITION)));
-        Integer priority = null;
-        if (!c.isNull(c.getColumnIndex(PRIORITY))) {
-            priority = c.getInt(c.getColumnIndex(PRIORITY));
-        }
-        setPriority(priority);
-        Integer due = null;
-        if (!c.isNull(c.getColumnIndex(DUE))) {
-            due = c.getInt(c.getColumnIndex(DUE));
-        }
-        setDue(due);
-        Optional<ListMirakel> list = absent();
-        if (!c.isNull(c.getColumnIndex(LIST))) {
-            list = ListMirakel.get(c.getLong(c.getColumnIndex(LIST)));
-        }
-        setList(list);
-        Integer weekday = null;
-        if (!c.isNull(c.getColumnIndex(WEEKDAY))) {
-            weekday = c.getInt(c.getColumnIndex(WEEKDAY));
-        }
-        setWeekday(weekday);
-    }
-
     public static Optional<Semantic> first() {
         return new MirakelQueryBuilder(context).get(Semantic.class);
     }
@@ -265,10 +274,6 @@ public class Semantic extends SemanticBase {
         return semantic.create();
     }
 
-    public Semantic(final int id, final String condition, final Integer priority,
-                    final Integer due, final Optional<ListMirakel> list, final Integer weekday) {
-        super(id, condition, priority, due, list, weekday);
-    }
 
     public Semantic create() {
         final ContentValues values = getContentValues();
@@ -297,25 +302,16 @@ public class Semantic extends SemanticBase {
         return 0;
     }
 
+
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
-        dest.writeValue(this.priority);
-        dest.writeValue(this.due);
-        dest.writeSerializable(this.list);
-        dest.writeValue(this.weekday);
         dest.writeLong(getId());
         dest.writeString(getName());
-    }
+        OptionalUtils.writeToParcel(dest, priority);
+        OptionalUtils.writeToParcel(dest, due);
+        OptionalUtils.writeToParcel(dest, list);
+        OptionalUtils.writeToParcel(dest, weekday);
 
-    @SuppressWarnings("unchecked")
-    private Semantic(final Parcel in) {
-        super();
-        this.priority = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.due = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.list = (Optional<ListMirakel>) in.readSerializable();
-        this.weekday = (Integer) in.readValue(Integer.class.getClassLoader());
-        setId(in.readLong());
-        setName(in.readString());
     }
 
     public static final Creator<Semantic> CREATOR = new Creator<Semantic>() {
