@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Чтение/запись данных из/в Mirakel</string>
   <string name="permission_read_write_desc">Разрешение на чтение и запись данных в Mirakel</string>
   <string name="title_settings">Параметры</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Поиск дел</string>
   <string name="search">Поиск</string>
   <string name="search_result_title">Поиск %s</string>

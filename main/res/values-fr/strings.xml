@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Lecture/écriture données de Mirakel</string>
   <string name="permission_read_write_desc">Autorisation en lecture et écriture dans Mirakel</string>
   <string name="title_settings">Paramètres</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Chercher des tâches</string>
   <string name="search">Rechercher</string>
   <string name="search_result_title">Recherche de %s</string>

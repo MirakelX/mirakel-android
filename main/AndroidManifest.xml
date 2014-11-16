@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="70"
-    android:versionName="2.8-beta2" >
+    android:versionCode="71"
+    android:versionName="2.8" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -135,39 +135,8 @@
                 android:resource="@xml/searchable" />
         </activity>
         <!-- android:launchMode="singleTop" -->
-        <activity
-            android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
-            android:configChanges="orientation|screenSize"
-            android:excludeFromRecents="true"
-            android:label="@string/sync_taskwarrior_configure" >
-        </activity>
 
-        <service
-            android:name="de.azapps.mirakel.sync.taskwarrior.services.AuthenticationService"
-            android:exported="true"
-            android:permission="de.azapps.mirakel.SYNC" >
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
 
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
-        <service
-            android:name="de.azapps.mirakel.sync.taskwarrior.services.SyncService"
-            android:exported="true"
-            android:permission="de.azapps.mirakel.SYNC" >
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter" >
-                </action>
-            </intent-filter>
-
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/adapter_sync" >
-            </meta-data>
-        </service>
 
         <activity
             android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"

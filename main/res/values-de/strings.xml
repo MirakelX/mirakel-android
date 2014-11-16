@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Mirakel-Daten lesen/schreiben</string>
   <string name="permission_read_write_desc">Berechtigung zum Lesen und Schreiben der Mirakel-Daten</string>
   <string name="title_settings">Einstellungen</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Suche Aufgaben</string>
   <string name="search">Suche</string>
   <string name="search_result_title">Suche nach %s</string>

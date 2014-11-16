@@ -5,7 +5,6 @@
   <string name="permission_read_desc">Povolenie čítať údaje z Mirakel</string>
   <string name="permission_write_lbl">Zapísať údaje do Mirakel</string>
   <string name="title_settings">Nastavenia</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Hľadať úlohy</string>
   <string name="search">Hľadať</string>
   <string name="search_result_title">Hľadať %s</string>

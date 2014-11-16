@@ -79,6 +79,7 @@ import de.azapps.mirakel.custom_views.TaskSummary;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
+import de.azapps.mirakel.helper.ListHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
@@ -104,6 +105,7 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
@@ -1587,8 +1589,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         } else if (intent.getAction().equals(DefinitionsHelper.SHOW_LIST)
                    || intent.getAction().contains(
                        DefinitionsHelper.SHOW_LIST_FROM_WIDGET)) {
-            if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
-                final ListMirakel list = intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST);
+            final Optional<ListMirakel> listMirakelOptional = ListHelper.getListMirakelFromIntent(intent);
+            if (listMirakelOptional.isPresent()) {
+                final ListMirakel list = listMirakelOptional.get();
                 setCurrentList (list);
                 final Optional<Task> taskOptional = list.getFirstTask ();
                 if (taskOptional.isPresent()) {
@@ -1705,21 +1708,25 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             if (taskOptional.isPresent()) {
                 this.currentTask = taskOptional.get();
             } else {
-                throw new TaskVanishedException(this.currentTask.getId());
+                updateCurrentTaskMissing();
             }
         } else {
-            final List<Task> currentTasks = this.currentList
-                                            .tasks(MirakelCommonPreferences.showDoneMain());
-            if (currentTasks.isEmpty()) {
-                this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
-            } else {
-                this.currentTask = currentTasks.get (0);
-            }
+            updateCurrentTaskMissing();
         }
         if (this.currentList != null) {
             this.currentList = ListMirakel.get(this.currentList.getId()).get();
         } else {
             this.currentList = this.currentTask.getList();
+        }
+    }
+
+    private void updateCurrentTaskMissing() {
+        final List<Task> currentTasks = this.currentList
+                                        .tasks(MirakelCommonPreferences.showDoneMain());
+        if (currentTasks.isEmpty()) {
+            this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
+        } else {
+            this.currentTask = currentTasks.get (0);
         }
     }
 

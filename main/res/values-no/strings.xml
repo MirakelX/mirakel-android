@@ -7,7 +7,6 @@
   <string name="permission_write_desc">Tillatelse til å skrive data til Mirakel</string>
   <string name="permission_read_write_lbl">Les/skriv Mirakel-data</string>
   <string name="title_settings">Innstillinger</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Søk etter oppgaver</string>
   <string name="search">Søk</string>
   <string name="search_result_title">Søk etter %s</string>

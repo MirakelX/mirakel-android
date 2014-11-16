@@ -10,7 +10,6 @@
   <string name="permission_read_write_lbl">Čtení/zápis dat aplikace Mirakel</string>
   <string name="permission_read_write_desc">Oprávnění číst a zapisovat data z/do aplikace Mirakel</string>
   <string name="title_settings">Nastavení</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Hledat úkoly</string>
   <string name="search">Hledat</string>
   <string name="search_result_title">Hledat %s</string>

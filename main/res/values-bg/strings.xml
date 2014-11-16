@@ -7,7 +7,6 @@
   <string name="permission_write_desc">Разрешение за записване на данни до Mirakel</string>
   <string name="permission_read_write_lbl">Четене/Записване на Mirakel данни</string>
   <string name="title_settings">Настройки</string>
-  <string name="app_name">Mirakel</string>
   <string name="search_hint">Търсене на задачи</string>
   <string name="search">Търсене</string>
   <string name="search_result_title">Търси за %s</string>
