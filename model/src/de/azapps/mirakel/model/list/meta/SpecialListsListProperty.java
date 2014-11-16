@@ -25,7 +25,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -69,6 +68,9 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
+        if (content.isEmpty()) {
+            return qb;
+        }
         final List<Integer> special = new ArrayList<>(content.size() / 2);
         final List<Integer> normal = new ArrayList<>(content.size() / 2);
         for (final int c : this.content) {
@@ -98,6 +100,9 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
     @NonNull
     @Override
     public String getSummary(@NonNull final Context ctx) {
+        if (content.isEmpty()) {
+            return "";
+        }
         final List <ListMirakel> lists = new MirakelQueryBuilder(ctx).and(ModelBase.ID,
                 MirakelQueryBuilder.Operation.IN, content).getList(ListMirakel.class);
         lists.addAll(new MirakelQueryBuilder(ctx).and(ModelBase.ID,
@@ -114,7 +119,7 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
             }
         }))).getList(SpecialList.class));
 
-        return (this.isSet ? ctx.getString(R.string.not_in) : "") + TextUtils.join(", ",
+        return (this.isSet ? ctx.getString(R.string.not_in) : "") + ' ' + TextUtils.join(", ",
         Collections2.transform(lists, new Function<ListMirakel, String>() {
             @Override
             public String apply(ListMirakel input) {

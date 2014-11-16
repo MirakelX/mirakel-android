@@ -56,6 +56,9 @@ public abstract class SpecialListsSetProperty extends SpecialListsBooleanPropert
     @NonNull
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
+        if (content.isEmpty()) {
+            return new MirakelQueryBuilder(ctx);
+        }
         return new MirakelQueryBuilder(ctx).and(getPropertyName(),
                                                 isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN, content);
     }

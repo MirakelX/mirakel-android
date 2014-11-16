@@ -54,7 +54,7 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
             content = ((SpecialListsTagProperty) oldProperty).getContent();
             isSet = ((SpecialListsTagProperty) oldProperty).isSet();
         } else {
-            content = new ArrayList<>();
+            content = new ArrayList<>(5);
             isSet = false;
         }
     }
@@ -67,6 +67,9 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
     @NonNull
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
+        if (content.isEmpty()) {
+            return new MirakelQueryBuilder(ctx);
+        }
         return new MirakelQueryBuilder(ctx).and(Task.ID,
                                                 isSet ? MirakelQueryBuilder.Operation.NOT_IN : MirakelQueryBuilder.Operation.IN,
                                                 new MirakelQueryBuilder(ctx).distinct().select("task_id").and("tag_id",
@@ -76,9 +79,12 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
     @NonNull
     @Override
     public String getSummary(@NonNull final Context ctx) {
+        if (content.isEmpty()) {
+            return "";
+        }
         List<Tag> tags = new MirakelQueryBuilder(ctx).and(ModelBase.ID, MirakelQueryBuilder.Operation.IN,
                 content).getList(Tag.class);
-        return (this.isSet ? ctx.getString(R.string.not_in) : "") + TextUtils.join(", ",
+        return (this.isSet ? ctx.getString(R.string.not_in) : "") + ' ' + TextUtils.join(", ",
         Collections2.transform(tags, new Function<Tag, String>() {
             @Override
             public String apply(Tag input) {
@@ -98,11 +104,13 @@ public class SpecialListsTagProperty extends SpecialListsSetProperty {
 
     public static final Creator<SpecialListsTagProperty> CREATOR = new
     Creator<SpecialListsTagProperty>() {
-        public SpecialListsTagProperty createFromParcel(Parcel source) {
+        @Override
+        public SpecialListsTagProperty createFromParcel(final Parcel source) {
             return new SpecialListsTagProperty(source);
         }
 
-        public SpecialListsTagProperty[] newArray(int size) {
+        @Override
+        public SpecialListsTagProperty[] newArray(final int size) {
             return new SpecialListsTagProperty[size];
         }
     };

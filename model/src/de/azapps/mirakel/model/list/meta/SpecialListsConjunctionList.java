@@ -92,11 +92,12 @@ public class SpecialListsConjunctionList extends SpecialListsBaseProperty {
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx);
-        for (SpecialListsBaseProperty c : childs) {
+        for (final SpecialListsBaseProperty c : childs) {
+            final MirakelQueryBuilder childQB = c.getWhereQueryBuilder(ctx);
             if (type == CONJUNCTION.AND) {
-                qb.and(c.getWhereQueryBuilder(ctx));
+                qb.and(childQB);
             } else {
-                qb.or(c.getWhereQueryBuilder(ctx));
+                qb.or(childQB);
             }
         }
         return qb;

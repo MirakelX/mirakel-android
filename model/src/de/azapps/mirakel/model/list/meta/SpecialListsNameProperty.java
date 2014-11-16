@@ -25,7 +25,6 @@ import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
-import de.azapps.mirakel.model.list.SpecialList;
 
 public class SpecialListsNameProperty extends SpecialListsStringProperty {
 
@@ -34,10 +33,6 @@ public class SpecialListsNameProperty extends SpecialListsStringProperty {
         super(isNegated, searchString, type);
     }
 
-    // needed for class.newInstance()
-    public SpecialListsNameProperty() {
-        super();
-    }
 
     private SpecialListsNameProperty(final @NonNull Parcel in) {
         super(in);

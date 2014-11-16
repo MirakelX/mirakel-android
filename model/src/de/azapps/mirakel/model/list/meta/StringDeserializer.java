@@ -19,13 +19,12 @@
 
 package de.azapps.mirakel.model.list.meta;
 
-import android.util.Log;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty.Type;
@@ -76,18 +75,15 @@ public class StringDeserializer<T extends SpecialListsStringProperty>
                     throw new JsonParseException("unknown format");
                 }
             }
-            if (searchString != null & type != null && negated != null) {
-                T ret;
+            if (((searchString != null) & (type != null)) && (negated != null)) {
+
                 try {
-                    ret = this.clazz.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
-                    Log.wtf(TAG, "cannot create new string-class");
-                    throw new JsonParseException("create string-class failed", e);
+                    return (T)clazz.getConstructor(boolean.class, String.class, Type.class).newInstance(negated,
+                            searchString, Type.values()[type]);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                             NoSuchMethodException e) {
+                    throw new JsonParseException("Could not create new StringProperty", e);
                 }
-                ret.setIsNegated(negated);
-                ret.setType(Type.values()[type]);
-                ret.setSearchString(searchString);
-                return ret;
             }
         }
         throw new JsonParseException("unknown format");

@@ -47,6 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchTaskException;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -101,14 +102,12 @@ public class ReminderAlarm extends BroadcastReceiver {
         Log.w(TAG, task.getName());
         final NotificationManager nm = (NotificationManager) context
                                        .getSystemService(Context.NOTIFICATION_SERVICE);
-        final Intent openIntent;
-        try {
-            openIntent = new Intent(context,
-                                    Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-        } catch (final ClassNotFoundException e) {
-            Log.wtf(TAG, "mainactivtity not found", e);
+        final Optional<Class<?>> main = Helpers.getMainActivity();
+        if (!main.isPresent()) {
             return;
         }
+        final Intent openIntent = new Intent(context, main.get());
+
         final Bundle withTask = new Bundle();
         withTask.putParcelable(DefinitionsHelper.EXTRA_TASK, task);
         openIntent.setAction(DefinitionsHelper.SHOW_TASK_REMINDER);
@@ -139,13 +138,14 @@ public class ReminderAlarm extends BroadcastReceiver {
         // Build Notification
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(
             context);
-        final int icon = R.drawable.mirakel;
         builder.setContentTitle(
             context.getString(R.string.reminder_notification_title,
                               task.getName()))
         .setContentText(task.getContent())
-        .setSmallIcon(icon)
+        .setSmallIcon(R.drawable.ic_mirakel)
+        .setLargeIcon(Helpers.getBitmap(R.drawable.mirakel, context))
         .setContentIntent(pOpenIntent)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setLights(Color.BLUE, 1500, 300)
         .setOngoing(persistent)
         .setDefaults(Notification.DEFAULT_VIBRATE)
@@ -178,9 +178,12 @@ public class ReminderAlarm extends BroadcastReceiver {
                                R.string.reminder_notification_due, due));
         builder.setStyle(inboxStyle);
         // Build notification
-        allReminders.add(task.getId());
-        nm.notify(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId(),
-                  builder.build());
+        if (!allReminders.contains(task.getId())) {
+            allReminders.add(task.getId());
+
+            nm.notify(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId(),
+                      builder.build());
+        }
     }
 
     private static AlarmManager alarmManager;
@@ -243,6 +246,7 @@ public class ReminderAlarm extends BroadcastReceiver {
                                           AlarmManager.INTERVAL_DAY, pendingIntent);
                 // Alarms
                 final List<Task> tasks = Task.getTasksWithReminders();
+                final Calendar now = new GregorianCalendar();
                 for (final Pair<Task, PendingIntent> p : activeAlarms) {
                     final Task t = p.first;
                     final Task newTask = Task.get(t.getId()).orNull();
@@ -253,7 +257,6 @@ public class ReminderAlarm extends BroadcastReceiver {
                             new GregorianCalendar())) {
                         cancelAlarm(ctx, t, newTask, p, p.second);
                     } else if (newTask.getReminder().isPresent()) {
-                        final Calendar now = new GregorianCalendar();
                         if (newTask.getReminder().get().after(now)
                             && !newTask.getRecurringReminder().isPresent()) {
                             closeNotificationFor(ctx, t.getId());
@@ -382,7 +385,7 @@ public class ReminderAlarm extends BroadcastReceiver {
         allReminders.remove(taskId);
     }
 
-    public static void stopAll(final Context context) {
+    public static void restart(final Context context) {
         final NotificationManager nm = (NotificationManager) context
                                        .getSystemService(Context.NOTIFICATION_SERVICE);
         // This hack is a must because otherwise we get a
@@ -392,5 +395,6 @@ public class ReminderAlarm extends BroadcastReceiver {
             nm.cancel(DefinitionsHelper.NOTIF_REMINDER + id.intValue());
             cancelAlarm(context, Task.get(id).orNull());
         }
+        updateAlarms(context);
     }
 }

@@ -444,8 +444,16 @@ public class ListMirakel extends ListBase {
             t.setUpdatedAt(j.getAsString().replace(":", ""));
         }
         j = el.get("sort_by");
-        if (j != null) {
+        if (j != null && j.getAsJsonPrimitive().isNumber()) {
             t.setSortBy(SORT_BY.fromShort(j.getAsShort()));
+        }
+        j = el.get("sync_state");
+        if ((j != null) && j.getAsJsonPrimitive().isNumber()) {
+            t.setSyncState(SYNC_STATE.valueOf((short) j.getAsFloat()));
+        }
+        j = el.get("color");
+        if ((j != null) && j.getAsJsonPrimitive().isNumber()) {
+            t.setColor(j.getAsInt());
         }
         return t;
     }
@@ -665,8 +673,9 @@ public class ListMirakel extends ListBase {
         json += "\"updated_at\":\"" + getName() + "\",";
         json += "\"lft\":" + getLft() + ',';
         json += "\"rgt\":" + getRgt() + ',';
-        json += "\"sort_by\":" + getSortBy() + ',';
-        json += "\"sync_state\":" + getSyncState();
+        json += "\"sort_by\":" + getSortBy().getShort() + ',';
+        json += "\"sync_state\":" + getSyncState().toInt() + ',';
+        json += "\"color\":" + getColor();
         json += "}";
         return json;
     }

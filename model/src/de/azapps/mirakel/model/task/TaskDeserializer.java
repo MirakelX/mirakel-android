@@ -19,9 +19,7 @@
 
 package de.azapps.mirakel.model.task;
 
-import android.content.Context;
-import android.util.Pair;
-import android.util.SparseBooleanArray;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Optional;
 import com.google.gson.JsonArray;
@@ -41,52 +39,40 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
 
-import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.model.R;
-import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class TaskDeserializer implements JsonDeserializer<Task> {
 
     private static final String TAG = "TaskDeserializer";
 
 
-    public TaskDeserializer() {
-    }
-
     @Override
-    public Task deserialize(final JsonElement json, final Type type,
-                            final JsonDeserializationContext ctx) throws JsonParseException {
+    public Task deserialize(final JsonElement json, final Type typeOfT,
+                            final JsonDeserializationContext context) throws JsonParseException {
         final JsonObject el = json.getAsJsonObject();
         Optional<ListMirakel> taskList = absent();
-        Optional<Task> taskOptional = absent();
-        JsonElement id = el.get("id");
-        if (id != null) {
-            taskOptional = Task.get(id.getAsLong());
+        final JsonElement id = el.get("id");
+        if (id == null) {
+            throw new JsonParseException("Json malformed");
         }
-        Task task;
-        if (taskOptional.isPresent()) {
-            task = taskOptional.get();
-        } else {
-            throw new JsonParseException("Id is missing");
-        }
+        final Task task = Task.get(id.getAsLong()).or(new Task());
         // Name
         final Set<Entry<String, JsonElement>> entries = el.entrySet();
         for (final Entry<String, JsonElement> entry : entries) {
-            String key = entry.getKey();
+            final String key = entry.getKey();
             final JsonElement val = entry.getValue();
-            if (key == null || key.equalsIgnoreCase("id")) {
+            if ((key == null) || "id".equalsIgnoreCase(key)) {
                 continue;
             }
             switch (key.toLowerCase()) {
@@ -106,13 +92,12 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             case "progress":
                 task.setProgress((int) val.getAsDouble());
                 break;
-            case "list_id": {
+            case "list_id":
                 taskList = ListMirakel.get(val.getAsInt());
                 if (!taskList.isPresent()) {
-                    taskList = Optional.fromNullable(SpecialList.firstSpecialSafe().getDefaultList());
+                    taskList = fromNullable(SpecialList.firstSpecialSafe().getDefaultList());
                 }
                 break;
-            }
             case "created_at":
                 task.setCreatedAt(val.getAsString().replace(":", ""));
                 break;
@@ -123,15 +108,19 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 task.setDone(val.getAsBoolean());
                 break;
             case "due":
-                Calendar due = parseDate(val.getAsString(), "yyyy-MM-dd");
-                task.setDue(fromNullable(due));
+                task.setDue(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
                 break;
             case "reminder":
-                Calendar reminder = parseDate(val.getAsString(), "yyyy-MM-dd");
-                task.setReminder(fromNullable(reminder));
+                task.setReminder(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
                 break;
             case "tags":
                 handleTags(task, val);
+                break;
+            case "sync_state":
+                task.setSyncState(DefinitionsHelper.SYNC_STATE.valueOf((short) val.getAsFloat()));
+                break;
+            case "show_recurring":
+                task.setIsRecurringShown(val.getAsBoolean());
                 break;
             default:
                 handleAdditionalEntries(task, key, val);
@@ -139,7 +128,7 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
             }
         }
         if (!taskList.isPresent()) {
-            taskList = Optional.of(ListMirakel.safeFirst());
+            taskList = of(ListMirakel.safeFirst());
         }
         task.setList(taskList.get(), true);
         return task;
@@ -150,45 +139,45 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
         if (val.isJsonPrimitive()) {
             final JsonPrimitive p = (JsonPrimitive) val;
             if (p.isBoolean()) {
-                t.addAdditionalEntry(key, val.getAsBoolean() + "");
+                t.addAdditionalEntry(key, String.valueOf(val.getAsBoolean()));
             } else if (p.isNumber()) {
-                t.addAdditionalEntry(key, val.getAsInt() + "");
+                t.addAdditionalEntry(key, String.valueOf(val.getAsInt()));
             } else if (p.isJsonNull()) {
                 t.addAdditionalEntry(key, "null");
             } else if (p.isString()) {
-                t.addAdditionalEntry(key, "\"" + val.getAsString() + "\"");
+                t.addAdditionalEntry(key, '"' + val.getAsString() + '"');
             } else {
-                Log.w(TAG, "unkown json-type");
+                Log.w(TAG, "unknown json-type");
             }
         } else if (val.isJsonArray()) {
             final JsonArray a = (JsonArray) val;
-            String s = "[";
+            StringBuilder s = new StringBuilder("[");
             boolean first = true;
             for (final JsonElement e : a) {
                 if (e.isJsonPrimitive()) {
                     final JsonPrimitive p = (JsonPrimitive) e;
-                    String add;
+                    final String add;
                     if (p.isBoolean()) {
-                        add = p.getAsBoolean() + "";
+                        add = String.valueOf(p.getAsBoolean());
                     } else if (p.isNumber()) {
-                        add = p.getAsInt() + "";
+                        add = String.valueOf(p.getAsInt());
                     } else if (p.isString()) {
-                        add = "\"" + p.getAsString() + "\"";
+                        add = '"' + p.getAsString() + '"';
                     } else if (p.isJsonNull()) {
                         add = "null";
                     } else {
-                        Log.w(TAG, "unkown json-type");
+                        Log.w(TAG, "unknown json-type");
                         break;
                     }
-                    s += (first ? "" : ",") + add;
+                    s.append(first ? "" : ",").append(add);
                     first = false;
                 } else {
-                    Log.w(TAG, "unkown json-type");
+                    Log.w(TAG, "unknown json-type");
                 }
             }
             t.addAdditionalEntry(key, s + "]");
         } else {
-            Log.w(TAG, "unkown json-type");
+            Log.w(TAG, "unknown json-type");
         }
     }
 
@@ -213,14 +202,14 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
     }
 
 
-
+    @Nullable
     private static Calendar parseDate(final String date, final String format) {
         final GregorianCalendar temp = new GregorianCalendar();
         try {
             temp.setTime(new SimpleDateFormat(format, Locale.getDefault())
                          .parse(date));
             return temp;
-        } catch (final ParseException e) {
+        } catch (final ParseException ignored) {
             return null;
         }
     }

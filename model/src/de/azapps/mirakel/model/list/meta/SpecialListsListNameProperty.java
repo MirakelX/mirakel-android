@@ -36,10 +36,6 @@ public class SpecialListsListNameProperty extends SpecialListsStringProperty {
         super(isNegated, searchString, type);
     }
 
-    // needed for class.newInstance()
-    public SpecialListsListNameProperty() {
-        super();
-    }
 
     private SpecialListsListNameProperty(final @NonNull Parcel in) {
         super(in);

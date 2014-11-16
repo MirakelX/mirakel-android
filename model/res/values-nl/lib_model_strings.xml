@@ -143,6 +143,7 @@
   <string name="where_like_begin_text">Begint met %s</string>
   <string name="where_like_end_text">Eindigt met %s</string>
   <string name="delete">Verwijderen</string>
+  <string name="delete_model_title">Weet je zeker dat je %s wil verwijderen?</string>
   <string name="special_list_progress_equal">Gelijk aan %d</string>
   <string name="special_list_progress_less_than">Minder dan %d</string>
   <string name="special_list_progress_greater_than">Groter dan %d</string>
@@ -173,6 +174,13 @@
   <string name="special_lists_progress_title">Voortgang</string>
   <string name="special_lists_reminder_title">Herinnnering</string>
   <string name="special_lists_subtask_title">Subtaken</string>
+  <string name="special_lists_tag_title">Tag</string>
+  <string name="and">EN</string>
+  <string name="or">Of</string>
+  <string name="new_tag">Nieuwe tag</string>
+  <string name="special_list_list_name">Naam van lijst</string>
+  <string name="special_lists_due_negated">Niet vóór vandaag %s</string>
+  <string name="special_lists_due">Vóór vandaag %s</string>
   <string-array name="demo_lists">
     <item>Werk</item>
     <item>Thuis</item>
@@ -186,4 +194,16 @@
     <item>Melk</item>
     <item>Kaas</item>
   </string-array>
+  <plurals name="day">
+    <item quantity="one">dag</item>
+    <item quantity="other">dag</item>
+  </plurals>
+  <plurals name="month">
+    <item quantity="one">maand</item>
+    <item quantity="other">maand</item>
+  </plurals>
+  <plurals name="year">
+    <item quantity="one">jaar</item>
+    <item quantity="other">jaar</item>
+  </plurals>
 </resources>

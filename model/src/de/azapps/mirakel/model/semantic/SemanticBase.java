@@ -21,6 +21,7 @@ package de.azapps.mirakel.model.semantic;
 
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -32,23 +33,32 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 abstract class SemanticBase  extends ModelBase {
-    protected Integer priority;
-    protected Integer due;
+    @NonNull
+    protected Optional<Integer> priority = absent();
+    @NonNull
+    protected Optional<Integer> due = absent();
+    @NonNull
     protected Optional<ListMirakel> list = absent();
-    protected Integer weekday;
+    @NonNull
+    protected Optional<Integer> weekday = absent();
+
+    @NonNull
     public static final String CONDITION = "condition", PRIORITY = "priority",
                                LIST = "default_list_id", DUE = "due", WEEKDAY = "weekday";
 
-    public SemanticBase(final int id, final String condition,
-                        final Integer priority, final Integer due, final Optional<ListMirakel> list,
-                        final Integer weekday) {
+    public SemanticBase(final int id, final @NonNull String condition,
+                        final @Nullable Integer priority, final @Nullable Integer due,
+                        final @NonNull Optional<ListMirakel> list,
+                        final @Nullable Integer weekday) {
         super(id, condition.toLowerCase(Locale.getDefault()));
-        this.priority = priority;
+        this.priority = fromNullable(priority);
         this.list = list;
-        this.due = due;
-        this.weekday = weekday;
+        this.due = fromNullable(due);
+        this.weekday = fromNullable(weekday);
     }
     SemanticBase(final long id, final String condition) {
         super(id, condition);
@@ -67,36 +77,40 @@ abstract class SemanticBase  extends ModelBase {
         setName(condition.toLowerCase(Locale.getDefault()));
     }
 
+    @Nullable
     public Integer getPriority() {
-        return this.priority;
+        return this.priority.orNull();
     }
 
-    public void setPriority(final Integer priority) {
-        this.priority = priority;
+    public void setPriority(final @Nullable Integer priority) {
+        this.priority = fromNullable(priority);
     }
 
+    @Nullable
     public Integer getDue() {
-        return this.due;
+        return this.due.orNull();
     }
 
-    public void setDue(final Integer due) {
-        this.due = due;
+    public void setDue(final @Nullable Integer due) {
+        this.due = fromNullable(due);
     }
 
+    @NonNull
     public Optional<ListMirakel> getList() {
         return this.list;
     }
 
-    public void setList(final Optional<ListMirakel> list) {
+    public void setList(final @NonNull Optional<ListMirakel> list) {
         this.list = list;
     }
 
+    @Nullable
     public Integer getWeekday() {
-        return this.weekday;
+        return this.weekday.orNull();
     }
 
-    public void setWeekday(final Integer weekday) {
-        this.weekday = weekday;
+    public void setWeekday(final @NonNull Integer weekday) {
+        this.weekday = fromNullable(weekday);
     }
 
 
@@ -112,9 +126,9 @@ abstract class SemanticBase  extends ModelBase {
                 return input.getId();
             }
         }));
-        cv.put(PRIORITY, this.priority);
-        cv.put(DUE, this.due);
-        cv.put(WEEKDAY, this.weekday);
+        cv.put(PRIORITY, this.priority.orNull());
+        cv.put(DUE, this.due.orNull());
+        cv.put(WEEKDAY, this.weekday.orNull());
         return cv;
     }
 
@@ -133,34 +147,25 @@ abstract class SemanticBase  extends ModelBase {
         if (!this.getName().equals(other.getName())) {
             return false;
         }
-        if (this.due == null) {
-            if (other.due != null) {
-                return false;
-            }
+        if (this.due.isPresent() != other.due.isPresent()) {
+            return false;
         } else if (!this.due.equals(other.due)) {
             return false;
         }
         if (this.getId() != other.getId()) {
             return false;
         }
-        if (!this.list.isPresent()) {
-            if (other.list.isPresent()) {
-                return false;
-            }
+        if (this.list.isPresent() != other.list.isPresent()) {
+            return false;
         } else if (!this.list.get().equals(other.list.get())) {
             return false;
         }
-        if (this.priority == null) {
-            if (other.priority != null) {
-                return false;
-            }
+        if (this.priority.isPresent() != other.priority.isPresent()) {
+            return false;
         } else if (!this.priority.equals(other.priority)) {
             return false;
         }
-        if (this.weekday == null) {
-            if (other.weekday != null) {
-                return false;
-            }
+        if (this.weekday.isPresent() != other.weekday.isPresent()) {
         } else if (!this.weekday.equals(other.weekday)) {
             return false;
         }
@@ -172,7 +177,7 @@ abstract class SemanticBase  extends ModelBase {
         final int prime = 31;
         int result = 1;
         result = prime * result + (this.getName().hashCode());
-        result = prime * result + (this.due == null ? 0 : this.due.hashCode());
+        result = prime * result + (this.due.hashCode());
         result = prime * result + (int)this.getId();
         int listNum = 0;
         if (this.list.isPresent()) {
@@ -180,10 +185,8 @@ abstract class SemanticBase  extends ModelBase {
         }
         result = prime * result
                  + listNum;
-        result = prime * result
-                 + (this.priority == null ? 0 : this.priority.hashCode());
-        result = prime * result
-                 + (this.weekday == null ? 0 : this.weekday.hashCode());
+        result = prime * result + (this.priority.hashCode());
+        result = prime * result + (this.weekday.hashCode());
         return result;
     }
 

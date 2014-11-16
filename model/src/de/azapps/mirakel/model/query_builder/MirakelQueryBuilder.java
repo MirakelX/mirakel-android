@@ -326,7 +326,7 @@ public class MirakelQueryBuilder {
      */
     private <T> MirakelQueryBuilder and (final String field, final Operation op,
                                          final List<T> filter, final List<String> selectionArgs) {
-        if (op == Operation.IN && !selectionArgs.isEmpty()) {
+        if ((op == Operation.IN) && !selectionArgs.isEmpty()) {
             throw new IllegalArgumentException("Call condition with in is only without selectionags supported");
         }
         return appendCondition(Conjunction.AND, field, op, filter,
@@ -334,8 +334,11 @@ public class MirakelQueryBuilder {
     }
 
     public MirakelQueryBuilder and (final MirakelQueryBuilder other) {
-        return appendCondition(Conjunction.AND, '(' + other.getSelection()
-                               + ')', other.selectionArgs);
+        if (other.isNotEmpty()) {
+            return appendCondition(Conjunction.AND, '(' + other.getSelection()
+                                   + ')', other.selectionArgs);
+        }
+        return this;
     }
 
     public MirakelQueryBuilder and (final String field, final Operation op,
@@ -427,9 +430,11 @@ public class MirakelQueryBuilder {
     }
 
     public MirakelQueryBuilder not(final MirakelQueryBuilder other) {
-        this.selection.append(" NOT (").append(other.getSelection())
-        .append(')');
-        this.selectionArgs.addAll(other.selectionArgs);
+        if (other.isNotEmpty()) {
+            this.selection.append(" NOT (").append(other.getSelection())
+            .append(')');
+            this.selectionArgs.addAll(other.selectionArgs);
+        }
         return this;
     }
 
@@ -568,5 +573,13 @@ public class MirakelQueryBuilder {
                 + super.toString());
             }
         }
+    }
+
+    public boolean isEmpty() {
+        return selection.toString().trim().isEmpty() && selectionArgs.isEmpty();
+    }
+
+    public boolean isNotEmpty() {
+        return !isEmpty();
     }
 }

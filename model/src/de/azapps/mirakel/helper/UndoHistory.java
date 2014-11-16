@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.helper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -27,8 +28,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskDeserializer;
@@ -41,23 +42,23 @@ public class UndoHistory {
     private static final short LIST = 1;
     private static String TAG = "UndoHistory";
     private static final short TASK = 0;
-    public static String UNDO = "OLD";
+    public static final String UNDO = "OLD";
 
     public static void logCreate(final ListMirakel newList, final Context ctx) {
-        updateLog(LIST, newList.getId() + "", ctx);
+        updateLog(LIST, String.valueOf(newList.getId()), ctx);
     }
 
     public static void logCreate(final Task newTask, final Context ctx) {
         if (newTask == null) {
             return;
         }
-        updateLog(TASK, newTask.getId() + "", ctx);
+        updateLog(TASK, String.valueOf(newTask.getId()), ctx);
     }
 
     public static void undoLast(final Context ctx) {
         final String last = MirakelCommonPreferences.getFromLog(0);
-        if (last != null && !last.equals("")) {
-            final short type = Short.parseShort(last.charAt(0) + "");
+        if (last != null && !last.isEmpty()) {
+            final short type = Short.parseShort(String.valueOf(last.charAt(0)));
             if (last.charAt(1) != '{') {
                 try {
                     final long id = Long.parseLong(last.substring(1));
@@ -82,7 +83,7 @@ public class UndoHistory {
                         Log.wtf(TAG, "unkown Type");
                         break;
                     }
-                } catch (final Exception e) {
+                } catch (NumberFormatException e) {
                     Log.e(TAG, "cannot parse String", e);
                 }
             } else {
@@ -93,33 +94,35 @@ public class UndoHistory {
                     final Gson gson = new GsonBuilder().registerTypeAdapter(
                         Task.class, new TaskDeserializer()).create();
                     final Task t = gson.fromJson(json, Task.class);
-                    if (!Task.get(t.getId()).isPresent()) {
+                    if (t.getId() != Task.INVALID_ID) {
                         t.save(false);
-                    } else {
-                        try {
-                            ctx.getContentResolver().insert(MirakelInternalContentProvider.TASK_URI,
-                                                            t.getContentValues());
-                        } catch (final Exception e) {
-                            Log.e(TAG, "cannot restore Task", e);
-                        }
+                        break;
                     }
+                    try {
+                        t.create(true, true);
+                    } catch (DefinitionsHelper.NoSuchListException e) {
+                        Log.w(TAG, "cannot restore task, list is missing", e);
+                    }
+
                     break;
                 case LIST:
                     final ListMirakel l = ListMirakel.unsafeParseJson(json);
-                    if (ListMirakel.get(l.getId()).isPresent()) {
+                    if (l.getId() != ListMirakel.INVALID_ID) {
                         l.save(false);
                     } else {
                         try {
+                            final ContentValues cv = l.getContentValues();
+                            cv.remove(ListMirakel.ID);
                             ctx.getContentResolver()
                             .insert(MirakelInternalContentProvider.LIST_URI,
-                                    l.getContentValues());
-                        } catch (final Exception e) {
+                                    cv);
+                        } catch (final RuntimeException e) {
                             Log.e(TAG, "cannot restore List", e);
                         }
                     }
                     break;
                 default:
-                    Log.wtf(TAG, "unkown Type");
+                    Log.wtf(TAG, "unknown Type");
                     break;
                 }
             }
@@ -129,7 +132,7 @@ public class UndoHistory {
             final String old = MirakelCommonPreferences.getFromLog(i + 1);
             editor.putString(UNDO + i, old);
         }
-        editor.putString(UNDO + 10, "");
+        editor.putString(UNDO + MirakelCommonPreferences.getUndoNumber(), "");
         editor.commit();
     }
 
