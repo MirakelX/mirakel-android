@@ -3,6 +3,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 CONFIG="upload.cfg"
+SECRET="googleapi_secret.json"
 UPLOAD_TO_PLAYSTORE="upload_apks.py"
 
 cd $DIR
@@ -31,10 +32,12 @@ fi
 
 VERSION=`awk -F'"' '/android:versionName/{print $(NF-1); exit}' $MAIN_MANIFEST`
 IS_BETA=0
+TRACK="production"
 
 if [[ $VERSION == *beta* ]]
 then
-  IS_BETA=1
+    IS_BETA=1
+    TRACK="beta"
 fi
 
 if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ]; then
@@ -68,10 +71,8 @@ fi
 
 if [ ! -f $UPLOAD_TO_PLAYSTORE ]; then
     echo "Upload to playstore script not found!"
-    echo "Add script as build/$UPLOAD_TO_PLAYSTORE"
+    echo "Add script as build/scripts/$UPLOAD_TO_PLAYSTORE"
     exit
 fi
 
-
-
-
+$(./$UPLOAD_TO_PLAYSTORE -p de.azapps.mirakelandroid -s $SECRET -t $TRACK -a $APK_FILE)
