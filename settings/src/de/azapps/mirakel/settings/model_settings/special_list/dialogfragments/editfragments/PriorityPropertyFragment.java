@@ -28,14 +28,14 @@ import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
 
 public class PriorityPropertyFragment extends SetPropertyFragment<SpecialListsPriorityProperty> {
 
-    public static PriorityPropertyFragment newInstance(SpecialListsPriorityProperty property) {
+    public static PriorityPropertyFragment newInstance(final SpecialListsPriorityProperty property) {
         return setInitialArguments(new PriorityPropertyFragment(), property);
     }
 
     @NonNull
     @Override
     protected Map<String, Integer> getElements() {
-        Map<String, Integer> lists = new HashMap<>();
+        final Map<String, Integer> lists = new HashMap<>(5);
         for (int i = -2; i < 3; i++) {
             lists.put(String.valueOf(i), i);
         }

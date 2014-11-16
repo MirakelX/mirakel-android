@@ -19,10 +19,10 @@
 
 package de.azapps.mirakel.settings.model_settings.generic_list;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +31,6 @@ import android.view.MenuItem;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.special_list.SpecialListDetailFragment;
 import de.azapps.tools.Log;
 
 /**
@@ -43,15 +42,20 @@ import de.azapps.tools.Log;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link de.azapps.mirakel.settings.model_settings.special_list.SpecialListDetailFragment}.
  */
-public class GenericModelDetailActivity<T extends ModelBase> extends Activity {
+public class GenericModelDetailActivity<T extends ModelBase> extends FragmentActivity {
 
     public static final int NEED_UPDATE = 42;
     public static final int SWITCH_LAYOUT = 43;
     public static final String FRAGMENT = "Fragment";
+    public static final String BACK_ACTIVITY = "back";
     private static final String TAG = "GenericModelSettingsDetailActivity";
+
+    protected boolean isSupport = false;
+    private Class<? extends GenericModelListActivity> backActivity;
 
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         if (MirakelCommonPreferences.isDark()) {
             setTheme(R.style.AppBaseThemeDARK);
@@ -74,22 +78,32 @@ public class GenericModelDetailActivity<T extends ModelBase> extends Activity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(SpecialListDetailFragment.ARG_ITEM,
+            final Bundle arguments = new Bundle();
+            arguments.putParcelable(GenericModelDetailFragment.ARG_ITEM,
                                     getIntent().getParcelableExtra(GenericModelDetailFragment.ARG_ITEM));
-            Class<? extends GenericModelDetailFragment<T>> fragmentClass =
-                (Class<? extends GenericModelDetailFragment<T>>) getIntent().getSerializableExtra(FRAGMENT);
-            GenericModelDetailFragment<T> fragment = null;
+            final Class<?> fragmentClass =
+                (Class<?>) getIntent().getSerializableExtra(FRAGMENT);
+            backActivity = (Class<? extends GenericModelListActivity>) getIntent().getSerializableExtra(
+                               BACK_ACTIVITY);
+            final Object fragment;
             try {
                 fragment = fragmentClass.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 Log.wtf(TAG, "Cannot create fragment: " + fragmentClass.getName());
                 throw new IllegalArgumentException("Cannot create fragment: " + fragmentClass.getName(), e);
             }
-            fragment.setArguments(arguments);
-            getFragmentManager().beginTransaction()
-            .add(R.id.speciallist_detail_container, fragment)
-            .commit();
+            if (fragment instanceof android.app.Fragment) {
+                ((android.app.Fragment)fragment).setArguments(arguments);
+                getFragmentManager().beginTransaction()
+                .add(R.id.speciallist_detail_container, ((android.app.Fragment)fragment))
+                .commit();
+            } else if (fragment instanceof android.support.v4.app.Fragment) {
+                ((android.support.v4.app.Fragment)fragment).setArguments(arguments);
+                getSupportFragmentManager().beginTransaction()
+                .add(R.id.speciallist_detail_container, ((android.support.v4.app.Fragment)fragment))
+                .commit();
+                isSupport = true;
+            }
         }
     }
 
@@ -113,7 +127,7 @@ public class GenericModelDetailActivity<T extends ModelBase> extends Activity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, GenericModelListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, backActivity));
             return true;
         } else if (id == R.id.menu_delete) {
             ((GenericModelDetailFragment<T>)getFragmentManager().findFragmentById(

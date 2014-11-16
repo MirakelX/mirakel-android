@@ -69,6 +69,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="no_barcode_app_install">Instalar</string>
   <string name="menu_edit_listaccount">Conta</string>
   <string name="change_account">Mudar conta</string>
+  <string name="version">Versão da aplicação</string>
   <string name="no">nenhuma</string>
   <string name="not">não</string>
   <string name="notification_title">Notificações</string>
@@ -116,6 +117,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="importing">Importação</string>
   <string name="astrid_import_title">Selecione o ficheiro Astrid</string>
   <string name="import_any_do_click">Importar de Any.Do</string>
+  <string name="any_do_import_title">Selecione o ficheiro de backup Any.Do</string>
   <string name="any_do_this_file">Importar de %s?\nSe não, escolha manualmente o ficheiro</string>
   <string name="any_do_how_to">Por favor, faça um backup dos seus dados Any.Do. Para o fazer, aceda a Any.Do -> Definições -> Backup -> Criar backup. Volte à aplicação e clique OK.\nOu então, escolha o ficheiro.</string>
   <string name="select_file">Selecionar ficheiro</string>
@@ -214,6 +216,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_file_default_title">Nome da tarefa para ficheiros importados</string>
   <string name="semantic_new">modelo</string>
   <string name="tag_new">Nova etiqueta</string>
+  <string name="tag_settings">Definições de etiquetas</string>
   <string name="color">Cor</string>
   <string name="tag_name">Nome</string>
   <string name="tag_dark_text">Deve o texto ser preto?</string>
@@ -283,7 +286,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string-array name="file_choice">
     <item>Não definido</item>
     <item>Tem ficheiro</item>
-    <item>Has no file</item>
+    <item>Não tem ficheiro</item>
   </string-array>
   <string name="remove">Remover</string>
   <string name="no_account_selected">Nenhuma conta selecionada</string>
@@ -295,6 +298,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="backup_title">Backup</string>
   <string name="third_party_title">Aplicações de terceiros</string>
   <string name="title_settings">Definições</string>
+  <string name="subcondition">Subcondição</string>
   <string name="done_text">Apenas tarefas terminadas</string>
   <string name="file_text">Apenas tarefas com ficheiros</string>
   <string name="due_exist_text">Apenas tarefas sem data limite</string>

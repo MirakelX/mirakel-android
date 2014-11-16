@@ -18,8 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.settings.taskfragment;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.database.DataSetObserver;
@@ -35,6 +33,8 @@ import com.google.common.base.Optional;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 import com.mobeta.android.dslv.DragSortListView.RemoveListener;
+
+import java.util.List;
 
 import de.azapps.mirakel.custom_views.TaskDetailView;
 import de.azapps.mirakel.helper.MirakelViewPreferences;
@@ -68,7 +68,9 @@ public class TaskFragmentSettingsFragment extends Fragment {
         final View view = inflater.inflate(
                               R.layout.activity_task_fragment_settings, null);
         setupView(view);
-        getActivity().getActionBar().setTitle(R.string.settings_task_fragment);
+        if (getActivity() != null && getActivity().getActionBar() != null) {
+            getActivity().getActionBar().setTitle(R.string.settings_task_fragment);
+        }
         return view;
     }
 

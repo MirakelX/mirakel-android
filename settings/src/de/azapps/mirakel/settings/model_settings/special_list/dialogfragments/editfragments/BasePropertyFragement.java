@@ -21,8 +21,7 @@ package de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.e
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.app.Fragment;
-
+import android.support.v4.app.Fragment;
 
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 
@@ -40,7 +39,7 @@ public abstract class BasePropertyFragement<T extends SpecialListsBaseProperty> 
     @Override
     public void onCreate(@NonNull final Bundle extras) {
         super.onCreate(extras);
-        if (getArguments() != null && getArguments().containsKey(PROPERTY_KEY)) {
+        if ((getArguments() != null) && getArguments().containsKey(PROPERTY_KEY)) {
             property = getArguments().getParcelable(PROPERTY_KEY);
         } else {
             throw new IllegalArgumentException("No property passed");
@@ -52,14 +51,14 @@ public abstract class BasePropertyFragement<T extends SpecialListsBaseProperty> 
         return property;
     }
 
-    public void setProperty(T property) {
+    public void setProperty(@NonNull final T property) {
         this.property = property;
     }
 
 
-    protected static<S extends BasePropertyFragement> S setInitialArguments(S fragment,
-            SpecialListsBaseProperty property) {
-        Bundle args = new Bundle();
+    protected static<S extends BasePropertyFragement> S setInitialArguments(final S fragment,
+            final SpecialListsBaseProperty property) {
+        final Bundle args = new Bundle();
         args.putParcelable(PROPERTY_KEY, property);
         fragment.setArguments(args);
         return fragment;

@@ -29,17 +29,31 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
+
+import static com.google.common.base.Optional.of;
 
 public class SemanticSettingsActivity extends GenericModelListActivity<Semantic> {
 
 
     @NonNull
     @Override
-    protected GenericModelDetailFragment<Semantic> getDetailFragment() {
-        return new SemanticDetailFragment();
+    protected boolean isSupport() {
+        return false;
     }
+
+    @NonNull
+    @Override
+    protected Optional<android.app.Fragment> getDetailFragment() {
+        return of((android.app.Fragment) new SemanticDetailFragment());
+    }
+
+    @NonNull
+    @Override
+    protected Class<? extends GenericModelListActivity> getSelf() {
+        return SemanticSettingsActivity.class;
+    }
+
 
     @NonNull
     @Override

@@ -19,12 +19,10 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,6 +31,7 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,19 +51,21 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.helper.SpecialListsConditionAdapter;
 
-public class  SpecialListDetailFragment extends GenericModelDetailFragment<SpecialList> implements
+public class  SpecialListDetailFragment extends Fragment implements
     CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener {
     private ArrayList<Integer> backStack = new ArrayList<>();
 
     private SpecialListsConditionAdapter mAdapter;
     private MirakelContentObserver observer;
+
+    protected SpecialList mItem;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -73,40 +74,37 @@ public class  SpecialListDetailFragment extends GenericModelDetailFragment<Speci
     public SpecialListDetailFragment() {
     }
 
-    @Override
-    protected SpecialList getDummyItem() {
-        return SpecialList.newSpecialList("Dummy", Optional.<SpecialListsBaseProperty>absent(), false);
-    }
-
-    @Override
-    protected int getResourceId() {
-        return NO_PREFERENCES;
-    }
-
-    @Override
-    protected void setUp() {
-        //nothing
-        //not needed here
-    }
 
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
         mItem.setActive(isChecked);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.speciallist_condition_list, container, false);
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+                             final Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.speciallist_condition_list, container, false);
         final DragSortListView listView = (DragSortListView)rootView.findViewById(R.id.speciallist_items);
-        Button add = (Button) rootView.findViewById(R.id.speciallist_add_condition);
-        List<Preference> preferences = getPrefernces();
+        final Button add = (Button) rootView.findViewById(R.id.speciallist_add_condition);
+        final List<Preference> preferences = getPrefernces();
         mAdapter = SpecialListsConditionAdapter.setUpListView(mItem, listView, getActivity(),
                    getFragmentManager(), backStack, this, add, preferences);
         return rootView;
     }
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments().containsKey(GenericModelDetailFragment.ARG_ITEM)) {
+            mItem = getArguments().getParcelable(GenericModelDetailFragment.ARG_ITEM);
+        } else {
+            // Load the dummy content
+            mItem = SpecialList.firstSpecialSafe();
+        }
+        getActivity().getActionBar().setTitle(mItem.getName());
+    }
+
 
     @NonNull
     private List<Preference> getPrefernces() {
@@ -149,7 +147,7 @@ public class  SpecialListDetailFragment extends GenericModelDetailFragment<Speci
 
     private Preference getDefaultDatePreference() {
         final Preference defDate = new Preference(getActivity());
-        defDate.setTitle(R.string.special_list_def_list);
+        defDate.setTitle(R.string.special_list_def_date);
         setDefaultDateSummary(defDate, getActivity(), mItem);
         defDate.setOnPreferenceChangeListener(null);
         defDate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

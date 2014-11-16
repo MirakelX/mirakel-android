@@ -34,6 +34,7 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -43,7 +44,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -139,8 +140,9 @@ public class SettingsActivity extends PreferenceActivity {
                 break;
             case CREDITS:
                 settingsActivity.startPreferenceFragment(new CreditsFragment(), true);
+                break;
             case DONATE:
-                DonationsFragment donationsFragment;
+                final DonationsFragment donationsFragment;
                 if (BuildHelper.isForPlayStore()) {
                     donationsFragment = DonationsFragment.newInstance(
                                             MirakelCommonPreferences.isDebug(),
@@ -174,9 +176,9 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @NonNull
-    private static final Set<FRAGMENTS> validFragments = new HashSet<>();
+    private static final Set<FRAGMENTS> VALID_FRAGMENTS = EnumSet.allOf(FRAGMENTS.class);
     static {
-        validFragments.addAll(Arrays.asList(FRAGMENTS.values()));
+        VALID_FRAGMENTS.addAll(Arrays.asList(FRAGMENTS.values()));
     }
 
 
@@ -188,7 +190,7 @@ public class SettingsActivity extends PreferenceActivity {
     private boolean isTablet;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         if (MirakelCommonPreferences.useNewUI()) {
             setTheme(R.style.MirakelSettingsTheme);
         } else if (MirakelCommonPreferences.isDark()) {
@@ -203,16 +205,16 @@ public class SettingsActivity extends PreferenceActivity {
             FRAGMENTS.DONATE.restoreFragment(this);
         }
         if (onIsMultiPane() && onIsHidingHeaders()) {
-            Intent i = new Intent();
-            i.putExtra(STATE_CUR_HEADER_POS, currentFragment.ordinal());
-            setResult(NEED_UPDATE, i);
+            final Intent intent = new Intent();
+            intent.putExtra(STATE_CUR_HEADER_POS, currentFragment.ordinal());
+            setResult(NEED_UPDATE, intent);
             finish();
         }
     }
 
     @Override
     public Header onGetInitialHeader() {
-        List<Header> filtered = new ArrayList<>(Collections2.filter(headers, new Predicate<Header>() {
+        final List<Header> filtered = new ArrayList<>(Collections2.filter(headers, new Predicate<Header>() {
             @Override
             public boolean apply(Header input) {
                 return currentFragment.toString().equals(input.fragment);
@@ -226,21 +228,21 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    public void onBuildHeaders(List<Header> target) {
+    public void onBuildHeaders(final List<Header> target) {
         loadHeadersFromResource(R.xml.settings, target);
         updateHeaderList(target);
     }
 
-    private void updateHeaderList(List<Header> target) {
+    private void updateHeaderList(final List<Header> target) {
         if (target == null) {
             return;
         }
         final boolean showDev = MirakelCommonPreferences.isEnabledDebugMenu();
         int i = 0;
-        boolean isDark = MirakelCommonPreferences.isDark();
+        final boolean isDark = MirakelCommonPreferences.isDark();
         while (i < target.size()) {
-            Header header = target.get(i);
-            int id = (int) header.id;
+            final Header header = target.get(i);
+            final int id = (int) header.id;
             if (id == R.id.development_settings && !showDev) {
                 target.remove(header);
                 i--;
@@ -273,8 +275,8 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    public void onHeaderClick(Header header, int position) {
-        if (isTablet) {
+    public void onHeaderClick(@NonNull final Header header, final int position) {
+        if (isTablet &&  getActionBar() != null) {
             getActionBar().setTitle(getString(header.titleRes));
         }
         if (header.id == R.id.donation_settings) {
@@ -286,9 +288,9 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     protected boolean isValidFragment(final String fragmentName) {
-        for (FRAGMENTS f : validFragments) {
-            if (f.toString().equals(fragmentName)) {
-                currentFragment = f;
+        for (final FRAGMENTS fragment : VALID_FRAGMENTS) {
+            if (fragment.toString().equals(fragmentName)) {
+                currentFragment = fragment;
                 return true;
             }
         }
@@ -312,7 +314,7 @@ public class SettingsActivity extends PreferenceActivity {
                     ErrorReporter.report(ErrorType.FILE_NOT_MIRAKEL_DB);
                 }
                 this.stream = FileUtils.getStreamFromUri(this, uri);
-            } catch (final FileNotFoundException e) {
+            } catch (final FileNotFoundException ignored) {
                 ErrorReporter.report(ErrorType.FILE_NOT_MIRAKEL_DB);
                 break;
             }
@@ -362,7 +364,7 @@ public class SettingsActivity extends PreferenceActivity {
                         try {
                             return AnyDoImport.exec(SettingsActivity.this,
                                                     SettingsActivity.this.stream);
-                        } catch (DefinitionsHelper.NoSuchListException e) {
+                        } catch (final DefinitionsHelper.NoSuchListException e) {
                             ErrorReporter
                             .report(ErrorType.LIST_VANISHED);
                             Log.wtf(TAG, "list vanished", e);
@@ -420,11 +422,14 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
         // Respond to the action bar's Up/Home button
         case android.R.id.home:
-            NavUtils.navigateUpFromSameTask(this);
+            final Optional<Class<?>> main = Helpers.getMainActivity();
+            if (main.isPresent()) {
+                NavUtils.navigateUpTo(this, new Intent(this, main.get()));
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -449,12 +454,12 @@ public class SettingsActivity extends PreferenceActivity {
         Locale.setDefault(Helpers.getLocal(this));
         super.onConfigurationChanged(newConfig);
         if (this.isTablet != MirakelCommonPreferences.isTablet()) {
-            Bundle saved = new Bundle();
+            final Bundle saved = new Bundle();
             onSaveInstanceState(saved);
             onCreate(saved);
             invalidateHeaders();
             onRestoreInstanceState(saved);
-            if (!isTablet) {
+            if (!isTablet && getActionBar() != null) {
                 getActionBar().setTitle(R.string.title_settings);
             }
         }
@@ -462,7 +467,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 
     @Override
-    protected void onRestoreInstanceState(Bundle state) {
+    protected void onRestoreInstanceState(@NonNull final Bundle state) {
         super.onRestoreInstanceState(state);
 
         //Retrieve our saved header list and last clicked position and ensure we switch to the proper header.
@@ -474,18 +479,18 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
 
         //Persist our list and last clicked position
-        if (headers != null && headers.size() > 0) {
+        if (headers != null && !headers.isEmpty()) {
             outState.putInt(STATE_CUR_HEADER_POS, currentFragment.ordinal());
             outState.putParcelableArrayList(STATE_HEADERS_LIST, headers);
         }
     }
 
     @Override
-    public void startPreferenceFragment(Fragment fragment, boolean push) {
+    public void startPreferenceFragment(final Fragment fragment, final boolean push) {
         if (isValidFragment(fragment.getClass().getName())) {
             super.startPreferenceFragment(fragment, push);
         }

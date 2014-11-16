@@ -31,17 +31,30 @@ import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
+
+import static com.google.common.base.Optional.of;
 
 public class RecurringSettingsActivity extends GenericModelListActivity<Recurring> {
 
 
+    @Override
+    protected boolean isSupport() {
+        return false;
+    }
+
     @NonNull
     @Override
-    protected GenericModelDetailFragment<Recurring> getDetailFragment() {
-        return new RecurringDetailFragment();
+    protected Optional<android.app.Fragment> getDetailFragment() {
+        return of((android.app.Fragment)new RecurringDetailFragment());
     }
+
+    @NonNull
+    @Override
+    protected Class<? extends GenericModelListActivity> getSelf() {
+        return RecurringSettingsActivity.class;
+    }
+
 
     @NonNull
     @Override
@@ -49,9 +62,8 @@ public class RecurringSettingsActivity extends GenericModelListActivity<Recurrin
         return Recurring.getSafeFirst();
     }
 
-    @NonNull
     @Override
-    protected void createItem(@NonNull Context ctx) {
+    protected void createItem(@NonNull final Context ctx) {
         onItemSelected(Recurring.newRecurring(getString(R.string.new_recurring), 0, 0,
                                               0, 0, 1, true, Optional.<Calendar>absent(), Optional.<Calendar>absent(), false, false,
                                               new SparseBooleanArray()));
