@@ -234,7 +234,9 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                             "editdialog");
                 } else {
                     final Preference pref = item.getPreference().get();
-                    pref.getOnPreferenceClickListener().onPreferenceClick(pref);
+                    if (pref.getOnPreferenceClickListener() != null) {
+                        pref.getOnPreferenceClickListener().onPreferenceClick(pref);
+                    }
                 }
             }
         });

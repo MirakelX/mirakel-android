@@ -196,9 +196,16 @@ public abstract class GenericModelListActivity<T extends ModelBase> extends Frag
         } else if (id == R.id.menu_add) {
             createItem(this);
             updateList();
-        } else if (id == R.id.menu_delete && mTwoPane) {
-            ((GenericModelDetailFragment<T>)getFragmentManager().findFragmentById(
-                 R.id.generic_model_detail_container)).getItem().destroy();
+        } else if ((id == R.id.menu_delete) && mTwoPane) {
+            final T toDestroy;
+            if (isSupport()) {
+                toDestroy = ((IDetailFragment<T>) getSupportFragmentManager().findFragmentById(
+                                 R.id.generic_model_detail_container)).getItem();
+            } else {
+                toDestroy = ((IDetailFragment<T>) getFragmentManager().findFragmentById(
+                                 R.id.generic_model_detail_container)).getItem();
+            }
+            toDestroy.destroy();
             updateList();
         }
         return super.onOptionsItemSelected(item);

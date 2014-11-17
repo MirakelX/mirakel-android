@@ -26,7 +26,8 @@ import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.ModelBase;
 
-public abstract class GenericModelDetailFragment<T extends ModelBase> extends PreferenceFragment {
+public abstract class GenericModelDetailFragment<T extends ModelBase> extends PreferenceFragment
+    implements IDetailFragment<T> {
 
     protected static final int NO_PREFERENCES = -1;
     /**
@@ -56,7 +57,7 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
     protected abstract void setUp();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey(ARG_ITEM)) {
@@ -65,7 +66,9 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
             // Load the dummy content
             mItem = getDummyItem();
         }
-        getActivity().getActionBar().setTitle(mItem.getName());
+        if ((getActivity() != null) && (getActivity().getActionBar() != null)) {
+            getActivity().getActionBar().setTitle(mItem.getName());
+        }
         final int preferencesResource = getResourceId();
         if (preferencesResource != NO_PREFERENCES) {
             addPreferencesFromResource(getResourceId());
@@ -80,6 +83,8 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
         mItem.save();
     }
 
+    @NonNull
+    @Override
     public T getItem() {
         return mItem;
     }
