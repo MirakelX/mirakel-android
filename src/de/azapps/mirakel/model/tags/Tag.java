@@ -153,7 +153,7 @@ public class Tag extends TagBase {
     }
 
     @NonNull
-    private static Optional<Tag> getByName(final String name) {
+    public static Optional<Tag> getByName(final String name) {
         return new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(Tag.class);
     }
 
@@ -229,4 +229,5 @@ public class Tag extends TagBase {
             return all.get(0);
         }
     }
+
 }

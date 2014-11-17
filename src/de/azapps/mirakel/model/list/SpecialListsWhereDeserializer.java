@@ -123,7 +123,9 @@ public final class SpecialListsWhereDeserializer {
             return of((SpecialListsBaseProperty) new SpecialListsConjunctionList(((
                           deep % 2) == 0) ? SpecialListsConjunctionList.CONJUNCTION.AND :
                       SpecialListsConjunctionList.CONJUNCTION.OR, childs));
-        } else {
+        } else if (obj.isJsonNull()) {
+            return absent();
+        } else  {
             throw new IllegalArgumentException("Unknown json type");
         }
     }
