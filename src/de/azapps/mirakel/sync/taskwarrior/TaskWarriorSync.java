@@ -177,9 +177,13 @@ public class TaskWarriorSync {
             final List<String> uuids = new ArrayList<>(remoteTasks.keySet());
             if (!uuids.isEmpty()) {
                 for (int i = 0; i < ((remoteTasks.size() / MAX_TASKS_PER_TRANSACTION) + 1); i++) {
-                    final int end = (((i + 1) * MAX_TASKS_PER_TRANSACTION) >= remoteTasks.size()) ? remoteTasks.size()
-                                    : ((
-                                           i + 1) * MAX_TASKS_PER_TRANSACTION);
+                    int end = (i + 1) * MAX_TASKS_PER_TRANSACTION;
+                    if (end > uuids.size()) {
+                        end = uuids.size();
+                    }
+                    if (end <= i * MAX_TASKS_PER_TRANSACTION) {
+                        break;
+                    }
                     final List<String> transactionUUIDS = uuids.subList(i * MAX_TASKS_PER_TRANSACTION, end);
                     final List<String> newUUIDS = new ArrayList<>(0);
 
