@@ -7,7 +7,7 @@ import re
 from airspeed import CachingFileLoader
 
 if len(sys.argv) != 3:
-    print sys.argv[0] + "<Model.java> <pathToTestDir>" 
+    print sys.argv[0] + "<Model.java> <pathToTestDir>"
     sys.exit()
 
 filenameModel=sys.argv[1]
@@ -24,7 +24,7 @@ for p in parts:
         directory+="/"+p
 className = None
 modelName = None
-        
+
 classRegex = re.compile("public class (\S+) extends (\S+)")
 with open(filenameModel) as f:
     for line in f:
@@ -33,8 +33,8 @@ with open(filenameModel) as f:
             (modelName, className) = classM.groups()
             break
 filename = filenameModel.replace(modelName,className)
-                        
-        
+
+
 
 
 vars = getVars(filename)
@@ -44,9 +44,10 @@ vars["IMPORTS"] = []
 vars["CONSTRUCTORS"] = []
 vars["MODELNAME"] = modelName
 
-    
+
 create_line=None
 getterRegex = re.compile("public\s*(@NonNull)?(\s+)(\S+)\s+get[a-zA-Z]+" + paramRegexS + "\s+" + throwsRegexS + "\s*{")
+isRegex = re.compile("public\s*(@NonNull)?(\s+)(\S+)\s+is[a-zA-Z]+" + paramRegexS + "\s+" + throwsRegexS + "\s*{")
 setterRegex = re.compile("public void set([a-zA-Z]+)" + paramRegexS + "\s+" + throwsRegexS + "\s*{")
 importRegex = re.compile(importRegexS)
 constructorRegex = re.compile("public " + modelName + paramRegexS + "\s+" + throwsRegexS + "\s*({)?")
@@ -54,10 +55,20 @@ with open(filename) as f:
     for line in f:
         if create_line != None:
             line = create_line.strip() + line.strip()
-            
+        line.replace("@Nullable","")
+
         getterM = getterRegex.search(line)
         if getterM != None:
             groups = getterM.groups()
+            isNonNull = groups[0] == "@NonNull"
+            name = groups[1]
+            type = groups[2]
+            params = getParams(groups[3])
+            vars["GETTERS"].append({"name": name,"params":params,"type":type})
+
+        isM = getterRegex.search(line)
+        if isM != None:
+            groups = isM.groups()
             isNonNull = groups[0] == "@NonNull"
             name = groups[1]
             type = groups[2]
