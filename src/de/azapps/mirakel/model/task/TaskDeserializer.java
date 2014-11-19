@@ -99,10 +99,18 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 }
                 break;
             case "created_at":
-                task.setCreatedAt(val.getAsString().replace(":", ""));
+                try {
+                    task.setCreatedAt(DateTimeHelper.parseDateTime(val.getAsString().replace(":", "")));
+                } catch (final ParseException e) {
+                    Log.wtf(TAG, "invalid dateformat: ", e);
+                }
                 break;
             case "updated_at":
-                task.setUpdatedAt(val.getAsString().replace(":", ""));
+                try {
+                    task.setUpdatedAt(DateTimeHelper.parseDateTime(val.getAsString().replace(":", "")));
+                } catch (final ParseException e) {
+                    Log.wtf(TAG, "invalid dateformat: ", e);
+                }
                 break;
             case "done":
                 task.setDone(val.getAsBoolean());
