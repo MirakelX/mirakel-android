@@ -18,6 +18,13 @@
  ******************************************************************************/
 package de.azapps.mirakelandroid.test;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.Uri;
+import android.util.SparseBooleanArray;
+
+import com.google.common.base.Optional;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -27,18 +34,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.net.Uri;
-import android.util.SparseBooleanArray;
-
-import com.google.common.base.Optional;
-
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 
@@ -56,6 +60,28 @@ public class RandomHelper {
 
     public static void init(final Context ctx) {
         RandomHelper.ctx = ctx;
+        final ListMirakel l=ListMirakel.safeFirst();
+        final Task t;
+        if(Task.all().isEmpty()) {
+            t=Task.newTask(getRandomString(),l);
+        }else{
+            t=Task.all().get(0);
+        }
+        if(Tag.all().isEmpty()){
+            Tag.newTag(getRandomString());
+        }
+        if(Semantic.all().isEmpty()){
+            Semantic.newSemantic(getRandomString(),getRandomInteger(),getRandomInteger(),getRandomOptional_ListMirakel(),getRandomInteger());
+        }
+        if(Recurring.all().isEmpty()){
+            Recurring.newRecurring(getRandomString(),getRandomint(),getRandomint(),getRandomint(),getRandomint(),getRandomint(),getRandomboolean(),getRandomOptional_Calendar(),getRandomOptional_Calendar(),getRandomboolean(),getRandomboolean(),getRandomSparseBooleanArray());
+        }
+        if(FileMirakel.all().isEmpty()){
+            FileMirakel.newFile(ctx,t,getRandomUri());
+        }
+        if(AccountMirakel.all().isEmpty()){
+            AccountMirakel.newAccount(getRandomString(),getRandomACCOUNT_TYPES(),getRandomboolean());
+        }
     }
 
     public static int getRandomint() {
@@ -90,7 +116,7 @@ public class RandomHelper {
     }
 
     public static ListMirakel getRandomListMirakel() {
-        final List<ListMirakel> t = ListMirakel.all();
+        final List<ListMirakel> t = ListMirakel.all(false);
         return t.get(random.nextInt(t.size()));
     }
 
