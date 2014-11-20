@@ -166,6 +166,7 @@
   <string name="nothing">Geen herhaling</string>
   <string name="special_lists_content_title">Inhoud</string>
   <string name="special_lists_done_title">Afgerond</string>
+  <string name="special_lists_due_exist_title">Aanwezigheid vervaldatum</string>
   <string name="special_lists_due_title">Vervaldatum</string>
   <string name="special_lists_file_title">Bestand</string>
   <string name="special_lists_list_title">Lijsten</string>
@@ -181,6 +182,8 @@
   <string name="special_list_list_name">Naam van lijst</string>
   <string name="special_lists_due_negated">Niet vóór vandaag %s</string>
   <string name="special_lists_due">Vóór vandaag %s</string>
+  <string name="due_exists">Vervaldatum bestaat</string>
+  <string name="due_dont_exist">Vervaldatum bestaat niet</string>
   <string-array name="demo_lists">
     <item>Werk</item>
     <item>Thuis</item>

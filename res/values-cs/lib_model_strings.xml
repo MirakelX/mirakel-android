@@ -38,7 +38,7 @@
   <string name="inbox">Inbox</string>
   <string name="first_task">První úkol</string>
   <string-array name="weekdays">
-    <item>Don\'t set</item>
+    <item>Nenastavovat</item>
     <item>Pondělí</item>
     <item>Úterý</item>
     <item>Středa</item>
@@ -55,6 +55,8 @@
   <string name="no_lists">Tento úkol nelze synchronizovat, protože nemáte žádné seznamy</string>
   <string name="import_any_do_click">Importovat z Any.Do</string>
   <string name="any_do_import_title">Vyberte soubor se zálohou ve formátu Any.Do</string>
+  <string name="any_do_this_file">Import z %s?\nPokud jiný, vyberte soubor sami</string>
+  <string name="any_do_how_to">Nejdříve prosím zálohujte svá Any.Do data. Jděte na Any.Do → Nastavení → Záloha → Vytvořit zálohu. Poté se vraťte a zmáčkněte OK.\nNebo vyberte soubor sami.</string>
   <string name="select_file">Vybrat soubor</string>
   <string name="wait">Počkejte prosím&#8230;</string>
   <string name="backup_import_ok">Import proběhl v pořádku - prosím restartujte Mirakel</string>
@@ -172,6 +174,13 @@
   <string name="special_lists_progress_title">Stav</string>
   <string name="special_lists_reminder_title">Upozornění</string>
   <string name="special_lists_subtask_title">Podúkoly</string>
+  <string name="special_lists_tag_title">Štítek</string>
+  <string name="and">A</string>
+  <string name="or">NEBO</string>
+  <string name="new_tag">Nový štítek</string>
+  <string name="special_list_list_name">Název seznamu</string>
+  <string name="special_lists_due_negated">Ne dříve než dnes %s</string>
+  <string name="special_lists_due">Před dneškem %s</string>
   <string-array name="demo_lists">
     <item>Práce</item>
     <item>Doma</item>
@@ -185,4 +194,19 @@
     <item>Mléko</item>
     <item>Sýr</item>
   </string-array>
+  <plurals name="day">
+    <item quantity="one">den</item>
+    <item quantity="few">dny</item>
+    <item quantity="other">dnů</item>
+  </plurals>
+  <plurals name="month">
+    <item quantity="one">měsíc</item>
+    <item quantity="few">měsíce</item>
+    <item quantity="other">měsíců</item>
+  </plurals>
+  <plurals name="year">
+    <item quantity="one">rok</item>
+    <item quantity="few">roky</item>
+    <item quantity="other">let</item>
+  </plurals>
 </resources>
