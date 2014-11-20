@@ -19,13 +19,24 @@
 
 package de.azapps.mirakel.helper.export_import;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.widget.Toast;
+
+import com.google.common.base.Optional;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,18 +47,6 @@ import java.util.GregorianCalendar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.widget.Toast;
-
-import com.google.common.base.Optional;
 
 import au.com.bytecode.opencsv.CSVReader;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -118,14 +117,14 @@ public class ExportImport {
                                            final FileInputStream stream) {
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory
                 .newInstance();
-        DocumentBuilder dBuilder;
+        final DocumentBuilder dBuilder;
         try {
             dBuilder = dbFactory.newDocumentBuilder();
         } catch (final ParserConfigurationException e) {
             Log.d(TAG, "cannot configure parser", e);
             return false;
         }
-        Document doc;
+        final Document doc;
         try {
             doc = dBuilder.parse(stream);
         } catch (final SAXException e) {
@@ -149,15 +148,15 @@ public class ExportImport {
                     final String name = m.getNamedItem("title")
                                         .getTextContent();
                     // List
-                    ListMirakel list;
                     Node child = null;
                     if (n.getChildNodes().getLength() > 1) {
                         child = n.getChildNodes().item(1);
                     }
-                    if (child != null && child.getAttributes() != null) {
+                    final ListMirakel list;
+                    if ((child != null) && (child.getAttributes() != null)) {
                         final String listname = child.getAttributes()
                                                 .getNamedItem("value").getTextContent();
-                        Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(listname);
+                        final Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(listname);
                         if (listMirakelOptional.isPresent()) {
                             list = listMirakelOptional.get();
                         } else {
@@ -190,9 +189,14 @@ public class ExportImport {
                     // Due
                     final long due = Long.parseLong(m.getNamedItem("dueDate")
                                                     .getTextContent());
-                    final Calendar d = new GregorianCalendar();
-                    d.setTimeInMillis(due);
-                    t.setDue(of(d));
+                    if (due > 0L) {
+                        final Calendar d = new GregorianCalendar();
+                        d.setTimeInMillis(due);
+                        t.setDue(of(d));
+                    } else {
+                        t.setDue(Optional.<Calendar>absent());
+                    }
+
                     // Created At
                     final long created = Long.parseLong(m.getNamedItem(
                                                             "created").getTextContent());
@@ -204,11 +208,11 @@ public class ExportImport {
                                                            "modified").getTextContent());
                     final Calendar u = new GregorianCalendar();
                     u.setTimeInMillis(update);
-                    t.setDue(of(u));
+                    t.setUpdatedAt(u);
                     // Done
                     final String done = m.getNamedItem("completed")
                                         .getTextContent();
-                    t.setDone(!done.equals("0"));
+                    t.setDone(!"0".equals(done));
                     final String content = m.getNamedItem("notes")
                                            .getTextContent();
                     t.setContent(content.trim());
@@ -299,13 +303,4 @@ public class ExportImport {
         return true;
     }
 
-    public static String getStringFromStream(final InputStream stream,
-            final Context ctx) throws IOException {
-        final StringBuilder sb = new StringBuilder();
-        int c;
-        while ((c = stream.read()) != -1) {
-            sb.append((char) c);
-        }
-        return sb.toString();
-    }
 }
