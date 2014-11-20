@@ -6,4 +6,5 @@
   <string name="ilovefs_email">Napište nám!</string>
   <string name="ilovefs_email_no_client">Nebyl nalezen žádný e-mailový klient</string>
   <string name="ilovefs_donate">Podpořit</string>
+  <string name="ilovefs_email_title">#ILoveFS</string>
 </resources>
