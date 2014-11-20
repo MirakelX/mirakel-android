@@ -10,7 +10,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 
@@ -18,6 +17,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * In this class we collect all functions to get the current settings. The
@@ -26,6 +26,8 @@ import java.util.List;
  * @author az
  */
 public class MirakelCommonPreferences extends MirakelPreferences {
+
+    private static final Pattern ARRAY_SPLIT = Pattern.compile("_");
 
     public static boolean addSubtaskToSameList() {
         return settings.getBoolean("subtaskAddToSameList", false);
@@ -59,7 +61,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         try {
             ret = DateTimeHelper.parseDate(settings.getString(name,
                                            defaultString));
-        } catch (final ParseException e) {
+        } catch (final ParseException ignored) {
             return null;
         }
         return ret;
@@ -86,7 +88,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         try {
             return Integer.parseInt(settings.getString("notificationsList",
                                     "-1"));
-        } catch (final NumberFormatException E) {
+        } catch (final NumberFormatException ignored) {
             return -1;
         }
     }
@@ -122,9 +124,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getInt("UndoNumber", 10);
     }
 
-    public static String getVersionKey() {
-        return settings.getString("PREFS_VERSION_KEY", "");
-    }
 
     public static boolean hideKeyboard() {
         return settings.getBoolean("hideKeyboard", true);
@@ -135,17 +134,17 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static boolean isDark() {
-        return settings.getBoolean("DarkTheme", false);
+        return !useNewUI() && settings.getBoolean("DarkTheme", false);
     }
 
-    public static void setIsDark(boolean isDark) {
+    public static void setIsDark(final boolean isDark) {
         final Editor editor = getEditor();
         editor.putBoolean("DarkTheme", isDark);
-        editor.apply();
+        editor.commit(); // Use commit here because we are restarting the app afterwards
     }
 
     public static boolean isDebug() {
-        if (settings != null && MirakelCommonPreferences.isEnabledDebugMenu()) {
+        if ((settings != null) && MirakelCommonPreferences.isEnabledDebugMenu()) {
             return settings.getBoolean("enabledDebug", BuildConfig.DEBUG);
         }
         return BuildConfig.DEBUG;
@@ -162,16 +161,13 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     public static boolean isNotificationListOpenDefault() {
         final String listOpen = settings.getString("notificationsListOpen",
                                 "default");
-        return listOpen.equals("default");
+        return "default".equals(listOpen);
     }
 
     public static boolean isShowAccountName() {
         return settings.getBoolean("show_account_name", false);
     }
 
-    public static boolean isStartupAllLists() {
-        return settings.getBoolean("startupAllLists", false);
-    }
 
     public static boolean isTablet() {
         final String value = settings.getString("useTabletLayoutNew", null);
@@ -194,29 +190,27 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static List<Integer> loadIntArray(final String arrayName) {
         final String serialized = settings.getString(arrayName, null);
-        final List<Integer> items = new ArrayList<Integer>();
         if (serialized != null) {
-            final String[] stringItems = serialized.split("_");
+            final String[] stringItems = ARRAY_SPLIT.split(serialized);
+            final List<Integer> items = new ArrayList<>(stringItems.length);
             for (final String item : stringItems) {
                 if (item.isEmpty()) {
                     continue;
                 }
                 items.add(Integer.valueOf(item));
             }
+            return items;
         }
-        return items;
+        return new ArrayList<>(0);
     }
 
-    public static boolean lockDrawerInTaskFragment() {
-        return settings.getBoolean("lockDrawerInTaskFragment", false);
-    }
 
     public static void saveIntArray(final String preferenceName,
                                     final List<Integer> items) {
-        final SharedPreferences.Editor editor = getEditor();
+        final Editor editor = getEditor();
         final StringBuilder pref = new StringBuilder(items.size() * 3);
         for (final Integer item : items) {
-            pref.append(String.valueOf(item) + '_');
+            pref.append(String.valueOf(item)).append('_');
         }
         editor.putString(preferenceName, pref.toString());
         editor.apply();
@@ -279,7 +273,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static boolean isDemoMode() {
-        return settings != null && settings.getBoolean("demoMode", false);
+        return (settings != null) && settings.getBoolean("demoMode", false);
     }
 
     public static void setDemoMode(final boolean val) {
@@ -289,11 +283,11 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static boolean writeLogsToFile() {
-        return settings != null && settings.getBoolean("writeLogsToFile", false);
+        return (settings != null) && settings.getBoolean("writeLogsToFile", false);
     }
 
     public static boolean useNewUI() {
-        return settings != null && settings.getBoolean("newUI", false);
+        return (settings != null) && settings.getBoolean("newUI", false);
     }
 
     public static void setUseNewUI(final boolean val) {
