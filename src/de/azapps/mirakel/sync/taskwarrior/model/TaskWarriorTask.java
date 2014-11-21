@@ -22,6 +22,7 @@ package de.azapps.mirakel.sync.taskwarrior.model;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.common.base.Function;
@@ -76,7 +77,7 @@ public class TaskWarriorTask {
     private enum Status {
         PENDING, DELETED, COMPLETED, WAITING, RECURRING;
 
-        public static Status fromString(String status) {
+        public static Status fromString(@Nullable String status) {
             if (status == null) {
                 status = "";
             }
@@ -97,11 +98,12 @@ public class TaskWarriorTask {
         }
     }
 
-    private class Annotation {
+    private static class Annotation {
+        @NonNull
         public String description;
         public long entry;
 
-        public Annotation(@NonNull final String description, final long entry) {
+        public  Annotation(@NonNull final String description, final long entry) {
             this.description = description;
             this.entry = entry;
         }
@@ -294,9 +296,9 @@ public class TaskWarriorTask {
             public Map<String, String> apply(String input) {
                 return Task.parseAdditionalEntries(input);
             }
-        }, new HashMap<String, String>());
+        }, new HashMap<String, String>(0));
 
-        ContentValues cv = new ContentValues();
+        final ContentValues cv = new ContentValues();
         cv.put(Task.NAME, description);
         cv.put(DatabaseHelper.CREATED_AT, entry);
         cv.put(Task.UUID, UUID);
@@ -363,7 +365,7 @@ public class TaskWarriorTask {
         if (modified.isPresent()) {
             cv.put(DatabaseHelper.UPDATED_AT, modified.get());
         } else {
-            cv.put(DatabaseHelper.UPDATED_AT, new GregorianCalendar().getTimeInMillis());
+            cv.put(DatabaseHelper.UPDATED_AT, new GregorianCalendar().getTimeInMillis() / 1000L);
         }
 
         cv.put(Task.CONTENT, TextUtils.join("\n", Collections2.transform(annotations,
@@ -518,7 +520,7 @@ public class TaskWarriorTask {
                 task.setPriority(1);
                 break;
             case L:
-                if (priorityNumber.isPresent() && (priorityNumber.get() == -1 || priorityNumber.get() == -2)) {
+                if (priorityNumber.isPresent() && ((priorityNumber.get() == -1) || (priorityNumber.get() == -2))) {
                     task.setPriority(priorityNumber.get());
                 } else {
                     task.setPriority(-2);
@@ -529,9 +531,9 @@ public class TaskWarriorTask {
             task.setPriority(0);
         }
         if (project.isPresent()) {
-            ListMirakel listMirakel;
+            final ListMirakel listMirakel;
             try {
-                Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(project.get());
+                final Optional<ListMirakel> listMirakelOptional = ListMirakel.findByName(project.get());
                 if (listMirakelOptional.isPresent()) {
                     listMirakel = listMirakelOptional.get();
                 } else {
@@ -582,7 +584,7 @@ public class TaskWarriorTask {
             }
         })));
 
-        for (Map.Entry<String, String> entry : uda.entrySet()) {
+        for (final Map.Entry<String, String> entry : uda.entrySet()) {
             task.addAdditionalEntry(entry.getKey(), entry.getValue());
 
         }
