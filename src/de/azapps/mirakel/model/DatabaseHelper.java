@@ -30,7 +30,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 
 import com.google.common.base.Optional;
 
@@ -72,7 +71,6 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.model.task.TaskDeserializer;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -81,7 +79,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 46;
+    public static final int DATABASE_VERSION = 47;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -1001,6 +999,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             createCaldavPropertyView(db);
         case 45:
             updateSpecialLists(db);
+        case 46:
+            db.execSQL("UPDATE " + Task.TABLE + " SET " + UPDATED_AT + " =strftime('%s','now') WHERE " +
+                       UPDATED_AT + ">strftime('%s','now');");
         default:
             break;
         }
