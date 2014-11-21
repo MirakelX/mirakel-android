@@ -332,8 +332,9 @@ public class TLSClient {
             return;
         }
         try {
-            dos.writeInt(data.length());
-            dos.writeBytes(data);
+            final byte[] utf8 = data.getBytes("UTF-8");
+            dos.writeInt(utf8.length);
+            dos.write(utf8);
         } catch (final IOException e) {
             Log.e(TAG, "cannot write data to outputstream", e);
         }
