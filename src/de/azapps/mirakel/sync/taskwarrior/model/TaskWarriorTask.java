@@ -39,6 +39,8 @@ import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -58,7 +60,7 @@ public class TaskWarriorTask {
     private enum Priority {
         H, M, L;
 
-        public static Priority fromString(String prio) {
+        public static Priority fromString(@Nullable String prio) {
             if (prio == null) {
                 prio = "";
             }
@@ -70,7 +72,10 @@ public class TaskWarriorTask {
             case "H":
                 return H;
             default:
-                throw new IllegalArgumentException("Unknown priority: " + prio);
+                // we should not crash here
+                Log.w(TAG, "Unknown priority: " + prio);
+                ErrorReporter.report(ErrorType.TASKWARRIOR_NON_STANDARD_PRIORIRTY);
+                return M;
             }
         }
     }
@@ -93,7 +98,10 @@ public class TaskWarriorTask {
             case "recurring":
                 return RECURRING;
             default:
-                throw new IllegalArgumentException("Unknown status: " + status);
+                // we should not crash here
+                Log.w(TAG, "Unknown status: " + status);
+                ErrorReporter.report(ErrorType.TASKWARRIOR_NON_STANDARD_STATUS);
+                return PENDING;
             }
         }
     }
