@@ -36,11 +36,16 @@ import java.util.GregorianCalendar;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
+import de.azapps.tools.Log;
+
 public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarriorTask> {
 
     private static final String TAG = "TaskWarriorTaskDeserializer";
     private static final String TW_DATE_FORMAT = "yyyyMMdd'T'HHmmss'Z'" ;
     public static final SimpleDateFormat TW_PARSER = new SimpleDateFormat(TW_DATE_FORMAT);
+    public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
     @Override
     public TaskWarriorTask deserialize(final JsonElement json, final Type type,
@@ -208,14 +213,15 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
 
     @NonNull
     private static Calendar parseDate(final String date) {
-        final GregorianCalendar temp = new GregorianCalendar();
+        final GregorianCalendar temp = new GregorianCalendar(UTC);
         try {
-            TW_PARSER.setTimeZone(TimeZone.getTimeZone("UTC"));
+            TW_PARSER.setTimeZone(UTC);
             temp.setTime(TW_PARSER.parse(date));
-            return temp;
         } catch (final ParseException ignored) {
-            throw new JsonParseException("Date format is not valid");
+            Log.w(TAG, "invalid date format: " + date);
+            ErrorReporter.report(ErrorType.TASKWARRIOR_NON_STANDARD_DATE);
         }
+        return temp;
     }
 
 }

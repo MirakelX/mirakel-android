@@ -347,12 +347,15 @@ public class TaskWarriorSync {
                 }
                 if (t.isRecurringMaster()) {
                     try {
-                        final Recurring r = t.getRecurrence().create();
-                        recurringMapping.put(t.getUUID(), r.getId());
-                        final ContentValues cv = new ContentValues();
-                        cv.put(Task.RECURRING, r.getId());
-                        pendingOperations.add(ContentProviderOperation.newUpdate(Task.URI).withSelection(Task.UUID + "=?",
-                                              new String[] {t.getUUID()}).withValues(cv).build());
+                        final Optional<TaskWarriorRecurrence> r = t.getRecurrence();
+                        if (r.isPresent()) {
+                            r.get().create();
+                            recurringMapping.put(t.getUUID(), r.get().getId());
+                            final ContentValues cv = new ContentValues();
+                            cv.put(Task.RECURRING, r.get().getId());
+                            pendingOperations.add(ContentProviderOperation.newUpdate(Task.URI).withSelection(Task.UUID + "=?",
+                                                  new String[] {t.getUUID()}).withValues(cv).build());
+                        }
                     } catch (final TaskWarriorRecurrence.NotSupportedRecurrenceException ignored) {
                         // eat it for now
                     }
