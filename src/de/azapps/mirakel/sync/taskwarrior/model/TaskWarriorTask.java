@@ -219,7 +219,7 @@ public class TaskWarriorTask {
     }
 
     public void setWait(@NonNull final Calendar wait) {
-        this.wait = of(wait.getTimeInMillis());
+        this.wait = of(wait.getTimeInMillis() / 1000L);
     }
 
     public void setScheduled(@NonNull final Calendar scheduled) {
@@ -255,11 +255,11 @@ public class TaskWarriorTask {
     }
 
     public void setReminder(@NonNull final Calendar reminder) {
-        this.reminder = of(reminder.getTimeInMillis());
+        this.reminder = of(reminder.getTimeInMillis() / 1000L);
     }
 
     public void addAnnotation(@NonNull final String description, @NonNull final Calendar entry) {
-        annotations.add(new Annotation(description, entry.getTimeInMillis()));
+        annotations.add(new Annotation(description, entry.getTimeInMillis() / 1000L));
     }
 
     public void setProgress(final int progress) {
