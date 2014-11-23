@@ -6,7 +6,7 @@ models=[
       ("account", "AccountBase", "AccountMirakel")
     , ("file", "FileBase", "FileMirakel")
     , ("list", "ListBase","ListMirakel")
-    , ("list", "ListBase","SpecialList")
+#    , ("list", "ListBase","SpecialList")
     , ("recurring", "RecurringBase","Recurring")
     , ("semantic", "SemanticBase","Semantic")
     , ("tags", "TagBase","Tag")
