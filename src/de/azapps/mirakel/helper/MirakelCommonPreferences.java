@@ -279,7 +279,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     public static void setDemoMode(final boolean val) {
         final Editor ed = settings.edit();
         ed.putBoolean("demoMode", val);
-        ed.apply();
+        ed.commit(); // Use commit here because we are restarting the app afterwards
     }
 
     public static boolean writeLogsToFile() {
