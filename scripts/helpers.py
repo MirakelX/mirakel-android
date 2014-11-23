@@ -12,7 +12,7 @@ def getVars(filename):
             groups = m.groups()
             vars["TESTCLASS"] = groups[-1].strip()
     return vars
-    
+
 '''more beautiful but not working :( (Pumping lemma)
 def getParams(p_string):
     paramRegex = re.compile("((final |@NonNull )*)(\S+) ([a-zA-Z]+),?")
@@ -53,14 +53,14 @@ def parseParam(param):
     groups = m.groups()
     (nonNull, pType, name) = m.groups()
     return {"type":pType, "name": name, "nonNull": nonNull != None}
-    
+
 def randomFunction(fname,params):
     p_strings = map(getRandom, params)
     p_string=", ".join(p_strings)
     return fname +"(" + p_string + ")"
 
 def getRandom(param):
-    paramtype=param["type"].replace("<","_").replace(",","_").replace(">","");
+    paramtype=param["type"].replace("<","_").replace(",","_").replace(">","").replace("@","").replace(" ","_");
     if param["name"]=="priority":
         paramtype="Priority"
     return "RandomHelper.getRandom" + paramtype +"()"

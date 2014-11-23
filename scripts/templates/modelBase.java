@@ -47,7 +47,7 @@ import static de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
 
 public class ${TESTCLASS}Test extends MirakelTestCase {
-    
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -60,7 +60,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     public void test${SETTER.name}${foreach.count}() {
     final List<${MODELNAME}> all= ${MODELNAME}.all();
     final ${MODELNAME} obj = RandomHelper.getRandomElem(all);
-    final ${SETTER.type.type} t = ${SETTER.randomFunction};
+    final ${SETTER.type} t = ${SETTER.randomFunction};
     obj.set${SETTER.name}(t);
     assertEquals("Getting and setting ${SETTER.name} does not match",t,obj.${SETTER.getterFunction});
     }

@@ -21,6 +21,7 @@ package de.azapps.mirakelandroid.test;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.SparseBooleanArray;
 
 import com.google.common.base.Optional;
@@ -227,5 +228,13 @@ public class RandomHelper {
         } else {
             return absent();
         }
+    }
+
+    @Nullable
+    public static Integer getRandomNullable_Integer() {
+        if(getRandomboolean()){
+            return null;
+        }
+        return getRandomInteger();
     }
 }
