@@ -21,6 +21,7 @@ package de.azapps.mirakel.helper.export_import;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.google.common.base.Optional;
@@ -99,9 +100,11 @@ public class ExportImport {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
     public static boolean importAstrid(final Context context,
-                                       final FileInputStream stream, final String mimetype) {
+                                       final FileInputStream stream, @Nullable String mimetype) {
+        if (mimetype == null) {
+            mimetype = "";
+        }
         switch (mimetype) {
         case "application/zip":
             return importAstridZip(context, stream);
@@ -109,6 +112,7 @@ public class ExportImport {
             return importAstridXml(context, stream);
         default:
             Log.d(TAG, "unknown filetype");
+            ErrorReporter.report(ErrorType.ASTRID_ERROR);
         }
         return false;
     }

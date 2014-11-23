@@ -116,10 +116,18 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 task.setDone(val.getAsBoolean());
                 break;
             case "due":
-                task.setDue(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                try {
+                    task.setDue(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                } catch (final NumberFormatException ignored) {
+                    task.setDue(Optional.<Calendar>absent());
+                }
                 break;
             case "reminder":
-                task.setReminder(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                try {
+                    task.setReminder(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                } catch (final NumberFormatException ignored) {
+                    task.setReminder(Optional.<Calendar>absent());
+                }
                 break;
             case "tags":
                 handleTags(task, val);
