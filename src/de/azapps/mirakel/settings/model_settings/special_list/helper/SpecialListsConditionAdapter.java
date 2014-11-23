@@ -170,55 +170,56 @@ public class SpecialListsConditionAdapter extends ArrayAdapter<SpecialListsViewH
                 adapter.setNewList(listToSave, backStack);
                 backStack.add(which - adapter.preferencesCount);
 
-                final UndoBarController.UndoBar undo = new UndoBarController.UndoBar(activity);
-                adapter.setUndo(of(undo));
-                undo.message(activity.getString(R.string.Undo)).listener(
-                new UndoBarController.AdvancedUndoListener() {
-                    @Override
-                    public void onHide(final Parcelable parcelable) {
-                        adapter.cancleUndo(backStack);
-                    }
+                if (backStack.size() < 2) {
+                    final UndoBarController.UndoBar undo = new UndoBarController.UndoBar(activity);
+                    adapter.setUndo(of(undo));
+                    undo.message(activity.getString(R.string.Undo)).listener(
+                    new UndoBarController.AdvancedUndoListener() {
+                        @Override
+                        public void onHide(final Parcelable parcelable) {
+                            adapter.cancleUndo(backStack);
+                        }
 
-                    @Override
-                    public void onClear() {
+                        @Override
+                        public void onClear() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onUndo(final Parcelable parcelable) {
-                        final SpecialList listToSave = EditDialogFragment.execOnTree(list, backStack,
-                        new EditDialogFragment.WorkOnTree() {
-                            @Override
-                            public void onTreeExists(final int position,
-                                                     @NonNull final SpecialListsConjunctionList currentProperty) {
-                                final List<SpecialListsBaseProperty> childs = new ArrayList<>();
-                                final List<SpecialListsBaseProperty> oldChilds = currentProperty.getChilds();
-                                boolean added = false;
-                                for (int j = 0; j < oldChilds.size(); j++) {
-                                    if (!added && (j == backStack.get(position))) {
-                                        childs.add(property);
-                                        added = true;
+                        @Override
+                        public void onUndo(final Parcelable parcelable) {
+                            final SpecialList listToSave = EditDialogFragment.execOnTree(list, backStack,
+                            new EditDialogFragment.WorkOnTree() {
+                                @Override
+                                public void onTreeExists(final int position,
+                                                         @NonNull final SpecialListsConjunctionList currentProperty) {
+                                    final List<SpecialListsBaseProperty> childs = new ArrayList<>();
+                                    final List<SpecialListsBaseProperty> oldChilds = currentProperty.getChilds();
+                                    boolean added = false;
+                                    for (int j = 0; j < oldChilds.size(); j++) {
+                                        if (!added && (j == backStack.get(position))) {
+                                            childs.add(property);
+                                            added = true;
+                                        }
+                                        childs.add(oldChilds.get(j));
                                     }
-                                    childs.add(oldChilds.get(j));
+                                    if (!added) {
+                                        childs.add(property);
+                                    }
+                                    currentProperty.setChilds(childs);
                                 }
-                                if (!added) {
-                                    childs.add(property);
+
+                                @NonNull
+                                @Override
+                                public Optional<SpecialListsBaseProperty> onTreeNotExists() {
+                                    return of(property);
                                 }
-                                currentProperty.setChilds(childs);
-                            }
-
-                            @NonNull
-                            @Override
-                            public Optional<SpecialListsBaseProperty> onTreeNotExists() {
-                                return of(property);
-                            }
-                        }, 1);
-                        listToSave.save();
-                        adapter.cancleUndo(backStack);
-                        adapter.setNewList(listToSave, backStack);
-                    }
-                }).show();
-
+                            }, 1);
+                            listToSave.save();
+                            adapter.cancleUndo(backStack);
+                            adapter.setNewList(listToSave, backStack);
+                        }
+                    }).show();
+                }
             }
         });
 
