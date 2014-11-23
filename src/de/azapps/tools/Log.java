@@ -18,6 +18,8 @@
  ******************************************************************************/
 package de.azapps.tools;
 
+import android.support.annotation.Nullable;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
@@ -39,7 +41,7 @@ public class Log {
         fileWriter = null;
     }
 
-    public static void d(final String tag, final String msg) {
+    public static void d(final @Nullable String tag, final @Nullable  String msg) {
         if (tag == null || msg == null) {
             return;
         }
@@ -48,7 +50,7 @@ public class Log {
         }
     }
 
-    public static void d(final String tag, final String msg, final Throwable e) {
+    public static void d(final @Nullable  String tag, final @Nullable  String msg, final Throwable e) {
         if (tag == null || msg == null) {
             return;
         }
@@ -57,7 +59,7 @@ public class Log {
         }
     }
 
-    public static void e(final String tag, final String msg) {
+    public static void e(final @Nullable  String tag, final @Nullable String msg) {
         if (tag == null || msg == null) {
             return;
         }
@@ -65,7 +67,7 @@ public class Log {
         write("e", tag, msg);
     }
 
-    public static void e(final String tag, final String msg, final Throwable tr) {
+    public static void e(final @Nullable String tag, final @Nullable String msg, final Throwable tr) {
         if (tag == null || msg == null) {
             return;
         }
@@ -73,23 +75,13 @@ public class Log {
         write("e", tag, msg, tr);
     }
 
-    /**
-     * You should use the logging functions
-     */
-    @Deprecated
-    public static String getStackTraceString(final Throwable tr) {
+
+    private static String getStackTraceString(final Throwable tr) {
         return android.util.Log.getStackTraceString(tr);
     }
 
-    /**
-     * You should use the logging functions
-     */
-    @Deprecated
-    public static void logStackTrace(final Throwable tr) {
-        e("Stacktrace", getStackTraceString(tr));
-    }
 
-    public static void i(final String tag, final String msg) {
+    public static void i(final @Nullable String tag, final @Nullable String msg) {
         if (tag == null || msg == null) {
             return;
         }
@@ -98,7 +90,7 @@ public class Log {
         }
     }
 
-    public static void i(final String tag, final String msg, final Throwable e) {
+    public static void i(final @Nullable String tag, final @Nullable String msg, final Throwable e) {
         if (tag == null || msg == null) {
             return;
         }
@@ -108,7 +100,7 @@ public class Log {
         write("i", tag, msg, e);
     }
 
-    public static void v(final String tag, final String msg) {
+    public static void v(final @Nullable String tag, final @Nullable String msg) {
         if (tag == null || msg == null) {
             return;
         }
@@ -117,7 +109,7 @@ public class Log {
         }
     }
 
-    public static void w(final String tag, final String msg) {
+    public static void w(final @Nullable String tag, final @Nullable String msg) {
         if (tag == null || msg == null) {
             return;
         }
@@ -127,7 +119,7 @@ public class Log {
         write("w", tag, msg);
     }
 
-    public static void w(final String tag, final String msg, final Throwable e) {
+    public static void w(final @Nullable String tag, final @Nullable String msg, final Throwable e) {
         if (tag == null || msg == null) {
             return;
         }
@@ -137,7 +129,7 @@ public class Log {
         write("w", tag, msg, e);
     }
 
-    public static void wtf(final String tag, final String msg) {
+    public static void wtf(final @Nullable String tag, final @Nullable String msg) {
         if (tag == null || msg == null) {
             return;
         }
@@ -145,7 +137,7 @@ public class Log {
         write("wtf", tag, msg);
     }
 
-    public static void wtf(final String tag, final String msg, final Throwable e) {
+    public static void wtf(final @Nullable String tag, final @Nullable String msg, final Throwable e) {
         if (tag == null || msg == null) {
             return;
         }
@@ -200,7 +192,10 @@ public class Log {
         }
     }
 
-    public static void longInfo(final String str) {
+    public static void longInfo(final @Nullable String str) {
+        if (str == null) {
+            return;
+        }
         if (str.length() > 4000) {
             Log.i(TAG, str.substring(0, 4000));
             longInfo(str.substring(4000));

@@ -52,6 +52,7 @@ Device: %3$s\n]]>
     <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Wunderlist file format changed. Please report this to the Mirakel team.</string>
     <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">There was a task with non standard conform priority, while syncing.</string>
     <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">There was a task with non standard conform status, while syncing.</string>
+    <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">There was a task with non standard conform date, while syncing.</string>
     <!-- 
     <string name="error_" tools:ignore="UnusedResources"></string>
     <string name="error_" tools:ignore="UnusedResources"></string>
