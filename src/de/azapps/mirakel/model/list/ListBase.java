@@ -252,9 +252,6 @@ abstract class ListBase extends ModelBase {
         if (this.accountID != other.accountID) {
             return false;
         }
-        if (!this.getAccount().equals(other.getAccount())) {
-            return false;
-        }
         if (this.color != other.color) {
             return false;
         }
