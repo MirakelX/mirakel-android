@@ -18,9 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.settings.taskfragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.SparseArray;
@@ -33,6 +30,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.custom_views.TaskDetailView.TYPE;
 import de.azapps.mirakel.custom_views.TaskDetailView.TYPE.NoSuchItemException;
@@ -66,8 +67,10 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
     @Override
     public View getView(final int position, final View convertView,
                         final ViewGroup parent) {
-        if (this.getCount() - 1 == position
-            && this.getDataAt(position) == TaskFragmentSettingsFragment.ADD_KEY) {
+        if (!getDataAt(position).isPresent()) {
+            return new View(context);
+        }
+        if (this.getDataAt(position).get() == TaskFragmentSettingsFragment.ADD_KEY) {
             return setupAddButton();
         }
         View row = convertView;
@@ -85,7 +88,7 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
         } else {
             holder = (ListHolder) row.getTag();
         }
-        final Integer item = this.getDataAt(position);
+        final Integer item = this.getDataAt(position).get();
         holder.rowDrag.setVisibility(View.VISIBLE);
         try {
             holder.rowName.setText(TYPE.getTranslatedName(this.context, item));
@@ -110,10 +113,12 @@ public class TaskFragmentSettingsAdapter extends MirakelArrayAdapter<Integer> {
     }
 
     public void onDrop(final int from, final int to) {
-        final Integer item = this.getDataAt(from);
-        this.remove(from);
-        this.addToData(to, item);
-        notifyDataSetChanged();
+        if (getDataAt(from).isPresent()) {
+            final Integer item = this.getDataAt(from).get();
+            this.remove(from);
+            this.addToData(to, item);
+            notifyDataSetChanged();
+        }
     }
 
     public void onRemove(final int which) {
