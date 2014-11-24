@@ -18,14 +18,17 @@
  ******************************************************************************/
 package de.azapps.mirakel.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.google.common.base.Optional;
+
+import java.util.List;
+
 import de.azapps.mirakel.model.task.Task;
 
 public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
@@ -44,12 +47,13 @@ public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
     @Override
     public View getView(final int position, final View convertView,
                         final ViewGroup parent) {
-        if (position >= getCount()) {
+        final Optional<Task> t = getDataAt(position);
+        if (!t.isPresent()) {
             return new View(this.context);
         }
         final CheckBox c = new CheckBox(this.context);
         c.setChecked(this.isSelectedAt(position));
-        c.setText(this.getDataAt(position).getName());
+        c.setText(t.get().getName());
         c.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView,
@@ -70,11 +74,14 @@ public class SubtaskAdapter extends MirakelArrayAdapter<Task> {
 
     private void determineSelected() {
         for (int i = 0; i < getCount(); i++) {
-            final Task t = this.getDataAt(i);
+            final Optional<Task> t = this.getDataAt(i);
+            if (!t.isPresent()) {
+                continue;
+            }
             if (!this.asSubtask) {
-                setSelected(i, t.isSubtaskOf(this.task));
+                setSelected(i, t.get().isSubtaskOf(this.task));
             } else {
-                setSelected(i, this.task.isSubtaskOf(t));
+                setSelected(i, this.task.isSubtaskOf(t.get()));
             }
         }
     }

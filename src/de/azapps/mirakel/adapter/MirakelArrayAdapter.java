@@ -18,13 +18,20 @@
  ******************************************************************************/
 package de.azapps.mirakel.adapter;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.widget.ArrayAdapter;
+
+import com.google.common.base.Optional;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-import android.widget.ArrayAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
     private static final String TAG = "MirakelArrayAdapter";
@@ -78,8 +85,12 @@ public class MirakelArrayAdapter<T> extends ArrayAdapter<T> {
         this.selected.add(false);
     }
 
-    public T getDataAt(final int location) {
-        return this.data.get(location);
+    @NonNull
+    public Optional<T> getDataAt(final int location) {
+        if (location < data.size()) {
+            return of(this.data.get(location));
+        }
+        return absent();
     }
 
     public boolean isSelectedAt(final int location) {
