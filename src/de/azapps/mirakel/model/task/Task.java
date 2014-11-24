@@ -1015,8 +1015,6 @@ public class Task extends TaskBase {
         Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
         if (listMirakelOptional.isPresent()) {
             this.list = listMirakelOptional.get();
-        } else {
-            throw new RuntimeException("List not found – List id " + listId);
         }
         this.priority = in.readInt();
         this.progress = in.readInt();
@@ -1032,6 +1030,26 @@ public class Task extends TaskBase {
         this.setId(in.readLong());
         this.setName(in.readString());
         this.setStub(in.readByte() != 0);
+        final Optional<Task> t = get(getId());
+        if (t.isPresent() && !this.equals(t.get())) {
+            Task other = t.get();
+            dependencies = other.dependencies;
+            additionalEntriesString = other.additionalEntriesString;
+            content = other.content;
+            createdAt = other.createdAt;
+            done = other.done;
+            due = other.due;
+            list = other.list;
+            priority = other.priority;
+            progress = other.progress;
+            reminder = other.reminder;
+            syncState = other.syncState;
+            updatedAt = other.updatedAt;
+            setId(other.getId());
+            setName(other.getName());
+        } else if (!t.isPresent()) {
+            throw new TaskVanishedException();
+        }
     }
 
     public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
