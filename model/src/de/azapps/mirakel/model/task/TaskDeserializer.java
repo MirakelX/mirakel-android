@@ -99,19 +99,35 @@ public class TaskDeserializer implements JsonDeserializer<Task> {
                 }
                 break;
             case "created_at":
-                task.setCreatedAt(val.getAsString().replace(":", ""));
+                try {
+                    task.setCreatedAt(DateTimeHelper.parseDateTime(val.getAsString().replace(":", "")));
+                } catch (final ParseException e) {
+                    Log.wtf(TAG, "invalid dateformat: ", e);
+                }
                 break;
             case "updated_at":
-                task.setUpdatedAt(val.getAsString().replace(":", ""));
+                try {
+                    task.setUpdatedAt(DateTimeHelper.parseDateTime(val.getAsString().replace(":", "")));
+                } catch (final ParseException e) {
+                    Log.wtf(TAG, "invalid dateformat: ", e);
+                }
                 break;
             case "done":
                 task.setDone(val.getAsBoolean());
                 break;
             case "due":
-                task.setDue(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                try {
+                    task.setDue(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                } catch (final NumberFormatException ignored) {
+                    task.setDue(Optional.<Calendar>absent());
+                }
                 break;
             case "reminder":
-                task.setReminder(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                try {
+                    task.setReminder(of(DateTimeHelper.createLocalCalendar(val.getAsLong())));
+                } catch (final NumberFormatException ignored) {
+                    task.setReminder(Optional.<Calendar>absent());
+                }
                 break;
             case "tags":
                 handleTags(task, val);

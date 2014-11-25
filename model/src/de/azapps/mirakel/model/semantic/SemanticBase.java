@@ -149,7 +149,7 @@ abstract class SemanticBase  extends ModelBase {
         }
         if (this.due.isPresent() != other.due.isPresent()) {
             return false;
-        } else if (!this.due.equals(other.due)) {
+        } else if (due.isPresent() && !due.get().equals(other.due.get())) {
             return false;
         }
         if (this.getId() != other.getId()) {
@@ -157,16 +157,17 @@ abstract class SemanticBase  extends ModelBase {
         }
         if (this.list.isPresent() != other.list.isPresent()) {
             return false;
-        } else if (!this.list.get().equals(other.list.get())) {
+        } else if (list.isPresent() && !list.get().equals(other.list.get())) {
             return false;
         }
         if (this.priority.isPresent() != other.priority.isPresent()) {
             return false;
-        } else if (!this.priority.equals(other.priority)) {
+        } else if (priority.isPresent() && !priority.get().equals(other.priority.get())) {
             return false;
         }
         if (this.weekday.isPresent() != other.weekday.isPresent()) {
-        } else if (!this.weekday.equals(other.weekday)) {
+            return false;
+        } else if (weekday.isPresent() && !weekday.get().equals(other.weekday.get())) {
             return false;
         }
         return true;

@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -86,7 +88,7 @@ public class SpecialList extends ListMirakel {
 
     public Optional<SpecialListsBaseProperty> getWhere() {
         if (!where.isPresent()) {
-            where = SpecialListsWhereDeserializer.deserializeWhere(whereString);
+            where = SpecialListsWhereDeserializer.deserializeWhere(whereString, getName());
         }
         return this.where;
     }

@@ -405,13 +405,6 @@ abstract class TaskBase extends ModelBase {
         this.createdAt = created_at;
     }
 
-    public void setCreatedAt(@NonNull final String created_at) {
-        try {
-            createdAt = DateTimeHelper.parseDateTime(created_at);
-        } catch (final ParseException ignored) {
-            createdAt = new GregorianCalendar();
-        }
-    }
 
     /**
      * @param newDone is the task marked as done?
@@ -562,13 +555,6 @@ abstract class TaskBase extends ModelBase {
         this.updatedAt = updated_at;
     }
 
-    public void setUpdatedAt(@NonNull final String updated_at) {
-        try {
-            updatedAt = DateTimeHelper.parseDateTime(updated_at);
-        } catch (final ParseException ignored) {
-            updatedAt = null;
-        }
-    }
 
     public void setUUID(@NonNull final String newUuid) {
         this.uuid = newUuid;

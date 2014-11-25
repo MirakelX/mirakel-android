@@ -33,6 +33,8 @@ import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.meta.DueDeserializer;
@@ -94,7 +96,7 @@ public final class SpecialListsWhereDeserializer {
 
     @NonNull
     public static Optional<SpecialListsBaseProperty> deserializeWhere(final @NonNull String
-            whereQuery) throws IllegalArgumentException {
+            whereQuery, final String name) throws IllegalArgumentException {
         if (TextUtils.isEmpty(whereQuery.trim())) {
             return absent();
         }
@@ -103,7 +105,8 @@ public final class SpecialListsWhereDeserializer {
             return parseSpecialListWhere(obj, 0);
         } catch (final JsonSyntaxException e) {
             Log.wtf(TAG, "cannot parse " + whereQuery, e);
-            throw new IllegalArgumentException("cannot parse " + whereQuery, e);
+            ErrorReporter.report(ErrorType.SPECIAL_LIST_JSON_INVALID, name);
+            return absent();
         }
     }
 
@@ -123,7 +126,9 @@ public final class SpecialListsWhereDeserializer {
             return of((SpecialListsBaseProperty) new SpecialListsConjunctionList(((
                           deep % 2) == 0) ? SpecialListsConjunctionList.CONJUNCTION.AND :
                       SpecialListsConjunctionList.CONJUNCTION.OR, childs));
-        } else {
+        } else if (obj.isJsonNull()) {
+            return absent();
+        } else  {
             throw new IllegalArgumentException("Unknown json type");
         }
     }
