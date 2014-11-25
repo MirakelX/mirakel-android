@@ -11,6 +11,7 @@
   <string name="sync_use_summary_mirakel">Synchronizovat s Mirakel jako %s</string>
   <string name="sync_use_summary_nothing">Nesynchronizovat</string>
   <string name="sync_user">Uživatelské jméno</string>
+  <string name="sync_user_summary">Uživatelské jméno na serveru</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Synchronizace s %s</string>
   <string name="sync_frequency">Plán synchronizace</string>
@@ -18,15 +19,20 @@
   <string name="sync_frequency_summary_man">Synchronizovat pouze ručně</string>
   <string-array name="sync_types">
     <item>CalDAV synchronizace</item>
-    <item>Taskwarrior sync</item>
+    <item>Taskwarrior synchronizace</item>
   </string-array>
   <string name="sync_caldav">CalDAV synchronizace</string>
+  <string name="download">Stahování</string>
   <string name="sync_add_account">Přidat účet</string>
   <string name="sync_taskwarrior_configure">Konfigurovat Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Načíst QR kód</string>
   <string name="sync_taskwarrior_select_file">Vybrat konfigurační soubor</string>
   <string name="sync_taskwarrior_how_to">Jak nastavit vlastní server</string>
+  <string name="sync_taskwarrior_own_server">nebo jen použít svůj server</string>
   <string name="sync_taskwarrior_configuring">Konfigurace synchronizace&#8230;</string>
+  <string name="sync_taskwarrior_about">Pokud již máte účet taskwarrior:</string>
+  <string name="sync_taskwarrior_register">Pokud ne, můžete si zaregistrovat nový účet na našem serveru:</string>
+  <string name="sync_taskwarrior_register_button">Registrace</string>
   <string name="sync_taskwarrior_setup_success">Nastavení účtu bylo úspěšné</string>
   <string name="sync_defaultAccount">Použít jako výchozí účet?</string>
   <string name="tw_account">Taskwarrior</string>
@@ -38,14 +44,23 @@
   <string name="menu_edit_listaccount">Účet</string>
   <string name="change_account">Změnit účet</string>
   <string name="wrong_config">Pravděpodobně jste použili nesprávný konfigurační soubor</string>
+  <string name="cert_not_found">Certifikát zmizel, vytvořte znovu svůj účet</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[
+        Při synchronizaci došlo k chybě. Při použití náhradního řešení mohlo dojít k částečné ztrátě dat :(. Byla vytvořena záloha vaší databáze. Zkontrolujte, jestli je všechno v pořádku. <br /><br />
+        Více informací najdete <a href="https://mirakel.atlassian.net/browse/MIR-453">zde</a>
+        ]]></string>
+  <string name="client_sync_key_not_found">Klíč pro synchronizaci klienta nebyl nalezen. Zkontrolujte taskwarrior konfiguraci.</string>
   <string name="config_404">Konfigurační soubor nenalezen</string>
+  <string name="config_error_empty">V konfiguraci není žádná položka %s</string>
   <string name="load_config">Vyberte konfigurační soubor pro Taskwarrior</string>
   <string name="select_config">Vyberte konfigurační soubor pro Taskwarrior</string>
   <string name="message_try_later">Zkuste synchronizovat později</string>
+  <string name="message_access_denied">Přístup odepřen!\nPoužíváte správný konfigurační soubor?\nJe třeba nakonfigurovat Taskwarrior server aby dovolil synchronizaci s Mirakel.</string>
   <string name="message_create_socket">Nemohu vytvořit socket!\nJe povoleno připojení k síti?</string>
   <string name="message_account_suspended">Váš účet je pozastaven!</string>
   <string name="message_parse_message">Nelze zpracovat obsah úkolů – prosím založte chybové hlášení s detailním popisem</string>
   <string name="message_message_error">Neznámá odpověď od serveru – prosím založte chybové hlášení s detailním popisem</string>
   <string name="finish_sync">Ukončit synchronizaci</string>
   <string name="account_vanished">Účet zmizel. K tomuto nemělo vůbec nikdy dojít</string>
+  <string name="create_account">Vytvořit účet</string>
 </resources>

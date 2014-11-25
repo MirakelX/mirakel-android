@@ -177,9 +177,13 @@ public class TaskWarriorSync {
             final List<String> uuids = new ArrayList<>(remoteTasks.keySet());
             if (!uuids.isEmpty()) {
                 for (int i = 0; i < ((remoteTasks.size() / MAX_TASKS_PER_TRANSACTION) + 1); i++) {
-                    final int end = (((i + 1) * MAX_TASKS_PER_TRANSACTION) >= remoteTasks.size()) ? remoteTasks.size()
-                                    : ((
-                                           i + 1) * MAX_TASKS_PER_TRANSACTION);
+                    int end = (i + 1) * MAX_TASKS_PER_TRANSACTION;
+                    if (end > uuids.size()) {
+                        end = uuids.size();
+                    }
+                    if (end <= i * MAX_TASKS_PER_TRANSACTION) {
+                        break;
+                    }
                     final List<String> transactionUUIDS = uuids.subList(i * MAX_TASKS_PER_TRANSACTION, end);
                     final List<String> newUUIDS = new ArrayList<>(0);
 
@@ -343,12 +347,15 @@ public class TaskWarriorSync {
                 }
                 if (t.isRecurringMaster()) {
                     try {
-                        final Recurring r = t.getRecurrence().create();
-                        recurringMapping.put(t.getUUID(), r.getId());
-                        final ContentValues cv = new ContentValues();
-                        cv.put(Task.RECURRING, r.getId());
-                        pendingOperations.add(ContentProviderOperation.newUpdate(Task.URI).withSelection(Task.UUID + "=?",
-                                              new String[] {t.getUUID()}).withValues(cv).build());
+                        final Optional<TaskWarriorRecurrence> r = t.getRecurrence();
+                        if (r.isPresent()) {
+                            r.get().create();
+                            recurringMapping.put(t.getUUID(), r.get().getId());
+                            final ContentValues cv = new ContentValues();
+                            cv.put(Task.RECURRING, r.get().getId());
+                            pendingOperations.add(ContentProviderOperation.newUpdate(Task.URI).withSelection(Task.UUID + "=?",
+                                                  new String[] {t.getUUID()}).withValues(cv).build());
+                        }
                     } catch (final TaskWarriorRecurrence.NotSupportedRecurrenceException ignored) {
                         // eat it for now
                     }
