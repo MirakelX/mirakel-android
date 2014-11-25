@@ -291,6 +291,24 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="remove">Verwijder</string>
   <string name="no_account_selected">Geen Account geselecteerd</string>
   <string name="no_recurrence_selected">Geen herhaling geselecteerd</string>
+  <string name="no_semantic_selected">Geen taak template geselecteerd</string>
+  <string name="no_special_list_selected">Geen meta lijst geselecteerd</string>
+  <string name="no_tag_selected">Geen tag geselecteerd</string>
+  <string name="sharing_title">Delen</string>
   <string name="backup_title">Reservekopie</string>
+  <string name="third_party_title">Apps van derden</string>
   <string name="title_settings">Instellingen</string>
+  <string name="subcondition">Subconditie</string>
+  <string name="done_text">Alleen voltooide taken</string>
+  <string name="file_text">Alleen taken met bestanden</string>
+  <string name="due_exist_text">Alleen taken zonder vervaldatum</string>
+  <string name="reminder_text">Alleen taken met herinnering</string>
+  <string name="is_subtask_parent">Is bovenliggend</string>
+  <string name="has_subtasks">Heeft subtaken</string>
+  <string name="has_parent">Heeft bovenliggende taak</string>
+  <string name="special_lists_condition_title">Voorwaarden</string>
+  <string name="Undo">Ongedaan maken verwijderen voorwaarde</string>
+  <string name="add_condition">Voorwaarde toevoegen</string>
+  <string name="undo_taskui_change">Ongedaan maken verwijderen van %s</string>
+  <string name="due_dialog_negated">Niet na</string>
 </resources>

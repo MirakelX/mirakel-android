@@ -29,6 +29,7 @@
   <string name="sync_use_summary_mirakel">Synchronizovat s Mirakel jako %s</string>
   <string name="sync_use_summary_nothing">Nesynchronizovat</string>
   <string name="sync_user">Uživatelské jméno</string>
+  <string name="sync_user_summary">Uživatelské jméno na serveru</string>
   <string name="sync_server">Server</string>
   <string name="sync_server_summary">Synchronizace s %s</string>
   <string name="sync_frequency">Plán synchronizace</string>
@@ -36,17 +37,23 @@
   <string name="sync_frequency_summary_man">Synchronizovat pouze ručně</string>
   <string-array name="sync_types">
     <item>CalDAV synchronizace</item>
-    <item>Taskwarrior sync</item>
+    <item>Taskwarrior synchronizace</item>
   </string-array>
   <string name="sync_caldav">CalDAV synchronizace</string>
+  <string name="download">Stahování</string>
   <string name="sync_add_account">Přidat účet</string>
   <string name="sync_taskwarrior_configure">Konfigurovat Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Načíst QR kód</string>
   <string name="sync_taskwarrior_select_file">Vybrat konfigurační soubor</string>
   <string name="sync_taskwarrior_how_to">Jak nastavit vlastní server</string>
+  <string name="sync_taskwarrior_own_server">nebo jen použít svůj server</string>
   <string name="sync_taskwarrior_url_error">Adresa URL není správná. Opravdu jste načetli správný kód?</string>
   <string name="sync_taskwarrior_configuring">Konfigurace synchronizace&#8230;</string>
+  <string name="sync_taskwarrior_about">Pokud již máte účet taskwarrior:</string>
+  <string name="sync_taskwarrior_register">Pokud ne, můžete si zaregistrovat nový účet na našem serveru:</string>
+  <string name="sync_taskwarrior_register_button">Registrace</string>
   <string name="sync_taskwarrior_setup_success">Nastavení účtu bylo úspěšné</string>
+  <string name="sync_taskwarrior_error_download">Nelze stáhnout konfigurační soubor</string>
   <string name="sync_taskwarrior_select_file_not_exists">Soubor neexistuje</string>
   <string name="sync_defaultAccount">Použít jako výchozí účet?</string>
   <string name="tw_account">Taskwarrior</string>
@@ -57,6 +64,7 @@
   <string name="no_barcode_app_install">Nainstalovat</string>
   <string name="menu_edit_listaccount">Účet</string>
   <string name="change_account">Změnit účet</string>
+  <string name="version">Verze aplikace</string>
   <string name="no">Ne</string>
   <string name="not">Ne</string>
   <string name="notification_title">Upozornění v horní liště</string>
@@ -77,6 +85,8 @@
   <string name="startup_show_lists_summary">Po spuštění zobrazit všechny seznamy</string>
   <string name="startup_list">Vybrat výchozí seznam</string>
   <string name="startup_list_summary">Zobrazit úkoly z \"%s\"</string>
+  <string name="special_lists_click">Spravovat meta seznamy</string>
+  <string name="special_lists_new">Nový meta seznam</string>
   <string name="settings_misc">Různá nastavení</string>
   <string name="settings_backup">Záloha, obnovení a import dat</string>
   <string name="backup_click_summary">Zálohovat databázi na SD kartu (%s)</string>
@@ -102,8 +112,15 @@
   <string name="importing">Probíhá import</string>
   <string name="astrid_import_title">Vyberte soubor Astrid</string>
   <string name="import_any_do_click">Importovat z Any.Do</string>
+  <string name="any_do_import_title">Vyberat záložní soubor Any.Do</string>
+  <string name="any_do_this_file">Import z %s?\nPokud jiný, vyberte soubor sami</string>
+  <string name="any_do_how_to">Nejdříve prosím zálohujte svá Any.Do data. Jděte na Any.Do → Nastavení → Záloha → Vytvořit zálohu. Poté se vraťte a zmáčkněte OK.\nNebo vyberte soubor sami.</string>
   <string name="select_file">Vybrat soubor</string>
   <string name="wait">Počkejte prosím&#8230;</string>
+  <string name="import_wunderlist_click">Importovat z Wunderlist</string>
+  <string name="import_wunderlist_title">Vybrat Wunderlist soubor</string>
+  <string name="import_wunderlist_howto">Jak importovat z Wunderlist</string>
+  <string name="import_wunderlist_howto_text">Aplikace Wunderlist nepodporuje zálohování.\n\nJe třeba se přihlásit na webovou stránku, pak jít na Předvolby → Účet → Vytvořit zálohu → (počkat) → Stáhnout. Zkopírujte stažený soubor do zařízení a pak se vraťte sem.</string>
   <string name="highlightSelected_summary">Zvýraznit seznamy a úkoly po klepnutí</string>
   <string name="highlightSelected">Zvýraznit označené</string>
   <string name="settings_date_format_relative">Zobrazit relativní datum</string>
@@ -119,7 +136,10 @@
   <string name="hide_keyboard_summary">Skrýt klávesnici pokud je vytvářen nový úkol</string>
   <string name="undo_number">Počet uložených změn</string>
   <string name="undo_number_summary">Vrátit %s změn</string>
+  <string name="settings_semantic">Šablony úloh</string>
+  <string name="semantic_new_task">Nová šablona úlohy</string>
   <string name="semantic_new_task_config_summary">Konfigurovat podmínky pro vytváření nových úkolů</string>
+  <string name="semantic_new_task_config">Konfigurovat šablony úloh</string>
   <string name="swipeBehavior_title">Zobrazit detail úkolu tažením</string>
   <string name="swipeBehavior_summary">Zobrazit detail taženého nebo naposledy vybraného úkolu</string>
   <string name="lock_drawer_in_task_fragment_summary">Takže nedojde k jeho nechtěnému otevření z detailu úkolu</string>
@@ -145,18 +165,23 @@
   <string name="menu_color">Změnit barvu</string>
   <string name="howto_setup_server">Jak nastavit server</string>
   <string name="register_server">Pokud budete potřebovat synchronizační účet na našem serveru, pošlete nám e-mail. V dalších verzích aplikace bude možné účet založit rovnou.</string>
+  <string name="special_lists_title">Meta seznamy</string>
+  <string name="register">Registrace</string>
   <string name="auto_backup_interval">Interval automatického zálohování</string>
+  <string name="auto_backup_interval_summary">Zálohování databáze po uplynutí %s dnů</string>
   <string name="preferences_colorize">Barvy</string>
   <string name="preferences_colorize_tasks">Obarvit úkoly</string>
   <string name="preferences_colorize_tasks_everywhere">Obarvit všechny úkoly</string>
   <string name="preferences_colorize_tasks_everywhere_summary">&#8230;nebo jen ve zvláštních seznamech?</string>
+  <string name="settings_semantics_title">Konfigurovat šablony úloh</string>
   <string name="settings_semantics_condition">Klíčové slovo</string>
   <string name="settings_semantics_actions">Akce</string>
   <string name="settings_semantics_list">Vybrat seznam</string>
   <string name="settings_semantics_priority">Nastavit prioritu</string>
   <string name="settings_semantics_due">Nastavení termín</string>
+  <string name="settings_semantics_weekday">Nastavit termín na další pracovní den</string>
   <string-array name="weekdays">
-    <item>Don\'t set</item>
+    <item>Nenastavovat</item>
     <item>Pondělí</item>
     <item>Úterý</item>
     <item>Středa</item>
@@ -184,7 +209,9 @@
   <string name="semantics_no_list">Nenastavovat seznam</string>
   <string name="semantics_no_due">Nenastavovat termín</string>
   <string name="settings_file_default_title">Název úkolu pro importované soubory</string>
+  <string name="semantic_new">Šablona</string>
   <string name="tag_new">Nový štítek</string>
+  <string name="tag_settings">Nastavení štítků</string>
   <string name="color">Barva</string>
   <string name="tag_name">Jméno</string>
   <string name="tag_dark_text">Měl by být text černý?</string>
@@ -195,9 +222,11 @@
   <string name="settings_subtask_add_to_same_list_summary">Nebo do seznamu vyhrazeného pro podúkoly?</string>
   <string name="settings_subtask_add_to_list_summary">Přidat podúkol pro %s</string>
   <string name="settings_use_btn_speak">Zobrazit tlačítko mikrofonu</string>
+  <string name="settings_use_btn_audio">Zobrazit tlačítko nahrávání zvuku</string>
   <string name="settings_use_btn_camera">Zobrazit tlačítko pro fotoaparát</string>
   <string name="preferences_colorize_subtasks">Obarvit podúkoly?</string>
   <string name="settings_tasks_title">Úkoly</string>
+  <string name="settings_task_fragment">Nastavení přehledu úkolů</string>
   <string name="settings_dev">Vývojářská nastavení</string>
   <string name="settings_dev_sync">Synchronizace</string>
   <string name="settings_dev_dump_tw_summary">Zapsat přijatý text do /sdcard/mirakel</string>
@@ -206,6 +235,8 @@
   <string name="disable">zakazuji</string>
   <string name="enabled">povoleno</string>
   <string name="disabled">zakázáno</string>
+  <string name="change_dev_mode">Máte %s vývojářské nastavení!</string>
+  <string name="enableDebugLog">Povolit Debug-Logcat?</string>
   <string name="action_contact">Kontakt / nahlásit chybu</string>
   <string name="action_contact_summary">Pošlete nám e-mail!</string>
   <string name="title_donations">Podpořit</string>
@@ -215,6 +246,15 @@
   <string name="title_activity_credits">O autorech</string>
   <string name="credits_github_description">Zkopírovat na Githubu</string>
   <string name="credits_googleplus_description">Připoj se k naší G+ komunitě</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel je open source, neváhejte přispívat přes GitHub.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Ikony a design navrhl <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Toto je svobodný software (uvolněn pod <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Navštivte nás na</p>
+]]>
+    </string>
   <string name="credits_translations">Překlady</string>
   <string name="feedback">Odeslat zpětnou vazbu</string>
   <string name="credits_libraries">Použité knihovny</string>
@@ -237,19 +277,22 @@
   <string-array name="file_choice">
     <item>Nenastaveno</item>
     <item>Má soubor</item>
-    <item>Has no file</item>
+    <item>Nemá žádný soubor</item>
   </string-array>
   <string name="remove">Odstranit</string>
   <string name="no_account_selected">Není vybrán žádný účet</string>
   <string name="no_recurrence_selected">Opakování nebylo vybráno</string>
   <string name="no_semantic_selected">Nebyla vybrána předloha pro úkol</string>
+  <string name="no_special_list_selected">Není vybrán žádný meta seznam</string>
   <string name="no_tag_selected">Nebyl vybrán štítek</string>
   <string name="sharing_title">Sdílení</string>
   <string name="backup_title">Zálohovat</string>
   <string name="third_party_title">Aplikace třetích stran</string>
   <string name="title_settings">Nastavení</string>
+  <string name="subcondition">Podpodmínka</string>
   <string name="done_text">Pouze hotové úkoly</string>
   <string name="file_text">Pouze úkoly obsahující soubor</string>
+  <string name="due_exist_text">Pouze úkoly bez termínu</string>
   <string name="reminder_text">Pouze úkoly s připomínkou</string>
   <string name="is_subtask_parent">Je nadřazen</string>
   <string name="has_subtasks">Obsahuje podkúkoly</string>
@@ -258,4 +301,5 @@
   <string name="Undo">Vrátit odstranění podmínky</string>
   <string name="add_condition">Přidat podmínku</string>
   <string name="undo_taskui_change">Vrátit odstranění %s</string>
+  <string name="due_dialog_negated">Ne po</string>
 </resources>

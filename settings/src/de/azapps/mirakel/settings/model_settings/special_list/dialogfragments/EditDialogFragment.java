@@ -19,9 +19,7 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list.dialogfragments;
 
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -82,8 +80,6 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     public static final String DIALOG = "dialog";
     private OnPropertyEditListener onEditListener;
 
-
-
     public interface OnPropertyEditListener {
         public abstract void onEditFinish(@NonNull SpecialList list);
     }
@@ -111,9 +107,11 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     public static final int SUBCONDITION = 13;
 
 
+    @NonNull
     private SpecialList mList;
+    @NonNull
     private SpecialListsBaseProperty property;
-    private SpecialListsConjunctionList rootProperty;
+    @NonNull
     private ArrayList<Integer> backStack;
 
 
@@ -138,7 +136,6 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
         super.onCreate(savedInstanceState);
         mList = getArguments().getParcelable(LIST_KEY);
         property = getArguments().getParcelable(PROPERTY_KEY);
-        rootProperty = getArguments().getParcelable(ROOT_PROPERTY_KEY);
         backStack = getArguments().getIntegerArrayList(BACK_STACK_KEY);
     }
 
@@ -251,7 +248,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             break;
         case SUBCONDITION:
             property = new SpecialListsConjunctionList(property,
-                    ((backStack.size() % 2) == 0) ? CONJUNCTION.OR : CONJUNCTION.AND);
+                    ((backStack.size() % 2) == 0) ? CONJUNCTION.AND : CONJUNCTION.OR);
             fragment = ConjunctionFragment.newInstance((SpecialListsConjunctionList) property, mList,
                        backStack);
             break;
@@ -280,7 +277,6 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onClick(final View v) {
         final SpecialListsBaseProperty property = ((BasePropertyFragement)
@@ -289,8 +285,11 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             @Override
             public void onTreeExists(final int position,
                                      @NonNull final SpecialListsConjunctionList currentProperty) {
+
                 if (backStack.get(position) != SpecialListsConditionAdapter.NEW_PROPERTY) {
-                    currentProperty.getChilds().set(backStack.get(position), property);
+                    if (backStack.get(position) < currentProperty.getChilds().size()) {
+                        currentProperty.getChilds().set(backStack.get(position), property);
+                    }
                 } else {
                     currentProperty.getChilds().add(property);
                 }
@@ -343,11 +342,10 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
                     SpecialListsBaseProperty newCurrentProperty = ((SpecialListsConjunctionList)
                             currentProperty).getChilds().get(backStack.get(i));
                     if (!(newCurrentProperty instanceof SpecialListsConjunctionList)) {
-                        List<SpecialListsBaseProperty> childs = new ArrayList<>();
+                        final List<SpecialListsBaseProperty> childs = new ArrayList<>(1);
                         childs.add(newCurrentProperty);
-                        newCurrentProperty = new SpecialListsConjunctionList(i % 2 == 0 ?
-                                SpecialListsConjunctionList.CONJUNCTION.AND
-                                : SpecialListsConjunctionList.CONJUNCTION.OR, childs);
+                        newCurrentProperty = new SpecialListsConjunctionList(((i % 2) == 1) ? CONJUNCTION.AND :
+                                CONJUNCTION.OR, childs);
                         ((SpecialListsConjunctionList) currentProperty).getChilds().set(backStack.get(i),
                                 newCurrentProperty);
                         currentProperty = newCurrentProperty;
@@ -358,7 +356,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
 
                 }
             } else {
-                List<SpecialListsBaseProperty> childs = new ArrayList<>();
+                List<SpecialListsBaseProperty> childs = new ArrayList<>(0);
                 childs.add(rootProperty);
                 currentProperty = new SpecialListsConjunctionList(SpecialListsConjunctionList.CONJUNCTION.AND,
                         childs);

@@ -54,11 +54,13 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
+import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.helper.SpecialListsConditionAdapter;
 
 public class  SpecialListDetailFragment extends Fragment implements
-    CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener {
+    CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener,
+    IDetailFragment<SpecialList> {
     private ArrayList<Integer> backStack = new ArrayList<>();
 
     private SpecialListsConditionAdapter mAdapter;
@@ -360,5 +362,11 @@ public class  SpecialListDetailFragment extends Fragment implements
     public void onEditFinish(@NonNull SpecialList list) {
         backStack.clear();
         mAdapter.setNewList(list, backStack);
+    }
+
+    @Override
+    @NonNull
+    public SpecialList getItem() {
+        return mItem;
     }
 }

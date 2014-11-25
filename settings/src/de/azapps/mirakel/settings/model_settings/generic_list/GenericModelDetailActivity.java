@@ -49,6 +49,7 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
     public static final String FRAGMENT = "Fragment";
     public static final String BACK_ACTIVITY = "back";
     private static final String TAG = "GenericModelSettingsDetailActivity";
+    public static final String DETAIL_FRAGMENT = "detailFragment";
 
     protected boolean isSupport = false;
     private Class<? extends GenericModelListActivity> backActivity;
@@ -64,7 +65,9 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
         setContentView(R.layout.activity_generic_model_detail);
 
         // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -95,12 +98,13 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
             if (fragment instanceof android.app.Fragment) {
                 ((android.app.Fragment)fragment).setArguments(arguments);
                 getFragmentManager().beginTransaction()
-                .add(R.id.speciallist_detail_container, ((android.app.Fragment)fragment))
+                .add(R.id.speciallist_detail_container, ((android.app.Fragment)fragment), DETAIL_FRAGMENT)
                 .commit();
             } else if (fragment instanceof android.support.v4.app.Fragment) {
                 ((android.support.v4.app.Fragment)fragment).setArguments(arguments);
                 getSupportFragmentManager().beginTransaction()
-                .add(R.id.speciallist_detail_container, ((android.support.v4.app.Fragment)fragment))
+                .add(R.id.speciallist_detail_container, ((android.support.v4.app.Fragment)fragment),
+                     DETAIL_FRAGMENT)
                 .commit();
                 isSupport = true;
             }
@@ -108,7 +112,7 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (MirakelCommonPreferences.isTablet()) {
             setResult(SWITCH_LAYOUT, getIntent());
@@ -117,7 +121,7 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
@@ -130,8 +134,15 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
             NavUtils.navigateUpTo(this, new Intent(this, backActivity));
             return true;
         } else if (id == R.id.menu_delete) {
-            ((GenericModelDetailFragment<T>)getFragmentManager().findFragmentById(
-                 R.id.speciallist_detail_container)).getItem().destroy();
+            final T modelItem;
+            if (isSupport) {
+                modelItem = ((IDetailFragment<T>) getSupportFragmentManager().findFragmentById(
+                                 R.id.speciallist_detail_container)).getItem();
+            } else {
+                modelItem = ((IDetailFragment<T>) getFragmentManager().findFragmentById(
+                                 R.id.speciallist_detail_container)).getItem();
+            }
+            modelItem.destroy();
             setResult(NEED_UPDATE, null);
             finish();
         }
@@ -139,8 +150,8 @@ public class GenericModelDetailActivity<T extends ModelBase> extends FragmentAct
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.generic_list_settings, menu);
         menu.findItem(R.id.menu_add).setVisible(false);
         return true;
