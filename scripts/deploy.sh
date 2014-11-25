@@ -40,7 +40,7 @@ then
     TRACK="beta"
 fi
 
-if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ] && [- n "$CHANGELOG"]; then
+if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ] && [ -n "$CHANGELOG" ]; then
 	
 	APK_FILE="apks/mirakel-$VERSION.apk"
 	
@@ -73,17 +73,12 @@ if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ] && [- n "$CHANGELOG"]
 	cd $DIR
 fi
 
-if [ ! -f $UPLOAD_TO_PLAYSTORE ]; then
-    echo "Upload to playstore script not found!"
-    echo "Add script as build/scripts/$UPLOAD_TO_PLAYSTORE"
-    exit
-fi
 
 if [ -n $PLAY_APK_NAME ]; then
   $(./$UPLOAD_TO_PLAYSTORE -p de.azapps.mirakelandroid -s $SECRET -t $TRACK -a $APK_DIR/$PLAY_APK_NAME)
 fi
 
-if [-n $GITHUB_DIR]; then
+if [ -n $GITHUB_DIR ]; then
 	cd $GITHUB_DIR
 	git pull
 	./update_subtrees.sh
