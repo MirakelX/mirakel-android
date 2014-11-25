@@ -40,13 +40,17 @@ then
     TRACK="beta"
 fi
 
-if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ]; then
+if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ] && [- n "$CHANGELOG"]; then
 	
 	APK_FILE="apks/mirakel-$VERSION.apk"
-	cp $APK_DIR/$WEBPAGE_APK_NAME $WEBPAGE_GIT_DIR/$APK_FILE
 	
 	cd $WEBPAGE_GIT_DIR
 	git pull
+	
+	cp $APK_DIR/$WEBPAGE_APK_NAME $WEBPAGE_GIT_DIR/$APK_FILE
+	cp $CHANGELOG $WEBPAGE_GIT_DIR/changelog.xml
+	
+	xsltproc updateChangelog.xslt changelog.xml >changelog.md
 	
 	SHA1SUM=`sha1sum $APK_FILE | tr -s " " "\012" |head -n 1`
 	DATE=`date +%Y-%m-%d`
@@ -58,7 +62,7 @@ if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ]; then
 		sed -i "s|## Final releases|## Final releases\n$STRING|g" releases.md
 	fi
 	
-	git add $APK_FILE releases.md
+	git add $APK_FILE releases.md changelog.xml changelog.md
 	git commit -m "Add mirakel $VERSION"
 	git push
 	if [ -n "$SSH_USER" ];then
@@ -75,4 +79,18 @@ if [ ! -f $UPLOAD_TO_PLAYSTORE ]; then
     exit
 fi
 
-$(./$UPLOAD_TO_PLAYSTORE -p de.azapps.mirakelandroid -s $SECRET -t $TRACK -a $APK_FILE)
+if [ -n $PLAY_APK_NAME ]; then
+  $(./$UPLOAD_TO_PLAYSTORE -p de.azapps.mirakelandroid -s $SECRET -t $TRACK -a $APK_DIR/$PLAY_APK_NAME)
+fi
+
+if [-n $GITHUB_DIR]; then
+	cd $GITHUB_DIR
+	git pull
+	./update_subtrees.sh
+	git push
+	git tag -a "v$VERSION"
+	git push --tags
+fi
+	
+
+
