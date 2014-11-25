@@ -11,7 +11,7 @@ if len(sys.argv)  != 2:
     print(sys.argv[0] + "  <pathToTestDir>")
     sys.exit()
 
-path="de/azapps/mirakel/model/task"
+path="de/azapps/mirakel/sync/taskwarrior/model/test/"
 filename="RecurrenceTest.java"
 
 tests_single={
@@ -74,7 +74,7 @@ VARS={}
 VARS["FUNCTIONS"]=[]
 
 for key,value in tests_multi.items():
-    ranges={1,2,5,10}
+    ranges={1,2,5,6,10}
     for i in ranges:
         cmd=deepcopy(value)
         for k in cmd.keys():
@@ -94,7 +94,7 @@ for key,value in tests_single.items():
 
 
 loader = CachingFileLoader(".")
-template = loader.load_template(os.path.dirname(__file__) + "/model/recurrenceTemplate.java")
+template = loader.load_template(os.path.dirname(__file__) + "/templates/recurrenceTemplate.java")
 
 
 directory=sys.argv[1]+'/src/'+path+'/';

@@ -18,12 +18,15 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.query_builder;
 
-import java.util.Arrays;
-import java.util.List;
-
 import android.database.Cursor;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
+
+import com.google.common.base.Optional;
+
+import java.util.Arrays;
+import java.util.List;
+
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -32,12 +35,17 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
-import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 public class QueryBuilderTest extends MirakelTestCase {
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        RandomHelper.init(getContext());
+    }
 
     @SmallTest
     public void testBasicQuery() {
@@ -341,79 +349,86 @@ public class QueryBuilderTest extends MirakelTestCase {
     @MediumTest
     public void testGetTask() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Task res_qb = qb.get(Task.class);
+        Optional<Task> res_qb = qb.get(Task.class);
         Cursor c = getContext().getContentResolver().query(Task.URI, Task.allColumns, null,
                    null, null);
         c.moveToFirst();
         Task res_raw = new Task(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
     @MediumTest
     public void testGetAccount() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        AccountMirakel res_qb = qb.get(AccountMirakel.class);
+        Optional<AccountMirakel> res_qb = qb.get(AccountMirakel.class);
         Cursor c = getContext().getContentResolver().query(
                        AccountMirakel.URI, AccountMirakel.allColumns, null, null, null);
         c.moveToFirst();
         AccountMirakel res_raw = new AccountMirakel(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
     @MediumTest
     public void testGetFile() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        FileMirakel res_qb = qb.get(FileMirakel.class);
+        Optional<FileMirakel> res_qb = qb.get(FileMirakel.class);
         Cursor c = getContext().getContentResolver().query(FileMirakel.URI,
                    FileMirakel.allColumns, null, null, null);
         c.moveToFirst();
         FileMirakel res_raw = new FileMirakel(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
     @MediumTest
     public void testGetRecurring() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Recurring res_qb = qb.get(Recurring.class);
+        Optional<Recurring> res_qb = qb.get(Recurring.class);
         Cursor c = getContext().getContentResolver().query(Recurring.URI,
                    Recurring.allColumns, null, null, null);
         c.moveToFirst();
         Recurring res_raw = new Recurring(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
     @MediumTest
     public void testGetSemantic() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        Semantic res_qb = qb.get(Semantic.class);
+        Optional<Semantic> res_qb = qb.get(Semantic.class);
         Cursor c = getContext().getContentResolver().query(Semantic.URI,
                    Semantic.allColumns, null, null, null);
         c.moveToFirst();
         Semantic res_raw = new Semantic(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
     @MediumTest
     public void testGetList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        ListMirakel res_qb = qb.get(ListMirakel.class);
+        Optional<ListMirakel> res_qb = qb.get(ListMirakel.class);
         Cursor c = getContext().getContentResolver().query(ListMirakel.URI,
                    ListMirakel.allColumns, null, null, null);
         c.moveToFirst();
         ListMirakel res_raw = new ListMirakel(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
     @MediumTest
     public void testGetMetaList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(getContext());
-        SpecialList res_qb = qb.get(SpecialList.class);
+        Optional<SpecialList> res_qb = qb.get(SpecialList.class);
         Cursor c = getContext().getContentResolver().query(SpecialList.URI,
                    SpecialList.allColumns, null, null, null);
         c.moveToFirst();
         SpecialList res_raw = new SpecialList(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertTrue(res_qb.isPresent());
+        assertEquals(res_raw, res_qb.get());
     }
 
     //test getList

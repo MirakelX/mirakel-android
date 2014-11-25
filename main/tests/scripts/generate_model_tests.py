@@ -77,7 +77,7 @@ if className=="SpecialList":
     vars["GETALL_FUNCTION"]="allSpecial()"
 
 loader = CachingFileLoader(".")
-template = loader.load_template(os.path.dirname(__file__) + "/model/base.java")
+template = loader.load_template(os.path.dirname(__file__) + "/templates/model.java")
 
 
 

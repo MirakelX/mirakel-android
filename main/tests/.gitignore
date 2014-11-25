@@ -76,3 +76,5 @@ src/de/azapps/model/task/TaskDeserializerTest.java
 src/de/azapps/mirakel/model/task/TaskDeserializerTest.java
 src/de/azapps/mirakel/model/task/RecurrenceTest.java
 src/de/azapps/mirakel/sync/taskwarrior/TaskWarriorRecurrenceTest.java
+src/de/azapps/mirakel/model/account/AccountBaseTest.java
+src/de/azapps/mirakel/model/account/AccountMirakelTest.java

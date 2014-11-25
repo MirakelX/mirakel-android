@@ -18,11 +18,16 @@
  ******************************************************************************/
 package de.azapps.mirakel.model.task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 
+import android.test.suitebuilder.annotation.MediumTest;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.gson.Gson;
@@ -33,9 +38,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
-import de.azapps.mirakel.sync.taskwarrior.TaskWarriorTaskSerializer;
+import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTask;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
+import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
+import static com.google.common.base.Optional.of;
 
 /**
  * This test cases tests if the Deserializer is working properly.
@@ -45,16 +56,18 @@ import de.azapps.mirakelandroid.test.RandomHelper;
  */
 public class TaskDeserializerTest extends MirakelTestCase {
 
-	private boolean compare(final String taskString, final Task task) {
+	private boolean compare(final String taskString, final TaskWarriorTask task) {
 		final JsonParser parser = new JsonParser();
 		final JsonObject o = (JsonObject) parser.parse(taskString);
+        Task t=new Task();
+        task.setToTask(t);
 
 		final String outputTask = new GsonBuilder()
 				.registerTypeAdapter(Task.class,
 						new TaskWarriorTaskSerializer(getContext())).create()
-				.toJson(task);
+				.toJson(t);
 		final JsonObject o2 = (JsonObject) parser.parse(outputTask);
-		return equalJson(o, o2);
+		return equalJson(o2, o);
 	}
 
 	//the buildin equal method does not match if the fields have a other order
@@ -142,15 +155,20 @@ public class TaskDeserializerTest extends MirakelTestCase {
 			String diff = "";
 			if (checkedElements.size() != f.entrySet().size()) {
 				diff = diff(s, checkedElements, diff, f.entrySet());
-				ret = false;
-				diff += "\n";
+                if(!diff.isEmpty()) {
+                    ret = false;
+                    diff += "\n";
+                }
 			}
 			if (checkedElements.size() != s.entrySet().size()) {
 				diff = diff(s, checkedElements, diff, s.entrySet());
-				ret = false;
+                if(!diff.isEmpty()) {
+                    ret = false;
+                    diff+="\n";
+                }
 			}
-			if (!ret) {
-				fail("Json object elements does not match: " + diff);
+			if (!ret&&!"+modified".equals(diff)) {
+				fail("Json object elements does not match: \n" + diff+"\n"+a.toString()+"\n"+b.toString());
 				return false;
 			}
 			return true;
@@ -164,7 +182,7 @@ public class TaskDeserializerTest extends MirakelTestCase {
 			final Set<Entry<String, JsonElement>> set) {
 		String retDiff = diff;
 		for (final Entry<String, JsonElement> el : set) {
-			if (!checkedElements.contains(el.getKey())) {
+			if (!checkedElements.contains(el.getKey())&&!"modified".equals(el.getKey())) {
 				retDiff += "+"
 						+ (diff.length() == 0 ? el.getKey() : el.getKey() + ",");
 			}
@@ -175,11 +193,10 @@ public class TaskDeserializerTest extends MirakelTestCase {
 	private void testString(final String message, final String inputTask)
 			throws Exception {
 		final Gson gson = new GsonBuilder().registerTypeAdapter(
-				Task.class,
-				new TaskDeserializer(true, RandomHelper
-						.getRandomAccountMirakel(), this.mContext)).create();
+				TaskWarriorTask.class,
+				new TaskWarriorTaskDeserializer()).create();
 
-		final Task task = gson.fromJson(inputTask, Task.class);
+		final TaskWarriorTask task = gson.fromJson(inputTask, TaskWarriorTask.class);
 		assertTrue(message, compare(inputTask, task));
 	}
 	
@@ -191,4 +208,47 @@ public class TaskDeserializerTest extends MirakelTestCase {
 	}
 	#end
 
+    @MediumTest
+    public void testSerialize1(){
+        Task t=new Task();
+        t.setUUID(java.util.UUID.randomUUID().toString());
+        t.setPriority(2);
+        t.setName(RandomHelper.getRandomString());
+        ListMirakel l=ListMirakel.getInboxList(AccountMirakel.getLocal());
+        t.setList(l);
+
+        Calendar created=new GregorianCalendar();
+        t.setCreatedAt(created);
+
+        Calendar updated=new GregorianCalendar();
+        updated.add(Calendar.DAY_OF_MONTH,1);
+        t.setUpdatedAt(updated);
+
+        Calendar due=new GregorianCalendar();
+        due.add(Calendar.DAY_OF_MONTH, 7);
+        t.setDue(of(due));
+
+        String serialized=new GsonBuilder()
+                .registerTypeAdapter(Task.class,
+                        new TaskWarriorTaskSerializer(getContext())).create()
+                .toJson(t);
+        SimpleDateFormat format=DateTimeHelper.taskwarriorFormat;
+
+        due.setTimeZone(TimeZone.getTimeZone("UTC"));
+        created.setTimeZone(TimeZone.getTimeZone("UTC"));
+        updated.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        String json="{\"uuid\":\""+t.getUUID()+"\","+
+                "\"status\":\"pending\","+
+                "\"entry:\":\""+format.format(created.getTime())+"\","+
+                "\"description\":\""+t.getName()+"\","+
+                "\"due:\":\""+format.format(due.getTime())+"\","+
+                "\"modified:\":\""+format.format(updated.getTime())+"\","+
+                "\"priority\":\"H\"}";
+
+        JsonParser parser=new JsonParser();
+
+        assert(equalJson(parser.parse(serialized),parser.parse(json)));
+    }
+	
 }

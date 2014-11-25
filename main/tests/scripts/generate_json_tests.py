@@ -7,7 +7,7 @@ if len(sys.argv) != 3:
     print(sys.argv[0]+" <taskList.json> <pathToTestDir>")
     sys.exit()
 
-path="de/azapps/mirakel/model/task"
+path="de/azapps/mirakel/templates/task"
 filename="TaskDeserializerTest.java"
 
 vars = {}
@@ -18,7 +18,7 @@ with open(sys.argv[1]) as f:
 
 
 loader = CachingFileLoader(".")
-template = loader.load_template(os.path.dirname(__file__) + "/model/jsonTemplate.java")
+template = loader.load_template(os.path.dirname(__file__) + "/templates/jsonTemplate.java")
 
 
 directory=sys.argv[2]+'/src/'+path+'/';

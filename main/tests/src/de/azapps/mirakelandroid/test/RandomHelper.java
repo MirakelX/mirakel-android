@@ -18,6 +18,14 @@
  ******************************************************************************/
 package de.azapps.mirakelandroid.test;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.Nullable;
+import android.util.SparseBooleanArray;
+
+import com.google.common.base.Optional;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -27,17 +35,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.net.Uri;
-import android.util.SparseBooleanArray;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
+import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 
 public class RandomHelper {
 
@@ -45,9 +56,33 @@ public class RandomHelper {
     @SuppressLint("TrulyRandom")
     private static SecureRandom random = new SecureRandom();
     private static Context ctx;
+    private static Optional<Calendar> randomOptional_Calendar;
+    private static Optional<String> randomOptional_String;
 
     public static void init(final Context ctx) {
         RandomHelper.ctx = ctx;
+        final ListMirakel l=ListMirakel.safeFirst();
+        final Task t;
+        if(Task.all().isEmpty()) {
+            t=Task.newTask(getRandomString(),l);
+        }else{
+            t=Task.all().get(0);
+        }
+        if(Tag.all().isEmpty()){
+            Tag.newTag(getRandomString());
+        }
+        if(Semantic.all().isEmpty()){
+            Semantic.newSemantic(getRandomString(),getRandomInteger(),getRandomInteger(),getRandomOptional_ListMirakel(),getRandomInteger());
+        }
+        if(Recurring.all().isEmpty()){
+            Recurring.newRecurring(getRandomString(),getRandomint(),getRandomint(),getRandomint(),getRandomint(),getRandomint(),getRandomboolean(),getRandomOptional_Calendar(),getRandomOptional_Calendar(),getRandomboolean(),getRandomboolean(),getRandomSparseBooleanArray());
+        }
+        if(FileMirakel.all().isEmpty()){
+            FileMirakel.newFile(ctx,t,getRandomUri());
+        }
+        if(AccountMirakel.all().isEmpty()){
+            AccountMirakel.newAccount(getRandomString(),getRandomACCOUNT_TYPES(),getRandomboolean());
+        }
     }
 
     public static int getRandomint() {
@@ -82,8 +117,7 @@ public class RandomHelper {
     }
 
     public static ListMirakel getRandomListMirakel() {
-        ListMirakel.init(ctx);
-        final List<ListMirakel> t = ListMirakel.all();
+        final List<ListMirakel> t = ListMirakel.all(false);
         return t.get(random.nextInt(t.size()));
     }
 
@@ -105,6 +139,10 @@ public class RandomHelper {
     public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
         return ACCOUNT_TYPES.values()[random
                                       .nextInt(ACCOUNT_TYPES.values().length)];
+    }
+
+    public static <T> T getRandomElem(final List<T> elems) {
+        return elems.get(random.nextInt(elems.size()));
     }
 
     public static Task getRandomTask() {
@@ -157,5 +195,46 @@ public class RandomHelper {
 
     public static ListMirakel.SORT_BY getRandomSORT_BY() {
         return ListMirakel.SORT_BY.fromShort((short)random.nextInt(ListMirakel.SORT_BY.values().length));
+    }
+
+
+    public static Optional<Calendar> getRandomOptional_Calendar() {
+        if(getRandomboolean()) {
+            return of(getRandomCalendar());
+        } else {
+            return absent();
+        }
+    }
+
+    public static Optional<Long> getRandomOptional_Long() {
+        if(getRandomboolean()) {
+            return of(getRandomLong());
+        } else {
+            return absent();
+        }
+    }
+
+    public static Optional<String> getRandomOptional_String() {
+        if(getRandomboolean()) {
+            return of(getRandomString());
+        } else {
+            return absent();
+        }
+    }
+
+    public static Optional<ListMirakel> getRandomOptional_ListMirakel() {
+        if(getRandomboolean()) {
+            return of(getRandomListMirakel());
+        } else {
+            return absent();
+        }
+    }
+
+    @Nullable
+    public static Integer getRandomNullable_Integer() {
+        if(getRandomboolean()){
+            return null;
+        }
+        return getRandomInteger();
     }
 }
