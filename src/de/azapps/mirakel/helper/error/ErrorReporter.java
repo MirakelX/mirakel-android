@@ -22,7 +22,8 @@ public class ErrorReporter {
         ErrorReporter.context = context;
     }
 
-    public static  void report(final ErrorType errorType) {
+
+    public static  void report(final ErrorType errorType, String... args) {
         if (context == null) {
             return;
         }
@@ -37,7 +38,7 @@ public class ErrorReporter {
             String text;
             try {
                 text = context.getString(R.string.class.getField(errorName).getInt(
-                                             null));
+                                             null), args);
             } catch (final Exception e) {
                 text = errorName;
             }

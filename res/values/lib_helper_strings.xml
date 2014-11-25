@@ -53,6 +53,7 @@ Device: %3$s\n]]>
     <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">There was a task with non standard conform priority, while syncing.</string>
     <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">There was a task with non standard conform status, while syncing.</string>
     <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">There was a task with non standard conform date, while syncing.</string>
+    <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Parsing condition for metalist %s failed. Please report how this happend.</string>
     <!-- 
     <string name="error_" tools:ignore="UnusedResources"></string>
     <string name="error_" tools:ignore="UnusedResources"></string>
