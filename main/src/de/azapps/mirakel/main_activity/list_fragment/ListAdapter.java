@@ -18,11 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.list_fragment;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -32,12 +27,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.azapps.mirakel.adapter.MirakelArrayAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.ViewHelper;
-import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountVanishedException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakelandroid.R;
@@ -75,8 +76,11 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
     @Override
     public View getView (final int position, final View convertView,
                          final ViewGroup parent) {
+        if (!getDataAt(position).isPresent()) {
+            return new View(context);
+        }
         View row = convertView;
-        ListHolder holder = null;
+        ListHolder holder;
         if (row == null) {
             final LayoutInflater inflater = ((Activity) this.context)
                                             .getLayoutInflater ();
@@ -94,7 +98,7 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
         } else {
             holder = (ListHolder) row.getTag ();
         }
-        final ListMirakel list = this.getDataAt (position);
+        final ListMirakel list = this.getDataAt(position).get();
         if (!this.enableDrop) {
             holder.listRowDrag.setVisibility (View.GONE);
         } else {
@@ -102,23 +106,26 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
         }
         holder.listRowName.setText (list.getName ());
         holder.listRowName.setTag (list);
-        holder.listRowTaskNumber.setText ("" + list.countTasks ());
+        holder.listRowTaskNumber.setText (String.valueOf(list.countTasks()));
         if (list.isSpecial () || !MirakelCommonPreferences.isShowAccountName ()) {
             holder.listAccount.setVisibility (View.GONE);
         } else {
             holder.listAccount.setVisibility (View.VISIBLE);
-            AccountMirakel a = list.getAccount ();
-            if (a == null) {
-                a = AccountMirakel.getLocal ();
-                list.setAccount (a);
-                list.save (false);
+
+            AccountMirakel a ;
+            try {
+                a = list.getAccount();
+            } catch (AccountVanishedException ignored) {
+                a = AccountMirakel.getLocal();
+                list.setAccount(a);
+                list.save(false);
             }
-            holder.listAccount.setText (a.getName ());
-            holder.listAccount.setTextColor (this.context.getResources ()
-                                             .getColor (android.R.color.darker_gray));
+            holder.listAccount.setText(a.getName());
+            holder.listAccount.setTextColor(this.context.getResources()
+                                            .getColor(android.R.color.darker_gray));
         }
-        this.viewsForLists.put (list.getId (), row);
-        final int w = row.getWidth () == 0 ? parent.getWidth () : row.getWidth ();
+        this.viewsForLists.put(list.getId(), row);
+        final int w = row.getWidth() != 0 ? row.getWidth() : parent.getWidth();
         ViewHelper.setListColorBackground (list, row, w);
         if (this.isSelectedAt (position)) {
             row.setBackgroundColor (this.context.getResources ().getColor (
@@ -137,56 +144,46 @@ public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {
     }
 
     public void onDrop (final int from, final int to) {
-        final ListMirakel t = this.getDataAt (from);
-        String TABLE;
-        if (t.getId () < 0) {
-            TABLE = SpecialList.TABLE;
-        } else {
-            TABLE = ListMirakel.TABLE;
-        }
-        ContentValues cv = new ContentValues();
-        ListMirakel lTo = this.getDataAt(to);
-        ListMirakel lFrom = this.getDataAt(from);
-        cv.put("TABLE", TABLE);
-        if (to < from) {// move list up
-            context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI, cv,
-                                                "lft>="
-                                                + lTo.getLft() + " and lft<"
-                                                + lFrom.getLft(), null);
-        } else if (to > from) {// move list down
-            context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI, cv,
-                                                "lft>"
-                                                + lFrom.getLft() + " and lft<="
-                                                + lTo.getLft(), null);
-        } else {
-            return;
-        }
-        t.setLft(lTo.getLft());
-        t.save ();
-        context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI, cv,
-                                            null, null);
-        this.remove (from);
-        this.addToData (to, t);
-        notifyDataSetChanged ();
-        final Thread load = new Thread (new Runnable () {
-            @Override
-            public void run () {
-                changeData (ListMirakel.all ());
+        if (getDataAt(from).isPresent() && getDataAt(to).isPresent()) {
+            final ListMirakel t = this.getDataAt(from).get();
+            String TABLE;
+            if (t.getId() < 0) {
+                TABLE = SpecialList.TABLE;
+            } else {
+                TABLE = ListMirakel.TABLE;
             }
-        });
-        load.start ();
-    }
-
-    public void onRemove (final int which) {
-        if (which < 0 || which > this.getCount ()) {
-            return;
+            ContentValues cv = new ContentValues();
+            ListMirakel lTo = this.getDataAt(to).get();
+            ListMirakel lFrom = this.getDataAt(from).get();
+            cv.put("TABLE", TABLE);
+            if (to < from) {// move list up
+                context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI, cv,
+                                                    "lft>="
+                                                    + lTo.getLft() + " and lft<"
+                                                    + lFrom.getLft(), null);
+            } else if (to > from) {// move list down
+                context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI, cv,
+                                                    "lft>"
+                                                    + lFrom.getLft() + " and lft<="
+                                                    + lTo.getLft(), null);
+            } else {
+                return;
+            }
+            t.setLft(lTo.getLft());
+            t.save();
+            context.getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI, cv,
+                                                null, null);
+            this.remove(from);
+            this.addToData(to, t);
+            notifyDataSetChanged();
+            final Thread load = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    changeData(ListMirakel.all());
+                }
+            });
+            load.start();
         }
-        this.viewsForLists.remove (this.getDataAt (which).getId ());
-        this.remove (which);
-    }
-
-    public void setEnableDrop (final boolean enableDrop) {
-        this.enableDrop = enableDrop;
     }
 
 }
