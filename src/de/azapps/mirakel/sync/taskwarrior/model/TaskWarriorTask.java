@@ -476,7 +476,7 @@ public class TaskWarriorTask {
         return depends;
     }
 
-    public TaskWarriorRecurrence getRecurrence() throws
+    public Optional<TaskWarriorRecurrence> getRecurrence() throws
         TaskWarriorRecurrence.NotSupportedRecurrenceException {
         if (recur.isPresent()) {
             final Optional<Calendar> until = OptionalUtils.withOptional(this.until,
@@ -488,9 +488,9 @@ public class TaskWarriorTask {
                     return of(calendar);
                 }
             }, Optional.<Calendar>absent());
-            return new TaskWarriorRecurrence(recur.get(), until);
+            return of(new TaskWarriorRecurrence(recur.get(), until));
         }
-        throw new IllegalStateException("There is no recurrence");
+        return absent();
     }
 
     /**
