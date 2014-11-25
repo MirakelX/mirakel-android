@@ -36,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.google.common.base.Optional;
 import com.larswerkman.colorpicker.ColorPicker;
 import com.larswerkman.colorpicker.SVBar;
 
@@ -146,7 +147,13 @@ public class TagListView extends View {
                 tag.setBackgroundColor(picker.getColor());
                 tag.setName(editName.getText().toString());
                 tag.setDarkText(darkText.isChecked());
-                tag.save();
+                final Optional<Tag> other = Tag.getByName(tag.getName());
+                if (!other.isPresent() || (other.get().getId() == tag.getId())) {
+                    tag.save();
+                } else {
+                    task.removeTag(tag);
+                    task.addTag(other.get());
+                }
                 invalidate();
             }
         }).setNegativeButton(android.R.string.cancel, null)

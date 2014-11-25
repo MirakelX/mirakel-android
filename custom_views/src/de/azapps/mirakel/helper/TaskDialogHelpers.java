@@ -414,7 +414,7 @@ public class TaskDialogHelpers {
         final ListView lv = (ListView) v.findViewById(R.id.subtask_listview);
         final List<Task> tasks = Task.cursorToTaskList(ctx.getContentResolver().query(
                                      MirakelInternalContentProvider.TASK_URI, Task.allColumns,
-                                     ModelBase.ID + "=" + task.getId() + " AND " + Task.BASIC_FILTER_DISPLAY_TASKS, null, null, null));
+                                     ModelBase.ID + "=" + task.getId() + " AND " + Task.BASIC_FILTER_DISPLAY_TASKS, null, null));
         subtaskAdapter = new SubtaskAdapter(ctx, 0, tasks, task, asSubtask);
         lv.post(new Runnable() {
             @Override
