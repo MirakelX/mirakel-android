@@ -83,4 +83,14 @@ if [ -n $PLAY_APK_NAME ]; then
   $(./$UPLOAD_TO_PLAYSTORE -p de.azapps.mirakelandroid -s $SECRET -t $TRACK -a $APK_DIR/$PLAY_APK_NAME)
 fi
 
+if [-n $GITHUB_DIR]; then
+	cd $GITHUB_DIR
+	git pull
+	./update_subtrees.sh
+	git push
+	git tag -a "v$VERSION"
+	git push --tags
+fi
+	
+
 
