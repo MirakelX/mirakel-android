@@ -19,6 +19,9 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
+    <version name="2.8.1" date="2014-11-25" code="72">
+        <feature>Bugfix release</feature>
+    </version>
     <version name="2.8" date="2014-11-16" code="71">
         <text><![CDATA[You want to help us developing Mirakel? Just write us an email to <a href="mailto:mirakel@azapps.de">mirakel@azapps.de</a>]]></text>
         <feature>Many Bugfixes</feature>
