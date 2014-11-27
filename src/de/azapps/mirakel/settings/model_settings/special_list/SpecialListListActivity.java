@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.settings.model_settings.special_list;
@@ -45,7 +45,7 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
 
     @NonNull
     @Override
-    protected Optional<Fragment> getSupportDetailFragment() {
+    protected Optional<Fragment> getSupportDetailFragment(final @NonNull SpecialList item) {
         return of((Fragment)new SpecialListDetailFragment());
     }
 
@@ -68,12 +68,18 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
                        Optional.<SpecialListsBaseProperty>absent(), true));
     }
 
+    @Override
+    protected String getTextTitle() {
+        return getString(R.string.special_lists_title);
+    }
+
 
     @Override
     public SimpleModelAdapter<SpecialList> getAdapter() {
         return new SimpleModelAdapter<>(this,
                                         new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
                                                 MirakelQueryBuilder.Operation.NOT_EQ,
-                                                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).query(SpecialList.URI), 0, SpecialList.class);
+                                                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).query(SpecialList.URI), 0, SpecialList.class, this);
     }
+
 }

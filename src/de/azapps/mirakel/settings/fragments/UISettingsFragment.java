@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.settings.fragments;
@@ -23,7 +23,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -32,10 +32,11 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
-import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
+import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
-public class UISettingsFragment extends PreferenceFragment {
+public class UISettingsFragment extends MirakelPreferencesFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,8 +116,11 @@ public class UISettingsFragment extends PreferenceFragment {
         taskFragment.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                ((SettingsActivity)getActivity()).startPreferenceFragment(new TaskFragmentSettingsFragment(),
-                        false);
+                if (getActivity() instanceof SettingsActivity) {
+                    ((SettingsActivity) getActivity()).onItemSelected(Settings.TASKUI);
+                } else {
+                    ((GenericModelDetailActivity) getActivity()).setFragment(Settings.TASKUI.getFragment());
+                }
                 return true;
             }
         });
@@ -136,4 +140,9 @@ public class UISettingsFragment extends PreferenceFragment {
         }
     }
 
+    @NonNull
+    @Override
+    public Settings getItem() {
+        return Settings.UI;
+    }
 }
