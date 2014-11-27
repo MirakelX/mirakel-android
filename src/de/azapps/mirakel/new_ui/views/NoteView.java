@@ -28,7 +28,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
 public class NoteView extends LinearLayout {

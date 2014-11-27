@@ -41,7 +41,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;

@@ -30,7 +30,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 

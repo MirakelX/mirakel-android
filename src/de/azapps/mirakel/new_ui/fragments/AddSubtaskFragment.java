@@ -50,7 +50,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 
 public class AddSubtaskFragment extends DialogFragment implements LoaderManager.LoaderCallbacks {
     public static final String ARGUMENT_PARENT_TASK = "PARENT_TASK";

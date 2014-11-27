@@ -40,7 +40,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 
 public class FloatingActionButton extends View {
 

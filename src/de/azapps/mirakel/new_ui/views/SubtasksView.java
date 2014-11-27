@@ -31,7 +31,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.tools.OptionalUtils;
 

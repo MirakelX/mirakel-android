@@ -23,7 +23,7 @@ import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 
 /**
  * Created by az on 06.08.14.

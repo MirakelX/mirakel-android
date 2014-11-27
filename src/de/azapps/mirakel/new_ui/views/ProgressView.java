@@ -24,7 +24,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
 public class ProgressView extends LinearLayout {

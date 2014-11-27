@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 
 public class ListAdapter extends CursorAdapter {
     private LayoutInflater mInflater;

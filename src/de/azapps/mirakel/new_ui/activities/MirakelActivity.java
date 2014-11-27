@@ -43,7 +43,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;

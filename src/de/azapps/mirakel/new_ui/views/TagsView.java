@@ -19,20 +19,13 @@
 
 package de.azapps.mirakel.new_ui.views;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import de.azapps.mirakel.custom_views.TagListView;
-import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.R;
-import de.azapps.tools.OptionalUtils;
+import de.azapps.mirakelandroid.R;
 
 public class TagsView extends LinearLayout {
 

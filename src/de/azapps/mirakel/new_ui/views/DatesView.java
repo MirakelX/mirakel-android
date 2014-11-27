@@ -31,10 +31,9 @@ import java.util.Calendar;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.R;
+import de.azapps.mirakelandroid.R;
 
 import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.fromNullable;
 
 public class DatesView extends LinearLayout {
     private OnClickListener dueEditListener;
