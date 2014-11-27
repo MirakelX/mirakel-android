@@ -67,4 +67,5 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="message_message_error">Rsposta sconosciuta dal server. Scrivere come questo si è verificato</string>
   <string name="finish_sync">Sincronizzazione completata</string>
   <string name="account_vanished">Account scomparso. Questo non dovrebbe mai accadere</string>
+  <string name="create_account">Crea account</string>
 </resources>
