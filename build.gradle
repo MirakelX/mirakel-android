@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 //apply plugin: 'hugo'
-apply plugin: 'eclipse'
 
 
 android {
