@@ -40,4 +40,9 @@ Device: %3$s\n]]>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Non è stato possibile risolvere questo problema. Mirakel verrà riavviato.</string>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Nome elenco già esistente. Scegliere un nome differente.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Aggiornare DAVdroid</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Formato del file di Wunderlist modificato. Segnalarlo al team di Mirakel.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Durante la sincronizzazione era presente un\'attività con formato della priorità non standard.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Durante la sincronizzazione era presente un\'attività con formato dello stato non standard.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Durante la sincronizzazione era presente un\'attività con formato della data non standard.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Analisi della condizione del meta-elenco %s non riuscita. Segnalare il problema.</string>
 </resources>

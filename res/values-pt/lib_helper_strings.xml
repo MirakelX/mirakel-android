@@ -41,4 +41,8 @@ Dispositivo: %3$s\n]]>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Este nome de lista já existe. Escolha outro nome.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Por favor atualize o DAVdroid</string>
   <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Formato do ficheiro Wunderlist alterado. Reporte esta situação à equipa Mirakel.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Durante a sincronização, foi encontrada uma tarefa com prioridade não padronizada.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Durante a sincronização, foi encontrada uma tarefa com estado não padronizado.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Durante a sincronização, foi encontrada uma tarefa com data não padronizada.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Falha ao processar a condição da meta-lista %s. Por favor reporte este erro.</string>
 </resources>
