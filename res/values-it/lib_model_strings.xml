@@ -167,6 +167,7 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
   <string name="nothing">Nessuna replica</string>
   <string name="special_lists_content_title">Contenuto</string>
   <string name="special_lists_done_title">Fatto</string>
+  <string name="special_lists_due_exist_title">Scadenza impostata</string>
   <string name="special_lists_due_title">Scadenza</string>
   <string name="special_lists_file_title">FIle</string>
   <string name="special_lists_list_title">Elenchi</string>
@@ -182,6 +183,8 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_list_name">Nome elenco</string>
   <string name="special_lists_due_negated">Non prima di oggi %s</string>
   <string name="special_lists_due">Prima di oggi %s</string>
+  <string name="due_exists">Scadenza impostata</string>
+  <string name="due_dont_exist">Scadenza non impostata</string>
   <string-array name="demo_lists">
     <item>Lavoro</item>
     <item>Casa</item>
