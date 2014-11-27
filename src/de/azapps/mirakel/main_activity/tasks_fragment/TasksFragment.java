@@ -81,7 +81,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -405,34 +405,33 @@ public class TasksFragment extends Fragment implements
                 @Override
                 public boolean onActionItemClicked(
                     final ActionMode mode, final MenuItem item) {
-                    switch (item.getItemId()) {
-                    case R.id.menu_delete:
+                    int i = item.getItemId();
+                    if (i == R.id.menu_delete) {
                         TasksFragment.this.main
                         .handleDestroyTask(TasksFragment.this.selectedTasks);
-                        break;
-                    case R.id.menu_move:
+
+                    } else if (i == R.id.menu_move) {
                         TasksFragment.this.main
                         .handleMoveTask(TasksFragment.this.selectedTasks);
-                        break;
-                    case R.id.menu_set_due:
+
+                    } else if (i == R.id.menu_set_due) {
                         TasksFragment.this.main
                         .handleSetDue(TasksFragment.this.selectedTasks);
-                        break;
-                    case R.id.edit_task:
+
+                    } else if (i == R.id.edit_task) {
                         TasksFragment.this.main.setCurrentTask(
                             TasksFragment.this.selectedTasks.get(0),
                             true);
-                        break;
-                    case R.id.done_task:
+
+                    } else if (i == R.id.done_task) {
                         for (final Task t : TasksFragment.this.selectedTasks) {
                             t.setDone(true);
                             t.save();
                         }
                         getLoaderManager().restartLoader(0, null,
                                                          TasksFragment.this);
-                        break;
-                    default:
-                        break;
+
+                    } else {
                     }
                     mode.finish();
                     return false;

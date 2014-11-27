@@ -18,10 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.task_fragment;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -61,7 +57,7 @@ import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.main_activity.MainActivity;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -149,31 +145,31 @@ public class TaskFragment extends Fragment {
 
     protected boolean handleActionBarClick (final MenuItem item) {
         this.saveContent = true;
-        switch (item.getItemId ()) {
-        case R.id.save:
+        int i1 = item.getItemId();
+        if (i1 == R.id.save) {
             if (TaskFragment.this.detailView != null) {
-                TaskFragment.this.detailView.saveContent ();
+                TaskFragment.this.detailView.saveContent();
             }
-            break;
-        case R.id.cancel:
-            Log.v (TAG, "cancel");
+
+        } else if (i1 == R.id.cancel) {
+            Log.v(TAG, "cancel");
             if (TaskFragment.this.detailView != null) {
                 this.saveContent = false;
-                TaskFragment.this.detailView.cancelContent ();
+                TaskFragment.this.detailView.cancelContent();
             }
-            break;
-        case R.id.menu_delete:
+
+        } else if (i1 == R.id.menu_delete) {
             if (TaskFragment.this.cabState == ActionbarState.FILE) {
                 final List<FileMirakel> selectedItems = new ArrayList<>();
                 for (int i = 0; i < this.markedFiles.size(); i++) {
                     selectedItems.add(this.markedFiles.valueAt(i));
                 }
-                TaskDialogHelpers.handleDeleteFile (selectedItems,
-                                                    getActivity (), TaskFragment.this.task,
-                new ExecInterfaceWithTask () {
+                TaskDialogHelpers.handleDeleteFile(selectedItems,
+                                                   getActivity(), TaskFragment.this.task,
+                new ExecInterfaceWithTask() {
                     @Override
-                    public void exec (final Task task) {
-                        update (task);
+                    public void exec(final Task task) {
+                        update(task);
                     }
                 });
             } else {// Subtask
@@ -181,24 +177,24 @@ public class TaskFragment extends Fragment {
                 for (int i = 0; i < this.markedSubtasks.size(); i++) {
                     selectedItems.add(this.markedSubtasks.valueAt(i));
                 }
-                TaskDialogHelpers.handleRemoveSubtask (selectedItems,
-                                                       getActivity (), TaskFragment.this.task,
-                new ExecInterfaceWithTask () {
+                TaskDialogHelpers.handleRemoveSubtask(selectedItems,
+                                                      getActivity(), TaskFragment.this.task,
+                new ExecInterfaceWithTask() {
                     @Override
-                    public void exec (final Task task) {
-                        update (task);
+                    public void exec(final Task task) {
+                        update(task);
                     }
                 });
             }
-            break;
-        case R.id.edit_task:
+
+        } else if (i1 == R.id.edit_task) {
             if (TaskFragment.this.main != null) {
                 TaskFragment.this.main
                 .setCurrentTask(TaskFragment.this.markedSubtasks
                                 .valueAt(0));
             }
-            break;
-        case R.id.done_task:
+
+        } else if (i1 == R.id.done_task) {
             for (int i = 0; i < this.markedSubtasks.size(); i++) {
                 final Task t = this.markedSubtasks.valueAt(i);
                 if (t != null) {
@@ -206,11 +202,11 @@ public class TaskFragment extends Fragment {
                     t.save();
                 }
             }
-            update (TaskFragment.this.task);
+            update(TaskFragment.this.task);
             TaskFragment.this.main.getTasksFragment().updateList();
             TaskFragment.this.main.getListFragment().update();
-            break;
-        default:
+
+        } else {
             return false;
         }
         Log.i (TaskFragment.TAG, "item clicked");

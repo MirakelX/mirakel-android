@@ -68,7 +68,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.Log;
 
 public class ListFragment extends MirakelFragment {
@@ -395,24 +395,23 @@ public class ListFragment extends MirakelFragment {
                     final ActionMode mode, final MenuItem item) {
                     final List<ListMirakel> lists = ListFragment.this.adapter
                                                     .getSelected ();
-                    switch (item.getItemId ()) {
-                    case R.id.menu_delete:
-                        ListFragment.this.main.handleDestroyList (lists);
-                        break;
-                    case R.id.menu_color:
-                        editColor (lists);
-                        break;
-                    case R.id.edit_list:
-                        editList (lists.get (0));
-                        break;
-                    case R.id.share_list_from_lists:
-                        SharingHelper.share (getActivity (), lists.get (0));
-                        break;
-                    case R.id.edit_listaccount:
-                        editListAccount (lists);
-                        break;
-                    default:
-                        break;
+                    int i = item.getItemId();
+                    if (i == R.id.menu_delete) {
+                        ListFragment.this.main.handleDestroyList(lists);
+
+                    } else if (i == R.id.menu_color) {
+                        editColor(lists);
+
+                    } else if (i == R.id.edit_list) {
+                        editList(lists.get(0));
+
+                    } else if (i == R.id.share_list_from_lists) {
+                        SharingHelper.share(getActivity(), lists.get(0));
+
+                    } else if (i == R.id.edit_listaccount) {
+                        editListAccount(lists);
+
+                    } else {
                     }
                     mode.finish ();
                     return false;

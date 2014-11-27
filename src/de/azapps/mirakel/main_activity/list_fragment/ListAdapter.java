@@ -41,7 +41,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountVanishedException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 
 @SuppressLint ("UseSparseArrays")
 public class ListAdapter extends MirakelArrayAdapter<ListMirakel> {

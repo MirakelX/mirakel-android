@@ -101,7 +101,7 @@ import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
@@ -1307,18 +1307,18 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         if (this.mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        switch (item.getItemId()) {
-        case R.id.menu_delete:
+        int i = item.getItemId();
+        if (i == R.id.menu_delete) {
             handleDestroyTask(this.currentTask);
             updateShare();
             return true;
-        case R.id.menu_move:
+        } else if (i == R.id.menu_move) {
             handleMoveTask(this.currentTask);
             return true;
-        case R.id.list_delete:
+        } else if (i == R.id.list_delete) {
             handleDestroyList(this.currentList);
             return true;
-        case R.id.task_sorting:
+        } else if (i == R.id.task_sorting) {
             this.currentList = ListDialogHelpers.handleSortBy(this,
             this.currentList, new Helpers.ExecInterface() {
                 @Override
@@ -1327,27 +1327,27 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 }
             }, null);
             return true;
-        case R.id.menu_new_list:
+        } else if (i == R.id.menu_new_list) {
             getListFragment().editList(null);
             return true;
-        case R.id.menu_sort_lists:
+        } else if (i == R.id.menu_sort_lists) {
             final boolean t = !item.isChecked();
             getListFragment().enableDrop(t);
             item.setChecked(t);
             return true;
-        case R.id.menu_settings:
+        } else if (i == R.id.menu_settings) {
             final Intent intent = new Intent(MainActivity.this,
                                              SettingsActivity.class);
             startActivityForResult(intent, MainActivity.RESULT_SETTINGS);
-            break;
-        case R.id.menu_contact:
+
+        } else if (i == R.id.menu_contact) {
             Helpers.contact(this);
-            break;
-        case R.id.menu_new_ui:
+
+        } else if (i == R.id.menu_new_ui) {
             MirakelCommonPreferences.setUseNewUI(true);
             Helpers.restartApp(this);
-            break;
-        case R.id.menu_sync_now:
+
+        } else if (i == R.id.menu_sync_now) {
             final Bundle bundle = new Bundle();
             bundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, true);
             bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
@@ -1366,17 +1366,17 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                     }
                 }
             }).start();
-            break;
-        case R.id.share_task:
+
+        } else if (i == R.id.share_task) {
             SharingHelper.share(this, getCurrentTask());
-            break;
-        case R.id.share_list:
+
+        } else if (i == R.id.share_list) {
             SharingHelper.share(this, getCurrentList());
-            break;
-        case R.id.search:
+
+        } else if (i == R.id.search) {
             onSearchRequested();
-            break;
-        case R.id.menu_undo:
+
+        } else if (i == R.id.menu_undo) {
             UndoHistory.undoLast(this);
             updateCurrentListAndTask();
             if (this.currentPosition == getTaskFragmentPosition()) {
@@ -1393,11 +1393,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                     setCurrentList(getCurrentList());
                 }
             }
-            break;
-        case R.id.mark_as_subtask:
+
+        } else if (i == R.id.mark_as_subtask) {
             TaskDialogHelpers.handleSubtask(this, this.currentTask, null, true);
-            break;
-        case R.id.menu_task_clone:
+
+        } else if (i == R.id.menu_task_clone) {
             try {
                 final Task newTask = this.currentTask.create();
                 setCurrentTask(newTask, true);
@@ -1406,8 +1406,8 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             } catch (final NoSuchListException e) {
                 Log.wtf(MainActivity.TAG, "List vanished on task cloning");
             }
-            break;
-        default:
+
+        } else {
             return super.onOptionsItemSelected(item);
         }
         return true;
