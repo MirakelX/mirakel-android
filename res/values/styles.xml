@@ -36,12 +36,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
     <style name="MirakelSettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MirakelOldSettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+
+    <style name="MirakelOldDarkSettingsTheme" parent="@style/Theme.AppCompat.NoActionBar">
+
     </style>
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
