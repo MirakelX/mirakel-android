@@ -166,6 +166,7 @@
   <string name="nothing">Bez opakování</string>
   <string name="special_lists_content_title">Obsah</string>
   <string name="special_lists_done_title">Hotovo</string>
+  <string name="special_lists_due_exist_title">Existence termínu</string>
   <string name="special_lists_due_title">Termín</string>
   <string name="special_lists_file_title">Soubor</string>
   <string name="special_lists_list_title">Seznamy</string>
@@ -181,6 +182,8 @@
   <string name="special_list_list_name">Název seznamu</string>
   <string name="special_lists_due_negated">Ne dříve než dnes %s</string>
   <string name="special_lists_due">Před dneškem %s</string>
+  <string name="due_exists">Termín existuje</string>
+  <string name="due_dont_exist">Termín neexistuje</string>
   <string-array name="demo_lists">
     <item>Práce</item>
     <item>Doma</item>
