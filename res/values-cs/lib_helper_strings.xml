@@ -22,6 +22,7 @@ Zařízení: %3$s\n]]>
   <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Bohužel, daný soubor nelze otevřít</string>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Není nainstalován žádný e-mailový klient</string>
   <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Nainstalujte si prosím správce souborů</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Došlo k vnitřní chybě při analýze jména souboru</string>
   <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Došlo k neočekávané chybě</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Soubor nebyl nalezen</string>
   <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Došlo k chybě při exportování databáze</string>
@@ -40,4 +41,8 @@ Zařízení: %3$s\n]]>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Název seznamu již existuje. Vyberte nějaký jiný.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Prosím aktualizujte DAVdroid</string>
   <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Formát souboru Wunderlist byl změněn. Nahlašte to týmu Mirakel.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Při synchronizaci byl nalezen úkol s nestandartní prioritou shody.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Při synchronizaci byl nalezen úkol s nestandartním stavem shody.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Při synchronizaci byl nalezen úkol s nestandartním datem shody.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Rozbor podmínek pro metaseznam %s se nezdařil. Prosím nahlašte, jak k tomu došlo.</string>
 </resources>
