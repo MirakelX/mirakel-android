@@ -255,6 +255,10 @@
 <p>Navštivte nás na</p>
 ]]>
     </string>
+  <string name="credits_license">
+<![CDATA[<p>Toto je svobodný software: můžete jej šířit a upravovat podle podmínek <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> vydávané Free Software Foundation, buď verze 3 licence, nebo (dle vlastního uvážení) libovolné pozdější verze.</p>
+<p>Tento program je šířen v naději, že bude užitečný, ale bez JAKÉKOLI ZÁRUKY; bez odvozené záruky PRODEJNOSTI nebo VHODNOSTI PRO URČITÝ ÚČEL. Viz GNU General Public License pro další podrobnosti.</p>]]>
+    </string>
   <string name="credits_translations">Překlady</string>
   <string name="feedback">Odeslat zpětnou vazbu</string>
   <string name="credits_libraries">Použité knihovny</string>
