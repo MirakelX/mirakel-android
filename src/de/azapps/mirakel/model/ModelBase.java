@@ -24,16 +24,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.tools.Log;
 
-/**
- * Created by weiznich on 02.07.14.
- */
-abstract public class ModelBase implements Parcelable {
+
+abstract public class ModelBase implements IGenericElementInterface {
     private static final String TAG = "ModelBase";
 
     public static final String ID = "_id";
