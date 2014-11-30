@@ -131,6 +131,10 @@ dependencies {
     compile project(':acra')
     compile project(':drag-sort-listview')
     compile project(':main')
+    compile "com.jakewharton:butterknife:$butterknifeVersion"
+
+    compile "com.android.support:cardview-v7:$androidSupportVersion"
+    compile "com.android.support:recyclerview-v7:$androidSupportVersion"
 
     //for tests
     //androidTestCompile files("$project.buildDir/classes/debug")

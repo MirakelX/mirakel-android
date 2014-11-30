@@ -46,6 +46,11 @@ import com.google.common.base.Optional;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnEditorAction;
+import butterknife.OnFocusChange;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -72,23 +77,32 @@ public class TaskFragment extends DialogFragment {
     private static final String TAG = "TaskFragment";
     public static final String ARGUMENT_TASK = "task";
 
-    private View layout;
     private Task task;
-    private ProgressDoneView progressDoneView;
-    private ProgressView progressView;
+    @InjectView(R.id.task_progress_done)
+    ProgressDoneView progressDoneView;
 
     // TaskName
-    private TextView taskName;
-    private EditText taskNameEdit;
-    private ViewSwitcher taskNameViewSwitcher;
+    @InjectView(R.id.task_name)
+    TextView taskName;
+    @InjectView(R.id.task_name_edit)
+    EditText taskNameEdit;
+    @InjectView(R.id.task_name_view_switcher)
+    ViewSwitcher taskNameViewSwitcher;
+    @InjectView(R.id.task_progress)
+    ProgressView progressView;
 
-
-    private NoteView noteView;
-    private DatesView datesView;
-    private TagsView task_tags;
-    private SubtasksView subtasksView;
-    private Button addMoreButton;
-    private Button doneButton;
+    @InjectView(R.id.task_note)
+    NoteView noteView;
+    @InjectView(R.id.task_dates)
+    DatesView datesView;
+    @InjectView(R.id.task_tags)
+    TagsView taskTags;
+    @InjectView(R.id.task_subtasks)
+    SubtasksView subtasksView;
+    @InjectView(R.id.task_button_add_more)
+    Button addMoreButton;
+    @InjectView(R.id.task_button_done)
+    Button doneButton;
 
     private MirakelContentObserver observer;
     private InputMethodManager inputMethodManager;
@@ -154,20 +168,8 @@ public class TaskFragment extends DialogFragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        ////////////////////////////////////////
-        // Inflate the layout for this fragment
-        layout = inflater.inflate(R.layout.fragment_task, container, false);
-        progressDoneView = (ProgressDoneView) layout.findViewById(R.id.task_progress_done);
-        taskName = (TextView) layout.findViewById(R.id.task_name);
-        taskNameEdit = (EditText) layout.findViewById(R.id.task_name_edit);
-        taskNameViewSwitcher = (ViewSwitcher) layout.findViewById(R.id.task_name_view_switcher);
-        progressView = (ProgressView) layout.findViewById(R.id.task_progress);
-        noteView = (NoteView) layout.findViewById(R.id.task_note);
-        datesView = (DatesView) layout.findViewById(R.id.task_dates);
-        task_tags = (TagsView) layout.findViewById(R.id.task_tags);
-        subtasksView = (SubtasksView) layout.findViewById(R.id.task_subtasks);
-        addMoreButton = (Button) layout.findViewById(R.id.task_button_add_more);
-        doneButton = (Button) layout.findViewById(R.id.task_button_done);
+        final View layout = inflater.inflate(R.layout.fragment_task, container, false);
+        ButterKnife.inject(this, layout);
         updateAll();
 
         return layout;
@@ -191,17 +193,15 @@ public class TaskFragment extends DialogFragment {
         });
         taskName.setText(task.getName());
         initTaskNameEdit();
-        taskName.setOnClickListener(onEditName);
         progressView.setProgress(task.getProgress());
         progressView.setOnProgressChangeListener(progressChangedListener);
         noteView.setNote(task.getContent());
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
-        task_tags.setTask(task);
+        taskTags.setTask(task);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
                                  onSubtaskDoneListener);
-        doneButton.setOnClickListener(onDoneButtonClickListener);
     }
 
     private final Procedure<Integer> progressChangedListener = new
@@ -213,6 +213,24 @@ public class TaskFragment extends DialogFragment {
         }
     };
 
+    @OnFocusChange(R.id.task_name_edit)
+    void taskNameEditFocusChange(boolean hasFocus) {
+        if (hasFocus) {
+            toggleKeyboard();
+        }
+    }
+
+    @OnEditorAction(R.id.task_name_edit)
+    boolean onEditorAction(int actionId) {
+        switch (actionId) {
+        case EditorInfo.IME_ACTION_DONE:
+        case EditorInfo.IME_ACTION_SEND:
+            updateName();
+            return true;
+        }
+        return false;
+    }
+
     private void initTaskNameEdit() {
         taskNameEdit.setText(task.getName());
         // Show Keyboard if stub
@@ -222,26 +240,6 @@ public class TaskFragment extends DialogFragment {
             taskNameEdit.requestFocus();
             toggleKeyboard();
         }
-        taskNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(final View v, final boolean hasFocus) {
-                if (hasFocus) {
-                    toggleKeyboard();
-                }
-            }
-        });
-        taskNameEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
-                switch (actionId) {
-                case EditorInfo.IME_ACTION_DONE:
-                case EditorInfo.IME_ACTION_SEND:
-                    updateName();
-                    return true;
-                }
-                return false;
-            }
-        });
         taskNameEdit.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
@@ -265,14 +263,13 @@ public class TaskFragment extends DialogFragment {
         taskNameViewSwitcher.showPrevious();
     }
 
-    private final View.OnClickListener onEditName = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            taskNameViewSwitcher.showNext();
-            taskNameEdit.setText(task.getName());
-            taskNameEdit.requestFocus();
-        }
-    };
+    @OnClick(R.id.task_name)
+    void clickTaskName() {
+        taskNameViewSwitcher.showNext();
+        taskNameEdit.setText(task.getName());
+        taskNameEdit.requestFocus();
+
+    }
 
     private final Procedure<String> noteChangedListener = new
     Procedure<String>() {
@@ -368,20 +365,18 @@ public class TaskFragment extends DialogFragment {
         }
     };
 
-    private final View.OnClickListener onDoneButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View view) {
-            if (task.isStub()) {
-                try {
-                    task.create();
-                } catch (final DefinitionsHelper.NoSuchListException e) {
-                    ErrorReporter.report(ErrorType.TASKS_NO_LIST);
-                    Log.e(TAG, "NoSuchListException", e);
-                }
+    @OnClick(R.id.task_button_done)
+    void doneClick() {
+        if (task.isStub()) {
+            try {
+                task.create();
+            } catch (final DefinitionsHelper.NoSuchListException e) {
+                ErrorReporter.report(ErrorType.TASKS_NO_LIST);
+                Log.e(TAG, "NoSuchListException", e);
             }
-            dismiss();
         }
-    };
+        dismiss();
+    }
 
 }
 

@@ -107,14 +107,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MirakelActivity"
+            android:name="de.azapps.mirakel.new_ui.activities.MirakelActivity"
             android:theme="@style/MirakelBaseTheme"
             android:label="@string/title_activity_mirakel"
             android:uiOptions="none"
             android:launchMode="singleTop">
         </activity>
         <activity
-            android:name=".activities.TaskActivity"
+            android:name="de.azapps.mirakel.new_ui.activities.TaskActivity"
             android:theme="@style/MirakelBaseTheme"
             android:label="@string/title_activity_mirakel" >
         </activity>

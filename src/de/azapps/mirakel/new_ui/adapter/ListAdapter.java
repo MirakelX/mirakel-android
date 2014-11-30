@@ -27,42 +27,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 
 public class ListAdapter extends CursorAdapter {
-    private LayoutInflater mInflater;
+    final LayoutInflater mInflater;
 
-    public ListAdapter(Context context, Cursor c, int flags) {
+    public ListAdapter(final Context context, final Cursor c, final int flags) {
         super(context, c, flags);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = mInflater.inflate(R.layout.row_list, null);
-        ViewHolder viewHolder = new ViewHolder(view);
+    public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
+        final View view = mInflater.inflate(R.layout.row_list, null);
+        final ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
-        ListMirakel listMirakel = new ListMirakel(cursor);
+    public void bindView(final View view, final Context context, final Cursor cursor) {
+        final ViewHolder viewHolder = (ViewHolder) view.getTag();
+        final ListMirakel listMirakel = new ListMirakel(cursor);
         viewHolder.list = listMirakel;
         viewHolder.name.setText(listMirakel.getName());
-        viewHolder.count.setText(listMirakel.countTasks() + "");
+        viewHolder.count.setText(String.valueOf(listMirakel.countTasks()));
     }
 
     public static class ViewHolder {
-        private final TextView name;
-        private final TextView count;
-        private ListMirakel list;
+        @InjectView(R.id.list_name)
+        TextView name;
+        @InjectView(R.id.list_count)
+        TextView count;
+        ListMirakel list;
 
-        private ViewHolder(View view) {
-            name = (TextView) view.findViewById(R.id.list_name);
-            count = (TextView) view.findViewById(R.id.list_count);
+        private ViewHolder(final View view) {
+            ButterKnife.inject(this, view);
         }
 
         public ListMirakel getList() {

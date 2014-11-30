@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
@@ -95,19 +97,20 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
 
 
     public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TaskNameView name;
-        final TextView due;
-        final TextView list;
-        final ProgressDoneView priorityDone;
+        @InjectView(R.id.task_name)
+        TaskNameView name;
+        @InjectView(R.id.task_due)
+        TextView due;
+        @InjectView(R.id.task_list)
+        TextView list;
+        @InjectView(R.id.task_priority_done)
+        ProgressDoneView priorityDone;
         private Task task;
 
         public TaskViewHolder(final View view) {
             super(view);
             view.setOnClickListener(this);
-            name = (TaskNameView) view.findViewById(R.id.task_name);
-            due = (TextView) view.findViewById(R.id.task_due);
-            list = (TextView) view.findViewById(R.id.task_list);
-            priorityDone = (ProgressDoneView) view.findViewById(R.id.task_priority_done);
+            ButterKnife.inject(this, view);
         }
 
         public Task getTask() {

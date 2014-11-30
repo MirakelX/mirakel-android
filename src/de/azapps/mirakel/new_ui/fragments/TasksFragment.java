@@ -34,6 +34,9 @@ import android.view.ViewGroup;
 
 import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
@@ -50,7 +53,10 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
 
     private TaskAdapter mAdapter;
-    private RecyclerView mListView;
+    @InjectView(R.id.task_listview)
+    RecyclerView mListView;
+    @InjectView(R.id.fabbutton)
+    FloatingActionButton floatingActionButton;
     private View layout;
     private OnTaskSelectedListener mListener;
 
@@ -61,12 +67,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public static TasksFragment newInstance(final ListMirakel listMirakel) {
-        final TasksFragment f = new TasksFragment();
+        final TasksFragment tasksFragment = new TasksFragment();
         // Supply num input as an argument.
         final Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_LIST, listMirakel);
-        f.setArguments(args);
-        return f;
+        tasksFragment.setArguments(args);
+        return tasksFragment;
     }
 
     public ListMirakel getList() {
@@ -99,28 +105,17 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         layout = inflater.inflate(R.layout.fragment_tasks, container, false);
-        mListView = (RecyclerView) layout.findViewById(R.id.task_listview);
-        initFab();
+        ButterKnife.inject(this, layout);
+        floatingActionButton.setColor(getResources().getColor(R.color.colorAccent));
+        floatingActionButton.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
+        floatingActionButton.hide(false);
         return layout;
     }
 
-    public void initFab() {
-        final FloatingActionButton mFab = (FloatingActionButton) layout.findViewById(R.id.fabbutton);
-        mFab.setColor(getResources().getColor(R.color.colorAccent));
-        mFab.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
-        mFab.hide(false);
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickFAB(v);
-            }
-        });
-    }
-
-    private void clickFAB(View v) {
+    @OnClick(R.id.fabbutton)
+    void clickFAB() {
         final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
-                          true,
-                          getActivity());
+                          true, getActivity());
         mListener.onTaskSelected(task);
     }
 

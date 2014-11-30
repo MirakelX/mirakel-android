@@ -37,25 +37,26 @@ import android.view.View;
 
 import com.google.common.base.Optional;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static de.azapps.tools.OptionalUtils.Procedure;
-import static de.azapps.tools.OptionalUtils.withOptional;
+import static de.azapps.tools.OptionalUtils.*;
 
 public class MirakelActivity extends ActionBarActivity implements OnTaskSelectedListener,
     OnListSelectedListener {
@@ -64,7 +65,8 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
     @NonNull
-    private Toolbar actionbar;
+    @InjectView(R.id.actionbar)
+    Toolbar actionbar;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Getter / Setter
@@ -83,7 +85,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
-        actionbar = (Toolbar) findViewById(R.id.actionbar);
+        ButterKnife.inject(this);
         initDrawer();
         handleIntent(getIntent());
         if ((getTasksFragment() != null) && (getTasksFragment().getList() != null)) {
@@ -116,7 +118,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
     }

@@ -28,6 +28,8 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
@@ -39,9 +41,12 @@ public class DatesView extends LinearLayout {
     private OnClickListener dueEditListener;
     private OnClickListener listEditListener;
     private OnClickListener reminderEditListener;
-    private TextView dueText;
-    private TextView listText;
-    private TextView reminderText;
+    @InjectView(R.id.dates_due)
+    TextView dueText;
+    @InjectView(R.id.dates_list)
+    TextView listText;
+    @InjectView(R.id.dates_reminder)
+    TextView reminderText;
 
     private Optional<Calendar> due = absent();
     private String listMirakel;
@@ -49,20 +54,18 @@ public class DatesView extends LinearLayout {
     private boolean isDone;
 
 
-    public DatesView(Context context) {
+    public DatesView(final Context context) {
         this(context, null);
     }
 
-    public DatesView(Context context, AttributeSet attrs) {
+    public DatesView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DatesView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DatesView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_dates, this);
-        dueText = (TextView) findViewById(R.id.dates_due);
-        listText = (TextView) findViewById(R.id.dates_list);
-        reminderText = (TextView) findViewById(R.id.dates_reminder);
+        ButterKnife.inject(this, this);
     }
 
     private void rebuildLayout() {
@@ -96,7 +99,7 @@ public class DatesView extends LinearLayout {
         requestLayout();
     }
 
-    public void setData(Task task) {
+    public void setData(final Task task) {
         this.due = task.getDue();
         this.listMirakel = task.getList().getName();
         this.reminder = task.getReminder();
@@ -104,8 +107,9 @@ public class DatesView extends LinearLayout {
         rebuildLayout();
     }
 
-    public void setListeners(OnClickListener dueEditListener, OnClickListener listEditListener,
-                             OnClickListener reminderEditListener) {
+    public void setListeners(final OnClickListener dueEditListener,
+                             final OnClickListener listEditListener,
+                             final OnClickListener reminderEditListener) {
         this.dueEditListener = dueEditListener;
         this.listEditListener = listEditListener;
         this.reminderEditListener = reminderEditListener;

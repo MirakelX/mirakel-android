@@ -23,31 +23,34 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.custom_views.TagListView;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class TagsView extends LinearLayout {
 
-    private LinearLayout tagList;
+    @InjectView(R.id.task_tags_wrapper)
+    LinearLayout tagList;
     private Task task;
 
-    public TagsView(Context context) {
+    public TagsView(final Context context) {
         this(context, null);
     }
 
-    public TagsView(Context context, AttributeSet attrs) {
+    public TagsView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TagsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TagsView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_tags, this);
-        tagList = (LinearLayout) findViewById(R.id.task_tags_wrapper);
+        ButterKnife.inject(this, this);
     }
 
     private void rebuildLayout() {
-        TagListView tagView;
+        final TagListView tagView;
         if (this.tagList.getChildCount() < 1) {
             tagView = new TagListView(getContext());
             tagView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -63,7 +66,7 @@ public class TagsView extends LinearLayout {
         requestLayout();
     }
 
-    public void setTask(Task task) {
+    public void setTask(final Task task) {
         this.task = task;
         rebuildLayout();
     }

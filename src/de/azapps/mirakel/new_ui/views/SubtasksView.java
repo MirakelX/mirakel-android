@@ -23,6 +23,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -30,55 +31,64 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
+import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
 public class SubtasksView extends LinearLayout {
-    LinearLayout subtasksWrapper;
 
-    private LayoutInflater layoutInflater;
-    public SubtasksView(Context context) {
+    private final LayoutInflater layoutInflater;
+    @InjectView(R.id.task_subtasks_wrapper)
+    LinearLayout subtasksWrapper;
+    @InjectView(R.id.subtask_done)
+    CheckBox subtaskDone;
+    @InjectView(R.id.subtask_name)
+    TextView subtaskName;
+    @InjectView(R.id.task_subtasks_add)
+    Button addSubtask;
+
+    public SubtasksView(final Context context) {
         this(context, null);
     }
 
-    public SubtasksView(Context context, AttributeSet attrs) {
+    public SubtasksView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SubtasksView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SubtasksView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_subtasks, this);
         layoutInflater = LayoutInflater.from(context);
-        subtasksWrapper = (LinearLayout) findViewById(R.id.task_subtasks_wrapper);
+        ButterKnife.inject(this, this);
     }
 
-    public void setSubtasks(List<Task> subtasks, OnClickListener onSubtaskAddListener,
+    public void setSubtasks(final List<Task> subtasks, final OnClickListener onSubtaskAddListener,
                             final OnTaskSelectedListener onSubtaskClickListener,
                             final OptionalUtils.Procedure<Task> onSubtaskDoneListener) {
         subtasksWrapper.removeAllViews();
         for (final Task subtask : subtasks) {
-            LinearLayout v = (LinearLayout) layoutInflater.inflate(R.layout.row_subtask, subtasksWrapper,
-                             false);
-            CheckBox subtask_done = (CheckBox) v.findViewById(R.id.subtask_done);
-            TextView subtask_name = (TextView) v.findViewById(R.id.subtask_name);
-            subtask_done.setChecked(subtask.isDone());
-            subtask_name.setText(subtask.getName());
-            subtask_done.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            final LinearLayout layout = (LinearLayout) layoutInflater.inflate(R.layout.row_subtask,
+                                        subtasksWrapper,
+                                        false);
+            subtaskDone.setChecked(subtask.isDone());
+            subtaskName.setText(subtask.getName());
+            subtaskDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                public void onCheckedChanged(final CompoundButton compoundButton, final boolean isChecked) {
                     onSubtaskDoneListener.apply(subtask);
                 }
             });
-            subtask_name.setOnClickListener(new OnClickListener() {
+            subtaskName.setOnClickListener(new OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(final View view) {
                     onSubtaskClickListener.onTaskSelected(subtask);
                 }
             });
-            subtasksWrapper.addView(v);
+            subtasksWrapper.addView(layout);
         }
-        findViewById(R.id.task_subtasks_add).setOnClickListener(onSubtaskAddListener);
+        addSubtask.setOnClickListener(onSubtaskAddListener);
     }
 }
