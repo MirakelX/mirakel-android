@@ -71,7 +71,7 @@ configure(allprojects) {
     ext.gsonVersion = "2.2.+"
     ext.junitVersion = "4.11"
     ext.guavaVersion = "17.0"
-    ext.butterknifeVersion = "5.1.1"
+    ext.butterknifeVersion = "6.0.0"
     ext.dashclockVersion = "2.0.0"
     ext.robolectricVersion= "2.3"
 }
