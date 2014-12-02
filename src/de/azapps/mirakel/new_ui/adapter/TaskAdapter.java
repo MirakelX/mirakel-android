@@ -35,17 +35,17 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
-import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
+import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.TaskNameView;
 
 public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
 
     private final LayoutInflater mInflater;
-    private final OnTaskSelectedListener itemClickListener;
+    private final OnItemClickedListener<Task> itemClickListener;
 
     public TaskAdapter(final Context context, final Cursor cursor, final int flags,
-                       final OnTaskSelectedListener itemClickListener) {
+                       final OnItemClickedListener<Task> itemClickListener) {
         super(context, cursor, flags);
         mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
@@ -119,7 +119,7 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
 
         @Override
         public void onClick(final View v) {
-            itemClickListener.onTaskSelected(task);
+            itemClickListener.onItemSelected(task);
         }
     }
 }

@@ -40,16 +40,16 @@ import com.google.common.base.Optional;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
-import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
-import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -58,8 +58,7 @@ import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static de.azapps.tools.OptionalUtils.*;
 
-public class MirakelActivity extends ActionBarActivity implements OnTaskSelectedListener,
-    OnListSelectedListener {
+public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase> {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
@@ -171,22 +170,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onTaskSelected(final Task task) {
-        final DialogFragment newFragment = TaskFragment.newInstance(task);
-        newFragment.show(getSupportFragmentManager(), "dialog");
-    }
 
-    @Override
-    public void onListSelected(final ListMirakel list) {
-        setList(list);
-        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
-            @Override
-            public void apply(final DrawerLayout input) {
-                input.closeDrawer(Gravity.START);
-            }
-        });
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Other functions
@@ -210,7 +194,7 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
             final Optional<Task> task = TaskHelper.getTaskFromIntent(intent);
             if (task.isPresent()) {
                 setList(task.get().getList());
-                onTaskSelected(task.get());
+                selectTask(task.get());
             }
             break;
         case Intent.ACTION_SEND:
@@ -270,4 +254,27 @@ public class MirakelActivity extends ActionBarActivity implements OnTaskSelected
     }
 
 
+    @Override
+    public void onItemSelected(final @NonNull ModelBase item) {
+        if (item instanceof Task) {
+            selectTask((Task) item);
+        } else if (item instanceof ListMirakel) {
+            selectList((ListMirakel) item);
+        }
+    }
+
+    private void selectList(ListMirakel item) {
+        setList((ListMirakel)item);
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
+            @Override
+            public void apply(final DrawerLayout input) {
+                input.closeDrawer(Gravity.START);
+            }
+        });
+    }
+
+    private void selectTask(Task item) {
+        final DialogFragment newFragment = TaskFragment.newInstance((Task) item);
+        newFragment.show(getSupportFragmentManager(), "dialog");
+    }
 }

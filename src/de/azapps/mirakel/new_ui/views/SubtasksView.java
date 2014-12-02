@@ -33,9 +33,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.OptionalUtils;
 
 public class SubtasksView extends LinearLayout {
@@ -65,8 +65,8 @@ public class SubtasksView extends LinearLayout {
         ButterKnife.inject(this, this);
     }
 
-    public void setSubtasks(final List<Task> subtasks, final OnClickListener onSubtaskAddListener,
-                            final OnTaskSelectedListener onSubtaskClickListener,
+    public void setSubtasks(List<Task> subtasks, OnClickListener onSubtaskAddListener,
+                            final OnItemClickedListener<Task> onSubtaskClickListener,
                             final OptionalUtils.Procedure<Task> onSubtaskDoneListener) {
         subtasksWrapper.removeAllViews();
         for (final Task subtask : subtasks) {
@@ -84,7 +84,7 @@ public class SubtasksView extends LinearLayout {
             subtaskName.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(final View view) {
-                    onSubtaskClickListener.onTaskSelected(subtask);
+                    onSubtaskClickListener.onItemSelected(subtask);
                 }
             });
             subtasksWrapper.addView(layout);

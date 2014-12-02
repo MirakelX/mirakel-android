@@ -37,12 +37,12 @@ import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
-import de.azapps.mirakel.new_ui.interfaces.OnTaskSelectedListener;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.fromNullable;
@@ -58,7 +58,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.fabbutton)
     FloatingActionButton floatingActionButton;
     private View layout;
-    private OnTaskSelectedListener mListener;
+    private OnItemClickedListener<Task> mListener;
 
     private ListMirakel listMirakel;
 
@@ -92,7 +92,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnTaskSelectedListener) activity;
+            mListener = (OnItemClickedListener<Task>) activity;
         } catch (final ClassCastException e) {
             Log.e(TAG, activity.toString() + " must implement OnArticleSelectedListener", e);
             throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
@@ -116,7 +116,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     void clickFAB() {
         final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
                           true, getActivity());
-        mListener.onTaskSelected(task);
+        mListener.onItemSelected(task);
     }
 
     public void setList(final ListMirakel listMirakel) {

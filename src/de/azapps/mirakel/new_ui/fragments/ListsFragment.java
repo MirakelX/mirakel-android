@@ -29,16 +29,16 @@ import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
+import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
-import de.azapps.mirakel.new_ui.interfaces.OnListSelectedListener;
 
 
 public class ListsFragment extends ListFragment implements LoaderManager.LoaderCallbacks {
 
     private ListAdapter mAdapter;
-    private OnListSelectedListener mListener;
+    private OnItemClickedListener<ListMirakel> mListener;
 
 
 
@@ -59,14 +59,14 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
 
     @Override
     public void onListItemClick (ListView l, View v, int position, long id) {
-        mListener.onListSelected(((ListAdapter.ViewHolder) v.getTag()).getList());
+        mListener.onItemSelected(((ListAdapter.ViewHolder) v.getTag()).getList());
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnListSelectedListener) activity;
+            mListener = (OnItemClickedListener<ListMirakel>) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnListSelectedListener");
         }
