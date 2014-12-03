@@ -43,6 +43,7 @@
   <string name="search_result_title">Поиск %s</string>
   <string name="task_empty">Дело не выбрано&#8230;</string>
   <string name="no_lists">Это дело невозможно выполнить, потому что у Вас нет списков</string>
+  <string name="any_do_import_title">Выберите файл резервной копии Any.Do</string>
   <string name="backup_import_ok">Импорт завершен - пожалуйста, перезапустите Mirakel</string>
   <string name="backup_export_ok">Экспортированно в %s</string>
   <string name="add_content">Добавить примечание&#8230;</string>
