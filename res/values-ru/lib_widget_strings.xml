@@ -25,6 +25,7 @@
   <string name="fontcolor">Цвет текста</string>
   <string name="widget_transparency">Прозрачность</string>
   <string name="widget_transparency_summary">Прозрачность %s%%</string>
+  <string name="widget_due_colors">Цвет даты исполнения</string>
   <string name="dark_theme">Тёмная тема</string>
   <string name="notifications_list_summary">Показать \"%s\"</string>
   <string name="empty_list">Нет дел</string>
