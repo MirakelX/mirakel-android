@@ -43,6 +43,7 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         super(context, cursor, flags);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.itemClickListener = itemClickListener;
+        setHasStableIds(true);
     }
 
     @Override

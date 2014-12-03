@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -35,7 +36,6 @@ public class TaskActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                R.color.colorPrimary)));
+        getActionBar().setBackgroundDrawable(new ColorDrawable(ThemeManager.getColor(R.attr.colorPrimary)));
     }
 }

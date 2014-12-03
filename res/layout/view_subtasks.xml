@@ -39,6 +39,6 @@
         android:drawableStart="@android:drawable/ic_menu_add"
         style="?android:attr/borderlessButtonStyle"
         android:drawablePadding="@dimen/padding_drawable"
-        android:textColor="@color/mirakel_light_grey"
+        android:textAppearance="@style/TextAppearance.Regular"
         android:gravity="start|center_vertical"/>
 </merge>

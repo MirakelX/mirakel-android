@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="In 2 Tagen"
-                android:textColor="@color/due_today"
+                android:textColor="?colorDueToday"
                 android:id="@+id/dates_due"/>
         </LinearLayout>
 

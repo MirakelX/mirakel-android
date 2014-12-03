@@ -18,11 +18,26 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/list_lists"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:dividerHeight="0dp"
-    android:divider="@color/transparent"
-    android:background="?colorBackground"/>
+<resources>
+
+    <style name="TextAppearance.Base" parent="android:TextAppearance">
+        <item name="android:textColor">?colorTextGrey</item>
+        <item name="android:textSize">@dimen/text_size_regular</item>
+    </style>
+
+    <style name="TextAppearance.Regular" parent="TextAppearance.Base">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.Regular.Small" parent="TextAppearance.Regular">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Light" parent="TextAppearance.Base">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="TextAppearance.Light.Small" parent="TextAppearance.Light">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+</resources>

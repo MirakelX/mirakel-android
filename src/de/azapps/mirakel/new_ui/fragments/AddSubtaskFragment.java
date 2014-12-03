@@ -44,6 +44,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.OnTextChanged;
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectModelAdapter;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.ModelBase;
@@ -146,8 +147,8 @@ public class AddSubtaskFragment extends DialogFragment implements LoaderManager.
     @OnClick(R.id.subtask_new_task)
     void clickCreateTask() {
         if (!isInNewTask) {
-            newTaskButton.setTextColor(getResources().getColor(R.color.Black));
-            selectTaskButton.setTextColor(getResources().getColor(R.color.Grey));
+            newTaskButton.setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
+            selectTaskButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
             isInNewTask = true;
             switcher.showNext();
         }
@@ -156,8 +157,8 @@ public class AddSubtaskFragment extends DialogFragment implements LoaderManager.
     @OnClick(R.id.subtask_select_old)
     void clickSelectOld() {
         if (isInNewTask) {
-            newTaskButton.setTextColor(getResources().getColor(R.color.Grey));
-            selectTaskButton.setTextColor(getResources().getColor(R.color.Black));
+            newTaskButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
+            selectTaskButton.setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
             isInNewTask = false;
             switcher.showNext();
         }

@@ -30,6 +30,7 @@ import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
@@ -80,15 +81,15 @@ public class DatesView extends LinearLayout {
                 dueText.setTextColor(TaskHelper.getTaskDueColor(getContext(), due, isDone));
             } else {
                 dueText.setText(getContext().getString(R.string.no_date));
-                dueText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
+                dueText.setTextColor(ThemeManager.getColor(R.attr.colorDisabled));
             }
             listText.setText(listMirakel);
             if (reminder.isPresent()) {
                 reminderText.setText(DateTimeHelper.formatReminder(getContext(), reminder.get()));
-                reminderText.setTextColor(getContext().getResources().getColor(R.color.Black)); // TODO fix color
+                reminderText.setTextColor(ThemeManager.getColor(R.attr.colorTextBlack)); // TODO fix color
             } else {
                 reminderText.setText(getContext().getString(R.string.no_reminder));
-                reminderText.setTextColor(getContext().getResources().getColor(R.color.color_disabled));
+                reminderText.setTextColor(ThemeManager.getColor(R.attr.colorDisabled));
             }
             // Set listener
             dueText.setOnClickListener(dueEditListener);

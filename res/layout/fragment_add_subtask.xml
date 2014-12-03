@@ -49,7 +49,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:text="@string/add_existing"
-            android:textColor="@color/Grey" />
+            android:textAppearance="@style/TextAppearance.Regular" />
     </LinearLayout>
 
     <ViewSwitcher

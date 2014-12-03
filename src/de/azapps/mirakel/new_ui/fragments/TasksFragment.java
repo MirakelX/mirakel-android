@@ -37,6 +37,7 @@ import com.faizmalkani.floatingactionbutton.FloatingActionButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
@@ -103,7 +104,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.inject(this, layout);
-        floatingActionButton.setColor(getResources().getColor(R.color.colorAccent));
+        floatingActionButton.setColor(ThemeManager.getColor(R.attr.colorAccent));
         floatingActionButton.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
         floatingActionButton.hide(false);
         return layout;
@@ -112,7 +113,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @OnClick(R.id.fabbutton)
     void clickFAB() {
         final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
-                true, getActivity());
+                          true, getActivity());
         mListener.onItemSelected(task);
     }
 

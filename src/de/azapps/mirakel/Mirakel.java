@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Looper;
+import android.os.StrictMode;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
@@ -42,6 +43,7 @@ import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -76,6 +78,23 @@ public class Mirakel extends Application {
     @Override
     public void onCreate () {
         super.onCreate ();
+
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                                       .detectAll()
+                                       .penaltyLog()
+                                       .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                                   .detectLeakedSqlLiteObjects()
+                                   .detectLeakedClosableObjects()
+                                   .penaltyLog()
+                                   .penaltyDeath()
+                                   .build());
+        }
+
+
+
         init (this);
         NotificationService.updateServices (this);
         // And now, after the Database initialization!!! We init ACRA

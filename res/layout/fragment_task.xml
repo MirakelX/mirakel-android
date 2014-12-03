@@ -46,8 +46,8 @@
                 android:layout_width="@dimen/priorityDoneSize"
                 android:layout_height="@dimen/priorityDoneSize"
                 android:id="@+id/task_progress_done"
-                custom:progress_color="@color/progress"
-                custom:progress_background_color="@color/progress_background"/>
+                custom:progress_color="?colorProgress"
+                custom:progress_background_color="?colorProgressBackground"/>
 
             <ViewSwitcher
                 android:layout_width="match_parent"
