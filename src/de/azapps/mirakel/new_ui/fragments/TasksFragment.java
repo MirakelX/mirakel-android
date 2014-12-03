@@ -41,9 +41,8 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
-import de.azapps.tools.Log;
+import de.azapps.mirakelandroid.R;
 
 import static com.google.common.base.Optional.fromNullable;
 
@@ -57,7 +56,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     RecyclerView mListView;
     @InjectView(R.id.fabbutton)
     FloatingActionButton floatingActionButton;
-    private View layout;
     private OnItemClickedListener<Task> mListener;
 
     private ListMirakel listMirakel;
@@ -93,8 +91,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onAttach(activity);
         try {
             mListener = (OnItemClickedListener<Task>) activity;
-        } catch (final ClassCastException e) {
-            Log.e(TAG, activity.toString() + " must implement OnArticleSelectedListener", e);
+        } catch (final ClassCastException ignored) {
             throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
         }
     }
@@ -104,7 +101,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        layout = inflater.inflate(R.layout.fragment_tasks, container, false);
+        final View layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.inject(this, layout);
         floatingActionButton.setColor(getResources().getColor(R.color.colorAccent));
         floatingActionButton.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
@@ -115,7 +112,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @OnClick(R.id.fabbutton)
     void clickFAB() {
         final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
-                          true, getActivity());
+                true, getActivity());
         mListener.onItemSelected(task);
     }
 

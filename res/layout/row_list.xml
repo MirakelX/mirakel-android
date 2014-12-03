@@ -23,10 +23,9 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/white"
+              android:background="@color/mirakel_background"
               android:minHeight="40dp"
-    android:paddingStart="@dimen/padding_list_item"
-    android:paddingEnd="@dimen/padding_list_item">
+    android:padding="@dimen/padding_list_item">
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,6 +34,7 @@
         android:id="@+id/list_name"
         android:text="List"
         android:layout_gravity="center_vertical"
+        android:textSize="@dimen/text_size_list"
         android:textColor="@color/mirakel_light_grey"/>
 
     <TextView
@@ -43,6 +43,7 @@
         android:layout_weight="0"
         android:id="@+id/list_count"
         android:text="1"
+        android:textSize="@dimen/text_size_list"
         android:layout_gravity="center_vertical"
         android:textColor="@color/mirakel_light_grey"/>
 </LinearLayout>

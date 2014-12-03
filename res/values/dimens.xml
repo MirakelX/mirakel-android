@@ -24,5 +24,6 @@
 
     <dimen name="priorityDoneSize">50dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
-    <dimen name="padding_list_item">8dp</dimen>
+    <dimen name="padding_list_item">16dp</dimen>
+    <dimen name="text_size_list">16sp</dimen>
 </resources>

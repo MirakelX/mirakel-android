@@ -23,23 +23,28 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ListView;
+import android.view.ViewGroup;
 
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 
-
-public class ListsFragment extends ListFragment implements LoaderManager.LoaderCallbacks {
+public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks {
 
     private ListAdapter mAdapter;
     private OnItemClickedListener<ListMirakel> mListener;
-
+    @InjectView(R.id.list_lists)
+    RecyclerView mListView;
 
 
     public ListsFragment() {
@@ -47,45 +52,47 @@ public class ListsFragment extends ListFragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new ListAdapter(getActivity(), null, 0);
-        getListView().setDivider(new ColorDrawable(getResources().getColor(R.color.transparent)));
-        setListAdapter(mAdapter);
+        mAdapter = new ListAdapter(getActivity(), null, 0, mListener);
         getLoaderManager().initLoader(0, null, this);
-        getListView().setBackgroundColor(getResources().getColor(R.color.white));
+        mListView.setAdapter(mAdapter);
+        mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
 
     @Override
-    public void onListItemClick (ListView l, View v, int position, long id) {
-        mListener.onItemSelected(((ListAdapter.ViewHolder) v.getTag()).getList());
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(final Activity activity) {
         super.onAttach(activity);
         try {
             mListener = (OnItemClickedListener<ListMirakel>) activity;
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException ignored) {
             throw new ClassCastException(activity.toString() + " must implement OnListSelectedListener");
         }
     }
 
 
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final View layout = inflater.inflate(R.layout.fragment_lists, container, false);
+        ButterKnife.inject(this, layout);
+        return layout;
+    }
 
     @Override
-    public Loader onCreateLoader(int i, Bundle bundle) {
+    public Loader onCreateLoader(final int i, final Bundle bundle) {
         return ListMirakel.allWithSpecialSupportCursorLoader();
     }
 
     @Override
-    public void onLoadFinished(Loader loader, Object o) {
+    public void onLoadFinished(final Loader loader, final Object o) {
         mAdapter.swapCursor((Cursor) o);
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(final Loader loader) {
         mAdapter.swapCursor(null);
     }
 }
