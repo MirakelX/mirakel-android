@@ -14,8 +14,23 @@
   <string name="sync_frequency">Частота</string>
   <string name="sync_frequency_summary">Синхронизировать каждые %s мин</string>
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
+  <string-array name="sync_types">
+    <item>Синхронизация CalDAV</item>
+    <item>Taskwarrior sync</item>
+  </string-array>
+  <string name="sync_caldav">Синхронизация CalDAV</string>
+  <string name="download">Скачать</string>
+  <string name="sync_taskwarrior_configure">Настройка Taskwarrior</string>
+  <string name="sync_taskwarrior_scan_qr">Сканировать QR-код</string>
+  <string name="sync_taskwarrior_select_file">Выберите файл конфигурации</string>
+  <string name="sync_taskwarrior_how_to">Как настроить свой собственный сервер</string>
+  <string name="sync_taskwarrior_configuring">Настройка синхронизации&#8230;</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
+  <string name="type">Тип</string>
+  <string name="no_barcode_app">Сканер штрих-кода, не установлен</string>
+  <string name="no_barcode_app_message">Мы рекомендуем сканер штрих-кодов:</string>
+  <string name="no_barcode_app_install">Установить</string>
   <string name="wrong_config">Похоже на то, что Вы используете неправильный конфигурационный файл</string>
   <string name="cert_not_found">Сертефикаты пропали, пожайлуста пересоздайте свой аккаунт</string>
   <string name="client_sync_key_not_found">Не найден ключ синхронизации клиента. Пожалуйста, проверьте Ваши настройки Taskwarrior.</string>
