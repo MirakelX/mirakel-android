@@ -21,6 +21,7 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -63,7 +64,12 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         final ListMirakel listMirakel = new ListMirakel(cursor);
         holder.list = listMirakel;
         holder.name.setText(listMirakel.getName());
-        holder.count.setText(String.valueOf(listMirakel.countTasks()));
+        long count = cursor.getLong(cursor.getColumnIndex("task_count"));
+        if (count != -1) {
+            holder.count.setText(String.valueOf(count));
+        } else {
+            new UpdateTaskCountTask().execute(holder);
+        }
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -87,5 +93,22 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         public void onClick(final View v) {
             itemClickListener.onItemSelected(list);
         }
+    }
+
+    private static class UpdateTaskCountTask extends AsyncTask<ListViewHolder, Void, Long> {
+        private ListViewHolder h;
+
+        @Override
+        protected Long doInBackground(final ListViewHolder... holders) {
+            h = holders[0];
+
+            return h.list.countTasks();
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+            h.count.setText(String.valueOf(result));
+        }
+
     }
 }
