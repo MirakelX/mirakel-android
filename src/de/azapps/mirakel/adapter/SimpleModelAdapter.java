@@ -44,6 +44,7 @@ public class SimpleModelAdapter<T extends IGenericElementInterface> extends
     public ModelViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         final View view = LayoutInflater.from(viewGroup.getContext()).inflate(
                               android.R.layout.simple_list_item_1, null);
+        view.setMinimumWidth(viewGroup.getWidth());
         return new ModelViewHolder(view);
     }
 
