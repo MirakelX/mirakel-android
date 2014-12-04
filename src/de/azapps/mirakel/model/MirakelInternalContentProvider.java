@@ -19,19 +19,6 @@
 
 package de.azapps.mirakel.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
@@ -39,7 +26,6 @@ import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -49,8 +35,17 @@ import android.os.Build;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multiset;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -357,10 +352,10 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         if (LIST_WITH_SPECIAL.equals(table)) {
             // TODO Account centric view
             c = getReadableDatabase().rawQuery(
-                    "select _id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,color, account_id, 1 as isNormal from lists\n"
+                    "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, 1 as isNormal, count(*) as task_count from lists inner join tasks on tasks.list_id = lists._id group by list_id\n"
                     +
                     "    UNION\n" +
-                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, 0 as account_id, 0 as isNormal from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
+                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, 0 as account_id, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
                     null);
         } else {
             c = builder.query(getReadableDatabase(), projection,
