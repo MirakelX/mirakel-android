@@ -80,21 +80,21 @@ public class DonationsFragment extends Fragment {
     // Google Play helper object
     protected IabHelper mHelper;
 
-    private static boolean mDebug = false;
+    private boolean mDebug = false;
 
-    private static boolean mGoogleEnabled = false;
-    private static String mGooglePubkey = "";
-    private static String[] mGoogleCatalog = new String[] {};
-    private static String[] mGoogleCatalogValues = new String[] {};
+    private boolean mGoogleEnabled = false;
+    private String mGooglePubkey = "";
+    private String[] mGoogleCatalog = new String[] {};
+    private String[] mGoogleCatalogValues = new String[] {};
 
-    private static boolean mPaypalEnabled = false;
-    private static String mPaypalUser = "";
-    private static String mPaypalCurrencyCode = "";
-    private static String mPaypalItemName = "";
+    private boolean mPaypalEnabled = false;
+    private String mPaypalUser = "";
+    private String mPaypalCurrencyCode = "";
+    private String mPaypalItemName = "";
 
-    private static boolean mFlattrEnabled = false;
-    private static String mFlattrProjectUrl = "";
-    private static String mFlattrUrl = "";
+    private boolean mFlattrEnabled = false;
+    private String mFlattrProjectUrl = "";
+    private String mFlattrUrl = "";
 
     public DonationsFragment() {
         super();
@@ -141,48 +141,21 @@ public class DonationsFragment extends Fragment {
             final boolean flattrEnabled, final String flattrProjectUrl,
             final String flattrUrl) {
         final DonationsFragment donationsFragment = new DonationsFragment();
-        final Bundle args = new Bundle();
-        args.putBoolean(ARG_DEBUG, debug);
-        args.putBoolean(ARG_GOOGLE_ENABLED, googleEnabled);
-        args.putString(ARG_GOOGLE_PUBKEY, googlePubkey);
-        args.putStringArray(ARG_GOOGLE_CATALOG, googleCatalog);
-        args.putStringArray(ARG_GOOGLE_CATALOG_VALUES, googleCatalogValues);
-        args.putBoolean(ARG_PAYPAL_ENABLED, paypalEnabled);
-        args.putString(ARG_PAYPAL_USER, paypalUser);
-        args.putString(ARG_PAYPAL_CURRENCY_CODE, paypalCurrencyCode);
-        args.putString(ARG_PAYPAL_ITEM_NAME, paypalItemName);
-        args.putBoolean(ARG_FLATTR_ENABLED, flattrEnabled);
-        args.putString(ARG_FLATTR_PROJECT_URL, flattrProjectUrl);
-        args.putString(ARG_FLATTR_URL, flattrUrl);
-        donationsFragment.setArguments(args);
+        donationsFragment.mDebug = debug;
+        donationsFragment.mGoogleCatalog = googleCatalog;
+        donationsFragment.mGoogleCatalogValues = googleCatalogValues;
+        donationsFragment.mGoogleEnabled = googleEnabled;
+        donationsFragment.mGooglePubkey = googlePubkey;
+        donationsFragment.mPaypalEnabled = paypalEnabled;
+        donationsFragment.mPaypalUser = paypalUser;
+        donationsFragment.mPaypalCurrencyCode = paypalCurrencyCode;
+        donationsFragment.mPaypalItemName = paypalItemName;
+        donationsFragment.mFlattrEnabled = flattrEnabled;
+        donationsFragment.mFlattrProjectUrl = flattrProjectUrl;
+        donationsFragment.mFlattrUrl = flattrUrl;
         return donationsFragment;
     }
 
-    @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            this.mDebug = getArguments().getBoolean(ARG_DEBUG);
-            this.mGoogleEnabled = getArguments().getBoolean(ARG_GOOGLE_ENABLED);
-            this.mGooglePubkey = getArguments().getString(ARG_GOOGLE_PUBKEY);
-            this.mGoogleCatalog = getArguments()
-                                  .getStringArray(ARG_GOOGLE_CATALOG);
-            this.mGoogleCatalogValues = getArguments().getStringArray(
-                                            ARG_GOOGLE_CATALOG_VALUES);
-            this.mPaypalEnabled = getArguments().getBoolean(ARG_PAYPAL_ENABLED);
-            this.mPaypalUser = getArguments().getString(ARG_PAYPAL_USER);
-            this.mPaypalCurrencyCode = getArguments().getString(
-                                           ARG_PAYPAL_CURRENCY_CODE);
-            this.mPaypalItemName = getArguments().getString(ARG_PAYPAL_ITEM_NAME);
-            this.mFlattrEnabled = getArguments().getBoolean(ARG_FLATTR_ENABLED);
-            this.mFlattrProjectUrl = getArguments().getString(
-                                         ARG_FLATTR_PROJECT_URL);
-            this.mFlattrUrl = getArguments().getString(ARG_FLATTR_URL);
-        }
-        if ((getActivity() != null) && (getActivity().getActionBar() != null)) {
-            getActivity().getActionBar().setTitle(R.string.title_donations);
-        }
-    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
