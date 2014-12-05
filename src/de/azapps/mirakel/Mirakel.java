@@ -42,6 +42,7 @@ import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
@@ -122,7 +123,9 @@ public class Mirakel extends Application {
         DefinitionsHelper.init (ctx);
         MirakelPreferences.init (ctx);
         ErrorReporter.init (ctx);
+        ThemeManager.init(ctx);
         ModelBase.init(ctx);
+        Settings.init(ctx);
         final Locale locale = Helpers.getLocal (ctx);
         Locale.setDefault (locale);
         BuildHelper.setPlaystore (ctx.getResources ().getBoolean (
