@@ -20,6 +20,7 @@
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -56,14 +58,15 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
+import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.widgets.SupportDateTimeDialog;
 
@@ -303,19 +306,18 @@ public class TaskFragment extends DialogFragment {
         @Override
         public void onClick(final View v) {
             //TODO
-            //final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>(getActivity(),
-            //        ListMirakel.getAllCursor(),
-            //        0, ListMirakel.class,this);
-            //final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            //builder.setTitle(R.string.task_move_to);
-            //builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            //@Override
-            //public void onClick(final DialogInterface dialogInterface, final int i) {
-            //        task.setList(adapter.getItem(i));
-            //        task.save();
-            //    }
-            //});
-            //builder.show();
+            final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_list_item_1, ListMirakel.all(false));
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.task_move_to);
+            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialogInterface, final int i) {
+                    task.setList(adapter.getItem(i));
+                    task.save();
+                }
+            });
+            builder.show();
         }
     };
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
