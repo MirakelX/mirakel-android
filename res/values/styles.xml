@@ -23,9 +23,12 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar"></style>
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    </style>
 
-    <style name="AppBaseThemeDARK" parent="@android:style/Theme.Holo"></style>
+    <style name="AppBaseThemeDARK" parent="@android:style/Theme.Holo">
+
+    </style>
 
     <!-- new ui-->
     <style name="MirakelBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -42,6 +45,13 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorTextGrey">#808080</item>
+        <item name="colorTextBlack">#000000</item>
+        <item name="colorBackground">#E6E6E6</item>
+        <item name="colorProgress">#AC7D92</item>
+        <item name="colorProgressBackground">#CCCCCC</item>
+        <item name="colorDisabled">#CCCCCC</item>
     </style>
 
 
