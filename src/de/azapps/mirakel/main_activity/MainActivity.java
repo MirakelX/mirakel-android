@@ -99,6 +99,7 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.services.NotificationService;
+import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakel.main_activity.R;
@@ -1230,7 +1231,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                                     final int which) {
                     final Intent intent = new Intent(MainActivity.this,
                                                      SettingsActivity.class);
-                    intent.putExtra(SettingsActivity.SHOW_DONATE, true);
+                    intent.putExtra(SettingsActivity.SHOW_FRAGMENT, Settings.DONATE.ordinal());
                     startActivity(intent);
                 }
             };
