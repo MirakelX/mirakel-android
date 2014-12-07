@@ -49,6 +49,7 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
     public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
                             NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
     private static final String TAG = "SettingsActivity";
+    public static final String SHOW_FRAGMENT = "SHOW_FRAGMENT";
 
     @NonNull
     private static List<Settings> HEADERS = new LinkedList(Arrays.asList(Settings.UI, Settings.SYNC,
@@ -70,6 +71,10 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
     protected void onResume() {
         super.onResume();
         reloadSettings();
+        if (getIntent().hasExtra(SHOW_FRAGMENT) &&
+            getIntent().getIntExtra(SHOW_FRAGMENT, 0) < Settings.values().length) {
+            onItemSelected(Settings.values()[getIntent().getIntExtra(SHOW_FRAGMENT, 0)]);
+        }
     }
 
     @NonNull
