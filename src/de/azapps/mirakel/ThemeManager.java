@@ -56,7 +56,7 @@ public class ThemeManager {
         return getColor(R.attr.colorAccent);
     }
 
-    private static int getColor(int attrId) {
+    public static int getColor(int attrId) {
         // The attributes you want retrieved
         int[] attrs = {attrId};
 

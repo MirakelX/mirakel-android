@@ -25,4 +25,10 @@
     <attr name="colorProgress" format="color" />
     <attr name="colorProgressBackground" format="color" />
     <attr name="colorDisabled" format="color" />
+
+    <!-- Due -->
+    <attr name="colorDueOverdue" format="color" />
+    <attr name="colorDueToday" format="color" />
+    <attr name="colorDueNext" format="color" />
+    <attr name="colorDueFuture" format="color" />
 </resources>

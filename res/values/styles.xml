@@ -32,15 +32,7 @@
 
     <!-- new ui-->
     <style name="MirakelBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary" id="foo">@color/colorPrimary</item>
-        <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!--   theme UI controls like checkboxes and text fields -->
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="MirakelDialogTheme" parent="@style/Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary" id="foo">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
@@ -52,6 +44,21 @@
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
         <item name="colorDisabled">#CCCCCC</item>
+        <item name="colorDueOverdue">#FF0000</item>
+
+        <item name="colorDueToday">#EF0381</item>
+        <item name="colorDueNext">#FFA500</item>
+        <item name="colorDueFuture">#00C400</item>
+
+
+    </style>
+
+    <style name="MirakelDialogTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 
