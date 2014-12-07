@@ -38,6 +38,7 @@ import java.util.Set;
 
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.settings.adapter.SettingsHeaderAdapter;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
 
 

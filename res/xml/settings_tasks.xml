@@ -20,22 +20,24 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   android:key="category_tasks"
                   android:title="@string/settings_tasks_title">
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="showDoneMain"
-        android:title="@string/showDone"/>
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="hideKeyboard"
-        android:summary="@string/hide_keyboard_summary"
-        android:title="@string/hide_keyboard"/>
-    <Preference
-        android:key="semanticNewTaskSettings"
-        android:summary="@string/semantic_new_task_config_summary"
-        android:title="@string/semantic_new_task_config"/>
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="subtaskAddToSameList"
-        android:summary="@string/settings_subtask_add_to_same_list_summary"
-        android:title="@string/settings_subtask_add_to_same_list"/>
+    <PreferenceCategory android:title="@string/general" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showDoneMain"
+            android:title="@string/showDone"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="hideKeyboard"
+            android:summary="@string/hide_keyboard_summary"
+            android:title="@string/hide_keyboard"/>
+        <Preference
+            android:key="semanticNewTaskSettings"
+            android:summary="@string/semantic_new_task_config_summary"
+            android:title="@string/semantic_new_task_config"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="subtaskAddToSameList"
+            android:summary="@string/settings_subtask_add_to_same_list_summary"
+            android:title="@string/settings_subtask_add_to_same_list"/>
+    </PreferenceCategory>
 </PreferenceScreen>

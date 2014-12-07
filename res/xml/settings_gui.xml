@@ -40,6 +40,11 @@
             android:entryValues="@array/language_keys"
             android:key="language"
             android:title="@string/language" />
+        <ListPreference
+            android:defaultValue="0"
+            android:key="startupList"
+            android:summary="@string/startup_list_summary"
+            android:title="@string/startup_list" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/list_fragment" >
         <CheckBoxPreference
@@ -72,10 +77,4 @@
             android:title="@string/settings_task_fragment" >
         </Preference>
     </PreferenceCategory>
-    <ListPreference
-        android:defaultValue="0"
-        android:key="startupList"
-        android:summary="@string/startup_list_summary"
-        android:title="@string/startup_list" />
-
 </PreferenceScreen>

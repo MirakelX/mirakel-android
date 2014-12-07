@@ -18,20 +18,21 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <CheckBoxPreference
-        android:key="enabledDebug"
-        android:title="@string/enableDebugLog" />
-    <CheckBoxPreference
-        android:key="demoMode"
-        android:title="@string/demo_mode" />
-    <Preference 
-        android:key="demoDropDB"
-        android:title="@string/demo_drop_db"
-        android:dependency="demoMode"/>
-    <CheckBoxPreference
-        android:key="writeLogsToFile"
-        android:title="@string/write_logs_to_file"/>
+    <PreferenceCategory android:title="@string/general" >
+        <CheckBoxPreference
+            android:key="enabledDebug"
+            android:title="@string/enableDebugLog" />
+        <CheckBoxPreference
+            android:key="demoMode"
+            android:title="@string/demo_mode" />
+        <Preference
+            android:key="demoDropDB"
+            android:title="@string/demo_drop_db"
+            android:dependency="demoMode"/>
+        <CheckBoxPreference
+            android:key="writeLogsToFile"
+            android:title="@string/write_logs_to_file"/>
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_dev_sync" >
         <CheckBoxPreference

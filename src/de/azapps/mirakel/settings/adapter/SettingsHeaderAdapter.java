@@ -17,7 +17,7 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.settings;
+package de.azapps.mirakel.settings.adapter;
 
 import android.preference.Preference;
 import android.support.annotation.NonNull;
@@ -31,6 +31,7 @@ import java.util.List;
 
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.settings.Settings;
 
 
 public class SettingsHeaderAdapter extends
