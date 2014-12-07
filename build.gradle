@@ -133,8 +133,6 @@ dependencies {
     compile project(':main')
     compile "com.jakewharton:butterknife:$butterknifeVersion"
 
-    compile "com.android.support:cardview-v7:$androidSupportVersion"
-
     //for tests
     //androidTestCompile files("$project.buildDir/classes/debug")
     //androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
