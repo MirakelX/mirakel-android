@@ -159,11 +159,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
                 return onOptionsItemSelected(menuItem);
             }
         });
-        if (MirakelCommonPreferences.useNewUI()) {
-            bar.setBackgroundResource(R.color.colorPrimary);
-        } else {
-            bar.setBackgroundResource(R.color.dialog_dark_gray);
-        }
+        bar.setBackgroundColor(ThemeManager.getColor(R.attr.colorPrimary));
         bar.setVisibility(View.VISIBLE);
         setSupportActionBar(bar);
     }

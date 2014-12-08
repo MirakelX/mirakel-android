@@ -168,11 +168,7 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
                 }
             });
         }
-        if (MirakelCommonPreferences.useNewUI()) {
-            actionBar.setBackgroundResource(R.color.colorPrimary);
-        } else {
-            actionBar.setBackgroundResource(R.color.dialog_dark_gray);
-        }
+        actionBar.setBackgroundResource(ThemeManager.getColor(R.attr.colorPrimary));
         actionBar.setVisibility(View.VISIBLE);
         setSupportActionBar(actionBar);
     }
