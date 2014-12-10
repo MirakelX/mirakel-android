@@ -21,8 +21,8 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -32,23 +32,51 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks {
 
+    private static final String ARGUMENT_ACCOUNT = "ARGUMENT_ACCOUNT";
     private ListAdapter mAdapter;
     private OnItemClickedListener<ListMirakel> mListener;
+    @NonNull
+    private Optional<AccountMirakel> accountMirakelOptional = Optional.absent();
     @InjectView(R.id.list_lists)
     RecyclerView mListView;
 
 
     public ListsFragment() {
         // Required empty public constructor
+    }
+
+
+    public static ListsFragment newInstance(final Optional<AccountMirakel> accountMirakelOptional) {
+        final ListsFragment listsFragment = new ListsFragment();
+        // Supply num input as an argument.
+        final Bundle args = new Bundle();
+        args.putParcelable(ARGUMENT_ACCOUNT, accountMirakelOptional.orNull());
+        listsFragment.setArguments(args);
+        return listsFragment;
+    }
+
+    public Optional<AccountMirakel> getAccount() {
+        return accountMirakelOptional;
+    }
+
+
+    public void setAccount(final Optional<AccountMirakel> accountMirakelOptional) {
+        this.accountMirakelOptional = accountMirakelOptional;
+        final Bundle args = new Bundle();
+        args.putParcelable(ARGUMENT_ACCOUNT, accountMirakelOptional.orNull());
+        getLoaderManager().restartLoader(0, args, this);
     }
 
     @Override
@@ -82,13 +110,20 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public Loader onCreateLoader(final int i, final Bundle bundle) {
-        return ListMirakel.allWithSpecialSupportCursorLoader();
+    public Loader onCreateLoader(final int id, final Bundle args) {
+        if (args != null) {
+            accountMirakelOptional = Optional.of((AccountMirakel) args.getParcelable(
+                    ARGUMENT_ACCOUNT));
+            if (accountMirakelOptional.get().getType() == AccountMirakel.ACCOUNT_TYPES.ALL) {
+                accountMirakelOptional = Optional.absent(); // Remove the hack as soon as possible
+            }
+        }
+        return ListMirakel.allWithSpecialSupportCursorLoader(accountMirakelOptional);
     }
 
     @Override
-    public void onLoadFinished(final Loader loader, final Object o) {
-        mAdapter.swapCursor((Cursor) o);
+    public void onLoadFinished(final Loader loader, final Object data) {
+        mAdapter.swapCursor((Cursor) data);
     }
 
     @Override

@@ -23,17 +23,25 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.google.common.base.Optional;
 
@@ -41,10 +49,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
@@ -56,13 +66,36 @@ import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static de.azapps.tools.OptionalUtils.*;
+import static com.google.common.base.Optional.of;
+import static de.azapps.tools.OptionalUtils.Procedure;
+import static de.azapps.tools.OptionalUtils.withOptional;
 
 public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase> {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
+
+    class ActionBarViewHolder {
+        @butterknife.Optional
+        @InjectView(R.id.actionbar_switcher)
+        @Nullable
+        ViewSwitcher actionbarSwitcher;
+        @InjectView(R.id.actionbar_spinner)
+        @NonNull
+        Spinner actionbarSpinner;
+        @butterknife.Optional
+        @InjectView(R.id.actionbar_title)
+        @Nullable
+        TextView actionbarTitle;
+
+        private ActionBarViewHolder(final View v) {
+            ButterKnife.inject(this, v);
+        }
+    }
+
+    private ActionBarViewHolder actionBarViewHolder;
+
     @NonNull
     @InjectView(R.id.actionbar)
     Toolbar actionbar;
@@ -88,8 +121,8 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         initDrawer();
         handleIntent(getIntent());
         if ((getTasksFragment() != null) && (getTasksFragment().getList() != null)) {
-            actionbar.setTitle(getTasksFragment().getList().getName());
             setSupportActionBar(actionbar);
+            setupActionbar();
         }
     }
 
@@ -171,7 +204,6 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     }
 
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Other functions
 
@@ -236,15 +268,16 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
                     @Override
                     public void onDrawerClosed(final View drawerView) {
                         super.onDrawerClosed(drawerView);
-                        actionbar.setTitle(getTasksFragment().getList().getName());
                         invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                        updateToolbar(false);
                     }
+
                     /** Called when a drawer has settled in a completely open state. */
                     @Override
                     public void onDrawerOpened(final View drawerView) {
                         super.onDrawerOpened(drawerView);
-                        actionbar.setTitle(R.string.list_title);
                         invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                        updateToolbar(true);
                     }
                 };
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -253,6 +286,53 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         });
     }
 
+    private void updateToolbar(final boolean showSwitcher) {
+        if (actionBarViewHolder.actionbarSwitcher != null) {
+            // This is for cases when the app wake up in a strange state
+            if (showSwitcher && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 0) {
+                actionBarViewHolder.actionbarSwitcher.showNext();
+            } else if (!showSwitcher  && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 1) {
+                actionBarViewHolder.actionbarSwitcher.showPrevious();
+            }
+        }
+        if (!showSwitcher) {
+            if (actionBarViewHolder.actionbarTitle != null) {
+                actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName());
+            }
+        }
+    }
+
+    private void setupActionbar() {
+        setTitle(null);
+        final View actionbarLayout = LayoutInflater.from(this).inflate(R.layout.actionbar_layout,
+                                     actionbar, false);
+        actionBarViewHolder = new ActionBarViewHolder(actionbarLayout);
+        actionbar.addView(actionbarLayout);
+
+
+        final Cursor cursor = AccountMirakel.allCursorWithAllAccounts();
+        final SimpleModelListAdapter<AccountMirakel> adapter = new SimpleModelListAdapter<>(this, cursor, 0,
+                AccountMirakel.class);
+        actionBarViewHolder.actionbarSpinner.setAdapter(adapter);
+        actionBarViewHolder.actionbarSpinner.setOnItemSelectedListener(new
+        AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView<?> parent, final View view, final int position,
+                                       final long id) {
+
+                final AccountMirakel accountMirakel = adapter.getItem(position);
+                getListsFragment().setAccount(of(accountMirakel));
+            }
+
+            @Override
+            public void onNothingSelected(final AdapterView<?> parent) {
+                // do nothing
+            }
+        });
+        if (actionBarViewHolder.actionbarTitle != null) {
+            actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName());
+        }
+    }
 
     @Override
     public void onItemSelected(final @NonNull ModelBase item) {
@@ -264,7 +344,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     }
 
     private void selectList(ListMirakel item) {
-        setList((ListMirakel)item);
+        setList(item);
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
             public void apply(final DrawerLayout input) {
@@ -273,8 +353,12 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         });
     }
 
-    private void selectTask(Task item) {
+    private void selectTask(final Task item) {
         final DialogFragment newFragment = TaskFragment.newInstance((Task) item);
         newFragment.show(getSupportFragmentManager(), "dialog");
+    }
+
+    private boolean shouldShowSpinner() {
+        return !mDrawerLayout.isPresent() || mDrawerLayout.get().isDrawerOpen(Gravity.START);
     }
 }
