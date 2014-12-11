@@ -19,7 +19,9 @@
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="sync_add">Добавить аккаунт</string>
   <string name="account_title">Учетные записи</string>
+  <string name="sync_new">Новый аккаунт</string>
   <string name="sync_use">Применить синхронизацию</string>
   <string name="sync_warning">Синхронизация ещё нестабильная</string>
   <string name="sync_warning_message">Синхронизация протекает ещё очень нестабильно. Но на свой страх и риск Вы можете её испробовать (сделайте предварительно резервную копию!) - Вы уверены?</string>
@@ -27,6 +29,7 @@
   <string name="sync_use_summary_mirakel">Синхронизировать с Mirakel как %s</string>
   <string name="sync_use_summary_nothing">Не синхронизовать</string>
   <string name="sync_user">Имя пользователя</string>
+  <string name="sync_user_summary">Имя пользователя на сервере</string>
   <string name="sync_server">Сервер</string>
   <string name="sync_server_summary">Синхронизировать с %s</string>
   <string name="sync_frequency">Частота</string>
@@ -38,17 +41,29 @@
   </string-array>
   <string name="sync_caldav">Синхронизация CalDAV</string>
   <string name="download">Скачать</string>
+  <string name="sync_add_account">Добавить аккаунт</string>
   <string name="sync_taskwarrior_configure">Настройка Taskwarrior</string>
   <string name="sync_taskwarrior_scan_qr">Сканировать QR-код</string>
   <string name="sync_taskwarrior_select_file">Выберите файл конфигурации</string>
   <string name="sync_taskwarrior_how_to">Как настроить свой собственный сервер</string>
+  <string name="sync_taskwarrior_own_server">или просто использовать свой собственный сервер</string>
+  <string name="sync_taskwarrior_url_error">URL-адрес не является правильным. Действительно ли вы сканировали правильный код?</string>
   <string name="sync_taskwarrior_configuring">Настройка синхронизации&#8230;</string>
+  <string name="sync_taskwarrior_about">Если у вас уже есть учетная запись taskwarrior:</string>
+  <string name="sync_taskwarrior_register">Если нет, то вы можете зарегистрировать новый аккаунт на нашем сервере:</string>
+  <string name="sync_taskwarrior_register_button">Зарегистрироваться</string>
+  <string name="sync_taskwarrior_setup_success">Настройка аккауна прошла успешно</string>
+  <string name="sync_taskwarrior_error_download">Не удалось загрузить файл конфигурации</string>
+  <string name="sync_taskwarrior_select_file_not_exists">Файл не существует</string>
+  <string name="sync_defaultAccount">Использовать в качестве аккаунта по умолчанию?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="type">Тип</string>
   <string name="no_barcode_app">Сканер штрих-кода, не установлен</string>
   <string name="no_barcode_app_message">Мы рекомендуем сканер штрих-кодов:</string>
   <string name="no_barcode_app_install">Установить</string>
+  <string name="menu_edit_listaccount">аккаунт</string>
+  <string name="change_account">Сменить аккаунт</string>
   <string name="version">Версия приложения</string>
   <string name="no">нет</string>
   <string name="not">не</string>
@@ -64,6 +79,7 @@
   <string name="notifications_zero_show">Скрыть пустые оповещения</string>
   <string name="reminder">Напоминание</string>
   <string name="reminders_persistent">Постоянные напоминания</string>
+  <string name="reminders_persistent_summary">Сделать невозможным закрыть напоминание</string>
   <string name="startup_title">Запуск приложения</string>
   <string name="startup_show_lists">Показать все списки</string>
   <string name="startup_show_lists_summary">Показать все списки при запуске</string>
@@ -89,13 +105,20 @@
   <string name="changelog_click">Список изменений</string>
   <string name="settings_about">О нас</string>
   <string name="settings_help">Помощь</string>
-  <string name="get_dashclock">Получить Mirakel-Dashclock</string>
+  <string name="get_dashclock">Установить Mirakel-Dashclock</string>
   <string name="get_dashclock_summary">Mirakel-расширение для Dashclock</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_success">Все данные успешно импортированы!</string>
   <string name="importing">Импортируется</string>
   <string name="astrid_import_title">Выберите Astrid-файл</string>
+  <string name="import_any_do_click">Импорт из Any.Do</string>
   <string name="any_do_import_title">Выберите файл резервной копии Any.Do</string>
+  <string name="any_do_this_file">Импорт из %s? \nЕсли нет, выберите файл самостоятельно</string>
+  <string name="select_file">Выберите файл</string>
+  <string name="wait">Пожалуйста подождите&#8230;</string>
+  <string name="import_wunderlist_click">Импорт из Wunderlist</string>
+  <string name="import_wunderlist_title">Выберите файл Wunderlist</string>
+  <string name="import_wunderlist_howto">Как импортировать из Wunderlist</string>
   <string name="highlightSelected_summary">Выделите списки/дела нажатием на них</string>
   <string name="highlightSelected">Выделить выбранное</string>
   <string name="settings_date_format_relative">Показывать относительные даты</string>
@@ -115,7 +138,12 @@
   <string name="semantic_new_task">Новый шаблон задачи</string>
   <string name="semantic_new_task_config_summary">Настройте условия для создания новых задач</string>
   <string name="semantic_new_task_config">Настройка шаблонов задач</string>
+  <string name="lock_drawer_in_task_fragment_summary">Так что бы вы не открыли его случайно</string>
   <string name="useTabletLayout">Планшетный интерфейс</string>
+  <string name="tasks_fragment">Обзор задач</string>
+  <string name="task_fragment">Сведения о задаче</string>
+  <string name="list_fragment">Обзор списка</string>
+  <string name="show_account_name">Показать имя аккаунта</string>
   <string name="delete_done">Удаление выполненных дел</string>
   <string name="delete_done_summary">Удалить все выполненные дела</string>
   <string name="delete_done_warning">Вы уверены?</string>
@@ -123,6 +151,8 @@
   <string name="delete_done_success">Выполненные дела успешно удалены.</string>
   <string name="menu_color">Изменить цвет</string>
   <string name="howto_setup_server">Как настроить сервер</string>
+  <string name="special_lists_title">Метасписки</string>
+  <string name="register">Зарегистрироваться</string>
   <string name="auto_backup_interval">Интервал автоматического резервного копирования</string>
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить задачи</string>
@@ -134,6 +164,16 @@
   <string name="settings_semantics_list">Указать список</string>
   <string name="settings_semantics_priority">Указать приоритет</string>
   <string name="settings_semantics_due">Установить срок</string>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Понедельник</item>
+    <item>Вторник</item>
+    <item>Среда</item>
+    <item>Четверг</item>
+    <item>Пятница</item>
+    <item>Суббота</item>
+    <item>Воскресенье</item>
+  </string-array>
   <string-array name="priority_entries">
     <item>Не задавайте приоритет</item>
     <item>-2</item>
