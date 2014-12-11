@@ -37,13 +37,27 @@
   <string name="list_overdue">Просрочено</string>
   <string name="inbox">Вход</string>
   <string name="first_task">Первое дело</string>
+  <string-array name="weekdays">
+    <item>Don\'t set</item>
+    <item>Понедельник</item>
+    <item>Вторник</item>
+    <item>Среда</item>
+    <item>Четверг</item>
+    <item>Пятница</item>
+    <item>Суббота</item>
+    <item>Воскресенье</item>
+  </string-array>
   <string name="local_account">Локальная учетная запись</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
   <string name="search_result_title">Поиск %s</string>
   <string name="task_empty">Дело не выбрано&#8230;</string>
   <string name="no_lists">Это дело невозможно выполнить, потому что у Вас нет списков</string>
+  <string name="import_any_do_click">Импорт из Any.Do</string>
   <string name="any_do_import_title">Выберите файл резервной копии Any.Do</string>
+  <string name="any_do_this_file">Импорт из %s? \nЕсли нет, выберите файл самостоятельно</string>
+  <string name="select_file">Выберите файл</string>
+  <string name="wait">Пожалуйста подождите&#8230;</string>
   <string name="backup_import_ok">Импорт завершен - пожалуйста, перезапустите Mirakel</string>
   <string name="backup_export_ok">Экспортированно в %s</string>
   <string name="add_content">Добавить примечание&#8230;</string>
