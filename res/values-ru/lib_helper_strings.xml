@@ -32,6 +32,8 @@ Device: %3$s\n]]>
   <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Это не файл базы данных Mirakel!</string>
   <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Произошла ошибка при импорте из Астрид!</string>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Файл Taskwarrior не найден</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Не удалось загрузить файл конфигурации</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">URL-адрес не является правильным. Действительно ли вы сканировали правильный код?</string>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Отсутствует разрешение на чтение файла</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Ой, список изчез&#8230;</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Мы не знаем как исправить ошибку. Mirakel перезапустится.</string>
