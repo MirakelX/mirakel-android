@@ -21,13 +21,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mirakel="http://schemas.android.com/apk/res-auto" >
 
-    <EditTextPreference
-        android:key="labelRecurring"
-        android:title="@string/label" />
+    <PreferenceCategory android:title="@string/general">
+        <EditTextPreference
+            android:key="labelRecurring"
+            android:title="@string/label" />
 
-    <CheckBoxPreference
-        android:key="forDue"
-        android:title="@string/forDue" />
+        <CheckBoxPreference
+            android:key="forDue"
+            android:title="@string/forDue" />
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="recurring_interval"

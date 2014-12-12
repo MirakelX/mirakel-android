@@ -36,6 +36,7 @@
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">Sync every %s min</string>
     <string name="sync_frequency_summary_man">Sync manually only</string>
+    <string name="account_informations">Information</string>
 
     <string-array name="sync_types">
         <item>CalDAV sync</item>

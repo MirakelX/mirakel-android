@@ -36,7 +36,7 @@ import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
-public class AboutSettingsFragment extends MirakelPreferencesFragment {
+public class AboutSettingsFragment extends MirakelPreferencesFragment<Settings> {
 
     protected int debugCounter;
 

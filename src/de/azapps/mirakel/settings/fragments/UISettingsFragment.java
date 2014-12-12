@@ -36,7 +36,7 @@ import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
-public class UISettingsFragment extends MirakelPreferencesFragment {
+public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

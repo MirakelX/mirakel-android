@@ -41,7 +41,7 @@ import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.model_settings.semantic.SemanticSettingsActivity;
 
-public class TaskSettingsFragment extends MirakelPreferencesFragment {
+public class TaskSettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

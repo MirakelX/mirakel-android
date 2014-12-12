@@ -9,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 
 
-public abstract class MirakelPreferencesFragment extends PreferenceFragment implements
-    IDetailFragment<Settings> {
+public abstract class MirakelPreferencesFragment<T extends IGenericElementInterface> extends
+    PreferenceFragment implements
+    IDetailFragment<T> {
 
 
     @Override
@@ -25,8 +26,6 @@ public abstract class MirakelPreferencesFragment extends PreferenceFragment impl
         if (((ActionBarActivity)getActivity()).getSupportActionBar() != null) {
             ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
         }
-
-
     }
 
     @Override

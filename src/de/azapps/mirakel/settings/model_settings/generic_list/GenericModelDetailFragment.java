@@ -21,15 +21,13 @@ package de.azapps.mirakel.settings.model_settings.generic_list;
 
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
 
 import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 
 public abstract class GenericModelDetailFragment<T extends IGenericElementInterface> extends
-    PreferenceFragment
-    implements IDetailFragment<T> {
+    MirakelPreferencesFragment<T> {
 
     protected static final int NO_PREFERENCES = -1;
     /**
@@ -60,17 +58,13 @@ public abstract class GenericModelDetailFragment<T extends IGenericElementInterf
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         if (getArguments().containsKey(ARG_ITEM)) {
             mItem = getArguments().getParcelable(ARG_ITEM);
         } else {
             // Load the dummy content
             mItem = getDummyItem();
         }
-        if ((getActivity() != null) && (((ActionBarActivity)getActivity()).getSupportActionBar() != null)) {
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(mItem.getName());
-        }
+        super.onCreate(savedInstanceState);
         final int preferencesResource = getResourceId();
         if (preferencesResource != NO_PREFERENCES) {
             addPreferencesFromResource(getResourceId());

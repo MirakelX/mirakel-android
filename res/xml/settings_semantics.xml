@@ -21,9 +21,11 @@
     android:key="category_special_lists"
     android:title="@string/notification_title" >
 
-    <EditTextPreference
-        android:key="semantics_condition"
-        android:title="@string/settings_semantics_condition" />
+    <PreferenceCategory android:title="@string/general">
+        <EditTextPreference
+            android:key="semantics_condition"
+            android:title="@string/settings_semantics_condition" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_semantics_actions" >
         <ListPreference

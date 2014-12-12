@@ -47,7 +47,7 @@ import de.azapps.mirakel.settings.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.tools.FileUtils;
 
-public class BackupSettingsFragment extends MirakelPreferencesFragment {
+public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

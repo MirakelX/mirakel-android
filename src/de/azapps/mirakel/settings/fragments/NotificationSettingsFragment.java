@@ -40,7 +40,7 @@ import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.Settings;
 import de.azapps.tools.OptionalUtils;
 
-public class NotificationSettingsFragment extends MirakelPreferencesFragment {
+public class NotificationSettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

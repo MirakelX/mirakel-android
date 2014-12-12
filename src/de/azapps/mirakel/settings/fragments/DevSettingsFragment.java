@@ -45,7 +45,7 @@ import de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActi
 import de.azapps.mirakel.settings.model_settings.tag.TagSettingsActivity;
 import de.azapps.tools.FileUtils;
 
-public class DevSettingsFragment extends MirakelPreferencesFragment {
+public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
