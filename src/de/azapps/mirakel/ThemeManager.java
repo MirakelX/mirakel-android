@@ -58,13 +58,13 @@ public class ThemeManager {
 
     public static int getColor(int attrId) {
         // The attributes you want retrieved
-        int[] attrs = {attrId};
+        final int[] attrs = {attrId};
 
         // Parse MyCustomStyle, using Context.obtainStyledAttributes()
-        TypedArray ta = context.obtainStyledAttributes(themeResId, attrs);
+        final TypedArray ta = context.obtainStyledAttributes(themeResId, attrs);
 
         // Fetching the colors defined in your style
-        int color = ta.getColor(0, Color.BLACK);
+        final int color = ta.getColor(0, Color.BLACK);
 
         // OH, and don't forget to recycle the TypedArray
         ta.recycle();
