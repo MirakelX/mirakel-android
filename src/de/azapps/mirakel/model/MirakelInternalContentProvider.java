@@ -62,7 +62,6 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     OnAccountsUpdateListener {
 
 
-
     public interface DBTransaction {
         abstract void exec();
     }
@@ -138,12 +137,13 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri UPDATE_LIST_FIX_RGT_URI = getUri(UPDATE_LIST_FIX_RGT);
 
     private static final Map<String, String> views = new HashMap<>();
+
     static {
         views.put("caldav_lists", ListMirakel.TABLE);
         views.put("caldav_tasks", Task.TABLE);
     }
 
-    private static final ListMultimap<Uri, Uri> notifyUris =  ArrayListMultimap.create();
+    private static final ListMultimap<Uri, Uri> notifyUris = ArrayListMultimap.create();
 
     static {
         notifyUris.put(CALDAV_TASKS_URI, TASK_URI);
@@ -317,7 +317,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             throw new IllegalArgumentException(table
                                                + " is blacklisted for query");
         } else if (IGNORED.contains(table)) {
-            return new MatrixCursor(new String [0]);
+            return new MatrixCursor(new String[0]);
         }
         switch (table) {
         case TASK_SUBTASK_JOIN:
@@ -335,6 +335,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                               + " ON " + Task.TABLE + "." + ModelBase.ID + "="
                               + Recurring.TW_TABLE + "." + Recurring.PARENT);
             break;
+        case Task.TABLE:
+            builder.setTables("tasks_view");
+            break;
         case TASK_TAG_JOIN:
             builder.setTables(Tag.TAG_CONNECTION_TABLE + " INNER JOIN "
                               + Tag.TABLE + " ON " + Tag.TAG_CONNECTION_TABLE
@@ -350,13 +353,24 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         }
         final Cursor c;
         if (LIST_WITH_SPECIAL.equals(table)) {
+            final String where;
+            final ArrayList<String> args;
+            if (selectionArgs.length > 0) {
+                where = " where " + selection;
+                args = new ArrayList<>(Arrays.asList(selectionArgs));
+                args.add(args.get(0)); // dirty hack to set the account_id of the special lists
+            } else {
+                where = "";
+                args = new ArrayList<>();
+            }
             // TODO Account centric view
             c = getReadableDatabase().rawQuery(
-                    "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, 1 as isNormal, count(*) as task_count from lists inner join tasks on tasks.list_id = lists._id group by list_id\n"
+                    "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
+                    + where + " group by lists._id\n"
                     +
                     "    UNION\n" +
-                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, 0 as account_id, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
-                    null);
+                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
+                    args.toArray(selectionArgs));
         } else {
             c = builder.query(getReadableDatabase(), projection,
                               selection, selectionArgs, groupBy, null, sortOrder);
@@ -417,7 +431,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                        selection + ";");
             break;
         case UPDATE_LIST_FIX_RGT:
-            db.execSQL ("UPDATE " + update_table + " SET rgt=lft+1;");
+            db.execSQL("UPDATE " + update_table + " SET rgt=lft+1;");
             break;
         default:
             u = db.update(table, values, selection, selectionArgs);

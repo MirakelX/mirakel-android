@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.model.list;
 
+import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.SharedPreferences;
@@ -214,14 +215,27 @@ public class ListMirakel extends ListBase {
     }
 
     @NonNull
-    public static CursorLoader allWithSpecialCursorLoader() {
-        return new MirakelQueryBuilder(context).toCursorLoader(
+    private static MirakelQueryBuilder allWithSpecialMQB(@NonNull final Optional<AccountMirakel>
+            accountMirakelOptional) {
+        final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
+        if (accountMirakelOptional.isPresent()) {
+            mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, accountMirakelOptional.get());
+        }
+        return mirakelQueryBuilder;
+    }
+
+    @NonNull
+    public static CursorLoader allWithSpecialCursorLoader(@NonNull final Optional<AccountMirakel>
+            accountMirakelOptional) {
+
+        return allWithSpecialMQB(accountMirakelOptional).toCursorLoader(
                    MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
 
     @NonNull
-    public static android.support.v4.content.CursorLoader allWithSpecialSupportCursorLoader() {
-        return new MirakelQueryBuilder(context).toSupportCursorLoader(
+    public static android.support.v4.content.CursorLoader allWithSpecialSupportCursorLoader(
+        @NonNull final Optional<AccountMirakel> accountMirakelOptional) {
+        return allWithSpecialMQB(accountMirakelOptional).toSupportCursorLoader(
                    MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
 
@@ -510,8 +524,8 @@ public class ListMirakel extends ListBase {
         if (getId() < 0) {
             try {
                 qb = this.getWhereQueryForTasks();
-            } catch (ClassCastException e) {
-                Optional<SpecialList> specialList = SpecialList.getSpecial(getId());
+            } catch (final ClassCastException ignored) {
+                final Optional<SpecialList> specialList = toSpecial();
                 qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
                          context);
             }
@@ -636,11 +650,20 @@ public class ListMirakel extends ListBase {
         return Task.getTasks(this, getSortBy(), showDone);
     }
 
+    private Optional<SpecialList> toSpecial() {
+        final Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
+        if (specialListOptional.isPresent() &&
+            getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
+            specialListOptional.get().setAccount(getAccount());
+        }
+        return specialListOptional;
+    }
+
     @NonNull
     public MirakelQueryBuilder getTasksQueryBuilder() {
         if (getId() < 0L) {
             // We look like a List but we are better than one MUHAHA
-            final Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
+            final Optional<SpecialList> specialListOptional = toSpecial();
             if (specialListOptional.isPresent()) {
                 final SpecialList specialList = specialListOptional.get();
                 final MirakelQueryBuilder mirakelQueryBuilder = specialList.getWhereQueryForTasks();

@@ -24,6 +24,8 @@ import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -48,11 +50,10 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 public class AccountMirakel extends AccountBase {
     public enum ACCOUNT_TYPES {
-        CALDAV, LOCAL, TASKWARRIOR;
+        ALL, CALDAV, LOCAL, TASKWARRIOR;
 
         public static ACCOUNT_TYPES parseAccountType(final String type) {
             switch (type) {
@@ -61,6 +62,8 @@ public class AccountMirakel extends AccountBase {
                 return CALDAV;
             case ACCOUNT_TYPE_MIRAKEL:
                 return TASKWARRIOR;
+            case ACCOUNT_TYPE_ALL:
+                return ALL;
             default:
                 return LOCAL;
             }
@@ -74,6 +77,8 @@ public class AccountMirakel extends AccountBase {
                 return CALDAV;
             case 2:
                 return TASKWARRIOR;
+            case 3:
+                return ALL;
             default:
                 throw new IllegalArgumentException();
             }
@@ -85,6 +90,8 @@ public class AccountMirakel extends AccountBase {
                 return ACCOUNT_TYPE_DAVDROID;
             case TASKWARRIOR:
                 return ACCOUNT_TYPE_MIRAKEL;
+            case ALL:
+                return ACCOUNT_TYPE_ALL;
             case LOCAL:
             default:
                 return null;
@@ -99,6 +106,8 @@ public class AccountMirakel extends AccountBase {
                 return -1;
             case TASKWARRIOR:
                 return 2;
+            case ALL:
+                return 3;
             default:
                 throw new RuntimeException();
             }
@@ -112,12 +121,15 @@ public class AccountMirakel extends AccountBase {
                 return ctx.getString(R.string.local_account);
             case TASKWARRIOR:
                 return ctx.getString(R.string.tw_account);
+            case ALL:
+                return ctx.getString(R.string.accounts_all);
             default:
                 return "Unknown account type";
             }
         }
     }
 
+    public static final String ACCOUNT_TYPE_ALL = "universe.all";
     public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
     public static final String ACCOUNT_TYPE_DAVDROID_MIRAKEL = "bitfire.at.davdroid.mirakel";
     public static final String ACCOUNT_TYPE_DMFS = "org.dmfs.caldav.account";
@@ -127,8 +139,8 @@ public class AccountMirakel extends AccountBase {
     private static final List<String> allowedAccounts = Arrays.asList(ACCOUNT_TYPE_DAVDROID_MIRAKEL,
             ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL, ACCOUNT_TYPE_DMFS);
 
-    public static final String[] allColumns = { ModelBase.ID,
-                                                ModelBase.NAME, TYPE, ENABLED, SYNC_KEY
+    public static final String[] allColumns = {ModelBase.ID,
+                                               ModelBase.NAME, "content", TYPE, ENABLED, SYNC_KEY
                                               };
     public static final Uri URI = MirakelInternalContentProvider.ACCOUNT_URI;
 
@@ -175,6 +187,21 @@ public class AccountMirakel extends AccountBase {
 
     public static List<AccountMirakel> all() {
         return new MirakelQueryBuilder(context).getList(AccountMirakel.class);
+    }
+
+    /**
+     * This is a hack to add the "All Accounts" item in the Spinner
+     * @return
+     */
+    public static Cursor allCursorWithAllAccounts() {
+        final MatrixCursor extras = new MatrixCursor(allColumns);
+        extras.addRow(new String[] {"-1", ACCOUNT_TYPES.ALL.typeName(context), null, String.valueOf(ACCOUNT_TYPES.ALL.toInt()), "1", null});
+        final Cursor allCursor = allCursor();
+        return new MergeCursor(new Cursor[] {extras, allCursor});
+    }
+
+    public static Cursor allCursor() {
+        return new MirakelQueryBuilder(context).query(MirakelInternalContentProvider.ACCOUNT_URI);
     }
 
     public static List<AccountMirakel> getEnabled(final boolean isEnabled) {
@@ -329,6 +356,7 @@ public class AccountMirakel extends AccountBase {
         public AccountMirakel createFromParcel(Parcel source) {
             return new AccountMirakel(source);
         }
+
         public AccountMirakel[] newArray(int size) {
             return new AccountMirakel[size];
         }

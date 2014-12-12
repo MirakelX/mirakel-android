@@ -79,7 +79,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 47;
+    public static final int DATABASE_VERSION = 48;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -1002,6 +1002,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 46:
             db.execSQL("UPDATE " + Task.TABLE + " SET " + UPDATED_AT + " =strftime('%s','now') WHERE " +
                        UPDATED_AT + ">strftime('%s','now');");
+        case 47:
+            db.execSQL("CREATE VIEW tasks_view AS select " + Task.TABLE + ".*, " + ListMirakel.TABLE +
+                       ".account_id AS account_id, " + ListMirakel.TABLE + ".name AS list_name FROM tasks INNER JOIN " +
+                       ListMirakel.TABLE + " ON " + Task.TABLE + ".list_id = " + ListMirakel.TABLE + "._id;");
         default:
             break;
         }

@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -72,7 +70,11 @@ public class SpecialList extends ListMirakel {
 
     @Override
     public MirakelQueryBuilder getWhereQueryForTasks() {
-        return packWhere(getWhere());
+        final MirakelQueryBuilder mirakelQueryBuilder = packWhere(getWhere());
+        if (getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
+            mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, getAccount());
+        }
+        return mirakelQueryBuilder;
     }
 
     @Override
@@ -239,6 +241,7 @@ public class SpecialList extends ListMirakel {
         } else {
             qb = new MirakelQueryBuilder(context);
         }
+        // Check for account
         Log.d(TAG, "Query:<" + qb.getSelection() + ">");
         return Task.addBasicFiler(qb);
     }
@@ -363,6 +366,14 @@ public class SpecialList extends ListMirakel {
         return s.get();
     }
 
+    private static AccountMirakel getAccountFromCursor(final Cursor cursor) {
+        final int columnIndex = cursor.getColumnIndex(ACCOUNT_ID);
+        if (columnIndex >= 0) {
+            return AccountMirakel.get(cursor.getInt(columnIndex)).or(AccountMirakel.getLocal());
+        }
+        return AccountMirakel.getLocal();
+    }
+
     /**
      * Create a List from a Cursor
      *
@@ -374,7 +385,7 @@ public class SpecialList extends ListMirakel {
               SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))), "", "",
               SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
-              AccountMirakel.getLocal());
+              getAccountFromCursor(c));
         int defDateCol = c.getColumnIndex(DEFAULT_DUE);
         whereString = c.getString(c.getColumnIndex(WHERE_QUERY));
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);

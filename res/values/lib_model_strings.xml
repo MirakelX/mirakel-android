@@ -241,4 +241,5 @@
         <item quantity="one">year</item>
         <item quantity="other">years</item>
     </plurals>
+    <string name="accounts_all">All Accounts</string>
 </resources>
