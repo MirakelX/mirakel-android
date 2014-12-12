@@ -7,7 +7,7 @@ buildscript {
                 artifactUrls "file:~/.m2/"
             }
         }
-        classpath 'com.android.tools.build:gradle:1.0.0-rc3'
+        classpath 'com.android.tools.build:gradle:1.0.0'
 //        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
         classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
     }
@@ -74,6 +74,7 @@ configure(allprojects) {
     ext.butterknifeVersion = "6.0.0"
     ext.dashclockVersion = "2.0.0"
     ext.robolectricVersion= "2.3"
+    ext.FAB_VERSION= "0.0.6"
 }
 
 allprojects {
