@@ -168,7 +168,7 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
                 }
             });
         }
-        actionBar.setBackgroundResource(ThemeManager.getColor(R.attr.colorPrimary));
+        actionBar.setBackgroundColor(ThemeManager.getColor(R.attr.colorPrimary));
         actionBar.setVisibility(View.VISIBLE);
         setSupportActionBar(actionBar);
     }
