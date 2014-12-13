@@ -27,7 +27,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -59,11 +58,9 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
     public static final String BACK_ACTIVITY = "back";
     private static final String TAG = "GenericModelSettingsDetailActivity";
     public static final String DETAIL_FRAGMENT = "detailFragment";
-    public static final String HAS_MENU = "HAS_MENU";
 
 
     protected boolean isSupport;
-    protected boolean hasMenu;
     @NonNull
     private Class<? extends GenericModelListActivity> backActivity;
     @NonNull
@@ -97,7 +94,6 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            hasMenu = getIntent().hasExtra(HAS_MENU);
 
             final Class<?> fragmentClass =
                 (Class<?>) getIntent().getSerializableExtra(FRAGMENT);
@@ -158,17 +154,11 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
 
     protected void setUpActionbar() {
         final Toolbar actionBar = (Toolbar) findViewById(R.id.actionbar);
-        actionBar.inflateMenu(R.menu.generic_list_settings);
-        actionBar.getMenu().findItem(R.id.menu_add).setVisible(false);
-        if (hasMenu) {
-            actionBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(final MenuItem menuItem) {
-                    return onOptionsItemSelected(menuItem);
-                }
-            });
+        if (MirakelCommonPreferences.useNewUI()) {
+            actionBar.setBackgroundResource(R.color.colorPrimary);
+        } else {
+            actionBar.setBackgroundResource(R.color.dialog_dark_gray);
         }
-        actionBar.setBackgroundColor(ThemeManager.getColor(R.attr.colorPrimary));
         actionBar.setVisibility(View.VISIBLE);
         setSupportActionBar(actionBar);
     }
@@ -196,30 +186,8 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
             //
             NavUtils.navigateUpTo(this, new Intent(this, backActivity));
             return true;
-        } else if (id == R.id.menu_delete) {
-            final T modelItem;
-            if (isSupport) {
-                modelItem = ((IDetailFragment<T>) getSupportFragmentManager().findFragmentById(
-                                 R.id.speciallist_detail_container)).getItem();
-            } else {
-                modelItem = ((IDetailFragment<T>) getFragmentManager().findFragmentById(
-                                 R.id.speciallist_detail_container)).getItem();
-            }
-            modelItem.destroy();
-            setResult(NEED_UPDATE, null);
-            finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        if (hasMenu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.generic_list_settings, menu);
-            menu.findItem(R.id.menu_add).setVisible(false);
-        }
-        return true;
     }
 
     @Override

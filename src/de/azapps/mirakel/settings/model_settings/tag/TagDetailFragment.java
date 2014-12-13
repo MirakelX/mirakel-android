@@ -59,6 +59,7 @@ public class TagDetailFragment extends GenericModelDetailFragment<Tag> {
                 tag.setName((String) newValue);
                 tag.save();
                 name.setSummary(tag.getName());
+                updateList();
                 return true;
             }
         });

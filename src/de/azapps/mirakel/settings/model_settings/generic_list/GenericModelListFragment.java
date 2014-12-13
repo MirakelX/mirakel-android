@@ -21,7 +21,9 @@ package de.azapps.mirakel.settings.model_settings.generic_list;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,10 +36,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.shamanland.fab.FloatingActionButton;
+
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.settings.R;
 
 
-public class GenericModelListFragment extends Fragment {
+public class GenericModelListFragment extends Fragment implements View.OnClickListener {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -60,12 +65,19 @@ public class GenericModelListFragment extends Fragment {
     @Nullable
     private RecyclerView listView;
 
+    private FloatingActionButton fab;
+
     public void reload() {
         if (listView != null) {
             listView.setLayoutManager(mCallbacks.getLayoutManager(getActivity()));
             listView.setAdapter(mCallbacks.getAdapter());
             listView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        mCallbacks.addItem();
     }
 
 
@@ -81,6 +93,10 @@ public class GenericModelListFragment extends Fragment {
 
         @NonNull
         public RecyclerView.LayoutManager getLayoutManager(final @NonNull Context ctx);
+
+        public void addItem();
+
+        public boolean hasFab();
 
     }
 
@@ -102,6 +118,18 @@ public class GenericModelListFragment extends Fragment {
         public RecyclerView.LayoutManager getLayoutManager(final @NonNull Context ctx) {
             return new LinearLayoutManager(ctx);
         }
+
+        @Override
+        public void addItem() {
+            //nothing
+        }
+
+        @Override
+        public boolean hasFab() {
+            return true;
+        }
+
+
     };
 
     /**
@@ -123,6 +151,11 @@ public class GenericModelListFragment extends Fragment {
                              final Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.generic_list_fragment, container, false);
         listView = (RecyclerView)rootView.findViewById(R.id.generic_list);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fabbutton);
+        fab.setColorFilter(Color.WHITE);
+        fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
+        fab.setOnClickListener(this);
+        fab.setVisibility(mCallbacks.hasFab() ? View.VISIBLE : View.GONE);
         return rootView;
     }
 
@@ -155,6 +188,9 @@ public class GenericModelListFragment extends Fragment {
         }
 
         mCallbacks = (Callbacks) activity;
+        if (fab != null) {
+            fab.setVisibility(mCallbacks.hasFab() ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override

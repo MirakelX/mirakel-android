@@ -31,7 +31,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -61,10 +60,6 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
 
     protected abstract boolean isSupport();
 
-    protected boolean hasMenu() {
-        return true;
-    }
-
     @NonNull
     protected Optional<android.app.Fragment> getDetailFragment(final @NonNull T item) {
         return absent();
@@ -83,9 +78,6 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
     private Bundle getDetailArguments(T item) {
         final Bundle arguments = new Bundle();
         arguments.putParcelable(GenericModelDetailFragment.ARG_ITEM, item);
-        if (hasMenu()) {
-            arguments.putBoolean(GenericModelDetailActivity.HAS_MENU, true);
-        }
         return arguments;
     }
 
@@ -256,20 +248,6 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
             //
             finish();
             return true;
-        } else if (id == R.id.menu_add) {
-            createItem(this);
-            updateList();
-        } else if ((id == R.id.menu_delete) && mTwoPane) {
-            final T toDestroy;
-            if (isSupport()) {
-                toDestroy = ((IDetailFragment<T>) getSupportFragmentManager().findFragmentById(
-                                 R.id.generic_model_detail_container)).getItem();
-            } else {
-                toDestroy = ((IDetailFragment<T>) getFragmentManager().findFragmentById(
-                                 R.id.generic_model_detail_container)).getItem();
-            }
-            toDestroy.destroy();
-            updateList();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -311,9 +289,6 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
                 startNew = true;
             }
             if (startNew) {
-                if (hasMenu()) {
-                    detailIntent.putExtra(GenericModelDetailActivity.HAS_MENU, true);
-                }
                 detailIntent.putExtra(GenericModelDetailActivity.BACK_ACTIVITY, getSelf());
                 startActivityForResult(detailIntent, RESULT_ITEM);
             }
@@ -337,20 +312,19 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        if (hasMenu()) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.generic_list_settings, menu);
-            menu.findItem(R.id.menu_delete).setVisible(mTwoPane);
-        }
-        return true;
-    }
-
     @NonNull
     @Override
     public RecyclerView.LayoutManager getLayoutManager(final @NonNull Context ctx) {
         return new LinearLayoutManager(ctx);
     }
 
+    public void addItem() {
+        createItem(this);
+        updateList();
+    }
+
+    @Override
+    public boolean hasFab() {
+        return true;
+    }
 }

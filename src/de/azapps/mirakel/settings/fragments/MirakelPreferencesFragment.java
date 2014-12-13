@@ -1,7 +1,10 @@
 package de.azapps.mirakel.settings.fragments;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shamanland.fab.FloatingActionButton;
+
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
@@ -17,8 +23,8 @@ import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 
 public abstract class MirakelPreferencesFragment<T extends IGenericElementInterface> extends
     PreferenceFragment implements
-    IDetailFragment<T> {
-
+    IDetailFragment<T>, View.OnClickListener {
+    private FloatingActionButton fab;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -28,21 +34,46 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
         }
     }
 
+    protected void onFABClicked(){
+    //nothing
+     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.generic_list_fragment, null);
-        SettingsGroupAdapter a = new SettingsGroupAdapter(getPreferenceScreen());
-        RecyclerView l = (RecyclerView)rootView.findViewById(R.id.generic_list);
-        l.setLayoutManager(new LinearLayoutManager(container.getContext()));
-        l.setAdapter(a);
-        return rootView;
+    public void onClick(final View v) {
+        onFABClicked();
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.generic_list_fragment, null);
+        final SettingsGroupAdapter a = new SettingsGroupAdapter(getPreferenceScreen());
+        final RecyclerView l = (RecyclerView)rootView.findViewById(R.id.generic_list);
+        l.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        l.setAdapter(a);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fabbutton);
+        if (isFabVisible()) {
+            fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
+            fab.setColorFilter(Color.WHITE);
+            fab.setImageResource(android.R.drawable.ic_menu_delete);
+            fab.setOnClickListener(this);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+        return rootView;
+    }
+
+
+    protected boolean isFabVisible() {
+        return false;
+    }
+
+
+
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
         try {
             super.onActivityCreated(savedInstanceState);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException ignored) {
             //we must call this
         }
     }

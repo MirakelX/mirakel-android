@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
 
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 
@@ -69,6 +70,7 @@ public abstract class GenericModelDetailFragment<T extends IGenericElementInterf
         if (preferencesResource != NO_PREFERENCES) {
             addPreferencesFromResource(getResourceId());
             setUp();
+
         }
     }
 
@@ -77,6 +79,12 @@ public abstract class GenericModelDetailFragment<T extends IGenericElementInterf
     public void onPause() {
         super.onPause();
         mItem.save();
+    }
+
+    protected void updateList() {
+        if (MirakelCommonPreferences.isTablet() && (getActivity() instanceof GenericModelListActivity)) {
+            ((GenericModelListActivity) getActivity()).updateList();
+        }
     }
 
     @NonNull
@@ -92,4 +100,21 @@ public abstract class GenericModelDetailFragment<T extends IGenericElementInterf
         }
     }
 
+    @Override
+    protected void onFABClicked(){
+        super.onFABClicked();
+        if (mItem != null) {
+            mItem.destroy();
+            if (getActivity() instanceof GenericModelDetailActivity) {
+                getActivity().setResult(GenericModelDetailActivity.NEED_UPDATE, null);
+                getActivity().finish();
+            }
+            updateList();
+        }
+    }
+
+    @Override
+    protected boolean isFabVisible() {
+        return true;
+    }
 }

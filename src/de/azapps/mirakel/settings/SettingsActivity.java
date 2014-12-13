@@ -91,11 +91,6 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
     }
 
     @Override
-    protected boolean hasMenu() {
-        return false;
-    }
-
-    @Override
     protected boolean isSupport() {
         return false;
     }
@@ -147,6 +142,8 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
         }
     }
 
-
-
+    @Override
+    public boolean hasFab() {
+        return false;
+    }
 }

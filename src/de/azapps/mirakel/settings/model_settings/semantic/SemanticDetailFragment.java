@@ -234,6 +234,7 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
             mItem.setCondition(newValue);
             this.semanticsCondition.setSummary(newValue);
             this.semanticsCondition.setText(newValue);
+            updateList();
             break;
         default:
             return false;

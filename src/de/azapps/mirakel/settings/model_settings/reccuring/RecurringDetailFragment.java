@@ -183,6 +183,7 @@ public class RecurringDetailFragment extends GenericModelDetailFragment<Recurrin
                 .setText(recurring
                          .getLabel());
                 recurring.save();
+                updateList();
                 return false;
             }
         });
