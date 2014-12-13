@@ -21,7 +21,9 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -32,7 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.faizmalkani.floatingactionbutton.FloatingActionButton;
+import com.shamanland.fab.FloatingActionButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -104,9 +106,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.inject(this, layout);
-        floatingActionButton.setColor(ThemeManager.getColor(R.attr.colorAccent));
-        floatingActionButton.setDrawable(getResources().getDrawable(android.R.drawable.ic_menu_add));
-        floatingActionButton.hide(false);
+        floatingActionButton.setColorFilter(Color.WHITE);
+        floatingActionButton.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
         return layout;
     }
 
