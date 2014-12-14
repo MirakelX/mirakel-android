@@ -21,6 +21,8 @@
 <resources>
     <attr name="colorTextBlack" format="color"/>
     <attr name="colorTextGrey" format="color"/>
+    <attr name="colorTextActionBar" format="color" />
+    <attr name="colorTextActionBarHighlight" format="color" />
     <attr name="colorBackground" format="color" />
     <attr name="colorProgress" format="color" />
     <attr name="colorProgressBackground" format="color" />
