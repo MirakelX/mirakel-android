@@ -60,7 +60,7 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListener;
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
+import de.azapps.mirakel.DefinitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.customviews.R;
