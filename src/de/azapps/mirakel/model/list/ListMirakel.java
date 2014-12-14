@@ -62,6 +62,11 @@ import static com.google.common.base.Optional.of;
  */
 public class ListMirakel extends ListBase {
 
+    /**
+     * This is used by the Spinner in the MirakelActivity to identify the All Accounts selection
+     */
+    public static final int ALL_ACCOUNTS_ID = 0;
+
     public static class ListAlreadyExistsException extends Exception {
         public ListAlreadyExistsException(String detailMessage) {
             super(detailMessage);
@@ -652,7 +657,7 @@ public class ListMirakel extends ListBase {
 
     private Optional<SpecialList> toSpecial() {
         final Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
-        if (specialListOptional.isPresent() &&
+        if (specialListOptional.isPresent() && accountID != ALL_ACCOUNTS_ID &&
             getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
             specialListOptional.get().setAccount(getAccount());
         }

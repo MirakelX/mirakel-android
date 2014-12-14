@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import de.azapps.mirakel.model.R;
 
 import de.azapps.mirakel.model.ModelBase;
 
@@ -47,7 +48,7 @@ public class SimpleModelListAdapter<T extends ModelBase> extends CursorAdapter {
 
     @Override
     public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-        final View view = mInflater.inflate(android.R.layout.simple_list_item_1, null);
+        final View view = mInflater.inflate(R.layout.row_simple_list_adapter, null);
         final ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;
@@ -63,15 +64,42 @@ public class SimpleModelListAdapter<T extends ModelBase> extends CursorAdapter {
     public void bindView(final View view, final Context context, final Cursor cursor) {
         final ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
         viewHolder.model = cursorToObject(cursor, tClass);
-        viewHolder.name.setText(viewHolder.model.getName());
+        viewHolder.setText(viewHolder.model.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        final View v = super.getView(position, convertView, parent);
+        final ViewHolder<T> viewHolder = (ViewHolder<T>) v.getTag();
+        viewHolder.header_text.setVisibility(View.VISIBLE);
+        viewHolder.normal_text.setVisibility(View.GONE);
+        return v;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public View getDropDownView(final int position, final View convertView, final ViewGroup parent) {
+        final View v = super.getView(position, convertView, parent);
+        final ViewHolder<T> viewHolder = (ViewHolder<T>) v.getTag();
+        viewHolder.header_text.setVisibility(View.GONE);
+        viewHolder.normal_text.setVisibility(View.VISIBLE);
+        return v;
     }
 
     public static class ViewHolder<T extends ModelBase> {
-        private final TextView name;
+        private final TextView header_text;
+        private final TextView normal_text;
         private T model;
 
         private ViewHolder(final View view) {
-            name = (TextView) view.findViewById(android.R.id.text1);
+            header_text = (TextView) view.findViewById(R.id.header_text);
+            normal_text = (TextView) view.findViewById(android.R.id.text1);
+        }
+
+        public void setText(final String text) {
+            header_text.setText(text);
+            normal_text.setText(text);
         }
 
         public T getModel() {
