@@ -22,6 +22,9 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="de.azapps.mirakel.main_activity" >
 
+    <uses-sdk android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
+    
     <application>
         <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
