@@ -39,6 +39,7 @@ import de.azapps.widgets.DueDialog;
 public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic> implements
     Preference.OnPreferenceChangeListener {
 
+    private static final String NULL_STR = "null";
     private EditTextPreference semanticsCondition;
     private ListPreference semanticsPriority;
     private Preference semanticsDue;
@@ -50,7 +51,7 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
     @NonNull
     @Override
     protected Semantic getDummyItem() {
-        Optional<Semantic> s = Semantic.first();
+        final Optional<Semantic> s = Semantic.first();
         if (!s.isPresent()) {
             return Semantic.newSemantic("", null, null, Optional.<ListMirakel>absent(), null);
         } else {
@@ -167,7 +168,7 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
         final CharSequence[] listEntries = new CharSequence[lists.size() + 1];
         final CharSequence[] listValues = new CharSequence[lists.size() + 1];
         listEntries[0] = getString(R.string.semantics_no_list);
-        listValues[0] = "null";
+        listValues[0] = NULL_STR;
         for (int i = 0; i < lists.size(); i++) {
             listValues[i + 1] = String.valueOf(lists.get(i).getId());
             listEntries[i + 1] = lists.get(i).getName();
@@ -178,7 +179,7 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
             this.semanticsList.setValueIndex(0);
             this.semanticsList.setSummary(getString(R.string.semantics_no_list));
         } else {
-            ListMirakel listMirakel = mItem.getList().get();
+            final ListMirakel listMirakel = mItem.getList().get();
             this.semanticsList.setValue(String.valueOf(listMirakel
                                         .getId()));
             this.semanticsList.setSummary(listMirakel.getName());
@@ -192,7 +193,7 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
         final String key = preference.getKey();
         switch (key) {
         case "semantics_priority":
-            if (newValue.equals("null")) {
+            if (NULL_STR.equals(newValue)) {
                 mItem.setPriority(null);
                 this.semanticsPriority.setValueIndex(0);
                 this.semanticsPriority.setSummary(this.semanticsPriority
@@ -213,13 +214,12 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
             this.semanticsWeekday.setSummary(this.semanticsWeekday.getEntry());
             break;
         case "semantics_list":
-            if (newValue.equals("null")) {
-                mItem.setList(null);
+            if (NULL_STR.equals(newValue)) {
+                mItem.setList(Optional.<ListMirakel>absent());
                 this.semanticsList.setValueIndex(0);
                 this.semanticsList.setSummary(this.semanticsList.getEntries()[0]);
             } else {
-                final Optional<ListMirakel> newList = ListMirakel.get(Integer
-                                                      .parseInt(newValue));
+                final Optional<ListMirakel> newList = ListMirakel.get(Integer.parseInt(newValue));
                 mItem.setList(newList);
                 this.semanticsList.setValue(newValue);
                 OptionalUtils.withOptional(newList, new OptionalUtils.Procedure<ListMirakel>() {
@@ -252,19 +252,19 @@ public class SemanticDetailFragment extends GenericModelDetailFragment<Semantic>
      */
     protected String updateDueStuff() {
         final Integer due = mItem.getDue();
-        String summary;
+        final String summary;
         if (due == null) {
             this.dueDialogDayYear = DueDialog.VALUE.DAY;
             this.dueDialogValue = 0;
             summary = getString(R.string.semantics_no_due);
-        } else if (due % 365 == 0 && due != 0) {
+        } else if (((due % 365) == 0) && (due != 0)) {
             this.dueDialogValue = due / 365;
             this.dueDialogDayYear = DueDialog.VALUE.YEAR;
             summary = this.dueDialogValue
                       + " "
                       + getResources().getQuantityString(
                           R.plurals.due_year, this.dueDialogValue);
-        } else if (due % 30 == 0 && due != 0) {
+        } else if (((due % 30) == 0) && (due != 0)) {
             this.dueDialogValue = due / 30;
             this.dueDialogDayYear = DueDialog.VALUE.MONTH;
             summary = this.dueDialogValue
