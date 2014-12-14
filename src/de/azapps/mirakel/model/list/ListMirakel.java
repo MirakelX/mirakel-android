@@ -527,13 +527,9 @@ public class ListMirakel extends ListBase {
     public long countTasks() {
         MirakelQueryBuilder qb;
         if (getId() < 0) {
-            try {
-                qb = this.getWhereQueryForTasks();
-            } catch (final ClassCastException ignored) {
-                final Optional<SpecialList> specialList = toSpecial();
-                qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
-                         context);
-            }
+            final Optional<SpecialList> specialList = toSpecial();
+            qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
+                     context);
         } else {
             qb = new MirakelQueryBuilder(context).and(Task.LIST_ID, Operation.EQ, this);
         }
