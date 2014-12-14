@@ -24,7 +24,7 @@
 
     <uses-sdk android:minSdkVersion="14"
         android:targetSdkVersion="21" />
-    
+
     <application>
         <activity
             android:name="de.azapps.mirakel.main_activity.MainActivity"
