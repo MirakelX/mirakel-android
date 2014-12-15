@@ -20,6 +20,7 @@
 package de.azapps.mirakel.settings.model_settings.reccuring;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 
@@ -27,7 +28,6 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.settings.R;
@@ -74,11 +74,14 @@ public class RecurringSettingsActivity extends GenericModelListActivity<Recurrin
         return getString(R.string.recurring);
     }
 
-    @NonNull
     @Override
-    public SimpleModelAdapter<Recurring> getAdapter() {
-        return new SimpleModelAdapter<>(this, new MirakelQueryBuilder(this).query(Recurring.URI), 0,
-                                        Recurring.class, this);
+    protected Class<Recurring> getItemClass() {
+        return Recurring.class;
+    }
+
+    @Override
+    protected Cursor getQuery() {
+        return new MirakelQueryBuilder(this).query(Recurring.URI);
     }
 
 }

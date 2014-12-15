@@ -20,13 +20,13 @@
 package de.azapps.mirakel.settings.model_settings.special_list;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
@@ -61,7 +61,6 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
         return SpecialList.firstSpecialSafe();
     }
 
-    @NonNull
     @Override
     protected void createItem(final @NonNull Context ctx) {
         onItemSelected(SpecialList.newSpecialList(ctx.getString(R.string.special_lists_new),
@@ -75,11 +74,15 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
 
 
     @Override
-    public SimpleModelAdapter<SpecialList> getAdapter() {
-        return new SimpleModelAdapter<>(this,
-                                        new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
-                                                MirakelQueryBuilder.Operation.NOT_EQ,
-                                                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).query(SpecialList.URI), 0, SpecialList.class, this);
+    protected Class<SpecialList> getItemClass() {
+        return SpecialList.class;
+    }
+
+    @Override
+    protected Cursor getQuery() {
+        return new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
+                MirakelQueryBuilder.Operation.NOT_EQ,
+                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).query(SpecialList.URI);
     }
 
 }

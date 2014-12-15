@@ -24,13 +24,13 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.Html;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -151,11 +151,14 @@ public class AccountSettingsActivity extends GenericModelListActivity<AccountMir
         return getString(R.string.sync_title);
     }
 
+    @Override
+    protected Class<AccountMirakel> getItemClass() {
+        return AccountMirakel.class;
+    }
 
     @Override
-    public SimpleModelAdapter<AccountMirakel> getAdapter() {
-        return new SimpleModelAdapter<>(this, new MirakelQueryBuilder(this).query(AccountMirakel.URI), 0,
-                                        AccountMirakel.class, this);
+    protected Cursor getQuery() {
+        return new MirakelQueryBuilder(this).query(AccountMirakel.URI);
     }
 
 

@@ -20,11 +20,11 @@
 package de.azapps.mirakel.settings.model_settings.semantic;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
@@ -34,7 +34,6 @@ import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListAc
 import static com.google.common.base.Optional.of;
 
 public class SemanticSettingsActivity extends GenericModelListActivity<Semantic> {
-
 
     @NonNull
     @Override
@@ -53,6 +52,7 @@ public class SemanticSettingsActivity extends GenericModelListActivity<Semantic>
     protected Class<? extends GenericModelListActivity> getSelf() {
         return SemanticSettingsActivity.class;
     }
+
 
 
     @NonNull
@@ -78,11 +78,15 @@ public class SemanticSettingsActivity extends GenericModelListActivity<Semantic>
         return getString(R.string.settings_semantics_title);
     }
 
-    @NonNull
     @Override
-    public SimpleModelAdapter<Semantic> getAdapter() {
-        return new SimpleModelAdapter<>(this, new MirakelQueryBuilder(this).query(Semantic.URI), 0,
-                                        Semantic.class, this);
+    protected Class<Semantic> getItemClass() {
+        return Semantic.class;
     }
+
+    @Override
+    protected Cursor getQuery() {
+        return new MirakelQueryBuilder(this).query(Semantic.URI);
+    }
+
 
 }

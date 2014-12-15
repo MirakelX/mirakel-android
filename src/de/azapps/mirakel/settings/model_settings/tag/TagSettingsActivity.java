@@ -21,11 +21,11 @@ package de.azapps.mirakel.settings.model_settings.tag;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.settings.R;
@@ -59,9 +59,9 @@ public class TagSettingsActivity extends GenericModelListActivity<Tag> {
         return Tag.getSafeFirst();
     }
 
-    @NonNull
+
     @Override
-    protected void createItem(@NonNull Context ctx) {
+    protected void createItem(@NonNull final Context ctx) {
         onItemSelected(Tag.newTag(getString(R.string.tag_new)));
     }
 
@@ -70,11 +70,14 @@ public class TagSettingsActivity extends GenericModelListActivity<Tag> {
         return getString(R.string.tag_settings);
     }
 
-    @NonNull
     @Override
-    public SimpleModelAdapter<Tag> getAdapter() {
-        return new SimpleModelAdapter<>(this, new MirakelQueryBuilder(this).query(Tag.URI), 0, Tag.class,
-                                        this);
+    protected Class<Tag> getItemClass() {
+        return Tag.class;
+    }
+
+    @Override
+    protected Cursor getQuery() {
+        return new MirakelQueryBuilder(this).query(Tag.URI);
     }
 
 }

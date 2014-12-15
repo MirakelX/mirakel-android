@@ -24,8 +24,10 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
@@ -57,6 +60,9 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
     private FrameLayout mDetailContainer;
     private boolean mTwoPane;
     private List<T> backstack = new ArrayList<>();
+
+    @Nullable
+    private Cursor query = null;
 
     protected abstract boolean isSupport();
 
@@ -326,5 +332,38 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
     @Override
     public boolean hasFab() {
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        closeCursor();
+    }
+
+    private void closeCursor() {
+        if (query != null) {
+            query.close();
+        }
+    }
+
+    @Nullable
+    @Override
+    public RecyclerView.Adapter getAdapter() {
+        closeCursor();
+        query = getQuery();
+        if (query != null) {
+            return new SimpleModelAdapter<>(this, query, getItemClass(), this);
+        }
+        return null;
+    }
+
+    @Nullable
+    protected Class<T> getItemClass() {
+        return null;
+    }
+
+    @Nullable
+    protected Cursor getQuery() {
+        return null;
     }
 }
