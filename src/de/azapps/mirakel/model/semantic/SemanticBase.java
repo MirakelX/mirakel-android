@@ -34,7 +34,6 @@ import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 abstract class SemanticBase  extends ModelBase {
     @NonNull
@@ -109,7 +108,7 @@ abstract class SemanticBase  extends ModelBase {
         return this.weekday.orNull();
     }
 
-    public void setWeekday(final @NonNull Integer weekday) {
+    public void setWeekday(final @Nullable Integer weekday) {
         this.weekday = fromNullable(weekday);
     }
 
