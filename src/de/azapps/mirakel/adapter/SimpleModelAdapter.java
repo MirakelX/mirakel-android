@@ -21,9 +21,9 @@ public class SimpleModelAdapter<T extends IGenericElementInterface> extends
     private final OnItemClickedListener<T> onItemClickedListener;
 
 
-    public SimpleModelAdapter(final Context context, final Cursor c, final int flags,
+    public SimpleModelAdapter(final Context context, final Cursor c,
                               final Class<T> tClass, final @NonNull OnItemClickedListener<T> onClick) {
-        super(context, c, flags);
+        super(context, c);
         this.tClass = tClass;
         this.onItemClickedListener = onClick;
     }
@@ -35,10 +35,6 @@ public class SimpleModelAdapter<T extends IGenericElementInterface> extends
         holder.name.setText(holder.model.getName());
     }
 
-    @Override
-    protected void onContentChanged() {
-
-    }
 
     @Override
     public ModelViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
