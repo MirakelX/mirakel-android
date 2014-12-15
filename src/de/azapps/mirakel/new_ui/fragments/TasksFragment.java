@@ -83,7 +83,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new TaskAdapter(getActivity(), null, 0, mListener);
+        mAdapter = new TaskAdapter(getActivity(), null, mListener);
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

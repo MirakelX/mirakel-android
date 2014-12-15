@@ -54,7 +54,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new ListAdapter(getActivity(), null, 0, mListener);
+        mAdapter = new ListAdapter(getActivity(), null, mListener);
         getLoaderManager().initLoader(0, null, this);
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));

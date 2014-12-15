@@ -39,9 +39,9 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     final LayoutInflater mInflater;
     private final OnItemClickedListener<ListMirakel> itemClickListener;
 
-    public ListAdapter(final Context context, final Cursor cursor, final int flags,
+    public ListAdapter(final Context context, final Cursor cursor,
                        final OnItemClickedListener<ListMirakel> itemClickListener) {
-        super(context, cursor, flags);
+        super(context, cursor);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.itemClickListener = itemClickListener;
         setHasStableIds(true);
@@ -51,12 +51,6 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     public ListViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int i) {
         final View view = mInflater.inflate(R.layout.row_list, viewGroup, false);
         return new ListViewHolder(view);
-    }
-
-
-    @Override
-    protected void onContentChanged() {
-        //nothing for now
     }
 
     @Override

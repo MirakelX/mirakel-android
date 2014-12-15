@@ -44,26 +44,18 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
     private final LayoutInflater mInflater;
     private final OnItemClickedListener<Task> itemClickListener;
 
-    public TaskAdapter(final Context context, final Cursor cursor, final int flags,
+    public TaskAdapter(final Context context, final Cursor cursor,
                        final OnItemClickedListener<Task> itemClickListener) {
-        super(context, cursor, flags);
+        super(context, cursor);
         mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
         setHasStableIds(true);
     }
 
-
-
     @Override
     public TaskViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int i) {
         final View view = mInflater.inflate(R.layout.row_task, viewGroup, false);
         return new TaskViewHolder(view);
-    }
-
-
-    @Override
-    protected void onContentChanged() {
-        //nothing for now
     }
 
     @Override
