@@ -209,4 +209,5 @@
     <item quantity="one">ano</item>
     <item quantity="other">anos</item>
   </plurals>
+  <string name="accounts_all">Todas as contas</string>
 </resources>
