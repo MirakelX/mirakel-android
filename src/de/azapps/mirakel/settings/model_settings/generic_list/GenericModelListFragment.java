@@ -71,7 +71,7 @@ public class GenericModelListFragment extends Fragment implements View.OnClickLi
         if (listView != null) {
             listView.setLayoutManager(mCallbacks.getLayoutManager(getActivity()));
             listView.setAdapter(mCallbacks.getAdapter());
-            listView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+            listView.addItemDecoration(new DividerItemDecoration(getActivity(), null, false, false));
         }
     }
 
