@@ -46,17 +46,21 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
     private final PreferenceScreen screen;
     private final static LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+
     private Map<String, Integer> dependencis = new HashMap<>();
 
     public SettingsGroupAdapter(final @NonNull PreferenceScreen preferenceScreen) {
         screen = preferenceScreen;
         screen.setOnPreferenceChangeListener(this);
-        params.setMargins(0, (int) (screen.getContext().getResources().getDimension(
-                                        R.dimen.padding_list_item) * 0.5), 0, 0);
+
+        final int margin = (int) (screen.getContext().getResources().getDimension(
+                                R.dimen.padding_list_item));
+        params.setMargins(margin, (int) (margin * 0.5), margin, 0);
+
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         final LinearLayout wrapper = new LinearLayout(parent.getContext());
         wrapper.setLayoutParams(params);
         return new ViewHolder(wrapper);
@@ -70,7 +74,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         if (preference instanceof PreferenceGroup) {
             v = new CardView(holder.itemView.getContext());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                v.setElevation(5);
+                v.setElevation(5.0F);
             }
             v.setLayoutParams(params);
             final LinearLayout ll = new LinearLayout(holder.itemView.getContext());
@@ -102,14 +106,17 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
                 if (dependencis.containsKey(p.getKey()) && (dependencis.get(p.getKey()) != position)) {
                     notifyItemChanged(dependencis.get(p.getKey()));
                 }
-                return changed == null || changed.onPreferenceChange(p, newValue);
+                return (changed == null) || changed.onPreferenceChange(p, newValue);
             }
         });
-        View v = preference.getView(null, null);
+        final View v = preference.getView(null, null);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                screen.onItemClick(null, null, findPreferenceScreenForPreference(preference.getKey(), null), 0);
+                final Integer pos = findPreferenceScreenForPreference(preference.getKey(), null);
+                if (pos != null) {
+                    screen.onItemClick(null, null, pos, 0L);
+                }
                 if (!(preference instanceof DialogPreference)) {
                     notifyItemChanged(position);
                 }
@@ -148,14 +155,14 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
+    public boolean onPreferenceChange(final Preference preference, final Object newValue) {
         notifyDataSetChanged();
         return true;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
         }
 

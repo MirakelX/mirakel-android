@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.shamanland.fab.FloatingActionButton;
 
@@ -24,7 +25,6 @@ import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 public abstract class MirakelPreferencesFragment<T extends IGenericElementInterface> extends
     PreferenceFragment implements
     IDetailFragment<T>, View.OnClickListener {
-    private FloatingActionButton fab;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -47,9 +47,9 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
     public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.generic_list_fragment, null);
         final SettingsGroupAdapter a = new SettingsGroupAdapter(getPreferenceScreen());
-        final RecyclerView l = (RecyclerView)rootView.findViewById(R.id.generic_list);
-        l.setLayoutManager(new LinearLayoutManager(container.getContext()));
-        l.setAdapter(a);
+        final RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.generic_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        recyclerView.setAdapter(a);
         fab = (FloatingActionButton) rootView.findViewById(R.id.fabbutton);
         if (isFabVisible()) {
             fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
