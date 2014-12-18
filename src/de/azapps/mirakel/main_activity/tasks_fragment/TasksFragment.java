@@ -91,6 +91,7 @@ import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting.
 public class TasksFragment extends Fragment implements
     LoaderManager.LoaderCallbacks<Cursor>, FilterQueryProvider {
     private static final String TAG = "TasksFragment";
+    private static final String TAG_NEWTASK = "NewTask";
     private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
     protected TaskAdapter adapter;
     protected boolean created = false;
@@ -232,6 +233,15 @@ public class TasksFragment extends Fragment implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // save state
+        super.onSaveInstanceState(outState);
+        final EditText task_editText = (EditText) getView().findViewById(R.id.tasks_new);
+        final String newTask = task_editText.getText().toString();
+        outState.putString(TAG_NEWTASK, newTask);
+    }
+
+    @Override
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container, final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -244,11 +254,19 @@ public class TasksFragment extends Fragment implements
         this.listView = (ListView) this.view.findViewById(R.id.tasks_list);
         this.listView
         .setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        // Events
+
         this.newTask = (EditText) this.view.findViewById(R.id.tasks_new);
         if (MirakelCommonPreferences.isTablet()) {
             this.newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
         }
+
+        // restore saved state
+        if (savedInstanceState != null) {
+            final String newTask = savedInstanceState.getString(TAG_NEWTASK);
+            this.newTask.setText(newTask);
+        }
+
+        // Events
         this.newTask.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(final TextView v, final int actionId,
