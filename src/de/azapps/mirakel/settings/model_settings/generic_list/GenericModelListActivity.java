@@ -21,14 +21,15 @@ package de.azapps.mirakel.settings.model_settings.generic_list;
 
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -130,19 +131,20 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
 
         mTwoPane = MirakelCommonPreferences.isTablet();
         mDetailContainer.setVisibility(mTwoPane ? View.VISIBLE : View.GONE);
-        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(
-                R.id.generic_model_list_container, new GenericModelListFragment());
+        final FragmentTransaction transaction = getFragmentManager().beginTransaction().replace(
+                    R.id.generic_model_list_container, new GenericModelListFragment());
         if (mTwoPane) {
             if (!isSupport()) {
                 final Optional<Fragment> f = instanceDetail(getDefaultItem());
                 if (f.isPresent()) {
-                    getFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
-                            f.get()).commit();
+                    transaction.replace(R.id.generic_model_detail_container,
+                            f.get());
                 }
             } else {
                 final Optional<android.support.v4.app.Fragment> f = instanceSupportDetail(getDefaultItem());
                 if (f.isPresent()) {
-                    transaction.replace(R.id.generic_model_detail_container, f.get());
+                    getSupportFragmentManager().beginTransaction().replace(R.id.generic_model_detail_container,
+                            f.get()).commit();
                 }
             }
         }
@@ -236,7 +238,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
     }
 
     public void updateList() {
-        ((GenericModelListFragment)getSupportFragmentManager().findFragmentById(
+        ((GenericModelListFragment)getFragmentManager().findFragmentById(
              R.id.generic_model_list_container)).reload();
     }
 
@@ -348,7 +350,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
 
     @Nullable
     @Override
-    public RecyclerView.Adapter getAdapter() {
+    public RecyclerView.Adapter getAdapter(final @NonNull PreferenceFragment caller) {
         closeCursor();
         query = getQuery();
         if (query != null) {

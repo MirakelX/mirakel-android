@@ -25,24 +25,26 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.shamanland.fab.FloatingActionButton;
 
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 
 
-public class GenericModelListFragment extends Fragment implements View.OnClickListener {
+public class GenericModelListFragment extends PreferenceFragment implements View.OnClickListener {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -70,8 +72,8 @@ public class GenericModelListFragment extends Fragment implements View.OnClickLi
     public void reload() {
         if (listView != null) {
             listView.setLayoutManager(mCallbacks.getLayoutManager(getActivity()));
-            listView.setAdapter(mCallbacks.getAdapter());
-            listView.addItemDecoration(new DividerItemDecoration(getActivity(), null, false, false));
+            listView.setAdapter(mCallbacks.getAdapter(this));
+
         }
     }
 
@@ -89,7 +91,7 @@ public class GenericModelListFragment extends Fragment implements View.OnClickLi
     public interface Callbacks {
 
         @Nullable
-        public RecyclerView.Adapter getAdapter();
+        public RecyclerView.Adapter getAdapter(final @NonNull PreferenceFragment caller);
 
         @NonNull
         public RecyclerView.LayoutManager getLayoutManager(final @NonNull Context ctx);
@@ -109,7 +111,7 @@ public class GenericModelListFragment extends Fragment implements View.OnClickLi
 
         @Override
         @Nullable
-        public RecyclerView.Adapter getAdapter() {
+        public RecyclerView.Adapter getAdapter(final @NonNull PreferenceFragment caller) {
             return null;
         }
 
@@ -156,6 +158,14 @@ public class GenericModelListFragment extends Fragment implements View.OnClickLi
         fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
         fab.setOnClickListener(this);
         fab.setVisibility(mCallbacks.hasFab() ? View.VISIBLE : View.GONE);
+        if (mCallbacks.getAdapter(this) instanceof SettingsGroupAdapter) {
+            final FrameLayout outerBox = (FrameLayout) listView.getParent().getParent();
+            ((ViewGroup) listView.getParent()).removeView(listView);
+            outerBox.removeViewAt(0);
+            outerBox.addView(listView);
+        } else {
+            listView.addItemDecoration(new DividerItemDecoration(rootView.getContext(), null, false, false));
+        }
         return rootView;
     }
 

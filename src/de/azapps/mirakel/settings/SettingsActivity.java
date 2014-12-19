@@ -23,6 +23,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -30,15 +32,11 @@ import android.support.v7.widget.Toolbar;
 
 import com.google.common.base.Optional;
 
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import de.azapps.mirakel.ThemeManager;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.settings.adapter.SettingsHeaderAdapter;
+import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
 
 
@@ -53,13 +51,9 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
     public static final String SHOW_FRAGMENT = "SHOW_FRAGMENT";
 
     @NonNull
-    private static List<Settings> HEADERS = new LinkedList(Arrays.asList(Settings.UI, Settings.SYNC,
-            Settings.TASK, Settings.SPECIAL_LISTS, Settings.NOTIFICATION, Settings.BACKUP, Settings.DEV,
-            Settings.ABOUT, Settings.DONATE));
-    @NonNull
     private static final Set<Settings> SUBSETTINGS = EnumSet.of(Settings.SYNC, Settings.SPECIAL_LISTS);
     @Nullable
-    private SettingsHeaderAdapter headerAdapter;
+    private SettingsGroupAdapter headerAdapter;
 
 
     @Override
@@ -126,19 +120,17 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
 
     @Nullable
     @Override
-    public RecyclerView.Adapter getAdapter() {
-        headerAdapter = new SettingsHeaderAdapter(HEADERS, this);
+    public RecyclerView.Adapter getAdapter(final @NonNull PreferenceFragment caller) {
+        headerAdapter = new SettingsGroupAdapter(Settings.inflateHeaders(
+                    caller.getPreferenceManager().createPreferenceScreen(this), this));
         return headerAdapter;
     }
 
     public void reloadSettings() {
-        if (MirakelCommonPreferences.isEnabledDebugMenu() && !HEADERS.contains(Settings.DEV)) {
-            HEADERS.add(DEV_SETTINGS_POSITION, Settings.DEV);
-        } else if (!MirakelCommonPreferences.isEnabledDebugMenu() && HEADERS.contains(Settings.DEV)) {
-            HEADERS.remove(DEV_SETTINGS_POSITION);
-        }
         if (headerAdapter != null) {
-            headerAdapter.setData(HEADERS);
+            final PreferenceScreen old = headerAdapter.getScreen();
+            old.removeAll();
+            headerAdapter.updateScreen(Settings.inflateHeaders(old, this));
         }
     }
 

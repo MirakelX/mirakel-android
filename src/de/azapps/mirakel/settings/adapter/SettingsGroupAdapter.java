@@ -43,7 +43,7 @@ import de.azapps.mirakel.settings.R;
 public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdapter.ViewHolder>
     implements Preference.OnPreferenceChangeListener {
     @NonNull
-    private final PreferenceScreen screen;
+    private PreferenceScreen screen;
     private final static LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 
@@ -57,6 +57,11 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
                                 R.dimen.padding_list_item));
         params.setMargins(margin, (int) (margin * 0.5), margin, 0);
 
+    }
+
+    public void updateScreen(final @NonNull PreferenceScreen newScreen) {
+        screen = newScreen;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -158,6 +163,11 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
     public boolean onPreferenceChange(final Preference preference, final Object newValue) {
         notifyDataSetChanged();
         return true;
+    }
+
+    @NonNull
+    public PreferenceScreen getScreen() {
+        return screen;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

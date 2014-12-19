@@ -23,10 +23,25 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
+import android.preference.Preference;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArrayMap;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.common.base.Optional;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import de.azapps.mirakel.ThemeManager;
+import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.fragments.AboutSettingsFragment;
 import de.azapps.mirakel.settings.fragments.BackupSettingsFragment;
@@ -59,7 +74,12 @@ public enum  Settings implements IGenericElementInterface {
     SYNC( R.string.sync_title, R.drawable.settings_sync),
     SPECIAL_LISTS( R.string.special_lists_click);
 
-
+    private static final Map<Integer, List<Settings>> all = new ArrayMap<>(4);
+    static{
+        all.put(R.string.general, Arrays.asList(UI, SYNC, TASK, NOTIFICATION));
+        all.put(R.string.settings_about, Arrays.asList(DONATE, ABOUT));
+        all.put(R.string.settings_advanced, Arrays.asList(SPECIAL_LISTS, BACKUP, DEV));
+    }
 
     @Override
     public String toString() {
@@ -139,6 +159,39 @@ public enum  Settings implements IGenericElementInterface {
         this.iconResId = of(iconResId);
     }
 
+    static class SettingsHeader extends Preference{
+
+        public SettingsHeader(final Context context) {
+            super(context);
+        }
+
+        @Override
+        public View getView(final View convertView, final ViewGroup parent) {
+            final View v = super.getView(convertView, parent);
+            ((ImageView)v.findViewById(android.R.id.icon)).setColorFilter(ThemeManager.getAccentThemeColor());
+            ((TextView)v.findViewById(android.R.id.title)).setTextColor(ThemeManager.getColor(
+                R.attr.colorTextBlack));
+            return v;
+        }
+    }
+
+    Preference getPreference(final @NonNull OnItemClickedListener<Settings> onClick) {
+        final Preference p = new SettingsHeader(ctx);
+        p.setKey(toString());
+        p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(final Preference preference) {
+                onClick.onItemSelected(Settings.this);
+                return true;
+            }
+        });
+        if (iconResId.isPresent()) {
+            p.setIcon(iconResId.get());
+        }
+        p.setTitle(titleResId);
+        return p;
+    }
+
 
     @Override
     public String getName() {
@@ -205,4 +258,22 @@ public enum  Settings implements IGenericElementInterface {
         }
         throw new IllegalArgumentException("Implement me");
     }
+
+
+    public static PreferenceScreen inflateHeaders(final @NonNull PreferenceScreen screen, final @NonNull OnItemClickedListener<Settings> onClick) {
+        for (final Map.Entry<Integer, List<Settings>> id : all.entrySet()) {
+            final PreferenceCategory cat = new PreferenceCategory(ctx);
+            screen.addPreference(cat);
+            cat.setTitle(id.getKey());
+            for (final Settings setting : id.getValue()) {
+                if ((setting == DEV) && !MirakelCommonPreferences.isEnabledDebugMenu()) {
+                    continue;
+                }
+                cat.addItemFromInflater(setting.getPreference(onClick));
+            }
+        }
+        return screen;
+
+    }
+
 }
