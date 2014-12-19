@@ -77,9 +77,6 @@ public class Mirakel extends Application {
     @SuppressLint ("InlinedApi")
     @Override
     public void onCreate () {
-        super.onCreate ();
-
-
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                                        .detectAll()
@@ -92,8 +89,7 @@ public class Mirakel extends Application {
                                    .penaltyDeath()
                                    .build());
         }
-
-
+        super.onCreate ();
 
         init (this);
         NotificationService.updateServices (this);
