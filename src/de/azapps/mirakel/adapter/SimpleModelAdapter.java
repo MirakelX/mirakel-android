@@ -30,7 +30,8 @@ public class SimpleModelAdapter<T extends IGenericElementInterface> extends
 
 
     @Override
-    public void onBindViewHolder(SimpleModelAdapter.ModelViewHolder holder, Cursor cursor) {
+    public void onBindViewHolder(final SimpleModelAdapter.ModelViewHolder holder, final Cursor cursor,
+                                 final int position) {
         holder.model = MirakelQueryBuilder.cursorToObject(cursor, tClass);
         holder.name.setText(holder.model.getName());
     }
