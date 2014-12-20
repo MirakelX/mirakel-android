@@ -23,6 +23,9 @@
     <attr name="colorTextGrey" format="color"/>
     <attr name="colorTextActionBar" format="color" />
     <attr name="colorTextActionBarHighlight" format="color" />
+    <attr name="colorSelectedRow" format="color" />
+    <attr name="colorCAB" format="color" />
+    <attr name="colorCABStatus" format="color" />
     <attr name="colorBackground" format="color" />
     <attr name="colorProgress" format="color" />
     <attr name="colorProgressBackground" format="color" />

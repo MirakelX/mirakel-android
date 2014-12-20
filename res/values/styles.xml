@@ -39,6 +39,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorTextActionBar">#FFFFFF</item>
         <item name="colorTextActionBarHighlight">#FFFFFF</item>
+        <item name="colorSelectedRow">#E1F4F6</item>
+        <item name="colorCAB">#00BCD2</item>
+        <item name="colorCABStatus">#0096A8</item>
 
         <item name="colorTextGrey">#808080</item>
         <item name="colorTextBlack">#000000</item>
@@ -51,8 +54,23 @@
         <item name="colorDueToday">#EF0381</item>
         <item name="colorDueNext">#FFA500</item>
         <item name="colorDueFuture">#00C400</item>
+        <!-- The CAB should overlay the normal ActionBar -->
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">?colorCAB</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
+        <item name="android:actionModeStyle">@style/ActionModeStyle</item>
+    </style>
 
+    <style name="ActionModeStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:background">?colorCAB</item>
+        <item name="android:titleTextStyle">@style/ActionModeStyle.Title</item>
+        <!-- I don't know how to fix this :( Any ideas how to not hard code this but use the Lollipop default -->
+        <item name="android:height">56dp</item>
+        <item name="android:minHeight">?actionBarSize</item>
+    </style>
 
+    <style name="ActionModeStyle.Title" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?colorTextActionBar</item>
     </style>
 
     <style name="MirakelDialogTheme" parent="@style/Theme.AppCompat.Light.Dialog">
