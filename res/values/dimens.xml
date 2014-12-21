@@ -20,4 +20,7 @@
 
 <resources>
     <dimen name="padding_list_item">8dp</dimen>
+    <dimen name="flatbutton_text_size">14sp</dimen>
+    <dimen name="flatbutton_height">48dp</dimen>
+    <dimen name="flatbutton_min_width">72dp</dimen>
 </resources>

@@ -17,14 +17,13 @@
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
-    </style>
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar"></style>
 
     <style name="AppBaseThemeDARK" parent="@android:style/Theme.Holo">
 
@@ -81,8 +80,18 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    -
 
-
+    <style name="FlatButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/flatbutton_text_size</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_height">@dimen/flatbutton_height</item>
+        <item name="android:minWidth">@dimen/flatbutton_min_width</item>
+    </style>
 
 
     <!-- Application theme. -->
@@ -110,11 +119,14 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
-	<style name="Dialog" parent="@android:style/Theme.Dialog"/>
+
+    <style name="Dialog" parent="@android:style/Theme.Dialog" />
+
     <style name="Button" parent="@android:style/ButtonBar"></style>
-  
+
     <style name="selectableButton" parent="@style/Button"></style>
-     <style name="buttonDivider">
+
+    <style name="buttonDivider">
         <item name="android:background">@color/White</item>
         <item name="android:layout_width">2dp</item>
     </style>
