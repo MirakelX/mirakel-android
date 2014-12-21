@@ -21,16 +21,21 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
@@ -38,10 +43,14 @@ import de.azapps.mirakelandroid.R;
 public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     final LayoutInflater mInflater;
     private final OnItemClickedListener<ListMirakel> itemClickListener;
+    private boolean selectMode = false;
+    private final MultiSelectCallbacks multiSelectCallbacks;
+    private final SparseBooleanArray selectedItems = new SparseBooleanArray();
 
     public ListAdapter(final Context context, final Cursor cursor,
-                       final OnItemClickedListener<ListMirakel> itemClickListener) {
+                       final OnItemClickedListener<ListMirakel> itemClickListener, MultiSelectCallbacks multiSelectCallbacks) {
         super(context, cursor);
+        this.multiSelectCallbacks = multiSelectCallbacks;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.itemClickListener = itemClickListener;
         setHasStableIds(true);
@@ -54,7 +63,7 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, final Cursor cursor) {
+    public void onBindViewHolder(final ListViewHolder holder, final Cursor cursor, int position) {
         final ListMirakel listMirakel = new ListMirakel(cursor);
         holder.list = listMirakel;
         holder.name.setText(listMirakel.getName());
@@ -64,18 +73,30 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         } else {
             new UpdateTaskCountTask().execute(holder);
         }
+
+        holder.position = position;
+        if (selectedItems.get(position)) {
+            holder.view.setBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+        } else {
+            holder.view.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
-    public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+        View.OnLongClickListener {
         @InjectView(R.id.list_name)
         TextView name;
         @InjectView(R.id.list_count)
         TextView count;
+        View view;
         ListMirakel list;
+        int position;
 
         public ListViewHolder(final View view) {
             super(view);
+            this.view = view;
             view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
             ButterKnife.inject(this, view);
         }
 
@@ -85,7 +106,19 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
 
         @Override
         public void onClick(final View v) {
-            itemClickListener.onItemSelected(list);
+
+            if (selectMode) {
+                toggleSelection(position);
+            } else {
+                itemClickListener.onItemSelected(list);
+            }
+        }
+
+        @Override
+        public boolean onLongClick(final View v) {
+            setSelectMode(true);
+            toggleSelection(position);
+            return true;
         }
     }
 
@@ -100,9 +133,70 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         }
 
         @Override
-        protected void onPostExecute(Long result) {
+        protected void onPostExecute(final Long result) {
             h.count.setText(String.valueOf(result));
         }
 
+    }
+
+
+    // For Multi-select
+
+    public void setSelectMode(final boolean selectMode) {
+        this.selectMode = selectMode;
+        multiSelectCallbacks.onSelectModeChanged(selectMode);
+    }
+
+    public void toggleSelection(final int pos) {
+        final Cursor cursor = getCursor();
+        cursor.moveToPosition(pos);
+        final ListMirakel item = new ListMirakel(cursor);
+
+        if (selectedItems.get(pos, false)) {
+            selectedItems.delete(pos);
+            multiSelectCallbacks.onRemoveSelectedItem(item);
+        } else {
+            // Check if it is allowed to select the item
+            if (!multiSelectCallbacks.canAddItem(item)) {
+                if (getSelectedItemCount() == 0) {
+                    setSelectMode(false);
+                }
+                return;
+            }
+            selectedItems.put(pos, true);
+            multiSelectCallbacks.onAddSelectedItem(item);
+        }
+        notifyItemChanged(pos);
+    }
+
+    public void clearSelections() {
+        setSelectMode(false);
+        selectedItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        return selectedItems.size();
+    }
+
+    public ArrayList<ListMirakel> getSelectedItems() {
+        final ArrayList<ListMirakel> items =
+            new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            final int pos = selectedItems.keyAt(i);
+            getCursor().moveToPosition(pos);
+            items.add(new ListMirakel(getCursor()));
+        }
+        return items;
+    }
+
+    public interface MultiSelectCallbacks {
+        public void onSelectModeChanged(boolean selectMode);
+
+        public boolean canAddItem(ListMirakel listMirakel);
+
+        public void onAddSelectedItem(ListMirakel listMirakel);
+
+        public void onRemoveSelectedItem(ListMirakel listMirakel);
     }
 }

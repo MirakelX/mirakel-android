@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~ Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
@@ -17,23 +18,17 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/actionbar_switcher"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/actionbar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-        android:textColor="?colorTextActionBar"
-        android:gravity="center_vertical" />
-
-    <Spinner
-        android:id="@+id/actionbar_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/ActionBarSpinner" />
-
-</ViewSwitcher>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_delete"
+        android:title="@string/menu_delete_list"
+        android:showAsAction="ifRoom"
+        android:visible="false"
+        android:icon="@drawable/ic_delete_white_36dp"/>
+    <item
+        android:id="@+id/menu_edit"
+        android:title="@string/menu_edit_list"
+        android:showAsAction="ifRoom"
+        android:visible="false"
+        android:icon="@drawable/ic_pencil_white_36dp"/>
+</menu>

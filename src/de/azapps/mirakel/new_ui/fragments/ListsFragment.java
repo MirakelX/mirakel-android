@@ -21,36 +21,55 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.common.base.Optional;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.listeners.ActionClickListener;
+import com.nispok.snackbar.listeners.EventListener;
 
+import java.util.ArrayList;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.mirakel.ThemeManager;
+import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 
-public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks {
+public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
+    ListAdapter.MultiSelectCallbacks, ActionMode.Callback, ActionClickListener {
 
     private static final String ARGUMENT_ACCOUNT = "ARGUMENT_ACCOUNT";
     private ListAdapter mAdapter;
     private OnItemClickedListener<ListMirakel> mListener;
+    private ActionMode actionMode;
     @NonNull
     private Optional<AccountMirakel> accountMirakelOptional = Optional.absent();
     @InjectView(R.id.list_lists)
     RecyclerView mListView;
+    private ActionMode mActionMode;
+    private int numberOfSelectedEditables = 0;
+    private int numberOfSelectedDeletables = 0;
 
 
     public ListsFragment() {
@@ -82,7 +101,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new ListAdapter(getActivity(), null, mListener);
+        mAdapter = new ListAdapter(getActivity(), null, mListener, this);
         getLoaderManager().initLoader(0, null, this);
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -94,8 +113,12 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onAttach(activity);
         try {
             mListener = (OnItemClickedListener<ListMirakel>) activity;
+            if (!(activity instanceof EventListener)) {
+                throw new ClassCastException();
+            }
         } catch (final ClassCastException ignored) {
-            throw new ClassCastException(activity.toString() + " must implement OnListSelectedListener");
+            throw new ClassCastException(activity.toString() +
+                                         " must implement OnListSelectedListener and EventListener");
         }
     }
 
@@ -129,5 +152,137 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoaderReset(final Loader loader) {
         mAdapter.swapCursor(null);
+    }
+
+    public void onCloseNavDrawer() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
+    }
+
+    @Override
+    public void onSelectModeChanged(final boolean selectMode) {
+        if (selectMode) {
+            mActionMode = getActivity().startActionMode(this);
+        } else {
+            mActionMode.finish();
+        }
+    }
+
+    @Override
+    public boolean canAddItem(final ListMirakel listMirakel) {
+        if (!listMirakel.isDeletable() && !listMirakel.isEditable()) {
+            SnackbarManager.show(Snackbar.with(getActivity())
+                                 .text(R.string.can_not_edit_list)
+                                 .eventListener((EventListener) getActivity())
+                                 , getActivity());
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onAddSelectedItem(final ListMirakel listMirakel) {
+        onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
+        if (listMirakel.isEditable()) {
+            numberOfSelectedEditables++;
+            if (numberOfSelectedEditables == 1) {
+                mActionMode.getMenu().findItem(R.id.menu_edit).setVisible(true);
+            } else {
+                mActionMode.getMenu().findItem(R.id.menu_edit).setVisible(false);
+
+            }
+        }
+        if (listMirakel.isDeletable()) {
+            numberOfSelectedDeletables++;
+            // Show remove icon
+            if (numberOfSelectedDeletables == 1) {
+                mActionMode.getMenu().findItem(R.id.menu_delete).setVisible(true);
+            }
+        }
+    }
+
+    @Override
+    public void onRemoveSelectedItem(final ListMirakel listMirakel) {
+        final int count = mAdapter.getSelectedItemCount();
+        onSelectedItemCountChanged(count);
+        if (count > 0) {
+            if (count == 1 && listMirakel.isEditable()) {
+                mActionMode.getMenu().findItem(R.id.menu_edit).setVisible(true);
+            }
+            if (listMirakel.isDeletable()) {
+                numberOfSelectedDeletables--;
+                if (numberOfSelectedDeletables == 0) {
+                    mActionMode.getMenu().findItem(R.id.menu_delete).setVisible(false);
+                }
+            }
+        }
+    }
+
+    public void onSelectedItemCountChanged(final int itemCount) {
+        if (itemCount == 0) {
+            mActionMode.finish();
+        } else {
+            mActionMode.setTitle(getString(R.string.list_mulitiselect_title, itemCount));
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
+        final MenuInflater inflater = mode
+                                      .getMenuInflater();
+        inflater.inflate(R.menu.multiselect_lists, menu);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
+        }
+        mode.setTitle(getString(R.string.list_mulitiselect_title, mAdapter.getSelectedItemCount()));
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
+        final ArrayList<ListMirakel> selected = mAdapter.getSelectedItems();
+        switch (item.getItemId()) {
+        case R.id.menu_delete:
+            // TODO implement deleting
+            SnackbarManager.show(
+                Snackbar.with(getActivity())
+                .text(getString(R.string.list_multiselect_deleted, selected.size()))
+                .actionLabel(R.string.undo)
+                .actionListener(this)
+                .eventListener((EventListener) getActivity())
+                , getActivity());
+            break;
+        case R.id.menu_edit:
+            final DialogFragment newFragment = ListEditFragment.newInstance(selected.get(0));
+            newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+            break;
+        default:
+            return false;
+        }
+        mActionMode.finish();
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(final ActionMode mode) {
+        mAdapter.clearSelections();
+        mActionMode = null;
+        numberOfSelectedDeletables = 0;
+        numberOfSelectedEditables = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
+        }
+    }
+
+    @Override
+    public void onActionClicked(final Snackbar snackbar) {
+        // TODO implement undo
     }
 }

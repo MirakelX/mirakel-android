@@ -33,7 +33,7 @@
 
     <com.shamanland.fab.FloatingActionButton
         android:id="@+id/fabbutton"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_plus_white_48dp"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="bottom|end"

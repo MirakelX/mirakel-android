@@ -58,7 +58,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.task_listview)
     RecyclerView mListView;
     @InjectView(R.id.fabbutton)
-    FloatingActionButton floatingActionButton;
+    public FloatingActionButton floatingActionButton;
     private OnItemClickedListener<Task> mListener;
 
     private ListMirakel listMirakel;

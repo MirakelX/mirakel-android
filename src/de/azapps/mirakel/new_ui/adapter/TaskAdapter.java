@@ -59,7 +59,7 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final TaskViewHolder holder, final Cursor cursor) {
+    public void onBindViewHolder(final TaskViewHolder holder, final Cursor cursor, int position) {
         final Task task = new Task(cursor);
         holder.task = task;
         holder.name.setText(task.getName());

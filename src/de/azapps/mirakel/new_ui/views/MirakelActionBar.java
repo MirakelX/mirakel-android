@@ -30,6 +30,6 @@ public class MirakelActionBar extends Toolbar {
 
     public MirakelActionBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        inflateMenu(R.menu.mirakel);
+        inflateMenu(R.menu.tasks_menu);
     }
 }

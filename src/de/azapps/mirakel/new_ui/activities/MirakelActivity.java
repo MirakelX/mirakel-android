@@ -37,13 +37,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.common.base.Optional;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.listeners.EventListener;
+import com.shamanland.fab.FloatingActionButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -57,6 +60,7 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.new_ui.fragments.ListEditFragment;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
@@ -70,11 +74,13 @@ import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
-public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase> {
+public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase>,
+    EventListener {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
+
 
     class ActionBarViewHolder {
         @butterknife.Optional
@@ -132,7 +138,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         // Sync the toggle state after onRestoreInstanceState has occurred.
         withOptional(mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
             @Override
-            public void apply(ActionBarDrawerToggle input) {
+            public void apply(final ActionBarDrawerToggle input) {
                 input.syncState();
             }
         });
@@ -143,7 +149,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         super.onConfigurationChanged(newConfig);
         withOptional(mDrawerToggle, new Procedure<ActionBarDrawerToggle>() {
             @Override
-            public void apply(ActionBarDrawerToggle input) {
+            public void apply(final ActionBarDrawerToggle input) {
                 input.onConfigurationChanged(newConfig);
             }
         });
@@ -162,20 +168,13 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             // For phones
             final boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(Gravity.START);
             if (drawerOpen) {
-                // TODO list menu
+                getMenuInflater().inflate(R.menu.lists_menu, menu);
             } else {
-                // TODO tasks menu
+                getMenuInflater().inflate(R.menu.tasks_menu, menu);
             }
         } else {
-            // For Tablets
+            getMenuInflater().inflate(R.menu.tablet_menu, menu);
         }
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mirakel, menu);
         return true;
     }
 
@@ -198,6 +197,10 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         } else if (id == R.id.action_toggle_ui) {
             MirakelCommonPreferences.setUseNewUI(false);
             Helpers.restartApp(this);
+            return true;
+        } else if (id == R.id.action_create_list) {
+            final DialogFragment newFragment = ListEditFragment.newInstance(ListMirakel.getStub());
+            newFragment.show(getSupportFragmentManager(), "dialog");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -259,29 +262,9 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
             public void apply(final DrawerLayout mDrawerLayout) {
-                final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(MirakelActivity.this,
-                        mDrawerLayout,
-                        actionbar,
-                        R.string.list_title, /* "open drawer" description */
-                R.string.list_title /* "close drawer" description */) {
-                    /** Called when a drawer has settled in a completely closed state. */
-                    @Override
-                    public void onDrawerClosed(final View drawerView) {
-                        super.onDrawerClosed(drawerView);
-                        invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                        updateToolbar(false);
-                    }
-
-                    /** Called when a drawer has settled in a completely open state. */
-                    @Override
-                    public void onDrawerOpened(final View drawerView) {
-                        super.onDrawerOpened(drawerView);
-                        invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                        updateToolbar(true);
-                    }
-                };
+                final ActionBarDrawerToggle mDrawerToggle = new DrawerToggle(mDrawerLayout);
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
-                MirakelActivity.this.mDrawerToggle = Optional.of(mDrawerToggle);
+                MirakelActivity.this.mDrawerToggle = of(mDrawerToggle);
             }
         });
     }
@@ -291,7 +274,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             // This is for cases when the app wake up in a strange state
             if (showSwitcher && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 0) {
                 actionBarViewHolder.actionbarSwitcher.showNext();
-            } else if (!showSwitcher  && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 1) {
+            } else if (!showSwitcher && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 1) {
                 actionBarViewHolder.actionbarSwitcher.showPrevious();
             }
         }
@@ -312,7 +295,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
 
         final Cursor cursor = AccountMirakel.allCursorWithAllAccounts();
         final SimpleModelListAdapter<AccountMirakel> adapter = new SimpleModelListAdapter<>(this, cursor, 0,
-                AccountMirakel.class);
+                AccountMirakel.class, R.layout.simple_list_row_with_bold_header);
         actionBarViewHolder.actionbarSpinner.setAdapter(adapter);
         actionBarViewHolder.actionbarSpinner.setOnItemSelectedListener(new
         AdapterView.OnItemSelectedListener() {
@@ -361,4 +344,70 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     private boolean shouldShowSpinner() {
         return !mDrawerLayout.isPresent() || mDrawerLayout.get().isDrawerOpen(Gravity.START);
     }
+
+    // Snackbar stuff
+    @Override
+    public void onShow(final Snackbar snackbar) {
+        final FloatingActionButton fab = getTasksFragment().floatingActionButton;
+        // Have to set the animation in code because I can not change the toDeltaY at runtime :(
+        // And I do not know it before
+        final TranslateAnimation anim = new TranslateAnimation(0, 0, 0, -snackbar.getHeight());
+        anim.setDuration(getResources().getInteger(R.integer.anim_snackbar_duration));
+        anim.setFillEnabled(true);
+        anim.setFillAfter(true);
+        anim.setInterpolator(this, R.interpolator.decelerate_cubic);
+        fab.startAnimation(anim);
+    }
+
+    @Override
+    public void onShown(final Snackbar snackbar) {
+
+    }
+
+    @Override
+    public void onDismiss(final Snackbar snackbar) {
+        final FloatingActionButton fab = getTasksFragment().floatingActionButton;
+        final TranslateAnimation anim = new TranslateAnimation(0, 0, -snackbar.getHeight(), 0);
+        anim.setDuration(getResources().getInteger(R.integer.anim_snackbar_duration));
+        anim.setFillEnabled(true);
+        anim.setFillAfter(true);
+        anim.setInterpolator(this, R.interpolator.accelerate_cubic);
+        fab.startAnimation(anim);
+    }
+
+    @Override
+    public void onDismissed(final Snackbar snackbar) {
+
+    }
+
+    private class DrawerToggle extends ActionBarDrawerToggle {
+        public DrawerToggle(DrawerLayout mDrawerLayout) {
+            super(MirakelActivity.this, mDrawerLayout, MirakelActivity.this.actionbar, R.string.list_title,
+                  R.string.list_title);
+        }
+
+        /**
+         * Called when a drawer has settled in a completely closed state.
+         */
+        @Override
+        public void onDrawerClosed(final View drawerView) {
+            super.onDrawerClosed(drawerView);
+            invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            getListsFragment().onCloseNavDrawer();
+            updateToolbar(false);
+            invalidateOptionsMenu();
+        }
+
+        /**
+         * Called when a drawer has settled in a completely open state.
+         */
+        @Override
+        public void onDrawerOpened(final View drawerView) {
+            super.onDrawerOpened(drawerView);
+            invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            updateToolbar(true);
+            invalidateOptionsMenu();
+        }
+    }
+
 }
