@@ -127,6 +127,24 @@ public class AccountMirakel extends AccountBase {
                 return "Unknown account type";
             }
         }
+
+        public boolean isListEditable() {
+            switch (this) {
+            case CALDAV:
+                return false;
+            case LOCAL:
+                return true;
+            case TASKWARRIOR:
+                return true;
+            case ALL:
+            default:
+                throw new RuntimeException("Unknown account type");
+            }
+        }
+
+        public boolean isListDeletable() {
+            return isListEditable();
+        }
     }
 
     public static final String ACCOUNT_TYPE_ALL = "universe.all";
@@ -187,6 +205,10 @@ public class AccountMirakel extends AccountBase {
 
     public static List<AccountMirakel> all() {
         return new MirakelQueryBuilder(context).getList(AccountMirakel.class);
+    }
+
+    public static long count() {
+        return new MirakelQueryBuilder(context).count(AccountMirakel.URI);
     }
 
     /**

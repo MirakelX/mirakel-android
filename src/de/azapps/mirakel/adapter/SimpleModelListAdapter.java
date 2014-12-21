@@ -26,18 +26,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.model.R;
 
 import de.azapps.mirakel.model.ModelBase;
 
 import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.cursorToObject;
 
-/**
- * Created by az on 12/10/14.
- */
 public class SimpleModelListAdapter<T extends ModelBase> extends CursorAdapter {
     private final LayoutInflater mInflater;
     private final Class<T> tClass;
+    private Optional<Integer> headerTextColor = Optional.absent();
 
     public SimpleModelListAdapter(final Context context, final Cursor c, final int flags,
                                   final Class<T> tClass) {
@@ -46,11 +47,20 @@ public class SimpleModelListAdapter<T extends ModelBase> extends CursorAdapter {
         this.tClass = tClass;
     }
 
+    public SimpleModelListAdapter(final Context context, final Cursor c, final int flags,
+                                  final Class<T> tClass, final int headerTextColor) {
+        this(context, c, flags, tClass);
+        this.headerTextColor = Optional.of(headerTextColor);
+    }
+
     @Override
     public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
         final View view = mInflater.inflate(R.layout.row_simple_list_adapter, null);
         final ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
+        if (headerTextColor.isPresent()) {
+            viewHolder.header_text.setTextColor(headerTextColor.get());
+        }
         return view;
     }
 

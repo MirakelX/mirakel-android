@@ -764,4 +764,10 @@ public class ListMirakel extends ListBase {
         }
     };
 
+    public boolean isEditable() {
+        return getAccount().getType().isListEditable();
+    }
+    public boolean isDeletable() {
+        return getAccount().getType().isListDeletable();
+    }
 }
