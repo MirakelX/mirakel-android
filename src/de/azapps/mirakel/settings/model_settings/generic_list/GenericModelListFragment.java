@@ -34,7 +34,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.shamanland.fab.FloatingActionButton;
@@ -158,12 +157,7 @@ public class GenericModelListFragment extends PreferenceFragment implements View
         fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
         fab.setOnClickListener(this);
         fab.setVisibility(mCallbacks.hasFab() ? View.VISIBLE : View.GONE);
-        if (mCallbacks.getAdapter(this) instanceof SettingsGroupAdapter) {
-            final FrameLayout outerBox = (FrameLayout) listView.getParent().getParent();
-            ((ViewGroup) listView.getParent()).removeView(listView);
-            outerBox.removeViewAt(0);
-            outerBox.addView(listView);
-        } else {
+        if (!(mCallbacks.getAdapter(this) instanceof SettingsGroupAdapter)) {
             listView.addItemDecoration(new DividerItemDecoration(rootView.getContext(), null, false, false));
         }
         return rootView;

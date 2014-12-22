@@ -114,7 +114,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     @NonNull
     private SpecialListsBaseProperty property;
     @NonNull
-    private ArrayList<Integer> backStack;
+    private ArrayList<Integer> backStack = new ArrayList<>();
 
 
     public static EditDialogFragment newInstance(@NonNull final SpecialList list,

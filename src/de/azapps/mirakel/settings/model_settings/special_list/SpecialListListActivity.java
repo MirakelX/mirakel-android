@@ -19,10 +19,10 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 
 import com.google.common.base.Optional;
 
@@ -39,13 +39,13 @@ import static com.google.common.base.Optional.of;
 public class SpecialListListActivity extends GenericModelListActivity<SpecialList> {
     @Override
     protected boolean isSupport() {
-        return true;
+        return false;
     }
 
 
     @NonNull
     @Override
-    protected Optional<Fragment> getSupportDetailFragment(final @NonNull SpecialList item) {
+    protected Optional<Fragment> getDetailFragment(final @NonNull SpecialList item) {
         return of((Fragment)new SpecialListDetailFragment());
     }
 

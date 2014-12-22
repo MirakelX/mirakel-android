@@ -34,10 +34,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.google.common.base.Optional;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.SwipeLinearLayout;
+import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 
 public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdapter.ViewHolder>
@@ -48,13 +56,15 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
 
     private Map<String, Integer> dependencis = new HashMap<>();
+    @NonNull
+    private Optional<SwipeLinearLayout.OnItemRemoveListener> onRemove = absent();
 
     public SettingsGroupAdapter(final @NonNull PreferenceScreen preferenceScreen) {
         screen = preferenceScreen;
         screen.setOnPreferenceChangeListener(this);
 
         final int margin = (int) (screen.getContext().getResources().getDimension(
-                                R.dimen.padding_list_item));
+                                      R.dimen.padding_list_item));
         params.setMargins(margin, (int) (margin * 0.5), margin, 0);
 
     }
@@ -71,6 +81,10 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         return new ViewHolder(wrapper);
     }
 
+    public void setRemoveListener(final @Nullable SwipeLinearLayout.OnItemRemoveListener onRemove) {
+        this.onRemove = fromNullable(onRemove);
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Preference preference = screen.getPreference(position);
@@ -82,7 +96,10 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
                 v.setElevation(5.0F);
             }
             v.setLayoutParams(params);
-            final LinearLayout ll = new LinearLayout(holder.itemView.getContext());
+            final SwipeLinearLayout ll = new SwipeLinearLayout(holder.itemView.getContext());
+            if (onRemove.isPresent()) {
+                ll.setOnItemRemovedListener(onRemove.get());
+            }
             ll.setOrientation(LinearLayout.VERTICAL);
             ll.addView(preference.getView(null, null));
             final PreferenceGroup group = (PreferenceGroup)preference;
@@ -115,7 +132,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
             }
         });
         final View v = preference.getView(null, null);
-        v.setOnClickListener(new View.OnClickListener() {
+        final View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 final Integer pos = findPreferenceScreenForPreference(preference.getKey(), null);
@@ -126,7 +143,12 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
                     notifyItemChanged(position);
                 }
             }
-        });
+        };
+        if ((preference.getKey() != null) &&
+            preference.getKey().startsWith(String.valueOf(SwipeLinearLayout.SWIPEABLE_VIEW))) {
+            v.setTag(SwipeLinearLayout.SWIPEABLE_VIEW, onClick);
+        }
+        v.setOnClickListener(onClick);
         return v;
     }
 
