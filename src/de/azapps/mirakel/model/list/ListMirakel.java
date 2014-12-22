@@ -764,6 +764,9 @@ public class ListMirakel extends ListBase {
         }
     };
 
+    public boolean isStub() {
+        return getId() == 0;
+    }
     public boolean isEditable() {
         return getAccount().getType().isListEditable();
     }

@@ -27,8 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.common.base.Optional;
-
 import de.azapps.mirakel.model.R;
 
 import de.azapps.mirakel.model.ModelBase;
@@ -38,29 +36,26 @@ import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.cursorTo
 public class SimpleModelListAdapter<T extends ModelBase> extends CursorAdapter {
     private final LayoutInflater mInflater;
     private final Class<T> tClass;
-    private Optional<Integer> headerTextColor = Optional.absent();
+    private final int layout;
 
-    public SimpleModelListAdapter(final Context context, final Cursor c, final int flags,
+    public SimpleModelListAdapter(final Context context, final Cursor cursor, final int flags,
                                   final Class<T> tClass) {
-        super(context, c, flags);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.tClass = tClass;
+        this(context, cursor, flags, tClass,  R.layout.simple_list_row);
     }
 
-    public SimpleModelListAdapter(final Context context, final Cursor c, final int flags,
-                                  final Class<T> tClass, final int headerTextColor) {
-        this(context, c, flags, tClass);
-        this.headerTextColor = Optional.of(headerTextColor);
+    public SimpleModelListAdapter(final Context context, final Cursor cursor, final int flags,
+                                  final Class<T> tClass, final int layout) {
+        super(context, cursor, flags);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.tClass = tClass;
+        this.layout = layout;
     }
 
     @Override
     public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
-        final View view = mInflater.inflate(R.layout.row_simple_list_adapter, null);
+        final View view = mInflater.inflate(layout, null);
         final ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
-        if (headerTextColor.isPresent()) {
-            viewHolder.header_text.setTextColor(headerTextColor.get());
-        }
         return view;
     }
 
