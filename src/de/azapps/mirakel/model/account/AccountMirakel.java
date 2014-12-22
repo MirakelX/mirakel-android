@@ -247,7 +247,7 @@ public class AccountMirakel extends AccountBase {
         }
         for (final Account a : accounts) {
             if (allowedAccounts.contains(a.type)) {
-                Log.d(TAG, "is supportet Account");
+                Log.d(TAG, "is supported Account");
                 if (!map.containsKey(a.name)) {
                     // Add new account here....
                     AccountMirakel.newAccount(a.name,
