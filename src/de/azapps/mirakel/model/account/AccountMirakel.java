@@ -52,6 +52,9 @@ import de.azapps.tools.Log;
 import static com.google.common.base.Optional.fromNullable;
 
 public class AccountMirakel extends AccountBase {
+    private static final List<Integer> MOVABLE_TO_ACCOUNT_TYPES = new ArrayList<>(Arrays.asList(
+                ACCOUNT_TYPES.LOCAL.toInt(), ACCOUNT_TYPES.TASKWARRIOR.toInt()));
+
     public enum ACCOUNT_TYPES {
         ALL, CALDAV, LOCAL, TASKWARRIOR;
 
@@ -207,12 +210,17 @@ public class AccountMirakel extends AccountBase {
         return new MirakelQueryBuilder(context).getList(AccountMirakel.class);
     }
 
-    public static long count() {
-        return new MirakelQueryBuilder(context).count(AccountMirakel.URI);
+    public static long countMovableTo() {
+        return allMovableToMQB().count(AccountMirakel.URI);
+    }
+
+    private static MirakelQueryBuilder allMovableToMQB() {
+        return new MirakelQueryBuilder(context).and(TYPE, Operation.IN, MOVABLE_TO_ACCOUNT_TYPES);
     }
 
     /**
      * This is a hack to add the "All Accounts" item in the Spinner
+     *
      * @return
      */
     public static Cursor allCursorWithAllAccounts() {
@@ -223,7 +231,7 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static Cursor allCursor() {
-        return new MirakelQueryBuilder(context).query(MirakelInternalContentProvider.ACCOUNT_URI);
+        return allMovableToMQB().query(MirakelInternalContentProvider.ACCOUNT_URI);
     }
 
     public static List<AccountMirakel> getEnabled(final boolean isEnabled) {

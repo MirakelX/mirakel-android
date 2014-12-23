@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.model.list;
 
-import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.SharedPreferences;
@@ -73,10 +72,10 @@ public class ListMirakel extends ListBase {
         }
     }
 
-    public static final String[] allColumns = { ModelBase.ID,
-                                                ModelBase.NAME, SORT_BY_FIELD, DatabaseHelper.CREATED_AT,
-                                                DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
-                                                RGT, COLOR, ACCOUNT_ID
+    public static final String[] allColumns = {ModelBase.ID,
+                                               ModelBase.NAME, SORT_BY_FIELD, DatabaseHelper.CREATED_AT,
+                                               DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
+                                               RGT, COLOR, ACCOUNT_ID
                                               };
 
     public enum SORT_BY {
@@ -116,6 +115,7 @@ public class ListMirakel extends ListBase {
             }
         }
     }
+
     public static final Uri URI = MirakelInternalContentProvider.LIST_URI;
 
 
@@ -191,7 +191,7 @@ public class ListMirakel extends ListBase {
         cols[allColumns.length] = "COUNT(*)-1 AS level";
         final Cursor cursor = query(MirakelInternalContentProvider.LISTS_SORT_URI, cols, "n." + LFT
                                     + " BETWEEN p." + LFT + " AND p." + RGT + " " + " AND NOT n."
-                                    + DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE , null, "n." + LFT );
+                                    + DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE, null, "n." + LFT);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             lists.add(new ListMirakel(cursor));
@@ -276,7 +276,7 @@ public class ListMirakel extends ListBase {
     @NonNull
     public static Optional<ListMirakel> findByName(final String name,
             final AccountMirakel account) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(NAME,
+        final MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(NAME,
                 Operation.EQ, name);
         if (account != null) {
             qb.and(ACCOUNT_ID, Operation.EQ, account);
@@ -288,11 +288,12 @@ public class ListMirakel extends ListBase {
 
     @NonNull
     public static ListMirakel getInboxList(final AccountMirakel account) {
-        final Optional<ListMirakel> l = new MirakelQueryBuilder(context).and(NAME, Operation.EQ,
+        final Optional<ListMirakel> listMirakelOptional = new MirakelQueryBuilder(context).and(NAME,
+                Operation.EQ,
                 context.getString(R.string.inbox)).and(ACCOUNT_ID, Operation.EQ,
                         account).get(ListMirakel.class);
-        if (l.isPresent()) {
-            return l.get();
+        if (listMirakelOptional.isPresent()) {
+            return listMirakelOptional.get();
         }
         try {
             return newList(context.getString(R.string.inbox), SORT_BY.OPT, account);
@@ -332,31 +333,35 @@ public class ListMirakel extends ListBase {
     }
 
     @NonNull
-    private static ListMirakel safeNewList(String name, final int iteration) {
+    private static ListMirakel safeNewList(String name, final AccountMirakel accountMirakel,
+                                           final int iteration) {
         final ListMirakel listMirakel;
         try {
             if (iteration > 0) {
-                name += "_" + iteration;
+                name += " " + iteration;
             }
-            listMirakel = ListMirakel.newList(name, SORT_BY.OPT);
-        } catch (final ListMirakel.ListAlreadyExistsException e) {
-            return safeNewList(name, iteration + 1);
+            listMirakel = ListMirakel.newList(name, accountMirakel);
+        } catch (final ListMirakel.ListAlreadyExistsException ignored) {
+            return safeNewList(name, accountMirakel, iteration + 1);
         }
         return listMirakel;
     }
 
     @NonNull
     public static ListMirakel saveNewList(final String name) {
-        return safeNewList(name, 0);
+        return safeNewList(name, AccountMirakel.getLocal(), 0);
+    }
+
+    @NonNull
+    public static ListMirakel saveNewList(final String name, final AccountMirakel accountMirakel) {
+        return safeNewList(name, accountMirakel, 0);
     }
 
     /**
      * Create and insert a new List
      *
-     * @param name
-     *            Name of the List
-     * @param sort_by
-     *            the default sorting
+     * @param name    Name of the List
+     * @param sort_by the default sorting
      * @return new List
      */
     @NonNull
@@ -364,6 +369,12 @@ public class ListMirakel extends ListBase {
                                        final SORT_BY sort_by) throws ListAlreadyExistsException {
         return newList(name, sort_by,
                        MirakelModelPreferences.getDefaultAccount());
+    }
+
+    @NonNull
+    private static ListMirakel newList(final String name,
+                                       final AccountMirakel account) throws ListAlreadyExistsException {
+        return newList(name, SORT_BY.OPT, account);
     }
 
     @NonNull
@@ -431,6 +442,7 @@ public class ListMirakel extends ListBase {
 
     /**
      * Use this function only if you know what you are doing
+     *
      * @param el Json Object
      * @return List
      */
@@ -491,7 +503,7 @@ public class ListMirakel extends ListBase {
 
     @NonNull
     public static ListMirakel safeGet(final int listId) {
-        Optional<ListMirakel> l = get(listId);
+        final Optional<ListMirakel> l = get(listId);
         if (!l.isPresent()) {
             return safeFirst();
         } else {
@@ -517,6 +529,13 @@ public class ListMirakel extends ListBase {
                           final int color, final int account) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
               color, account);
+    }
+
+    public static ListMirakel getStub() {
+        final ListMirakel stub = new ListMirakel();
+        stub.setName(context.getString(R.string.stub_list_name));
+        stub.setAccount(AccountMirakel.getLocal());
+        return stub;
     }
 
     /**
@@ -591,11 +610,12 @@ public class ListMirakel extends ListBase {
     public void save() {
         save(true);
     }
+
     /**
      * Update the List in the Database
      *
      * @param log, save a undo_log
-     *            The List
+     *             The List
      */
     public void save(final boolean log) {
         final SharedPreferences.Editor editor = MirakelPreferences.getEditor();
@@ -758,6 +778,7 @@ public class ListMirakel extends ListBase {
         public ListMirakel createFromParcel(final Parcel source) {
             return new ListMirakel(source);
         }
+
         @Override
         public ListMirakel[] newArray(final int size) {
             return new ListMirakel[size];
@@ -767,9 +788,11 @@ public class ListMirakel extends ListBase {
     public boolean isStub() {
         return getId() == 0;
     }
+
     public boolean isEditable() {
         return getAccount().getType().isListEditable();
     }
+
     public boolean isDeletable() {
         return getAccount().getType().isListDeletable();
     }
