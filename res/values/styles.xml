@@ -42,8 +42,10 @@
         <item name="colorCAB">#00BCD2</item>
         <item name="colorCABStatus">#0096A8</item>
 
-        <item name="colorTextGrey">#808080</item>
-        <item name="colorTextBlack">#000000</item>
+        <!-- Black 54% -->
+        <item name="colorTextGrey">#8a000000</item>
+        <!-- Black 87% -->
+        <item name="colorTextBlack">#de000000</item>
         <item name="colorBackground">#E6E6E6</item>
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
