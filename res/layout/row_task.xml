@@ -31,7 +31,8 @@
         custom:cardCornerRadius="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout
             android:orientation="horizontal"

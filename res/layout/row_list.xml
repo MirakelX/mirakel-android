@@ -20,11 +20,12 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:minHeight="40dp"
-    android:padding="@dimen/padding_list_item">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/clickable_item_size"
+    android:paddingStart="@dimen/padding_default"
+    android:paddingEnd="@dimen/padding_default">
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,8 +33,7 @@
         android:layout_weight="1"
         android:id="@+id/list_name"
         android:text="List"
-        android:textAppearance="@style/TextAppearance.Regular.Small"
-        android:layout_gravity="center_vertical"/>
+        style="@style/ListsFragmentTextStyle" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -41,6 +41,5 @@
         android:layout_weight="0"
         android:id="@+id/list_count"
         android:text="1"
-        android:textAppearance="@style/TextAppearance.Regular.Small"
-        android:layout_gravity="center_vertical"/>
+        style="@style/ListsFragmentTextStyle" />
 </LinearLayout>

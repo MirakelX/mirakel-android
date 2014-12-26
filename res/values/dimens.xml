@@ -22,11 +22,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="priorityDoneSize">50dp</dimen>
+    <dimen name="priorityDoneSize">@dimen/clickable_item_size</dimen>
+    <dimen name="clickable_item_size">48dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
-    <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_regular">16sp</dimen>
     <dimen name="dialog_min_width">600dp</dimen>
+    <dimen name="padding_default">16dp</dimen>
     
     <integer name="anim_snackbar_duration">300</integer>
 

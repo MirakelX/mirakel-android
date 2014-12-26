@@ -45,7 +45,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import com.nispok.snackbar.listeners.EventListener;
 
 import java.util.ArrayList;
-import de.azapps.mirakel.adapter.OnItemClickedListener;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakel.ThemeManager;
@@ -54,7 +54,6 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakelandroid.R;
-import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     ListAdapter.MultiSelectCallbacks, ActionMode.Callback, ActionClickListener {
