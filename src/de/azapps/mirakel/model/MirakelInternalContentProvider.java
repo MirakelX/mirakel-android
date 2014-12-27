@@ -363,7 +363,6 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                 where = "";
                 args = new ArrayList<>();
             }
-            // TODO Account centric view
             c = getReadableDatabase().rawQuery(
                     "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
                     + where + " group by lists._id\n"

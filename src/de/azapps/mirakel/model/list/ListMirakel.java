@@ -790,10 +790,15 @@ public class ListMirakel extends ListBase {
     }
 
     public boolean isEditable() {
-        return getAccount().getType().isListEditable();
+        if (getId() < 0) {
+            return true;
+        } else {
+            return getAccount().getType().isListEditable();
+        }
     }
 
     public boolean isDeletable() {
-        return getAccount().getType().isListDeletable();
+        // Same as isEditable
+        return isEditable();
     }
 }
