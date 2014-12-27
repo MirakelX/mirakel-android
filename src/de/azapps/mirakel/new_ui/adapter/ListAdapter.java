@@ -29,6 +29,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -48,7 +49,8 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     private final SparseBooleanArray selectedItems = new SparseBooleanArray();
 
     public ListAdapter(final Context context, final Cursor cursor,
-                       final OnItemClickedListener<ListMirakel> itemClickListener, MultiSelectCallbacks multiSelectCallbacks) {
+                       final OnItemClickedListener<ListMirakel> itemClickListener,
+                       MultiSelectCallbacks multiSelectCallbacks) {
         super(context, cursor);
         this.multiSelectCallbacks = multiSelectCallbacks;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -80,10 +82,18 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         } else {
             holder.view.setBackgroundColor(Color.TRANSPARENT);
         }
+        if (selectMode) {
+            holder.dragImage.setVisibility(View.VISIBLE);
+        } else {
+            holder.dragImage.setVisibility(View.GONE);
+
+        }
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
         View.OnLongClickListener {
+        @InjectView(R.id.row_list_drag)
+        ImageView dragImage;
         @InjectView(R.id.list_name)
         TextView name;
         @InjectView(R.id.list_count)
@@ -145,6 +155,7 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     public void setSelectMode(final boolean selectMode) {
         this.selectMode = selectMode;
         multiSelectCallbacks.onSelectModeChanged(selectMode);
+        notifyDataSetChanged();
     }
 
     public void toggleSelection(final int pos) {
@@ -198,5 +209,13 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         public void onAddSelectedItem(ListMirakel listMirakel);
 
         public void onRemoveSelectedItem(ListMirakel listMirakel);
+    }
+
+    @Override
+    /**
+     * We need to override this for the DragSortRecycler
+     */
+    public long getItemId(int position) {
+        return position;
     }
 }

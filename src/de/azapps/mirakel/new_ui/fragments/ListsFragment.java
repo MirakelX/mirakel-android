@@ -20,10 +20,12 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -38,6 +40,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.emtronics.dragsortrecycler.DragSortRecycler;
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -50,22 +53,25 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakelandroid.R;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
-    ListAdapter.MultiSelectCallbacks, ActionMode.Callback, ActionClickListener {
+    ListAdapter.MultiSelectCallbacks, ActionMode.Callback, ActionClickListener,
+    DragSortRecycler.ItemMovedInterface {
 
     private static final String ARGUMENT_ACCOUNT = "ARGUMENT_ACCOUNT";
     private ListAdapter mAdapter;
     private OnItemClickedListener<ListMirakel> mListener;
-    private ActionMode actionMode;
     @NonNull
     private Optional<AccountMirakel> accountMirakelOptional = Optional.absent();
     @InjectView(R.id.list_lists)
     RecyclerView mListView;
+    @Nullable
     private ActionMode mActionMode;
     private int numberOfSelectedEditables = 0;
     private int numberOfSelectedDeletables = 0;
@@ -104,6 +110,16 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         getLoaderManager().initLoader(0, null, this);
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mListView.setItemAnimator(null);
+
+        final DragSortRecycler dragSortRecycler = new DragSortRecycler();
+        dragSortRecycler.setViewHandleId(R.id.row_list_drag);
+
+        dragSortRecycler.setItemMoveInterface(this);
+
+        mListView.addItemDecoration(dragSortRecycler);
+        mListView.addOnItemTouchListener(dragSortRecycler);
+        mListView.setOnScrollListener(dragSortRecycler.getScrollListener());
     }
 
 
@@ -283,5 +299,39 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActionClicked(final Snackbar snackbar) {
         // TODO implement undo
+    }
+
+    @Override
+    public void moveElement(final int from, final int to) {
+        final Cursor cursor = mAdapter.getCursor();
+        cursor.moveToPosition(from);
+        final ListMirakel fromList = new ListMirakel(cursor);
+        cursor.moveToPosition(to);
+        final ListMirakel toList = new ListMirakel(cursor);
+
+        for (final String table : new String[] {SpecialList.TABLE, ListMirakel.TABLE}) {
+            final ContentValues cv = new ContentValues();
+            cv.put("TABLE", table);
+            if (to < from) {// move list up
+                getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI,
+                        cv,
+                        ListMirakel.LFT + " >= "
+                        + toList.getLft() + " and " + ListMirakel.LFT + " < "
+                        + fromList.getLft(), null);
+            } else if (to > from) {// move list down
+                getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI,
+                        cv,
+                        ListMirakel.LFT + " > "
+                        + fromList.getLft() + " and " + ListMirakel.LFT + " <= "
+                        + toList.getLft(), null);
+            } else {
+                return;
+            }
+            fromList.setLft(toList.getLft());
+            fromList.save();
+            getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI,
+                    cv,
+                    null, null);
+        }
     }
 }
