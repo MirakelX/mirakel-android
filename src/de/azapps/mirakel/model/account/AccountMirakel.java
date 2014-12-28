@@ -231,6 +231,9 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static Cursor allCursor() {
+        return new MirakelQueryBuilder(context).query(MirakelInternalContentProvider.ACCOUNT_URI);
+    }
+    public static Cursor allMovableToCursor() {
         return allMovableToMQB().query(MirakelInternalContentProvider.ACCOUNT_URI);
     }
 
