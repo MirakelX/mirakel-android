@@ -75,7 +75,7 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
 public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase>,
-    EventListener {
+    EventListener, LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
@@ -268,6 +268,27 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             }
         });
     }
+
+    @Override
+    public void lockDrawer() {
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
+            @Override
+            public void apply(final DrawerLayout drawerLayout) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            }
+        });
+    }
+
+    @Override
+    public void unlockDrawer() {
+        withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
+            @Override
+            public void apply(final DrawerLayout drawerLayout) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+        });
+    }
+
 
     private void updateToolbar(final boolean showSwitcher) {
         if (actionBarViewHolder.actionbarSwitcher != null) {

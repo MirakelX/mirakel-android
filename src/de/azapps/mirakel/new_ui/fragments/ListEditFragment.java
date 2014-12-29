@@ -102,7 +102,7 @@ public class ListEditFragment extends DialogFragment implements AdapterView.OnIt
         // You can only move new lists
         if (listMirakel.isStub() && AccountMirakel.countMovableTo() > 1) {
             final SimpleModelListAdapter<AccountMirakel> adapter = new SimpleModelListAdapter<>(getActivity(),
-                    AccountMirakel.allCursor(), 0, AccountMirakel.class);
+                    AccountMirakel.allMovableToCursor(), 0, AccountMirakel.class);
             listEditAccount.setAdapter(adapter);
             listEditAccount.setOnItemSelectedListener(this);
             listEditAccount.setVisibility(View.VISIBLE);

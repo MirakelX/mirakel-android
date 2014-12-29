@@ -57,6 +57,7 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.new_ui.activities.LockableDrawer;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakelandroid.R;
 
@@ -114,6 +115,18 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         final DragSortRecycler dragSortRecycler = new DragSortRecycler();
         dragSortRecycler.setViewHandleId(R.id.row_list_drag);
+        dragSortRecycler.setDragStateChangedListener(new DragSortRecycler.OnDragStateChangedListener() {
+            @Override
+            public void onDragStart() {
+                ((LockableDrawer) getActivity()).lockDrawer();
+            }
+
+            @Override
+            public void onDragStop() {
+                ((LockableDrawer) getActivity()).unlockDrawer();
+
+            }
+        });
 
         dragSortRecycler.setItemMoveInterface(this);
 
@@ -128,12 +141,12 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onAttach(activity);
         try {
             mListener = (OnItemClickedListener<ListMirakel>) activity;
-            if (!(activity instanceof EventListener)) {
+            if (!(activity instanceof EventListener || activity instanceof LockableDrawer)) {
                 throw new ClassCastException();
             }
         } catch (final ClassCastException ignored) {
             throw new ClassCastException(activity.toString() +
-                                         " must implement OnListSelectedListener and EventListener");
+                                         " must implement OnListSelectedListener, EventListener and LockableDrawer");
         }
     }
 
@@ -180,6 +193,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (selectMode) {
             mActionMode = getActivity().startActionMode(this);
         } else {
+            assert mActionMode != null;
             mActionMode.finish();
         }
     }
@@ -199,6 +213,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onAddSelectedItem(final ListMirakel listMirakel) {
+        assert mActionMode != null;
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         if (listMirakel.isEditable()) {
             numberOfSelectedEditables++;
@@ -220,6 +235,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onRemoveSelectedItem(final ListMirakel listMirakel) {
+        assert mActionMode != null;
         final int count = mAdapter.getSelectedItemCount();
         onSelectedItemCountChanged(count);
         if (count > 0) {
@@ -236,6 +252,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void onSelectedItemCountChanged(final int itemCount) {
+        assert mActionMode != null;
         if (itemCount == 0) {
             mActionMode.finish();
         } else {
@@ -281,7 +298,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         default:
             return false;
         }
-        mActionMode.finish();
+        mode.finish();
         return true;
     }
 
