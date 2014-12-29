@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -65,9 +66,18 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration implements
 
     ItemMovedInterface moveInterface;
 
+    private boolean isDragging;
+    @Nullable
+    OnDragStateChangedListener dragStateChangedListener;
+
 
     public interface ItemMovedInterface {
         public void moveElement(int from, int to);
+    }
+
+    public interface OnDragStateChangedListener {
+        public void onDragStart();
+        public void onDragStop();
     }
 
     private void debugLog(String log) {
@@ -273,6 +283,7 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration implements
 
             }
 
+            setIsDragging(dragging);
             if (dragging) {
                 debugLog("Started Drag");
 
@@ -289,6 +300,22 @@ public class DragSortRecycler extends RecyclerView.ItemDecoration implements
             }
         }
         return false;
+    }
+
+    private void setIsDragging(final boolean dragging) {
+        if (dragging != isDragging) {
+            isDragging = dragging;
+            if (dragStateChangedListener != null) {
+                if (isDragging) {
+                    dragStateChangedListener.onDragStart();
+                } else {
+                    dragStateChangedListener.onDragStop();
+                }
+            }
+        }
+    }
+    public void setDragStateChangedListener(final OnDragStateChangedListener dragStateChangedListener) {
+        this.dragStateChangedListener = dragStateChangedListener;
     }
 
     @Override
