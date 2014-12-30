@@ -63,7 +63,7 @@ import de.azapps.mirakelandroid.R;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     ListAdapter.MultiSelectCallbacks, ActionMode.Callback, ActionClickListener,
-    DragSortRecycler.ItemMovedInterface {
+    DragSortRecycler.OnItemMovedListener {
 
     private static final String ARGUMENT_ACCOUNT = "ARGUMENT_ACCOUNT";
     private ListAdapter mAdapter;
@@ -115,7 +115,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         final DragSortRecycler dragSortRecycler = new DragSortRecycler();
         dragSortRecycler.setViewHandleId(R.id.row_list_drag);
-        dragSortRecycler.setDragStateChangedListener(new DragSortRecycler.OnDragStateChangedListener() {
+        dragSortRecycler.setOnDragStateChangedListener(new DragSortRecycler.OnDragStateChangedListener() {
             @Override
             public void onDragStart() {
                 ((LockableDrawer) getActivity()).lockDrawer();
@@ -128,7 +128,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         });
 
-        dragSortRecycler.setItemMoveInterface(this);
+        dragSortRecycler.setOnItemMovedListener(this);
 
         mListView.addItemDecoration(dragSortRecycler);
         mListView.addOnItemTouchListener(dragSortRecycler);
@@ -319,7 +319,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void moveElement(final int from, final int to) {
+    public void onItemMoved(final int from, final int to) {
         final Cursor cursor = mAdapter.getCursor();
         cursor.moveToPosition(from);
         final ListMirakel fromList = new ListMirakel(cursor);

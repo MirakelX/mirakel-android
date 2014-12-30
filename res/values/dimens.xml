@@ -29,6 +29,7 @@
     <dimen name="text_size_regular">16sp</dimen>
     <dimen name="dialog_min_width">600dp</dimen>
     <dimen name="padding_default">16dp</dimen>
+    <dimen name="small_icon_size">24dp</dimen>
     
     <integer name="anim_snackbar_duration">300</integer>
 

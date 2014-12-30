@@ -21,8 +21,14 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -32,6 +38,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -40,8 +47,10 @@ import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.Log;
 
 public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
+    private static final String TAG = "ListAdapter";
     final LayoutInflater mInflater;
     private final OnItemClickedListener<ListMirakel> itemClickListener;
     private boolean selectMode = false;
@@ -69,7 +78,10 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         final ListMirakel listMirakel = new ListMirakel(cursor);
         holder.list = listMirakel;
         holder.name.setText(listMirakel.getName());
-        long count = cursor.getLong(cursor.getColumnIndex("task_count"));
+        // First hide the icon and show it if it exists
+        holder.icon.setVisibility(View.GONE);
+        new UpdateIconTask(mContext).execute(holder);
+        final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
         if (count != -1) {
             holder.count.setText(String.valueOf(count));
         } else {
@@ -78,15 +90,14 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
 
         holder.position = position;
         if (selectedItems.get(position)) {
-            holder.view.setBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+            holder.itemView.setBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
         } else {
-            holder.view.setBackgroundColor(Color.TRANSPARENT);
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
         if (selectMode) {
             holder.dragImage.setVisibility(View.VISIBLE);
         } else {
             holder.dragImage.setVisibility(View.GONE);
-
         }
     }
 
@@ -94,17 +105,17 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         View.OnLongClickListener {
         @InjectView(R.id.row_list_drag)
         ImageView dragImage;
+        @InjectView(R.id.row_list_icon)
+        ImageView icon;
         @InjectView(R.id.list_name)
         TextView name;
         @InjectView(R.id.list_count)
         TextView count;
-        View view;
         ListMirakel list;
         int position;
 
         public ListViewHolder(final View view) {
             super(view);
-            this.view = view;
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
             ButterKnife.inject(this, view);
@@ -133,20 +144,65 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
     }
 
     private static class UpdateTaskCountTask extends AsyncTask<ListViewHolder, Void, Long> {
-        private ListViewHolder h;
+        private ListViewHolder viewHolder;
 
         @Override
         protected Long doInBackground(final ListViewHolder... holders) {
-            h = holders[0];
+            viewHolder = holders[0];
 
-            return h.list.countTasks();
+            return viewHolder.list.countTasks();
         }
 
         @Override
         protected void onPostExecute(final Long result) {
-            h.count.setText(String.valueOf(result));
+            viewHolder.count.setText(String.valueOf(result));
         }
 
+    }
+
+    private static class UpdateIconTask extends AsyncTask<ListViewHolder, Void, Drawable> {
+        private ListViewHolder viewHolder;
+        private Context mContext;
+
+        private UpdateIconTask(Context mContext) {
+            this.mContext = mContext;
+        }
+
+        @Override
+        @Nullable
+        protected Drawable doInBackground(final ListViewHolder... holders) {
+            viewHolder = holders[0];
+            final ListMirakel listMirakel = viewHolder.list;
+
+            if (listMirakel.getIconPath().isPresent()) {
+                final Bitmap bitmap;
+                final String path = listMirakel.getIconPath().get();
+                if (path.startsWith("file:///android_asset/")) {
+                    try {
+                        bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(path.replace("file:///android_asset/",
+                                                            "")));
+                    } catch (final IOException e) {
+                        Log.w(TAG, "Image not found", e);
+                        return null;
+                    }
+                } else {
+                    bitmap = BitmapFactory.decodeFile(listMirakel.getIconPath().get());
+                }
+                final BitmapDrawable drawable = new BitmapDrawable(mContext.getResources(), bitmap);
+                drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.MULTIPLY);
+                return drawable;
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(@Nullable final Drawable drawable) {
+            if (drawable != null) {
+                viewHolder.icon.setImageDrawable(drawable);
+                viewHolder.icon.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 
