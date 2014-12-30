@@ -463,9 +463,20 @@ public class Task extends TaskBase {
     // helper methods
 
     public static MirakelQueryBuilder addBasicFiler(final MirakelQueryBuilder qb) {
+        // If you change this do not forget to change the getBasicFilter() too
         return qb.and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
                       SYNC_STATE.DELETE.toInt()).and(RECURRING_SHOWN, Operation.EQ,
                               true);
+    }
+
+    public static String getQualifiedColumn(final String column) {
+        return TABLE + '.' + column;
+    }
+
+    public static String getBasicFilter() {
+        // If you change this do not forget to change the addBasicFiler() too
+        return ' ' + getQualifiedColumn(DatabaseHelper.SYNC_STATE_FIELD) + "!=" + SYNC_STATE.DELETE.toInt()
+               + " AND " +  getQualifiedColumn(RECURRING_SHOWN) + "= 1 ";
     }
 
     public static void resetSyncState(final List<Task> tasks) {

@@ -48,6 +48,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -363,9 +364,20 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                 where = "";
                 args = new ArrayList<>();
             }
+
+            String whereLists = "";
+            // If we hide done tasks
+            if (!MirakelCommonPreferences.showDoneMain()) {
+                if (where.isEmpty()) {
+                    whereLists = " where ";
+                } else {
+                    whereLists = " and ";
+                }
+                whereLists += Task.getBasicFilter() + " AND tasks.done = 0 ";
+            }
             c = getReadableDatabase().rawQuery(
                     "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, icon_path, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
-                    + where + " group by lists._id\n"
+                    + where + whereLists + " group by lists._id\n"
                     +
                     "    UNION\n" +
                     "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, icon_path, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
