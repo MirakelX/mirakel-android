@@ -79,7 +79,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 48;
+    public static final int DATABASE_VERSION = 49;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -1006,6 +1006,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("CREATE VIEW tasks_view AS select " + Task.TABLE + ".*, " + ListMirakel.TABLE +
                        ".account_id AS account_id, " + ListMirakel.TABLE + ".name AS list_name FROM tasks INNER JOIN " +
                        ListMirakel.TABLE + " ON " + Task.TABLE + ".list_id = " + ListMirakel.TABLE + "._id;");
+        case 48:
+            db.execSQL("ALTER TABLE " + ListMirakel.TABLE + " add column "
+                       + ListMirakel.ICON_PATH + " TEXT;");
+            db.execSQL("ALTER TABLE " + SpecialList.TABLE + " add column "
+                       + ListMirakel.ICON_PATH + " TEXT;");
+            db.execSQL("UPDATE " + ListMirakel.TABLE + " SET " + ListMirakel.ICON_PATH +
+                       "='file:///android_asset/list_icons/inbox.png' WHERE " + ModelBase.NAME + "= '" + context.getString(
+                           R.string.inbox) + "';");
+            db.execSQL("UPDATE " + SpecialList.TABLE + " SET " + ListMirakel.ICON_PATH +
+                       "='file:///android_asset/list_icons/today.png' WHERE " + ModelBase.NAME + "= '" + context.getString(
+                           R.string.list_today) + "';");
+            db.execSQL("UPDATE " + SpecialList.TABLE + " SET " + ListMirakel.ICON_PATH +
+                       "='file:///android_asset/list_icons/week.png' WHERE " + ModelBase.NAME + "= '" + context.getString(
+                           R.string.list_week) + "';");
+            db.execSQL("UPDATE " + SpecialList.TABLE + " SET " + ListMirakel.ICON_PATH +
+                       "='file:///android_asset/list_icons/overdue.png' WHERE " + ModelBase.NAME + "= '" +
+                       context.getString(R.string.list_overdue) + "';");
         default:
             break;
         }

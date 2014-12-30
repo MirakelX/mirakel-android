@@ -364,11 +364,11 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                 args = new ArrayList<>();
             }
             c = getReadableDatabase().rawQuery(
-                    "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
+                    "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, icon_path, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
                     + where + " group by lists._id\n"
                     +
                     "    UNION\n" +
-                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
+                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, icon_path, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
                     args.toArray(selectionArgs));
         } else {
             c = builder.query(getReadableDatabase(), projection,

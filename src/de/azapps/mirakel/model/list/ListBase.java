@@ -41,6 +41,7 @@ abstract class ListBase extends ModelBase {
     public final static String COLOR = "color";
     public final static String SORT_BY_FIELD = "sort_by";
     public final static String ACCOUNT_ID = "account_id";
+    public final static String ICON_PATH = "icon_path";
 
 
     @NonNull
@@ -59,6 +60,9 @@ abstract class ListBase extends ModelBase {
     private AccountMirakel accountMirakel;
     protected boolean isSpecial = false;
 
+    @NonNull
+    protected Optional<String> iconPath;
+
     private static final String TAG = "ListBase";
 
     ListBase() {
@@ -68,7 +72,7 @@ abstract class ListBase extends ModelBase {
     ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
              @NonNull final String createdAt, @NonNull final String updatedAt,
              @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-             final int color, @NonNull final AccountMirakel a) {
+             final int color, @NonNull final AccountMirakel a, @NonNull final Optional<String> iconPath) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -78,6 +82,7 @@ abstract class ListBase extends ModelBase {
         this.setRgt(rgt);
         this.setColor(color);
         this.setAccount(a);
+        this.setIconPath(iconPath);
     }
 
     ListBase(final long id, @NonNull final String name) {
@@ -87,7 +92,7 @@ abstract class ListBase extends ModelBase {
     protected ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
                        @NonNull final String createdAt, @NonNull final String updatedAt,
                        @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-                       final int color, final int account) {
+                       final int color, final int account, @NonNull final Optional<String> iconPath) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -97,6 +102,7 @@ abstract class ListBase extends ModelBase {
         this.setRgt(rgt);
         this.setColor(color);
         this.setAccount(account);
+        this.setIconPath(iconPath);
     }
 
     public void setListName(@NonNull final String name) throws ListMirakel.ListAlreadyExistsException {
@@ -160,6 +166,16 @@ abstract class ListBase extends ModelBase {
         this.color = color;
     }
 
+
+    @NonNull
+    public Optional<String> getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(@NonNull Optional<String> iconPath) {
+        this.iconPath = iconPath;
+    }
+
     @NonNull
     public AccountMirakel getAccount() {
         if (this.accountMirakel == null) {
@@ -205,6 +221,7 @@ abstract class ListBase extends ModelBase {
         cv.put(RGT, this.rgt);
         cv.put(COLOR, this.color);
         cv.put(ACCOUNT_ID, this.accountID);
+        cv.put(ICON_PATH, iconPath.orNull());
         return cv;
     }
 
@@ -234,6 +251,7 @@ abstract class ListBase extends ModelBase {
         result = prime * result + this.sortBy.getShort();
         result = prime * result + (this.syncState.hashCode());
         result = prime * result + (this.updatedAt.hashCode());
+        result = prime * result + (this.iconPath.hashCode());
         return result;
     }
 
@@ -277,6 +295,9 @@ abstract class ListBase extends ModelBase {
             return false;
         }
         if (this.syncState != other.syncState) {
+            return false;
+        }
+        if (this.iconPath != other.iconPath) {
             return false;
         }
         return true;

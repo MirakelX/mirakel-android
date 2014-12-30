@@ -54,6 +54,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.task.Task;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 /**
@@ -75,7 +76,7 @@ public class ListMirakel extends ListBase {
     public static final String[] allColumns = {ModelBase.ID,
                                                ModelBase.NAME, SORT_BY_FIELD, DatabaseHelper.CREATED_AT,
                                                DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
-                                               RGT, COLOR, ACCOUNT_ID
+                                               RGT, COLOR, ACCOUNT_ID, ICON_PATH
                                               };
 
     public enum SORT_BY {
@@ -265,7 +266,7 @@ public class ListMirakel extends ListBase {
               c.getString(c.getColumnIndex(DatabaseHelper.UPDATED_AT)),
               SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
-              c.getInt(c.getColumnIndex(ACCOUNT_ID)));
+              c.getInt(c.getColumnIndex(ACCOUNT_ID)), fromNullable(c.getString(c.getColumnIndex(ICON_PATH))));
     }
 
     @NonNull
@@ -382,7 +383,8 @@ public class ListMirakel extends ListBase {
                                       final AccountMirakel account) throws ListAlreadyExistsException {
         final String now = new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US)
         .format(new Date());
-        final ListMirakel l = new ListMirakel(0, name, sort_by, now, now, SYNC_STATE.ADD, 0, 0, 0, account);
+        final ListMirakel l = new ListMirakel(0, name, sort_by, now, now, SYNC_STATE.ADD, 0, 0, 0, account,
+                                              Optional.<String>absent());
         final ListMirakel newList = l.create();
         UndoHistory.logCreate(newList, context);
         return newList;
@@ -518,17 +520,17 @@ public class ListMirakel extends ListBase {
     public ListMirakel(final long id, @NonNull final String name, @NonNull final SORT_BY sort_by,
                        @NonNull final String created_at, @NonNull final String updated_at,
                        @NonNull final SYNC_STATE sync_state, final int lft, final int rgt,
-                       final int color, @NonNull final AccountMirakel account) {
+                       final int color, @NonNull final AccountMirakel account, @NonNull final Optional<String> iconPath) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
-              color, account);
+              color, account, iconPath);
     }
 
     protected ListMirakel(final long id, @NonNull final String name, @NonNull final SORT_BY sort_by,
                           @NonNull final String created_at, @NonNull final String updated_at,
                           @NonNull final SYNC_STATE sync_state, final int lft, final int rgt,
-                          final int color, final int account) {
+                          final int color, final int account, @NonNull final Optional<String> iconPath) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
-              color, account);
+              color, account, iconPath);
     }
 
     public static ListMirakel getStub() {
