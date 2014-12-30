@@ -35,6 +35,7 @@
   <string name="sync_frequency">Frequência</string>
   <string name="sync_frequency_summary">Sincronizar a cada %s minutos</string>
   <string name="sync_frequency_summary_man">Sincronização manual</string>
+  <string name="account_informations">Informações</string>
   <string-array name="sync_types">
     <item>Sincronização CalDAV</item>
     <item>Sincronização Taskwarrior</item>
