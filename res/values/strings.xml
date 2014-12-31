@@ -36,8 +36,14 @@
     <string name="task_tags">Tags:</string>
     <string name="subtask_add">Add subtask…</string>
     <string name="task_new">New task</string>
-    <string name="list_mulitiselect_title">Edit Lists (%s)</string>
-    <string name="list_multiselect_deleted">Deleted %s lists</string>
+    <plurals name="list_multiselect_title">
+        <item quantity="one">1 list selected</item>
+        <item quantity="other">%d lists selected</item>
+    </plurals>
+    <plurals name="list_multiselect_deleted">
+        <item quantity="one">1 list deleted</item>
+        <item quantity="other">%d lists deleted</item>
+    </plurals>
     <string name="list_name">List name</string>
     <string name="list_account">List account</string>
     <string name="list_edit_multiple_names">Different names</string>

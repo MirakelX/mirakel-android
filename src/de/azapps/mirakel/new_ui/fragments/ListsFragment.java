@@ -256,7 +256,8 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (itemCount == 0) {
             mActionMode.finish();
         } else {
-            mActionMode.setTitle(getString(R.string.list_mulitiselect_title, itemCount));
+            mActionMode.setTitle(getResources().getQuantityString(R.plurals.list_mulitiselect_title,
+                                 itemCount));
         }
     }
 
@@ -268,7 +269,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
         }
-        mode.setTitle(getString(R.string.list_mulitiselect_title, mAdapter.getSelectedItemCount()));
+        mode.setTitle(getString(R.string.list_multiselect_title, mAdapter.getSelectedItemCount()));
         return true;
     }
 
@@ -285,7 +286,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
             // TODO implement deleting
             SnackbarManager.show(
                 Snackbar.with(getActivity())
-                .text(getString(R.string.list_multiselect_deleted, selected.size()))
+                .text(getResources().getQuantityText(R.plurals.list_multiselect_deleted, selected.size()))
                 .actionLabel(R.string.undo)
                 .actionListener(this)
                 .eventListener((EventListener) getActivity())
