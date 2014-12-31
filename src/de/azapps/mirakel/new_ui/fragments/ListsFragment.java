@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakel.ThemeManager;
+import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -62,7 +63,8 @@ import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakelandroid.R;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
-    ListAdapter.MultiSelectCallbacks, ActionMode.Callback, ActionClickListener,
+    MultiSelectCursorAdapter.MultiSelectCallbacks<ListMirakel>, ActionMode.Callback,
+    ActionClickListener,
     DragSortRecycler.OnItemMovedListener {
 
     private static final String ARGUMENT_ACCOUNT = "ARGUMENT_ACCOUNT";
@@ -199,7 +201,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public boolean canAddItem(final ListMirakel listMirakel) {
+    public boolean canAddItem(@NonNull final ListMirakel listMirakel) {
         if (!listMirakel.isDeletable() && !listMirakel.isEditable()) {
             SnackbarManager.show(Snackbar.with(getActivity())
                                  .text(R.string.can_not_edit_list)
@@ -212,7 +214,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onAddSelectedItem(final ListMirakel listMirakel) {
+    public void onAddSelectedItem(@NonNull final ListMirakel listMirakel) {
         assert mActionMode != null;
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         if (listMirakel.isEditable()) {
@@ -234,7 +236,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onRemoveSelectedItem(final ListMirakel listMirakel) {
+    public void onRemoveSelectedItem(@NonNull final ListMirakel listMirakel) {
         assert mActionMode != null;
         final int count = mAdapter.getSelectedItemCount();
         onSelectedItemCountChanged(count);
@@ -256,8 +258,8 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (itemCount == 0) {
             mActionMode.finish();
         } else {
-            mActionMode.setTitle(getResources().getQuantityString(R.plurals.list_mulitiselect_title,
-                                 itemCount));
+            mActionMode.setTitle(getResources().getQuantityString(R.plurals.list_multiselect_title,
+                                 itemCount, itemCount));
         }
     }
 
@@ -269,7 +271,8 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
         }
-        mode.setTitle(getString(R.string.list_multiselect_title, mAdapter.getSelectedItemCount()));
+        final int count = mAdapter.getSelectedItemCount();
+        mode.setTitle(getResources().getQuantityString(R.plurals.list_multiselect_title, count, count));
         return true;
     }
 
@@ -284,9 +287,10 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (item.getItemId()) {
         case R.id.menu_delete:
             // TODO implement deleting
+            final int count = selected.size();
             SnackbarManager.show(
                 Snackbar.with(getActivity())
-                .text(getResources().getQuantityText(R.plurals.list_multiselect_deleted, selected.size()))
+                .text(getResources().getQuantityString(R.plurals.list_multiselect_deleted, count, count))
                 .actionLabel(R.string.undo)
                 .actionListener(this)
                 .eventListener((EventListener) getActivity())
@@ -345,11 +349,12 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
             } else {
                 return;
             }
-            fromList.setLft(toList.getLft());
-            fromList.save();
             getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI,
                     cv,
                     null, null);
         }
+        fromList.setLft(toList.getLft());
+        fromList.setRgt(toList.getLft() + 2);
+        fromList.save();
     }
 }

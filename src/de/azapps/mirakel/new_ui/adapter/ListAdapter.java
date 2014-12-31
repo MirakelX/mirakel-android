@@ -28,6 +28,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
@@ -44,27 +45,28 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakel.ThemeManager;
+import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
-public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
+public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHolder, ListMirakel> {
     private static final String TAG = "ListAdapter";
     final LayoutInflater mInflater;
-    private final OnItemClickedListener<ListMirakel> itemClickListener;
-    private boolean selectMode = false;
-    private final MultiSelectCallbacks multiSelectCallbacks;
-    private final SparseBooleanArray selectedItems = new SparseBooleanArray();
 
     public ListAdapter(final Context context, final Cursor cursor,
                        final OnItemClickedListener<ListMirakel> itemClickListener,
-                       MultiSelectCallbacks multiSelectCallbacks) {
-        super(context, cursor);
-        this.multiSelectCallbacks = multiSelectCallbacks;
+                       final MultiSelectCallbacks<ListMirakel> multiSelectCallbacks) {
+        super(context, cursor, itemClickListener, multiSelectCallbacks);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.itemClickListener = itemClickListener;
         setHasStableIds(true);
+    }
+
+    @NonNull
+    @Override
+    public ListMirakel fromCursor(@NonNull final Cursor cursor) {
+        return new ListMirakel(cursor);
     }
 
     @Override
@@ -88,7 +90,6 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
             new UpdateTaskCountTask().execute(holder);
         }
 
-        holder.position = position;
         if (selectedItems.get(position)) {
             holder.itemView.setBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
         } else {
@@ -101,8 +102,7 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         }
     }
 
-    public class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-        View.OnLongClickListener {
+    public class ListViewHolder extends MultiSelectCursorAdapter.MultiSelectViewHolder {
         @InjectView(R.id.row_list_drag)
         ImageView dragImage;
         @InjectView(R.id.row_list_icon)
@@ -112,34 +112,10 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
         @InjectView(R.id.list_count)
         TextView count;
         ListMirakel list;
-        int position;
 
         public ListViewHolder(final View view) {
             super(view);
-            view.setOnClickListener(this);
-            view.setOnLongClickListener(this);
             ButterKnife.inject(this, view);
-        }
-
-        public ListMirakel getList() {
-            return list;
-        }
-
-        @Override
-        public void onClick(final View v) {
-
-            if (selectMode) {
-                toggleSelection(position);
-            } else {
-                itemClickListener.onItemSelected(list);
-            }
-        }
-
-        @Override
-        public boolean onLongClick(final View v) {
-            setSelectMode(true);
-            toggleSelection(position);
-            return true;
         }
     }
 
@@ -208,64 +184,6 @@ public class ListAdapter extends CursorAdapter<ListAdapter.ListViewHolder> {
 
     // For Multi-select
 
-    public void setSelectMode(final boolean selectMode) {
-        this.selectMode = selectMode;
-        multiSelectCallbacks.onSelectModeChanged(selectMode);
-        notifyDataSetChanged();
-    }
-
-    public void toggleSelection(final int pos) {
-        final Cursor cursor = getCursor();
-        cursor.moveToPosition(pos);
-        final ListMirakel item = new ListMirakel(cursor);
-
-        if (selectedItems.get(pos, false)) {
-            selectedItems.delete(pos);
-            multiSelectCallbacks.onRemoveSelectedItem(item);
-        } else {
-            // Check if it is allowed to select the item
-            if (!multiSelectCallbacks.canAddItem(item)) {
-                if (getSelectedItemCount() == 0) {
-                    setSelectMode(false);
-                }
-                return;
-            }
-            selectedItems.put(pos, true);
-            multiSelectCallbacks.onAddSelectedItem(item);
-        }
-        notifyItemChanged(pos);
-    }
-
-    public void clearSelections() {
-        setSelectMode(false);
-        selectedItems.clear();
-        notifyDataSetChanged();
-    }
-
-    public int getSelectedItemCount() {
-        return selectedItems.size();
-    }
-
-    public ArrayList<ListMirakel> getSelectedItems() {
-        final ArrayList<ListMirakel> items =
-            new ArrayList<>(selectedItems.size());
-        for (int i = 0; i < selectedItems.size(); i++) {
-            final int pos = selectedItems.keyAt(i);
-            getCursor().moveToPosition(pos);
-            items.add(new ListMirakel(getCursor()));
-        }
-        return items;
-    }
-
-    public interface MultiSelectCallbacks {
-        public void onSelectModeChanged(boolean selectMode);
-
-        public boolean canAddItem(ListMirakel listMirakel);
-
-        public void onAddSelectedItem(ListMirakel listMirakel);
-
-        public void onRemoveSelectedItem(ListMirakel listMirakel);
-    }
 
     @Override
     /**
