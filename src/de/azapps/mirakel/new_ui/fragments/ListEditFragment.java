@@ -136,7 +136,7 @@ public class ListEditFragment extends DialogFragment implements AdapterView.OnIt
         final String name = listEditName.getText().toString();
         listMirakel.setName(name);
         if (listMirakel.isStub()) {
-            ListMirakel.saveNewList(name, listMirakel.getAccount());
+            ListMirakel.safeNewList(name, listMirakel.getAccount());
         } else {
             listMirakel.save();
         }
