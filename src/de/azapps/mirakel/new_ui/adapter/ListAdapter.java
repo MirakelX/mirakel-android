@@ -27,20 +27,19 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CursorAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -152,17 +151,22 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
 
             if (listMirakel.getIconPath().isPresent()) {
                 final Bitmap bitmap;
-                final String path = listMirakel.getIconPath().get();
-                if (path.startsWith("file:///android_asset/")) {
-                    try {
+                final Uri iconUri = listMirakel.getIconPath().get();
+                final String path = iconUri.toString();
+                try {
+                    if (path.startsWith("file:///android_asset/")) {
                         bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(path.replace("file:///android_asset/",
                                                             "")));
-                    } catch (final IOException e) {
-                        Log.w(TAG, "Image not found", e);
-                        return null;
+                    } else {
+                        final InputStream inputStream = mContext.getContentResolver().openInputStream(iconUri);
+                        bitmap = BitmapFactory.decodeStream(inputStream);
                     }
-                } else {
-                    bitmap = BitmapFactory.decodeFile(listMirakel.getIconPath().get());
+                } catch (final FileNotFoundException e) {
+                    Log.w(TAG, "Image not found", e);
+                    return null;
+                } catch (final IOException e) {
+                    Log.w(TAG, "Other IO Error", e);
+                    return null;
                 }
                 final BitmapDrawable drawable = new BitmapDrawable(mContext.getResources(), bitmap);
                 drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.MULTIPLY);
