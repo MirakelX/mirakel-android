@@ -20,6 +20,7 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -61,7 +62,7 @@ abstract class ListBase extends ModelBase {
     protected boolean isSpecial = false;
 
     @NonNull
-    protected Optional<String> iconPath;
+    protected Optional<Uri> iconPath;
 
     private static final String TAG = "ListBase";
 
@@ -72,7 +73,7 @@ abstract class ListBase extends ModelBase {
     ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
              @NonNull final String createdAt, @NonNull final String updatedAt,
              @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-             final int color, @NonNull final AccountMirakel a, @NonNull final Optional<String> iconPath) {
+             final int color, @NonNull final AccountMirakel a, @NonNull final Optional<Uri> iconPath) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -92,7 +93,7 @@ abstract class ListBase extends ModelBase {
     protected ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
                        @NonNull final String createdAt, @NonNull final String updatedAt,
                        @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-                       final int color, final int account, @NonNull final Optional<String> iconPath) {
+                       final int color, final int accountId, @NonNull final Optional<Uri> iconPath) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -101,12 +102,12 @@ abstract class ListBase extends ModelBase {
         this.setLft(lft);
         this.setRgt(rgt);
         this.setColor(color);
-        this.setAccount(account);
+        this.setAccount(accountId);
         this.setIconPath(iconPath);
     }
 
     public void setListName(@NonNull final String name) throws ListMirakel.ListAlreadyExistsException {
-        Optional<ListMirakel> listMirakel = ListMirakel.getByName(name, getAccount());
+        final Optional<ListMirakel> listMirakel = ListMirakel.getByName(name, getAccount());
         if (listMirakel.isPresent() && listMirakel.get().getId() != getId()) {
             throw new ListMirakel.ListAlreadyExistsException("List " + getName() + " already exists as ID: " +
                     listMirakel.get().getId());
@@ -166,13 +167,22 @@ abstract class ListBase extends ModelBase {
         this.color = color;
     }
 
-
     @NonNull
-    public Optional<String> getIconPath() {
+    public Optional<Uri> getIconPath() {
         return iconPath;
     }
 
-    public void setIconPath(@NonNull Optional<String> iconPath) {
+    @Nullable
+    protected String getIconPathString() {
+        if (iconPath.isPresent()) {
+            return iconPath.get().toString();
+        } else {
+            return null;
+        }
+    }
+
+
+    public void setIconPath(@NonNull Optional<Uri> iconPath) {
         this.iconPath = iconPath;
     }
 
@@ -221,7 +231,7 @@ abstract class ListBase extends ModelBase {
         cv.put(RGT, this.rgt);
         cv.put(COLOR, this.color);
         cv.put(ACCOUNT_ID, this.accountID);
-        cv.put(ICON_PATH, iconPath.orNull());
+        cv.put(ICON_PATH, getIconPathString());
         return cv;
     }
 

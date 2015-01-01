@@ -52,9 +52,9 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.FileUtils;
 
 import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 /**
@@ -266,7 +266,8 @@ public class ListMirakel extends ListBase {
               c.getString(c.getColumnIndex(DatabaseHelper.UPDATED_AT)),
               SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
-              c.getInt(c.getColumnIndex(ACCOUNT_ID)), fromNullable(c.getString(c.getColumnIndex(ICON_PATH))));
+              c.getInt(c.getColumnIndex(ACCOUNT_ID)),
+              FileUtils.parsePath(c.getString(c.getColumnIndex(ICON_PATH))));
     }
 
     @NonNull
@@ -384,7 +385,7 @@ public class ListMirakel extends ListBase {
         final String now = new SimpleDateFormat(context.getString(R.string.dateTimeFormat), Locale.US)
         .format(new Date());
         final ListMirakel l = new ListMirakel(0, name, sort_by, now, now, SYNC_STATE.ADD, 0, 0, 0, account,
-                                              Optional.<String>absent());
+                                              Optional.<Uri>absent());
         final ListMirakel newList = l.create();
         UndoHistory.logCreate(newList, context);
         return newList;
@@ -520,7 +521,7 @@ public class ListMirakel extends ListBase {
     public ListMirakel(final long id, @NonNull final String name, @NonNull final SORT_BY sort_by,
                        @NonNull final String created_at, @NonNull final String updated_at,
                        @NonNull final SYNC_STATE sync_state, final int lft, final int rgt,
-                       final int color, @NonNull final AccountMirakel account, @NonNull final Optional<String> iconPath) {
+                       final int color, @NonNull final AccountMirakel account, @NonNull final Optional<Uri> iconPath) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
               color, account, iconPath);
     }
@@ -528,7 +529,7 @@ public class ListMirakel extends ListBase {
     protected ListMirakel(final long id, @NonNull final String name, @NonNull final SORT_BY sort_by,
                           @NonNull final String created_at, @NonNull final String updated_at,
                           @NonNull final SYNC_STATE sync_state, final int lft, final int rgt,
-                          final int color, final int account, @NonNull final Optional<String> iconPath) {
+                          final int color, final int account, @NonNull final Optional<Uri> iconPath) {
         super(id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,
               color, account, iconPath);
     }

@@ -43,6 +43,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
@@ -137,7 +138,7 @@ public class SpecialList extends ListMirakel {
                 final boolean active, @NonNull final Optional<ListMirakel> defaultList,
                 final @Nullable Integer defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
-                final int rgt, @NonNull final Optional<String> iconPath) {
+                final int rgt, @NonNull final Optional<Uri> iconPath) {
         super(-id, name, sort_by, "", "", sync_state, 0, 0, color,
               AccountMirakel.getLocal(), iconPath);
         this.active = active;
@@ -219,7 +220,7 @@ public class SpecialList extends ListMirakel {
             final boolean active) {
         final SpecialList s = new SpecialList(0, name, whereQuery, active, null, null, SORT_BY.OPT,
                                               SYNC_STATE.ADD, 0,
-                                              0, 0, Optional.<String>absent());
+                                              0, 0, Optional.<Uri>absent());
         return s.create();
     }
 
@@ -385,8 +386,8 @@ public class SpecialList extends ListMirakel {
               SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))), "", "",
               SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
-              getAccountFromCursor(c), fromNullable(c.getString(c.getColumnIndex(ICON_PATH))));
-        int defDateCol = c.getColumnIndex(DEFAULT_DUE);
+              getAccountFromCursor(c), FileUtils.parsePath(c.getString(c.getColumnIndex(ICON_PATH))));
+        final int defDateCol = c.getColumnIndex(DEFAULT_DUE);
         whereString = c.getString(c.getColumnIndex(WHERE_QUERY));
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
         setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
@@ -428,7 +429,7 @@ public class SpecialList extends ListMirakel {
         dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
-        dest.writeString(getIconPath().orNull());
+        dest.writeString(getIconPathString());
     }
 
     @SuppressWarnings("unchecked")
@@ -452,7 +453,7 @@ public class SpecialList extends ListMirakel {
         this.isSpecial = in.readByte() != 0;
         this.setId(-1 * in.readLong());
         this.setName(in.readString());
-        this.setIconPath(fromNullable(in.readString()));
+        this.setIconPath(FileUtils.parsePath(in.readString()));
     }
 
     public static final Creator<SpecialList> CREATOR = new Creator<SpecialList>() {
