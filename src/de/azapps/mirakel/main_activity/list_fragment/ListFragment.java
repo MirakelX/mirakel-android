@@ -172,7 +172,7 @@ public class ListFragment extends MirakelFragment {
                     ListMirakel l = list;
                     if (l == null) {
                         l = ListMirakel
-                            .saveNewList(ListFragment.this.input
+                            .safeNewList(ListFragment.this.input
                                          .getText().toString());
                     } else {
                         l.setListName(ListFragment.this.input.getText()
