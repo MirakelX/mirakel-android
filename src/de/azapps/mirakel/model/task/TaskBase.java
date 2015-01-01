@@ -92,11 +92,10 @@ abstract class TaskBase extends ModelBase {
     protected String uuid = "";
     @NonNull
     protected Optional<List<Tag>> tags = absent();
-    private boolean isStub;
 
     TaskBase() {
         // nothing
-        super(0L, "");
+        super(INVALID_ID, "");
     }
 
     TaskBase(final long newId, @NonNull final String newUuid, @NonNull final ListMirakel newList,
@@ -130,7 +129,7 @@ abstract class TaskBase extends ModelBase {
 
 
     TaskBase(@NonNull final String newName, @NonNull final ListMirakel list) {
-        super(0L, newName);
+        super(INVALID_ID, newName);
         this.uuid = java.util.UUID.randomUUID().toString();
         setList(list, false);
         setContent("");
@@ -589,14 +588,6 @@ abstract class TaskBase extends ModelBase {
     protected void removeTag(@NonNull final Tag tag) {
         checkTags();
         this.tags.get().remove(tag);
-    }
-
-    public boolean isStub() {
-        return isStub;
-    }
-
-    public void setStub(final boolean isStub) {
-        this.isStub = isStub;
     }
 
     @Override

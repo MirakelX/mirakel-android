@@ -230,9 +230,7 @@ public class Semantic extends SemanticBase {
         if (!currentList.isPresent()) {
             currentList = Optional.fromNullable(ListMirakel.safeFirst());
         }
-        final Task t = new Task(taskName, currentList.get(), due, prio);
-        t.setStub(true);
-        return t;
+        return new Task(taskName, currentList.get(), due, prio);
     }
 
     public static Optional<Semantic> first() {

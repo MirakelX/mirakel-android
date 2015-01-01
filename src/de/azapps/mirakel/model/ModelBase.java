@@ -35,7 +35,7 @@ abstract public class ModelBase implements IGenericElementInterface {
 
     public static final String ID = "_id";
     public static final String NAME = "name";
-    public static final long INVALID_ID = -1L;
+    protected static final long INVALID_ID = 0L;
 
     private long id = INVALID_ID;
     private String name = "";
@@ -68,10 +68,10 @@ abstract public class ModelBase implements IGenericElementInterface {
         context = ctx;
     }
 
-    @NonNull
     public long getId() {
         return this.id;
     }
+    @Override
     @NonNull
     public String getName() {
         return this.name;
@@ -150,5 +150,9 @@ abstract public class ModelBase implements IGenericElementInterface {
             ret[i] = prefix + '.' + columns[i];
         }
         return ret;
+    }
+
+    public final boolean isStub() {
+        return getId() == INVALID_ID;
     }
 }

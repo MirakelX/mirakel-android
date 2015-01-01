@@ -115,7 +115,7 @@ public class Task extends TaskBase {
     public Task(@NonNull final String name, @NonNull final ListMirakel list,
                 @NonNull final String content, final boolean done,
                 final @NonNull Optional<Calendar> due, final int priority) {
-        this(0L, java.util.UUID.randomUUID().toString(),
+        this(INVALID_ID, java.util.UUID.randomUUID().toString(),
              list, name, content, done, due, Optional.<Calendar>absent(), priority, new GregorianCalendar(),
              new GregorianCalendar(),
              SYNC_STATE.ADD, "", -1, -1, 0, true);
@@ -150,24 +150,24 @@ public class Task extends TaskBase {
             setReminder(fromNullable(DateTimeHelper.createLocalCalendar(cursor
                                      .getLong(cursor.getColumnIndex(REMINDER)))));
         }
-        final Calendar created_at;
+        final Calendar createdAt;
         if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.CREATED_AT))) {
-            created_at = new GregorianCalendar();
+            createdAt = new GregorianCalendar();
         } else {
-            created_at = new GregorianCalendar();
-            created_at.setTimeInMillis(cursor.getLong(cursor
-                                       .getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000L);
+            createdAt = new GregorianCalendar();
+            createdAt.setTimeInMillis(cursor.getLong(cursor
+                                      .getColumnIndex(DatabaseHelper.CREATED_AT)) * 1000L);
         }
-        setCreatedAt(created_at);
-        final Calendar updated_at;
+        setCreatedAt(createdAt);
+        final Calendar updatedAt;
         if (cursor.isNull(cursor.getColumnIndex(DatabaseHelper.UPDATED_AT))) {
-            updated_at = new GregorianCalendar();
+            updatedAt = new GregorianCalendar();
         } else {
-            updated_at = new GregorianCalendar();
-            updated_at.setTimeInMillis(cursor.getLong(cursor
-                                       .getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000L);
+            updatedAt = new GregorianCalendar();
+            updatedAt.setTimeInMillis(cursor.getLong(cursor
+                                      .getColumnIndex(DatabaseHelper.UPDATED_AT)) * 1000L);
         }
-        setUpdatedAt(updated_at);
+        setUpdatedAt(updatedAt);
         setId(cursor.getLong(cursor.getColumnIndex(ID)));
         setUUID(cursor.getString(cursor.getColumnIndex(UUID)));
         this.list = ListMirakel.get(cursor.getLong(cursor.getColumnIndex(LIST_ID))).get();
@@ -1012,7 +1012,6 @@ public class Task extends TaskBase {
         dest.writeTypedList(getTags());
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
-        dest.writeByte(isStub() ? (byte) 1 : (byte) 0);
     }
 
     private Task(Parcel in) {
@@ -1040,7 +1039,6 @@ public class Task extends TaskBase {
         in.readTypedList(getTags(), Tag.CREATOR);
         this.setId(in.readLong());
         this.setName(in.readString());
-        this.setStub(in.readByte() != 0);
         final Optional<Task> t = get(getId());
         if (t.isPresent() && !this.equals(t.get())) {
             Task other = t.get();

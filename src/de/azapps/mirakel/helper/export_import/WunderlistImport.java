@@ -207,7 +207,7 @@ public class WunderlistImport {
     private static SparseArray<ListMirakel> parseList(final JsonObject jsonList) {
         final String name = jsonList.get("title").getAsString();
         final int id = jsonList.get("id").getAsInt();
-        final ListMirakel l = ListMirakel.saveNewList(name);
+        final ListMirakel l = ListMirakel.safeNewList(name);
         l.setCreatedAt(jsonList.get("created_at").getAsString());
         if (jsonList.get("updated_at") != null) {
             l.setUpdatedAt(jsonList.get("updated_at").getAsString());

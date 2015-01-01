@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.model.list;
 
+import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.SharedPreferences;
@@ -116,7 +117,6 @@ public class ListMirakel extends ListBase {
             }
         }
     }
-
     public static final Uri URI = MirakelInternalContentProvider.LIST_URI;
 
 
@@ -350,12 +350,12 @@ public class ListMirakel extends ListBase {
     }
 
     @NonNull
-    public static ListMirakel saveNewList(final String name) {
+    public static ListMirakel safeNewList(final String name) {
         return safeNewList(name, AccountMirakel.getLocal(), 0);
     }
 
     @NonNull
-    public static ListMirakel saveNewList(final String name, final AccountMirakel accountMirakel) {
+    public static ListMirakel safeNewList(final String name, final AccountMirakel accountMirakel) {
         return safeNewList(name, accountMirakel, 0);
     }
 
@@ -445,7 +445,6 @@ public class ListMirakel extends ListBase {
 
     /**
      * Use this function only if you know what you are doing
-     *
      * @param el Json Object
      * @return List
      */
@@ -618,7 +617,7 @@ public class ListMirakel extends ListBase {
      * Update the List in the Database
      *
      * @param log, save a undo_log
-     *             The List
+     *            The List
      */
     public void save(final boolean log) {
         final SharedPreferences.Editor editor = MirakelPreferences.getEditor();
@@ -787,10 +786,6 @@ public class ListMirakel extends ListBase {
             return new ListMirakel[size];
         }
     };
-
-    public boolean isStub() {
-        return getId() == 0;
-    }
 
     public boolean isEditable() {
         if (getId() < 0) {

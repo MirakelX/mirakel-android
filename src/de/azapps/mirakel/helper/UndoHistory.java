@@ -83,7 +83,7 @@ public class UndoHistory {
                         Log.wtf(TAG, "unkown Type");
                         break;
                     }
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     Log.e(TAG, "cannot parse String", e);
                 }
             } else {
@@ -94,7 +94,7 @@ public class UndoHistory {
                     final Gson gson = new GsonBuilder().registerTypeAdapter(
                         Task.class, new TaskDeserializer()).create();
                     final Task t = gson.fromJson(json, Task.class);
-                    if (t.getId() != Task.INVALID_ID) {
+                    if (t.isStub()) {
                         t.save(false);
                         break;
                     }
@@ -106,12 +106,12 @@ public class UndoHistory {
 
                     break;
                 case LIST:
-                    final ListMirakel l = ListMirakel.unsafeParseJson(json);
-                    if (l.getId() != ListMirakel.INVALID_ID) {
-                        l.save(false);
+                    final ListMirakel listMirakel = ListMirakel.unsafeParseJson(json);
+                    if (listMirakel.isStub()) {
+                        listMirakel.save(false);
                     } else {
                         try {
-                            final ContentValues cv = l.getContentValues();
+                            final ContentValues cv = listMirakel.getContentValues();
                             cv.remove(ListMirakel.ID);
                             ctx.getContentResolver()
                             .insert(MirakelInternalContentProvider.LIST_URI,

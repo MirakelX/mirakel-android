@@ -85,7 +85,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
             String listName = context.getString(R.string.subtask_list_name);
             list = ListMirakel.findByName(listName);
             if (!list.isPresent()) {
-                list = of(ListMirakel.saveNewList(listName));
+                list = of(ListMirakel.safeNewList(listName));
             }
             setSubtaskAddToList(list.get());
         }

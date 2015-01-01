@@ -208,7 +208,7 @@ public class AnyDoImport {
                                             final SparseIntArray listMapping) {
         final String name = jsonList.get("name").getAsString();
         final int id = jsonList.get("id").getAsInt();
-        final ListMirakel l = ListMirakel.saveNewList(name);
+        final ListMirakel l = ListMirakel.safeNewList(name);
         listMapping.put(id, (int) l.getId());
         return listMapping;
     }

@@ -164,7 +164,7 @@ public class ExportImport {
                         if (listMirakelOptional.isPresent()) {
                             list = listMirakelOptional.get();
                         } else {
-                            list = ListMirakel.saveNewList(listname);
+                            list = ListMirakel.safeNewList(listname);
                         }
                     } else {
                         list = MirakelModelPreferences
@@ -260,7 +260,7 @@ public class ExportImport {
             while ((row = listsReader.readNext()) != null) {
                 final String name = row[0];
                 if (!ListMirakel.findByName(name).isPresent()) {
-                    ListMirakel.saveNewList(name);
+                    ListMirakel.safeNewList(name);
                     Log.v(TAG, "created list:" + name);
                 }
             }
