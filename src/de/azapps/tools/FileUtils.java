@@ -40,7 +40,12 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.webkit.MimeTypeMap;
+
+import com.google.common.base.Optional;
+
 import de.azapps.mirakel.DefinitionsHelper;
 
 public class FileUtils {
@@ -344,4 +349,14 @@ public class FileUtils {
         return mimeType.startsWith(type);
     }
 
+    @NonNull
+    public static Optional<Uri> parsePath(@Nullable final String path) {
+        final Optional<Uri> uri;
+        if (path == null) {
+            uri = Optional.absent();
+        } else {
+            uri = Optional.fromNullable(Uri.parse(path));
+        }
+        return uri;
+    }
 }
