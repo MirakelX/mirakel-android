@@ -191,4 +191,5 @@
     <item>Milch</item>
     <item>Käse</item>
   </string-array>
+  <string name="stub_list_name">Neue Liste</string>
 </resources>

@@ -209,4 +209,5 @@
     <item quantity="one">jaar</item>
     <item quantity="other">jaar</item>
   </plurals>
+  <string name="stub_list_name">Nieuwe lijst</string>
 </resources>

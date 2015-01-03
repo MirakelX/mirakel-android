@@ -139,4 +139,5 @@
   <string name="special_lists_progress_title">Progreso</string>
   <string name="special_lists_reminder_title">Recordatorio</string>
   <string name="special_lists_subtask_title">Subtareas</string>
+  <string name="stub_list_name">Nueva lista</string>
 </resources>

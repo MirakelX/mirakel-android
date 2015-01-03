@@ -189,4 +189,5 @@
     <item>Молоко</item>
     <item>Сыр</item>
   </string-array>
+  <string name="stub_list_name">Новый список</string>
 </resources>

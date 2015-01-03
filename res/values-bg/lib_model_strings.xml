@@ -145,4 +145,5 @@
   <string name="special_lists_progress_title">Прогрес</string>
   <string name="special_lists_reminder_title">Напомняне</string>
   <string name="special_lists_subtask_title">Подзадачи</string>
+  <string name="stub_list_name">Нов списък</string>
 </resources>

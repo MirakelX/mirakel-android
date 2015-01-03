@@ -185,4 +185,5 @@
     <item>Mleko</item>
     <item>Sir</item>
   </string-array>
+  <string name="stub_list_name">Nov seznam</string>
 </resources>

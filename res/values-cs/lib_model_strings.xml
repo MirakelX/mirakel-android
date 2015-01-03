@@ -212,4 +212,5 @@
     <item quantity="few">roky</item>
     <item quantity="other">let</item>
   </plurals>
+  <string name="stub_list_name">Nový seznam</string>
 </resources>

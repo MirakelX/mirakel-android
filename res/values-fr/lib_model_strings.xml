@@ -187,4 +187,5 @@
     <item>Lait</item>
     <item>Fromage</item>
   </string-array>
+  <string name="stub_list_name">Nouvelle liste</string>
 </resources>

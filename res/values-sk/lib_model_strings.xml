@@ -160,4 +160,5 @@
     <item>Mlieko</item>
     <item>Syr</item>
   </string-array>
+  <string name="stub_list_name">Nový zoznam</string>
 </resources>

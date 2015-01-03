@@ -184,4 +184,5 @@
     <item>حليب</item>
     <item>جبن</item>
   </string-array>
+  <string name="stub_list_name">قائمة جديدة</string>
 </resources>
