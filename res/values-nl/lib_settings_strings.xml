@@ -37,7 +37,7 @@
   <string name="sync_frequency_summary_man">Alleen handmatig synchroniseren</string>
   <string-array name="sync_types">
     <item>CalDAV synchronisatie</item>
-    <item>Taskwarrior syngronisatie</item>
+    <item>Taskwarrior synchronisatie</item>
   </string-array>
   <string name="sync_caldav">CalDAV synchronisatie</string>
   <string name="sync_caldav_howto">
