@@ -323,6 +323,31 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         // TODO implement undo
     }
 
+    /**
+     * We want to move a list from position A to position B.
+     *
+     * We have a column lft. The lists are ordered by this column. When we are moving lists down we have to do the following:
+     *
+     * lft  | list
+     * 1    | A
+     * 3    | B
+     * 5    | C
+     * 7    | D
+     * 9    | E
+     *
+     * ## Moving Down
+     * We want to move list B below D. We do the following:
+     * 1. Decrement the lft-values by 2 of the lists with lft > lft(B) && lft <= lft(D)
+     * 2. Set the lft of B to the old lft(D)
+     *
+     * ## Moving Up
+     * We want to move list D above list B. We do the following:
+     * 1. Increment the lft-values by 2 of the lists with lft>=lft(B) && lft < lft(D)
+     * 2. Set the lft of D to the old lft(B)
+     *
+     * @param from List to move
+     * @param to Target list to move the `from` list to. If the user is moving from down, than it should be moved below `to` otherwise above
+     */
     @Override
     public void onItemMoved(final int from, final int to) {
         final Cursor cursor = mAdapter.getCursor();
@@ -330,31 +355,35 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         final ListMirakel fromList = new ListMirakel(cursor);
         cursor.moveToPosition(to);
         final ListMirakel toList = new ListMirakel(cursor);
-
-        for (final String table : new String[] {SpecialList.TABLE, ListMirakel.TABLE}) {
-            final ContentValues cv = new ContentValues();
-            cv.put("TABLE", table);
-            if (to < from) {// move list up
-                getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI,
-                        cv,
-                        ListMirakel.LFT + " >= "
-                        + toList.getLft() + " and " + ListMirakel.LFT + " < "
-                        + fromList.getLft(), null);
-            } else if (to > from) {// move list down
-                getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI,
-                        cv,
-                        ListMirakel.LFT + " > "
-                        + fromList.getLft() + " and " + ListMirakel.LFT + " <= "
-                        + toList.getLft(), null);
-            } else {
-                return;
+        MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
+            @Override
+            public void exec() {
+                for (final String table : new String[] {SpecialList.TABLE, ListMirakel.TABLE}) {
+                    final ContentValues cv = new ContentValues();
+                    cv.put("TABLE", table);
+                    if (to < from) {// move list up
+                        getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI,
+                                cv,
+                                ListMirakel.LFT + " >= "
+                                + toList.getLft() + " and " + ListMirakel.LFT + " < "
+                                + fromList.getLft(), null);
+                    } else if (to > from) {// move list down
+                        getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI,
+                                cv,
+                                ListMirakel.LFT + " > "
+                                + fromList.getLft() + " and " + ListMirakel.LFT + " <= "
+                                + toList.getLft(), null);
+                    } else {
+                        return;
+                    }
+                    getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI,
+                            cv,
+                            null, null);
+                }
+        	fromList.setLft(toList.getLft());
+        	fromList.setRgt(toList.getLft() + 2);
+        	fromList.save();
             }
-            getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_FIX_RGT_URI,
-                    cv,
-                    null, null);
-        }
-        fromList.setLft(toList.getLft());
-        fromList.setRgt(toList.getLft() + 2);
-        fromList.save();
+        });
     }
 }
