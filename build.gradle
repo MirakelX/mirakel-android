@@ -38,4 +38,5 @@ dependencies {
     compile "com.google.guava:guava:$guavaVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
     compile "com.shamanland:fab:$FAB_VERSION"
+    compile "com.nispok:snackbar:$snackbarVersion"
 }
