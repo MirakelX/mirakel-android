@@ -132,7 +132,6 @@ dependencies {
     compile project(':drag-sort-listview')
     compile project(':main')
     compile "com.jakewharton:butterknife:$butterknifeVersion"
-    compile "com.nispok:snackbar:$snackbarVersion"
 
     //for tests
     //androidTestCompile files("$project.buildDir/classes/debug")
