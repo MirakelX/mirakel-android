@@ -74,12 +74,13 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 49;
+    public static final int DATABASE_VERSION = 50;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -1023,8 +1024,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE " + SpecialList.TABLE + " SET " + ListMirakel.ICON_PATH +
                        "='file:///android_asset/list_icons/overdue.png' WHERE " + ModelBase.NAME + "= '" +
                        context.getString(R.string.list_overdue) + "';");
+        case 49:
+            normaliseLfts(db);
         default:
             break;
+        }
+    }
+
+    /**
+     * We want to be able to mix normal and special lists. Therefore and because we had a
+     * bug which led to incorrect enumeration of lft's we normalise the values here.
+     * @param db
+     */
+    private void normaliseLfts(final SQLiteDatabase db) {
+        final Cursor allListsCursor = db.rawQuery(
+                                          "select _id, 1 as isNormal, lft from lists WHERE sync_state !=  -1 "
+                                          + " UNION "
+                                          + " select _id, 0 as isNormal, lft from special_lists WHERE sync_state !=  -1 ORDER BY isNormal ASC, lft ASC;",
+                                          null);
+        int lft = 1;
+        while (allListsCursor.moveToNext()) {
+            final long id = allListsCursor.getLong(0);
+            final boolean isNormal = allListsCursor.getInt(1) == 1;
+            final String table;
+            if (isNormal) {
+                table = ListMirakel.TABLE;
+            } else {
+                table = SpecialList.TABLE;
+            }
+            final ContentValues contentValues = new ContentValues(2);
+            contentValues.put(ListMirakel.LFT, lft);
+            contentValues.put(ListMirakel.RGT, lft + 1);
+            db.update(table, contentValues, "_id = ?", new String[] {String.valueOf(id)});
+            lft += 2;
         }
     }
 

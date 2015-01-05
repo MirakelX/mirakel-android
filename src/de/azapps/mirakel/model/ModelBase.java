@@ -89,9 +89,9 @@ abstract public class ModelBase implements IGenericElementInterface {
     }
 
     @NonNull
-    public ContentValues getContentValues()throws DefinitionsHelper.NoSuchListException {
+    public ContentValues getContentValues() throws DefinitionsHelper.NoSuchListException {
         final ContentValues cv = new ContentValues();
-        cv.put(ID, id);
+        cv.put(ID, Math.abs(id));
         cv.put(NAME, name);
         return cv;
     }

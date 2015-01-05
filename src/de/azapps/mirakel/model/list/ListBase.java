@@ -193,7 +193,7 @@ abstract class ListBase extends ModelBase {
             if (accountMirakelOptional.isPresent()) {
                 this.accountMirakel = accountMirakelOptional.get();
             } else {
-                throw new AccountVanishedException(accountID);
+                throw new AccountVanishedException(accountID, getId());
             }
         }
         return this.accountMirakel;
@@ -223,14 +223,17 @@ abstract class ListBase extends ModelBase {
             Log.wtf(TAG, "dies could not happen", e);
             return new ContentValues();
         }
-        cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
-        cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
+        // If it's a special list we can't put this values into the database
+        if (getId() > 0) {
+            cv.put(ACCOUNT_ID, this.accountID);
+            cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
+            cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
+        }
         cv.put(SORT_BY_FIELD, this.sortBy.getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(LFT, this.lft);
         cv.put(RGT, this.rgt);
         cv.put(COLOR, this.color);
-        cv.put(ACCOUNT_ID, this.accountID);
         cv.put(ICON_PATH, getIconPathString());
         return cv;
     }

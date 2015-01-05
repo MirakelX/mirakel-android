@@ -472,7 +472,6 @@ public class MirakelQueryBuilder {
         return get(clazz);
     }
 
-
     @NonNull
     public <T extends ModelBase> Optional<T> get(final Class<T> clazz) {
         Optional<T> a = absent();

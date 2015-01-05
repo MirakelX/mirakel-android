@@ -12,7 +12,10 @@ public class AccountVanishedException extends ModelVanishedException {
         super(message);
     }
 
-    public AccountVanishedException(long id) {
-        super(id);
+    public AccountVanishedException(long accountId) {
+        super(accountId);
+    }
+    public AccountVanishedException(long accountId, long listId) {
+        super("Account: " + accountId + " List: " + listId);
     }
 }

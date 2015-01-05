@@ -380,7 +380,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                     + where + whereLists + " group by lists._id\n"
                     +
                     "    UNION\n" +
-                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, icon_path, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
+                    "    select -_id AS _id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, icon_path, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY lft ASC;",
                     args.toArray(selectionArgs));
         } else {
             c = builder.query(getReadableDatabase(), projection,
@@ -472,20 +472,17 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                           e);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         throw new android.database.SQLException(
-                            "General error while executing witTransaction",
+                            "General error while executing withTransaction",
                             e);
                     } else {
                         throw new android.database.SQLException(
-                            "General error while executing witTransaction");
+                            "General error while executing withTransaction");
                     }
                 } finally {
                     db.endTransaction();
                 }
             } else {
-                if (!isPreInit) {
-                    throw new DataBaseLockedException(
-                        "Database already in a transaction");
-                }
+                what.exec();
             }
         }
     }

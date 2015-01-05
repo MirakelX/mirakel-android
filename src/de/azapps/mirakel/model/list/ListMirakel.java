@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.model.list;
 
-import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.SharedPreferences;
@@ -181,22 +180,10 @@ public class ListMirakel extends ListBase {
 
     @NonNull
     public static List<ListMirakel> all(final boolean withSpecial) {
-        final List<ListMirakel> lists = new ArrayList<>();
-        if (withSpecial) {
-            lists.addAll(SpecialList.allSpecial());
-        }
-        String[] cols = new String[allColumns.length + 1];
-        for (int i = 0; i < allColumns.length; i++) {
-            cols[i] = "n." + allColumns[i];
-        }
-        cols[allColumns.length] = "COUNT(*)-1 AS level";
-        final Cursor cursor = query(MirakelInternalContentProvider.LISTS_SORT_URI, cols, "n." + LFT
-                                    + " BETWEEN p." + LFT + " AND p." + RGT + " " + " AND NOT n."
-                                    + DatabaseHelper.SYNC_STATE_FIELD + "=" + SYNC_STATE.DELETE, null, "n." + LFT);
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
+        final Cursor cursor = allCursor(withSpecial);
+        final List<ListMirakel> lists = new ArrayList<>(cursor.getCount());
+        while (cursor.moveToNext()) {
             lists.add(new ListMirakel(cursor));
-            cursor.moveToNext();
         }
         cursor.close();
         return lists;
@@ -233,7 +220,6 @@ public class ListMirakel extends ListBase {
     @NonNull
     public static CursorLoader allWithSpecialCursorLoader(@NonNull final Optional<AccountMirakel>
             accountMirakelOptional) {
-
         return allWithSpecialMQB(accountMirakelOptional).toCursorLoader(
                    MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
@@ -246,8 +232,13 @@ public class ListMirakel extends ListBase {
     }
 
     @NonNull
-    public static Cursor getAllCursor() {
-        return getBasicMQB().query(MirakelInternalContentProvider.LIST_URI);
+    public static Cursor allCursor(final boolean withSpecial) {
+        if (withSpecial) {
+            return allWithSpecialMQB(Optional.<AccountMirakel>absent()).query(
+                       MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
+        } else {
+            return getBasicMQB().query(MirakelInternalContentProvider.LIST_URI);
+        }
     }
 
     public static long count() {
@@ -632,22 +623,25 @@ public class ListMirakel extends ListBase {
                     setUpdatedAt(new SimpleDateFormat(
                                      context.getString(R.string.dateTimeFormat),
                                      Locale.getDefault()).format(new Date()));
-                    ContentValues values = getContentValues();
+                    final ContentValues values = getContentValues();
                     if (log) {
                         UndoHistory.updateLog(ListMirakel.get(getId()).get(), context);
                     }
                     update(URI, values, ModelBase.ID
                            + " = " + getId(), null);
-                    values = new ContentValues();
-                    values.put(DatabaseHelper.UPDATED_AT,
-                               new GregorianCalendar().getTimeInMillis() / 1000L);
-                    values.put(DatabaseHelper.SYNC_STATE_FIELD,
-                               SYNC_STATE.NEED_SYNC.toInt());
-                    update(MirakelInternalContentProvider.TASK_URI, values,
+                    final ContentValues taskContentValues = new ContentValues();
+                    taskContentValues.put(DatabaseHelper.UPDATED_AT,
+                                          new GregorianCalendar().getTimeInMillis() / 1000L);
+                    taskContentValues.put(DatabaseHelper.SYNC_STATE_FIELD,
+                                          SYNC_STATE.NEED_SYNC.toInt());
+                    update(MirakelInternalContentProvider.TASK_URI, taskContentValues,
                            Task.LIST_ID + "=?",
                            new String[] {String.valueOf(getId())});
                 }
             });
+        } else {
+            final ContentValues values = getContentValues();
+            update(SpecialList.URI, values, ModelBase.ID + " = " + Math.abs(getId()), null);
         }
         editor.commit();
     }
@@ -788,7 +782,8 @@ public class ListMirakel extends ListBase {
     };
 
     public boolean isEditable() {
-        if (getId() < 0) {
+        // TODO This is buggy I think we need to refactor the ListMirakel handling
+        if (getId() < 0 || accountID == INVALID_ID) {
             return true;
         } else {
             return getAccount().getType().isListEditable();
