@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.settings.adapter;
 
-import android.app.ActionBar;
 import android.os.Build;
 import android.preference.DialogPreference;
 import android.preference.Preference;
@@ -30,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -41,19 +41,16 @@ import java.util.Map;
 
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SwipeLinearLayout;
-import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 
 public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdapter.ViewHolder>
     implements Preference.OnPreferenceChangeListener {
     @NonNull
     private PreferenceScreen screen;
-    private final static LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-        ViewGroup.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.WRAP_CONTENT);
+    private final LayoutInflater inflater;
 
     private Map<String, Integer> dependencis = new HashMap<>();
     @NonNull
@@ -63,9 +60,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         screen = preferenceScreen;
         screen.setOnPreferenceChangeListener(this);
 
-        final int margin = (int) (screen.getContext().getResources().getDimension(
-                                      R.dimen.padding_list_item));
-        params.setMargins(margin, (int) (margin * 0.5), margin, 0);
+        inflater = LayoutInflater.from(preferenceScreen.getContext());
 
     }
 
@@ -76,9 +71,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final LinearLayout wrapper = new LinearLayout(parent.getContext());
-        wrapper.setLayoutParams(params);
-        return new ViewHolder(wrapper);
+        return new ViewHolder((LinearLayout) inflater.inflate(R.layout.preferences_group_card, null));
     }
 
     public void setRemoveListener(final @Nullable SwipeLinearLayout.OnItemRemoveListener onRemove) {
@@ -88,14 +81,9 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Preference preference = screen.getPreference(position);
-        ((LinearLayout)holder.itemView).removeAllViews();
-        final View v;
+        final CardView card = holder.card;
+        card.removeAllViews();
         if (preference instanceof PreferenceGroup) {
-            v = new CardView(holder.itemView.getContext());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                v.setElevation(5.0F);
-            }
-            v.setLayoutParams(params);
             final SwipeLinearLayout ll = new SwipeLinearLayout(holder.itemView.getContext());
             if (onRemove.isPresent()) {
                 ll.setOnItemRemovedListener(onRemove.get());
@@ -106,12 +94,11 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
             for (int i = 0; i < group.getPreferenceCount(); i++) {
                 ll.addView(getView(position, group.getPreference(i)));
             }
-            ((CardView)v).addView(ll);
+            card.addView(ll);
         } else {
-            v = getView(position, preference);
-
+            card.addView(getView(position, preference));
         }
-        ((LinearLayout) holder.itemView).addView(v);
+        ((View) card.getParent()).invalidate();
     }
 
     private View getView(final int position, final @NonNull Preference preference) {
@@ -194,8 +181,14 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final View itemView) {
+        @NonNull
+        public final CardView card;
+
+        public ViewHolder(final @NonNull LinearLayout itemView) {
             super(itemView);
+            itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                     ViewGroup.LayoutParams.WRAP_CONTENT));
+            card = (CardView) itemView.findViewById(R.id.card_wrapper);
         }
 
     }

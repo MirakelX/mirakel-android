@@ -32,8 +32,9 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (((ActionBarActivity)getActivity()).getSupportActionBar() != null) {
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
+        if (((ActionBarActivity) getActivity()).getSupportActionBar() != null) {
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getItem().getName());
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setElevation(42);
         }
     }
 
