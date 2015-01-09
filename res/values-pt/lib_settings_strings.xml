@@ -312,4 +312,5 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="add_condition">Adicionar condição</string>
   <string name="undo_taskui_change">Anular remoção de %s</string>
   <string name="due_dialog_negated">Não após</string>
+  <string name="settings_advanced">Avançado</string>
 </resources>
