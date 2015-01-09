@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- *   Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
  *       This program is free software: you can redistribute it and/or modify
  *       it under the terms of the GNU General Public License as published by
@@ -132,13 +132,13 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         mTwoPane = MirakelCommonPreferences.isTablet();
         mDetailContainer.setVisibility(mTwoPane ? View.VISIBLE : View.GONE);
         final FragmentTransaction transaction = getFragmentManager().beginTransaction().replace(
-                    R.id.generic_model_list_container, new GenericModelListFragment());
+                R.id.generic_model_list_container, new GenericModelListFragment());
         if (mTwoPane) {
             if (!isSupport()) {
                 final Optional<Fragment> f = instanceDetail(getDefaultItem());
                 if (f.isPresent()) {
                     transaction.replace(R.id.generic_model_detail_container,
-                            f.get());
+                                        f.get());
                 }
             } else {
                 final Optional<android.support.v4.app.Fragment> f = instanceSupportDetail(getDefaultItem());

@@ -1,8 +1,7 @@
-package de.azapps.mirakel.settings;
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- *   Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
  *       This program is free software: you can redistribute it and/or modify
  *       it under the terms of the GNU General Public License as published by
@@ -17,6 +16,8 @@ package de.azapps.mirakel.settings;
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
+package de.azapps.mirakel.settings;
 
 import android.content.Context;
 import android.gesture.GestureOverlayView;
