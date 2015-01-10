@@ -58,4 +58,5 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
     compile "com.shamanland:fab:$FAB_VERSION"
     compile "com.nispok:snackbar:$snackbarVersion"
+    compile(group: 'com.github.navasmdc', name: 'MaterialDesign', version: "$materialdesignVersion", ext: 'aar')
 }
