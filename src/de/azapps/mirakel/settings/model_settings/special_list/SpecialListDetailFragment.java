@@ -61,6 +61,8 @@ import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 
+import static com.google.common.base.Optional.of;
+
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
     CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener,
     SwipeLinearLayout.OnItemRemoveListener {
@@ -403,24 +405,40 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     @Override
     public void onRemove(final int index) {
         final Optional<SpecialListsBaseProperty> where = mItem.getWhere();
-        if (where.isPresent() && where.get() instanceof SpecialListsConjunctionList) {
-            final SpecialListsBaseProperty old = ((SpecialListsConjunctionList) where.get()).getChilds().remove(
-                    index - 1);
-            mItem.setWhere(where);
-            mItem.save();
+        if (where.isPresent()) {
+            final ActionClickListener undo;
+            if (where.get() instanceof SpecialListsConjunctionList) {
+                final SpecialListsBaseProperty old = ((SpecialListsConjunctionList) where.get()).getChilds().remove(
+                        index - 1);
+                mItem.setWhere(where);
+                mItem.save();
+                undo = new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(final Snackbar snackbar) {
+                        ((SpecialListsConjunctionList) where.get()).getChilds().add(index - 1, old);
+                        mItem.setWhere(where);
+                        mItem.save();
+                        mAdapter.updateScreen(getPreferenceScreen());
+                    }
+                };
+            } else {
+                final SpecialListsBaseProperty old = where.get();
+                mItem.setWhere(Optional.<SpecialListsBaseProperty>absent());
+                mItem.save();
+                undo = new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(final Snackbar snackbar) {
+                        mItem.setWhere(of(old));
+                        mItem.save();
+                        mAdapter.updateScreen(getPreferenceScreen());
+                    }
+                };
+            }
             SnackbarManager.show(
                 Snackbar.with(getActivity())
                 .text(getActivity().getString(R.string.delete_condition))
                 .actionLabel(R.string.undo)
-            .actionListener(new ActionClickListener() {
-                @Override
-                public void onActionClicked(Snackbar snackbar) {
-                    ((SpecialListsConjunctionList) where.get()).getChilds().add(index - 1, old);
-                    mItem.setWhere(where);
-                    mItem.save();
-                    mAdapter.updateScreen(getPreferenceScreen());
-                }
-            }));
+                .actionListener(undo));
         }
     }
 }
