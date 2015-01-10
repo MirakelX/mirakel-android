@@ -373,7 +373,8 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                 } else {
                     whereLists = " and ";
                 }
-                whereLists += Task.getBasicFilter() + " AND tasks.done = 0 ";
+                whereLists += "(tasks." + ModelBase.ID + " IS NULL OR " + Task.getBasicFilter() +
+                              " AND tasks.done = 0 )";
             }
             c = getReadableDatabase().rawQuery(
                     "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, icon_path, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
