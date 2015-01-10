@@ -31,14 +31,15 @@
         android:dividerHeight="0dp"
         android:divider="@color/transparent"/>
 
-    <com.shamanland.fab.FloatingActionButton
+    <com.gc.materialdesign.views.ButtonFloat
         android:id="@+id/fabbutton"
-        android:src="@drawable/ic_plus_white_48dp"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginEnd="16dp"
+        app:animate="false"
+        app:iconDrawable="@drawable/ic_plus_white_48dp" />
 
     <!--
     Your layouts here. Do not put anything below the FAB layout

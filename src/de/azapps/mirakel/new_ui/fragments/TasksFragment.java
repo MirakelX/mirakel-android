@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.gc.materialdesign.views.ButtonFloat;
 import com.shamanland.fab.FloatingActionButton;
 
 import butterknife.ButterKnife;
@@ -58,7 +59,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.task_listview)
     RecyclerView mListView;
     @InjectView(R.id.fabbutton)
-    public FloatingActionButton floatingActionButton;
+    public ButtonFloat floatingActionButton;
     private OnItemClickedListener<Task> mListener;
 
     private ListMirakel listMirakel;
@@ -106,8 +107,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.inject(this, layout);
-        floatingActionButton.setColorFilter(Color.WHITE);
-        floatingActionButton.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
+        floatingActionButton.setBackgroundColor(ThemeManager.getAccentThemeColor());
         return layout;
     }
 

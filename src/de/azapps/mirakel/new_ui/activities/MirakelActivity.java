@@ -43,6 +43,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.gc.materialdesign.views.ButtonFloat;
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.EventListener;
@@ -369,7 +370,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     // Snackbar stuff
     @Override
     public void onShow(final Snackbar snackbar) {
-        final FloatingActionButton fab = getTasksFragment().floatingActionButton;
+        final ButtonFloat fab = getTasksFragment().floatingActionButton;
         // Have to set the animation in code because I can not change the toDeltaY at runtime :(
         // And I do not know it before
         final TranslateAnimation anim = new TranslateAnimation(0, 0, 0, -snackbar.getHeight());
@@ -387,7 +388,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
 
     @Override
     public void onDismiss(final Snackbar snackbar) {
-        final FloatingActionButton fab = getTasksFragment().floatingActionButton;
+        final ButtonFloat fab = getTasksFragment().floatingActionButton;
         final TranslateAnimation anim = new TranslateAnimation(0, 0, -snackbar.getHeight(), 0);
         anim.setDuration(getResources().getInteger(R.integer.anim_snackbar_duration));
         anim.setFillEnabled(true);
