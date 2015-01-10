@@ -234,6 +234,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         } else if (SettingsHelper.handleActivityResult(requestCode, resultCode, data, this)) {
             finish();
         }
+        backstack.clear();
         super.onActivityResult(requestCode, resultCode, data);
     }
 
