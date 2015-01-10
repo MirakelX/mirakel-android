@@ -29,8 +29,8 @@
         <attr name="shadowColor" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="PriorityDone">
-        <attr name="progress" format="integer"/>
+    <declare-styleable name="ProgressDone">
+        <attr name="progress_value" format="integer"/>
         <attr name="done" format="boolean" />
         <attr name="progress_color" format="color"/>
         <attr name="progress_background_color" format="color"/>

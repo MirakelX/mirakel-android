@@ -70,12 +70,12 @@ public class ProgressDoneView extends CheckBox implements Runnable {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.PriorityDone,
+        TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressDone,
                                 0, 0);
         try {
-            progress = attributes.getInt(R.styleable.PriorityDone_progress, 0);
-            progressColor = attributes.getInt(R.styleable.PriorityDone_progress_color, 0);
-            progressBackgroundColor = attributes.getInt(R.styleable.PriorityDone_progress_background_color, 0);
+            progress = attributes.getInt(R.styleable.ProgressDone_progress_value, 0);
+            progressColor = attributes.getInt(R.styleable.ProgressDone_progress_color, 0);
+            progressBackgroundColor = attributes.getInt(R.styleable.ProgressDone_progress_background_color, 0);
         } finally {
             attributes.recycle();
         }
