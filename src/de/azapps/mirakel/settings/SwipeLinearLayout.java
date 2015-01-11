@@ -19,22 +19,33 @@
 
 package de.azapps.mirakel.settings;
 
+import android.animation.Animator;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.gesture.GestureOverlayView;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.google.common.base.Optional;
+
+import de.azapps.mirakel.ThemeManager;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -46,9 +57,7 @@ public class SwipeLinearLayout extends GestureOverlayView  {
 
     private static final int SWIPE_THRESHOLD_VELOCITY = 1200;
 
-    private int xDelta;
     private int selectedChildIndex = 0;
-    private int startMargin;
     @Nullable
     private Thread resetThread = null;
     @Nullable
@@ -62,6 +71,9 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     @NonNull
     private final VelocityTracker velocityTracker = VelocityTracker.obtain();
     private int screenW;
+    private FrameLayout.LayoutParams leaveBehindParams;
+    private double childWidth;
+    private boolean isRemoving = false;
 
 
     @Override
@@ -90,7 +102,7 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         final int x = (int) ev.getRawX();
         velocityTracker.clear();
         if (stopReset()) {
-            updateParams(currentTouchView, x - xDelta);
+            updateParams(currentTouchView, x);
             return false;
         }
         currentTouchView = null;
@@ -103,23 +115,9 @@ public class SwipeLinearLayout extends GestureOverlayView  {
                 break;
             }
         }
-        if ((currentTouchView == null) || !(currentTouchView instanceof RelativeLayout) ) {
+        if ((currentTouchView == null) || !(currentTouchView instanceof LinearLayout) ) {
             currentTouchView = null;
             return false;
-        }
-        final MarginLayoutParams initialParams;
-        try {
-            initialParams = (MarginLayoutParams) currentTouchView.getLayoutParams();
-        } catch (final ClassCastException e) {
-            currentTouchView = null;
-            return false;
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            xDelta = x - initialParams.leftMargin;
-            startMargin = initialParams.leftMargin;
-        } else {
-            startMargin = initialParams.getMarginStart();
-            xDelta = x - initialParams.getMarginStart();
         }
         xDown = ev.getX();
         yDown = ev.getY();
@@ -131,20 +129,21 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         if (v == null) {
             return absent();
         }
-        final Object tag;
-        if (v instanceof RelativeLayout) {
-            tag = ((RelativeLayout) v).getChildAt(0).getTag(SWIPEABLE_VIEW);
-        } else {
-            tag = v.getTag(SWIPEABLE_VIEW);
-        }
+        final Object tag = v.getTag(SWIPEABLE_VIEW);
         if (tag instanceof OnClickListener) {
             return of((OnClickListener)tag);
+        }
+        if (v instanceof LinearLayout && ((LinearLayout) v).getChildCount() > 1) {
+            final Object tag1 = ((LinearLayout) v).getChildAt(1).getTag(SWIPEABLE_VIEW);
+            if (tag1 instanceof OnClickListener) {
+                return of((OnClickListener)tag1);
+            }
         }
         return absent();
     }
 
     @Override
-    public boolean onTouchEvent(@NonNull final MotionEvent event) {
+    public boolean onTouchEvent(final @NonNull MotionEvent event) {
         if (super.onTouchEvent(event)) {
             return true;
         }
@@ -175,13 +174,27 @@ public class SwipeLinearLayout extends GestureOverlayView  {
                             return;
                         }
                         synchronized (SwipeLinearLayout.this) {
-                            if ((resetThread != null) && !resetThread.isInterrupted() && (currentTouchView != null)) {
+                            if ((resetThread != null) && !resetThread.isInterrupted() && (currentTouchView != null) &&
+                                !isRemoving) {
                                 currentTouchView.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        updateParams(currentTouchView, startMargin);
-                                        currentTouchView = null;
-                                        getParent().requestDisallowInterceptTouchEvent(false);
+                                        animateView((int) (x - xDown), 300L, new DecelerateInterpolator(),
+                                        new ValueAnimator.AnimatorUpdateListener() {
+                                            @Override
+                                            public void onAnimationUpdate(final ValueAnimator animation) {
+                                                updateParams(currentTouchView, (Integer) animation.getAnimatedValue());
+                                            }
+                                        }, new EndMoveAnimatorListener(new AnimationEnd() {
+                                            @Override
+                                            public void onAnimationEnd(@NonNull final Animator animation) {
+                                                currentTouchView = null;
+                                                getParent().requestDisallowInterceptTouchEvent(false);
+                                            }
+                                        }));
+
+
+
                                     }
                                 });
                                 resetThread = null;
@@ -199,13 +212,33 @@ public class SwipeLinearLayout extends GestureOverlayView  {
 
                 getParent().requestDisallowInterceptTouchEvent(true);
                 stopReset();
-                updateParams(currentTouchView, x - xDelta);
+                updateParams(currentTouchView, (int) (x - xDown));
 
                 if ((currentTouchView != null) && listener.isPresent() && (getDistanceTo(event) > (screenW / 2)) &&
                     (Math.abs(velocityTracker.getXVelocity()) > SWIPE_THRESHOLD_VELOCITY)) {
-                    listener.get().onRemove(selectedChildIndex);
-                    mContainer.removeView(currentTouchView);
-                    currentTouchView = null;
+                    isRemoving = true;
+                    animateView(currentTouchView.getMeasuredHeight(), 300L, new LinearInterpolator(),
+                    new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(final ValueAnimator animation) {
+                            if (currentTouchView != null) {
+                                final ViewGroup.LayoutParams params = currentTouchView.getLayoutParams();
+                                params.height = (int) animation.getAnimatedValue();
+                                currentTouchView.setLayoutParams(params);
+                            }
+                        }
+                    }, new EndMoveAnimatorListener(new AnimationEnd() {
+                        @Override
+                        public void onAnimationEnd(@NonNull final Animator animation) {
+                            if (currentTouchView != null) {
+                                listener.get().onRemove(selectedChildIndex);
+                                mContainer.removeView(currentTouchView);
+                                getParent().requestDisallowInterceptTouchEvent(false);
+                                currentTouchView = null;
+                                isRemoving = false;
+                            }
+                        }
+                    }));
                     return false;
                 }
             }
@@ -215,6 +248,19 @@ public class SwipeLinearLayout extends GestureOverlayView  {
             return false;
         }
         return true;
+    }
+
+    private void animateView(int start, long duration,
+                             final @NonNull TimeInterpolator interpolator,
+                             final @NonNull ValueAnimator.AnimatorUpdateListener onUpdate,
+                             final @NonNull Animator.AnimatorListener animatorListener) {
+        final ValueAnimator animator = new ValueAnimator();
+        animator.setIntValues(start, 0);
+        animator.setDuration(duration);
+        animator.setInterpolator(interpolator);
+        animator.addUpdateListener(onUpdate);
+        animator.addListener(animatorListener);
+        animator.start();
     }
 
     @Override
@@ -231,17 +277,43 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         return currentTouchView != null;
     }
 
-    private static void updateParams(final @Nullable View view, final int value) {
-        if (view == null) {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void updateParams(final @Nullable View view, final int value) {
+        if ((view == null) || !(view instanceof LinearLayout &&
+                                ((LinearLayout) view).getChildCount() > 2)) {
             return;
         }
-        final MarginLayoutParams layoutParams = (MarginLayoutParams) view.getLayoutParams();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            layoutParams.leftMargin = value;
+        final int pos = (value < 0) ? 2 : 0;
+        final int otherPos = (value < 0) ? 0 : 2;
+        int marginMultiplier = 1;
+
+        final LinearLayout.LayoutParams cparams = (LinearLayout.LayoutParams) ((
+                    LinearLayout) view).getChildAt(1).getLayoutParams();
+        cparams.width = (int) Math.max((screenW - Math.abs(value)), childWidth);
+
+        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) && (value <= 0)) {
+            cparams.leftMargin = value;
+            marginMultiplier = 2;
         } else {
-            layoutParams.setMarginStart(value);
+            if ((getLayoutDirection() == LAYOUT_DIRECTION_LTR) && (value <= 0)) {
+                cparams.leftMargin = value;
+                marginMultiplier = 2;
+            } else if ((getLayoutDirection() == LAYOUT_DIRECTION_RTL) && (value >= 0)) {
+                cparams.rightMargin = -1 * value;
+                marginMultiplier = 2;
+            }
         }
-        view.setLayoutParams(layoutParams);
+        ((LinearLayout) view).getChildAt(1).setLayoutParams(cparams);
+
+        final LinearLayout.LayoutParams lparams = (LinearLayout.LayoutParams) ((
+                    LinearLayout) view).getChildAt(pos).getLayoutParams();
+        lparams.width = Math.abs(value) * marginMultiplier;
+        ((LinearLayout) view).getChildAt(pos).setLayoutParams(lparams);
+
+        final LinearLayout.LayoutParams rparams = (LinearLayout.LayoutParams) ((
+                    LinearLayout) view).getChildAt(otherPos).getLayoutParams();
+        rparams.width = 0;
+        ((LinearLayout) view).getChildAt(otherPos).setLayoutParams(rparams);
         view.invalidate();
     }
 
@@ -265,6 +337,8 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         mContainer.setOrientation(LinearLayout.VERTICAL);
         addView(mContainer);
         setWillNotDraw(true);
+        leaveBehindParams = new FrameLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+        leaveBehindParams.gravity = Gravity.CENTER;
     }
 
 
@@ -275,21 +349,31 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         return true;
     }
 
-    private static View setupChildView(final View view) {
-        if (!isSwipeable(view).isPresent()) {
-            return view;
+    private View setupChildView(final View child) {
+        final Optional<OnClickListener> tag = isSwipeable(child);
+        if (!tag.isPresent()) {
+            return child;
         }
-        View child = view;
-        if (!(view instanceof RelativeLayout)) {
-            final  RelativeLayout wrapper = new RelativeLayout(view.getContext());
+        final LinearLayout wrapper = new LinearLayout(getContext());
+        wrapper.setOrientation(LinearLayout.HORIZONTAL);
+        wrapper.addView(getLeaveBehindView());
+        childWidth = Math.max(child.getMeasuredWidthAndState(), childWidth);
+        wrapper.addView(child);
+        wrapper.addView(getLeaveBehindView());
+        wrapper.setTag(SWIPEABLE_VIEW, tag.get());
+        return wrapper;
+    }
 
-            wrapper.requestDisallowInterceptTouchEvent(true);
-            wrapper.addView(view);
-            child = wrapper;
+    private ImageView getLeaveBehindView() {
+        final ImageView leaveBehind = new ImageView(getContext());
+        leaveBehind.setLayoutParams(leaveBehindParams);
+        leaveBehind.setImageResource(android.R.drawable.ic_menu_delete);
+        leaveBehind.setColorFilter(ThemeManager.getAccentThemeColor());
+        leaveBehind.setBackgroundColor(Color.GRAY);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            leaveBehind.setElevation(-15);
         }
-        //c.setOnTouchListener(null);
-        //c.setOnClickListener(null);
-        return child;
+        return leaveBehind;
     }
 
     @Override
@@ -300,5 +384,38 @@ public class SwipeLinearLayout extends GestureOverlayView  {
             return;
         }
         mContainer.addView(setupChildView(child), index);
+    }
+
+    private interface AnimationEnd {
+        void onAnimationEnd(final @NonNull Animator animation);
+    }
+
+    private class EndMoveAnimatorListener implements Animator.AnimatorListener {
+
+        private final AnimationEnd onEnd;
+
+        EndMoveAnimatorListener(final AnimationEnd onEnd) {
+            this.onEnd = onEnd;
+        }
+
+        @Override
+        public void onAnimationStart(final Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(final Animator animation) {
+            onEnd.onAnimationEnd(animation);
+        }
+
+        @Override
+        public void onAnimationCancel(final Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(final Animator animation) {
+
+        }
     }
 }
