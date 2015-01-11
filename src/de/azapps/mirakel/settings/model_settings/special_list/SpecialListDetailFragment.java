@@ -352,6 +352,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     private EditTextPreference getNamePreference() {
         final EditTextPreference name = new EditTextPreference(getActivity());
         name.setKey("special_lists_name");
+        name.setDialogTitle(R.string.special_list_name);
         name.setTitle(R.string.special_list_name);
         name.setSummary(mItem.getName());
         name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
