@@ -57,9 +57,9 @@ import static org.junit.Assert.assertEquals;
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class ${TESTCLASS}Test{
-    
+
     @Before
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         TestHelper.init(Robolectric.application);
         RandomHelper.init(Robolectric.application);
     }

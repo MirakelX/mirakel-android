@@ -19,6 +19,10 @@
 package de.azapps.mirakel.model.query_builder;
 
 
+import android.database.Cursor;
+
+import com.google.common.base.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -41,10 +45,8 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
-public class QueryBuilderTest extends MirakelTestCase {
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -358,79 +360,100 @@ public class QueryBuilderTest {
     @Test
     public void testGetTask() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        Task res_qb = qb.get(Task.class);
+        Optional<Task> res_qb = qb.get(Task.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(Task.URI, Task.allColumns, null,
                    null, null);
         c.moveToFirst();
         Task res_raw = new Task(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
     @Test
     public void testGetAccount() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        AccountMirakel res_qb = qb.get(AccountMirakel.class);
+        Optional<AccountMirakel> res_qb = qb.get(AccountMirakel.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(
                        AccountMirakel.URI, AccountMirakel.allColumns, null, null, null);
         c.moveToFirst();
         AccountMirakel res_raw = new AccountMirakel(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
     @Test
     public void testGetFile() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        FileMirakel res_qb = qb.get(FileMirakel.class);
+        Optional<FileMirakel> res_qb = qb.get(FileMirakel.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(FileMirakel.URI,
                    FileMirakel.allColumns, null, null, null);
         c.moveToFirst();
         FileMirakel res_raw = new FileMirakel(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
     @Test
     public void testGetRecurring() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        Recurring res_qb = qb.get(Recurring.class);
+        Optional<Recurring> res_qb = qb.get(Recurring.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(Recurring.URI,
                    Recurring.allColumns, null, null, null);
         c.moveToFirst();
         Recurring res_raw = new Recurring(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
     @Test
     public void testGetSemantic() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        Semantic res_qb = qb.get(Semantic.class);
+        Optional<Semantic> res_qb = qb.get(Semantic.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(Semantic.URI,
                    Semantic.allColumns, null, null, null);
         c.moveToFirst();
         Semantic res_raw = new Semantic(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
     @Test
     public void testGetList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        ListMirakel res_qb = qb.get(ListMirakel.class);
+        Optional<ListMirakel> res_qb = qb.get(ListMirakel.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(ListMirakel.URI,
                    ListMirakel.allColumns, null, null, null);
         c.moveToFirst();
         ListMirakel res_raw = new ListMirakel(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
     @Test
     public void testGetMetaList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
-        SpecialList res_qb = qb.get(SpecialList.class);
+        Optional<SpecialList> res_qb = qb.get(SpecialList.class);
+        if (!res_qb.isPresent()) {
+            fail("Querybuilder returned empty result");
+        }
         Cursor c = Robolectric.application.getContentResolver().query(SpecialList.URI,
                    SpecialList.allColumns, null, null, null);
         c.moveToFirst();
         SpecialList res_raw = new SpecialList(c);
         c.close();
-        assertEquals(res_raw, res_qb);
+        assertEquals(res_raw, res_qb.get());
     }
 
     //test getList
@@ -455,40 +478,44 @@ public class QueryBuilderTest {
     public void testGetAccountList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(AccountMirakel.class);
-        List res_raw = AccountMirakel.cursorToAccountList(Robolectric.application.getContentResolver().query(
-                           AccountMirakel.URI, AccountMirakel.allColumns, null, null, null));
+        List res_raw = AccountMirakel.cursorToAccountList(
+                           Robolectric.application.getContentResolver().query(
+                               AccountMirakel.URI, AccountMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
     @Test
     public void testGetFileList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(FileMirakel.class);
-        List res_raw = FileMirakel.cursorToFileList(Robolectric.application.getContentResolver().query(FileMirakel.URI,
-                       FileMirakel.allColumns, null, null, null));
+        List res_raw = FileMirakel.cursorToFileList(Robolectric.application.getContentResolver().query(
+                           FileMirakel.URI,
+                           FileMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
     @Test
     public void testGetRecurringList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(Recurring.class);
-        List res_raw = Recurring.cursorToRecurringList(Robolectric.application.getContentResolver().query(
-                           Recurring.URI, Recurring.allColumns, null, null, null));
+        List res_raw = Recurring.cursorToList(Robolectric.application.getContentResolver().query(
+                Recurring.URI, Recurring.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
     @Test
     public void testGetSemanticList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(Semantic.class);
-        List res_raw = Semantic.cursorToSemanticList(Robolectric.application.getContentResolver().query(Semantic.URI,
-                       Semantic.allColumns, null, null, null));
+        List res_raw = Semantic.cursorToSemanticList(Robolectric.application.getContentResolver().query(
+                           Semantic.URI,
+                           Semantic.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
     @Test
     public void testGetListList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(Robolectric.application);
         List res_qb = qb.getList(ListMirakel.class);
-        List res_raw = ListMirakel.cursorToList(Robolectric.application.getContentResolver().query(ListMirakel.URI,
-                                                ListMirakel.allColumns, null, null, null));
+        List res_raw = ListMirakel.cursorToList(Robolectric.application.getContentResolver().query(
+                ListMirakel.URI,
+                ListMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
     @Test

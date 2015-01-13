@@ -54,7 +54,7 @@ public class ${TESTCLASS}Test {
     private static SQLiteDatabase database;
 
     @Before
-    protected void setUp() throws Exception{
+    public void setUp() throws Exception{
     	TestHelper.init(Robolectric.application);
         database = DatabaseHelper.getDatabaseHelper(Robolectric.application).getWritableDatabase();
         RandomHelper.init(Robolectric.application);

@@ -21,14 +21,16 @@ package de.azapps.mirakelandroid.test;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.util.SparseBooleanArray;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -38,12 +40,12 @@ import java.util.Map;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
-import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
-import de.azapps.mirakel.model.recurring.Recurring;
-import de.azapps.mirakel.model.semantic.Semantic;
-import de.azapps.mirakel.model.tags.Tag;
+import de.azapps.mirakel.model.list.meta.SpecialListsDueProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsProgressProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsStringProperty;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 
@@ -61,28 +63,6 @@ public class RandomHelper {
 
     public static void init(final Context ctx) {
         RandomHelper.ctx = ctx;
-        final ListMirakel l=ListMirakel.safeFirst();
-        final Task t;
-        if(Task.all().isEmpty()) {
-            t=Task.newTask(getRandomString(),l);
-        }else{
-            t=Task.all().get(0);
-        }
-        if(Tag.all().isEmpty()){
-            Tag.newTag(getRandomString());
-        }
-        if(Semantic.all().isEmpty()){
-            Semantic.newSemantic(getRandomString(),getRandomInteger(),getRandomInteger(),getRandomOptional_ListMirakel(),getRandomInteger());
-        }
-        if(Recurring.all().isEmpty()){
-            Recurring.newRecurring(getRandomString(),getRandomint(),getRandomint(),getRandomint(),getRandomint(),getRandomint(),getRandomboolean(),getRandomOptional_Calendar(),getRandomOptional_Calendar(),getRandomboolean(),getRandomboolean(),getRandomSparseBooleanArray());
-        }
-        if(FileMirakel.all().isEmpty()){
-            FileMirakel.newFile(ctx,t,getRandomUri());
-        }
-        if(AccountMirakel.all().isEmpty()){
-            AccountMirakel.newAccount(getRandomString(),getRandomACCOUNT_TYPES(),getRandomboolean());
-        }
     }
 
     public static int getRandomint() {
@@ -117,7 +97,7 @@ public class RandomHelper {
     }
 
     public static ListMirakel getRandomListMirakel() {
-        final List<ListMirakel> t = ListMirakel.all(false);
+        final List<ListMirakel> t = ListMirakel.all();
         return t.get(random.nextInt(t.size()));
     }
 
@@ -236,5 +216,44 @@ public class RandomHelper {
             return null;
         }
         return getRandomInteger();
+    }
+
+    public static int getRandomint(final int i) {
+        return random.nextInt(i);
+    }
+
+    public static SpecialListsStringProperty.Type getRandomStringPropertyType() {
+        return SpecialListsStringProperty.Type.values()[getRandomint(
+                    SpecialListsStringProperty.Type.values().length)];
+    }
+
+    public static SpecialListsDueProperty.Unit getRandomUnit() {
+        return SpecialListsDueProperty.Unit.values()[getRandomint(
+                    SpecialListsDueProperty.Unit.values().length)];
+    }
+
+    public static List<Integer> getRandomList_ListMirakel_ID() {
+        final List<ListMirakel> all = ListMirakel.all(false);
+        return new ArrayList<>(Collections2.transform(all.subList(0, getRandomint(all.size())),
+        new Function<ListMirakel, Integer>() {
+            @Override
+            public Integer apply(final ListMirakel input) {
+                return (int)input.getId();
+            }
+        }));
+    }
+
+    public static List<SpecialList> getRandomList_SpecialList() {
+        final List<SpecialList> all = SpecialList.allSpecial();
+        return all.subList(0, getRandomint(all.size()));
+    }
+
+    public static SpecialListsProgressProperty.OPERATION getRandomOperation() {
+        return SpecialListsProgressProperty.OPERATION.values()[getRandomint(
+                    SpecialListsProgressProperty.OPERATION.values().length)];
+    }
+
+    public static Optional<Uri> getRandomOptional_Uri() {
+        return absent();
     }
 }
