@@ -16,7 +16,7 @@
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.task;
+package de.azapps.mirakel.sync.taskwarrior.model.test;
 
 
 
@@ -34,6 +34,7 @@ import java.util.Calendar;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
+import de.azapps.mirakelandroid.test.MirakelTestCase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +42,7 @@ import static org.junit.Assert.fail;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class RecurrenceTest {
+public class RecurrenceTest extends MirakelTestCase {
 
     private void performBackCheck(String rec,Recurring r) {
         final JsonObject e=new JsonObject();

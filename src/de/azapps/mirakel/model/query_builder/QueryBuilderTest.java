@@ -45,6 +45,7 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 
@@ -56,7 +57,7 @@ import static org.junit.Assert.assertFalse;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class QueryBuilderTest {
+public class QueryBuilderTest extends MirakelTestCase {
 
     @Test
     public void testBasicQuery() {

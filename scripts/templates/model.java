@@ -38,6 +38,7 @@ import de.azapps.mirakel.model.MirakelContentProvider;
 
 import com.google.common.base.Optional;
 
+import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
 
@@ -49,14 +50,13 @@ import static org.junit.Assert.assertFalse;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class ${TESTCLASS}Test {
+public class ${TESTCLASS}Test extends MirakelTestCase{
     private static SQLiteDatabase database;
 
     @Before
     public void setUp() throws Exception{
-    	TestHelper.init(Robolectric.application);
+        super.setUp();
         database = DatabaseHelper.getDatabaseHelper(Robolectric.application).getWritableDatabase();
-        RandomHelper.init(Robolectric.application);
         // Create at least one item to have something to test with
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
         ${CREATEFUNCTION.function};

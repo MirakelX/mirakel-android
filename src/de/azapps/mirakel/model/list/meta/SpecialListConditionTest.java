@@ -40,6 +40,7 @@ import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.SpecialListsWhereDeserializer;
 import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList.CONJUNCTION;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
 
@@ -49,7 +50,7 @@ import static org.junit.Assert.fail;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class SpecialListConditionTest {
+public class SpecialListConditionTest extends MirakelTestCase {
 
     @Test
     public void testDoneCondition() {

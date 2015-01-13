@@ -49,6 +49,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTask;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
+import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import static com.google.common.base.Optional.of;
 
@@ -64,7 +65,7 @@ import static org.junit.Assert.fail;
  */
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class TaskDeserializerTest {
+public class TaskDeserializerTest extends MirakelTestCase{
 
 	private boolean compare(final String taskString, final TaskWarriorTask task) {
 		final JsonParser parser = new JsonParser();

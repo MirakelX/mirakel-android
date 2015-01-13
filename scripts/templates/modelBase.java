@@ -18,7 +18,6 @@
  ******************************************************************************/
 package $FULLPACKAGE;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -55,13 +54,8 @@ import static org.junit.Assert.assertEquals;
 
 @Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class ${TESTCLASS}Test{
+public class ${TESTCLASS}Test extends MirakelTestCase{
 
-    @Before
-    public void setUp() throws Exception {
-        TestHelper.init(Robolectric.application);
-        RandomHelper.init(Robolectric.application);
-    }
 
 #foreach($SETTER in $SETTERS)
     // Test for getting and setting ${SETTER.name}
