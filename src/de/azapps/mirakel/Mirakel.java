@@ -78,16 +78,20 @@ public class Mirakel extends Application {
     @Override
     public void onCreate () {
         if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                                       .detectAll()
+            try {
+                StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                                           .detectAll()
+                                           .penaltyLog()
+                                           .build());
+                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                                       .detectLeakedSqlLiteObjects()
+                                       .detectLeakedClosableObjects()
                                        .penaltyLog()
+                                       .penaltyDeath()
                                        .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                                   .detectLeakedSqlLiteObjects()
-                                   .detectLeakedClosableObjects()
-                                   .penaltyLog()
-                                   .penaltyDeath()
-                                   .build());
+            } catch (NullPointerException e) {
+                //happend during tests;)
+            }
         }
         super.onCreate ();
 
