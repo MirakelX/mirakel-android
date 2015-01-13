@@ -18,14 +18,4 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<resources xmlns:xliff="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="year_picker_description">Lista de años</string>
-  <string name="item_is_selected">%1$s seleccionado</string>
-  <string name="deleted_key"><xliff:g id="key" example="4"> %1$s </xliff:g> eliminado</string>
-  <string name="select_hours">Seleccione horas</string>
-  <string name="select_minutes">Seleccionar minutos</string>
-  <string name="acessibility_recurrence_choose_end_date_description">Cambiar fecha de finalización</string>
-  <string name="save_label">Hecho</string>
-  <string name="set_date">Fijar fecha</string>
-  <string name="set_time">Fijar hora</string>
-</resources>
+<resources/>
