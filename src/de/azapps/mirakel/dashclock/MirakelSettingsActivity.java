@@ -32,7 +32,7 @@ import android.widget.NumberPicker;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
+import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -70,7 +70,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 final Cursor cursor = new MirakelQueryBuilder(MirakelSettingsActivity.this).query(
                     MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
-                final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>
+                final SimpleModelListAdapter<ListMirakel> adapter = new SimpleModelListAdapter<>
                 (MirakelSettingsActivity.this, cursor, 0, ListMirakel.class);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MirakelSettingsActivity.this);
                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
