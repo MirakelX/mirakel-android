@@ -21,6 +21,7 @@
   <string name="action_undo">Undo the last Change</string>
   <string name="action_sync_now">Sincronizar ahora</string>
   <string name="action_settings">Configuración</string>
+  <string name="save">Guardar</string>
   <string name="as_subtask">Añadir a una tarea</string>
   <string name="task_clone">Clonar Tarea</string>
   <string name="task_menu_sorting">Ordenar tareas</string>
@@ -33,19 +34,22 @@
   <string name="share_list_title">%1$s (%2$d)</string>
   <string name="share_footer">Compartido con Mirakel\nLa herramienta de Listas para hacer libre (como en libertad) para Android y la Web\nhttp://mirakel.azapps.de</string>
   <string name="list_change_color">Cambiar color</string>
+  <string name="unset_color">Sin color</string>
   <string-array name="list_actions_items">
     <item>Select color</item>
     <item>Renombrar</item>
     <item>Eliminar</item>
     <item>Compartir</item>
   </string-array>
+  <string name="crash_toast_text">Ooooops! Me cerré! Por favor iniciar la aplicación nuevamente, así puedo enviar un mensaje a mi desarrollador</string>
   <string name="crash_dialog_title">Mirakel se ha cerrado</string>
+  <string name="crash_dialog_text">Se ha producido un error inesperado, obligando a la aplicación a detenerse. Por favor ayúdenos a arreglar esto enviándonos datos del error, todo lo que tienes que hacer es hacer clic en OK.</string>
   <string name="crash_dialog_ok_toast">¡Gracias!</string>
   <string name="speak_lang_code">en-US</string>
   <string-array name="audio_playback_options">
     <item>Abrir el archivo</item>
-    <item>Play loud</item>
-    <item>Play silent</item>
+    <item>Reproducir alto</item>
+    <item>Reproducir en silencio</item>
   </string-array>
   <string-array name="task_actions_items">
     <item>Editar</item>
