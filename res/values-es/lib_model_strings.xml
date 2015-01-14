@@ -3,7 +3,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="subtask_list_name">Subtareas</string>
   <string name="daily">Diariamente</string>
+  <string name="second_day">Dos veces al día</string>
   <string name="weekly">Semanal</string>
+  <string name="two_weekly">Dos veces a la semana</string>
   <string name="yearly">Anual</string>
   <string name="monthly">Mensual</string>
   <string name="hourly">Por hora</string>
@@ -14,10 +16,14 @@
   <string name="day">Día</string>
   <string name="month">Mes</string>
   <string name="year">Año</string>
+  <string name="beginning">Comienzo</string>
   <string name="end">Final</string>
   <string name="no_begin_end">No %s</string>
+  <string name="beginning_end">Comienzo y Fin</string>
+  <string name="save">Guardar</string>
   <string name="every">Cada</string>
   <string name="recurrence_end_continously">Siempre</string>
+  <string name="recurrence_end_date_label">Hasta una fecha</string>
   <string name="recurrence_from_now">A partir de ahora</string>
   <string name="recurrence_from">De</string>
   <string name="list_all">Todas las listas</string>
@@ -98,7 +104,7 @@
     <item>Fecha límite</item>
     <item>Prioridad</item>
     <item>Fecha de creación</item>
-    <item>First by priority, then by date</item>
+    <item>Primero por prioridad, luego por fecha</item>
   </string-array>
   <string name="special_list_where_prio_title_text">Prioridad</string>
   <string name="special_list_where_name_title_text">Nombre</string>
