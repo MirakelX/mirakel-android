@@ -35,6 +35,7 @@
   <string name="sync_frequency">Plán synchronizace</string>
   <string name="sync_frequency_summary">Synchronizovat každých %s minut</string>
   <string name="sync_frequency_summary_man">Synchronizovat pouze ručně</string>
+  <string name="account_informations">Informace</string>
   <string-array name="sync_types">
     <item>CalDAV synchronizace</item>
     <item>Taskwarrior synchronizace</item>
@@ -311,4 +312,6 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="add_condition">Přidat podmínku</string>
   <string name="undo_taskui_change">Vrátit odstranění %s</string>
   <string name="due_dialog_negated">Ne po</string>
+  <string name="settings_advanced">Pokročilé</string>
+  <string name="delete_condition">Odstranit podmínku</string>
 </resources>
