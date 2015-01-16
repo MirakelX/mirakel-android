@@ -19,6 +19,9 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Escuche eso!</string>
+  <string name="file_default_title">Revise este archivo</string>
+  <string name="photo_default_title">Revise esta foto</string>
   <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
   <string name="today">Hoy</string>
   <string name="contact_email">mirakel@azapps.de</string>
@@ -30,8 +33,30 @@ Mirakel-version: %1$s\n
 SDK-version: %2$d\n
 Device: %3$s\n]]>
     </string>
+  <string name="contact_chooser">Enviar e-mail&#8230;</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">!Ups¡ Tu dispositivo no puede hacer fotos</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">No hay lugar donde pueda guardar la foto. ¡ Lo siento!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">!Ups! El dispositivo no es compatible con voz a texto</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Las subtareas no pueden formar un bucle</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">No sé cómo abrir este archivo – lo siento</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Ningún cliente de correo electrónico instalado</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Hubo un error interno al analizar el nombre del archivo</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Ocurrió un error inesperado</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">El archivo no pudo ser encontrado</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Hubo un error al exportar la base de datos</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Hubo un error al importar la base de datos</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">No se pudo generar una imagen en miniatura. El archivo es demasiado grande</string>
   <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Yikes, the list of the task has vanished. I\'m sorry&#8230;</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Esto no es un archivo de base de datos Mirakel!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Hubo un error durante la importación de Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">No se encontró el archivo Taskwarrior</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">No se pudo descargar el archivo de configuración</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">La URL no es correcta. Realmente has escaneado el código correcto?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">No hay permiso para leer el archivo</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">No sabemos cómo solucionar este error. Mirakel está reiniciando.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">El nombre de la lista ya existe. Elija otro.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Por favor actualice DAVdroid</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">El formato de archivo de Wunderlist cambió. Por favor repórtelo al equipo de Mirakel.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">El análisis de condición para metalist %s falló. Por favor informe cómo sucedió.</string>
 </resources>
