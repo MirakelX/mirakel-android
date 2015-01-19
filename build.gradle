@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+import java.util.regex.Pattern
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
@@ -18,8 +18,23 @@ apply plugin: 'com.android.application'
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    mavenLocal()
+    mavenCentral()
+}
+buildscript {
+    dependencies {
+        repositories {
+            mavenCentral()
+        }
+        classpath "com.android.tools.build:gradle:1.0.0"
+        classpath "com.github.jcandksolutions.gradle:android-unit-test:2.1.1"
+    }
+}
+
+apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
-apply plugin: 'robolectric'
 
 def getVersionCode() {
     def manifestFile = file("AndroidManifest.xml")
@@ -107,6 +122,7 @@ android {
 
         androidTest {
             java.srcDirs = ['../tests/src']
+            resources.srcDirs = ['../tests/res','../tests/resources']
         }
         instrumentTest.setRoot('../tests/src')
 
@@ -117,25 +133,31 @@ android {
     }
 }
 
+apply plugin: "android-unit-test"
 
-robolectric {
-    // configure the set of classes for JUnit tests
-    include '**/*Test.class'
-    //exclude '**/espresso/**/*.class'
-
-    // configure max heap size of the test JVM
-    //maxHeapSize = '2048m'
-
-    // configure the test JVM arguments
-    //jvmArgs '-Xmx1024m', '-XX:MaxPermSize=256m', '-XX:+HeapDumpOnOutOfMemoryError'
-
-    // configure whether failing tests should fail the build
-    //ignoreFailures false
-
-    // use afterTest to listen to the test execution results
-    afterTest { descriptor, result ->
-        println "Executing test for {$descriptor.name} with result: ${result.resultType}"
+androidUnitTest {
+  sourceSets { //Configures the test source sets.
+      testTasks { //Specifies which source set to modify.
+        java.srcDirs = ['../tests/src']
+        resources.srcDirs = ['../tests/res','../tests/resources']
     }
+      test {
+          java.srcDirs = ['../tests/src']
+          resources.srcDirs = ['../tests/res','../tests/resources']
+      }
+      testCompile {
+          java.srcDirs = ['../tests/src']
+          resources.srcDirs = ['../tests/res','../tests/resources']
+      }
+  }
+  testTasks { //Configures the test tasks.
+    all { //Configures all the test tasks with the same values.
+      maxParallelForks = 1 //There are sql-errors with more than one thread
+      forkEvery =20 //Allow to group a number of tests for each thread to run.
+      minHeapSize = '515m' //Specifies the minHeapSize.
+      maxHeapSize = '2048m' //Specifies the maxHeapSize.
+    }
+  }
 }
 
 dependencies {
@@ -153,33 +175,10 @@ dependencies {
     compile "com.jakewharton:butterknife:$butterknifeVersion"
 
     //for tests
-    androidTestCompile files("$project.buildDir/classes/debug")
-    //androidTestCompile "com.jayway.android.robotium:robotium-solo:$robotiumVersion"
-    androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
-    androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
+    testCompile "junit:junit:4.11"
+    testCompile "org.assertj:assertj-core:1.7.0"
+    testCompile "org.robolectric:robolectric:3.0-SNAPSHOT"
 
-    androidTestCompile("junit:junit:4.11"){
-        exclude module: 'hamcrest-core'
-    }
-
-    androidTestCompile("org.robolectric:robolectric:2.3") {
-    	exclude module: 'classworlds'
-    	exclude module: 'commons-logging'
-    	exclude module: 'httpclient'
-    	exclude module: 'maven-artifact'
-    	exclude module: 'maven-artifact-manager'
-    	exclude module: 'maven-error-diagnostics'
-    	exclude module: 'maven-model'
-    	exclude module: 'maven-project'
-    	exclude module: 'maven-settings'
-    	exclude module: 'plexus-container-default'
-    	exclude module: 'plexus-interpolation'
-    	exclude module: 'plexus-utils'
-    	exclude module: 'wagon-file'
-    	exclude module: 'wagon-http-lightweight'
-    	exclude module: 'wagon-provider-api'
-    }
 }
 
 task deploy(dependsOn: build) << {
