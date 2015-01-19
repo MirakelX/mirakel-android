@@ -89,7 +89,11 @@ public class RandomHelper {
 
     public static AccountMirakel getRandomAccountMirakel() {
         List<AccountMirakel> all = AccountMirakel.all();
-        return all.get(random.nextInt(all.size()));
+        if(all.isEmpty()){
+            return AccountMirakel.getLocal();
+        }else {
+            return all.get(random.nextInt(all.size()));
+        }
     }
 
     public static Integer getRandomInteger() {

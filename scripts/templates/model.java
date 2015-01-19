@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 import java.util.Random;
@@ -41,6 +42,7 @@ import com.google.common.base.Optional;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +50,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertFalse;
 
-@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class ${TESTCLASS}Test extends MirakelTestCase{
     private static SQLiteDatabase database;
@@ -56,7 +57,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase{
     @Before
     public void setUp() throws Exception{
         super.setUp();
-        database = DatabaseHelper.getDatabaseHelper(Robolectric.application).getWritableDatabase();
+        database = DatabaseHelper.getDatabaseHelper(RuntimeEnvironment.application).getWritableDatabase();
         // Create at least one item to have something to test with
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
         ${CREATEFUNCTION.function};
@@ -124,6 +125,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase{
 #end
 
     // If nothing was changed the database should not be updated
+    @Test
     public void testUpdateEqual() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
         final int randomItem = new Random().nextInt(elems.size());

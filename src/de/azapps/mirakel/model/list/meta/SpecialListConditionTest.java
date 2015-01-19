@@ -26,9 +26,7 @@ import com.google.common.collect.Collections2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +39,7 @@ import de.azapps.mirakel.model.list.SpecialListsWhereDeserializer;
 import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList.CONJUNCTION;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
 
@@ -48,8 +47,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Config(emulateSdk = 18)
-@RunWith(RobolectricTestRunner.class)
+@RunWith(MirakelTestRunner.class)
 public class SpecialListConditionTest extends MirakelTestCase {
 
     @Test
@@ -59,7 +57,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         final SpecialListsDoneProperty done = new SpecialListsDoneProperty(isDone);
         assertEquals("Done status not set correctly", isDone, done.isSet());
 
-        final MirakelQueryBuilder qb = done.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = done.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match", "done = ?", qb.getSelection().trim());
         assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
         assertEquals("Argument does not match", isDone ? "1" : "0", qb.getSelectionArguments().get(0));
@@ -81,7 +79,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         final SpecialListsReminderProperty reminder = new SpecialListsReminderProperty(hasReminder);
         assertEquals("Reminder status not set correctly", hasReminder, reminder.isSet());
 
-        final MirakelQueryBuilder qb = reminder.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = reminder.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match", hasReminder ? "reminder IS NOT NULL" : "reminder IS NULL",
                      qb.getSelection().trim());
         assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
@@ -103,7 +101,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         final SpecialListsFileProperty file = new SpecialListsFileProperty(hasFile);
         assertEquals("File status not set correctly", hasFile, file.isSet());
 
-        final MirakelQueryBuilder qb = file.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = file.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match", (hasFile ? "" : "NOT ") + "_id IN (SELECT task_id FROM files)",
                      qb.getSelection().trim());
         assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
@@ -125,7 +123,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         final SpecialListsDueExistsProperty due = new SpecialListsDueExistsProperty(hasDue);
         assertEquals("Due status not set correctly", hasDue, due.isSet());
 
-        final MirakelQueryBuilder qb = due.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = due.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match", hasDue ? "due IS NULL" : "due IS NOT NULL",
                      qb.getSelection().trim());
         assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
@@ -152,7 +150,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Search type not set correctly", type, content.getType());
         assertEquals("Search negated  not set correctly", negated, content.isSet());
 
-        final MirakelQueryBuilder qb = content.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = content.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match", (negated ? "NOT " : "") + "content LIKE ?",
                      qb.getSelection().trim());
         assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
@@ -193,7 +191,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Search type not set correctly", type, name.getType());
         assertEquals("Search negated  not set correctly", negated, name.isSet());
 
-        final MirakelQueryBuilder qb = name.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = name.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match", (negated ? "NOT " : "") + "name LIKE ?",
                      qb.getSelection().trim());
         assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
@@ -235,7 +233,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Search type not set correctly", type, listName.getType());
         assertEquals("Search negated  not set correctly", negated, listName.isSet());
 
-        final MirakelQueryBuilder qb = listName.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = listName.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match",
                      "list_id IN (SELECT _id FROM lists WHERE " + (negated ? "NOT " : "") + "lists.name LIKE ?)",
                      qb.getSelection().trim());
@@ -277,7 +275,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Negated not set correctly", negated, due.isSet());
         assertEquals("Length not set correctly", length, due.getLength());
 
-        final MirakelQueryBuilder qb = due.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = due.getWhereQueryBuilder(RuntimeEnvironment.application);
         final Calendar date = new GregorianCalendar();
         date.setTimeZone(TimeZone.getTimeZone(TimeZone.getAvailableIDs(0)[0]));
         date.set(Calendar.SECOND, 0);
@@ -330,7 +328,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Negation not set correctly", negated, list.isSet());
         assertTrue("List ids not set correctly", TestHelper.listEquals(allIds, list.getContent()));
 
-        final MirakelQueryBuilder qb = list.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = list.getWhereQueryBuilder(RuntimeEnvironment.application);
 
         final List<MirakelQueryBuilder> specialQBs = new ArrayList<>(Collections2.transform(special,
         new Function<SpecialList, MirakelQueryBuilder>() {
@@ -359,7 +357,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
             arguments.addAll(builder.getSelectionArguments());
         }
 
-        String query = " list_id IN (" + TextUtils.join(",", Collections2.transform(lists,
+        String query = "list_id IN(" + TextUtils.join(",", Collections2.transform(lists,
         new Function<Integer, String>() {
             @Override
             public String apply(final Integer input) {
@@ -371,7 +369,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         }
 
         if (negated) {
-            query = "NOT (" + query + ')';
+            query = " NOT (" + query + ')';
         }
 
         assertEquals("Query does not match", query, qb.getSelection());
@@ -403,7 +401,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Negation not set correctly", negated, prio.isSet());
         assertTrue("Priorities not set correctly", TestHelper.listEquals(prios, prio.getContent()));
 
-        final MirakelQueryBuilder qb = prio.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = prio.getWhereQueryBuilder(RuntimeEnvironment.application);
         String query = " priority IN (" + TextUtils.join(",", Collections2.transform(prios,
         new Function<Integer, String>() {
             @Override
@@ -443,7 +441,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Value not set correctly", value, progress.getValue());
         assertEquals("Operation not set correctly", op, progress.getOperation());
 
-        final MirakelQueryBuilder qb = progress.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = progress.getWhereQueryBuilder(RuntimeEnvironment.application);
         String operation;
         switch (op) {
         case GREATER_THAN:
@@ -484,7 +482,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Negated not set correctly", negated, subtask.isSet());
         assertEquals("Parent not set correctly", isParent, subtask.isParent());
 
-        final MirakelQueryBuilder qb = subtask.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = subtask.getWhereQueryBuilder(RuntimeEnvironment.application);
         assertEquals("Query does not match",
                      (negated ? "NOT " : "") + "_id IN (SELECT DISTINCT " + (isParent ? "parent_id" : "child_id") +
                      " FROM subtasks)" , qb.getSelection().trim());
@@ -517,7 +515,7 @@ public class SpecialListConditionTest extends MirakelTestCase {
         assertEquals("Negated not set correctly", negated, tag.isSet());
         assertTrue("Tagids not set correctly", TestHelper.listEquals(tagIds, tag.getContent()));
 
-        final MirakelQueryBuilder qb = tag.getWhereQueryBuilder(Robolectric.application);
+        final MirakelQueryBuilder qb = tag.getWhereQueryBuilder(RuntimeEnvironment.application);
         String query = (negated ? "NOT " : "") +
                        "_id IN (SELECT DISTINCT task_id FROM task_tag WHERE tag_id IN(";
         query += TextUtils.join(",", Collections2.transform(tagIds, new Function<Integer, String>() {
@@ -646,8 +644,8 @@ public class SpecialListConditionTest extends MirakelTestCase {
                      ((SpecialListsDoneProperty) conjunctionLeaf.getChilds().get(1)).isSet());
 
 
-        final MirakelQueryBuilder qb = conjunctionRoot.getWhereQueryBuilder(Robolectric.application);
-        String dummyQuery = '(' + dummyChild.getWhereQueryBuilder(Robolectric.application).getSelection() +
+        final MirakelQueryBuilder qb = conjunctionRoot.getWhereQueryBuilder(RuntimeEnvironment.application);
+        String dummyQuery = '(' + dummyChild.getWhereQueryBuilder(RuntimeEnvironment.application).getSelection() +
                             ')';
         final String query = dummyQuery + " AND (" + dummyQuery + " OR (" + dummyQuery + " AND " +
                              dummyQuery + "))";

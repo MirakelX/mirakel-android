@@ -18,8 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.sync.taskwarrior.model.test;
 
-
-
 import com.google.common.base.Optional;
 import com.google.gson.JsonObject;
 
@@ -35,12 +33,12 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class RecurrenceTest extends MirakelTestCase {
 

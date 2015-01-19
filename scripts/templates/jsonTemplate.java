@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.text.SimpleDateFormat;
@@ -51,6 +52,8 @@ import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
+
 import static com.google.common.base.Optional.of;
 
 import static org.junit.Assert.assertEquals;
@@ -63,7 +66,6 @@ import static org.junit.Assert.fail;
  * @author az
  *
  */
-@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class TaskDeserializerTest extends MirakelTestCase{
 
@@ -75,7 +77,7 @@ public class TaskDeserializerTest extends MirakelTestCase{
 
 		final String outputTask = new GsonBuilder()
 				.registerTypeAdapter(Task.class,
-						new TaskWarriorTaskSerializer(Robolectric.application)).create()
+						new TaskWarriorTaskSerializer(RuntimeEnvironment.application)).create()
 				.toJson(t);
 		final JsonObject o2 = (JsonObject) parser.parse(outputTask);
 		return equalJson(o2, o);
@@ -241,7 +243,7 @@ public class TaskDeserializerTest extends MirakelTestCase{
 
         String serialized=new GsonBuilder()
                 .registerTypeAdapter(Task.class,
-                        new TaskWarriorTaskSerializer(Robolectric.application)).create()
+                        new TaskWarriorTaskSerializer(RuntimeEnvironment.application)).create()
                 .toJson(t);
         SimpleDateFormat format=DateTimeHelper.taskwarriorFormat;
 
@@ -251,10 +253,10 @@ public class TaskDeserializerTest extends MirakelTestCase{
 
         String json="{\"uuid\":\""+t.getUUID()+"\","+
                 "\"status\":\"pending\","+
-                "\"entry:\":\""+format.format(created.getTime())+"\","+
+                "\"entry\":\""+format.format(created.getTime())+"\","+
                 "\"description\":\""+t.getName()+"\","+
-                "\"due:\":\""+format.format(due.getTime())+"\","+
-                "\"modified:\":\""+format.format(updated.getTime())+"\","+
+                "\"due\":\""+format.format(due.getTime())+"\","+
+                "\"modified\":\""+format.format(updated.getTime())+"\","+
                 "\"priority\":\"H\"}";
 
         JsonParser parser=new JsonParser();

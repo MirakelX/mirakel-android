@@ -24,12 +24,32 @@ import android.content.Context;
 import java.util.List;
 
 import de.azapps.mirakel.Mirakel;
+import de.azapps.mirakel.model.tags.Tag;
+import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.model.file.FileMirakel;
+
 import de.azapps.mirakel.model.semantic.Semantic;
 
 public class TestHelper {
     public static void init(final Context ctx) {
         Mirakel.init(ctx);
         Semantic.init(ctx);
+        try {
+            ListMirakel.newList(RandomHelper.getRandomString(), RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomAccountMirakel());
+        } catch (ListMirakel.ListAlreadyExistsException e) {
+            //eat it
+        }
+        final Task t=Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel());
+        Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+        Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(), RandomHelper.getRandomString(), RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+
+        Tag.newTag(RandomHelper.getRandomString());
+        FileMirakel.newFile(ctx,t,RandomHelper.getRandomUri());
+        Recurring.newRecurring(RandomHelper.getRandomString(),RandomHelper.getRandomint(),RandomHelper.getRandomint(),RandomHelper.getRandomint(),RandomHelper.getRandomint(),RandomHelper.getRandomint(),RandomHelper.getRandomboolean(),RandomHelper.getRandomOptional_Calendar(),RandomHelper.getRandomOptional_Calendar(),RandomHelper.getRandomboolean(),RandomHelper.getRandomboolean(),RandomHelper.getRandomSparseBooleanArray());
+        Semantic.newSemantic(RandomHelper.getRandomString(),RandomHelper.getRandomint(),RandomHelper.getRandomint(),RandomHelper.getRandomOptional_ListMirakel(),RandomHelper.getRandomint());
     }
 
     public static void terminate() {

@@ -23,30 +23,29 @@ import android.content.ContentResolver;
 
 import org.junit.After;
 import org.junit.Before;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowContentResolver;
 
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 
-public class MirakelTestCase {
+public class MirakelTestCase{
 
     private MirakelInternalContentProvider mProvider;
     private ContentResolver mContentResolver;
-    private ShadowContentResolver mShadowContentResolver;
+    //private ShadowContentResolver mShadowContentResolver;
 
     @Before
     public void setUp() throws Exception {
         mProvider = new MirakelInternalContentProvider();
-        mContentResolver = Robolectric.application.getContentResolver();
-        mShadowContentResolver = Robolectric.shadowOf(mContentResolver);
+        mContentResolver = RuntimeEnvironment.application.getContentResolver();
+        //mShadowContentResolver = Shadow.shadowOf(mContentResolver);
         ShadowContentResolver.registerProvider(
             "de.azapps.mirakel.provider.internal",    //authority of your provider
             mProvider  //instance of your ContentProvider (you can just use default constructor)
         );
         mProvider.onCreate();
-
-        TestHelper.init(Robolectric.application);
-        RandomHelper.init(Robolectric.application);
+        TestHelper.init(RuntimeEnvironment.application);
+        RandomHelper.init(RuntimeEnvironment.application);
     }
 
     @After

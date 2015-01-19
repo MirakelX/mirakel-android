@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
@@ -36,6 +37,7 @@ import de.azapps.mirakel.model.MirakelContentProvider;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
 
 import junit.framework.TestCase;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -52,7 +54,6 @@ import static de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import static org.junit.Assert.assertEquals;
 
 
-@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class ${TESTCLASS}Test extends MirakelTestCase{
 
