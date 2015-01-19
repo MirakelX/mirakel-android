@@ -20,4 +20,5 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
     <dimen name="padding_settings_card">8dp</dimen>
+    <dimen name="padding_settings_header_icon">8dp</dimen>
 </resources>

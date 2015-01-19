@@ -22,15 +22,19 @@ package de.azapps.mirakel.settings;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Parcel;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.common.base.Optional;
@@ -62,17 +66,17 @@ import static com.google.common.base.Optional.of;
 public enum  Settings implements IGenericElementInterface {
 
 
-    ABOUT(R.string.settings_about, R.drawable.settings_about),
-    BACKUP(R.string.settings_backup, R.drawable.settings_backup),
-    DEV(R.string.settings_dev, R.drawable.settings_dev),
-    NOTIFICATION(R.string.notification_title, R.drawable.settings_notifications),
-    TASK( R.string.settings_tasks_title, R.drawable.settings_tasks),
-    UI( R.string.ui_settings_title, R.drawable.settings_ui),
+    ABOUT(R.string.settings_about, R.drawable.ic_info_24px),
+    BACKUP(R.string.settings_backup, R.drawable.ic_settings_backup_restore_24px),
+    DEV(R.string.settings_dev, R.drawable.ic_developer_mode_24px),
+    NOTIFICATION(R.string.notification_title, R.drawable.ic_notifications_24px),
+    TASK( R.string.settings_tasks_title, R.drawable.ic_done_24px),
+    UI( R.string.ui_settings_title, R.drawable.ic_stay_current_portrait_24px),
     TASKUI(R.string.settings_task_fragment),
-    DONATE( R.string.title_donations),
+    DONATE( R.string.title_donations, R.drawable.ic_favorite_24px),
     CREDITS(R.string.action_credits),
-    SYNC( R.string.sync_title, R.drawable.settings_sync),
-    SPECIAL_LISTS( R.string.special_lists_click);
+    SYNC( R.string.sync_title, R.drawable.ic_sync_24px),
+    SPECIAL_LISTS( R.string.special_lists_click, R.drawable.ic_local_offer_24px);
 
     private static final Map<Integer, List<Settings>> all = new ArrayMap<>(4);
     static{
@@ -161,16 +165,24 @@ public enum  Settings implements IGenericElementInterface {
 
     static class SettingsHeader extends Preference{
 
+        private final int iconPadding;
         public SettingsHeader(final Context context) {
             super(context);
+            iconPadding = (int) context.getResources().getDimension(R.dimen.padding_settings_header_icon);
         }
 
         @Override
         public View getView(final View convertView, final ViewGroup parent) {
             final View v = super.getView(convertView, parent);
-            ((ImageView)v.findViewById(android.R.id.icon)).setColorFilter(ThemeManager.getAccentThemeColor());
-            ((TextView)v.findViewById(android.R.id.title)).setTextColor(ThemeManager.getColor(
+            final ImageView icon = (ImageView) v.findViewById(android.R.id.icon);
+            icon.setColorFilter(ThemeManager.getAccentThemeColor());
+            icon.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
+
+            final TextView text = (TextView) v.findViewById(android.R.id.title);
+            text.setTextColor(ThemeManager.getColor(
                 R.attr.colorTextBlack));
+            text.setTypeface(Typeface.DEFAULT);
+            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16.0F);
             return v;
         }
     }

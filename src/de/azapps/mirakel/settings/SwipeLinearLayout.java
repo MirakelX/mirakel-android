@@ -74,12 +74,14 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     private FrameLayout.LayoutParams leaveBehindParams;
     private double childWidth;
     private boolean isRemoving = false;
+    private int eventCount = 0;
 
 
     @Override
     public boolean onInterceptTouchEvent(final MotionEvent ev) {
         switch (ev.getAction()) {
         case MotionEvent.ACTION_DOWN:
+            eventCount = 0;
             if (processTouchDown(ev)) {
                 velocityTracker.addMovement(ev);
                 return true;
@@ -101,7 +103,7 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     boolean processTouchDown(final @NonNull MotionEvent ev) {
         final int x = (int) ev.getRawX();
         velocityTracker.clear();
-        if (stopReset()) {
+        if (stopReset() && isSwipeable(currentTouchView).isPresent()) {
             updateParams(currentTouchView, x);
             return false;
         }
@@ -206,8 +208,9 @@ public class SwipeLinearLayout extends GestureOverlayView  {
             }
             break;
         case MotionEvent.ACTION_MOVE:
-            if ((isSwipeable(currentTouchView).isPresent() &&
-                 (ViewConfiguration.getTapTimeout() < (event.getEventTime() - event.getDownTime()))) ||
+            ++eventCount;
+            if (((eventCount > 3) && (isSwipeable(currentTouchView).isPresent() &&
+                                      (ViewConfiguration.getTapTimeout() < (event.getEventTime() - event.getDownTime())))) ||
                 (ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event))) {
 
                 getParent().requestDisallowInterceptTouchEvent(true);
@@ -285,12 +288,12 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         }
         final int pos = (value < 0) ? 2 : 0;
         final int otherPos = (value < 0) ? 0 : 2;
-        int marginMultiplier = 1;
 
         final LinearLayout.LayoutParams cparams = (LinearLayout.LayoutParams) ((
                     LinearLayout) view).getChildAt(1).getLayoutParams();
         cparams.width = (int) Math.max((screenW - Math.abs(value)), childWidth);
 
+        int marginMultiplier = 1;
         if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) && (value <= 0)) {
             cparams.leftMargin = value;
             marginMultiplier = 2;
@@ -367,11 +370,11 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     private ImageView getLeaveBehindView() {
         final ImageView leaveBehind = new ImageView(getContext());
         leaveBehind.setLayoutParams(leaveBehindParams);
-        leaveBehind.setImageResource(android.R.drawable.ic_menu_delete);
-        leaveBehind.setColorFilter(ThemeManager.getAccentThemeColor());
+        leaveBehind.setImageResource(R.drawable.ic_delete_24px);
+        leaveBehind.setColorFilter(ThemeManager.getColor(R.attr.colorTextBlack));
         leaveBehind.setBackgroundColor(Color.GRAY);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            leaveBehind.setElevation(-15);
+            leaveBehind.setElevation(-15.0F);
         }
         return leaveBehind;
     }

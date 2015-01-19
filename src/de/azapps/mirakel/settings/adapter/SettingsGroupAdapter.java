@@ -19,7 +19,7 @@
 
 package de.azapps.mirakel.settings.adapter;
 
-import android.os.Build;
+import android.graphics.Typeface;
 import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
@@ -29,16 +29,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.common.base.Optional;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SwipeLinearLayout;
 
@@ -89,7 +92,12 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
                 ll.setOnItemRemovedListener(onRemove.get());
             }
             ll.setOrientation(LinearLayout.VERTICAL);
-            ll.addView(preference.getView(null, null));
+            View header = preference.getView(null, null);
+            TextView title = (TextView) header.findViewById(android.R.id.title);
+            title.setTypeface(Typeface.DEFAULT_BOLD);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0F);
+            title.setTextColor(ThemeManager.getAccentThemeColor());
+            ll.addView(header);
             final PreferenceGroup group = (PreferenceGroup)preference;
             for (int i = 0; i < group.getPreferenceCount(); i++) {
                 ll.addView(getView(position, group.getPreference(i)));
