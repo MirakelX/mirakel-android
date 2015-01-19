@@ -40,8 +40,6 @@ import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
-import static com.google.common.base.Optional.fromNullable;
-
 public class Tag extends TagBase {
 
     public static final String TABLE = "tag";
@@ -128,14 +126,20 @@ public class Tag extends TagBase {
     public static int getNextColor(final long count, final Context ctx) {
         final TypedArray ta = ctx.getResources().obtainTypedArray(
                                   R.array.default_colors);
-        final int transparency[] = ctx.getResources().getIntArray(
-                                       R.array.default_transparency);
-        final int alpha = ((int) count / ta.length()) % transparency.length;
-        final int colorPos = (int)count % ta.length();
-        final int color = android.graphics.Color.argb(transparency[alpha],
-                          Color.red(ta.getColor(colorPos, 0)),
-                          Color.green(ta.getColor(colorPos, 0)),
-                          Color.blue(ta.getColor(colorPos, 0)));
+        final int color;
+        if(ta.length()==0){
+            //Robolectic does not load the typedarray in the right way, so bypass the calculation of the nec color for this case
+          color=Color.RED;
+        }else {
+            final int transparency[] = ctx.getResources().getIntArray(
+                    R.array.default_transparency);
+            final int alpha = ((int) count / ta.length()) % transparency.length;
+            final int colorPos = (int) count % ta.length();
+            color = android.graphics.Color.argb(transparency[alpha],
+                    Color.red(ta.getColor(colorPos, 0)),
+                    Color.green(ta.getColor(colorPos, 0)),
+                    Color.blue(ta.getColor(colorPos, 0)));
+        }
         ta.recycle();
         return color;
     }
