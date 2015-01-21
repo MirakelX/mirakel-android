@@ -21,9 +21,7 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -34,13 +32,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gc.materialdesign.views.ButtonFloat;
-import com.shamanland.fab.FloatingActionButton;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
@@ -59,7 +54,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.task_listview)
     RecyclerView mListView;
     @InjectView(R.id.fabbutton)
-    public ButtonFloat floatingActionButton;
+    public FloatingActionButton floatingActionButton;
     private OnItemClickedListener<Task> mListener;
 
     private ListMirakel listMirakel;
@@ -107,7 +102,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.inject(this, layout);
-        floatingActionButton.setBackgroundColor(ThemeManager.getAccentThemeColor());
         return layout;
     }
 
