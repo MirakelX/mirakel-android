@@ -37,7 +37,7 @@ import com.shamanland.fab.FloatingActionButton;
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.SwipeLinearLayout;
+import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 

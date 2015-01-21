@@ -43,7 +43,9 @@ import java.util.Map;
 
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.SwipeLinearLayout;
+import de.azapps.mirakel.settings.custom_views.ExpandablePreference;
+import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
+import de.azapps.mirakel.settings.helper.PreferencesHelper;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -89,18 +91,34 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         if (preference instanceof PreferenceGroup) {
             final SwipeLinearLayout ll = new SwipeLinearLayout(holder.itemView.getContext());
             if (onRemove.isPresent()) {
-                ll.setOnItemRemovedListener(onRemove.get());
+                ll.setOnItemRemovedListener(new SwipeLinearLayout.OnItemRemoveListener() {
+                    @Override
+                    public void onRemove(final int p, final int index) {
+                        onRemove.get().onRemove(position, index);
+                    }
+                });
             }
             ll.setOrientation(LinearLayout.VERTICAL);
-            View header = preference.getView(null, null);
+            final View header = preference.getView(null, null);
             TextView title = (TextView) header.findViewById(android.R.id.title);
             title.setTypeface(Typeface.DEFAULT_BOLD);
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0F);
             title.setTextColor(ThemeManager.getAccentThemeColor());
+            if (preference.getKey() != null &&
+                preference.getKey().startsWith(String.valueOf(SwipeLinearLayout.SWIPEABLE_VIEW))) {
+                header.setTag(SwipeLinearLayout.SWIPEABLE_VIEW, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        header.performClick();
+                    }
+                });
+            }
             ll.addView(header);
-            final PreferenceGroup group = (PreferenceGroup)preference;
-            for (int i = 0; i < group.getPreferenceCount(); i++) {
-                ll.addView(getView(position, group.getPreference(i)));
+            if (!(preference instanceof ExpandablePreference)) {
+                final PreferenceGroup group = (PreferenceGroup) preference;
+                for (int i = 0; i < group.getPreferenceCount(); i++) {
+                    ll.addView(getView(position, group.getPreference(i)));
+                }
             }
             card.addView(ll);
         } else {
@@ -130,12 +148,15 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         final View.OnClickListener onClick = new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                final Integer pos = findPreferenceScreenForPreference(preference.getKey(), null);
-                if (pos != null) {
-                    screen.onItemClick(null, null, pos, 0L);
-                }
-                if (!(preference instanceof DialogPreference)) {
-                    notifyItemChanged(position);
+                if (preference.hasKey()) {
+                    final Integer pos = PreferencesHelper.findPreferenceScreenForPreference(preference.getKey(),
+                                        screen);
+                    if (pos != null) {
+                        screen.onItemClick(null, null, pos, 0L);
+                    }
+                    if (!(preference instanceof DialogPreference)) {
+                        notifyItemChanged(position);
+                    }
                 }
             }
         };
@@ -147,28 +168,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         return v;
     }
 
-    @Nullable
-    private Integer findPreferenceScreenForPreference( @NonNull final String key,
-            PreferenceScreen screen ) {
-        if ( screen == null ) {
-            screen = this.screen;
-        }
 
-        final android.widget.Adapter ada = screen.getRootAdapter();
-        for ( int i = 0; i < ada.getCount(); i++ ) {
-            final String prefKey = ((Preference)ada.getItem(i)).getKey();
-            if (key.equals( prefKey ) ) {
-                return i;
-            }
-            if ( ada.getItem(i) instanceof PreferenceScreen ) {
-                final Integer result = findPreferenceScreenForPreference(key, (PreferenceScreen) ada.getItem(i));
-                if ( result != null ) {
-                    return result;
-                }
-            }
-        }
-        return null;
-    }
 
 
     @Override

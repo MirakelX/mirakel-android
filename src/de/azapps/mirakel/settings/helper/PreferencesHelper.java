@@ -17,39 +17,31 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.settings.fragments;
+package de.azapps.mirakel.settings.helper;
 
-
-import android.app.Fragment;
-import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
+import android.support.annotation.Nullable;
 
-import org.sufficientlysecure.donations.DonationsFragment;
+public class PreferencesHelper {
 
-import de.azapps.mirakel.settings.custom_views.Settings;
-import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
-
-public class DonationFragmentWrapper extends DonationsFragment implements
-    IDetailFragment<Settings> {
-
-    @NonNull
-    @Override
-    public Settings getItem() {
-        return Settings.DONATE;
-    }
-
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (((ActionBarActivity)getActivity()).getSupportActionBar() != null) {
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
+    @Nullable
+    public static Integer findPreferenceScreenForPreference( @NonNull final String key,
+            final @NonNull PreferenceScreen screen ) {
+        final android.widget.Adapter ada = screen.getRootAdapter();
+        for ( int i = 0; i < ada.getCount(); i++ ) {
+            final String prefKey = ((Preference)ada.getItem(i)).getKey();
+            if (key.equals( prefKey ) ) {
+                return i;
+            }
+            if ( ada.getItem(i) instanceof PreferenceScreen ) {
+                final Integer result = findPreferenceScreenForPreference(key, (PreferenceScreen) ada.getItem(i));
+                if ( result != null ) {
+                    return result;
+                }
+            }
         }
-    }
-
-    @NonNull
-    public static Fragment newInstance() {
-        return new DonationFragmentWrapper();
+        return null;
     }
 }

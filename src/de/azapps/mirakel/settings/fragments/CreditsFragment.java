@@ -35,7 +35,7 @@ import android.widget.TextView;
 
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 
 public class CreditsFragment extends Fragment implements IDetailFragment<Settings> {

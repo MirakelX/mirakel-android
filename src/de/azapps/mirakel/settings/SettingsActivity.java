@@ -37,6 +37,7 @@ import java.util.Set;
 
 import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
 
 

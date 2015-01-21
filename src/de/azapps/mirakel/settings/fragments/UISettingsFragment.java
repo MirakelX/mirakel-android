@@ -32,7 +32,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 

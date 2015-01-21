@@ -21,7 +21,6 @@ package de.azapps.mirakel.settings.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -38,8 +37,9 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
-import de.azapps.mirakel.settings.model_settings.semantic.SemanticSettingsActivity;
+import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.settings.custom_views.Settings;
+import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
 public class TaskSettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
@@ -50,11 +50,19 @@ public class TaskSettingsFragment extends MirakelPreferencesFragment<Settings> {
         addPreferencesFromResource(R.xml.settings_tasks);
 
 
-        final Intent startSemanticsIntent = new Intent(getActivity(),
-                SemanticSettingsActivity.class);
         final Preference semantics = findPreference("semanticNewTaskSettings");
         if (semantics != null) {
-            semantics.setIntent(startSemanticsIntent);
+            semantics.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    if (getActivity() instanceof SettingsActivity) {
+                        ((SettingsActivity) getActivity()).onItemSelected(Settings.TASK_TEMPLATES);
+                    } else {
+                        ((GenericModelDetailActivity) getActivity()).setFragment(Settings.TASK_TEMPLATES.getFragment());
+                    }
+                    return true;
+                }
+            });
         }
 
 

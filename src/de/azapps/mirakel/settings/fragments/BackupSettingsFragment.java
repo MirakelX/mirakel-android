@@ -43,7 +43,7 @@ import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.tools.FileUtils;
 

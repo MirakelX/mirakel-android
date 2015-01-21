@@ -37,7 +37,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.tools.OptionalUtils;
 
 public class NotificationSettingsFragment extends MirakelPreferencesFragment<Settings> {

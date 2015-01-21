@@ -17,13 +17,12 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.settings;
+package de.azapps.mirakel.settings.custom_views;
 
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Parcel;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -34,7 +33,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.common.base.Optional;
@@ -47,12 +45,15 @@ import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.fragments.AboutSettingsFragment;
 import de.azapps.mirakel.settings.fragments.BackupSettingsFragment;
 import de.azapps.mirakel.settings.fragments.CreditsFragment;
 import de.azapps.mirakel.settings.fragments.DevSettingsFragment;
 import de.azapps.mirakel.settings.fragments.DonationFragmentWrapper;
 import de.azapps.mirakel.settings.fragments.NotificationSettingsFragment;
+import de.azapps.mirakel.settings.fragments.SemanticFragment;
 import de.azapps.mirakel.settings.fragments.TaskSettingsFragment;
 import de.azapps.mirakel.settings.fragments.UISettingsFragment;
 import de.azapps.mirakel.settings.model_settings.account.AccountSettingsActivity;
@@ -76,7 +77,8 @@ public enum  Settings implements IGenericElementInterface {
     DONATE( R.string.title_donations, R.drawable.ic_favorite_24px),
     CREDITS(R.string.action_credits),
     SYNC( R.string.sync_title, R.drawable.ic_sync_24px),
-    SPECIAL_LISTS( R.string.special_lists_click, R.drawable.ic_local_offer_24px);
+    SPECIAL_LISTS( R.string.special_lists_click, R.drawable.ic_local_offer_24px),
+    TASK_TEMPLATES(R.string.settings_semantics_title);
 
     private static final Map<Integer, List<Settings>> all = new ArrayMap<>(4);
     static{
@@ -106,6 +108,12 @@ public enum  Settings implements IGenericElementInterface {
             return DonationFragmentWrapper.class.getName();
         case CREDITS:
             return CreditsFragment.class.getName();
+        case SYNC:
+            break;
+        case SPECIAL_LISTS:
+            break;
+        case TASK_TEMPLATES:
+            return SemanticFragment.class.getName();
 
         }
         return super.toString();
@@ -135,6 +143,8 @@ public enum  Settings implements IGenericElementInterface {
             break;
         case SPECIAL_LISTS:
             break;
+        case TASK_TEMPLATES:
+            return new SemanticFragment();
         }
         return new UISettingsFragment();
     }
@@ -266,6 +276,7 @@ public enum  Settings implements IGenericElementInterface {
         case TASKUI:
         case DONATE:
         case CREDITS:
+        case TASK_TEMPLATES:
             return new Intent(ctx, SettingsActivity.class);
         }
         throw new IllegalArgumentException("Implement me");

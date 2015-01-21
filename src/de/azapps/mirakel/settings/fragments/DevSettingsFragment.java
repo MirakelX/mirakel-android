@@ -40,7 +40,7 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.Settings;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity;
 import de.azapps.mirakel.settings.model_settings.tag.TagSettingsActivity;
 import de.azapps.tools.FileUtils;

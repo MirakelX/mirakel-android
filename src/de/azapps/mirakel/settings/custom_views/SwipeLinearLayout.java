@@ -17,14 +17,13 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.settings;
+package de.azapps.mirakel.settings.custom_views;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.gesture.GestureOverlayView;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
@@ -46,13 +45,13 @@ import android.widget.LinearLayout;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.ThemeManager;
+import de.azapps.mirakel.settings.R;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 
-public class SwipeLinearLayout extends GestureOverlayView  {
+public class SwipeLinearLayout extends LinearLayout  {
     public final static int SWIPEABLE_VIEW = R.id.remove_handle;
 
     private static final int SWIPE_THRESHOLD_VELOCITY = 1200;
@@ -62,8 +61,6 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     private Thread resetThread = null;
     @Nullable
     private View currentTouchView = null;
-    @NonNull
-    private LinearLayout mContainer;
     private float xDown;
     private float yDown;
     @NonNull
@@ -74,26 +71,35 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     private FrameLayout.LayoutParams leaveBehindParams;
     private double childWidth;
     private boolean isRemoving = false;
-    private int eventCount = 0;
+    private boolean moved = false;
 
 
     @Override
-    public boolean onInterceptTouchEvent(final MotionEvent ev) {
+    public boolean onInterceptTouchEvent(final @NonNull MotionEvent ev) {
         switch (ev.getAction()) {
         case MotionEvent.ACTION_DOWN:
-            eventCount = 0;
             if (processTouchDown(ev)) {
+                moved = false;
                 velocityTracker.addMovement(ev);
-                return true;
             }
             return false;
+        case MotionEvent.ACTION_MOVE:
+            if (isInMotion(ev, (int) ev.getX())) {
+                return !handleMove(ev, (int) ev.getX());
+            }
+            break;
+        case MotionEvent.ACTION_UP:
+            if (currentTouchView != null) {
+                currentTouchView = null;
+            }
+            break;
         default:
             break;
         }
         return false;
     }
 
-    private int getDistanceTo(MotionEvent ev) {
+    private int getDistanceTo(final @NonNull MotionEvent ev) {
 
         final double x = (double) (ev.getX() - xDown);
         final double y = (double) (ev.getY() - yDown);
@@ -101,15 +107,15 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     }
 
     boolean processTouchDown(final @NonNull MotionEvent ev) {
-        final int x = (int) ev.getRawX();
+        final int x = (int) ev.getX();
         velocityTracker.clear();
-        if (stopReset() && isSwipeable(currentTouchView).isPresent()) {
+        if (stopReset() && isSwipeable(currentTouchView)) {
             updateParams(currentTouchView, x);
             return false;
         }
         currentTouchView = null;
-        for (int i = 0; i < mContainer.getChildCount(); i++) {
-            final View child = mContainer.getChildAt(i);
+        for (int i = 0; i < getChildCount(); i++) {
+            final View child = getChildAt(i);
             final Rect outRect = new Rect(child.getLeft(), child.getTop(), child.getRight(), child.getBottom());
             if (outRect.contains((int) ev.getX(), (int) ev.getY())) {
                 currentTouchView = child;
@@ -123,25 +129,22 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         }
         xDown = ev.getX();
         yDown = ev.getY();
-        return isSwipeable(currentTouchView).isPresent();
+        return isSwipeable(currentTouchView);
     }
 
-    @NonNull
-    private static Optional<OnClickListener> isSwipeable(@Nullable final View v) {
+    private static boolean isSwipeable(@Nullable final View v) {
         if (v == null) {
-            return absent();
+            return false;
         }
-        final Object tag = v.getTag(SWIPEABLE_VIEW);
-        if (tag instanceof OnClickListener) {
-            return of((OnClickListener)tag);
+        if (v.getTag(SWIPEABLE_VIEW) != null) {
+            return true;
         }
-        if (v instanceof LinearLayout && ((LinearLayout) v).getChildCount() > 1) {
-            final Object tag1 = ((LinearLayout) v).getChildAt(1).getTag(SWIPEABLE_VIEW);
-            if (tag1 instanceof OnClickListener) {
-                return of((OnClickListener)tag1);
+        if ((v instanceof LinearLayout) && (((LinearLayout) v).getChildCount() > 1)) {
+            if (((LinearLayout) v).getChildAt(1).getTag(SWIPEABLE_VIEW) != null) {
+                return true;
             }
         }
-        return absent();
+        return false;
     }
 
     @Override
@@ -157,95 +160,14 @@ public class SwipeLinearLayout extends GestureOverlayView  {
             break;
         case MotionEvent.ACTION_CANCEL:
         case MotionEvent.ACTION_UP:
-            final Optional<OnClickListener> click = isSwipeable(currentTouchView);
-            if (click.isPresent() &&
-                !(ViewConfiguration.getTapTimeout() < event.getEventTime() - event.getDownTime() ||
-                  ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event))) {
-                currentTouchView.setOnClickListener(click.get());
-                currentTouchView.performClick();
-                currentTouchView = null;
-                return true;
-            }
-            synchronized (this) {
-                resetThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(100L);
-                        } catch (final InterruptedException ignored) {
-                            return;
-                        }
-                        synchronized (SwipeLinearLayout.this) {
-                            if ((resetThread != null) && !resetThread.isInterrupted() && (currentTouchView != null) &&
-                                !isRemoving) {
-                                currentTouchView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        animateView((int) (x - xDown), 300L, new DecelerateInterpolator(),
-                                        new ValueAnimator.AnimatorUpdateListener() {
-                                            @Override
-                                            public void onAnimationUpdate(final ValueAnimator animation) {
-                                                updateParams(currentTouchView, (Integer) animation.getAnimatedValue());
-                                            }
-                                        }, new EndMoveAnimatorListener(new AnimationEnd() {
-                                            @Override
-                                            public void onAnimationEnd(@NonNull final Animator animation) {
-                                                currentTouchView = null;
-                                                getParent().requestDisallowInterceptTouchEvent(false);
-                                            }
-                                        }));
-
-
-
-                                    }
-                                });
-                                resetThread = null;
-                            }
-                        }
-                    }
-                });
-                resetThread.start();
+            if (handleEndTouchEvent(event, x)) {
+                return false;
             }
             break;
         case MotionEvent.ACTION_MOVE:
-            ++eventCount;
-            if (((eventCount > 3) && (isSwipeable(currentTouchView).isPresent() &&
-                                      (ViewConfiguration.getTapTimeout() < (event.getEventTime() - event.getDownTime())))) ||
-                (ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event))) {
-
-                getParent().requestDisallowInterceptTouchEvent(true);
-                stopReset();
-                updateParams(currentTouchView, (int) (x - xDown));
-
-                if ((currentTouchView != null) && listener.isPresent() && (getDistanceTo(event) > (screenW / 2)) &&
-                    (Math.abs(velocityTracker.getXVelocity()) > SWIPE_THRESHOLD_VELOCITY)) {
-                    isRemoving = true;
-                    animateView(currentTouchView.getMeasuredHeight(), 300L, new LinearInterpolator(),
-                    new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(final ValueAnimator animation) {
-                            if (currentTouchView != null) {
-                                final ViewGroup.LayoutParams params = currentTouchView.getLayoutParams();
-                                params.height = (int) animation.getAnimatedValue();
-                                currentTouchView.setLayoutParams(params);
-                            }
-                        }
-                    }, new EndMoveAnimatorListener(new AnimationEnd() {
-                        @Override
-                        public void onAnimationEnd(@NonNull final Animator animation) {
-                            if (currentTouchView != null) {
-                                listener.get().onRemove(selectedChildIndex);
-                                mContainer.removeView(currentTouchView);
-                                getParent().requestDisallowInterceptTouchEvent(false);
-                                currentTouchView = null;
-                                isRemoving = false;
-                            }
-                        }
-                    }));
-                    return false;
-                }
+            if (isInMotion(event, x) && handleMove(event, x)) {
+                return false;
             }
-
             break;
         default:
             return false;
@@ -253,7 +175,103 @@ public class SwipeLinearLayout extends GestureOverlayView  {
         return true;
     }
 
-    private void animateView(int start, long duration,
+    private boolean handleEndTouchEvent(final @NonNull MotionEvent event, final int x) {
+        if (isSwipeable(currentTouchView) &&
+            !(ViewConfiguration.getTapTimeout() < event.getEventTime() - event.getDownTime() ||
+              ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event))) {
+            updateParams(currentTouchView, 0);
+            currentTouchView.onTouchEvent(event);
+            currentTouchView = null;
+            return true;
+        }
+        synchronized (this) {
+            resetThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(100L);
+                    } catch (final InterruptedException ignored) {
+                        return;
+                    }
+                    synchronized (SwipeLinearLayout.this) {
+                        if (moved && (resetThread != null) && !resetThread.isInterrupted() && (currentTouchView != null) &&
+                            !isRemoving) {
+                            currentTouchView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    animateView((int) (x - xDown), 300L, new DecelerateInterpolator(),
+                                    new ValueAnimator.AnimatorUpdateListener() {
+                                        @Override
+                                        public void onAnimationUpdate(final ValueAnimator animation) {
+                                            updateParams(currentTouchView, (Integer) animation.getAnimatedValue());
+                                        }
+                                    }, new EndMoveAnimatorListener(new AnimationEnd() {
+                                        @Override
+                                        public void onAnimationEnd(@NonNull final Animator animation) {
+                                            currentTouchView = null;
+                                            if (getParent() != null) {
+                                                getParent().requestDisallowInterceptTouchEvent(false);
+                                            }
+                                        }
+                                    }));
+
+
+
+                                }
+                            });
+                            resetThread = null;
+                        }
+                    }
+                }
+            });
+            resetThread.start();
+        }
+        return false;
+    }
+
+    private boolean handleMove(final @NonNull MotionEvent event, final int x) {
+        moved = true;
+        getParent().requestDisallowInterceptTouchEvent(true);
+        stopReset();
+        updateParams(currentTouchView, (int) (x - xDown));
+        if ((currentTouchView != null) && listener.isPresent() && (getDistanceTo(event) > (screenW / 2)) &&
+            (Math.abs(velocityTracker.getXVelocity()) > SWIPE_THRESHOLD_VELOCITY)) {
+            isRemoving = true;
+            animateView(currentTouchView.getMeasuredHeight(), 300L, new LinearInterpolator(),
+            new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(final ValueAnimator animation) {
+                    if (currentTouchView != null) {
+                        final ViewGroup.LayoutParams params = currentTouchView.getLayoutParams();
+                        params.height = (int) animation.getAnimatedValue();
+                        currentTouchView.setLayoutParams(params);
+                    }
+                }
+            }, new EndMoveAnimatorListener(new AnimationEnd() {
+                @Override
+                public void onAnimationEnd(@NonNull final Animator animation) {
+                    if (currentTouchView != null) {
+                        listener.get().onRemove(0, selectedChildIndex);
+                        removeView(currentTouchView);
+                        getParent().requestDisallowInterceptTouchEvent(false);
+                        currentTouchView = null;
+                        isRemoving = false;
+                    }
+                }
+            }));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isInMotion(final @NonNull MotionEvent event, final int x) {
+        return ((Math.abs(x - xDown) > 2 * Math.abs(event.getY() - yDown) &&
+                 Math.abs(x - xDown) > screenW / 10) && (isSwipeable(currentTouchView) &&
+                         (ViewConfiguration.getTapTimeout() < (event.getEventTime() - event.getDownTime())))) &&
+               (ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event));
+    }
+
+    private void animateView(final int start, final long duration,
                              final @NonNull TimeInterpolator interpolator,
                              final @NonNull ValueAnimator.AnimatorUpdateListener onUpdate,
                              final @NonNull Animator.AnimatorListener animatorListener) {
@@ -326,19 +344,18 @@ public class SwipeLinearLayout extends GestureOverlayView  {
 
 
     public interface OnItemRemoveListener {
-        void onRemove(int index);
+        void onRemove(int position, int index);
     }
 
     public SwipeLinearLayout(final Context context) {
         this(context, null);
     }
 
+
+
     public SwipeLinearLayout(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         requestDisallowInterceptTouchEvent(true);
-        mContainer = new LinearLayout(getContext());
-        mContainer.setOrientation(LinearLayout.VERTICAL);
-        addView(mContainer);
         setWillNotDraw(true);
         leaveBehindParams = new FrameLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
         leaveBehindParams.gravity = Gravity.CENTER;
@@ -348,22 +365,25 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     @Override
     protected boolean addViewInLayout(@NonNull final View child, final int index,
                                       final ViewGroup.LayoutParams params, final boolean preventRequestLayout) {
-        mContainer.addView(setupChildView(child));
+        addView(setupChildView(child));
         return true;
     }
 
     private View setupChildView(final View child) {
-        final Optional<OnClickListener> tag = isSwipeable(child);
-        if (!tag.isPresent()) {
+        if (!isSwipeable(child)) {
             return child;
         }
         final LinearLayout wrapper = new LinearLayout(getContext());
         wrapper.setOrientation(LinearLayout.HORIZONTAL);
         wrapper.addView(getLeaveBehindView());
         childWidth = Math.max(child.getMeasuredWidthAndState(), childWidth);
+        wrapper.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT));
+        child.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                              ViewGroup.LayoutParams.WRAP_CONTENT));
         wrapper.addView(child);
         wrapper.addView(getLeaveBehindView());
-        wrapper.setTag(SWIPEABLE_VIEW, tag.get());
+        wrapper.setTag(SWIPEABLE_VIEW, child.getTag(SWIPEABLE_VIEW));
         return wrapper;
     }
 
@@ -382,18 +402,14 @@ public class SwipeLinearLayout extends GestureOverlayView  {
     @Override
     public void addView(@NonNull final View child, final int index,
                         final ViewGroup.LayoutParams params) {
-        if (mContainer.equals(child)) {
-            super.addView(child, index, params);
-            return;
-        }
-        mContainer.addView(setupChildView(child), index);
+        super.addView(setupChildView(child), index, params);
     }
 
     private interface AnimationEnd {
         void onAnimationEnd(final @NonNull Animator animation);
     }
 
-    private class EndMoveAnimatorListener implements Animator.AnimatorListener {
+    private static class EndMoveAnimatorListener implements Animator.AnimatorListener {
 
         private final AnimationEnd onEnd;
 

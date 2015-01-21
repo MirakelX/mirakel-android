@@ -56,7 +56,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList;
 import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.SwipeLinearLayout;
+import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
 import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
@@ -404,7 +404,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     }
 
     @Override
-    public void onRemove(final int index) {
+    public void onRemove(final int position, final int index) {
         final Optional<SpecialListsBaseProperty> where = mItem.getWhere();
         if (where.isPresent()) {
             final ActionClickListener undo;
