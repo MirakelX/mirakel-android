@@ -74,9 +74,6 @@ configure(allprojects) {
     ext.butterknifeVersion = "6.0.0"
     ext.dashclockVersion = "2.0.0"
     ext.robolectricVersion= "2.3"
-    ext.FAB_VERSION= "0.0.6"
-    ext.snackbarVersion = "2.6.0"
-    ext.materialdesignVersion = "1.0"
 }
 
 allprojects {
