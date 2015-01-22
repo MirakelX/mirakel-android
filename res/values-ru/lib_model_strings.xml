@@ -56,7 +56,7 @@
   <string name="inbox">Вход</string>
   <string name="first_task">Первое дело</string>
   <string-array name="weekdays">
-    <item>Don\'t set</item>
+    <item>Не устанавливать</item>
     <item>Понедельник</item>
     <item>Вторник</item>
     <item>Среда</item>
@@ -74,6 +74,7 @@
   <string name="import_any_do_click">Импорт из Any.Do</string>
   <string name="any_do_import_title">Выберите файл резервной копии Any.Do</string>
   <string name="any_do_this_file">Импорт из %s? \nЕсли нет, выберите файл самостоятельно</string>
+  <string name="any_do_how_to">Пожалуйста, сначала сделайте резервную копию данных Any.Do. Для этого перейдите в Any.Do → Параметры → Резервная копия → Создать резервную копию. Затем вернитесь и нажмите ОК.\nИли выберите файл вручную.</string>
   <string name="select_file">Выберите файл</string>
   <string name="wait">Пожалуйста подождите&#8230;</string>
   <string name="backup_import_ok">Импорт завершен - пожалуйста, перезапустите Mirakel</string>
@@ -183,17 +184,24 @@
   <string name="nothing">Без повтора</string>
   <string name="special_lists_content_title">Комментарий</string>
   <string name="special_lists_done_title">Выполнено</string>
+  <string name="special_lists_due_exist_title">Крайний срок существования</string>
   <string name="special_lists_due_title">Срок</string>
   <string name="special_lists_file_title">Файл</string>
   <string name="special_lists_list_title">Списки</string>
   <string name="special_lists_name_title">Имя</string>
   <string name="special_lists_priority_title">Приоритет</string>
+  <string name="special_lists_progress_title">Прогресс</string>
   <string name="special_lists_reminder_title">Напоминание</string>
   <string name="special_lists_subtask_title">Подзадачи</string>
   <string name="special_lists_tag_title">Тег</string>
   <string name="and">И</string>
   <string name="or">ИЛИ</string>
   <string name="new_tag">Новый тег</string>
+  <string name="special_list_list_name">Название списка</string>
+  <string name="special_lists_due_negated">Не до сегодня %s</string>
+  <string name="special_lists_due">До сегодня %s</string>
+  <string name="due_exists">Крайний срок существует</string>
+  <string name="due_dont_exist">Крайний срок не существует</string>
   <string-array name="demo_lists">
     <item>Работа</item>
     <item>Дом</item>
@@ -207,5 +215,21 @@
     <item>Молоко</item>
     <item>Сыр</item>
   </string-array>
+  <plurals name="day">
+    <item quantity="one">день</item>
+    <item quantity="few">дня</item>
+    <item quantity="other">дней</item>
+  </plurals>
+  <plurals name="month">
+    <item quantity="one">месяц</item>
+    <item quantity="few">месяца</item>
+    <item quantity="other">месяцев</item>
+  </plurals>
+  <plurals name="year">
+    <item quantity="one">год</item>
+    <item quantity="few">года</item>
+    <item quantity="other">лет</item>
+  </plurals>
+  <string name="accounts_all">Все Аккаунты</string>
   <string name="stub_list_name">Новый список</string>
 </resources>
