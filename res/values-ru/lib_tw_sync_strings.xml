@@ -37,9 +37,14 @@
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
   <string-array name="sync_types">
     <item>Синхронизация CalDAV</item>
-    <item>Taskwarrior sync</item>
+    <item>Синхронизация с Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Синхронизация CalDAV</string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Вы должны установить совместимое с Mirakel приложение синхронизации CalDAV. В настоящее время Вам нужно установить нашу изменённую версию DAVdroid с нашей страницы.<br /><br />
+Скоро официальное приложение DAVdroid также будет поддерживать Mirakel, и мы работаем с некоторыми другими, чтобы сделать возможной синхронизацию с Mirakel.
+        ]]>
+    </string>
   <string name="download">Скачать</string>
   <string name="sync_add_account">Добавить аккаунт</string>
   <string name="sync_taskwarrior_configure">Настройка Taskwarrior</string>
@@ -63,15 +68,22 @@
   <string name="change_account">Сменить аккаунт</string>
   <string name="wrong_config">Похоже на то, что Вы используете неправильный конфигурационный файл</string>
   <string name="cert_not_found">Сертефикаты пропали, пожайлуста пересоздайте свой аккаунт</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[
+        Во время синхронизации произошла ошибка. Но мы пошли в обход, и некоторые данные могут быть потеряны :(. Мы сделали резервную копию Вашей базы данных. Проверьте, всё ли в порядке. <br /><br />
+        Для дополнительной информации обратитесь <a href="https://mirakel.atlassian.net/browse/MIR-453">сюда</a>
+        ]]></string>
   <string name="client_sync_key_not_found">Не найден ключ синхронизации клиента. Пожалуйста, проверьте Ваши настройки Taskwarrior.</string>
   <string name="config_404">Конфигурационный файл не найден</string>
   <string name="config_error_empty">Запись %s не существует в конфиге</string>
   <string name="load_config">Выберите конфигурационный файл для Taskwarrior</string>
   <string name="select_config">Выберите конфигурационный файл для Taskwarrior</string>
   <string name="message_try_later">Попробуйте синхронизировать позже</string>
+  <string name="message_access_denied">Доступ запрещён!\nВы используете правильный файл конфигурации?\nВам нужно настроить сервер Taskwarrior так, чтобы он мог синхронизироваться с Mirakel.</string>
   <string name="message_create_socket">Не удается создать сокет! \nПроверьте сетевое подключение.</string>
   <string name="message_account_suspended">Ваш аккаунт заблокирован!</string>
   <string name="message_parse_message">Не удается интерпретировать задачи – пожалуйста, напишите нам, как это произошло</string>
   <string name="message_message_error">Неизвестный ответ от сервера – напишите, как это произошло</string>
   <string name="finish_sync">Завершить синхронизацию</string>
+  <string name="account_vanished">Аккаунт исчез. Это никогда не должно случаться</string>
+  <string name="create_account">Создать аккаунт</string>
 </resources>
