@@ -26,9 +26,13 @@
   <string name="save_label">Выполнено</string>
   <string name="audio_record_file">Запись аудио</string>
   <string name="image_file">Изображение</string>
+  <string name="task_fragment_header">Заголовок</string>
+  <string name="task_fragment_file">Файлы</string>
   <string name="task_fragment_due">Срок</string>
   <string name="task_fragment_reminder">Напоминание</string>
+  <string name="task_fragment_content">Заметки</string>
   <string name="task_fragment_subtask">Подзадачи</string>
+  <string name="task_fragment_progress">Прогресс</string>
   <string name="task_fragment_tags">Теги</string>
   <string name="audio_record_title">Запись аудио&#8230;</string>
   <string name="audio_record_message">Запись&#8230;</string>
