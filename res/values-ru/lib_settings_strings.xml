@@ -35,11 +35,17 @@
   <string name="sync_frequency">Частота</string>
   <string name="sync_frequency_summary">Синхронизировать каждые %s мин</string>
   <string name="sync_frequency_summary_man">Синхронизировать только вручную</string>
+  <string name="account_informations">Информация</string>
   <string-array name="sync_types">
     <item>Синхронизация CalDAV</item>
-    <item>Taskwarrior sync</item>
+    <item>Синхронизация с Taskwarrior</item>
   </string-array>
   <string name="sync_caldav">Синхронизация CalDAV</string>
+  <string name="sync_caldav_howto">
+<![CDATA[Вы должны установить совместимое с Mirakel приложение синхронизации CalDAV. В настоящее время Вам нужно установить нашу изменённую версию DAVdroid с нашей страницы.<br /><br />
+Скоро официальное приложение DAVdroid также будет поддерживать Mirakel, и мы работаем с некоторыми другими, чтобы сделать возможной синхронизацию с Mirakel.
+        ]]>
+    </string>
   <string name="download">Скачать</string>
   <string name="sync_add_account">Добавить аккаунт</string>
   <string name="sync_taskwarrior_configure">Настройка Taskwarrior</string>
@@ -114,11 +120,13 @@
   <string name="import_any_do_click">Импорт из Any.Do</string>
   <string name="any_do_import_title">Выберите файл резервной копии Any.Do</string>
   <string name="any_do_this_file">Импорт из %s? \nЕсли нет, выберите файл самостоятельно</string>
+  <string name="any_do_how_to">Пожалуйста, сначала сделайте резервную копию данных Any.Do. Для этого перейдите в Any.Do → Параметры → Резервная копия → Создать резервную копию. Затем вернитесь и нажмите ОК.\nИли выберите файл вручную.</string>
   <string name="select_file">Выберите файл</string>
   <string name="wait">Пожалуйста подождите&#8230;</string>
   <string name="import_wunderlist_click">Импорт из Wunderlist</string>
   <string name="import_wunderlist_title">Выберите файл Wunderlist</string>
   <string name="import_wunderlist_howto">Как импортировать из Wunderlist</string>
+  <string name="import_wunderlist_howto_text">Приложение Wunderlist для Android не поддерживает резервные копии.\n\n Поэтому Вам надо зайти в веб-приложение. Перейдите в Настройки → Аккаунт → Создать резервную копию → (подождите) → Нажмите, чтобы скачать. Скопируйте этот файл на Ваше устройство и вернитесь назад.</string>
   <string name="highlightSelected_summary">Выделите списки/дела нажатием на них</string>
   <string name="highlightSelected">Выделить выбранное</string>
   <string name="settings_date_format_relative">Показывать относительные даты</string>
@@ -138,12 +146,23 @@
   <string name="semantic_new_task">Новый шаблон задачи</string>
   <string name="semantic_new_task_config_summary">Настройте условия для создания новых задач</string>
   <string name="semantic_new_task_config">Настройка шаблонов задач</string>
+  <string name="swipeBehavior_title">Переключаться на Задачу при прикосновении</string>
+  <string name="swipeBehavior_summary">Переключаться на Задачу, к которой прикоснулись, или к последней выбранной</string>
   <string name="lock_drawer_in_task_fragment_summary">Так что бы вы не открыли его случайно</string>
+  <string name="lock_drawer_in_task_fragment">Фиксировать вид списком в информации о Задаче</string>
   <string name="useTabletLayout">Планшетный интерфейс</string>
+  <string name="general">Общие</string>
   <string name="tasks_fragment">Обзор задач</string>
   <string name="task_fragment">Сведения о задаче</string>
+  <string name="do_not_touch">Не трогать</string>
   <string name="list_fragment">Обзор списка</string>
   <string name="show_account_name">Показать имя аккаунта</string>
+  <string-array name="tablet_options">
+    <item>никогда</item>
+    <item>альбомная</item>
+    <item>портретная</item>
+    <item>портретная &amp; альбомная</item>
+  </string-array>
   <string name="delete_done">Удаление выполненных дел</string>
   <string name="delete_done_summary">Удалить все выполненные дела</string>
   <string name="delete_done_warning">Вы уверены?</string>
@@ -151,9 +170,11 @@
   <string name="delete_done_success">Выполненные дела успешно удалены.</string>
   <string name="menu_color">Изменить цвет</string>
   <string name="howto_setup_server">Как настроить сервер</string>
+  <string name="register_server">Если Вам нужен аккаунт для синхронизации с нашим сервером, напишите нам по электронной почте. В следующей версии Вы получите возможность зарегистрировать аккаунт!</string>
   <string name="special_lists_title">Метасписки</string>
   <string name="register">Зарегистрироваться</string>
   <string name="auto_backup_interval">Интервал автоматического резервного копирования</string>
+  <string name="auto_backup_interval_summary">Делать резервную копию базы данных каждые %s дня(-ей)</string>
   <string name="preferences_colorize">Цвета</string>
   <string name="preferences_colorize_tasks">Раскрасить задачи</string>
   <string name="preferences_colorize_tasks_everywhere">Раскрасить задачи везде</string>
@@ -164,8 +185,9 @@
   <string name="settings_semantics_list">Указать список</string>
   <string name="settings_semantics_priority">Указать приоритет</string>
   <string name="settings_semantics_due">Установить срок</string>
+  <string name="settings_semantics_weekday">Установить крайний срок на следующий будний день</string>
   <string-array name="weekdays">
-    <item>Don\'t set</item>
+    <item>Не устанавливать</item>
     <item>Понедельник</item>
     <item>Вторник</item>
     <item>Среда</item>
@@ -193,6 +215,7 @@
   <string name="semantics_no_list">Не задавайте список</string>
   <string name="semantics_no_due">Не устанавливайте срок</string>
   <string name="settings_file_default_title">Название дела для импортированных файлов</string>
+  <string name="semantic_new">Шаблон</string>
   <string name="tag_new">Новый тег</string>
   <string name="tag_settings">Параметры тегов</string>
   <string name="color">Цвет</string>
@@ -205,9 +228,11 @@
   <string name="settings_subtask_add_to_same_list_summary">Или укажите, в какой список по умолчанию должны добавляться подзадачи</string>
   <string name="settings_subtask_add_to_list_summary">Добавить подзадачу к %s</string>
   <string name="settings_use_btn_speak">Показать кнопку микрофона</string>
+  <string name="settings_use_btn_audio">Показать кнопку записи аудио</string>
   <string name="settings_use_btn_camera">Показать кнопку камеры</string>
   <string name="preferences_colorize_subtasks">Раскрасить подзадачи?</string>
   <string name="settings_tasks_title">Дела</string>
+  <string name="settings_task_fragment">Параметры обзора задач</string>
   <string name="settings_dev">Конфигурируемые значения для разработки приложения</string>
   <string name="settings_dev_sync">Синхронизация</string>
   <string name="settings_dev_dump_tw_summary">Экспортировать полученный текст в /sdcard/mirakel</string>
@@ -253,6 +278,7 @@
   <string name="alert_taskwarrior_title">Информация для Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Подзадачи</string>
   <string name="special_list_where_tag_title_text">Теги</string>
+  <string name="special_list_where_progress_title_text">Прогресс</string>
   <string name="special_list_where_file_title_text">Файл</string>
   <string-array name="special_lists_subtask_options">
     <item>Инвертировать выделение</item>
@@ -265,6 +291,7 @@
   </string-array>
   <string name="remove">Удалить</string>
   <string name="no_account_selected">Учетная запись не выбрана</string>
+  <string name="no_recurrence_selected">Повторение не выбрано</string>
   <string name="no_semantic_selected">Шаблон задачи не выбран</string>
   <string name="no_special_list_selected">Мета список не выбран</string>
   <string name="no_tag_selected">Тег не выбран</string>
@@ -284,4 +311,7 @@
   <string name="Undo">Отменить удаление условия</string>
   <string name="add_condition">Добавить условие</string>
   <string name="undo_taskui_change">Отменить удаление %s</string>
+  <string name="due_dialog_negated">Не после</string>
+  <string name="settings_advanced">Расширенные</string>
+  <string name="delete_condition">Удалить условие</string>
 </resources>
