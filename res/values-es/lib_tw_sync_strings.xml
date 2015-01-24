@@ -27,6 +27,7 @@
   <string name="sync_warning_message">La sincronización es actualmente experimental. Pero puedes intentarlo bajo tu propio riesgo (¡haz una copia de seguridad!) – ¿estás seguro?</string>
   <string name="sync_use_summary_taskwarrior">Sincronizar con Taskwarrior como %s</string>
   <string name="sync_use_summary_mirakel">Sincronizar con Mirakel como %s</string>
+  <string name="sync_use_summary_nothing">No usar la sincronización</string>
   <string name="sync_user">Usuario</string>
   <string name="sync_user_summary">Nombre de usuario del lado del servidor</string>
   <string name="sync_server">Servidor</string>
@@ -58,12 +59,31 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="sync_taskwarrior_setup_success">La configuración de la cuenta fue exitosa</string>
   <string name="sync_defaultAccount">Usar como cuenta predeterminada?</string>
   <string name="tw_account">Taskwarrior</string>
+  <string name="calDavName">CalDAV</string>
   <string name="type">Escribe</string>
   <string name="no_barcode_app">No hay ningún escáner de códigos de barras instalado</string>
   <string name="no_barcode_app_message">Recomendamos el siguiente escáner de códigos de barras:</string>
   <string name="no_barcode_app_install">Instalar</string>
   <string name="menu_edit_listaccount">Cuenta</string>
   <string name="change_account">Cambiar cuenta</string>
+  <string name="wrong_config">Parece que ha utilizado un archivo de configuración incorrecta</string>
+  <string name="cert_not_found">El certificado desapareció. Por favor, vuelva a crear su cuenta</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[
+        Hubo un error al sincronizar. Hemos realizado una solución parcial pero algunos datos pueden haber desaparecido  :(. Hemos realizado una copia de seguridad de su base de datos, comproueba si algo está mal. <br /><br />
+        Para mar información, vea <a href="https://mirakel.atlassian.net/browse/MIR-453">esto</a>
+        ]]></string>
+  <string name="client_sync_key_not_found">No se encuentra la clave de sincronización del cliente. Por favor, comprueba su configuración de Taskwarrior.</string>
+  <string name="config_404">Archivo de configuración no encontrado</string>
+  <string name="config_error_empty">No hay ninguna entrada %s en el archivo de configuración</string>
   <string name="load_config">Select the config file for Taskwarrior</string>
   <string name="select_config">Select Taskwarrior config file</string>
+  <string name="message_try_later">Intente sincronizar más tarde</string>
+  <string name="message_access_denied">Acceso denegado!\n¿Ha usado el archivo de configuración adecuado?\nDebe configurar el servidor de Taskwarrior para que acepte la sincronización con Mirakel.</string>
+  <string name="message_create_socket">¡No se puede crear el socket!\n¿Ha activado su conexión de red?</string>
+  <string name="message_account_suspended">¡Su cuenta está suspendida!</string>
+  <string name="message_parse_message">No se puede analizar las tareas. Por favor, escriba cómo sucedió esto</string>
+  <string name="message_message_error">Respuesta desconocida del servidor. Por favor, escriba cómo sucedió esto</string>
+  <string name="finish_sync">Sincronización finalizada</string>
+  <string name="account_vanished">Cuenta desaparecida. Esto no debería suceder jamás</string>
+  <string name="create_account">Crear cuenta</string>
 </resources>
