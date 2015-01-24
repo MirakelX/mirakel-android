@@ -30,6 +30,7 @@
   <string name="task_fragment_reminder">Recordatorio</string>
   <string name="task_fragment_subtask">Subtareas</string>
   <string name="task_fragment_progress">Progreso</string>
+  <string name="task_fragment_tags">Etiquetas</string>
   <string name="audio_record_title">Grabación de audio&#8230;</string>
   <string name="audio_record_message">Grabando&#8230;</string>
   <string name="audio_playback_title">Reproducción de audio&#8230;</string>
@@ -41,8 +42,11 @@
   <string name="remove_subtask">Eliminar Subtarea</string>
   <string name="remove_files_summary">¿Quieres eliminar %1$s de \"%2$s\"?</string>
   <string name="add_existing">Añadir tarea existente</string>
+  <string name="task_name">Nombre de la tarea</string>
   <string name="subtask_add_options">Filtro &gt;&gt;</string>
+  <string name="subtask_done">¿Tarea finalizada?</string>
   <string name="subtask_reminder">¿Tarea con recordatorio?</string>
+  <string name="subtask_content">¿Tarea con nota?</string>
   <string name="new_task">Nueva tarea</string>
   <string name="add_subtasks">Agregar subtarea...</string>
   <string name="add_tags">Añadir etiqueta&#8230;</string>
@@ -55,6 +59,7 @@
     <item>Editar etiqueta</item>
     <item>Quitar etiqueta</item>
   </string-array>
+  <string name="tag_has_dark_text">El texto está vacío</string>
   <string-array name="recurring_task_select">
     <item>Sólo esta repetición</item>
     <item>Todas las repeticiones</item>
