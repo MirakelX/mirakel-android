@@ -89,9 +89,9 @@ public class RandomHelper {
 
     public static AccountMirakel getRandomAccountMirakel() {
         List<AccountMirakel> all = AccountMirakel.all();
-        if(all.isEmpty()){
+        if (all.isEmpty()) {
             return AccountMirakel.getLocal();
-        }else {
+        } else {
             return all.get(random.nextInt(all.size()));
         }
     }
@@ -126,6 +126,9 @@ public class RandomHelper {
     }
 
     public static <T> T getRandomElem(final List<T> elems) {
+        if (elems.isEmpty()) {
+            return null;
+        }
         return elems.get(random.nextInt(elems.size()));
     }
 
@@ -183,7 +186,7 @@ public class RandomHelper {
 
 
     public static Optional<Calendar> getRandomOptional_Calendar() {
-        if(getRandomboolean()) {
+        if (getRandomboolean()) {
             return of(getRandomCalendar());
         } else {
             return absent();
@@ -191,7 +194,7 @@ public class RandomHelper {
     }
 
     public static Optional<Long> getRandomOptional_Long() {
-        if(getRandomboolean()) {
+        if (getRandomboolean()) {
             return of(getRandomLong());
         } else {
             return absent();
@@ -199,7 +202,7 @@ public class RandomHelper {
     }
 
     public static Optional<String> getRandomOptional_String() {
-        if(getRandomboolean()) {
+        if (getRandomboolean()) {
             return of(getRandomString());
         } else {
             return absent();
@@ -207,7 +210,7 @@ public class RandomHelper {
     }
 
     public static Optional<ListMirakel> getRandomOptional_ListMirakel() {
-        if(getRandomboolean()) {
+        if (getRandomboolean()) {
             return of(getRandomListMirakel());
         } else {
             return absent();
@@ -216,7 +219,7 @@ public class RandomHelper {
 
     @Nullable
     public static Integer getRandomNullable_Integer() {
-        if(getRandomboolean()){
+        if (getRandomboolean()) {
             return null;
         }
         return getRandomInteger();

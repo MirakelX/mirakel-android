@@ -52,8 +52,6 @@ import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.MirakelTestRunner;
-
 import static com.google.common.base.Optional.of;
 
 import static org.junit.Assert.assertEquals;

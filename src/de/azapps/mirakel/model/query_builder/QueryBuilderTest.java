@@ -363,7 +363,7 @@ public class QueryBuilderTest extends MirakelTestCase {
         if (!res_qb.isPresent()) {
             fail("Querybuilder returned empty result");
         }
-        Cursor c = RuntimeEnvironment.application.getContentResolver().query(Task.URI, Task.allColumns, null,
+        Cursor c = Robolectric.application.getContentResolver().query(Task.URI, Task.allColumns, null,
                    null, null);
         c.moveToFirst();
         Task res_raw = new Task(c);
@@ -466,7 +466,7 @@ public class QueryBuilderTest extends MirakelTestCase {
     public void testGetTaskList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         List res_qb = qb.getList(Task.class);
-        List res_raw = Task.cursorToTaskList(RuntimeEnvironment.application.getContentResolver().query(Task.URI,
+        List res_raw = Task.cursorToTaskList(Robolectric.application.getContentResolver().query(Task.URI,
                                              Task.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
@@ -486,7 +486,7 @@ public class QueryBuilderTest extends MirakelTestCase {
     public void testGetFileList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         List res_qb = qb.getList(FileMirakel.class);
-        List res_raw = FileMirakel.cursorToFileList(RuntimeEnvironment.application.getContentResolver().query(
+        List res_raw = FileMirakel.cursorToFileList(Robolectric.application.getContentResolver().query(
                            FileMirakel.URI,
                            FileMirakel.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
@@ -503,7 +503,7 @@ public class QueryBuilderTest extends MirakelTestCase {
     public void testGetSemanticList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         List res_qb = qb.getList(Semantic.class);
-        List res_raw = Semantic.cursorToSemanticList(RuntimeEnvironment.application.getContentResolver().query(
+        List res_raw = Semantic.cursorToSemanticList(Robolectric.application.getContentResolver().query(
                            Semantic.URI,
                            Semantic.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
@@ -521,7 +521,7 @@ public class QueryBuilderTest extends MirakelTestCase {
     public void testGetMetaListList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         List res_qb = qb.getList(SpecialList.class);
-        List res_raw = SpecialList.cursorToSpecialLists(RuntimeEnvironment.application.getContentResolver().query(
+        List res_raw = SpecialList.cursorToSpecialLists(Robolectric.application.getContentResolver().query(
                            SpecialList.URI, SpecialList.allColumns, null, null, null));
         compareLists(res_qb, res_raw);
     }
