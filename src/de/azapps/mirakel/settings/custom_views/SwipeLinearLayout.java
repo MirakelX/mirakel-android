@@ -30,7 +30,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -38,13 +37,12 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.ThemeManager;
 import de.azapps.mirakel.settings.R;
 
 import static com.google.common.base.Optional.absent;
@@ -68,7 +66,7 @@ public class SwipeLinearLayout extends LinearLayout  {
     @NonNull
     private final VelocityTracker velocityTracker = VelocityTracker.obtain();
     private int screenW;
-    private FrameLayout.LayoutParams leaveBehindParams;
+    private RelativeLayout.LayoutParams leaveBehindParams;
     private double childWidth;
     private boolean isRemoving = false;
     private boolean moved = false;
@@ -357,8 +355,8 @@ public class SwipeLinearLayout extends LinearLayout  {
         super(context, attrs);
         requestDisallowInterceptTouchEvent(true);
         setWillNotDraw(true);
-        leaveBehindParams = new FrameLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        leaveBehindParams.gravity = Gravity.CENTER;
+        leaveBehindParams = new RelativeLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+        leaveBehindParams.addRule(RelativeLayout.CENTER_IN_PARENT);
     }
 
 
@@ -387,16 +385,27 @@ public class SwipeLinearLayout extends LinearLayout  {
         return wrapper;
     }
 
-    private ImageView getLeaveBehindView() {
+    private View getLeaveBehindView() {
+
         final ImageView leaveBehind = new ImageView(getContext());
-        leaveBehind.setLayoutParams(leaveBehindParams);
+        leaveBehind.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT));
         leaveBehind.setImageResource(R.drawable.ic_delete_24px);
-        leaveBehind.setColorFilter(ThemeManager.getColor(R.attr.colorTextBlack));
+        leaveBehind.setColorFilter(Color.DKGRAY);
+        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        leaveBehind.setLayoutParams(params);
         leaveBehind.setBackgroundColor(Color.GRAY);
+
+        final RelativeLayout leaveBehindWrapper = new RelativeLayout(getContext());
+        leaveBehindWrapper.addView(leaveBehind);
+        leaveBehindWrapper.setBackgroundColor(Color.GRAY);
+        leaveBehindWrapper.setLayoutParams(leaveBehindParams);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            leaveBehind.setElevation(-15.0F);
+            leaveBehindWrapper.setElevation(-15.0F);
         }
-        return leaveBehind;
+        return leaveBehindWrapper;
     }
 
     @Override
