@@ -56,7 +56,7 @@
   <string name="inbox">Bandeja de entrada</string>
   <string name="first_task">Primera tarea</string>
   <string-array name="weekdays">
-    <item>Sin establecer</item>
+    <item>No establecer</item>
     <item>Lunes</item>
     <item>Martes</item>
     <item>Miércoles</item>
@@ -65,14 +65,14 @@
     <item>Sábado</item>
     <item>Domingo</item>
   </string-array>
-  <string name="local_account">Cuenta Local</string>
+  <string name="local_account">Cuenta local</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDAV</string>
   <string name="search_result_title">Buscar %s</string>
   <string name="task_empty">No hay ninguna tarea seleccionada&#8230;</string>
   <string name="no_lists">Esta tarea no puede ser sincronizada, porque no tienes listas</string>
   <string name="import_any_do_click">Importar desde Any.Do</string>
-  <string name="any_do_import_title">Seleccionar archivo de copia de resguardo de Any.Do</string>
+  <string name="any_do_import_title">Seleccionar archivo de copia de seguridad de Any.Do</string>
   <string name="any_do_this_file">Importar desde %s?\nSi no, por favor selecciona tú mismo un archivo</string>
   <string name="any_do_how_to">Por favor, primero haz una copia de resguardo de los datos de tu Any.Do. Para eso, ve a Any.Do → Configuración → Copia de resguardo → Crear copia de resguardo. Después vuelve aquí y haz clic en OK.\nO selecciona el archivo tú mismo.</string>
   <string name="select_file">Selecciona un archivo</string>
@@ -184,6 +184,7 @@
   <string name="nothing">Ninguna repetición</string>
   <string name="special_lists_content_title">Contenido</string>
   <string name="special_lists_done_title">Hecho</string>
+  <string name="special_lists_due_exist_title">Existe fecha límite</string>
   <string name="special_lists_due_title">vencimiento</string>
   <string name="special_lists_file_title">Archivo</string>
   <string name="special_lists_list_title">Listas</string>
