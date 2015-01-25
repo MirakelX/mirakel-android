@@ -53,7 +53,7 @@ Device: %3$s\n]]>
   <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">¡Ocurrió un error durante la importación de Astrid!</string>
   <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">No se encontró el archivo de Taskwarrior</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">No se pudo descargar el archivo de configuración</string>
-  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">La URL no es correcta. Realmente has escaneado el código correcto?</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">La URL no es correcta. ¿Has escaneado el código correcto?</string>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">No tiene permiso para leer el archivo</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Vaya, la lista desapareció&#8230;</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">No sabemos cómo solucionar este error. Mirakel se reiniciará.</string>
