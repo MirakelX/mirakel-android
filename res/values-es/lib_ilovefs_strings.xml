@@ -24,6 +24,9 @@
         <p>El día de San Valentín es tradicionalmente un día para celebrar y demostrar amor. Así que ¿por qué no lo tomamos este año como una oportunidad para demostrar nuestro amor por el software libre?</p>
         <p><a href="https://fsfe.org/campaigns/ilovefs/">Saber más</a></p> 
         ]]></string>
+  <string name="ilovefs_rate">¡Vota!</string>
   <string name="ilovefs_email">¡ Escríbenos!</string>
-  <string name="ilovefs_donate">Dona</string>
+  <string name="ilovefs_email_no_client">No se encuentra ningún cliente de correo</string>
+  <string name="ilovefs_donate">Donar</string>
+  <string name="ilovefs_email_title">#ILoveFS</string>
 </resources>
