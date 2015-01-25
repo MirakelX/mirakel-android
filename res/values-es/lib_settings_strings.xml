@@ -24,23 +24,23 @@
   <string name="sync_new">Nueva cuenta</string>
   <string name="sync_use">Utilizar Sincronizar</string>
   <string name="sync_warning">La sincronización es experimental</string>
-  <string name="sync_warning_message">La sincronización es actualmente experimental. Pero puedes intentarlo bajo tu propio riesgo (¡haz una copia de seguridad!) – ¿estás seguro?</string>
+  <string name="sync_warning_message">La sincronización es actualmente muy experimental. Pero puedes probarla bajo tu propio riesgo (¡haz una copia de seguridad!).  ¿Estás seguro?</string>
   <string name="sync_use_summary_taskwarrior">Sincronizar con Taskwarrior como %s</string>
   <string name="sync_use_summary_mirakel">Sincronizar con Mirakel como %s</string>
   <string name="sync_use_summary_nothing">No usar la sincronización</string>
   <string name="sync_user">Usuario</string>
-  <string name="sync_user_summary">Nombre de usuario del lado del servidor</string>
+  <string name="sync_user_summary">Nombre de usuario en el servidor</string>
   <string name="sync_server">Servidor</string>
   <string name="sync_server_summary">Sincronizar con %s</string>
   <string name="sync_frequency">Frecuencia</string>
-  <string name="sync_frequency_summary">Sincronizar a cada %s min</string>
+  <string name="sync_frequency_summary">Sincronizar cada %s minutos</string>
   <string name="sync_frequency_summary_man">Sincronizar solo manualmente</string>
   <string name="account_informations">Información</string>
   <string-array name="sync_types">
-    <item>Sincronización CalDav</item>
+    <item>Sincronización CalDAV</item>
     <item>Sincronización de Taskwarrior</item>
   </string-array>
-  <string name="sync_caldav">Sincronización CalDav</string>
+  <string name="sync_caldav">Sincronización CalDAV</string>
   <string name="sync_caldav_howto">
 <![CDATA[Tienes que instalar una aplicación de sincronización por CalDAV que sea compatible con Mirakel. Por ahora, es necesario instalar la versión modificada de DAVdroid de nuestra página.<br /><br />
 Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a trabajar junto con otros para que sea posible sincronizar con Mirakel.
@@ -49,19 +49,19 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="download">Descargar</string>
   <string name="sync_add_account">Agregar cuenta</string>
   <string name="sync_taskwarrior_configure">Configurar Taskwarrior</string>
-  <string name="sync_taskwarrior_scan_qr">Escanear cód. QR</string>
+  <string name="sync_taskwarrior_scan_qr">Escanear código QR</string>
   <string name="sync_taskwarrior_select_file">Seleccionar archivo de configuración</string>
   <string name="sync_taskwarrior_how_to">Cómo configurar tu propio servidor</string>
   <string name="sync_taskwarrior_own_server">o simplemente usa tu propio servidor</string>
-  <string name="sync_taskwarrior_url_error">La URL no es correcta. Realmente has escaneado el código correcto?</string>
+  <string name="sync_taskwarrior_url_error">La URL no es correcta. ¿Has escaneado el código correcto?</string>
   <string name="sync_taskwarrior_configuring">Configurando la sincronización&#8230;</string>
-  <string name="sync_taskwarrior_about">si ya tienes una cuenta de taskwarrior:</string>
-  <string name="sync_taskwarrior_register">si no, puedes registrar una cuenta nueva en nuestro servidor:</string>
+  <string name="sync_taskwarrior_about">si ya tienes una cuenta de Taskwarrior:</string>
+  <string name="sync_taskwarrior_register">Si no, puedes registrar una cuenta nueva en nuestro servidor:</string>
   <string name="sync_taskwarrior_register_button">Registrar</string>
-  <string name="sync_taskwarrior_setup_success">La configuración de la cuenta fue exitosa</string>
+  <string name="sync_taskwarrior_setup_success">La configuración de la cuenta ha sido un éxito</string>
   <string name="sync_taskwarrior_error_download">No se pudo descargar el archivo de configuración</string>
   <string name="sync_taskwarrior_select_file_not_exists">El archivo no existe</string>
-  <string name="sync_defaultAccount">Usar como cuenta predeterminada?</string>
+  <string name="sync_defaultAccount">¿Usar como cuenta predeterminada?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDAV</string>
   <string name="type">Escribe</string>
@@ -91,9 +91,9 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="startup_show_lists_summary">Mostrar todas las listas al comenzar</string>
   <string name="startup_list">Seleccione lista de inicio</string>
   <string name="startup_list_summary">Mostrar tareas de \"%s\"</string>
-  <string name="special_lists_click">Administrar meta-listas</string>
-  <string name="special_lists_new">Crear una meta-lista</string>
-  <string name="settings_misc">Misc</string>
+  <string name="special_lists_click">Administrar metalistas</string>
+  <string name="special_lists_new">Crear una metalista</string>
+  <string name="settings_misc">Otros</string>
   <string name="settings_backup">Copia de seguridad e importación</string>
   <string name="backup_click_summary">Copia de seguridad de la base de datos en la tarjeta SD (%s)</string>
   <string name="backup_click">Copia de seguridad</string>
@@ -103,20 +103,20 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="import_sure_summary">¡Todos los datos van a ser reemplazados! (Importando desde %s)</string>
   <string name="import_title">Seleccione archivo Mirakel</string>
   <string name="no_filemanager">Por favor, instale a un gestor de archivos</string>
-  <string name="import_default_list_summary">Importar hacia \"%s\"</string>
-  <string name="import_no_default_list_summary">No hay ninguna lista seleccionada como default</string>
+  <string name="import_default_list_summary">Importar a \"%s\"</string>
+  <string name="import_no_default_list_summary">No hay ninguna lista seleccionada como predeterminada</string>
   <string name="import_default_list">Importar la lista predeterminada</string>
   <string name="import_to">Importar a</string>
   <string name="changelog_click_summary">Ver el registro de cambios</string>
   <string name="changelog_click">Registro de cambios</string>
-  <string name="settings_about">Sobre nosotros</string>
+  <string name="settings_about">Acerca de</string>
   <string name="settings_help">Ayuda</string>
-  <string name="get_dashclock">Bajarse el Mirakel-Dashclock</string>
+  <string name="get_dashclock">Bajar la extensión de Dashclock para Mirakel</string>
   <string name="get_dashclock_summary">La extensión para Dashclock de Mirakel</string>
   <string name="import_astrid_click">Importar desde Astrid</string>
   <string name="astrid_success">¡Todos los datos importados con éxito!</string>
   <string name="importing">Importando</string>
-  <string name="astrid_import_title">Seleccione archivo Astrid</string>
+  <string name="astrid_import_title">Seleccione archivo de Astrid</string>
   <string name="import_any_do_click">Importar desde Any.Do</string>
   <string name="any_do_import_title">Seleccionar archivo de copia de seguridad de Any.Do</string>
   <string name="any_do_this_file">Importar desde %s?\nSi no, por favor selecciona tú mismo un archivo</string>
@@ -127,7 +127,7 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="import_wunderlist_title">Seleccionar archivo de Wunderlist</string>
   <string name="import_wunderlist_howto">Cómo importar desde Wunderlist</string>
   <string name="import_wunderlist_howto_text">La aplicación para Android de Wunderlist no provee funcionalidad de copia de resguardo.\n\nDe modo que tienes que entrar en la aplicación web. Ve a Preferencias → Cuenta → Crear copia de resguardo → (espera) → Clic para descargar. Copia este archivo a tu dispositivo y vuelve aquí.</string>
-  <string name="highlightSelected_summary">Destacar listas/tareas cuando se les hace clic</string>
+  <string name="highlightSelected_summary">Destacar listas/tareas cuando se pulsan</string>
   <string name="highlightSelected">Resaltado seleccionado</string>
   <string name="settings_date_format_relative">Mostrar fechas relativas</string>
   <string name="settings_date_format_relative_summary">Por ejemplo \"mañana\" en lugar de la cita real</string>
@@ -146,35 +146,48 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="semantic_new_task">Nueva plantilla de tareas</string>
   <string name="semantic_new_task_config_summary">Configurar las condiciones para crear nuevas tareas</string>
   <string name="semantic_new_task_config">Configurar plantillas de tareas</string>
+  <string name="swipeBehavior_title">Cambiar a la tarea tocada al deslizar</string>
+  <string name="swipeBehavior_summary">Cambiar a la tarea que se toca o cambiar a la última tarea seleccionada</string>
+  <string name="lock_drawer_in_task_fragment_summary">Para no abrirlo accidentalmente</string>
+  <string name="lock_drawer_in_task_fragment">Bloquear vista de lista en los detalles de la tarea</string>
+  <string name="useTabletLayout">Usar diseño de tablet</string>
   <string name="general">General</string>
+  <string name="tasks_fragment">Resumen de tareas</string>
   <string name="task_fragment">Detalles de la tarea</string>
   <string name="do_not_touch">No tocar</string>
+  <string name="list_fragment">Resumen de listas</string>
+  <string name="show_account_name">Mostrar el nombre de la cuenta</string>
   <string-array name="tablet_options">
-    <item>Nunca</item>
-    <item>paisaje</item>
-    <item>Retrato</item>
-    <item>Retrato &amp; paisaje</item>
+    <item>nunca</item>
+    <item>horizontal</item>
+    <item>vertical</item>
+    <item>vertial &amp; horizontal</item>
   </string-array>
-  <string name="delete_done">Delete done tasks</string>
-  <string name="delete_done_summary">Delete all done tasks</string>
+  <string name="delete_done">Borrar tareas realizadas</string>
+  <string name="delete_done_summary">Borrar todas las tareas realizadas</string>
   <string name="delete_done_warning">¿Estás seguro?</string>
-  <string name="delete_done_warning_message">You can not undo this. Make a backup!</string>
-  <string name="delete_done_success">Successfully deleted your done tasks.</string>
+  <string name="delete_done_warning_message">No se puede deshacer esto. Haz una copia de seguridad.</string>
+  <string name="delete_done_success">Tareas realizadas borradas con éxito.</string>
   <string name="menu_color">Cambiar color</string>
   <string name="howto_setup_server">Cómo configurar el servidor</string>
+  <string name="register_server">Si necesitas una cuenta para sincronizar en nuestro servidor, por favor envíanos un e-mail. ¡Con la próxima versión tendrás la posibilidad de registrar una cuenta!</string>
+  <string name="special_lists_title">Metalistas</string>
   <string name="register">Registrar</string>
   <string name="auto_backup_interval">Intervalo de copia de seguridad automática</string>
+  <string name="auto_backup_interval_summary">Realizar copia de seguridad de la base de datos cada %s días</string>
   <string name="preferences_colorize">Colores</string>
   <string name="preferences_colorize_tasks">Colorear las tareas</string>
   <string name="preferences_colorize_tasks_everywhere">Colorear las tareas en todas partes</string>
+  <string name="preferences_colorize_tasks_everywhere_summary">¿...o solo en las metalistas?</string>
   <string name="settings_semantics_title">Configurar plantillas de tareas</string>
   <string name="settings_semantics_condition">Condición</string>
+  <string name="settings_semantics_actions">Acciones</string>
   <string name="settings_semantics_list">Establecer lista</string>
   <string name="settings_semantics_priority">Establecer prioridad</string>
-  <string name="settings_semantics_due">Establecer fecha de vencimiento</string>
-  <string name="settings_semantics_weekday">Establecer vencimiento en la semana que viene</string>
+  <string name="settings_semantics_due">Establecer fecha límite</string>
+  <string name="settings_semantics_weekday">Establecer fecha límite a la semana que viene</string>
   <string-array name="weekdays">
-    <item>Sin establecer</item>
+    <item>No establecer</item>
     <item>Lunes</item>
     <item>Martes</item>
     <item>Miércoles</item>
@@ -184,7 +197,7 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
     <item>Domingo</item>
   </string-array>
   <string-array name="priority_entries">
-    <item>No colocar prioridad</item>
+    <item>No establecer prioridad</item>
     <item>-2</item>
     <item>-1</item>
     <item>0</item>
@@ -192,7 +205,7 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
     <item>2</item>
   </string-array>
   <string-array name="priority_entry_values">
-    <item>Nulo</item>
+    <item>nada</item>
     <item>-2</item>
     <item>-1</item>
     <item>0</item>
@@ -200,6 +213,8 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
     <item>2</item>
   </string-array>
   <string name="semantics_no_list">No establecer lista</string>
+  <string name="semantics_no_due">No establecer fecha límite</string>
+  <string name="settings_file_default_title">Nombre de la tarea para archivos importados</string>
   <string name="semantic_new">Plantilla</string>
   <string name="tag_new">Nueva etiqueta</string>
   <string name="tag_settings">Configuración de etiquetas</string>
@@ -210,11 +225,14 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="settings_subtask">Subtareas</string>
   <string name="settings_subtask_default_new">Mostrar nueva tarea por defecto</string>
   <string name="settings_subtask_add_to_same_list">Añadir subtarea a la lista de tareas</string>
-  <string name="settings_subtask_add_to_same_list_summary">O selecciona la lista por defecto, cuando la subtarea se añada</string>
+  <string name="settings_subtask_add_to_same_list_summary">O selecciona la lista por defecto, donde la subtarea se añade</string>
   <string name="settings_subtask_add_to_list_summary">Añadir subtarea a %s</string>
+  <string name="settings_use_btn_speak">Mostrar el botón de reconocimiento de voz</string>
+  <string name="settings_use_btn_audio">Mostrar el botón de grabación de audio</string>
   <string name="settings_use_btn_camera">Mostrar el botón de cámara</string>
   <string name="preferences_colorize_subtasks">¿Colorear las subtareas?</string>
   <string name="settings_tasks_title">Tareas</string>
+  <string name="settings_task_fragment">Configuración de resumen de tareas</string>
   <string name="settings_dev">Configuración de desarrollo</string>
   <string name="settings_dev_sync">Sincronizar</string>
   <string name="settings_dev_dump_tw_summary">Volcar el texto recibido a /sdcard/mirakel</string>
@@ -227,12 +245,26 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="enableDebugLog">¿Habilitar depuración-Logcat?</string>
   <string name="action_contact">Contacto / Informar de un error</string>
   <string name="action_contact_summary">Escríbenos un correo electrónico.</string>
-  <string name="title_donations">Dona</string>
+  <string name="title_donations">Donar</string>
   <string name="add">Agregar</string>
   <string name="action_credits">Créditos</string>
   <string name="action_credits_summary">Sobre nosotros</string>
   <string name="title_activity_credits">Créditos y acerca de</string>
+  <string name="credits_github_description">Haz un fork en GitHub</string>
   <string name="credits_googleplus_description">Únete a nuestra comunidad G+</string>
+  <string name="credits_text_head">
+<![CDATA[
+<h3>Mirakel es software libre, puedes contribuir vía GitHub.</h3>
+<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
+<p>Icono y sugerencias de diseño por <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
+<p>Esto es software libre (publicado con la licencia <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
+<p>Visítanos en</p>
+]]>
+    </string>
+  <string name="credits_license">
+<![CDATA[<p>Este programa es software libre: usted puede redistribuirlo y/o modificarlo bajo los términos de la licencia  <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> publicada por la Free Software Foundation, ya sea la versión 3  (a su elección) cualquier versión posterior.</p>
+<p>Este programa se distribuye con la esperanza de ser útil, pero SIN GARANTÍA; ni siquiera la garantía implícita de COMERCIABILIDAD o ADECUACIÓN A UN PROPÓSITO PARTICULAR. Vea la licencia GNU General Public License para más detalles.</p>]]>
+    </string>
   <string name="credits_translations">Traducciones</string>
   <string name="feedback">Enviar comentario</string>
   <string name="credits_libraries">Bibliotecas usadas</string>
@@ -273,4 +305,13 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="due_exist_text">Solo tareas con fecha límite</string>
   <string name="reminder_text">Solo tareas con recordatorio</string>
   <string name="is_subtask_parent">Es tarea superior</string>
+  <string name="has_subtasks">Tiene subtareas</string>
+  <string name="has_parent">Tiene tarea superior</string>
+  <string name="special_lists_condition_title">Condiciones</string>
+  <string name="Undo">Deshacer eliminar condición</string>
+  <string name="add_condition">Agregar condición</string>
+  <string name="undo_taskui_change">Deshacer eliminar %s</string>
+  <string name="due_dialog_negated">No después de</string>
+  <string name="settings_advanced">Avanzado</string>
+  <string name="delete_condition">Eliminar condición</string>
 </resources>
