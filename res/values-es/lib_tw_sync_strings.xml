@@ -24,22 +24,22 @@
   <string name="sync_new">Nueva cuenta</string>
   <string name="sync_use">Utilizar Sincronizar</string>
   <string name="sync_warning">La sincronización es experimental</string>
-  <string name="sync_warning_message">La sincronización es actualmente experimental. Pero puedes intentarlo bajo tu propio riesgo (¡haz una copia de seguridad!) – ¿estás seguro?</string>
+  <string name="sync_warning_message">La sincronización es actualmente muy experimental. Pero puedes probarla bajo tu propio riesgo (¡haz una copia de seguridad!).  ¿Estás seguro?</string>
   <string name="sync_use_summary_taskwarrior">Sincronizar con Taskwarrior como %s</string>
   <string name="sync_use_summary_mirakel">Sincronizar con Mirakel como %s</string>
   <string name="sync_use_summary_nothing">No usar la sincronización</string>
   <string name="sync_user">Usuario</string>
-  <string name="sync_user_summary">Nombre de usuario del lado del servidor</string>
+  <string name="sync_user_summary">Nombre de usuario en el servidor</string>
   <string name="sync_server">Servidor</string>
   <string name="sync_server_summary">Sincronizar con %s</string>
   <string name="sync_frequency">Frecuencia</string>
-  <string name="sync_frequency_summary">Sincronizar a cada %s min</string>
+  <string name="sync_frequency_summary">Sincronizar cada %s minutos</string>
   <string name="sync_frequency_summary_man">Sincronizar solo manualmente</string>
   <string-array name="sync_types">
-    <item>Sincronización CalDav</item>
+    <item>Sincronización CalDAV</item>
     <item>Sincronización de Taskwarrior</item>
   </string-array>
-  <string name="sync_caldav">Sincronización CalDav</string>
+  <string name="sync_caldav">Sincronización CalDAV</string>
   <string name="sync_caldav_howto_">
 <![CDATA[Tienes que instalar una aplicación de sincronización por CalDAV que sea compatible con Mirakel. Por ahora, es necesario instalar la versión modificada de DAVdroid de nuestra página.<br /><br />
 Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a trabajar junto con otros para que sea posible sincronizar con Mirakel.
@@ -48,16 +48,16 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="download">Descargar</string>
   <string name="sync_add_account">Agregar cuenta</string>
   <string name="sync_taskwarrior_configure">Configurar Taskwarrior</string>
-  <string name="sync_taskwarrior_scan_qr">Escanear cód. QR</string>
+  <string name="sync_taskwarrior_scan_qr">Escanear código QR</string>
   <string name="sync_taskwarrior_select_file">Seleccionar archivo de configuración</string>
   <string name="sync_taskwarrior_how_to">Cómo configurar tu propio servidor</string>
   <string name="sync_taskwarrior_own_server">o simplemente usa tu propio servidor</string>
   <string name="sync_taskwarrior_configuring">Configurando la sincronización&#8230;</string>
-  <string name="sync_taskwarrior_about">si ya tienes una cuenta de taskwarrior:</string>
-  <string name="sync_taskwarrior_register">si no, puedes registrar una cuenta nueva en nuestro servidor:</string>
+  <string name="sync_taskwarrior_about">si ya tienes una cuenta de Taskwarrior:</string>
+  <string name="sync_taskwarrior_register">Si no, puedes registrar una cuenta nueva en nuestro servidor:</string>
   <string name="sync_taskwarrior_register_button">Registrar</string>
-  <string name="sync_taskwarrior_setup_success">La configuración de la cuenta fue exitosa</string>
-  <string name="sync_defaultAccount">Usar como cuenta predeterminada?</string>
+  <string name="sync_taskwarrior_setup_success">La configuración de la cuenta ha sido un éxito</string>
+  <string name="sync_defaultAccount">¿Usar como cuenta predeterminada?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDAV</string>
   <string name="type">Escribe</string>
