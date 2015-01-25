@@ -45,7 +45,7 @@
   <string name="menu_set_due">Establecer fecha</string>
   <string name="menu_edit_list">Renombrar lista</string>
   <string name="menu_do_task">Dar tarea por finalizada</string>
-  <string name="action_undo">Undo the last Change</string>
+  <string name="action_undo">Deshacer el último cambio</string>
   <string name="action_sync_now">Sincronizar ahora</string>
   <string name="action_contact">Contacto / Informar de un error</string>
   <string name="kill_app">Cerrar app</string>
