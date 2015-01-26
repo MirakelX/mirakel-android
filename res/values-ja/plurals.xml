@@ -20,91 +20,69 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
   <plurals name="selected_tasks">
-    <item quantity="one">Una tarea</item>
-    <item quantity="other">%d tareas</item>
+    <item quantity="other">%d タスク</item>
   </plurals>
   <plurals name="selected_lists">
-    <item quantity="one">Una lista</item>
-    <item quantity="other">%d Listas</item>
+    <item quantity="other">%d リスト</item>
   </plurals>
   <plurals name="list_delete">
-    <item quantity="one">¿Borrar lista?</item>
-    <item quantity="other">¿Borrar Listas?</item>
+    <item quantity="other">リストを削除しますか?</item>
   </plurals>
   <plurals name="task_delete">
-    <item quantity="one">¿Borrar tarea?</item>
-    <item quantity="other">¿Borrar tareas?</item>
+    <item quantity="other">タスクを削除しますか?</item>
   </plurals>
   <plurals name="due_year">
-    <item quantity="one">año</item>
-    <item quantity="other">años</item>
+    <item quantity="other">年</item>
   </plurals>
   <plurals name="due_day">
-    <item quantity="one">día</item>
-    <item quantity="other">días</item>
+    <item quantity="other">日</item>
   </plurals>
   <plurals name="due_minute">
-    <item quantity="one">minuto</item>
-    <item quantity="other">minutos</item>
+    <item quantity="other">分</item>
   </plurals>
   <plurals name="due_hour">
-    <item quantity="one">hora</item>
-    <item quantity="other">horas</item>
+    <item quantity="other">時間</item>
   </plurals>
   <plurals name="due_month">
-    <item quantity="one">mes</item>
-    <item quantity="other">meses</item>
+    <item quantity="other">ヶ月</item>
   </plurals>
   <plurals name="months">
-    <item quantity="one">mes</item>
-    <item quantity="other">meses</item>
+    <item quantity="other">ヶ月</item>
   </plurals>
   <plurals name="every_months">
-    <item quantity="one">Cada mes</item>
-    <item quantity="other">Cada %d meses</item>
+    <item quantity="other">%d ヶ月ごと</item>
   </plurals>
   <plurals name="days">
-    <item quantity="one">día</item>
-    <item quantity="other">Días</item>
+    <item quantity="other">日</item>
   </plurals>
   <plurals name="every_days">
-    <item quantity="one">Cada día</item>
-    <item quantity="other">Cada %d días</item>
+    <item quantity="other">%d 日ごと</item>
   </plurals>
   <plurals name="years">
-    <item quantity="one">año</item>
-    <item quantity="other">Años</item>
+    <item quantity="other">年</item>
   </plurals>
   <plurals name="every_years">
-    <item quantity="one">Cada año</item>
-    <item quantity="other">Cada %d años</item>
+    <item quantity="other">%d 年ごと</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="one">minuto</item>
-    <item quantity="other">minutos</item>
+    <item quantity="other">分</item>
   </plurals>
   <plurals name="every_minutes">
-    <item quantity="one">Cada minuto</item>
-    <item quantity="other">Cada %d minutos</item>
+    <item quantity="other">%d 分ごと</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="one">hora</item>
-    <item quantity="other">horas</item>
+    <item quantity="other">時間</item>
   </plurals>
   <plurals name="every_hours">
-    <item quantity="one">Cada hora</item>
-    <item quantity="other">Cada %d horas</item>
+    <item quantity="other">%d 時間ごと</item>
   </plurals>
   <plurals name="subtasks">
-    <item quantity="one">Una subtarea</item>
-    <item quantity="other">%d subtareas</item>
+    <item quantity="other">%d サブタスク</item>
   </plurals>
   <plurals name="file">
-    <item quantity="one">Un archivo</item>
-    <item quantity="other">%d archivos</item>
+    <item quantity="other">%d ファイル</item>
   </plurals>
   <plurals name="dev_toast">
-    <item quantity="one">Estás ahora a %1$d paso de %2$s activar las opciones de desarrollo.</item>
-    <item quantity="other">Estás ahora a %1$d pasos de %2$s activar las opciones de desarrollo.</item>
+    <item quantity="other">%2$s 開発設定から %1$d ステップ離れました。</item>
   </plurals>
 </resources>

@@ -18,4 +18,115 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<resources/>
+<resources>
+  <plurals name="selected_tasks">
+    <item quantity="one">Jeden úkol</item>
+    <item quantity="few">%d úkoly</item>
+    <item quantity="other">%d úkolů</item>
+  </plurals>
+  <plurals name="selected_lists">
+    <item quantity="one">Jeden seznam</item>
+    <item quantity="few">%d seznamy</item>
+    <item quantity="other">%d seznamů</item>
+  </plurals>
+  <plurals name="list_delete">
+    <item quantity="one">Smazat seznam?</item>
+    <item quantity="few">Smazat seznamy?</item>
+    <item quantity="other">Smazat seznamy?</item>
+  </plurals>
+  <plurals name="task_delete">
+    <item quantity="one">Smazat úkol?</item>
+    <item quantity="few">Smazat úkoly?</item>
+    <item quantity="other">Smazat úkoly?</item>
+  </plurals>
+  <plurals name="due_year">
+    <item quantity="one">Rok</item>
+    <item quantity="few">Roky</item>
+    <item quantity="other">Let</item>
+  </plurals>
+  <plurals name="due_day">
+    <item quantity="one">Den</item>
+    <item quantity="few">Dny</item>
+    <item quantity="other">Dnů</item>
+  </plurals>
+  <plurals name="due_minute">
+    <item quantity="one">Minuta</item>
+    <item quantity="few">Minuty</item>
+    <item quantity="other">Minut</item>
+  </plurals>
+  <plurals name="due_hour">
+    <item quantity="one">Hodina</item>
+    <item quantity="few">Hodiny</item>
+    <item quantity="other">Hodin</item>
+  </plurals>
+  <plurals name="due_month">
+    <item quantity="one">Měsíc</item>
+    <item quantity="few">Měsíce</item>
+    <item quantity="other">Měsíců</item>
+  </plurals>
+  <plurals name="months">
+    <item quantity="one">Měsíc</item>
+    <item quantity="few">Měsíce</item>
+    <item quantity="other">Měsíců</item>
+  </plurals>
+  <plurals name="every_months">
+    <item quantity="one">Každý měsíc</item>
+    <item quantity="few">Každé %d měsíce</item>
+    <item quantity="other">Každých %d měsíců</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="one">Den</item>
+    <item quantity="few">Dny</item>
+    <item quantity="other">Dnů</item>
+  </plurals>
+  <plurals name="every_days">
+    <item quantity="one">Každý den</item>
+    <item quantity="few">Každé %d dny</item>
+    <item quantity="other">Každých %d dnů</item>
+  </plurals>
+  <plurals name="years">
+    <item quantity="one">Rok</item>
+    <item quantity="few">Roky</item>
+    <item quantity="other">Let</item>
+  </plurals>
+  <plurals name="every_years">
+    <item quantity="one">Každý rok</item>
+    <item quantity="few">Každé %d roky</item>
+    <item quantity="other">Každých %d let</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">Minuta</item>
+    <item quantity="few">Minuty</item>
+    <item quantity="other">Minut</item>
+  </plurals>
+  <plurals name="every_minutes">
+    <item quantity="one">Každou minutu</item>
+    <item quantity="few">Každé %d minuty</item>
+    <item quantity="other">Každých %d minut</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">Hodina</item>
+    <item quantity="few">Hodiny</item>
+    <item quantity="other">Hodin</item>
+  </plurals>
+  <plurals name="every_hours">
+    <item quantity="one">Každou hodinu</item>
+    <item quantity="few">Každé %d hodiny</item>
+    <item quantity="other">Každých %d hodin</item>
+  </plurals>
+  <plurals name="subtasks">
+    <item quantity="one">Jeden podúkol</item>
+    <item quantity="few">%d podúkoly</item>
+    <item quantity="other">%d podúkolů</item>
+  </plurals>
+  <plurals name="file">
+    <item quantity="one">Jeden soubor</item>
+    <item quantity="few">%d soubory</item>
+    <item quantity="other">%d souborů</item>
+  </plurals>
+  <plurals name="dev_toast">
+    <item quantity="one">Jsi %1$d krok od %2$s vývojářských nastavení.</item>
+    <item quantity="few">Jsi %1$d kroky od %2$s vývojářských nastavení.</item>
+    <item quantity="other">Jsi %1$d kroků od %2$s vývojářských nastavení.</item>
+  </plurals>
+</resources>
