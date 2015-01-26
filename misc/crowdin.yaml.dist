@@ -46,3 +46,6 @@ files:
   -
     source: /settings/res/values/plurals.xml
     translation: /settings/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /new_ui/res/values/strings.xml
+    translation: /new_ui/res/values-%two_letters_code%/%original_file_name%
