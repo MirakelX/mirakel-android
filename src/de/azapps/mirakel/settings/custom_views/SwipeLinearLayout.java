@@ -373,19 +373,19 @@ public class SwipeLinearLayout extends LinearLayout  {
         }
         final LinearLayout wrapper = new LinearLayout(getContext());
         wrapper.setOrientation(LinearLayout.HORIZONTAL);
-        wrapper.addView(getLeaveBehindView());
+        wrapper.addView(getLeaveBehindView(false));
         childWidth = Math.max(child.getMeasuredWidthAndState(), childWidth);
         wrapper.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT));
         child.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                               ViewGroup.LayoutParams.WRAP_CONTENT));
         wrapper.addView(child);
-        wrapper.addView(getLeaveBehindView());
+        wrapper.addView(getLeaveBehindView(true));
         wrapper.setTag(SWIPEABLE_VIEW, child.getTag(SWIPEABLE_VIEW));
         return wrapper;
     }
 
-    private View getLeaveBehindView() {
+    private View getLeaveBehindView(final boolean left) {
 
         final ImageView leaveBehind = new ImageView(getContext());
         leaveBehind.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -396,11 +396,12 @@ public class SwipeLinearLayout extends LinearLayout  {
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         leaveBehind.setLayoutParams(params);
-        leaveBehind.setBackgroundColor(Color.GRAY);
+        leaveBehind.setBackgroundColor(Color.TRANSPARENT);
 
         final RelativeLayout leaveBehindWrapper = new RelativeLayout(getContext());
         leaveBehindWrapper.addView(leaveBehind);
-        leaveBehindWrapper.setBackgroundColor(Color.GRAY);
+        leaveBehindWrapper.setBackgroundResource(left ? R.drawable.leave_behind_background_right :
+                R.drawable.leave_behind_background_left);
         leaveBehindWrapper.setLayoutParams(leaveBehindParams);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             leaveBehindWrapper.setElevation(-15.0F);
