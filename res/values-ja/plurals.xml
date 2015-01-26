@@ -20,13 +20,9 @@
 -->
 <resources>
   <plurals name="status">
-    <item quantity="one">Jeden úkol k vyřešení</item>
-    <item quantity="few">%d úkoly k vyřešení</item>
-    <item quantity="other">%d úkolů k vyřešení</item>
+    <item quantity="other">実行する %d タスク</item>
   </plurals>
   <plurals name="how_many">
-    <item quantity="one">1 úkol</item>
-    <item quantity="few">%d úkoly</item>
-    <item quantity="other">%d úkolů</item>
+    <item quantity="other">%d タスク</item>
   </plurals>
 </resources>
