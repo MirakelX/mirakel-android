@@ -20,27 +20,31 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="donations__button_close">Cerrar</string>
-  <string name="donations__description">¿Encuentras esta aplicación útil?\n¡Apoya su desarrollo mediante el envío de una donación al desarrollador!</string>
+  <string name="donations__flattr">Flattr</string>
+  <string name="donations__description">¿Encuentras útil esta aplicación?\n¡Apoya su desarrollo mediante el envío de una donación al desarrollador!</string>
+  <string name="donations__flattr_description" formatted="false">¡Flattr se lleva el 10% como tarifa mensual!</string>
   <string name="donations__google_android_market">Google Play Store</string>
+  <string name="donations__google_android_market_not_supported_title">No se admiten donaciones dentro de la app.</string>
+  <string name="donations__google_android_market_not_supported">No se admiten donaciones dentro de la app. ¿Google Play está instalado correctamente?</string>
   <string name="donations__google_android_market_description">¡Google se queda el 30% de cada donación!</string>
-  <string name="donations__google_android_market_donate_button">Dona!</string>
-  <string name="donations__google_android_market_text">Cuánto?</string>
-  <string name="donations__paypal">Paypal</string>
-  <string name="donations__paypal_description">Tu puedes elegir cuando quiere donar después de hacer clic en el botón!</string>
-  <string name="donations__thanks_dialog_title">Gracias!</string>
-  <string name="donations__thanks_dialog">Gracias por donar!\n Realmente se lo agradezco!</string>
+  <string name="donations__google_android_market_donate_button">¡Dona!</string>
+  <string name="donations__google_android_market_text">¿Cuánto?</string>
+  <string name="donations__paypal">PayPal</string>
+  <string name="donations__paypal_description">¡Puedes elegir cuánto quieres donar después de pulsar el botón!</string>
+  <string name="donations__thanks_dialog_title">¡Gracias!</string>
+  <string name="donations__thanks_dialog">¡Gracias por donar!\n ¡Realmente se lo agradecemos!</string>
   <string name="donations__alert_dialog_title">Se produjo un error</string>
-  <string name="donations__alert_dialog_no_browser">No se encontró ningun navegador para abrir una página web!</string>
+  <string name="donations__alert_dialog_no_browser">¡No se encontró ningún navegador para abrir una página web!</string>
   <string-array name="donation_google_catalog_values">
-    <item>0,5 Euros</item>
-    <item>1 Euro</item>
-    <item>2 Euros</item>
-    <item>5 Euros</item>
-    <item>10 Euros</item>
-    <item>15 Euros</item>
-    <item>25 Euros</item>
-    <item>199 Euros</item>
+    <item>0,50 euros</item>
+    <item>1 euro</item>
+    <item>2 euros</item>
+    <item>5 euros</item>
+    <item>10 euros</item>
+    <item>15 euros</item>
+    <item>25 euros</item>
+    <item>199 euros</item>
   </string-array>
   <string name="donation_paypal_item">Donación a Mirakel</string>
-  <string name="title_donations">Dona</string>
+  <string name="title_donations">Donar</string>
 </resources>
