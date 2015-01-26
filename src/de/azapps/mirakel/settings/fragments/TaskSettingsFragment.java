@@ -23,8 +23,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
@@ -66,7 +66,7 @@ public class TaskSettingsFragment extends MirakelPreferencesFragment<Settings> {
         }
 
 
-        final CheckBoxPreference subTaskAddToSameList = (CheckBoxPreference)
+        final SwitchPreference subTaskAddToSameList = (SwitchPreference)
                 findPreference("subtaskAddToSameList");
         if (subTaskAddToSameList != null) {
             final Optional<ListMirakel> subtaskAddToList = MirakelModelPreferences

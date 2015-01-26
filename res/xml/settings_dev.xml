@@ -19,23 +19,23 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory android:title="@string/general" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:key="enabledDebug"
             android:title="@string/enableDebugLog" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:key="demoMode"
             android:title="@string/demo_mode" />
         <Preference
             android:key="demoDropDB"
             android:title="@string/demo_drop_db"
             android:dependency="demoMode"/>
-        <CheckBoxPreference
+        <SwitchPreference
             android:key="writeLogsToFile"
             android:title="@string/write_logs_to_file"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_dev_sync" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:key="dump_tw_sync_to_sdcard"
             android:summary="@string/settings_dev_dump_tw_summary"
             android:title="@string/settings_dev_dump_tw" />

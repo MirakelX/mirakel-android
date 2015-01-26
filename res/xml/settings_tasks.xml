@@ -21,11 +21,11 @@
                   android:key="category_tasks"
                   android:title="@string/settings_tasks_title">
     <PreferenceCategory android:title="@string/general" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="showDoneMain"
             android:title="@string/showDone"/>
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="hideKeyboard"
             android:summary="@string/hide_keyboard_summary"
@@ -34,7 +34,7 @@
             android:key="semanticNewTaskSettings"
             android:summary="@string/semantic_new_task_config_summary"
             android:title="@string/semantic_new_task_config"/>
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="subtaskAddToSameList"
             android:summary="@string/settings_subtask_add_to_same_list_summary"

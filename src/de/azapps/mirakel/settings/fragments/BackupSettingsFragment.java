@@ -23,9 +23,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
@@ -43,8 +43,8 @@ import de.azapps.mirakel.helper.export_import.AnyDoImport;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.tools.FileUtils;
 
 public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings> {
@@ -56,7 +56,7 @@ public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings>
         addPreferencesFromResource(R.xml.settings_backup);
 
 
-        final CheckBoxPreference importDefaultList = (CheckBoxPreference)
+        final SwitchPreference importDefaultList = (SwitchPreference)
                 findPreference("importDefaultList");
         final Optional<ListMirakel> list = MirakelModelPreferences
                                            .getImportDefaultList();

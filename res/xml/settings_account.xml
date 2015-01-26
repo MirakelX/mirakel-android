@@ -21,11 +21,11 @@
                   android:title="@string/sync_title">
 
     <PreferenceCategory android:title="@string/general">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="syncUse"
             android:title="@string/sync_use"/>
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="defaultAccount"
             android:title="@string/sync_defaultAccount"/>

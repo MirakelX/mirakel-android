@@ -25,9 +25,9 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
 
@@ -36,7 +36,6 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
-
 import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
 import de.azapps.tools.Log;
 
@@ -63,9 +62,9 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
         // Preference Fields
         final Preference syncUsername = findPreference("syncUsername");
         final EditTextPreference syncServer = (EditTextPreference) findPreference("syncServer");
-        final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
+        final SwitchPreference syncUse = (SwitchPreference) findPreference("syncUse");
         final Preference syncType = findPreference("sync_type");
-        final CheckBoxPreference defaultAccount = (CheckBoxPreference) findPreference("defaultAccount");
+        final SwitchPreference defaultAccount = (SwitchPreference) findPreference("defaultAccount");
         final Preference syncInterval = findPreference("syncFrequency");
         // Set Preferences
         syncUsername.setEnabled(false);

@@ -22,10 +22,10 @@ package de.azapps.mirakel.settings.model_settings.reccuring;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.widget.DatePicker;
@@ -37,10 +37,10 @@ import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.recurring.Recurring;
-import de.azapps.widgets.NumPickerPref;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.tools.Log;
+import de.azapps.widgets.NumPickerPref;
 
 public class RecurringDetailFragment extends GenericModelDetailFragment<Recurring> {
 
@@ -67,7 +67,7 @@ public class RecurringDetailFragment extends GenericModelDetailFragment<Recurrin
         final NumPickerPref recurring_day = (NumPickerPref) findPreference("recurring_day");
         final NumPickerPref recurring_hour = (NumPickerPref) findPreference("recurring_hour");
         final NumPickerPref recurring_minute = (NumPickerPref) findPreference("recurring_min");
-        final CheckBoxPreference forDue = (CheckBoxPreference) findPreference("forDue");
+        final SwitchPreference forDue = (SwitchPreference) findPreference("forDue");
         final EditTextPreference labelRecurring = (EditTextPreference)
                 findPreference("labelRecurring");
         final Preference startDate = findPreference("recurring_begin");
@@ -195,7 +195,7 @@ public class RecurringDetailFragment extends GenericModelDetailFragment<Recurrin
                 hideForReminder(recurring.isForDue(),
                                 recurring_minute, recurring_hour);
                 preference.setPersistent(false);
-                ((CheckBoxPreference) preference)
+                ((SwitchPreference) preference)
                 .setChecked(recurring.isForDue());
                 recurring.save();
                 return false;

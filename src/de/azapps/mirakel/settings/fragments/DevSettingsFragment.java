@@ -24,8 +24,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
@@ -156,7 +156,7 @@ public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
             }
         });
 
-        final CheckBoxPreference demoMode = (CheckBoxPreference) findPreference("demoMode");
+        final SwitchPreference demoMode = (SwitchPreference) findPreference("demoMode");
         demoMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(final Preference preference,

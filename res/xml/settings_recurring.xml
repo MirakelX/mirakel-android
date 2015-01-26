@@ -26,7 +26,7 @@
             android:key="labelRecurring"
             android:title="@string/label" />
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:key="forDue"
             android:title="@string/forDue" />
     </PreferenceCategory>

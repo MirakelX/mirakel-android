@@ -22,9 +22,9 @@ package de.azapps.mirakel.settings.fragments;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
@@ -69,7 +69,7 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
         entryValuesWithDefault[0] = "default";
 
 
-        final CheckBoxPreference notificationsUse = (CheckBoxPreference) findPreference("notificationsUse");
+        final SwitchPreference notificationsUse = (SwitchPreference) findPreference("notificationsUse");
         notificationsUse
         .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -100,8 +100,8 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
             }
         });
 
-        final CheckBoxPreference notifSetting = (CheckBoxPreference)
-                                                findPreference("notificationsPersistent");
+        final SwitchPreference notifSetting = (SwitchPreference)
+                                              findPreference("notificationsPersistent");
         notifSetting
         .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -206,7 +206,7 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
         });
 
 
-        final CheckBoxPreference remindersPersistent = (CheckBoxPreference)
+        final SwitchPreference remindersPersistent = (SwitchPreference)
                 findPreference("remindersPersistent");
         remindersPersistent
         .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

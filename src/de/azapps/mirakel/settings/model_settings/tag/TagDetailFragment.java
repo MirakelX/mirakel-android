@@ -19,9 +19,9 @@
 
 package de.azapps.mirakel.settings.model_settings.tag;
 
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.model.tags.Tag;
@@ -47,7 +47,7 @@ public class TagDetailFragment extends GenericModelDetailFragment<Tag> {
     protected void setUp() {
         final Tag tag = mItem;
         final EditTextPreference name = (EditTextPreference) findPreference("tag_name");
-        final CheckBoxPreference darkBackground = (CheckBoxPreference) findPreference("tag_dark_text");
+        final SwitchPreference darkBackground = (SwitchPreference) findPreference("tag_dark_text");
         final ColorPickerPref background = (ColorPickerPref) findPreference("tag_background_color");
         name.setSummary(tag.getName());
         name.setText(tag.getName());

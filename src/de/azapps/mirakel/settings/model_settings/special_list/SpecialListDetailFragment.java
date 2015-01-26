@@ -23,13 +23,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
@@ -158,7 +158,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         final EditTextPreference name = getNamePreference();
         summary.addItemFromInflater(name);
 
-        final CheckBoxPreference active = getIsActivePreference();
+        final SwitchPreference active = getIsActivePreference();
         summary.addItemFromInflater(active);
 
 
@@ -332,8 +332,8 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         return where;
     }
 
-    private CheckBoxPreference getIsActivePreference() {
-        final CheckBoxPreference active = new CheckBoxPreference(getActivity());
+    private SwitchPreference getIsActivePreference() {
+        final SwitchPreference active = new SwitchPreference(getActivity());
         active.setKey("special_lists_active");
         active.setTitle(R.string.special_list_active);
         active.setChecked(mItem.isActive());

@@ -22,7 +22,7 @@
 
     <PreferenceCategory
         android:title="@string/sharing_title">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="importDefaultList"
             android:summary="@string/import_default_list_summary"

@@ -24,11 +24,11 @@
     <PreferenceCategory 
         android:key="notifications"
         android:title="@string/notification_title" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="notificationsUse"
             android:title="@string/notifications_use" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:dependency="notificationsUse"
             android:key="notificationsPersistent"
@@ -48,7 +48,7 @@
             android:title="@string/notifications_list_open" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/reminder" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="remindersPersistent"
             android:summary="@string/reminders_persistent_summary"
