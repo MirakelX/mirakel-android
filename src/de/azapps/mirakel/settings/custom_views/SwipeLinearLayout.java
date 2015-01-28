@@ -30,6 +30,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -37,6 +38,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -341,6 +343,7 @@ public class SwipeLinearLayout extends LinearLayout  {
     }
 
 
+
     public interface OnItemRemoveListener {
         void onRemove(int position, int index);
     }
@@ -361,6 +364,7 @@ public class SwipeLinearLayout extends LinearLayout  {
 
 
     @Override
+
     protected boolean addViewInLayout(@NonNull final View child, final int index,
                                       final ViewGroup.LayoutParams params, final boolean preventRequestLayout) {
         addView(setupChildView(child));
@@ -368,46 +372,47 @@ public class SwipeLinearLayout extends LinearLayout  {
     }
 
     private View setupChildView(final View child) {
-        if (!isSwipeable(child)) {
-            return child;
+        final View wrapper = LayoutInflater.from(getContext()).inflate(R.layout.leave_behind_wrapper, null);
+        final FrameLayout container = (FrameLayout) wrapper.findViewById(R.id.leave_behind_center);
+        setRipple(child, container);
+        container.addView(child);
+        ((ImageView)wrapper.findViewById(R.id.left_leave_behind)).setColorFilter(Color.DKGRAY);
+        ((ImageView)wrapper.findViewById(R.id.right_leave_behind)).setColorFilter(Color.DKGRAY);
+        if (isSwipeable(child)) {
+            wrapper.setTag(SWIPEABLE_VIEW, child.getTag(SWIPEABLE_VIEW));
         }
-        final LinearLayout wrapper = new LinearLayout(getContext());
-        wrapper.setOrientation(LinearLayout.HORIZONTAL);
-        wrapper.addView(getLeaveBehindView(false));
-        childWidth = Math.max(child.getMeasuredWidthAndState(), childWidth);
-        wrapper.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT));
-        child.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                              ViewGroup.LayoutParams.WRAP_CONTENT));
-        wrapper.addView(child);
-        wrapper.addView(getLeaveBehindView(true));
-        wrapper.setTag(SWIPEABLE_VIEW, child.getTag(SWIPEABLE_VIEW));
         return wrapper;
     }
 
-    private View getLeaveBehindView(final boolean left) {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setRipple(final @NonNull View child, final @NonNull FrameLayout container) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) && child.isClickable()) {
+            container.setForeground(getContext().getDrawable(R.drawable.ripple));
+            container.setClickable(true);
+            child.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(final View v, final MotionEvent event) {
+                    final float x = event.getX() + v.getLeft();
+                    final float y = event.getY() + v.getTop();
+                    container.drawableHotspotChanged(x, y);
 
-        final ImageView leaveBehind = new ImageView(getContext());
-        leaveBehind.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT));
-        leaveBehind.setImageResource(R.drawable.ic_delete_24px);
-        leaveBehind.setColorFilter(Color.DKGRAY);
-        final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        leaveBehind.setLayoutParams(params);
-        leaveBehind.setBackgroundColor(Color.TRANSPARENT);
+                    switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        container.setPressed(true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        container.setPressed(false);
+                        break;
+                    }
 
-        final RelativeLayout leaveBehindWrapper = new RelativeLayout(getContext());
-        leaveBehindWrapper.addView(leaveBehind);
-        leaveBehindWrapper.setBackgroundResource(left ? R.drawable.leave_behind_background_right :
-                R.drawable.leave_behind_background_left);
-        leaveBehindWrapper.setLayoutParams(leaveBehindParams);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            leaveBehindWrapper.setElevation(-15.0F);
+                    // Pass all events through to the host view.
+                    return false;
+                }
+            });
         }
-        return leaveBehindWrapper;
     }
+
 
     @Override
     public void addView(@NonNull final View child, final int index,
