@@ -229,9 +229,10 @@
   <string name="action_contact_summary">يكتب لنا رسالة بالبريد إلكتروني!</string>
   <string name="title_donations">تبرع</string>
   <string name="add">إضافة</string>
-  <string name="action_credits">الإعتمادات</string>
-  <string name="title_activity_credits">حول البرنامج و الاعتمادات</string>
-  <string name="credits_googleplus_description">الانضمام إلى مجتمعنا G+</string>
+  <string name="action_credits">شكر وتقدير</string>
+  <string name="title_activity_credits">حول البرنامج و المساهمون</string>
+  <string name="credits_github_description">أنشئ فرعاً على github</string>
+  <string name="credits_googleplus_description">إنضم إلى مجتمعنا على G+</string>
   <string name="credits_translations">الترجمات</string>
   <string name="feedback">أرسل ملاحظاتك</string>
   <string name="credits_libraries">المكتبات المستعملة</string>
