@@ -69,7 +69,7 @@ public enum  Settings implements IGenericElementInterface {
 
     ABOUT(R.string.settings_about, R.drawable.ic_info_24px),
     BACKUP(R.string.settings_backup, R.drawable.ic_settings_backup_restore_24px),
-    DEV(R.string.settings_dev, R.drawable.ic_developer_mode_24px),
+    DEV(R.string.settings_dev, R.drawable.ic_settings_development),
     NOTIFICATION(R.string.notification_title, R.drawable.ic_notifications_24px),
     TASK( R.string.settings_tasks_title, R.drawable.ic_done_24px),
     UI( R.string.ui_settings_title, R.drawable.ic_stay_current_portrait_24px),
