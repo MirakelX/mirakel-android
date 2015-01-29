@@ -28,7 +28,7 @@
             android:key="tag_background_color"
             android:title="@string/color"/>
 
-        <SwitchPreference
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
             android:key="tag_dark_text"
             android:title="@string/tag_dark_text"/>
     </PreferenceCategory>

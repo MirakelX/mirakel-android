@@ -26,7 +26,7 @@
             android:key="labelRecurring"
             android:title="@string/label" />
 
-        <SwitchPreference
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
             android:key="forDue"
             android:title="@string/forDue" />
     </PreferenceCategory>

@@ -230,6 +230,9 @@ public class SwipeLinearLayout extends LinearLayout  {
     }
 
     private boolean handleMove(final @NonNull MotionEvent event, final int x) {
+        if (getParent() == null) {
+            return false;
+        }
         moved = true;
         getParent().requestDisallowInterceptTouchEvent(true);
         stopReset();

@@ -104,6 +104,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
             title.setTypeface(Typeface.DEFAULT_BOLD);
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0F);
             title.setTextColor(ThemeManager.getAccentThemeColor());
+
             if (preference.getKey() != null &&
                 preference.getKey().startsWith(String.valueOf(SwipeLinearLayout.SWIPEABLE_VIEW))) {
                 header.setTag(SwipeLinearLayout.SWIPEABLE_VIEW, new View.OnClickListener() {

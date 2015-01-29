@@ -21,11 +21,11 @@
                   android:title="@string/sync_title">
 
     <PreferenceCategory android:title="@string/general">
-        <SwitchPreference
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
             android:defaultValue="false"
             android:key="syncUse"
             android:title="@string/sync_use"/>
-        <SwitchPreference
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
             android:defaultValue="false"
             android:key="defaultAccount"
             android:title="@string/sync_defaultAccount"/>

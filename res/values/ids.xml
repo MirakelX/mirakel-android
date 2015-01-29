@@ -20,4 +20,5 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
     <item name="remove_handle" type="id"/>
+    <item name="switch_widget" type="id"/>
 </resources>

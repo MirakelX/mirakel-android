@@ -57,6 +57,7 @@ import de.azapps.mirakel.model.list.meta.SpecialListsDoneProperty;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
+import de.azapps.mirakel.settings.custom_views.SwitchCompatPreference;
 import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
@@ -333,7 +334,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     }
 
     private SwitchPreference getIsActivePreference() {
-        final SwitchPreference active = new SwitchPreference(getActivity());
+        final SwitchPreference active = new SwitchCompatPreference(getActivity());
         active.setKey("special_lists_active");
         active.setTitle(R.string.special_list_active);
         active.setChecked(mItem.isActive());

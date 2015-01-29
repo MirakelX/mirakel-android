@@ -22,7 +22,7 @@
 
     <PreferenceCategory
         android:title="@string/sharing_title">
-        <SwitchPreference
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
             android:defaultValue="false"
             android:key="importDefaultList"
             android:summary="@string/import_default_list_summary"
