@@ -43,33 +43,24 @@ import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.settings.Settings;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
-@SuppressLint ("RtlHardcoded")
-@ReportsCrashes (
-// This is required for backward compatibility but not used
-    formKey = "",
-// optional, displayed as soon as the crash occurs, before collecting data which
-// can take a few seconds
-    reportType = org.acra.sender.HttpSender.Type.JSON,
-    httpMethod = org.acra.sender.HttpSender.Method.PUT,
+@ReportsCrashes(
     formUri = "http://couchdb.azapps.de/acra-mirakel/_design/acra-storage/_update/report",
     formUriBasicAuthLogin = "mirakel", formUriBasicAuthPassword = "Ieshi8Egheic0etaipeeTeibo",
-    disableSSLCertValidation = true, mode = ReportingInteractionMode.DIALOG,
-    resToastText = R.string.crash_toast_text,
-// optional. default is a warning sign
-    resDialogText = R.string.crash_dialog_text, resDialogIcon = android.R.drawable.ic_dialog_info,
-// optional. default is your application name
-    resDialogTitle = R.string.crash_dialog_title,
-// optional. when defined, adds a user text field input with this text resource
-// as a label
-    resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
-    resDialogOkToast = R.string.crash_dialog_ok_toast
-// optional. displays a Toast message when the user accepts to send a report.
-
+    mode = ReportingInteractionMode.DIALOG,
+    resToastText =
+        R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds
+    resDialogText = R.string.crash_dialog_text,
+    resDialogIcon = R.drawable.ic_info_grey600_24dp, //optional. default is a warning sign
+    resDialogTitle = R.string.crash_dialog_title, // optional. default is your application name
+    resDialogCommentPrompt =
+        R.string.crash_dialog_comment_prompt, // optional. when defined, adds a user text field input with this text resource as a label
+    resDialogOkToast =
+        R.string.crash_dialog_ok_toast // optional. displays a Toast message when the user accepts to send a report.
 )
 public class Mirakel extends Application {
     // Public Constants
@@ -77,6 +68,7 @@ public class Mirakel extends Application {
     @SuppressLint ("InlinedApi")
     @Override
     public void onCreate () {
+
         if (BuildConfig.DEBUG) {
             try {
                 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
