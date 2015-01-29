@@ -63,12 +63,6 @@
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustPan" >
         </activity>
-        <activity
-            android:name="org.acra.CrashReportDialog"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="true"
-            android:launchMode="singleInstance"
-            android:theme="@style/Dialog" />
 
         <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
             <intent-filter>
