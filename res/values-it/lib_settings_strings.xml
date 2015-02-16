@@ -35,6 +35,7 @@
   <string name="sync_frequency">Frequenza</string>
   <string name="sync_frequency_summary">Sincronizza ogni %s min</string>
   <string name="sync_frequency_summary_man">Sincronizza solo manualmente</string>
+  <string name="account_informations">Informazioni</string>
   <string-array name="sync_types">
     <item>Sincronizzazione CalDAV</item>
     <item>Sincronizzazione Taskwarrior</item>
@@ -311,4 +312,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="add_condition">Aggiungi condizione</string>
   <string name="undo_taskui_change">Annulla la rimozione di %s</string>
   <string name="due_dialog_negated">Non dopo</string>
+  <string name="settings_advanced">Avanzate</string>
+  <string name="delete_condition">Elimina condizione</string>
 </resources>
