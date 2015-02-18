@@ -228,5 +228,6 @@ con Android e sul web\nhttp://mirakel.azapps.de</string>
     <item quantity="one">anno</item>
     <item quantity="other">anni</item>
   </plurals>
+  <string name="accounts_all">Tutti gli account</string>
   <string name="stub_list_name">Nuovo elenco</string>
 </resources>
