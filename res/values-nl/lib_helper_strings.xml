@@ -59,4 +59,8 @@ Device: %3$s\n]]>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Lijstnaam bestaat al. Kies een andere.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Update DAVdroid alstublieft</string>
   <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">De Wunderlist-bestandsindeling is gewijzigd. Gelieve dit te melden aan het Mirakel team.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Er was een taak met  een niet-standaard prioriteit tijdens het synchroniseren.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Er was een taak met niet-standaard voldoen status tijdens het synchroniseren.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Er was een taak met een niet-standaard datum tijdens het synchroniseren.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Het uitlezen van de meta lijst %s is mislukt. AUB rapporteer hoe dit gebeurd is.</string>
 </resources>
