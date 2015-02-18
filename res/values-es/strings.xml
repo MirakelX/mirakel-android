@@ -96,7 +96,7 @@
   <string name="use_new_ui">Usar nueva interfaz de usuario (experimental)</string>
   <string-array name="subtask_task_select">
     <item>Solo esta tarea</item>
-    <item>Eliminar también subtareas</item>
+    <item>Eliminar también subtarea</item>
   </string-array>
   <string name="delete_caldav_lists">No está permitido borrar listas de una cuenta CalDAV.</string>
 </resources>

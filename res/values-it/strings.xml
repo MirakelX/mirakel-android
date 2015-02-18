@@ -99,7 +99,7 @@ i dati sull\'errore, basta premere il pulsante \"OK\".</string>
   <string name="use_new_ui">Usa nuova interfaccia (sperimentale)</string>
   <string-array name="subtask_task_select">
     <item>Solo questa attività</item>
-    <item>Elimina anche le attività secondarie</item>
+    <item>Elimina anche attività secondarie</item>
   </string-array>
   <string name="delete_caldav_lists">Non è consentito eliminare elenchi da un account caldav.</string>
 </resources>

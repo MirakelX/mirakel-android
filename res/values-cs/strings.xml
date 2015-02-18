@@ -96,7 +96,7 @@
   <string name="use_new_ui">Použít nové uživatelské rozhraní (experimentální)</string>
   <string-array name="subtask_task_select">
     <item>Pouze tento úkol</item>
-    <item>Smazat také podúkoly</item>
+    <item>Smazat také podúkol</item>
   </string-array>
   <string name="delete_caldav_lists">Není povoleno smazat seznam propojený s účtem caldav.</string>
 </resources>

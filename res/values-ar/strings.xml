@@ -91,6 +91,6 @@
   <string name="dialog_error_message" formatted="false">السبب: %s\n\nError رسالة الخطأ: %s</string>
   <string-array name="subtask_task_select">
     <item>هذه المهمة فقط</item>
-    <item>حذف المهام الفرعية أيضاً</item>
+    <item>Delete also subtask</item>
   </string-array>
 </resources>

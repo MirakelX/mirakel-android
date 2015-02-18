@@ -96,7 +96,7 @@
   <string name="use_new_ui">Neue Benutzeroberfläche verwenden (Experimentell)</string>
   <string-array name="subtask_task_select">
     <item>Nur diese Aufgabe</item>
-    <item>Auch Unteraufgaben löschen</item>
+    <item>Delete also subtask</item>
   </string-array>
   <string name="delete_caldav_lists">Das Löschen einer Liste eines CalDAV-Kontos ist nicht erlaubt.</string>
 </resources>

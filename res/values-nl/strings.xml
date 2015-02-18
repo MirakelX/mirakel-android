@@ -96,7 +96,7 @@
   <string name="use_new_ui">Gebruik de nieuwe UI (experimenteel)</string>
   <string-array name="subtask_task_select">
     <item>Alleen deze taak</item>
-    <item>Verwijderen ook subtaken</item>
+    <item>Subtaak ook verwijderen</item>
   </string-array>
   <string name="delete_caldav_lists">Het is niet toegestaan om lijsten van een caldav-account te verwijderen.</string>
 </resources>

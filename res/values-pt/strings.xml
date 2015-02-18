@@ -96,7 +96,7 @@
   <string name="use_new_ui">Utilizar nova interface (experimental)</string>
   <string-array name="subtask_task_select">
     <item>Apenas esta tarefa</item>
-    <item>Remover também subtarefas</item>
+    <item>Eliminar também a subtarefa</item>
   </string-array>
   <string name="delete_caldav_lists">Não é possível eliminar listas de uma conta caldav.</string>
 </resources>

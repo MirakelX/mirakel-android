@@ -96,7 +96,7 @@
   <string name="use_new_ui">Использовать новый пользовательский интерфейс (экспериментальный)</string>
   <string-array name="subtask_task_select">
     <item>Только эта задача</item>
-    <item>Также удалить подзадачи</item>
+    <item>Delete also subtask</item>
   </string-array>
   <string name="delete_caldav_lists">Не разрешено удалять списки учетной записи caldav.</string>
 </resources>
