@@ -41,7 +41,7 @@ import com.google.common.base.Optional;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.azapps.mirakel.ThemeManager;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.custom_views.ExpandablePreference;
 import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;

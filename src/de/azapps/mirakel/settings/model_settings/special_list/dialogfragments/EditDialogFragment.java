@@ -40,7 +40,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.ThemeManager;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;

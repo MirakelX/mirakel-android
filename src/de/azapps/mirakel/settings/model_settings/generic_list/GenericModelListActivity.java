@@ -43,7 +43,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.ThemeManager;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;

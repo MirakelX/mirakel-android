@@ -38,7 +38,7 @@ import android.widget.ListView;
 
 import com.shamanland.fab.FloatingActionButton;
 
-import de.azapps.mirakel.ThemeManager;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 
