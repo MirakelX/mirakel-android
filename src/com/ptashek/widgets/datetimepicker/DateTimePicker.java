@@ -17,8 +17,6 @@ package com.ptashek.widgets.datetimepicker;
  Modified by azapps,weiznich 2013
  */
 
-import java.util.Calendar;
-
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -32,8 +30,11 @@ import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.ViewSwitcher;
+
+import java.util.Calendar;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class DateTimePicker extends RelativeLayout implements
     View.OnClickListener, OnDateChangedListener, OnTimeChangedListener {
@@ -46,7 +47,6 @@ public class DateTimePicker extends RelativeLayout implements
     private final ViewSwitcher viewSwitcher;
     // Calendar reference
     private final Calendar mCalendar;
-    private final boolean darkTheme;
 
     // Constructor start
     public DateTimePicker(final Context context) {
@@ -60,7 +60,6 @@ public class DateTimePicker extends RelativeLayout implements
     public DateTimePicker(final Context context, final AttributeSet attrs,
                           final int defStyle) {
         super(context, attrs, defStyle);
-        this.darkTheme = MirakelCommonPreferences.isDark();
         // Get LayoutInflater instance
         final LayoutInflater inflater = (LayoutInflater) context
                                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -87,27 +86,14 @@ public class DateTimePicker extends RelativeLayout implements
                           .findViewById(R.id.TimePicker);
         this.timePicker.setOnTimeChangedListener(this);
         // Handle button clicks
-        ((Button) findViewById(R.id.SwitchToTime)).setOnClickListener(this); // shows
-        // the
-        // time
-        // picker
-        ((Button) findViewById(R.id.SwitchToDate)).setOnClickListener(this); // shows
-        // the
-        // date
-        // picker
-        if (this.darkTheme) {
-            ((Button) findViewById(R.id.SwitchToDate))
-            .setTextColor(getResources().getColor(R.color.White));
-        }
+        findViewById(R.id.SwitchToTime).setOnClickListener(this);// shows the time picker
+
+        findViewById(R.id.SwitchToDate).setOnClickListener(this); // shows the date picker
+        ((Button) findViewById(R.id.SwitchToDate)).setTextColor(ThemeManager.getColor(
+                    R.attr.colorControlHighlight));
         // Populate ViewSwitcher
         this.viewSwitcher.addView(datePickerView, 0);
         this.viewSwitcher.addView(timePickerView, 1);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            ((Button) findViewById(R.id.SwitchToTime))
-            .setTextColor(getResources().getColor(R.color.Black));
-            ((Button) findViewById(R.id.SwitchToDate))
-            .setTextColor(getResources().getColor(R.color.Black));
-        }
     }
 
     // Constructor end
@@ -135,10 +121,8 @@ public class DateTimePicker extends RelativeLayout implements
     // Handle button clicks
     @Override
     public void onClick(final View v) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            ((Button) v).setTextColor(getResources().getColor(
-                                          this.darkTheme ? R.color.White : R.color.Black));
-        }
+        ((Button) v).setTextColor(getResources().getColor(ThemeManager.getColor(
+                                      R.attr.colorControlHighlight)));
         if (v.getId() == R.id.SwitchToDate) {
             v.setEnabled(false);
             findViewById(R.id.SwitchToTime).setEnabled(true);
