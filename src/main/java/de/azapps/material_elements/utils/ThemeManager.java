@@ -34,6 +34,8 @@ public class ThemeManager {
     private static int themeResId;
     private static int dialogTheme;
 
+    private static final float SHADE_FACTOR = 0.8F;
+
     public static void init(final @NonNull Context ctx,final int theme,final int dialogTheme) {
         context = ctx;
         themeResId = theme;
@@ -78,5 +80,11 @@ public class ThemeManager {
 
     public static int getDialogTheme() {
         return dialogTheme;
+    }
+
+    public static int getDarkerShade(final int color) {
+        return Color.rgb((int) (SHADE_FACTOR * Color.red(color)),
+                (int) (SHADE_FACTOR * Color.green(color)),
+                (int) (SHADE_FACTOR * Color.blue(color)));
     }
 }

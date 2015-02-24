@@ -36,7 +36,6 @@ import android.graphics.drawable.shapes.RectShape;
 public class TextDrawable extends Drawable {
 
     private final Paint textPaint;
-    private static final float SHADE_FACTOR = 0.9f;
     private String text;
     private final int color;
     private int height;
@@ -104,11 +103,6 @@ public class TextDrawable extends Drawable {
         }
     }
 
-    private static int getDarkerShade(final int color) {
-        return Color.rgb((int) (SHADE_FACTOR * Color.red(color)),
-                (int) (SHADE_FACTOR * Color.green(color)),
-                (int) (SHADE_FACTOR * Color.blue(color)));
-    }
 
     public void setNewText(final String text){
         this.text = upperCase ? text.toUpperCase() : text;
