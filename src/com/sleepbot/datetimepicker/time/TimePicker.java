@@ -24,11 +24,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyCharacterMap;
@@ -45,10 +42,10 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class TimePicker extends LinearLayout implements
     RadialPickerLayout.OnValueSelectedListener {
@@ -181,7 +178,6 @@ public class TimePicker extends LinearLayout implements
     private String mAmText;
 
     private OnTimeSetListener mCallback;
-    private boolean mDark = false;
     private String mDeletedKeyFormat;
     public Dialog mDialog;
 
@@ -234,8 +230,6 @@ public class TimePicker extends LinearLayout implements
         }
         this.mIs24HourMode = DateTimeHelper.is24HourLocale(Helpers.getLocal(context));
         this.layout = inflate(context, R.layout.time_picker_view, this);
-        this.mDark = MirakelCommonPreferences.isDark();// TODO get this from
-        // theme or so...
         initLayout();
     }
 
@@ -538,10 +532,6 @@ public class TimePicker extends LinearLayout implements
 
     private void initLayout() {
         final View dialog = this.layout.findViewById(R.id.time_picker_dialog);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            dialog.setBackgroundColor(this.ctx.getResources().getColor(
-                                          this.mDark ? android.R.color.black : android.R.color.white));
-        }
         final KeyboardListener keyboardListener = new KeyboardListener(null);
         this.layout.findViewById(R.id.time_picker_dialog).setOnKeyListener(
             keyboardListener);
@@ -552,10 +542,8 @@ public class TimePicker extends LinearLayout implements
         this.mMinutePickerDescription = res
                                         .getString(R.string.minute_picker_description);
         this.mSelectMinutes = res.getString(R.string.select_minutes);
-        this.mSelectedColor = res.getColor(this.mDark ? R.color.Red
-                                           : R.color.clock_blue);// R.color.blue
-        this.mUnselectedColor = res.getColor(this.mDark ? R.color.clock_white
-                                             : R.color.numbers_text_color);// R.color.numbers_text_color
+        this.mSelectedColor = ThemeManager.getPrimaryThemeColor();
+        this.mUnselectedColor = ThemeManager.getColor(R.attr.colorControlNormal);
         this.mHourView = (TextView) this.layout.findViewById(R.id.hours);
         this.mHourView.setOnKeyListener(keyboardListener);
         this.mHourSpaceView = (TextView) this.layout
@@ -567,24 +555,6 @@ public class TimePicker extends LinearLayout implements
         this.mAmPmTextView = (TextView) this.layout
                              .findViewById(R.id.ampm_label);
         this.mAmPmTextView.setOnKeyListener(keyboardListener);
-        if (Build.VERSION.SDK_INT <= 14) {
-            this.mAmPmTextView
-            .setTransformationMethod(new TransformationMethod() {
-                private final Locale locale = Helpers.getLocal(getContext());
-                @Override
-                public CharSequence getTransformation(
-                    final CharSequence source, final View view) {
-                    return (source != null) ? source.toString()
-                           .toUpperCase(this.locale) : null;
-                }
-                @Override
-                public void onFocusChanged(final View view,
-                                           final CharSequence sourceText,
-                                           final boolean focused, final int direction,
-                                           final Rect previouslyFocusedRect) {
-                }
-            });
-        }
         final String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
         this.mAmText = amPmTexts[0];
         this.mPmText = amPmTexts[1];
@@ -593,13 +563,8 @@ public class TimePicker extends LinearLayout implements
         this.mTimePicker.setOnValueSelectedListener(this);
         this.mTimePicker.setOnKeyListener(keyboardListener);
         this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay,
-                                    this.mInitialMinute, this.mIs24HourMode, this.mDark);
+                                    this.mInitialMinute, this.mIs24HourMode);
         final int currentItemShowing = HOUR_INDEX;
-        // if (savedInstanceState != null
-        // && savedInstanceState.containsKey(KEY_CURRENT_ITEM_SHOWING)) {
-        // currentItemShowing = savedInstanceState
-        // .getInt(KEY_CURRENT_ITEM_SHOWING);
-        // }
         setCurrentItemShowing(currentItemShowing, false, true, true);
         this.mTimePicker.invalidate();
         this.mHourView.setOnClickListener(new OnClickListener() {
@@ -644,25 +609,19 @@ public class TimePicker extends LinearLayout implements
                 }
             }
         });
-        if (this.mDark) {
-            final View header = this.layout.findViewById(R.id.time_dialog_head);
-            header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
-            dialog.setBackgroundColor(res.getColor(R.color.dialog_gray));
-            final View header_background = this.layout
-                                           .findViewById(R.id.header_background_timepicker);
-            header_background.setBackgroundColor(res
-                                                 .getColor(R.color.dialog_gray));
-            final View hairline = this.layout
-                                  .findViewById(R.id.hairline_timepicker);
-            if (hairline != null) {
-                hairline.setBackgroundColor(res.getColor(R.color.clock_gray));
-            }
-            this.mDoneButton.setTextColor(this.mUnselectedColor);
-            this.mNoDateButton.setTextColor(this.mUnselectedColor);
-        } else {
-            this.mDoneButton.setTextColor(res.getColor(R.color.Black));
-            this.mNoDateButton.setTextColor(res.getColor(R.color.Black));
+        final View header = this.layout.findViewById(R.id.time_dialog_head);
+        header.setBackgroundColor(ThemeManager.getAccentThemeColor());
+        dialog.setBackgroundColor(ThemeManager.getColor(R.attr.colorBackground));
+        final View header_background = this.layout
+                                       .findViewById(R.id.header_background_timepicker);
+        header_background.setBackgroundColor(ThemeManager.getAccentThemeColor());
+        final View hairline = this.layout
+                              .findViewById(R.id.hairline_timepicker);
+        if (hairline != null) {
+            hairline.setBackgroundColor(ThemeManager.getColor(R.attr.colorTextGrey));
         }
+        this.mDoneButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
+        this.mNoDateButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
         // Enable or disable the AM/PM view.
         this.mAmPmHitspace = this.layout.findViewById(R.id.ampm_hitspace);
         if (this.mIs24HourMode) {
@@ -895,7 +854,7 @@ public class TimePicker extends LinearLayout implements
         this.mIs24HourMode = mode;
         if (this.mTimePicker != null) {
             this.mTimePicker.initialize(this.ctx, this.mInitialHourOfDay,
-                                        this.mInitialMinute, this.mIs24HourMode, this.mDark);
+                                        this.mInitialMinute, this.mIs24HourMode);
             this.mTimePicker.invalidate();
         }
         updateDisplay(true);

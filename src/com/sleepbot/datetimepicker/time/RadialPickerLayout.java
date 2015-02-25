@@ -42,6 +42,7 @@ import com.fourmob.datetimepicker.Utils;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 
 public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
@@ -63,7 +64,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private final Vibrator mVibrator;
     private long mLastVibrate;
     private int mLastValueSelected;
-    private boolean mDark;
 
     private OnValueSelectedListener mListener;
     private boolean mTimeInitialized;
@@ -129,15 +129,12 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         this.mGrayBox.setLayoutParams(new ViewGroup.LayoutParams(
                                           ViewGroup.LayoutParams.MATCH_PARENT,
                                           ViewGroup.LayoutParams.MATCH_PARENT));
-        this.mGrayBox.setBackgroundColor(getResources().getColor(
-                                             this.mDark ? R.color.circle_background
-                                             : R.color.transparent_black));
+        this.mGrayBox.setBackgroundColor(ThemeManager.getColor(R.attr.colorBackground));
         this.mGrayBox.setVisibility(View.INVISIBLE);
         addView(this.mGrayBox);
         this.mAccessibilityManager = (AccessibilityManager) context
                                      .getSystemService(Context.ACCESSIBILITY_SERVICE);
         this.mTimeInitialized = false;
-        this.mDark = false;
     }
 
     /**
@@ -170,21 +167,19 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * @param is24HourMode
      */
     public void initialize(final Context context, final int initialHoursOfDay,
-                           final int initialMinutes, final boolean is24HourMode,
-                           final boolean dark) {
+                           final int initialMinutes, final boolean is24HourMode) {
         if (this.mTimeInitialized) {
             Log.e(TAG, "Time has already been initialized.");
             return;
         }
         this.mIs24HourMode = is24HourMode;
-        this.mDark = dark;
         this.mHideAmPm = Utils
                          .isTouchExplorationEnabled(this.mAccessibilityManager) || this.mIs24HourMode;
         // Initialize the circle and AM/PM circles if applicable.
-        this.mCircleView.initialize(context, this.mHideAmPm, dark);
+        this.mCircleView.initialize(context, this.mHideAmPm);
         this.mCircleView.invalidate();
         if (!this.mHideAmPm) {
-            this.mAmPmCirclesView.initialize(context, (initialHoursOfDay < 12) ? AM : PM, dark);
+            this.mAmPmCirclesView.initialize(context, (initialHoursOfDay < 12) ? AM : PM);
             this.mAmPmCirclesView.invalidate();
         }
         // Initialize the hours and minutes numbers.
@@ -202,11 +197,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             minutesTexts[i] = String.format("%02d", minutes[i]);
         }
         this.mHourRadialTextsView.initialize(res, hoursTexts,
-                                             is24HourMode ? innerHoursTexts : null, this.mHideAmPm, true,
-                                             this.mDark);
+                                             is24HourMode ? innerHoursTexts : null, this.mHideAmPm, true);
         this.mHourRadialTextsView.invalidate();
         this.mMinuteRadialTextsView.initialize(res, minutesTexts, null,
-                                               this.mHideAmPm, false, this.mDark);
+                                               this.mHideAmPm, false);
         this.mMinuteRadialTextsView.invalidate();
         // Initialize the currently-selected hour and minute.
         setValueForItem(HOUR_INDEX, initialHoursOfDay);
@@ -214,11 +208,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         final int hourDegrees = (initialHoursOfDay % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
         this.mHourRadialSelectorView.initialize(context, this.mHideAmPm,
                                                 is24HourMode, true, hourDegrees,
-                                                isHourInnerCircle(initialHoursOfDay), this.mDark);
+                                                isHourInnerCircle(initialHoursOfDay));
         final int minuteDegrees = initialMinutes
                                   * MINUTE_VALUE_TO_DEGREES_STEP_SIZE;
         this.mMinuteRadialSelectorView.initialize(context, this.mHideAmPm,
-                false, false, minuteDegrees, false, this.mDark);
+                false, false, minuteDegrees, false);
         this.mTimeInitialized = true;
     }
 

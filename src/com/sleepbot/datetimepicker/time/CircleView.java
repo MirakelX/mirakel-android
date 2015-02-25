@@ -22,6 +22,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.View;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 
 /**
@@ -43,8 +45,6 @@ public class CircleView extends View {
     private int mYCenter;
     private int mCircleRadius;
 
-    private boolean mDark;
-
     public CircleView(final Context context) {
         super(context);
         final Resources res = context.getResources();
@@ -54,18 +54,13 @@ public class CircleView extends View {
         this.mIsInitialized = false;
     }
 
-    public void initialize(final Context context, final boolean is24HourMode,
-                           final boolean dark) {
+    public void initialize(final Context context, final boolean is24HourMode) {
         if (this.mIsInitialized) {
             Log.e(TAG, "CircleView may only be initialized once.");
             return;
         }
-        this.mDark = dark;
-        if (this.mDark) {
-            final Resources res = context.getResources();
-            this.mBackgroundColor = res.getColor(R.color.dialog_gray);
-            this.mTextColor = res.getColor(R.color.clock_white);
-        }
+        this.mBackgroundColor = ThemeManager.getColor(R.attr.colorBackground);
+        this.mTextColor = ThemeManager.getAccentThemeColor();
         final Resources res = context.getResources();
         this.mIs24HourMode = is24HourMode;
         if (is24HourMode) {
@@ -105,12 +100,6 @@ public class CircleView extends View {
         this.mPaint.setColor(this.mBackgroundColor);
         canvas.drawCircle(this.mXCenter, this.mYCenter, this.mCircleRadius,
                           this.mPaint);
-        if (this.mDark) {
-            this.mPaint.setColor(getResources().getColor(
-                                     R.color.dialog_dark_gray));
-            canvas.drawCircle(this.mXCenter, this.mYCenter, this.mCircleRadius,
-                              this.mPaint);
-        }
         // Draw a small circle in the center.
         this.mPaint.setColor(this.mTextColor);
         canvas.drawCircle(this.mXCenter, this.mYCenter, 2, this.mPaint);

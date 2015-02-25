@@ -28,6 +28,7 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
 import com.nineoldandroids.animation.ValueAnimator;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 
 /**
@@ -54,7 +55,6 @@ public class RadialSelectorView extends View {
 
     private int mCircleRadius;
     private float mCircleRadiusMultiplier;
-    private boolean mDark;
     private boolean mDrawValuesReady;
     private boolean mForceDrawDot;
     private boolean mHasInnerCircle;
@@ -119,7 +119,7 @@ public class RadialSelectorView extends View {
                         this.mOuterNumbersRadiusMultiplier)
                         + this.mSelectionRadius;
                 final int halfwayHypotenusePoint = (int) (this.mCircleRadius * ((this.mOuterNumbersRadiusMultiplier
-                                                   + this.mInnerNumbersRadiusMultiplier) / 2));
+                                                   + this.mInnerNumbersRadiusMultiplier) / 2.0F));
                 if (hypotenuse >= minAllowedHypotenuseForInnerNumber
                     && hypotenuse <= halfwayHypotenusePoint) {
                     isInnerCircle[0] = true;
@@ -141,7 +141,7 @@ public class RadialSelectorView extends View {
                 // The max allowed distance will be defined as the distance from
                 // the center of the
                 // number to the edge of the circle.
-                final int maxAllowedDistance = (int) (this.mCircleRadius * (1 - this.mNumbersRadiusMultiplier));
+                final int maxAllowedDistance = (int) (this.mCircleRadius * (1.0F - this.mNumbersRadiusMultiplier));
                 if (distanceToNumber > maxAllowedDistance) {
                     return -1;
                 }
@@ -149,17 +149,17 @@ public class RadialSelectorView extends View {
         }
         final float opposite = Math.abs(pointY - this.mYCenter);
         final double radians = Math.asin(opposite / hypotenuse);
-        int degrees = (int) (radians * 180 / Math.PI);
+        int degrees = (int) (radians * 180.0D / Math.PI);
         // Now we have to translate to the correct quadrant.
         final boolean rightSide = pointX > this.mXCenter;
         final boolean topSide = pointY < this.mYCenter;
         if (rightSide && topSide) {
             degrees = 90 - degrees;
-        } else if (rightSide && !topSide) {
+        } else if (rightSide) {
             degrees = 90 + degrees;
-        } else if (!rightSide && !topSide) {
+        } else if (!topSide) {
             degrees = 270 - degrees;
-        } else if (!rightSide && topSide) {
+        } else {
             degrees = 270 + degrees;
         }
         return degrees;
@@ -170,19 +170,18 @@ public class RadialSelectorView extends View {
             Log.e(TAG, "RadialSelectorView was not ready for animation.");
             return null;
         }
-        Keyframe kf0, kf1, kf2;
-        final float midwayPoint = 0.2f;
-        final int duration = 500;
-        kf0 = Keyframe.ofFloat(0f, 1);
-        kf1 = Keyframe
-              .ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
-        kf2 = Keyframe.ofFloat(1f, this.mTransitionEndRadiusMultiplier);
+        Keyframe kf0 = Keyframe.ofFloat(0.0F, 1.0F);
+        final float midwayPoint = 0.2F;
+        Keyframe kf1 = Keyframe
+                       .ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
+        final Keyframe kf2 = Keyframe.ofFloat(1.0F, this.mTransitionEndRadiusMultiplier);
         final PropertyValuesHolder radiusDisappear = PropertyValuesHolder
                 .ofKeyframe("animationRadiusMultiplier", kf0, kf1, kf2);
-        kf0 = Keyframe.ofFloat(0f, 1f);
-        kf1 = Keyframe.ofFloat(1f, 0f);
+        kf0 = Keyframe.ofFloat(0.0F, 1.0F);
+        kf1 = Keyframe.ofFloat(1.0F, 0.0F);
         final PropertyValuesHolder fadeOut = PropertyValuesHolder.ofKeyframe(
                 "alpha", kf0, kf1);
+        final int duration = 500;
         final ObjectAnimator disappearAnimator = ObjectAnimator
                 .ofPropertyValuesHolder(this, radiusDisappear, fadeOut)
                 .setDuration(duration);
@@ -195,7 +194,6 @@ public class RadialSelectorView extends View {
             Log.e(TAG, "RadialSelectorView was not ready for animation.");
             return null;
         }
-        Keyframe kf0, kf1, kf2, kf3;
         float midwayPoint = 0.2f;
         final int duration = 500;
         // The time points are half of what they would normally be, because this
@@ -203,23 +201,23 @@ public class RadialSelectorView extends View {
         // staggered against the disappear so they happen seamlessly. The
         // reappear starts
         // halfway into the disappear.
-        final float delayMultiplier = 0.25f;
-        final float transitionDurationMultiplier = 1f;
+        final float delayMultiplier = 0.25F;
+        final float transitionDurationMultiplier = 1.0F;
         final float totalDurationMultiplier = transitionDurationMultiplier
                                               + delayMultiplier;
         final int totalDuration = (int) (duration * totalDurationMultiplier);
         final float delayPoint = delayMultiplier * duration / totalDuration;
-        midwayPoint = 1 - midwayPoint * (1 - delayPoint);
-        kf0 = Keyframe.ofFloat(0f, this.mTransitionEndRadiusMultiplier);
-        kf1 = Keyframe.ofFloat(delayPoint, this.mTransitionEndRadiusMultiplier);
-        kf2 = Keyframe
-              .ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
-        kf3 = Keyframe.ofFloat(1f, 1);
+        midwayPoint = 1.0F - midwayPoint * (1.0F - delayPoint);
+        Keyframe kf0 = Keyframe.ofFloat(0.0F, this.mTransitionEndRadiusMultiplier);
+        Keyframe kf1 = Keyframe.ofFloat(delayPoint, this.mTransitionEndRadiusMultiplier);
+        Keyframe kf2 = Keyframe
+                       .ofFloat(midwayPoint, this.mTransitionMidRadiusMultiplier);
+        final Keyframe kf3 = Keyframe.ofFloat(1.0F, 1.0F);
         final PropertyValuesHolder radiusReappear = PropertyValuesHolder
                 .ofKeyframe("animationRadiusMultiplier", kf0, kf1, kf2, kf3);
-        kf0 = Keyframe.ofFloat(0f, 0f);
-        kf1 = Keyframe.ofFloat(delayPoint, 0f);
-        kf2 = Keyframe.ofFloat(1f, 1f);
+        kf0 = Keyframe.ofFloat(0.0F, 0.0F);
+        kf1 = Keyframe.ofFloat(delayPoint, 0.0F);
+        kf2 = Keyframe.ofFloat(1.0F, 1.0F);
         final PropertyValuesHolder fadeIn = PropertyValuesHolder.ofKeyframe(
                                                 "alpha", kf0, kf1, kf2);
         final ObjectAnimator reappearAnimator = ObjectAnimator
@@ -261,15 +259,13 @@ public class RadialSelectorView extends View {
      */
     public void initialize(final Context context, final boolean is24HourMode,
                            final boolean hasInnerCircle, final boolean disappearsOut,
-                           final int selectionDegrees, final boolean isInnerCircle,
-                           final boolean dark) {
+                           final int selectionDegrees, final boolean isInnerCircle) {
         if (this.mIsInitialized) {
             Log.e(TAG, "This RadialSelectorView may only be initialized once.");
             return;
         }
         final Resources res = context.getResources();
-        final int selectorColor = res.getColor(dark ? R.color.Red
-                                               : R.color.blue);
+        final int selectorColor = ThemeManager.getPrimaryThemeColor();
         this.mPaint.setColor(selectorColor);
         this.mPaint.setAntiAlias(true);
         // Calculate values for the circle radius size.
@@ -297,15 +293,14 @@ public class RadialSelectorView extends View {
         this.mSelectionRadiusMultiplier = Float.parseFloat(res
                                           .getString(R.string.selection_radius_multiplier));
         // Calculate values for the transition mid-way states.
-        this.mAnimationRadiusMultiplier = 1;
-        this.mTransitionMidRadiusMultiplier = 1f + 0.05f * (disappearsOut ? -1
+        this.mAnimationRadiusMultiplier = 1.0F;
+        this.mTransitionMidRadiusMultiplier = 1.0f + 0.05f * (disappearsOut ? -1
                                               : 1);
-        this.mTransitionEndRadiusMultiplier = 1f + 0.3f * (disappearsOut ? 1
+        this.mTransitionEndRadiusMultiplier = 1.0f + 0.3f * (disappearsOut ? 1
                                               : -1);
         this.mInvalidateUpdateListener = new InvalidateUpdateListener();
         setSelection(selectionDegrees, isInnerCircle, false);
         this.mIsInitialized = true;
-        this.mDark = dark;
     }
 
     @Override
@@ -338,7 +333,7 @@ public class RadialSelectorView extends View {
         int pointY = this.mYCenter
                      - (int) (this.mLineLength * Math.cos(this.mSelectionRadians));
         // Draw the selection circle.
-        this.mPaint.setAlpha(this.mDark ? 100 : 51);
+        this.mPaint.setAlpha(75);
         canvas.drawCircle(pointX, pointY, this.mSelectionRadius, this.mPaint);
         if (this.mForceDrawDot | this.mSelectionDegrees % 30 != 0) {
             // We're not on a direct tick (or we've been told to draw the dot
@@ -359,7 +354,7 @@ public class RadialSelectorView extends View {
         }
         // Draw the line from the center of the circle.
         this.mPaint.setAlpha(255);
-        this.mPaint.setStrokeWidth(1);
+        this.mPaint.setStrokeWidth(1.0F);
         canvas.drawLine(this.mXCenter, this.mYCenter, pointX, pointY,
                         this.mPaint);
     }
@@ -390,7 +385,7 @@ public class RadialSelectorView extends View {
     public void setSelection(final int selectionDegrees,
                              final boolean isInnerCircle, final boolean forceDrawDot) {
         this.mSelectionDegrees = selectionDegrees;
-        this.mSelectionRadians = selectionDegrees * Math.PI / 180;
+        this.mSelectionRadians = selectionDegrees * Math.PI / 180.0D;
         this.mForceDrawDot = forceDrawDot;
         if (this.mHasInnerCircle) {
             if (isInnerCircle) {
