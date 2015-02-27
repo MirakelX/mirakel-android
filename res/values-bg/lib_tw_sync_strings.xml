@@ -39,6 +39,11 @@
     <item>Taskwarrior синхронизация</item>
   </string-array>
   <string name="sync_caldav">CalDAV синхронизация</string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Трябва да настройте Mirakel-compatible CalDAV-syncing app. За момента трябва да инсталирате нашата модифицирана версия DAVdroid от сайта ни.<br /><br />
+Скоро и официалният DAVdroid app ще поддържа Mirakel и работим заедно и с други, за да направиме възможно синхронизирането с Mirakel.
+        ]]>
+    </string>
   <string name="download">Изтегляне</string>
   <string name="sync_add_account">Прибавяне на профил</string>
   <string name="sync_taskwarrior_configure">Конфигуриране на Taskwarrior</string>
