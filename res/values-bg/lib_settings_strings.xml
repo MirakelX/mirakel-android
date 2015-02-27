@@ -38,6 +38,11 @@
     <item>Taskwarrior синхронизация</item>
   </string-array>
   <string name="sync_caldav">CalDAV синхронизация</string>
+  <string name="sync_caldav_howto">
+<![CDATA[Трябва да настройте Mirakel-compatible CalDAV-syncing app. За момента трябва да инсталирате нашата модифицирана версия DAVdroid от сайта ни.<br /><br />
+Скоро и официалният DAVdroid app ще поддържа Mirakel и работим заедно и с други, за да направиме възможно синхронизирането с Mirakel.
+        ]]>
+    </string>
   <string name="download">Изтегляне</string>
   <string name="sync_add_account">Прибавяне на профил</string>
   <string name="sync_taskwarrior_configure">Конфигуриране на Taskwarrior</string>
@@ -117,6 +122,7 @@
   <string name="settings_semantic">Шаблон за задачи</string>
   <string name="semantic_new_task">Нов шаблон за задачи</string>
   <string name="semantic_new_task_config">Конфигуриране на шаблоните за задачи</string>
+  <string name="swipeBehavior_title">Превключи за Задачата при докосване</string>
   <string name="swipeBehavior_summary">Превключи към задача, която е започната или премини към последната избарана задача</string>
   <string name="lock_drawer_in_task_fragment_summary">Така че да не го отворите случайно</string>
   <string name="lock_drawer_in_task_fragment">Заключване на изгледа на списъка в детайлите на задачата</string>
