@@ -90,6 +90,7 @@
   <string name="share_footer">Споделено чрез Mirakel\n свободнитят ToDo-List инструмент за Андроид и мрежата\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Име</string>
   <string name="special_list_active">Покажи</string>
+  <string name="special_list_where">SQL-Where Query</string>
   <string name="special_list_sort_by">Сортиране по</string>
   <string name="special_list_def_list">Списък по подразбиране</string>
   <string name="special_list_def_date">Дата по подразбиране</string>
