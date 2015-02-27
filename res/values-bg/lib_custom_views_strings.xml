@@ -42,13 +42,28 @@
   <string name="audio_playback_stop">Спиране</string>
   <string name="task_change_prio_title">Смяна на приоритета</string>
   <string name="remove_subtask">Премахване на подзадача</string>
+  <string name="remove_files_summary">Искате ли да премахнете %1$s от \"%2$s\"?</string>
   <string name="add_existing">Добавяне на съществуваща задача</string>
+  <string name="task_name">Име на задачата</string>
   <string name="subtask_add_options">Филтър &gt;&gt;</string>
+  <string name="subtask_done">Задачата е готова?</string>
   <string name="subtask_reminder">Задача с напомняне?</string>
+  <string name="subtask_content">Задача с бележка?</string>
   <string name="new_task">Нова задача</string>
   <string name="add_subtasks">Добавяне на подзадача&#8230;</string>
+  <string name="add_tags">Прибави таг&#8230;</string>
   <string name="add">Добавяне</string>
   <string name="add_subtask">Добавяне на подзадача</string>
   <string name="file_no_activity">Не знам как да отворя този файл - съжалявам</string>
   <string name="remove_files">Пемахване на файлове от задачата</string>
+  <string name="search_tag">Търси таг</string>
+  <string-array name="tag_menu">
+    <item>Промени таг</item>
+    <item>Премахни таг</item>
+  </string-array>
+  <string name="tag_has_dark_text">Текстът е черен</string>
+  <string-array name="recurring_task_select">
+    <item>Само това повтаряне</item>
+    <item>Всички повтарания</item>
+  </string-array>
 </resources>
