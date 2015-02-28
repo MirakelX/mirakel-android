@@ -29,6 +29,7 @@ import android.os.StrictMode;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import de.azapps.material_elements.utils.ThemeManager;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -134,7 +135,7 @@ public class Mirakel extends Application {
         DefinitionsHelper.init (ctx);
         MirakelPreferences.init (ctx);
         ErrorReporter.init (ctx);
-        ThemeManager.init(ctx);
+        ThemeManager.init(ctx, R.style.MirakelBaseTheme, R.style.MirakelDialogTheme);
         ModelBase.init(ctx);
         Settings.init(ctx);
         final Locale locale = Helpers.getLocal (ctx);

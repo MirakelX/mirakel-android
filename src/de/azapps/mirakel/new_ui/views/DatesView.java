@@ -30,7 +30,7 @@ import java.util.Calendar;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.azapps.mirakel.ThemeManager;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;

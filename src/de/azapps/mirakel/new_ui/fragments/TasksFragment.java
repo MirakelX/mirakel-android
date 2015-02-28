@@ -40,7 +40,7 @@ import com.shamanland.fab.FloatingActionButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.azapps.mirakel.ThemeManager;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
