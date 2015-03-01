@@ -1751,7 +1751,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         }
         getTasksFragment().updateList();
         getListFragment().update();
-        NotificationService.updateServices(this);
     }
 
     public void updateShare() {

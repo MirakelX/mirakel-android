@@ -27,7 +27,6 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.services.NotificationService;
 
 public class BackgroundTasks {
 
@@ -35,7 +34,6 @@ public class BackgroundTasks {
         new Thread (new Runnable () {
             @Override
             public void run () {
-                NotificationService.updateServices (context);
                 if (!MirakelCommonPreferences.containsHighlightSelected ()) {
                     final SharedPreferences.Editor editor = MirakelPreferences
                                                             .getEditor ();
