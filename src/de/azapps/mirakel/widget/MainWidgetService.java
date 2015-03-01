@@ -18,11 +18,8 @@
  ******************************************************************************/
 package de.azapps.mirakel.widget;
 
-import java.util.List;
-
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -31,6 +28,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.WidgetHelper;

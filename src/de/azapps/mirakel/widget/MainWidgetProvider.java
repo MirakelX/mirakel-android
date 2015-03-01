@@ -188,6 +188,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
             try {
                 appWidgetManager.updateAppWidget(new int[] { widgetId },
                                                  views);
+
+                appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_tasks_list);
             } catch (final RuntimeException e) {
                 Log.d(TAG, "cannot create widget", e);
                 return;
