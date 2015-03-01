@@ -25,4 +25,4 @@
     android:layout_height="match_parent"
     android:dividerHeight="0dp"
     android:divider="@color/transparent"
-    android:background="?colorBackground"/>
+    android:background="?colorListsBackground"/>

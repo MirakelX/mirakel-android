@@ -30,6 +30,7 @@
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
         android:background="?colorPrimary"
+        android:elevation="@dimen/actionbar_elevation"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -48,9 +49,8 @@
             android:id="@+id/tasks_fragment"/>
 
         <fragment
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/navdrawer_width"
             android:layout_height="match_parent"
-            android:layout_marginEnd="30dp"
             android:name="de.azapps.mirakel.new_ui.fragments.ListsFragment"
             android:layout_gravity="start"
             android:id="@+id/lists_fragment"/>

@@ -28,16 +28,6 @@
     android:paddingEnd="@dimen/padding_default">
 
     <ImageView
-        android:id="@+id/row_list_drag"
-        android:layout_width="@dimen/small_icon_size"
-        android:layout_height="@dimen/small_icon_size"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="@null"
-        android:src="@android:drawable/ic_menu_sort_by_size"
-        android:layout_marginEnd="@dimen/padding_default"
-        android:visibility="gone"/>
-
-    <ImageView
         android:id="@+id/row_list_icon"
         android:layout_width="@dimen/small_icon_size"
         android:layout_height="@dimen/small_icon_size"
@@ -62,4 +52,15 @@
         android:id="@+id/list_count"
         android:text="1"
         style="@style/ListsFragmentTextStyle" />
+
+    <ImageView
+        android:id="@+id/row_list_drag"
+        android:layout_width="@dimen/small_icon_size"
+        android:layout_height="@dimen/small_icon_size"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0"
+        android:contentDescription="@null"
+        android:layout_marginStart="@dimen/padding_default"
+        android:src="@drawable/ic_reorder_grey600_24dp"
+        />
 </LinearLayout>

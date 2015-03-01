@@ -51,6 +51,7 @@ import com.shamanland.fab.FloatingActionButton;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
@@ -263,6 +264,8 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
             public void apply(final DrawerLayout mDrawerLayout) {
+                mDrawerLayout.setScrimColor(ThemeManager.getColor(R.attr.colorNavDrawerScrim));
+                mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
                 final ActionBarDrawerToggle mDrawerToggle = new DrawerToggle(mDrawerLayout);
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
                 MirakelActivity.this.mDrawerToggle = of(mDrawerToggle);
