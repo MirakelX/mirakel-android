@@ -156,9 +156,6 @@ public class SupportDatePickerDialog extends DialogFragment {
                 .setDay(SupportDatePickerDialog.this.mInitDay);
             }
         }, 0);
-        if (!this.mHasNoDate) {
-            this.mDatePicker.hideNoDate();
-        }
         return view;
     }
 
