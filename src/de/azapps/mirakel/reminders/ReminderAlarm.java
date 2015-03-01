@@ -196,10 +196,12 @@ public class ReminderAlarm extends BroadcastReceiver {
             @Override
             public void handleChange() {
                 updateAlarms(ctx);
+                NotificationService.updateServices(ctx);
             }
 
             @Override
             public void handleChange(final long id) {
+                NotificationService.updateServices(ctx);
                 final Optional<Task> t = Task.get(id);
                 final Calendar c = new GregorianCalendar();
                 if (t.isPresent()) {

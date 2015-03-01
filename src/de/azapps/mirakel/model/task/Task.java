@@ -246,7 +246,6 @@ public class Task extends TaskBase {
                        + " AND done=1", null);
             }
         });
-        NotificationService.updateServices(context);
     }
 
     /**
@@ -453,7 +452,6 @@ public class Task extends TaskBase {
         final Task newTask = get(getId()).get();
         if (!calledFromSync) {
             UndoHistory.logCreate(newTask, Task.context);
-            NotificationService.updateServices(context);
         }
         return newTask;
     }
@@ -570,7 +568,6 @@ public class Task extends TaskBase {
             delete(MirakelInternalContentProvider.FILE_URI, "task_id = " + id
                    + " OR task_id " + subWhereQuery, null);
         }
-        NotificationService.updateServices(context);
     }
 
     public void destroyGarbage() {
@@ -749,12 +746,6 @@ public class Task extends TaskBase {
                 clearEdited();
             }
         });
-        boolean updateReminders = false;
-        if (isEdited(TaskBase.DONE) || isEdited(TaskBase.REMINDER)
-            || isEdited(TaskBase.RECURRING_REMINDER)) {
-            updateReminders = true;
-        }
-        NotificationService.updateServices(Task.context);
     }
 
     @NonNull

@@ -107,7 +107,7 @@ public class MirakelContentObserver extends ContentObserver {
                 doWhat.get(uri).handleChange();
             }
         } else {
-            Log.wtf(TAG, "no callback found for this uri");
+            Log.wtf(TAG, "no callback found for this uri: " + uri.toString());
         }
     }
 
