@@ -38,15 +38,16 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorTextActionBar">#FFFFFF</item>
         <item name="colorTextActionBarHighlight">#FFFFFF</item>
-        <item name="colorSelectedRow">#E1F4F6</item>
-        <item name="colorCAB">#00BCD2</item>
-        <item name="colorCABStatus">#0096A8</item>
+        <item name="colorSelectedRow">#D3EAFD</item>
+        <item name="colorCAB">#2196F3</item>
+        <item name="colorCABStatus">#1A78C2</item>
 
         <!-- Black 54% -->
         <item name="colorTextGrey">#8a000000</item>
         <!-- Black 87% -->
         <item name="colorTextBlack">#de000000</item>
         <item name="colorBackground">#E6E6E6</item>
+        <item name="colorListsBackground">#FFFFFF</item>
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
         <item name="colorDisabled">#CCCCCC</item>
@@ -55,6 +56,7 @@
         <item name="colorDueToday">#EF0381</item>
         <item name="colorDueNext">#FFA500</item>
         <item name="colorDueFuture">#00C400</item>
+        <item name="colorNavDrawerScrim">#77000000</item>
         <!-- The CAB should overlay the normal ActionBar -->
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">?colorCAB</item>
