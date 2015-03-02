@@ -35,6 +35,7 @@
   <string name="sync_frequency">Häufigkeit</string>
   <string name="sync_frequency_summary">Synchronisiere alle %s min</string>
   <string name="sync_frequency_summary_man">Nur manuell synchronisieren</string>
+  <string name="account_informations">Informationen</string>
   <string-array name="sync_types">
     <item>CalDAV Synchronisierung</item>
     <item>Taskwarrior-Sync</item>
@@ -68,6 +69,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="no_barcode_app_install">Installieren</string>
   <string name="menu_edit_listaccount">Konto</string>
   <string name="change_account">Konto ändern</string>
+  <string name="version">App Version</string>
   <string name="no">Nein</string>
   <string name="not">nicht</string>
   <string name="notification_title">Benachrichtigungen</string>
@@ -115,6 +117,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="importing">Importiere</string>
   <string name="astrid_import_title">Astrid Datei auswählen</string>
   <string name="import_any_do_click">Any.Do Import</string>
+  <string name="any_do_import_title">Any.Do Backup-Datei auswählen</string>
   <string name="any_do_this_file">Soll ich von %s importieren?\nWenn nicht, dann wähle eine Datei aus</string>
   <string name="any_do_how_to">Bitte erstelle zuerst ein Backup deiner Any.Do Daten. Öffne Any.Do → Einstellungen → Backup → Backup erstellen. Dann komm zurück und klicke OK.\nOder wähle die Datei händisch aus.</string>
   <string name="select_file">Datei auswählen</string>
@@ -293,6 +296,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="sharing_title">Teilen</string>
   <string name="backup_title">Backup</string>
   <string name="title_settings">Einstellungen</string>
+  <string name="subcondition">Unterbedingung</string>
   <string name="done_text">Nur erledigte Aufgaben</string>
   <string name="file_text">Nur Aufgaben mit Datei</string>
   <string name="reminder_text">Nur Aufgaben mit Erinnerung</string>
