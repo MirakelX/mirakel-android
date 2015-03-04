@@ -161,6 +161,7 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
         }
         actionBar.setVisibility(View.VISIBLE);
         setSupportActionBar(actionBar);
+        getSupportActionBar().setElevation(getResources().getDimension(R.dimen.actionbar_elevation));
     }
 
     @Override
@@ -175,7 +176,7 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
     @Override
     @SuppressWarnings("unchecked")
     public boolean onOptionsItemSelected(final MenuItem item) {
-        int id = item.getItemId();
+        final int id = item.getItemId();
         if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users

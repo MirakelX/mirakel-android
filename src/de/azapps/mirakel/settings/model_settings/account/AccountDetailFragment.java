@@ -55,6 +55,16 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
     }
 
     @Override
+    protected boolean hasMenu() {
+        return true;
+    }
+
+    @Override
+    protected boolean isFabVisible() {
+        return false;
+    }
+
+    @Override
     protected void setUp() {
         final AccountManager accountManager = AccountManager.get(getActivity());
         final AccountMirakel accountMirakel = mItem;
@@ -229,6 +239,8 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
             syncInterval.setEnabled(true);
         }
     }
+
+
 
 
 }

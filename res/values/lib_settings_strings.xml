@@ -413,4 +413,5 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="settings_advanced">Advanced</string>
     <string name="delete_condition">Delete Condition</string>
     <string name="delete_semantic">Delete task template</string>
+    <string name="delete_special_lists">Delete meta list</string>
 </resources>

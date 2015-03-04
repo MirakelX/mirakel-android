@@ -27,7 +27,7 @@
 
     <application>
         <activity
-            android:theme="@style/AppBaseTheme"
+            android:theme="@style/MirakelBaseTheme"
             android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_settings"
@@ -39,41 +39,41 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/sync_title"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppBaseTheme" >
+            android:theme="@style/MirakelBaseTheme" >
         </activity>
         <activity
             android:name="de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/recurring"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppBaseTheme" >
+            android:theme="@style/MirakelBaseTheme" >
         </activity>
         <activity
             android:name=".model_settings.special_list.SpecialListListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/special_lists_title"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppBaseTheme" >
+            android:theme="@style/MirakelBaseTheme" >
         </activity>
         <activity
             android:name=".model_settings.semantic.SemanticSettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/settings_semantic"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppBaseTheme" >
+            android:theme="@style/MirakelBaseTheme" >
         </activity>
         <activity
             android:name=".model_settings.tag.TagSettingsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/tag_settings"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppBaseTheme" >
+            android:theme="@style/MirakelBaseTheme" >
         </activity>
         <activity
             android:name=".model_settings.generic_list.GenericModelDetailActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_credits"
-            android:theme="@style/AppBaseTheme" >
+            android:theme="@style/MirakelBaseTheme" >
         </activity>
     </application>
 

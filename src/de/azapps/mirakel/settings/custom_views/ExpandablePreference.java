@@ -26,7 +26,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.preference.DialogPreference;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
@@ -38,21 +37,26 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.helper.PreferencesHelper;
 
 
-public class ExpandablePreference extends PreferenceCategory implements View.OnClickListener {
+public class ExpandablePreference extends PreferenceGroup implements View.OnClickListener {
 
     private final PreferenceScreen mSreen;
     private LinearLayout childWrapper;
     private LinearLayout.LayoutParams childWrapperParams;
-    private boolean isExanded = false;
+    private boolean isExanded;
     private LinearLayout globalWrapper;
     private ImageButton expand;
+    private List<Preference> childs = new ArrayList<>();
 
 
-    public ExpandablePreference(final Context context, PreferenceScreen screen) {
+    public ExpandablePreference(final Context context, final PreferenceScreen screen) {
         super(context, null);
         mSreen = screen;
     }
@@ -61,9 +65,11 @@ public class ExpandablePreference extends PreferenceCategory implements View.OnC
     protected View onCreateView(final ViewGroup parent) {
         globalWrapper = new LinearLayout(getContext());
         globalWrapper.setOrientation(LinearLayout.VERTICAL);
+        globalWrapper.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                      ViewGroup.LayoutParams.WRAP_CONTENT));
         expand = new ImageButton(getContext());
         expand.setImageResource(R.drawable.ic_expand_more_36px);
-        expand.setColorFilter(Color.BLACK);
+        expand.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey));
         expand.setOnClickListener(this);
         expand.setBackgroundColor(Color.TRANSPARENT);
         final LayoutInflater layoutInflater =
@@ -93,28 +99,21 @@ public class ExpandablePreference extends PreferenceCategory implements View.OnC
                                                     R.dimen.padding_settings_card);
             }
         }
+        if (childWrapperParams == null) {
+            return globalWrapper;
+        }
         childWrapper.setLayoutParams(childWrapperParams);
-        setChildToWrapper(this);
+        setChildToWrapper(childs);
         globalWrapper.addView(childWrapper);
         return globalWrapper;
     }
 
-    @Override
-    protected boolean onPrepareAddPreference(final Preference preference) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            preference.onParentChanged(this, shouldDisableDependents());
-        } else if (!super.isEnabled()) {
-            preference.setEnabled(false);
-        }
-        return true;
-    }
 
-    private void setChildToWrapper(final @NonNull PreferenceGroup group) {
+    private void setChildToWrapper(final @NonNull List<Preference> group) {
 
-        for (int i = 0; i < group.getPreferenceCount(); i++) {
-            final Preference preference = group.getPreference(i);
-            final OnPreferenceChangeListener onChange = preference.getOnPreferenceChangeListener();
-            preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+        for (final Preference pref : group) {
+            final OnPreferenceChangeListener onChange = pref.getOnPreferenceChangeListener();
+            pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     final boolean ret = (onChange != null) && onChange.onPreferenceChange(preference, newValue);
@@ -124,24 +123,28 @@ public class ExpandablePreference extends PreferenceCategory implements View.OnC
                     return ret;
                 }
             });
-            final View view = preference.getView(null, null);
+            final View view = pref.getView(null, null);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    final Integer pos = PreferencesHelper.findPreferenceScreenForPreference(preference.getKey(),
+                    final Integer pos = PreferencesHelper.findPreferenceScreenForPreference(pref.getKey(),
                                         mSreen);
                     if (pos != null) {
                         mSreen.onItemClick(null, null, pos, 0L);
                     }
-                    if (!(preference instanceof DialogPreference)) {
+                    if (!(pref instanceof DialogPreference)) {
                         notifyChanged();
                     }
                 }
             });
 
             childWrapper.addView(view);
-            if (preference instanceof PreferenceGroup) {
-                setChildToWrapper((PreferenceGroup) preference);
+            if (pref instanceof PreferenceGroup) {
+                final List<Preference> preferences = new ArrayList<>(((PreferenceGroup) pref).getPreferenceCount());
+                for (int i = 0; i < ((PreferenceGroup) pref).getPreferenceCount(); i++) {
+                    preferences.add(((PreferenceGroup) pref).getPreference(i));
+                }
+                setChildToWrapper(preferences);
             }
         }
     }
@@ -154,8 +157,10 @@ public class ExpandablePreference extends PreferenceCategory implements View.OnC
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(final ValueAnimator animation) {
-                childWrapperParams.height = (int) animation.getAnimatedValue();
-                childWrapper.setLayoutParams(childWrapperParams);
+                if (childWrapperParams != null) {
+                    childWrapperParams.height = (int) animation.getAnimatedValue();
+                    childWrapper.setLayoutParams(childWrapperParams);
+                }
             }
         });
         animator.addListener(new Animator.AnimatorListener() {
@@ -184,16 +189,18 @@ public class ExpandablePreference extends PreferenceCategory implements View.OnC
         animator.start();
     }
 
-    public void setExanded(final boolean value) {
+    public void setExpanded
+    (final boolean value) {
         if (isExanded != value) {
             onClick(null);
             isExanded = value;
         }
     }
 
+
     @Override
     public void onClick(final View v) {
-        if (childWrapper == null) {
+        if ((childWrapper == null) || (expand == null)) {
             return;//view not inflated
         }
         final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -206,9 +213,15 @@ public class ExpandablePreference extends PreferenceCategory implements View.OnC
             childWrapper.setVisibility(View.VISIBLE);
             animate(0, childWrapper.getMeasuredHeight());
             expand.setImageResource(R.drawable.ic_expand_less_36px);
+
         }
         isExanded = !isExanded;
     }
 
 
+    public void addChild(final @NonNull Preference pref) {
+        childs.add(pref);
+        addPreference(pref);
+        updateView(null, true);
+    }
 }

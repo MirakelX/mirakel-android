@@ -32,7 +32,7 @@ public class PreferencesHelper {
         final android.widget.Adapter ada = screen.getRootAdapter();
         for ( int i = 0; i < ada.getCount(); i++ ) {
             final String prefKey = ((Preference)ada.getItem(i)).getKey();
-            if (key.equals( prefKey ) ) {
+            if (key != null && key.equals( prefKey ) ) {
                 return i;
             }
             if ( ada.getItem(i) instanceof PreferenceScreen ) {

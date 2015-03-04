@@ -30,9 +30,13 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DividerItemDecoration;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
@@ -46,6 +50,7 @@ import java.util.List;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.adapter.ExpandableSettingsAdapter;
 import de.azapps.mirakel.settings.custom_views.ExpandablePreference;
 import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
@@ -61,7 +66,8 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
     private int dueDialogValue;
     private final List<ExpandablePreference> prefs = new ArrayList<>();
     private List<Semantic> semantics = new ArrayList<>();
-    private boolean undo = false;
+    @Nullable
+    private Semantic deletedSemantic;
 
 
     @Override
@@ -80,31 +86,34 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
     }
 
     @Override
-    public PreferenceScreen getPreferenceScreen() {
-        prefs.clear();
-        final PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(mContext);
-        for (final Semantic s : semantics) {
-            final ExpandablePreference p = new ExpandablePreference(mContext, screen);
-            p.setKey(SwipeLinearLayout.SWIPEABLE_VIEW + s.getName() + s.getId());
-            screen.addPreference(p);
-            p.setTitle(s.getName());
-            setupItemPreferences(p, s);
-            prefs.add(p);
+    protected void setAdapter(final PreferenceScreen preferenceScreen) {
+        if (recyclerView != null) {
+            ExpandableSettingsAdapter mAdapter = new ExpandableSettingsAdapter(preferenceScreen);
+            mAdapter.setRemoveListener(getRemoveListener());
+            recyclerView.setAdapter(mAdapter);
         }
-        return screen;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (deletedSemantic != null) {
+            deletedSemantic.destroy();
+            deletedSemantic = null;
+        }
+        super.onDestroy();
     }
 
     private void setupItemPreferences(final ExpandablePreference p, final Semantic item) {
         final PreferenceCategory general = new PreferenceCategory(mContext);
         general.setTitle(R.string.general);
-        p.addItemFromInflater(general);
+        p.addChild(general);
 
         final EditTextPreference semanticsCondition = new EditTextPreference(mContext);
         semanticsCondition.setKey("semantics_condition" + item.getId());
         semanticsCondition.setDialogTitle(R.string.settings_semantics_condition);
         semanticsCondition.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
+            public boolean onPreferenceChange(final Preference preference, final Object newValue) {
                 item.setCondition((String) newValue);
                 semanticsCondition.setSummary((String)newValue);
                 semanticsCondition.setText((String)newValue);
@@ -116,13 +125,17 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         semanticsCondition.setText(item.getCondition());
         semanticsCondition.setSummary(item.getCondition());
         semanticsCondition.setTitle(R.string.settings_semantics_condition);
-        general.addItemFromInflater(semanticsCondition);
+        try {
+            general.addPreference(semanticsCondition);
+        } catch (NullPointerException e) {}
 
 
 
         final PreferenceCategory conditions = new PreferenceCategory(mContext);
         conditions.setTitle(R.string.settings_semantics_actions);
-        p.addItemFromInflater(conditions);
+        try {
+            p.addChild(conditions);
+        } catch (NullPointerException e) {}
 
         // Priority
         final ListPreference semanticsPriority = new ListPreference(mContext);
@@ -158,7 +171,9 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
             semanticsPriority
             .setSummary(semanticsPriority.getValue());
         }
-        conditions.addItemFromInflater(semanticsPriority);
+        try {
+            conditions.addPreference(semanticsPriority);
+        } catch (NullPointerException e) {}
 
         // Due
         final Preference semanticsDue = new Preference(mContext);
@@ -222,7 +237,9 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                 return false;
             }
         });
-        conditions.addItemFromInflater(semanticsDue);
+        try {
+            conditions.addPreference(semanticsDue);
+        } catch (NullPointerException e) {}
 
         // Weekday
         final Integer weekday = item.getWeekday();
@@ -256,7 +273,11 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
             semanticsWeekday.setValueIndex(weekday);
         }
         semanticsWeekday.setSummary(semanticsWeekday.getEntry());
-        conditions.addItemFromInflater(semanticsWeekday);
+        try {
+            conditions.addPreference(semanticsWeekday);
+        } catch (NullPointerException e) {
+
+        }
 
 
         // List
@@ -306,7 +327,11 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                                                   .getId()));
             semanticsList.setSummary(listMirakel.getName());
         }
-        conditions.addItemFromInflater(semanticsList);
+        try {
+            conditions.addPreference(semanticsList);
+        } catch (NullPointerException a) {
+
+        }
     }
 
     protected String updateDueStuff(final @NonNull Semantic item) {
@@ -336,17 +361,43 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         }
         return summary;
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+    public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
+        final View v = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(
+                                           android.R.drawable.divider_horizontal_dark)));
+        return v;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.settings_about);
+        update();
+    }
+
+    private void update() {
+        final PreferenceScreen screen = getPreferenceScreen();
+        screen.removeAll();
+        for (final Semantic s : semantics) {
+            final ExpandablePreference p = new ExpandablePreference(mContext, screen);
+            p.setKey(SwipeLinearLayout.SWIPEABLE_VIEW + s.getName() + s.getId());
+            screen.addPreference(p);
+            p.setTitle(s.getName());
+            setupItemPreferences(p, s);
+            prefs.add(p);
+        }
+        updateScreen(screen);
+    }
+
+    @Override
+    protected boolean hasMenu() {
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.semantic_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -354,8 +405,8 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         if (item.getItemId() == R.id.action_create_semantic) {
             semantics.add(Semantic.newSemantic(getString(R.string.semantic_new), null,
                                                null, Optional.<ListMirakel>absent(), null));
-            mAdapter.updateScreen(getPreferenceScreen());
-            prefs.get(prefs.size() - 1).setExanded(true);
+            update();
+            prefs.get(prefs.size() - 1).setExpanded(true);
             return true;
         } else {
             return false;
@@ -371,15 +422,14 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
     @Override
     public void onRemove(final int position, final int index) {
         if (position < semantics.size()) {
-            final Semantic s = semantics.remove(position);
+            deletedSemantic = semantics.remove(position);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final PreferenceScreen screen = getPreferenceScreen();
                     getActivity().getWindow().getDecorView().post(new Runnable() {
                         @Override
                         public void run() {
-                            mAdapter.updateScreen(screen);
+                            update();
                         }
                     });
                 }
@@ -391,7 +441,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
             .eventListener(new EventListener() {
                 @Override
                 public void onShow(final Snackbar snackbar) {
-                    undo = false;
+
                 }
 
                 @Override
@@ -406,18 +456,19 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
 
                 @Override
                 public void onDismissed(final Snackbar snackbar) {
-                    if (!undo) {
-                        s.destroy();
-                        mAdapter.updateScreen(getPreferenceScreen());
+                    if (deletedSemantic != null) {
+                        deletedSemantic.destroy();
+                        deletedSemantic = null;
+                        update();
                     }
                 }
             })
             .actionListener(new ActionClickListener() {
                 @Override
                 public void onActionClicked(final Snackbar snackbar) {
-                    semantics.add(position, s);
-                    undo = true;
-                    mAdapter.updateScreen(getPreferenceScreen());
+                    semantics.add(position, deletedSemantic);
+                    deletedSemantic = null;
+                    update();
                 }
             }));
         }

@@ -24,6 +24,7 @@ import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.settings.ColorPickerPref;
 import de.azapps.mirakel.settings.R;
@@ -31,6 +32,10 @@ import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetail
 
 public class TagDetailFragment extends GenericModelDetailFragment<Tag> {
 
+    @Override
+    protected boolean hasMenu() {
+        return !MirakelCommonPreferences.isTablet();
+    }
 
     @NonNull
     @Override

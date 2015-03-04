@@ -32,6 +32,9 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -39,6 +42,7 @@ import android.widget.ListView;
 import com.shamanland.fab.FloatingActionButton;
 
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 
@@ -214,6 +218,7 @@ public class GenericModelListFragment extends PreferenceFragment implements View
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
         }
     }
+
 
 
     private void setActivatedPosition(final int position) {

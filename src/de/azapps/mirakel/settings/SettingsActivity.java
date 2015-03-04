@@ -117,6 +117,7 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
         final Toolbar bar = (Toolbar) findViewById(R.id.actionbar);
         bar.setBackgroundColor(ThemeManager.getPrimaryThemeColor());
         setSupportActionBar(bar);
+        getSupportActionBar().setElevation(getResources().getDimension(R.dimen.actionbar_elevation));
     }
 
     @Nullable

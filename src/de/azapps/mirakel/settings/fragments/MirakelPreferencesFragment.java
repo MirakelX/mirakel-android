@@ -23,18 +23,23 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.shamanland.fab.FloatingActionButton;
 
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
@@ -46,19 +51,24 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
     PreferenceFragment implements
     IDetailFragment<T>, View.OnClickListener {
 
-    protected SettingsGroupAdapter mAdapter;
+
+    protected RecyclerView recyclerView;
+    protected FloatingActionButton mFab;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (((ActionBarActivity) getActivity()).getSupportActionBar() != null) {
             ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getItem().getName());
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setElevation(42);
         }
     }
 
     protected void onFABClicked() {
         //nothing
+    }
+
+    protected void updateScreen(final PreferenceScreen preferenceScreen) {
+        setAdapter(preferenceScreen);
     }
 
     @Override
@@ -71,21 +81,26 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
     public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.generic_list_fragment, null);
-        mAdapter = new SettingsGroupAdapter(getPreferenceScreen());
-        mAdapter.setRemoveListener(getRemoveListener());
-        final RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.generic_list);
+        recyclerView = (RecyclerView)rootView.findViewById(R.id.generic_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
-        recyclerView.setAdapter(mAdapter);
-        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fabbutton);
-        configureFab(fab);
+        setAdapter(getPreferenceScreen());
+        mFab = (FloatingActionButton) rootView.findViewById(R.id.fabbutton);
+        configureFab(mFab);
+        setHasOptionsMenu(hasMenu());
         return rootView;
     }
 
-    protected void configureFab(FloatingActionButton fab) {
+    protected void setAdapter(final PreferenceScreen preferenceScreen) {
+        final SettingsGroupAdapter mAdapter = new SettingsGroupAdapter(preferenceScreen);
+        mAdapter.setRemoveListener(getRemoveListener());
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    protected void configureFab(final FloatingActionButton fab) {
         if (isFabVisible()) {
             fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
             fab.setColorFilter(Color.WHITE);
-            fab.setImageResource(android.R.drawable.ic_menu_delete);
+            fab.setImageResource(R.drawable.ic_delete_24px);
             fab.setOnClickListener(this);
         } else {
             fab.setVisibility(View.GONE);
@@ -100,6 +115,36 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
 
     protected boolean isFabVisible() {
         return false;
+    }
+
+    protected boolean hasMenu() {
+        return false;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        inflater.inflate(R.menu.generic_model_menu, menu);
+        final MenuItem item = menu.findItem(R.id.action_create_special);
+        item.setEnabled(false);
+        item.setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == R.id.action_delete_special) {
+            handleDelete();
+            if (!MirakelCommonPreferences.isTablet()) {
+                getActivity().finish();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected void handleDelete() {
+        //nothing
     }
 
 

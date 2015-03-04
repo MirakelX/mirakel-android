@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
@@ -45,6 +46,11 @@ import de.azapps.widgets.NumPickerPref;
 public class RecurringDetailFragment extends GenericModelDetailFragment<Recurring> {
 
     private static final String TAG = "AccountDetailFragment";
+
+    @Override
+    protected boolean hasMenu() {
+        return !MirakelCommonPreferences.isTablet();
+    }
 
     @NonNull
     @Override

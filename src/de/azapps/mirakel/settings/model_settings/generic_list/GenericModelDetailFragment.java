@@ -113,8 +113,9 @@ public abstract class GenericModelDetailFragment<T extends IGenericElementInterf
         }
     }
 
+
     @Override
-    protected boolean isFabVisible() {
-        return true;
+    protected void handleDelete() {
+        mItem.destroy();
     }
 }

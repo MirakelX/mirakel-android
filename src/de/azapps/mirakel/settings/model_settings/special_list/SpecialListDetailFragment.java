@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
@@ -33,12 +34,23 @@ import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
+import com.cocosw.undobar.UndoBarController;
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
+import com.nispok.snackbar.listeners.EventListener;
 import com.shamanland.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -48,6 +60,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -66,12 +79,13 @@ import static com.google.common.base.Optional.of;
 
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
     CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener,
-    SwipeLinearLayout.OnItemRemoveListener {
+    SwipeLinearLayout.OnItemRemoveListener, EventListener, ValueAnimator.AnimatorUpdateListener {
 
 
     protected SpecialList mItem;
 
     private Context mContext = null;
+    private int initialTop;
 
 
     /**
@@ -85,6 +99,11 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     @Override
     protected boolean isFabVisible() {
         return true;
+    }
+
+    @Override
+    protected boolean hasMenu() {
+        return !MirakelCommonPreferences.isTablet();
     }
 
     @Override
@@ -112,13 +131,14 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         }
         mItem.setWhere(Optional.<SpecialListsBaseProperty>of(specialListsBaseProperty));
         mItem.save();
-        mAdapter.updateScreen(getPreferenceScreen());
+        updateScreen(getPreferenceScreen());
         final ArrayList<Integer> backStack = new ArrayList<>();
         backStack.add(specialListsBaseProperty.getChilds().size() - 1);
         EditDialogFragment.newInstance(mItem, property, backStack,
                                        SpecialListDetailFragment.this, specialListsBaseProperty).show(((ActionBarActivity)
                                                mContext).getSupportFragmentManager(), "editdialog");
     }
+
 
     @Override
     @Nullable
@@ -231,6 +251,11 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
             });
             conditions.addItemFromInflater(p);
         }
+    }
+
+    @Override
+    protected void handleDelete() {
+        mItem.destroy();
     }
 
     private Preference getDefaultDatePreference() {
@@ -395,7 +420,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     @Override
     public void onEditFinish(@NonNull final SpecialList list) {
         mItem = list;
-        mAdapter.updateScreen(getPreferenceScreen());
+        updateScreen(getPreferenceScreen());
     }
 
     @Override
@@ -420,7 +445,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                         ((SpecialListsConjunctionList) where.get()).getChilds().add(index - 1, old);
                         mItem.setWhere(where);
                         mItem.save();
-                        mAdapter.updateScreen(getPreferenceScreen());
+                        updateScreen(getPreferenceScreen());
                     }
                 };
             } else {
@@ -432,7 +457,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                     public void onActionClicked(final Snackbar snackbar) {
                         mItem.setWhere(of(old));
                         mItem.save();
-                        mAdapter.updateScreen(getPreferenceScreen());
+                        updateScreen(getPreferenceScreen());
                     }
                 };
             }
@@ -440,7 +465,56 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                 Snackbar.with(getActivity())
                 .text(getActivity().getString(R.string.delete_condition))
                 .actionLabel(R.string.undo)
-                .actionListener(undo));
+                .actionListener(undo)
+                .eventListener(this));
         }
+    }
+
+    @Override
+    public void onShow(final Snackbar snackbar) {
+
+        if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
+            initialTop = mFab.getTop();
+            final ValueAnimator animator = new ValueAnimator();
+            animator.setIntValues(initialTop, initialTop - snackbar.getHeight());
+            animator.setInterpolator(new OvershootInterpolator());
+            animator.setDuration(100L);
+            animator.addUpdateListener(this);
+            animator.start();
+        }
+    }
+
+    @Override
+    public void onShown(final Snackbar snackbar) {
+
+    }
+
+    @Override
+    public void onDismiss(final Snackbar snackbar) {
+        if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
+            mFab.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    final ValueAnimator animator = new ValueAnimator();
+                    animator.setIntValues(mFab.getTop(), initialTop);
+                    animator.setInterpolator(new OvershootInterpolator());
+                    animator.setDuration(100L);
+                    animator.addUpdateListener(SpecialListDetailFragment.this);
+                    animator.start();
+                }
+            }, 200L);
+        }
+    }
+
+    @Override
+    public void onDismissed(final Snackbar snackbar) {
+
+    }
+
+    @Override
+    public void onAnimationUpdate(final ValueAnimator animation) {
+        final int size = mFab.getBottom() - mFab.getTop();
+        mFab.setTop((int) animation.getAnimatedValue());
+        mFab.setBottom(mFab.getTop() + size);
     }
 }

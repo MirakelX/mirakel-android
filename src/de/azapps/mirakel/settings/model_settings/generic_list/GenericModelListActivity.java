@@ -34,6 +34,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -48,6 +50,7 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsHelper;
 
@@ -151,6 +154,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         transaction.commit();
     }
 
+
     protected void setUpActionBar() {
         final Toolbar bar = (Toolbar) findViewById(R.id.actionbar);
         bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -162,6 +166,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         bar.setBackgroundColor(ThemeManager.getColor(R.attr.colorPrimary));
         bar.setVisibility(View.VISIBLE);
         setSupportActionBar(bar);
+        getSupportActionBar().setElevation(getResources().getDimension(R.dimen.actionbar_elevation));
     }
 
     @Override
@@ -243,6 +248,26 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
              R.id.generic_model_list_container)).reload();
     }
 
+    protected boolean hasMenu() {
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        if (hasMenu()) {
+            final MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.generic_model_menu, menu);
+            if (!MirakelCommonPreferences.isTablet()) {
+                final MenuItem item = menu.findItem(R.id.action_delete_special);
+                item.setEnabled(false);
+                item.setVisible(false);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
     @Override
     @SuppressWarnings("unchecked")
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -256,6 +281,15 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
             finish();
+            return true;
+        } else if (id == R.id.action_create_special ) {
+            createItem(this);
+            return true;
+        } else if ((id == R.id.action_delete_special) && !backstack.isEmpty()) {
+            final T delete = backstack.remove(backstack.size() - 1);
+            delete.destroy();
+
+            onItemSelected(getDefaultItem());
             return true;
         }
         return super.onOptionsItemSelected(item);

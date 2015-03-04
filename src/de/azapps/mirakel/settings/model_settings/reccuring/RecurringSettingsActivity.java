@@ -84,4 +84,13 @@ public class RecurringSettingsActivity extends GenericModelListActivity<Recurrin
         return new MirakelQueryBuilder(this).query(Recurring.URI);
     }
 
+    @Override
+    protected boolean hasMenu() {
+        return true;
+    }
+
+    @Override
+    public boolean hasFab() {
+        return false;
+    }
 }

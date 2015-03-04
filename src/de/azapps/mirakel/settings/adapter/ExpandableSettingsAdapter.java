@@ -19,31 +19,24 @@
 
 package de.azapps.mirakel.settings.adapter;
 
-import android.graphics.Typeface;
+import android.content.Context;
 import android.preference.DialogPreference;
 import android.preference.Preference;
-import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.google.common.base.Optional;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.azapps.material_elements.utils.ThemeManager;
-import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.custom_views.ExpandablePreference;
 import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
 import de.azapps.mirakel.settings.helper.PreferencesHelper;
 
@@ -51,7 +44,8 @@ import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 
 
-public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdapter.ViewHolder>
+public class ExpandableSettingsAdapter extends
+    RecyclerView.Adapter<ExpandableSettingsAdapter.ViewHolder>
     implements Preference.OnPreferenceChangeListener {
     @NonNull
     private PreferenceScreen screen;
@@ -61,7 +55,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
     @NonNull
     private Optional<SwipeLinearLayout.OnItemRemoveListener> onRemove = absent();
 
-    public SettingsGroupAdapter(final @NonNull PreferenceScreen preferenceScreen) {
+    public ExpandableSettingsAdapter(final @NonNull PreferenceScreen preferenceScreen) {
         screen = preferenceScreen;
         screen.setOnPreferenceChangeListener(this);
 
@@ -76,7 +70,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        return new ViewHolder((LinearLayout) inflater.inflate(R.layout.preferences_group_card, null));
+        return new ViewHolder(parent.getContext());
     }
 
     public void setRemoveListener(final @Nullable SwipeLinearLayout.OnItemRemoveListener onRemove) {
@@ -86,47 +80,17 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Preference preference = screen.getPreference(position);
-        final CardView card = holder.card;
-        card.removeAllViews();
-        card.setRadius(0.0F);
-        if (preference instanceof PreferenceGroup) {
-            final SwipeLinearLayout ll = new SwipeLinearLayout(holder.itemView.getContext());
-            if (onRemove.isPresent()) {
-                ll.setOnItemRemovedListener(new SwipeLinearLayout.OnItemRemoveListener() {
-                    @Override
-                    public void onRemove(final int p, final int index) {
-                        onRemove.get().onRemove(position, index);
-                    }
-                });
-            }
-            ll.setOrientation(LinearLayout.VERTICAL);
-            final View header = preference.getView(null, null);
-            TextView title = (TextView) header.findViewById(android.R.id.title);
-            title.setTypeface(Typeface.DEFAULT_BOLD);
-            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0F);
-            title.setTextColor(ThemeManager.getAccentThemeColor());
-
-            if (preference.getKey() != null &&
-                preference.getKey().startsWith(String.valueOf(SwipeLinearLayout.SWIPEABLE_VIEW))) {
-                header.setTag(SwipeLinearLayout.SWIPEABLE_VIEW, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        header.performClick();
-                    }
-                });
-            }
-            ll.addView(header);
-            if (!(preference instanceof ExpandablePreference)) {
-                final PreferenceGroup group = (PreferenceGroup) preference;
-                for (int i = 0; i < group.getPreferenceCount(); i++) {
-                    ll.addView(getView(position, group.getPreference(i)));
+        ((SwipeLinearLayout)holder.itemView).removeAllViews();
+        ((SwipeLinearLayout)holder.itemView).addView(getView(position, preference));
+        if (onRemove.isPresent()) {
+            ((SwipeLinearLayout)holder.itemView).setOnItemRemovedListener(new
+            SwipeLinearLayout.OnItemRemoveListener() {
+                @Override
+                public void onRemove(final int pos, final int index) {
+                    onRemove.get().onRemove(position, index);
                 }
-            }
-            card.addView(ll);
-        } else {
-            card.addView(getView(position, preference));
+            });
         }
-        ((View) card.getParent()).invalidate();
     }
 
     private View getView(final int position, final @NonNull Preference preference) {
@@ -189,16 +153,14 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
         return screen;
     }
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @NonNull
-        public final CardView card;
-
-        public ViewHolder(final @NonNull LinearLayout itemView) {
-            super(itemView);
-            itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                     ViewGroup.LayoutParams.WRAP_CONTENT));
-            card = (CardView) itemView.findViewById(R.id.card_wrapper);
+        public ViewHolder(final Context ctx) {
+            super(new SwipeLinearLayout(ctx));
+            final SwipeLinearLayout frame = (SwipeLinearLayout) itemView;
+            frame.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                  ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
     }

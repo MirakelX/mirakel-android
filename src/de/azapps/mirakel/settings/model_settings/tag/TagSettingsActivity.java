@@ -40,6 +40,11 @@ public class TagSettingsActivity extends GenericModelListActivity<Tag> {
         return false;
     }
 
+    @Override
+    protected boolean hasMenu() {
+        return true;
+    }
+
     @NonNull
     @Override
     protected Optional<Fragment> getDetailFragment(final @NonNull Tag item) {
