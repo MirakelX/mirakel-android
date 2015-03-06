@@ -19,5 +19,14 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="ilovefs_title">Аз ♥ Free Software Day</string>
+  <string name="ilovefs_message"><![CDATA[
+        <p>Св. Валентин по обичай е денят, в който показваме и отпразнуваме любота. Тогава защо тази година не използваш това като възможност да покажеш любовта си към Free Software?</p>
+        <p><a href="https://fsfe.org/campaigns/ilovefs/">Научи повече</a></p> 
+        ]]></string>
+  <string name="ilovefs_rate">Оцени!</string>
+  <string name="ilovefs_email">Пишете ни!</string>
+  <string name="ilovefs_email_no_client">Не беше намерен такъв майл потребител</string>
   <string name="ilovefs_donate">Дари</string>
+  <string name="ilovefs_email_title">#ILoveFS</string>
 </resources>
