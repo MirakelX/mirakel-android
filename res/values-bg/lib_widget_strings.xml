@@ -26,7 +26,9 @@
   <string name="widget_transparency">Прозрачност</string>
   <string name="widget_transparency_summary">%s%% прозрачност</string>
   <string name="widget_due_colors">Оцвети крайните дати</string>
+  <string name="dark_theme">Тъмна тема</string>
   <string name="notifications_list_summary">Покажи \"%s\"</string>
   <string name="empty_list">Няма задачи</string>
   <string name="preferences">Предпочитания</string>
+  <string name="widget_use_gradient">Използване на Gradient</string>
 </resources>
