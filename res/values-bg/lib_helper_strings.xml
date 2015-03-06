@@ -39,6 +39,7 @@ SDK-версия: %2$d\n
   <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Подзадачите не могат да образуват връзка</string>
   <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Не знам как да отворя този файл - съжалявам</string>
   <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Няма инсталиран имейл клиент</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Моля инсталирайте файлов мениджър</string>
   <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Настъпи вътрешна грешка при анализа на името на файла</string>
   <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Настъпи неочаквана грешка</string>
   <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Файлът не беше намерен</string>
@@ -55,4 +56,11 @@ SDK-версия: %2$d\n
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Нямам разрешение да чета този файл</string>
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Леле, списъкът изчезна&#8230;</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Не знаем как да оправим този бъг. Mirakel рестартира.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Това име за списък вече съществува. Изберете друго.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Моля актуализирайте DAVdroid</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Файловият формат Wunderlist е променен. Моля свържете се с екипа на Mirakel.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с нестандартен подходящ приоритет.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с нестандартен подходящ статус.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с нестандартна подходяща дата.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Анализирането на състоянието на металиста %s се провали. Моля съобщете за случилото се.</string>
 </resources>
