@@ -33,6 +33,7 @@
   <string name="task_fragment_content">Бележки</string>
   <string name="task_fragment_subtask">Подзадачи</string>
   <string name="task_fragment_progress">Прогрес</string>
+  <string name="task_fragment_tags">Тагове</string>
   <string name="audio_record_title">Аудио запис&#8230;</string>
   <string name="audio_record_message">Записване&#8230;</string>
   <string name="audio_playback_title">Аудио възпроизвеждане&#8230;</string>
