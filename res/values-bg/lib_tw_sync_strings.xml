@@ -27,6 +27,7 @@
   <string name="sync_warning_message">Синхронизацията в момента е много нестабилна. Но можете да опитате на собствен риск ( Направете резервно копие!) -Сигурни ли сте?</string>
   <string name="sync_use_summary_taskwarrior">Синхронизация с Taskwarrior като %s</string>
   <string name="sync_use_summary_mirakel">Синхронизация с  Mirakel като %s</string>
+  <string name="sync_use_summary_nothing">Не използвай синхронизация</string>
   <string name="sync_user">Потребителско име</string>
   <string name="sync_user_summary">Потребителско име от страна на сървъра</string>
   <string name="sync_server">Сървър</string>
@@ -65,6 +66,22 @@
   <string name="no_barcode_app_install">Инсталиране</string>
   <string name="menu_edit_listaccount">Сметка</string>
   <string name="change_account">Смяна на профила</string>
+  <string name="wrong_config">Изглежда, че сте използвали грешен конфигурационен файл</string>
+  <string name="cert_not_found">Сертификатът изчезна, моля създайте отново своя профил</string>
+  <string name="could_not_find_common_ancestor"><![CDATA[         Възникна грешка при синхронизиране. Но ние направихме заобиколно решение и някои данни могат да бъдат загубени: (. Ние направихме резервно копие на вашата база данни. Проверете го, ако нещо е наред. < br / > < br / >
+ За повече information\ виж <a href="https://mirakel.atlassian.net/browse/MIR-453"> тук</a>         ]]></string>
+  <string name="client_sync_key_not_found">Ключът за синхронизация не е намерен. Моля проверете конфигурацията на Вашия taswarrior.</string>
+  <string name="config_404">Конфигурационният файл не е намерен</string>
+  <string name="config_error_empty">В конфигурацията не съществува запис %s</string>
   <string name="load_config">Избиране на конфигурационен файл за Taskwarrior</string>
   <string name="select_config">Избиране на конфигурационен файл Taskwarrior</string>
+  <string name="message_try_later">Опитайте синхронизацията по-късно</string>
+  <string name="message_access_denied">Достъпът отказан!\nИзползвахте ли правилния конфигурационен файл?\nТрябва да конфигурирате сърварът на Taskwarrior, за да приеме синхронизацията с Mirakel.</string>
+  <string name="message_create_socket">Не мога да създам сокет!\nПроверете интернет връзката си.</string>
+  <string name="message_account_suspended">Вашият профил е блокиран!</string>
+  <string name="message_parse_message">Не мога да анализирам задачите - моля опишете как се случи това</string>
+  <string name="message_message_error">Непознат отговор от сървара - моля опишете как се случи това</string>
+  <string name="finish_sync">Синхронизацията е завършена</string>
+  <string name="account_vanished">Профилът изчезна. Това никога, ама никога, не бива да става</string>
+  <string name="create_account">Създаване на профил</string>
 </resources>
