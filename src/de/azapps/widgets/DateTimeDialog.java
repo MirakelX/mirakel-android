@@ -41,6 +41,7 @@ import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
@@ -139,6 +140,7 @@ public class DateTimeDialog extends DialogFragment {
                 }
                 dismiss();
             }
+
             @Override
             public void onNoTimeSet() {
                 if (DateTimeDialog.this.mCallback != null) {
@@ -155,6 +157,7 @@ public class DateTimeDialog extends DialogFragment {
                 }
                 dismiss();
             }
+
             @Override
             public void onDateSet(final DatePicker datePickerDialog,
                                   final int year, final int month, final int day) {
@@ -166,6 +169,7 @@ public class DateTimeDialog extends DialogFragment {
                 dismiss();
             }
         });
+        switchToDate.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
         switchToDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -175,6 +179,7 @@ public class DateTimeDialog extends DialogFragment {
                 }
             }
         });
+        switchToTime.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
         switchToTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {

@@ -542,7 +542,7 @@ public class TimePicker extends LinearLayout implements
         this.mMinutePickerDescription = res
                                         .getString(R.string.minute_picker_description);
         this.mSelectMinutes = res.getString(R.string.select_minutes);
-        this.mSelectedColor = ThemeManager.getPrimaryThemeColor();
+        this.mSelectedColor = ThemeManager.getColor(R.attr.colorTextWhite);
         this.mUnselectedColor = ThemeManager.getColor(R.attr.colorControlNormal);
         this.mHourView = (TextView) this.layout.findViewById(R.id.hours);
         this.mHourView.setOnKeyListener(keyboardListener);
@@ -610,11 +610,11 @@ public class TimePicker extends LinearLayout implements
             }
         });
         final View header = this.layout.findViewById(R.id.time_dialog_head);
-        header.setBackgroundColor(ThemeManager.getAccentThemeColor());
+        header.setBackgroundColor(ThemeManager.getPrimaryThemeColor());
         dialog.setBackgroundColor(ThemeManager.getColor(R.attr.colorBackground));
         final View header_background = this.layout
                                        .findViewById(R.id.header_background_timepicker);
-        header_background.setBackgroundColor(ThemeManager.getAccentThemeColor());
+        header_background.setBackgroundColor(ThemeManager.getPrimaryThemeColor());
         final View hairline = this.layout
                               .findViewById(R.id.hairline_timepicker);
         if (hairline != null) {

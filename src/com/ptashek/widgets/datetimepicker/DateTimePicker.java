@@ -18,7 +18,6 @@ package com.ptashek.widgets.datetimepicker;
  */
 
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,8 +88,7 @@ public class DateTimePicker extends RelativeLayout implements
         findViewById(R.id.SwitchToTime).setOnClickListener(this);// shows the time picker
 
         findViewById(R.id.SwitchToDate).setOnClickListener(this); // shows the date picker
-        ((Button) findViewById(R.id.SwitchToDate)).setTextColor(ThemeManager.getColor(
-                    R.attr.colorControlHighlight));
+        ((Button) findViewById(R.id.SwitchToDate)).setTextColor(ThemeManager.getPrimaryThemeColor());
         // Populate ViewSwitcher
         this.viewSwitcher.addView(datePickerView, 0);
         this.viewSwitcher.addView(timePickerView, 1);
@@ -126,18 +124,10 @@ public class DateTimePicker extends RelativeLayout implements
         if (v.getId() == R.id.SwitchToDate) {
             v.setEnabled(false);
             findViewById(R.id.SwitchToTime).setEnabled(true);
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-                ((Button) findViewById(R.id.SwitchToTime))
-                .setTextColor(getResources().getColor(R.color.Grey));
-            }
             this.viewSwitcher.showPrevious();
         } else if (v.getId() == R.id.SwitchToTime) {
             v.setEnabled(false);
             findViewById(R.id.SwitchToDate).setEnabled(true);
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-                ((Button) findViewById(R.id.SwitchToDate))
-                .setTextColor(getResources().getColor(R.color.Grey));
-            }
             this.viewSwitcher.showNext();
         }
     }

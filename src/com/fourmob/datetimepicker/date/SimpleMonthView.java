@@ -99,9 +99,9 @@ public class SimpleMonthView extends View {
         this.mDayOfWeekTypeface = getResources()
                                   .getString(R.string.day_of_week_label_typeface);
         this.mMonthTitleTypeface = getResources().getString(R.string.sans_serif);
-        this.mDayTextColor = ThemeManager.getAccentThemeColor();
+        this.mDayTextColor = ThemeManager.getColor(R.attr.colorTextBlack);
         this.mTodayNumberColor = ThemeManager.getPrimaryThemeColor();
-        this.mMonthTitleColor = ThemeManager.getAccentThemeColor();
+        this.mMonthTitleColor = ThemeManager.getColor(R.attr.colorTextGrey);
         this.mMonthTitleBGColor = ThemeManager.getColor(R.attr.colorBackground);
         this.mStringBuilder = new StringBuilder(50);
         MINI_DAY_NUMBER_TEXT_SIZE = getResources()

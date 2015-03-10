@@ -88,7 +88,7 @@ public class RadialTextsView extends View {
             return;
         }
         // Set up the paint.
-        final int numbersTextColor = ThemeManager.getAccentThemeColor();
+        final int numbersTextColor = ThemeManager.getColor(R.attr.colorTextBlack);
         this.mPaint.setColor(numbersTextColor);
         final String typefaceFamily = res
                                       .getString(R.string.radial_numbers_typeface);

@@ -337,10 +337,9 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         datepicker_dialog.setBackgroundColor(ThemeManager.getColor(R.attr.colorBackground));
         final View header = this.layout
                             .findViewById(R.id.datepicker_header);
-        header.setBackgroundColor(ThemeManager.getAccentThemeColor());
+        header.setBackgroundColor(ThemeManager.getPrimaryThemeColor());
         if (this.mDayOfWeekView != null) {
-            this.mDayOfWeekView.setBackgroundColor(ThemeManager.getDarkerShade(
-                    ThemeManager.getAccentThemeColor()));
+            this.mDayOfWeekView.setBackgroundColor(ThemeManager.getPrimaryDarkThemeColor());
             this.mDayOfWeekView.setTextColor(ThemeManager.getColor(R.attr.colorControlNormal));
         }
         this.mNoDateButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
@@ -356,7 +355,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
 
         final int[] colors = new int[] {
             ThemeManager.getPrimaryDarkThemeColor(),
-            ThemeManager.getPrimaryThemeColor(),
+            ThemeManager.getColor(R.attr.colorTextWhite),
             ThemeManager.getColor(R.attr.colorControlNormal)
         };
 

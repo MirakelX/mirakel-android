@@ -100,9 +100,9 @@ public class AmPmCirclesView extends View {
             return;
         }
         final Resources res = context.getResources();
-        this.mUnselected = ThemeManager.getAccentThemeColor();
+        this.mUnselected = ThemeManager.getPrimaryThemeColor();
         this.mAmPmTextColorUnselected = ThemeManager.getColor(R.attr.colorControlNormal);
-        this.mAmPmTextColorSelected = ThemeManager.getAccentThemeColor();
+        this.mAmPmTextColorSelected = ThemeManager.getPrimaryDarkThemeColor();
         this.mSelected = ThemeManager.getPrimaryThemeColor();
         final String typefaceFamily = res.getString(R.string.sans_serif);
         final Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);

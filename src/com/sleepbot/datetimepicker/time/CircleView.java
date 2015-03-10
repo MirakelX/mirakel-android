@@ -60,7 +60,7 @@ public class CircleView extends View {
             return;
         }
         this.mBackgroundColor = ThemeManager.getColor(R.attr.colorBackground);
-        this.mTextColor = ThemeManager.getAccentThemeColor();
+        this.mTextColor = ThemeManager.getColor(R.attr.colorTextBlack);
         final Resources res = context.getResources();
         this.mIs24HourMode = is24HourMode;
         if (is24HourMode) {

@@ -66,10 +66,11 @@ public class YearPickerView extends ListView implements
             if (year == new GregorianCalendar().get(Calendar.YEAR)) {
                 textViewWithCircularIndicator
                 .setTextColor(YearPickerView.this.mCurrentYear);
-            } else if (textViewWithCircularIndicator.equals(mSelectedView)) {
-                textViewWithCircularIndicator.setTextColor(ThemeManager.getPrimaryThemeColor());
-            } else {
+            } else if (mSelectedView != null &&
+                       String.valueOf(mController.getSelectedDay().year).equals(mSelectedView.getText())) {
                 textViewWithCircularIndicator.setTextColor(ThemeManager.getAccentThemeColor());
+            } else {
+                textViewWithCircularIndicator.setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
             }
             return textViewWithCircularIndicator;
         }

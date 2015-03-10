@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import de.azapps.tools.Log;
 
 public class DayPickerView extends ListView implements
     AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
@@ -91,7 +90,6 @@ public class DayPickerView extends ListView implements
     public boolean goTo(final SimpleMonthAdapter.CalendarDay calendarDay,
                         final boolean scrollToTop, final boolean selectDay,
                         final boolean displayMonth) {
-        Log.w(TAG, "goto");
         if (selectDay) {
             this.mSelectedDay.set(calendarDay);
         }

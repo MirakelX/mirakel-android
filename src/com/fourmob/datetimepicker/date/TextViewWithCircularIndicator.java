@@ -41,10 +41,10 @@ public class TextViewWithCircularIndicator extends TextView {
                                          final AttributeSet attributeSet) {
         super(context, attributeSet);
         this.mCircleColor = ThemeManager.getPrimaryThemeColor();
-        this.mSeclectedTextColor = ThemeManager.getPrimaryThemeColor();
+        this.mSeclectedTextColor = ThemeManager.getAccentThemeColor();
         this.mItemIsSelectedText = context.getResources().getString(
                                        R.string.item_is_selected);
-        this.mUnselectedTextColor = ThemeManager.getAccentThemeColor();
+        this.mUnselectedTextColor = ThemeManager.getColor(R.attr.colorTextBlack);
         init();
     }
 
