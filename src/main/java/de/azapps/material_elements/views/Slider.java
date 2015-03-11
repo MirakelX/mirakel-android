@@ -22,6 +22,7 @@ package de.azapps.material_elements.views;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -37,7 +38,6 @@ import android.widget.SeekBar;
 import de.azapps.material_elements.R;
 import de.azapps.material_elements.drawable.TextDrawable;
 import de.azapps.material_elements.utils.ThemeManager;
-import hugo.weaving.DebugLog;
 
 
 public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener {
@@ -60,9 +60,21 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
     boolean isThumbShown;
     private int width;
     private int height;
+    private int widgetColor;
 
     public Slider(final Context context, final AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.Slider,
+                0, 0);
+
+        try {
+            widgetColor=a.getColor(R.styleable.Slider_widget_color,ThemeManager.getAccentThemeColor());
+        } finally {
+            a.recycle();
+        }
+
         bubbleSize = (int) context.getResources().getDimension(R.dimen.bubbleSize);
         paddingOffset=21*bubbleSize/20;
 
@@ -75,7 +87,8 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         super.setOnSeekBarChangeListener(this);
 
         final Drawable progress=getProgressDrawable();
-        progress.setColorFilter(ThemeManager.getAccentThemeColor(), PorterDuff.Mode.SRC_IN);
+
+        progress.setColorFilter(widgetColor, PorterDuff.Mode.SRC_IN);
         setProgressDrawable(progress);
         setPadding(0,0,0,0);
         popupAnimator = new ValueAnimator();
@@ -96,7 +109,7 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
     private TextDrawable generateThumbDrawable(final int size,final String text) {
         return TextDrawable.builder().beginConfig().height(size)
                 .width(3 * size / 4).bold().displace(size / -8).endConfig()
-                .buildWithBackground(text, ThemeManager.getAccentThemeColor(), backgroundThumb);
+                .buildWithBackground(text, widgetColor, backgroundThumb);
     }
 
 
