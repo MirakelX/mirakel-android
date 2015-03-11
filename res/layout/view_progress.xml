@@ -19,6 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -29,9 +30,10 @@
             style="@style/task_header"
             android:text="@string/progress_header"/>
 
-        <SeekBar
+        <de.azapps.material_elements.views.Slider
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:widget_color="?colorPrimary"
             style="?android:attr/progressBarStyleHorizontal"
             android:id="@+id/progress_bar"/>
 </merge>
