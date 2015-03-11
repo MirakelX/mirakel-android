@@ -337,7 +337,7 @@ public class TaskFragment extends DialogFragment {
                     task.setReminder(Optional.<Calendar>absent());
                     task.save();
                 }
-            }, task.getReminder(), false);
+            }, task.getReminder());
             dateTimeDialog.show(getFragmentManager(), "reminderDialog");
         }
     };
