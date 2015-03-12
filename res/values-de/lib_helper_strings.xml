@@ -59,4 +59,8 @@ Device: %3$s\n]]>
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Eine Liste mit diesem Namen existiert bereits. Bitte wähle einen anderen Namen.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Bitte aktualisiere DAVdroid</string>
   <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Das Wunderlist Dateiformat hat sich verändert. Bitte berichte das dem Mirakel Team.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Während des Synchronisierens wurde eine Aufgabe mit fehlerhafter Priorität gefunden.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Während des Synchronisierens wurde eine Aufgabe mit fehlerhaftem Status gefunden.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Während des Synchronisierens wurde eine Aufgabe mit fehlerhaftem Datum gefunden.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Es trat ein Fehler in der Parser-Bedingung für die Metaliste %s auf. Bitte melden Sie den Fehler.</string>
 </resources>
