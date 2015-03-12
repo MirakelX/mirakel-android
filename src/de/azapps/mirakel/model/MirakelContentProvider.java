@@ -1209,7 +1209,7 @@ public class MirakelContentProvider extends SQLiteContentProvider {
     }
 
 
-    public static DatabaseHelper getDatabaseHelperStatic(Context context) {
+    public static DatabaseHelper getDatabaseHelperStatic(final Context context) {
         return DatabaseHelper.getDatabaseHelper(context);
     }
 

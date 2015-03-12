@@ -74,7 +74,6 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
-import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -129,16 +128,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " INTEGER NOT NULL default 0)");
     }
 
-    private DatabaseHelper(final Context ctx) {
-        super(ctx, getDBName(ctx), null, DATABASE_VERSION);
+    private DatabaseHelper(final Context ctx, final String name) {
+        super(ctx, name, null, DATABASE_VERSION);
         this.context = ctx;
     }
 
     private static DatabaseHelper databaseHelperSingleton;
 
+
     public static DatabaseHelper getDatabaseHelper(final Context context) {
         if (databaseHelperSingleton == null) {
-            databaseHelperSingleton = new DatabaseHelper(context);
+            databaseHelperSingleton = new DatabaseHelper(context, getDBName(context));
         }
         return databaseHelperSingleton;
     }
@@ -791,8 +791,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                   new String[] { cursor.getString(0) });
                     }
                 } while (cursor.moveToNext());
-                cursor.close();
             }
+            cursor.close();
         case 37:
             // Introduce tags
             db.execSQL("CREATE TABLE " + Tag.TABLE + " (" + ModelBase.ID
@@ -865,6 +865,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 } while (cursor.moveToNext());
             }
+            cursor.close();
             if (!DefinitionsHelper.freshInstall) {
                 final List<Integer> parts = MirakelCommonPreferences
                                             .loadIntArray("task_fragment_adapter_settings");
@@ -985,6 +986,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 } while (tagCursor.moveToNext());
             }
+            tagCursor.close();
             db.execSQL("DROP TABLE tmp_tags;");
             db.execSQL("create unique index tag_unique ON tag (name);");
         case 41:
@@ -1058,6 +1060,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.update(table, contentValues, "_id = ?", new String[] {String.valueOf(id)});
             lft += 2;
         }
+        allListsCursor.close();
     }
 
     private void updateSpecialLists(final SQLiteDatabase db) {
@@ -1122,6 +1125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             newWhere.put(SpecialList.WHERE_QUERY, newQuery.toString());
             db.update(SpecialList.TABLE, newWhere, ModelBase.ID + "=?", new String[] {String.valueOf(updateSpecial.getLong(1))});
         }
+        updateSpecial.close();
     }
 
 
@@ -1703,4 +1707,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return ret;
     }
+
+
 }
