@@ -104,14 +104,14 @@
   <string name="share_footer">Mit Mirakel geteilt\n Die freie (wie in Freiheit) ToDo-Listen App für Android und das Web\n http://mirakel.azapps.de</string>
   <string name="special_list_name">Name</string>
   <string name="special_list_active">Anzeigen</string>
-  <string name="special_list_where">WHERE-Abfrage</string>
+  <string name="special_list_where">SQL-WHERE-Abfrage</string>
   <string name="special_list_sort_by">Sortiere nach</string>
   <string name="special_list_def_list">Standardliste</string>
   <string name="special_list_def_date">Standarddatum</string>
   <string name="special_list_first">Standard</string>
-  <string name="special_list_contains">Auswahl-Argumente</string>
+  <string name="special_list_contains">Ausswahlkriterium</string>
   <string name="special_list_summary">Zusammenfassung</string>
-  <string name="special_lists_defaults">Standard Werte</string>
+  <string name="special_lists_defaults">Standardwerte</string>
   <string-array name="special_list_def_date_picker">
     <item>Kein Datum</item>
     <item>Gestern</item>
@@ -196,6 +196,11 @@
   <string name="and">UND</string>
   <string name="or">ODER</string>
   <string name="new_tag">Neuer Tag</string>
+  <string name="special_list_list_name">Liste</string>
+  <string name="special_lists_due_negated">Ab morgen %s</string>
+  <string name="special_lists_due">Heute %s</string>
+  <string name="due_exists">Fälligkeitsdatum vorhanden</string>
+  <string name="due_dont_exist">Kein Fälligkeitsdatum vorhanden</string>
   <string-array name="demo_lists">
     <item>Auf Arbeit</item>
     <item>Zu Hause</item>
@@ -209,5 +214,18 @@
     <item>Milch</item>
     <item>Käse</item>
   </string-array>
+  <plurals name="day">
+    <item quantity="one">Tag</item>
+    <item quantity="other">Tage</item>
+  </plurals>
+  <plurals name="month">
+    <item quantity="one">Monat</item>
+    <item quantity="other">Monate</item>
+  </plurals>
+  <plurals name="year">
+    <item quantity="one">Jahr</item>
+    <item quantity="other">Jahre</item>
+  </plurals>
+  <string name="accounts_all">Alle Konten</string>
   <string name="stub_list_name">Neue Liste</string>
 </resources>
