@@ -30,7 +30,7 @@ public class MirakelPreferences {
     protected static SharedPreferences settings;
 
     public static void init(final Context ctx) {
-        if (settings == null || MirakelPreferences.context == null) {
+        if (((settings == null) || (MirakelPreferences.context == null)) && (ctx != null)) {
             MirakelPreferences.context = ctx;
             settings = PreferenceManager.getDefaultSharedPreferences(ctx);
         }
