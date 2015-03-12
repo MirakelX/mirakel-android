@@ -46,6 +46,7 @@ import android.widget.RelativeLayout;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.settings.R;
+import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -107,12 +108,7 @@ public class SwipeLinearLayout extends LinearLayout  {
     }
 
     boolean processTouchDown(final @NonNull MotionEvent ev) {
-        final int x = (int) ev.getX();
         velocityTracker.clear();
-        if (stopReset() && isSwipeable(currentTouchView)) {
-            updateParams(currentTouchView, x);
-            return false;
-        }
         currentTouchView = null;
         for (int i = 0; i < getChildCount(); i++) {
             final View child = getChildAt(i);
@@ -268,16 +264,30 @@ public class SwipeLinearLayout extends LinearLayout  {
     }
 
     private boolean isInMotion(final @NonNull MotionEvent event, final int x) {
-        return ((Math.abs(x - xDown) > 2 * Math.abs(event.getY() - yDown) &&
-                 Math.abs(x - xDown) > screenW / 10) && (isSwipeable(currentTouchView) &&
-                         (ViewConfiguration.getTapTimeout() < (event.getEventTime() - event.getDownTime())))) &&
-               (ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event));
+        if (!isSwipeable(currentTouchView)) {
+            return false;
+        }
+        final float dx = Math.abs(x - xDown);
+        final float dy = Math.abs(event.getY() - yDown);
+        if (dx < (4.0F * dy)) {
+            return false;
+        }
+        if (dx < (screenW / 10.0F)) {
+            return false;
+        }
+        if (ViewConfiguration.getTapTimeout() > Math.abs(event.getEventTime() - event.getDownTime())) {
+            return false;
+        }
+        if (ViewConfiguration.get(getContext()).getScaledTouchSlop() > getDistanceTo(event)) {
+            return false;
+        }
+        return true;
     }
 
-    private void animateView(final int start, final long duration,
-                             final @NonNull TimeInterpolator interpolator,
-                             final @NonNull ValueAnimator.AnimatorUpdateListener onUpdate,
-                             final @NonNull Animator.AnimatorListener animatorListener) {
+    private static void animateView(final int start, final long duration,
+                                    final @NonNull TimeInterpolator interpolator,
+                                    final @NonNull ValueAnimator.AnimatorUpdateListener onUpdate,
+                                    final @NonNull Animator.AnimatorListener animatorListener) {
         final ValueAnimator animator = new ValueAnimator();
         animator.setIntValues(start, 0);
         animator.setDuration(duration);
