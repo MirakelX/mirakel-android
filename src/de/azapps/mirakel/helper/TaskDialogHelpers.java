@@ -18,12 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -68,6 +62,12 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListener;
 import com.google.common.base.Optional;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 import de.azapps.mirakel.DefinitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
@@ -90,6 +90,7 @@ import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.SupportDateTimeDialog;
 import de.azapps.widgets.SupportDateTimeDialog.OnDateTimeSetListener;
+
 import static com.google.common.base.Optional.of;
 
 public class TaskDialogHelpers {
@@ -364,8 +365,7 @@ public class TaskDialogHelpers {
         }, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
         reminder.get(Calendar.DAY_OF_MONTH), reminder
         .get(Calendar.HOUR_OF_DAY), reminder
-        .get(Calendar.MINUTE), true, MirakelCommonPreferences
-        .isDark());
+        .get(Calendar.MINUTE));
         dtDialog.show(fm, "datetimedialog");
     }
 
