@@ -99,8 +99,8 @@ import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.services.NotificationService;
-import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.Log;
@@ -1751,6 +1751,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         }
         getTasksFragment().updateList();
         getListFragment().update();
+        NotificationService.updateServices(this);
     }
 
     public void updateShare() {
