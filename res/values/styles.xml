@@ -46,6 +46,7 @@
         <item name="colorTextGrey">#8a000000</item>
         <!-- Black 87% -->
         <item name="colorTextBlack">#de000000</item>
+        <item name="colorTextWhite">#FFFFFF</item>
         <item name="colorBackground">#E6E6E6</item>
         <item name="colorListsBackground">#FFFFFF</item>
         <item name="colorProgress">#AC7D92</item>

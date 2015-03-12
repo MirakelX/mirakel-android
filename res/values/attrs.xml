@@ -21,6 +21,7 @@
 <resources>
     <attr name="colorTextBlack" format="color"/>
     <attr name="colorTextGrey" format="color"/>
+    <attr name="colorTextWhite" format="color"/>
     <attr name="colorTextActionBar" format="color" />
     <attr name="colorTextActionBarHighlight" format="color" />
     <attr name="colorSelectedRow" format="color" />
