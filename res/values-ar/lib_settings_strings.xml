@@ -248,4 +248,5 @@
   </string-array>
   <string name="backup_title">النسخ الاحتياطية</string>
   <string name="title_settings">إعدادات</string>
+  <string name="delete_semantic">حذف قالب المهمة</string>
 </resources>

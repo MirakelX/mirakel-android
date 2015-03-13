@@ -315,4 +315,5 @@
   <string name="due_dialog_negated">の後でなく</string>
   <string name="settings_advanced">高度</string>
   <string name="delete_condition">条件を削除</string>
+  <string name="delete_semantic">タスク テンプレートを削除</string>
 </resources>
