@@ -21,6 +21,7 @@ package de.azapps.material_elements.views;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -179,7 +180,7 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         return (max > 0) ? (getProgress() / (float) max) : 0.0F;
     }
 
-
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setThumbPos(int animatedValue) {
         int available = width - getPaddingLeft() - getPaddingRight();
         final int thumbWidth = mThumb.getWidth();
