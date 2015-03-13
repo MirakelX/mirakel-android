@@ -83,7 +83,7 @@ public class ExpandablePreference extends PreferenceGroup implements View.OnClic
     }
 
     private View updateView(final ViewGroup parent, final boolean respectExpand) {
-        if (childWrapper != null) {
+        if (childWrapper != null && globalWrapper != null) {
             globalWrapper.removeView(childWrapper);
         }
         childWrapper = new LinearLayout(getContext());

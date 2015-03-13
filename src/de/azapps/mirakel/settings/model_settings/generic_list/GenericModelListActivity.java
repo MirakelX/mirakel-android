@@ -85,7 +85,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
     protected abstract Class<? extends GenericModelListActivity> getSelf();
 
 
-    private Bundle getDetailArguments(T item) {
+    private Bundle getDetailArguments(final T item) {
         final Bundle arguments = new Bundle();
         arguments.putParcelable(GenericModelDetailFragment.ARG_ITEM, item);
         return arguments;

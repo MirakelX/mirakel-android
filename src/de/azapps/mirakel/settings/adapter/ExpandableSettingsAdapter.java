@@ -51,7 +51,7 @@ public class ExpandableSettingsAdapter extends
     private PreferenceScreen screen;
     private final LayoutInflater inflater;
 
-    private Map<String, Integer> dependencis = new HashMap<>();
+    private Map<String, Integer> dependencies = new HashMap<>();
     @NonNull
     private Optional<SwipeLinearLayout.OnItemRemoveListener> onRemove = absent();
 
@@ -95,7 +95,7 @@ public class ExpandableSettingsAdapter extends
 
     private View getView(final int position, final @NonNull Preference preference) {
         if (preference.getDependency() != null) {
-            dependencis.put(preference.getKey(), position);
+            dependencies.put(preference.getKey(), position);
             preference.setEnabled(((TwoStatePreference)screen.findPreference(
                                        preference.getDependency())).isChecked());
         }
@@ -104,8 +104,8 @@ public class ExpandableSettingsAdapter extends
             @Override
             public boolean onPreferenceChange(Preference p, Object newValue) {
                 notifyItemChanged(position);
-                if (dependencis.containsKey(p.getKey()) && (dependencis.get(p.getKey()) != position)) {
-                    notifyItemChanged(dependencis.get(p.getKey()));
+                if (dependencies.containsKey(p.getKey()) && (dependencies.get(p.getKey()) != position)) {
+                    notifyItemChanged(dependencies.get(p.getKey()));
                 }
                 return (changed == null) || changed.onPreferenceChange(p, newValue);
             }
