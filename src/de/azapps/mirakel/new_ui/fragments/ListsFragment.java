@@ -26,7 +26,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -40,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.emtronics.dragsortrecycler.DragSortRecycler;
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
@@ -60,6 +60,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.new_ui.activities.LockableDrawer;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
+import de.azapps.mirakel.new_ui.views.ListEditView;
 import de.azapps.mirakelandroid.R;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
@@ -297,14 +298,28 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
                 , getActivity());
             break;
         case R.id.menu_edit:
-            final DialogFragment newFragment = ListEditFragment.newInstance(selected.get(0));
-            newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+            editList(selected.get(0));
             break;
         default:
             return false;
         }
         mode.finish();
         return true;
+    }
+
+    public void editList(ListMirakel listMirakel) {
+        final ListEditView listEditView = new ListEditView(getActivity());
+        listEditView.setListMirakel(listMirakel);
+        new MaterialDialog.Builder(getActivity()).customView(listEditView, true)
+        .title(listMirakel.getName())
+        .positiveText(R.string.save)
+        .callback(new MaterialDialog.ButtonCallback() {
+            @Override
+            public void onPositive(MaterialDialog dialog) {
+                listEditView.saveList();
+            }
+        })
+        .show();
     }
 
     @Override

@@ -60,7 +60,6 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.fragments.ListEditFragment;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
@@ -199,8 +198,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             Helpers.restartApp(this);
             return true;
         } else if (id == R.id.action_create_list) {
-            final DialogFragment newFragment = ListEditFragment.newInstance(ListMirakel.getStub());
-            newFragment.show(getSupportFragmentManager(), "dialog");
+            getListsFragment().editList(ListMirakel.getStub());
             return true;
         }
         return super.onOptionsItemSelected(item);
