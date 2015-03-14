@@ -18,22 +18,25 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/task_header"
-            android:text="@string/progress_header"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Regular.Small"
+        android:text="@string/progress_header"
+        android:id="@+id/progress_text"
+        android:drawablePadding="@dimen/padding_drawable"
+        android:drawableStart="@drawable/ic_track_changes_white_18dp" />
 
-        <de.azapps.material_elements.views.Slider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:widget_color="?colorPrimary"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:id="@+id/progress_bar"/>
-</merge>
+    <de.azapps.material_elements.views.Slider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:widget_color="?colorPrimary"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progress_bar" />
+</LinearLayout>

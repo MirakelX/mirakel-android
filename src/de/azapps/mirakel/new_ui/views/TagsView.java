@@ -20,17 +20,22 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.custom_views.TagListView;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class TagsView extends LinearLayout {
 
+    @InjectView(R.id.task_tags_title)
+    TextView title;
     @InjectView(R.id.task_tags_wrapper)
     LinearLayout tagList;
     private Task task;
@@ -47,6 +52,9 @@ public class TagsView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_tags, this);
         ButterKnife.inject(this, this);
+        final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_local_offer_white_18dp,
+                              ThemeManager.getColor(R.attr.colorTextGrey));
+        title.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     private void rebuildLayout() {

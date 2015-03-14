@@ -19,16 +19,18 @@
 
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin">24dp</dimen>
+    <dimen name="activity_vertical_margin">24dp</dimen>
 
     <dimen name="priorityDoneSize">@dimen/clickable_item_size</dimen>
     <dimen name="clickable_item_size">48dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_regular">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
     <dimen name="dialog_min_width">600dp</dimen>
     <dimen name="padding_default">16dp</dimen>
+    <dimen name="padding_default_half">8dp</dimen>
     <dimen name="small_icon_size">24dp</dimen>
 
     <dimen name="card_margin">8dp</dimen>

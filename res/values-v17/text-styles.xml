@@ -32,6 +32,9 @@
     <style name="TextAppearance.Regular.Small" parent="TextAppearance.Regular">
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
+    <style name="TextAppearance.Regular.Large" parent="TextAppearance.Regular">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
 
     <style name="TextAppearance.Light" parent="TextAppearance.Base">
         <item name="android:fontFamily">sans-serif-light</item>
@@ -39,5 +42,8 @@
 
     <style name="TextAppearance.Light.Small" parent="TextAppearance.Light">
         <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+    <style name="TextAppearance.Light.Large" parent="TextAppearance.Light">
+        <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 </resources>

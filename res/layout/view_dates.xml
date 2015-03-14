@@ -30,6 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingBottom="@dimen/padding_default_half"
+            android:paddingTop="@dimen/padding_default_half"
             android:orientation="horizontal"
             android:id="@+id/dates_due_wrapper">
 
@@ -37,20 +39,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/padding_drawable"
-                android:drawableStart="@drawable/calendar"
-                android:text="@string/task_due_header"/>
+                android:drawableStart="@drawable/ic_calendar_white_18dp"
+                android:textAppearance="@style/TextAppearance.Regular.Small"
+                android:layout_marginEnd="2dp"
+                android:text="@string/task_due_header"
+                android:id="@+id/dates_due_title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="In 2 Tagen"
                 android:textColor="?colorDueToday"
-                android:id="@+id/dates_due"/>
+                android:textAppearance="@style/TextAppearance.Light.Small"
+                android:id="@+id/dates_due" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_default_half"
+            android:paddingTop="@dimen/padding_default_half"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:id="@+id/list_wrapper">
@@ -59,31 +67,44 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/padding_drawable"
-                android:drawableStart="@drawable/text_doc"
-                android:text="@string/task_list_header"/>
+                android:drawableStart="@drawable/ic_list_white_18dp"
+                android:layout_marginEnd="2dp"
+                android:textAppearance="@style/TextAppearance.Regular.Small"
+                android:id="@+id/dates_list_title"
+                android:text="@string/task_list_header" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Zu Hause"
-                android:id="@+id/dates_list"/>
+                android:textAppearance="@style/TextAppearance.Light.Small"
+                android:id="@+id/dates_list" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_default_half"
+        android:paddingTop="@dimen/padding_default_half"
+        android:id="@+id/reminder_wrapper"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/task_reminder_header"/>
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:layout_marginEnd="2dp"
+            android:drawablePadding="@dimen/padding_drawable"
+            android:drawableStart="@drawable/ic_alarm_white_18dp"
+            android:id="@+id/dates_reminder_title"
+            android:text="@string/task_reminder_header" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Morgen um 16:30 Uhr"
-            android:id="@+id/dates_reminder"/>
+            android:textAppearance="@style/TextAppearance.Light.Small"
+            android:id="@+id/dates_reminder" />
     </LinearLayout>
 </merge>

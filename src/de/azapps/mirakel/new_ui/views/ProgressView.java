@@ -17,15 +17,19 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
@@ -34,6 +38,8 @@ public class ProgressView extends LinearLayout {
 
     @InjectView(R.id.progress_bar)
     SeekBar progressBar;
+    @InjectView(R.id.progress_text)
+    TextView progressText;
 
     public ProgressView(final Context context) {
         this(context, null);
@@ -47,6 +53,9 @@ public class ProgressView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_progress, this);
         ButterKnife.inject(this, this);
+        final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_track_changes_white_18dp,
+                              ThemeManager.getColor(R.attr.colorTextGrey));
+        progressText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     public void setOnProgressChangeListener(final OptionalUtils.Procedure<Integer>
@@ -56,10 +65,12 @@ public class ProgressView extends LinearLayout {
             public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
                 // Do nothing
             }
+
             @Override
             public void onStartTrackingTouch(final SeekBar seekBar) {
                 // Do nothing
             }
+
             @Override
             public void onStopTrackingTouch(final SeekBar seekBar) {
                 onProgressChangeListener.apply(seekBar.getProgress());
