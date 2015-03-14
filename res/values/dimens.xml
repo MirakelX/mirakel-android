@@ -30,6 +30,10 @@
     <dimen name="dialog_min_width">600dp</dimen>
     <dimen name="padding_default">16dp</dimen>
     <dimen name="small_icon_size">24dp</dimen>
+
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="card_margin_top">2dp</dimen>
+    <dimen name="card_margin_bottom">6dp</dimen>
     
     <integer name="anim_snackbar_duration">300</integer>
     <dimen name="navdrawer_width">260dp</dimen>
