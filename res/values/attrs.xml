@@ -39,4 +39,7 @@
     <attr name="colorDueNext" format="color" />
     <attr name="colorDueFuture" format="color" />
     <attr name="colorNavDrawerScrim" format="color" />
+
+
+    <attr name="colorDivider" format="color" />
 </resources>

@@ -58,6 +58,8 @@
         <item name="colorDueNext">#FFA500</item>
         <item name="colorDueFuture">#00C400</item>
         <item name="colorNavDrawerScrim">#77000000</item>
+
+        <item name="colorDivider">#e6e6e6</item>
         <!-- The CAB should overlay the normal ActionBar -->
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">?colorCAB</item>
