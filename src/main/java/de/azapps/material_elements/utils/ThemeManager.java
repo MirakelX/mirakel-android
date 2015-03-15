@@ -24,6 +24,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
 import de.azapps.material_elements.R;
@@ -86,5 +88,11 @@ public class ThemeManager {
         return Color.rgb((int) (SHADE_FACTOR * Color.red(color)),
                 (int) (SHADE_FACTOR * Color.green(color)),
                 (int) (SHADE_FACTOR * Color.blue(color)));
+    }
+
+    public static Drawable getColoredIcon(final int drawable, final int color) {
+        final Drawable icon = context.getResources().getDrawable(drawable);
+        icon.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        return icon;
     }
 }
