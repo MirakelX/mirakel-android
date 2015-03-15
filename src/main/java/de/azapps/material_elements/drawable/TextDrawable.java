@@ -31,6 +31,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
+import android.util.Log;
 
 
 public class TextDrawable extends Drawable {
@@ -45,20 +46,8 @@ public class TextDrawable extends Drawable {
     private int displacment;
     private int topPadding=0;
     private Drawable background;
+    private int left;
 
-    public TextDrawable(final TextDrawable old, final int newHeight, final int newWidth){
-        textPaint=old.textPaint;
-        text=old.text;
-        color=old.color;
-        height=newHeight;
-        width=newWidth;
-        fontSize=old.fontSize;
-        upperCase=old.upperCase;
-        displacment=old.displacment;
-        topPadding=old.topPadding;
-        background=old.background;
-
-    }
 
     private TextDrawable(final Builder builder) {
         super();
@@ -124,7 +113,7 @@ public class TextDrawable extends Drawable {
     public void draw(final Canvas canvas) {
         final int count = canvas.save();
         final Rect r = getBounds();
-        r.top+=topPadding;
+        canvas.translate(left+left,r.top+topPadding);
         background.setBounds(r);
         background.draw(canvas);
 
@@ -171,10 +160,6 @@ public class TextDrawable extends Drawable {
         return new Builder();
     }
 
-    public int getHeight() {
-        return height;
-    }
-
     public void setTopPadding(int topPadding) {
         this.topPadding = topPadding;
     }
@@ -183,8 +168,14 @@ public class TextDrawable extends Drawable {
         return topPadding;
     }
 
-    public int getWidth() {
-        return width;
+
+
+    public void setLeft(int left) {
+        this.left = left;
+    }
+
+    public int getLeft() {
+        return left;
     }
 
     public static class Builder implements IConfigBuilder, IShapeBuilder, IBuilder {

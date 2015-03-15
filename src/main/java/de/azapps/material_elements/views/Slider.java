@@ -21,20 +21,24 @@ package de.azapps.material_elements.views;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.AbsSeekBar;
 import android.widget.SeekBar;
+
+import java.lang.reflect.Field;
 
 import de.azapps.material_elements.R;
 import de.azapps.material_elements.drawable.TextDrawable;
@@ -49,11 +53,12 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
     @NonNull
     private TextDrawable mThumb;
     @NonNull
-    private final ColorDrawable mNoThumb;
+    private Drawable mNoThumb;
+    @NonNull
+    private ShapeDrawable mSmallThumb;
     @NonNull
     private final Drawable backgroundThumb;
     private final int bubbleSize;
-    private final int paddingOffset;
     private final ValueAnimator popupAnimator;
     private final ValueAnimator vanishAnimator;
     @Nullable
@@ -65,7 +70,7 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
 
     public Slider(final Context context, final AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.getTheme().obtainStyledAttributes(
+        final TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.Slider,
                 0, 0);
@@ -77,14 +82,28 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         }
 
         bubbleSize = (int) context.getResources().getDimension(R.dimen.bubbleSize);
-        paddingOffset=21*bubbleSize/20;
 
 
         backgroundThumb=context.getResources().getDrawable(R.drawable.ic_marker);
-        mThumb= generateThumbDrawable(bubbleSize,"");
-        mNoThumb=new ColorDrawable(Color.TRANSPARENT);
+        mThumb= generateThumbDrawable(bubbleSize, "");
+        mThumb.setTopPadding(-1 * bubbleSize);
+        try {
+            final Field originalThumb = AbsSeekBar.class.getDeclaredField("mThumb");
+            originalThumb.setAccessible(true);
+            mNoThumb= (Drawable) originalThumb.get(this);
 
+        } catch (NoSuchFieldException e) {
+            Log.wtf(TAG,"mThumb not found");
+        } catch (IllegalAccessException e) {
+            Log.wtf(TAG,"could not access mThumb");
+        }
+        mNoThumb.setColorFilter(widgetColor, PorterDuff.Mode.SRC_IN);
         setThumb(mNoThumb);
+        mSmallThumb=new ShapeDrawable( new OvalShape() );
+        mSmallThumb.setIntrinsicHeight(mNoThumb.getIntrinsicHeight()/3);
+        mSmallThumb.setIntrinsicWidth(mNoThumb.getIntrinsicWidth()/3);
+        mSmallThumb.setColorFilter(widgetColor,PorterDuff.Mode.SRC_IN);
+
         super.setOnSeekBarChangeListener(this);
 
         final Drawable progress=getProgressDrawable();
@@ -116,15 +135,14 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
 
     @Override
     public void setPadding(final int left, final int top, final int right, final int bottom) {
-        super.setPadding(left, top, right, bottom-paddingOffset);
+        super.setPadding(left+bubbleSize/2, top + bubbleSize, right+bubbleSize/2, bottom+bubbleSize/10);
     }
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         width = getMeasuredWidth();
-        height = (int) ((getMeasuredHeight() + (2 * bubbleSize)) - (isThumbShown ? (0.70 * mThumb.getHeight()) : 0));
-        setMeasuredDimension(width, height);
+        height = getMeasuredWidth();
     }
 
     @Override
@@ -135,9 +153,11 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
     @Override
     public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
         if(listener!=null){
-            listener.onProgressChanged(seekBar,progress,fromUser);
+            listener.onProgressChanged(seekBar, progress, fromUser);
         }
         mThumb.setNewText(String.valueOf(progress));
+        final double scale= getScale() -0.5;
+        mThumb.setLeft((int) (((scale * mThumb.getIntrinsicWidth()) / 2.0) + (((-1.0 * Math.abs(scale)) + 0.5) * ((scale < 0) ? -1 : 1))));
         if(isThumbShown) {
             mThumb.invalidateSelf();
         }
@@ -174,33 +194,45 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         }, 100L);
     }
 
-
-    private float getScale() {
-        final int max = getMax();
-        return (max > 0) ? (getProgress() / (float) max) : 0.0F;
+    @Override
+    protected synchronized void onDraw(@NonNull final Canvas canvas) {
+        super.onDraw(canvas);
+        if(isThumbShown){
+            final int count=canvas.save();
+            canvas.translate(0.0F,mSmallThumb.getIntrinsicHeight()/(4));
+            setThumbPos(0, mSmallThumb);
+            mSmallThumb.draw(canvas);
+            canvas.restoreToCount(count);
+        }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setThumbPos(int animatedValue) {
-        int available = width - getPaddingLeft() - getPaddingRight();
-        final int thumbWidth = mThumb.getWidth();
-        final int thumbHeight = mThumb.getHeight();
+    private double getScale() {
+        final int max = getMax();
+        return (max > 0) ? (getProgress() / (double) max) : 0.0;
+    }
+
+
+    private void setThumbPos(final int animatedValue,final @NonNull Drawable thumb){
+        int available = getWidth() - getPaddingLeft() - getPaddingRight();
+        final int thumbWidth = thumb.getIntrinsicWidth();
+        final int thumbHeight = thumb.getIntrinsicHeight();
         available -= thumbWidth;
 
         // The extra space for the thumb to move on the track
         available += getThumbOffset() * 2;
 
-        final int thumbPos = (int) (getScale() * available + 0.5f);
+        int thumbPos = (int) (getScale() * available + 0.5f);
+        thumbPos+=(getScale()-0.5)*thumbWidth;
 
         final int top =  (bubbleSize - animatedValue);
-        final int bottom =top+ thumbHeight;
+        final int bottom =top + thumbHeight;
 
         final int left;
         if((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) && (getResources().getConfiguration().getLayoutDirection() ==
                 View.LAYOUT_DIRECTION_RTL)){
             left= available-thumbPos;
         }else {
-            left = thumbPos;
+            left = thumbPos+(thumb.equals(mThumb)?0:getPaddingRight());
         }
 
         final int right = left + thumbWidth;
@@ -216,36 +248,38 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         }
 
         // Canvas will be translated, so 0,0 is where we start drawing
-        mThumb.setBounds(left, top, right, bottom);
+        thumb.setBounds(left, top, right, bottom);
     }
 
     @Override
-    public void onAnimationUpdate(ValueAnimator animation) {
+    public void onAnimationUpdate(final ValueAnimator animation) {
         final int animatedValue = (Integer)animation.getAnimatedValue();
-        mThumb.setWidth((int) (animatedValue*0.75));
+        mThumb.setWidth((int) (animatedValue * 0.75));
         mThumb.setHeight(animatedValue);
-        setThumbPos(animatedValue);
+        setThumbPos(animatedValue, mThumb);
+        mThumb.setLeft(0);
         mThumb.invalidateSelf();
     }
 
     @Override
-    public void onAnimationStart(Animator animation) {
+    public void onAnimationStart(final Animator animation) {
 
     }
 
     @Override
-    public void onAnimationEnd(Animator animation) {
+    public void onAnimationEnd(final Animator animation) {
         if(!isThumbShown){
             setThumb(mNoThumb);
         }
+        mThumb.setLeft(0);
     }
 
     @Override
-    public void onAnimationCancel(Animator animation) {
+    public void onAnimationCancel(final Animator animation) {
     }
 
     @Override
-    public void onAnimationRepeat(Animator animation) {
+    public void onAnimationRepeat(final Animator animation) {
 
     }
 }
