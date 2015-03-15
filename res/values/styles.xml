@@ -48,6 +48,7 @@
         <item name="colorTextBlack">#de000000</item>
         <item name="colorTextWhite">#FFFFFF</item>
         <item name="colorBackground">#E6E6E6</item>
+        <item name="colorTaskFragmentBackground">#F5F5F5</item>
         <item name="colorListsBackground">#FFFFFF</item>
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>

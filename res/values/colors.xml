@@ -24,10 +24,10 @@
     <color name="Orange">#EF0381</color>
     <color name="Yellow">#FFA500</color>
     <color name="Green">#00c400</color>
-    <color name="due_overdue">#FF0000</color>
-    <color name="due_today">#EF0381</color>
-    <color name="due_next">#FFA500</color>
-    <color name="due_future">#00c400</color>
+    <color name="due_overdue">#D0021B</color>
+    <color name="due_today">#D0021B</color>
+    <color name="due_next">#DA6807</color>
+    <color name="due_future">#166BA8</color>
     <color name="pressed_color">#6633b5e5</color>
     <color name="White">#FFFFFF</color>
     <color name="highlighted_text_holo_dark">#6633b5e5</color>
