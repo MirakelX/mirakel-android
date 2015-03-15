@@ -314,4 +314,5 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="due_dialog_negated">Não após</string>
   <string name="settings_advanced">Avançado</string>
   <string name="delete_condition">Eliminar condição</string>
+  <string name="delete_semantic">Eliminar modelo de tarefa</string>
 </resources>
