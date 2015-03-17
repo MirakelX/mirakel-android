@@ -31,6 +31,7 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,6 +58,9 @@ import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DueDialog;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+
 
 public class SemanticFragment extends MirakelPreferencesFragment<Settings> implements
     SwipeLinearLayout.OnItemRemoveListener {
@@ -69,6 +73,9 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
     @Nullable
     private Semantic deletedSemantic;
     private PreferenceScreen mScreen;
+    private boolean hasDivider = false;
+    @NonNull
+    private Optional<Pair<Integer, Snackbar>> mSnackBar = absent();
 
 
     @Override
@@ -91,6 +98,10 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         if (recyclerView != null) {
             final ExpandableSettingsAdapter mAdapter = new ExpandableSettingsAdapter(preferenceScreen);
             mAdapter.setRemoveListener(getRemoveListener());
+            if (!hasDivider) {
+                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), null));
+                hasDivider = true;
+            }
             recyclerView.swapAdapter(mAdapter, false);
         }
     }
@@ -411,11 +422,14 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
     @Override
     public void onRemove(final int position, final int index) {
         if (position < semantics.size()) {
+            if (mSnackBar.isPresent() && (deletedSemantic != null)) {
+                removeSemantic(mSnackBar.get().first);
+            }
             deletedSemantic = semantics.remove(position);
-            SnackbarManager.show(
-                Snackbar.with(getActivity())
-                .text(getActivity().getString(R.string.delete_semantic))
-                .actionLabel(R.string.undo)
+            final long deleteSemanticId = deletedSemantic.getId();
+            mSnackBar = of(new Pair<>(position, Snackbar.with(getActivity())
+                                      .text(getActivity().getString(R.string.delete_semantic))
+                                      .actionLabel(R.string.undo)
             .eventListener(new EventListener() {
                 @Override
                 public void onShow(final Snackbar snackbar) {
@@ -434,13 +448,11 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
 
                 @Override
                 public void onDismissed(final Snackbar snackbar) {
-                    if (deletedSemantic != null) {
-                        final Preference p = mScreen.getPreference(position);
-                        mScreen.removePreference(p);
-                        deletedSemantic.destroy();
-                        deletedSemantic = null;
+                    if ((deletedSemantic != null) && (deleteSemanticId == deletedSemantic.getId())) {
+                        removeSemantic(position);
+                        updateScreen(mScreen);
                     }
-                    updateScreen(mScreen);
+                    mSnackBar = absent();
                 }
             })
             .actionListener(new ActionClickListener() {
@@ -448,9 +460,20 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                 public void onActionClicked(final Snackbar snackbar) {
                     semantics.add(position, deletedSemantic);
                     deletedSemantic = null;
+                    updateScreen(mScreen);
                 }
-            }));
+            })));
+            SnackbarManager.show(mSnackBar.get().second);
         }
 
+    }
+
+    private void removeSemantic(final int position) {
+        final Preference p = mScreen.getPreference(position);
+        mScreen.removePreference(p);
+        if (deletedSemantic != null) {
+            deletedSemantic.destroy();
+            deletedSemantic = null;
+        }
     }
 }

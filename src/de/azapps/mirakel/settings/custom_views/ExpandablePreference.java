@@ -75,6 +75,7 @@ public class ExpandablePreference extends PreferenceGroup implements View.OnClic
         final LayoutInflater layoutInflater =
             (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View header = layoutInflater.inflate(R.layout.android_standard_preference, parent, false);
+        header.setOnClickListener(this);
         ((LinearLayout)header.findViewById(android.R.id.widget_frame)).addView(expand);
         ((TextView)header.findViewById(android.R.id.title)).setText(getTitle());
         ((TextView)header.findViewById(android.R.id.summary)).setText(getSummary());
