@@ -316,4 +316,5 @@
   <string name="settings_advanced">高度</string>
   <string name="delete_condition">条件を削除</string>
   <string name="delete_semantic">タスク テンプレートを削除</string>
+  <string name="delete_special_lists">メタリストを削除</string>
 </resources>
