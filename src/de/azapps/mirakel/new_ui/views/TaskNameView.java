@@ -24,6 +24,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -34,13 +36,14 @@ public class TaskNameView extends TextView {
     private boolean isStrikeThrough;
     private final Paint stroke = new Paint();
     private final Rect textSize = new Rect();
+    private final Rect bounds = new Rect();
     private final int strokeSize;
     private final int strokeMargin;
 
-    public TaskNameView(Context ctx, AttributeSet attrs) {
+    public TaskNameView(final Context ctx, final AttributeSet attrs) {
         super(ctx, attrs);
         stroke.setColor(getTextColors().getDefaultColor());
-        TypedArray a = ctx.getTheme().obtainStyledAttributes(attrs, R.styleable.TaskName, 0, 0);
+        final TypedArray a = ctx.getTheme().obtainStyledAttributes(attrs, R.styleable.TaskName, 0, 0);
         try {
             strokeSize = (int)a.getDimension(R.styleable.TaskName_strokeSize, ViewHelper.dpToPx(2, ctx));
             strokeMargin = (int)a.getDimension(R.styleable.TaskName_strokeMargin, ViewHelper.dpToPx(5, ctx));
@@ -59,20 +62,23 @@ public class TaskNameView extends TextView {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
         if (isStrikeThrough) {
-            final String text = getText().toString();
-            getPaint().getTextBounds("H", 0, 1, textSize);
-            final int top = textSize.top;
-            final int bottom = textSize.bottom;
-            canvas.translate(0, (bottom - top));
-            getPaint().getTextBounds(text, 0, text.length(), textSize);
-            textSize.top = 0;
-            textSize.bottom = strokeSize;
-            textSize.left -= strokeMargin;
-            textSize.right += strokeMargin;
-            canvas.drawRect(textSize, stroke);
+            final Layout layout = getLayout();
+            if (layout != null) {
+                final int lineCount = layout.getLineCount();
+                for (int i = 0; i < lineCount; i++) {
+                    layout.getLineBounds(i, bounds);
+                    final float middle = (bounds.top + bounds.bottom) / 2.0F + (i == 0 ? strokeSize : 0);
+                    bounds.top = (int) (middle);
+                    bounds.left = -1 * strokeMargin;
+                    bounds.right = (int) (strokeMargin + layout.getLineWidth(i));
+                    bounds.bottom = (int) (middle + strokeSize);
+                    canvas.drawRect(bounds, stroke);
+
+                }
+            }
         }
     }
 }
