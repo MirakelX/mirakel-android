@@ -24,11 +24,11 @@
         android:title="@string/menu_delete_list"
         android:showAsAction="ifRoom"
         android:visible="false"
-        android:icon="@drawable/ic_delete_white_36dp"/>
+        android:icon="@drawable/ic_delete_white_24dp"/>
     <item
         android:id="@+id/menu_edit"
         android:title="@string/menu_edit_list"
         android:showAsAction="ifRoom"
         android:visible="false"
-        android:icon="@drawable/ic_pencil_white_36dp"/>
+        android:icon="@drawable/ic_pencil_white_24dp"/>
 </menu>

@@ -21,6 +21,9 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,25 +34,35 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.TaskNameView;
 
-public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
+public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHolder, Task> {
 
     private final LayoutInflater mInflater;
     private final OnItemClickedListener<Task> itemClickListener;
 
     public TaskAdapter(final Context context, final Cursor cursor,
-                       final OnItemClickedListener<Task> itemClickListener) {
-        super(context, cursor);
+                       final OnItemClickedListener<Task> itemClickListener,
+                       final MultiSelectCallbacks<Task> multiSelectCallbacks) {
+        super(context, cursor, itemClickListener, multiSelectCallbacks);
         mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
         setHasStableIds(true);
+    }
+
+    @NonNull
+    @Override
+    public Task fromCursor(@NonNull Cursor cursor) {
+        return new Task(cursor);
     }
 
     @Override
@@ -79,16 +92,22 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
         holder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-                final Task task = holder.getTask();
+                final Task task = holder.task;
                 task.setDone(isChecked);
                 task.save();
             }
         });
+
+        if (selectedItems.get(position)) {
+            holder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+        } else {
+            holder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+        }
     }
 
 
 
-    public class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class TaskViewHolder extends MultiSelectCursorAdapter.MultiSelectViewHolder {
         @InjectView(R.id.task_name)
         TaskNameView name;
         @InjectView(R.id.task_due)
@@ -97,21 +116,14 @@ public class TaskAdapter extends CursorAdapter<TaskAdapter.TaskViewHolder> {
         TextView list;
         @InjectView(R.id.task_priority_done)
         ProgressDoneView priorityDone;
-        private Task task;
+        @InjectView(R.id.task_card)
+        CardView card;
+        Task task;
 
         public TaskViewHolder(final View view) {
             super(view);
             view.setOnClickListener(this);
             ButterKnife.inject(this, view);
-        }
-
-        public Task getTask() {
-            return task;
-        }
-
-        @Override
-        public void onClick(final View v) {
-            itemClickListener.onItemSelected(task);
         }
     }
 }

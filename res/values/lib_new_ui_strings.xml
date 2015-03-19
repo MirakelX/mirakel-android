@@ -44,10 +44,19 @@
         <item quantity="one">1 list deleted</item>
         <item quantity="other">%d lists deleted</item>
     </plurals>
+    <plurals name="task_multiselect_title">
+        <item quantity="one">1 task selected</item>
+        <item quantity="other">%d tasks selected</item>
+    </plurals>
+    <plurals name="task_multiselect_deleted">
+        <item quantity="one">1 task deleted</item>
+        <item quantity="other">%d tasks deleted</item>
+    </plurals>
     <string name="list_name">List name</string>
     <string name="list_account">List account</string>
     <string name="list_edit_multiple_names">Different names</string>
     <string name="list_edit_title">Edit %s</string>
     <string name="can_not_edit_list">Can not edit CalDAV lists</string>
+    <string name="menu_set_tags">Set tags</string>
 
 </resources>

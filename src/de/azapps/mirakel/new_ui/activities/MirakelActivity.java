@@ -37,7 +37,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,6 +62,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
+import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -367,15 +367,17 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     // Snackbar stuff
     @Override
     public void onShow(final Snackbar snackbar) {
+        moveFABUp(snackbar.getHeight());
+    }
+
+    public void moveFABUp(final int height) {
         final FloatingActionButton fab = getTasksFragment().floatingActionButton;
-        // Have to set the animation in code because I can not change the toDeltaY at runtime :(
-        // And I do not know it before
-        final TranslateAnimation anim = new TranslateAnimation(0, 0, 0, -snackbar.getHeight());
-        anim.setDuration(getResources().getInteger(R.integer.anim_snackbar_duration));
-        anim.setFillEnabled(true);
-        anim.setFillAfter(true);
-        anim.setInterpolator(this, R.interpolator.decelerate_cubic);
-        fab.startAnimation(anim);
+        AnimationHelper.moveViewUp(this, fab, height);
+
+    }
+    public void moveFabDown(final int height) {
+        final FloatingActionButton fab = getTasksFragment().floatingActionButton;
+        AnimationHelper.moveViewDown(this, fab, height);
     }
 
     @Override
@@ -385,13 +387,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
 
     @Override
     public void onDismiss(final Snackbar snackbar) {
-        final FloatingActionButton fab = getTasksFragment().floatingActionButton;
-        final TranslateAnimation anim = new TranslateAnimation(0, 0, -snackbar.getHeight(), 0);
-        anim.setDuration(getResources().getInteger(R.integer.anim_snackbar_duration));
-        anim.setFillEnabled(true);
-        anim.setFillAfter(true);
-        anim.setInterpolator(this, R.interpolator.accelerate_cubic);
-        fab.startAnimation(anim);
+        moveFabDown(snackbar.getHeight());
     }
 
     @Override

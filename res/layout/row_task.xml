@@ -34,6 +34,7 @@
         android:layout_marginBottom="@dimen/card_margin_bottom"
         android:translationZ="1dp"
         custom:cardCornerRadius="1dp"
+        android:id="@+id/task_card"
         android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout

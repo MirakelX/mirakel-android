@@ -25,7 +25,7 @@
 
     <item android:id="@+id/action_create_list"
         android:title="@string/list_menu_new_list"
-        android:icon="@drawable/ic_plus_white_36dp"
+        android:icon="@drawable/ic_plus_white_24dp"
         app:showAsAction="always"/>
         />
 </menu>
