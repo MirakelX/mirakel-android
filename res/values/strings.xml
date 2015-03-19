@@ -51,6 +51,7 @@
     <string name="menu_move_task">Move task</string>
     <string name="menu_edit_task">Edit task</string>
     <string name="menu_set_due">Set due</string>
+    <string name="menu_set_priority">Set priority</string>
     <string name="menu_edit_list">Rename list</string>
     <string name="menu_do_task">Set task as done</string>
     <string name="action_undo">Undo the last Change</string>
