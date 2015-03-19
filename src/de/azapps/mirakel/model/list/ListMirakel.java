@@ -150,6 +150,7 @@ public class ListMirakel extends ListBase {
             qb.sort(Task.DONE, Sorting.ASC);
             qb.sort(dueSort, Sorting.ASC);
             qb.sort(Task.PRIORITY, Sorting.DESC);
+            qb.sort(Task.PROGRESS, Sorting.DESC);
             break;
         case DUE:
             qb.sort(Task.DONE, Sorting.ASC);
