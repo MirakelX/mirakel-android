@@ -24,6 +24,7 @@
     <attr name="colorTextWhite" format="color"/>
     <attr name="colorTextActionBar" format="color" />
     <attr name="colorTextActionBarHighlight" format="color" />
+    <attr name="colorTaskCard" format="color" />
     <attr name="colorSelectedRow" format="color" />
     <attr name="colorCAB" format="color" />
     <attr name="colorCABStatus" format="color" />
