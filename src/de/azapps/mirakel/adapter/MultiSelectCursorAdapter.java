@@ -121,8 +121,10 @@ public abstract class
 
         @Override
         public boolean onLongClick(@NonNull final View v) {
-            setSelectMode(true);
-            toggleSelection(getPosition());
+            if (!selectMode) {
+                setSelectMode(true);
+                toggleSelection(getPosition());
+            }
             return true;
         }
     }

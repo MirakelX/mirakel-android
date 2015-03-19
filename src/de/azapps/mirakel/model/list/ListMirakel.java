@@ -203,9 +203,20 @@ public class ListMirakel extends ListBase {
 
     @NonNull
     private static MirakelQueryBuilder getBasicMQB() {
-        return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
-                SYNC_STATE.DELETE.toString()).sort(LFT,
-                        Sorting.ASC);
+        return getBasicMQB(Optional.<AccountMirakel>absent());
+    }
+    @NonNull
+    private static MirakelQueryBuilder getBasicMQB(@NonNull final Optional<AccountMirakel>
+            accountMirakelOptional) {
+        final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context).and(
+            DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+            SYNC_STATE.DELETE.toString()).sort(LFT,
+                                               Sorting.ASC);
+        if (accountMirakelOptional.isPresent()) {
+            mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, accountMirakelOptional.get());
+        }
+
+        return mirakelQueryBuilder;
     }
 
     @NonNull
@@ -234,11 +245,16 @@ public class ListMirakel extends ListBase {
 
     @NonNull
     public static Cursor allCursor(final boolean withSpecial) {
+        return  allCursor(Optional.<AccountMirakel>absent(), withSpecial);
+    }
+    @NonNull
+    public static Cursor allCursor(@NonNull final Optional<AccountMirakel> accountMirakelOptional,
+                                   final boolean withSpecial) {
         if (withSpecial) {
             return allWithSpecialMQB(Optional.<AccountMirakel>absent()).query(
                        MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
         } else {
-            return getBasicMQB().query(MirakelInternalContentProvider.LIST_URI);
+            return getBasicMQB(accountMirakelOptional).query(MirakelInternalContentProvider.LIST_URI);
         }
     }
 
