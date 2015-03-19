@@ -315,4 +315,5 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="settings_advanced">Avanzado</string>
   <string name="delete_condition">Eliminar condición</string>
   <string name="delete_semantic">Borrar plantilla de tareas</string>
+  <string name="delete_special_lists">Eliminar metalista</string>
 </resources>
