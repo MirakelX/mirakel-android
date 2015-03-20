@@ -135,6 +135,8 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
 
     @Override
     public void setPadding(final int left, final int top, final int right, final int bottom) {
+        mThumb.setTopPadding(top-bubbleSize);
+        mSmallThumb.setPadding(0,top-bubbleSize,0,0);
         super.setPadding(left+bubbleSize/2, top + bubbleSize, right+bubbleSize/2, bottom+bubbleSize/10);
     }
 
