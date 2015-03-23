@@ -21,4 +21,5 @@
 <resources>
     <dimen name="bubbleSize">50dp</dimen>
     <dimen name="sliderOffset">55dp</dimen>
+  <integer name="anim_snackbar_duration">300</integer>
 </resources>
