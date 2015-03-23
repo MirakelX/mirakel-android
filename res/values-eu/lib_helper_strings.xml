@@ -24,6 +24,14 @@
   <string name="photo_default_title">Begiratu argazki hau</string>
   <string name="today">Gaur</string>
   <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Mirakel akats berri ematea / kontaktu eskaria</string>
+  <string name="contact_text">
+<![CDATA[\n\n
+--\n
+Mirakel bertsioa: %1$s\n
+SDK bertsioa: %2$d\n
+Gailua: %3$s\n]]>
+    </string>
   <string name="contact_chooser">Bidali ePosta&#8230;</string>
   <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Putxa! Zure gailuak ezin ditu argazkiak atera</string>
   <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Ez dago argazkia gordetzeko lekurik. Barkatu!</string>
