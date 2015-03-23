@@ -26,6 +26,7 @@
   <string name="sync_warning">Sinkronizazioa esperimentala da</string>
   <string name="sync_warning_message">Sinkronizazioa une honetan oso esperimentala da. Baina frogatu dezakezu, zure kontura (egin ezazu segurtasun kopia bat!) - Ziur zaude?</string>
   <string name="sync_use_summary_taskwarrior">Taskwarrior-ekin sinkronizatu %s gisa</string>
+  <string name="sync_use_summary_mirakel">Mirakel-ekin sinkronizatu %s gisa</string>
   <string name="sync_use_summary_nothing">Ez sinkronizatu</string>
   <string name="sync_user">Erabiltzaile izena</string>
   <string name="sync_user_summary">Zerbitzariko erabiltzaile izena</string>
@@ -40,6 +41,11 @@
     <item>Taskwarrior sinkronizazioa</item>
   </string-array>
   <string name="sync_caldav">CalDAV sinkronizazioa</string>
+  <string name="sync_caldav_howto">
+<![CDATA[Mirakel-ekin bateragarria den CalDAV sinkronizazio aplikazio bat ezarri behar duzu. Oraingoz guk eraldatutako DAVdroid bertsioa instalatu behar duzu gure webgunetik.<br /><br />
+Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuekin ere lanean ari gara Mirakel-ekin sinkronizatzeko gaitasuna izan dezaten.
+        ]]>
+    </string>
   <string name="download">Deskargatu</string>
   <string name="sync_add_account">Gehitu kontua</string>
   <string name="sync_taskwarrior_configure">Konfiguratu Taskwarrior</string>
@@ -80,6 +86,8 @@
   <string name="reminder">Oroigarria</string>
   <string name="reminders_persistent">Oroigarri iraunkorra</string>
   <string name="reminders_persistent_summary">Oroigarria ixtea ezinezko egin</string>
+  <string name="startup_title">Aplikazioaren abioa</string>
+  <string name="startup_show_lists">Erakutsi zerrenda guztiak</string>
   <string name="startup_show_lists_summary">Erakutsi zerrenda guztiak abiaraztean</string>
   <string name="startup_list">Aukeratu hasierako zerrenda</string>
   <string name="startup_list_summary">\"%s\"-ko zereginak erakutsi</string>
@@ -92,6 +100,7 @@
   <string name="import_click_summary">Inportatu datu-basea</string>
   <string name="import_click">Inportatu</string>
   <string name="import_sure">Ziur zaude?</string>
+  <string name="import_sure_summary">Datu guztiak gainidatziko dira! (%s-tik inportatzen)</string>
   <string name="import_title">Aukeratu Mirakel fitxategia</string>
   <string name="no_filemanager">Instalatu fitxategi kudeatzaile bat, mesedez</string>
   <string name="import_default_list_summary">\"%s\"-ra inportatu</string>
@@ -102,15 +111,23 @@
   <string name="changelog_click">Aldaketa erregistroa</string>
   <string name="settings_about">Honi buruz</string>
   <string name="settings_help">Laguntza</string>
+  <string name="get_dashclock">Lortu Mirakel-Dashclock</string>
+  <string name="get_dashclock_summary">Mirakel luzapena Dashclock-erako</string>
   <string name="import_astrid_click">Astrid-etik inportatu</string>
+  <string name="astrid_success">Ongi inportatu dira datu guztiak!</string>
   <string name="importing">Inportatzen</string>
+  <string name="astrid_import_title">Aukeratu Astrid fitxategia</string>
   <string name="import_any_do_click">Any.Do-tik inportatu</string>
   <string name="any_do_import_title">Aukeratu Any.Do segurtasun kopia fitxategia</string>
+  <string name="any_do_this_file">%s-tik inportatu?\nHorrela ez bada aukeratu fitxategi bat zuk zeuk</string>
+  <string name="any_do_how_to">Egin zure Any.Do-ko datuen segurtasun kopia bat lehenbizi. Horretarako zoaz hona Any.Do → Settings → Backup → Create Backup. Gero itzuli hona eta sakatu OK.\nBestela aukeratu fitxategia zuk zeuk.</string>
   <string name="select_file">Aukeratu fitxategia</string>
   <string name="wait">Itxaron mesedez&#8230;</string>
   <string name="import_wunderlist_click">Wunderlist-etik inportatu</string>
   <string name="import_wunderlist_title">Aukeratu Wunderlist fitxategia</string>
   <string name="import_wunderlist_howto">Nola inportatu Wunderlist-etik</string>
+  <string name="import_wunderlist_howto_text">Wunderlist Android aplikazioak ez du segurtasun kopiak sortzeko gaitasunik.\n\n Ondorioz web aplikazioan hasi behar duzu saioa. Zoaz hona Preferences → Account → Create Backup → (itxaron) → Click to download. Kopiatu fitxategia zure gailura eta etorri hona berriro.</string>
+  <string name="highlightSelected_summary">Nabarmendu zereginak edo zerrendak hauetan klik egitean</string>
   <string name="highlightSelected">Aukeratutakoa nabarmendu</string>
   <string name="settings_date_format_relative">Erakutsi data erlatiboak</string>
   <string name="settings_date_format_relative_summary">Adibidez \"bihar\" zenbakizko dataren ordez</string>
@@ -129,6 +146,8 @@
   <string name="semantic_new_task">Zeregin berriaren txantiloia</string>
   <string name="semantic_new_task_config_summary">Konfiguratu zeregin berriak sortzeko baldintzak</string>
   <string name="semantic_new_task_config">Konfiguratu zeregin txantiloiak</string>
+  <string name="swipeBehavior_title">Aldatu ukitatiko zereginera hatza pasatzean</string>
+  <string name="swipeBehavior_summary">Aldatu ukitutako zereginera edo aldatu aukeratutako azken zereginera</string>
   <string name="lock_drawer_in_task_fragment_summary">Nahi gabe ireki ez dezazun</string>
   <string name="lock_drawer_in_task_fragment">Blokeatu zerrenda ikuspegia zereginaren xehetasunetan</string>
   <string name="useTabletLayout">Erabili Tablet diseinua</string>
