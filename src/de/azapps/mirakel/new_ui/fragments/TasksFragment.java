@@ -377,4 +377,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     void onSetTag() {
         Toast.makeText(getActivity(), "Implement set tags", Toast.LENGTH_LONG);
     }
+
+    public void resetList() {
+        setList(listMirakel);
+    }
 }

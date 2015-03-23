@@ -34,7 +34,7 @@
         android:background="?colorPrimary"
         android:elevation="3dp"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+        app:popupTheme="@style/MirakelBaseTheme.PopupMenuStyle"/>
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

@@ -35,7 +35,8 @@
         android:translationZ="1dp"
         custom:cardCornerRadius="1dp"
         android:id="@+id/task_card"
-        android:foreground="?android:attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="?colorTaskCard">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -62,7 +63,7 @@
                 <de.azapps.mirakel.new_ui.views.TaskNameView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/task_name"
+                    android:textAppearance="@style/TextAppearance.Bold.Large"
                     android:id="@+id/task_name"
                     android:text="Example task"
                     custom:strokeSize="2dp"
@@ -86,6 +87,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/task_list"
                         android:text="List"
+                        android:textColor="?colorTextGrey"
                         android:textAppearance="@style/TextAppearance.Regular.Small"/>
 
                 </LinearLayout>
