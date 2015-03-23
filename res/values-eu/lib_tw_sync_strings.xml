@@ -26,6 +26,7 @@
   <string name="sync_warning">Sinkronizazioa esperimentala da</string>
   <string name="sync_warning_message">Sinkronizazioa une honetan oso esperimentala da. Baina frogatu dezakezu, zure kontura (egin ezazu segurtasun kopia bat!) - Ziur zaude?</string>
   <string name="sync_use_summary_taskwarrior">Taskwarrior-ekin sinkronizatu %s gisa</string>
+  <string name="sync_use_summary_mirakel">Mirakel-ekin sinkronizatu %s gisa</string>
   <string name="sync_use_summary_nothing">Ez sinkronizatu</string>
   <string name="sync_user">Erabiltzaile izena</string>
   <string name="sync_user_summary">Zerbitzariko erabiltzaile izena</string>
@@ -39,6 +40,11 @@
     <item>Taskwarrior sinkronizazioa</item>
   </string-array>
   <string name="sync_caldav">CalDAV sinkronizazioa</string>
+  <string name="sync_caldav_howto_">
+<![CDATA[Mirakel-ekin bateragarria den CalDAV sinkronizazio aplikazio bat ezarri behar duzu. Oraingoz guk eraldatutako DAVdroid bertsioa instalatu behar duzu gure webgunetik.<br /><br />
+Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuekin ere lanean ari gara Mirakel-ekin sinkronizatzeko gaitasuna izan dezaten.
+        ]]>
+    </string>
   <string name="download">Deskargatu</string>
   <string name="sync_add_account">Gehitu kontua</string>
   <string name="sync_taskwarrior_configure">Konfiguratu Taskwarrior</string>
@@ -69,6 +75,7 @@
   <string name="client_sync_key_not_found">Bezero sinkronizazio giltza ez da aurkitu. Egiaztatu zure Taskwarrior konfigurazioa mesedez.</string>
   <string name="config_404">Konfigurazio fitxategia ez da aurkitu</string>
   <string name="config_error_empty">Ez dago %s sarrerarik konfigurazioan</string>
+  <string name="load_config">Aukeratu Taskwarrior konfigurazio fitxategia</string>
   <string name="select_config">Aukeratu Taskwarrior konfigurazio fitxategia</string>
   <string name="message_try_later">Saiatu beranduago sinkronizatzen</string>
   <string name="message_access_denied">Sarbidea ukatuta!\nKonfigurazio fitxategi egokia erabili duzu?\nTaskwarrior zerbitzaria Mirakel-ekin sinkronizatzea onartu dezan konfiguratu behar duzu.</string>
