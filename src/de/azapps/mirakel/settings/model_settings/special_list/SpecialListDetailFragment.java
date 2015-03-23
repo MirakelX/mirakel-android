@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.MirakelContentObserver;
@@ -79,7 +80,7 @@ import static com.google.common.base.Optional.of;
 
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
     CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener,
-    SwipeLinearLayout.OnItemRemoveListener, EventListener, ValueAnimator.AnimatorUpdateListener {
+    SwipeLinearLayout.OnItemRemoveListener, EventListener {
 
 
     protected SpecialList mItem;
@@ -336,22 +337,6 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     private Preference getWhereStringPreference() {
         final Preference where = new Preference(mContext);
         where.setKey("special_lists_where");
-        Map<Uri, MirakelContentObserver.ObserverCallBack> doOnChange = new HashMap<>();
-        doOnChange.put(SpecialList.URI, new MirakelContentObserver.ObserverCallBack() {
-            @Override
-            public void handleChange() {
-                Optional<SpecialList> changed = SpecialList.getSpecial(mItem.getId());
-                if (changed.isPresent() && !changed.get().equals(mItem)) {
-                    mItem = changed.get();
-                    where.setSummary(mItem.getWhereQueryForTasks().select("*").getQuery(SpecialList.URI));
-                }
-            }
-
-            @Override
-            public void handleChange(long id) {
-                handleChange();
-            }
-        });
         where.setTitle(R.string.special_list_where);
         where.setSummary(mItem.getWhereQueryForTasks().select("*").getQuery(Task.URI));
         where.setEnabled(false);
@@ -474,13 +459,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     public void onShow(final Snackbar snackbar) {
 
         if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
-            initialTop = mFab.getTop();
-            final ValueAnimator animator = new ValueAnimator();
-            animator.setIntValues(initialTop, initialTop - snackbar.getHeight());
-            animator.setInterpolator(new OvershootInterpolator());
-            animator.setDuration(100L);
-            animator.addUpdateListener(this);
-            animator.start();
+            AnimationHelper.moveViewUp(getActivity(), mFab, snackbar.getHeight());
         }
     }
 
@@ -492,29 +471,12 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     @Override
     public void onDismiss(final Snackbar snackbar) {
         if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
-            mFab.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    final ValueAnimator animator = new ValueAnimator();
-                    animator.setIntValues(mFab.getTop(), initialTop);
-                    animator.setInterpolator(new OvershootInterpolator());
-                    animator.setDuration(100L);
-                    animator.addUpdateListener(SpecialListDetailFragment.this);
-                    animator.start();
-                }
-            }, 200L);
+            AnimationHelper.moveViewDown(getActivity(), mFab, snackbar.getHeight());
         }
     }
 
     @Override
     public void onDismissed(final Snackbar snackbar) {
 
-    }
-
-    @Override
-    public void onAnimationUpdate(final ValueAnimator animation) {
-        final int size = mFab.getBottom() - mFab.getTop();
-        mFab.setTop((int) animation.getAnimatedValue());
-        mFab.setBottom(mFab.getTop() + size);
     }
 }
