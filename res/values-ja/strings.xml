@@ -43,6 +43,7 @@
   <string name="menu_move_task">タスクを移動</string>
   <string name="menu_edit_task">タスクを編集</string>
   <string name="menu_set_due">期日を設定</string>
+  <string name="menu_set_priority">優先度の設定</string>
   <string name="menu_edit_list">リストの名前を変更</string>
   <string name="menu_do_task">タスクを完了として設定</string>
   <string name="action_undo">最後の変更を元に戻す</string>

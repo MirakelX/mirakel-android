@@ -43,6 +43,7 @@
   <string name="menu_move_task">Premakni nalogo</string>
   <string name="menu_edit_task">Uredi nalogo</string>
   <string name="menu_set_due">Nastavi datum preteka</string>
+  <string name="menu_set_priority">Nastavi prednost</string>
   <string name="menu_edit_list">Preimenuj seznam</string>
   <string name="menu_do_task">Nastavi nalogo kot končano</string>
   <string name="action_undo">Razveljavi zadnjo spremembo</string>

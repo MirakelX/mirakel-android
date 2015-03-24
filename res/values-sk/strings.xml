@@ -37,6 +37,7 @@
   <string name="menu_settings">Nastavenia</string>
   <string name="menu_move_task">Presunúť úlohu</string>
   <string name="menu_edit_task">Upraviť úlohu</string>
+  <string name="menu_set_priority">Nastaviť prioritu</string>
   <string name="menu_edit_list">Premenovať zoznam</string>
   <string name="menu_do_task">Nastaviť úlohu ako splnenú</string>
   <string name="action_undo">Vrátiť poslednú zmenu</string>

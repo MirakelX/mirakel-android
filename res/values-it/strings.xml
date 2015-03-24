@@ -43,6 +43,7 @@
   <string name="menu_move_task">Sposta l\'attività</string>
   <string name="menu_edit_task">Modifica l\'attività</string>
   <string name="menu_set_due">Imposta scadenza</string>
+  <string name="menu_set_priority">Imposta priorità</string>
   <string name="menu_edit_list">Rinomina l\'elenco</string>
   <string name="menu_do_task">Attività completata</string>
   <string name="action_undo">Annulla l\'ultima modifica</string>

@@ -43,6 +43,7 @@
   <string name="menu_move_task">Mover tarea</string>
   <string name="menu_edit_task">Editar tarea</string>
   <string name="menu_set_due">Establecer fecha</string>
+  <string name="menu_set_priority">Establecer prioridad</string>
   <string name="menu_edit_list">Renombrar lista</string>
   <string name="menu_do_task">Dar tarea por finalizada</string>
   <string name="action_undo">Deshacer el último cambio</string>

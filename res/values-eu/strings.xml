@@ -43,6 +43,7 @@
   <string name="menu_move_task">Mugitu zeregina</string>
   <string name="menu_edit_task">Aldatu zeregina</string>
   <string name="menu_set_due">Ezarri epemuga</string>
+  <string name="menu_set_priority">Ezarri lehentasuna</string>
   <string name="menu_edit_list">Izena aldatu zerrendari</string>
   <string name="menu_do_task">Ezarri zeregina eginda bezala</string>
   <string name="action_undo">Desegin azken aldaketa</string>

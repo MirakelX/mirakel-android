@@ -43,6 +43,7 @@
   <string name="menu_move_task">Aufgabe verschieben</string>
   <string name="menu_edit_task">Aufgabe bearbeiten</string>
   <string name="menu_set_due">Fälligkeit</string>
+  <string name="menu_set_priority">Priorität festlegen</string>
   <string name="menu_edit_list">Liste umbenennen</string>
   <string name="menu_do_task">Aufgabe als erledigt markieren</string>
   <string name="action_undo">Mache die letzte Änderung rückgängig</string>
