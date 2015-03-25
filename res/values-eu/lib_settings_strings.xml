@@ -261,6 +261,10 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
 <p>Bisita gaitzazu</p>
 ]]>
     </string>
+  <string name="credits_license">
+<![CDATA[<p>Programa hau software librea da: Berau banatu eta aldatu dezakezu Free Software Foundation fundazioak argitaratutakop <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> lizentziaren baldintzen arabera, bai 3. bertsioa, baita (nahiago baduzu) osteko bertsio baten arabera.</p>
+<p>Programa hau erabilgarri izateko asmoarekin banatzen da baina EZ DU INOLAKO BERMERIK; ez MERKATURATZE ez HELBURU ZEHATZ BATETARAKO EGOKITASUN bermearekin. Ikusi GNU General Public License lizentzia xehetasun gehiagorako.</p>]]>
+    </string>
   <string name="credits_translations">Itzulpenak</string>
   <string name="feedback">Iritzia bidali</string>
   <string name="credits_libraries">Erabilitako liburutegiak</string>
