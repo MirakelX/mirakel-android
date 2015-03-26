@@ -60,7 +60,7 @@
     <string name="kill_app">Close app</string>
     <string name="action_settings">Settings</string>
     <string name="save">Save</string>
-    <string name="menu_sort_lists">Reorder lists</string>
+    <string name="menu_sort_lists">Sort list</string>
     <string name="as_subtask">Add to a task</string>
     <string name="task_clone">Clone task</string>
     <string name="task_menu_sorting">Sort tasks</string>
