@@ -59,4 +59,8 @@
     <string name="can_not_edit_list">Can not edit CalDAV lists</string>
     <string name="menu_set_tags">Set tags</string>
 
+    <string name="add_tag_view_string">Tag</string>
+    <string name="add_note_view_string">Note</string>
+    <string name="add_subtask_view_string">Subtask</string>
+
 </resources>

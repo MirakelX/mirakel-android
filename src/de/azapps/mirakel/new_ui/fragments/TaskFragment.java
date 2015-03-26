@@ -24,11 +24,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -56,6 +60,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import butterknife.OnFocusChange;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -108,8 +113,17 @@ public class TaskFragment extends DialogFragment {
     @InjectView(R.id.task_button_done)
     Button doneButton;
 
+    @InjectView(R.id.tag_wrapper)
+    LinearLayout tagWrapper;
+    @InjectView(R.id.note_wrapper)
+    LinearLayout noteWrapper;
+    @InjectView(R.id.subtask_wrapper)
+    LinearLayout subtaskWrapper;
+
     private MirakelContentObserver observer;
     private InputMethodManager inputMethodManager;
+    private PopupWindow popupWindow;
+    private int popupViews = 3;
 
 
     public TaskFragment() {
@@ -176,23 +190,69 @@ public class TaskFragment extends DialogFragment {
         ButterKnife.inject(this, layout);
         updateAll();
 
+        setupAddMore(inflater);
+
         return layout;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window = dialog.getWindow();
-            lp.copyFrom(window.getAttributes());
-            // This makes the dialog take up the full width
+    private void setupAddMore(LayoutInflater inflater) {
+        final LinearLayout popupView = (LinearLayout) inflater.inflate(R.layout.add_view_popup, null);
+        popupView.getChildAt(0).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                tagWrapper.setVisibility(View.VISIBLE);
+                v.setVisibility(View.GONE);
+                checkDisableAddButton();
+                popupWindow.dismiss();
+            }
+        });
+        popupView.getChildAt(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                noteWrapper.setVisibility(View.VISIBLE);
+                v.setVisibility(View.GONE);
+                checkDisableAddButton();
+                popupWindow.dismiss();
+            }
+        });
+        popupView.getChildAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                subtaskWrapper.setVisibility(View.VISIBLE);
+                v.setVisibility(View.GONE);
+                checkDisableAddButton();
+                popupWindow.dismiss();
+            }
+        });
+        if (task.getContent().isEmpty()) {
+            noteWrapper.setVisibility(View.GONE);
+        } else {
+            popupView.getChildAt(1).setVisibility(View.GONE);
+            checkDisableAddButton();
+        }
+        if (task.getSubtasks().isEmpty()) {
+            subtaskWrapper.setVisibility(View.GONE);
+        } else {
+            popupView.getChildAt(2).setVisibility(View.GONE);
+            checkDisableAddButton();
+        }
+        if (task.getTags().isEmpty()) {
+            tagWrapper.setVisibility(View.GONE);
+        } else {
+            popupView.getChildAt(0).setVisibility(View.GONE);
+            checkDisableAddButton();
+        }
+        popupWindow = new PopupWindow(getActivity());
+        popupWindow.setContentView(popupView);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(ThemeManager.getColor(R.attr.colorTextWhite)));
+        popupWindow.setFocusable(true);
+        popupWindow.setWindowLayoutMode(WindowManager.LayoutParams.WRAP_CONTENT,
+                                        WindowManager.LayoutParams.WRAP_CONTENT);
+    }
 
-            // TODO do something else on tablets
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setAttributes(lp);
+    private void checkDisableAddButton() {
+        if (--popupViews < 1) {
+            addMoreButton.setVisibility(View.GONE);
         }
     }
 
@@ -322,6 +382,23 @@ public class TaskFragment extends DialogFragment {
         }
     };
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = dialog.getWindow();
+            lp.copyFrom(window.getAttributes());
+            // This makes the dialog take up the full width
+
+            // TODO do something else on tablets
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setAttributes(lp);
+        }
+    }
+
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
@@ -399,6 +476,18 @@ public class TaskFragment extends DialogFragment {
             }
         }
         dismiss();
+    }
+
+    @OnClick(R.id.task_button_add_more)
+    void onAddMoreClicked() {
+        if (popupWindow.isShowing()) {
+            popupWindow.dismiss();
+            return;
+        }
+        final int[] pos = new int[2];
+        addMoreButton.getLocationOnScreen(pos);
+        popupWindow.showAtLocation(addMoreButton, Gravity.NO_GRAVITY, pos[0], pos[1] );
+
     }
 
 }
