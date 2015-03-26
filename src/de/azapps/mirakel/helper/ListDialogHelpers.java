@@ -27,9 +27,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -69,34 +73,34 @@ public class ListDialogHelpers {
      *
      * @param ctx
      * @param list
-     * @param cls
+     * @param callback
      * @return
      */
     public static ListMirakel handleSortBy(final Context ctx,
-                                           final ListMirakel list, final Helpers.ExecInterface cls,
-                                           final Preference res) {
-        final CharSequence[] SortingItems = ctx.getResources().getStringArray(
+                                           final ListMirakel list, final Helpers.ExecInterface callback,
+                                           final Preference preferences) {
+        final CharSequence[] sortingItems = ctx.getResources().getStringArray(
                                                 R.array.task_sorting_items);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setTitle(ctx.getString(R.string.task_sorting_title));
-        builder.setSingleChoiceItems(SortingItems, list.getSortBy().getShort(),
-        new DialogInterface.OnClickListener() {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(ctx);
+
+        builder.title(ctx.getString(R.string.task_sorting_title));
+        builder.items(sortingItems);
+        // Find item
+        builder.itemsCallbackSingleChoice(list.getSortBy().getShort(), new MaterialDialog.ListCallback() {
             @Override
-            public void onClick(final DialogInterface dialog,
-                                final int item) {
+            public void onSelection(MaterialDialog materialDialog, View view, int item,
+                                    CharSequence charSequence) {
                 list.setSortBy(ListMirakel.SORT_BY.fromShort((short) item));
                 list.save();
-                if (res != null) {
-                    res.setSummary(SortingItems[item]);
+                if (preferences != null) {
+                    preferences.setSummary(sortingItems[item]);
                 }
-                if (cls != null) {
-                    cls.exec();
+                if (callback != null) {
+                    callback.exec();
                 }
-                alert.dismiss(); // Ugly
             }
         });
-        alert = builder.create();
-        alert.show();
+        builder.show();
         return list;
     }
 
