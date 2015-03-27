@@ -23,6 +23,9 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/progress_text"
@@ -33,8 +36,10 @@
 
         <de.azapps.material_elements.views.Slider
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="72dp"
             app:widget_color="?colorPrimary"
+            android:layout_centerInParent="true"
             style="?android:attr/progressBarStyleHorizontal"
             android:id="@+id/progress_bar"/>
+    </RelativeLayout>
 </merge>
