@@ -52,7 +52,6 @@
   <string name="kill_app">Закрыть приложение</string>
   <string name="action_settings">Параметры</string>
   <string name="save">Сохранить</string>
-  <string name="menu_sort_lists">Изменить порядок списков</string>
   <string name="as_subtask">Добавить в задачу</string>
   <string name="task_clone">Дублировать задачу</string>
   <string name="task_menu_sorting">Сортировать дела</string>

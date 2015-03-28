@@ -52,7 +52,6 @@
   <string name="kill_app">Fermer l\'application</string>
   <string name="action_settings">Paramètres</string>
   <string name="save">Sauvegarder</string>
-  <string name="menu_sort_lists">Réorganiser les listes</string>
   <string name="as_subtask">Ajouter à une tâche</string>
   <string name="task_clone">Dupliquer la tâche</string>
   <string name="task_menu_sorting">Trier les tâches</string>

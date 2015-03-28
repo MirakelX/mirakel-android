@@ -52,7 +52,6 @@
   <string name="kill_app">Затваряне на приложението</string>
   <string name="action_settings">Настройки</string>
   <string name="save">Запази</string>
-  <string name="menu_sort_lists">Реорганизиране на списъците</string>
   <string name="as_subtask">Добавяне към задача</string>
   <string name="task_clone">Копиране на задачата</string>
   <string name="task_menu_sorting">Сортиране на задачи</string>

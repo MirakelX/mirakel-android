@@ -52,7 +52,6 @@
   <string name="kill_app">إغلاق التطبيق</string>
   <string name="action_settings">إعدادات</string>
   <string name="save">حفظ</string>
-  <string name="menu_sort_lists">إعادة ترتيب القوائم</string>
   <string name="as_subtask">إضافة إلى مهمة</string>
   <string name="task_clone">استنساخ مهمة</string>
   <string name="task_menu_sorting">فرز المهام</string>

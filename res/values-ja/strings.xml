@@ -52,7 +52,6 @@
   <string name="kill_app">アプリを閉じる</string>
   <string name="action_settings">設定</string>
   <string name="save">保存</string>
-  <string name="menu_sort_lists">リストの並べ替え</string>
   <string name="as_subtask">タスクに追加</string>
   <string name="task_clone">タスクを複製</string>
   <string name="task_menu_sorting">タスクの並べ替え</string>

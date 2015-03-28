@@ -52,7 +52,6 @@
   <string name="kill_app">App schließen</string>
   <string name="action_settings">Einstellungen</string>
   <string name="save">Speichern</string>
-  <string name="menu_sort_lists">Listen umsortieren</string>
   <string name="as_subtask">Als Unteraufgabe hinzufügen</string>
   <string name="task_clone">Aufgabe duplizieren</string>
   <string name="task_menu_sorting">Sortiere Aufgaben</string>
