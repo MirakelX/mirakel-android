@@ -28,7 +28,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.ThemeManager;
-import de.azapps.mirakel.custom_views.TagListView;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -38,6 +37,8 @@ public class TagsView extends LinearLayout {
     TextView title;
     @InjectView(R.id.task_tags_wrapper)
     LinearLayout tagList;
+    @InjectView(R.id.task_tag_add_view)
+    AddTagView addTagView;
     private Task task;
 
     public TagsView(final Context context) {
@@ -58,18 +59,7 @@ public class TagsView extends LinearLayout {
     }
 
     private void rebuildLayout() {
-        final TagListView tagView;
-        if (this.tagList.getChildCount() < 1) {
-            tagView = new TagListView(getContext());
-            tagView.setLayoutParams(new LinearLayout.LayoutParams(
-                                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                                        android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-            tagView.init(this.task);
-            this.tagList.addView(tagView);
-        } else {
-            tagView = (TagListView) this.tagList.getChildAt(0);
-            tagView.init(this.task);
-        }
+        addTagView.setTags(task);
         invalidate();
         requestLayout();
     }

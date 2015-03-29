@@ -62,5 +62,6 @@
     <string name="add_tag_view_string">Tag</string>
     <string name="add_note_view_string">Note</string>
     <string name="add_subtask_view_string">Subtask</string>
+    <string name="add_tag">Add a tag</string>
 
 </resources>
