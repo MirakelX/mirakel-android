@@ -25,11 +25,4 @@
     </style>
     <style name="DialogStyle" parent="@style/Theme.AppCompat.Light"></style>
     <style name="Theme.Dialog" parent="@style/Theme.AppCompat.Light" />
-
-    <style name="ListsFragmentTextStyle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:color">?colorTextBlack</item>
-        <item name="android:layout_gravity">center_vertical</item>
-    </style>
 </resources>

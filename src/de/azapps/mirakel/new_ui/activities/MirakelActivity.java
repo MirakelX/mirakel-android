@@ -281,6 +281,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             public void apply(final DrawerLayout mDrawerLayout) {
                 final ActionBarDrawerToggle mDrawerToggle = new DrawerToggle(mDrawerLayout);
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
+                mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
                 MirakelActivity.this.mDrawerToggle = of(mDrawerToggle);
             }
         });
