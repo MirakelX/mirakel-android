@@ -104,22 +104,6 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
                 return true;
             }
         });
-        final CheckBoxPreference isMinimalistic = (CheckBoxPreference) findPreference("isMinimalistic");
-        if (isMinimalistic != null) {
-            isMinimalistic.setChecked(WidgetHelper.isMinimalistic(context,
-                                      widgetId));
-            isMinimalistic
-            .setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(
-                    final Preference preference,
-                    final Object newValue) {
-                    WidgetHelper.setMinimalistic(context, widgetId,
-                                                 (Boolean) newValue);
-                    return true;
-                }
-            });
-        }
         final CheckBoxPreference noGradient = (CheckBoxPreference) findPreference("widgetUseGradient");
         if (noGradient != null) {
             noGradient.setChecked(WidgetHelper
@@ -227,9 +211,6 @@ public class PreferencesWidgetHelper extends PreferencesHelper {
         } else {
             removePreference("widgetTransparency");
             removePreference("widgetFontColor");
-            if (isMinimalistic != null) {
-                removePreference("isMinimalistic");
-            }
         }
     }
 

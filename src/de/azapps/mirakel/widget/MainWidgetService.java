@@ -107,14 +107,11 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         }
         final Task task = this.tasks.get(position);
         // Get The Task
-        final boolean isMinimalistic = WidgetHelper.isMinimalistic(
-                                           this.mContext, this.widgetId);
         RemoteViews rv = new RemoteViews(this.mContext.getPackageName(),
-                                         isMinimalistic ? R.layout.widget_row_minimal
-                                         : R.layout.widget_row);
+                                         R.layout.widget_row_minimal);
         // Set the Contents of the Row
         rv = WidgetHelper.configureItem(rv, task, this.mContext,
-                                        this.list.getId(), isMinimalistic, this.widgetId);
+                                        this.list.getId(), this.widgetId);
         // Set the Click–Intent
         // We need to do so, because we can not start the Activity directly from
         // the Service
