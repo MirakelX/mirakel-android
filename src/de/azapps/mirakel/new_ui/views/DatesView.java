@@ -92,7 +92,7 @@ public class DatesView extends LinearLayout {
         } else {
             if (due.isPresent()) {
                 dueText.setText(DateTimeHelper.formatDate(getContext(), due));
-                dueColor = TaskHelper.getTaskDueColor(getContext(), due, isDone);
+                dueColor = TaskHelper.getTaskDueColor(due, isDone);
             } else {
                 dueText.setText(getContext().getString(R.string.no_date));
                 dueColor = ThemeManager.getColor(R.attr.colorDisabled);
@@ -100,7 +100,7 @@ public class DatesView extends LinearLayout {
             listText.setText(listMirakel);
             if (reminder.isPresent()) {
                 reminderText.setText(DateTimeHelper.formatReminder(getContext(), reminder.get()));
-                reminderColor = TaskHelper.getTaskDueColor(getContext(), reminder, false);
+                reminderColor = TaskHelper.getTaskDueColor(reminder, false);
             } else {
                 reminderText.setText(getContext().getString(R.string.no_reminder));
                 reminderColor = ThemeManager.getColor(R.attr.colorDisabled);

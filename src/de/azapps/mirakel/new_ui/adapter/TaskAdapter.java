@@ -21,11 +21,8 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.CursorAdapter;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +35,6 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
-import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
@@ -81,7 +77,7 @@ public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHo
             holder.due.setVisibility(View.VISIBLE);
             holder.due.setText(DateTimeHelper.formatDate(mContext,
                                task.getDue()));
-            holder.due.setTextColor(TaskHelper.getTaskDueColor(mContext, task.getDue(),
+            holder.due.setTextColor(TaskHelper.getTaskDueColor(task.getDue(),
                                     task.isDone()));
         } else {
             holder.due.setVisibility(View.GONE);
