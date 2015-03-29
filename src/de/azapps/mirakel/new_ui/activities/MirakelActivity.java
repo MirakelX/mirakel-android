@@ -29,7 +29,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -38,19 +37,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.EventListener;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -265,7 +259,12 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             // TODO
             break;
         case DefinitionsHelper.ADD_TASK_FROM_WIDGET:
-            // TODO
+            if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
+                setList((ListMirakel) intent.getParcelableExtra(DefinitionsHelper.EXTRA_LIST));
+                getTasksFragment().addTask();
+            } else {
+                Log.d(TAG, "show_list does not pass list, so ignore this");
+            }
             break;
         case DefinitionsHelper.SHOW_MESSAGE:
             // TODO
