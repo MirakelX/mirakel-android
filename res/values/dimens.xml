@@ -24,4 +24,7 @@
     <dimen name="flatbutton_height">48dp</dimen>
     <dimen name="flatbutton_min_width">72dp</dimen>
     <dimen name="actionbar_elevation">3dp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+    <dimen name="text_size_regular">16sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
 </resources>
