@@ -24,9 +24,9 @@
   <string name="sync_new">Нов профил</string>
   <string name="sync_use">Използвай синхронизация</string>
   <string name="sync_warning">Синхронизацията е нестабилна</string>
-  <string name="sync_warning_message">Синхронизацията в момента е много нестабилна. Но можете да опитате на собствен риск ( Направете резервно копие!) -Сигурни ли сте?</string>
+  <string name="sync_warning_message">Синхронизацията в момента е много нестабилна. Но можете да опитате на собствен риск (Направете резервно копие!) -Сигурни ли сте?</string>
   <string name="sync_use_summary_taskwarrior">Синхронизация с Taskwarrior като %s</string>
-  <string name="sync_use_summary_mirakel">Синхронизация с  Mirakel като %s</string>
+  <string name="sync_use_summary_mirakel">Синхронизация с Mirakel като %s</string>
   <string name="sync_use_summary_nothing">Не използвай синхронизация</string>
   <string name="sync_user">Потребителско име</string>
   <string name="sync_user_summary">Потребителско име от страна на сървъра</string>
@@ -51,7 +51,7 @@
   <string name="sync_taskwarrior_scan_qr">Сканиране на QR кода</string>
   <string name="sync_taskwarrior_select_file">Избиране на конфигурационен файл</string>
   <string name="sync_taskwarrior_how_to">Как да настройте вашия собствен сървър</string>
-  <string name="sync_taskwarrior_own_server">или Просто използвайте вашия собствен сървър</string>
+  <string name="sync_taskwarrior_own_server">или просто използвайте вашия собствен сървър</string>
   <string name="sync_taskwarrior_configuring">Конфигуриране на синхронизацията&#8230;</string>
   <string name="sync_taskwarrior_about">Ако вече имате taskwarrior профил:</string>
   <string name="sync_taskwarrior_register">Ако не, може да регистрирате нов профил на нашия сървър:</string>
@@ -68,7 +68,7 @@
   <string name="change_account">Смяна на профила</string>
   <string name="wrong_config">Изглежда, че сте използвали грешен конфигурационен файл</string>
   <string name="cert_not_found">Сертификатът изчезна, моля създайте отново своя профил</string>
-  <string name="could_not_find_common_ancestor"><![CDATA[         Възникна грешка при синхронизиране. Но ние направихме заобиколно решение и някои данни могат да бъдат загубени: (. Ние направихме резервно копие на вашата база данни. Проверете го, ако нещо е наред. < br / > < br / >
+  <string name="could_not_find_common_ancestor"><![CDATA[         Възникна грешка при синхронизирането. Някои данни могат да бъдат загубени: (. Ние направихме резервно копие на вашата база данни. Проверете го, ако нещо е наред. < br / > < br / >
  За повече information\ виж <a href="https://mirakel.atlassian.net/browse/MIR-453"> тук</a>         ]]></string>
   <string name="client_sync_key_not_found">Ключът за синхронизация не е намерен. Моля проверете конфигурацията на Вашия taswarrior.</string>
   <string name="config_404">Конфигурационният файл не е намерен</string>
@@ -76,7 +76,7 @@
   <string name="load_config">Избиране на конфигурационен файл за Taskwarrior</string>
   <string name="select_config">Избиране на конфигурационен файл Taskwarrior</string>
   <string name="message_try_later">Опитайте синхронизацията по-късно</string>
-  <string name="message_access_denied">Достъпът отказан!\nИзползвахте ли правилния конфигурационен файл?\nТрябва да конфигурирате сърварът на Taskwarrior, за да приеме синхронизацията с Mirakel.</string>
+  <string name="message_access_denied">Достъпът отказан!\nИзползвахте ли правилния конфигурационен файл?\nТрябва да конфигурирате сървара на Taskwarrior, за да приеме синхронизацията с Mirakel.</string>
   <string name="message_create_socket">Не мога да създам сокет!\nПроверете интернет връзката си.</string>
   <string name="message_account_suspended">Вашият профил е блокиран!</string>
   <string name="message_parse_message">Не мога да анализирам задачите - моля опишете как се случи това</string>
