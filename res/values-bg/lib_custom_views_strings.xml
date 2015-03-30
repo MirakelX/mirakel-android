@@ -64,7 +64,7 @@
   </string-array>
   <string name="tag_has_dark_text">Текстът е черен</string>
   <string-array name="recurring_task_select">
-    <item>Само това повтаряне</item>
-    <item>Всички повтарания</item>
+    <item>Само това повторение</item>
+    <item>Всички повторения</item>
   </string-array>
 </resources>
