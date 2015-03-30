@@ -24,9 +24,9 @@
   <string name="sync_new">Нов профил</string>
   <string name="sync_use">Използвай синхронизация</string>
   <string name="sync_warning">Синхронизацията е нестабилна</string>
-  <string name="sync_warning_message">Синхронизацията в момента е много нестабилна. Но можете да опитате на собствен риск ( Направете резервно копие!) -Сигурни ли сте?</string>
+  <string name="sync_warning_message">Синхронизацията в момента е много нестабилна. Но можете да опитате на собствен риск (Направете резервно копие!) -Сигурни ли сте?</string>
   <string name="sync_use_summary_taskwarrior">Синхронизация с Taskwarrior като %s</string>
-  <string name="sync_use_summary_mirakel">Синхронизация с  Mirakel като %s</string>
+  <string name="sync_use_summary_mirakel">Синхронизация с Mirakel като %s</string>
   <string name="sync_use_summary_nothing">Не използвай синхронизация</string>
   <string name="sync_user">Потребителско име</string>
   <string name="sync_user_summary">Потребителско име от страна на сървъра</string>
@@ -52,7 +52,7 @@
   <string name="sync_taskwarrior_scan_qr">Сканиране на QR кода</string>
   <string name="sync_taskwarrior_select_file">Избиране на конфигурационен файл</string>
   <string name="sync_taskwarrior_how_to">Как да настройте вашия собствен сървър</string>
-  <string name="sync_taskwarrior_own_server">или Просто използвайте вашия собствен сървър</string>
+  <string name="sync_taskwarrior_own_server">или просто използвайте вашия собствен сървър</string>
   <string name="sync_taskwarrior_url_error">URL адресът не е правилен. Наистина ли сканирахте правилния код?</string>
   <string name="sync_taskwarrior_configuring">Конфигуриране на синхронизацията&#8230;</string>
   <string name="sync_taskwarrior_about">Ако вече имате taskwarrior профил:</string>
@@ -70,7 +70,7 @@
   <string name="no_barcode_app_install">Инсталиране</string>
   <string name="menu_edit_listaccount">Сметка</string>
   <string name="change_account">Смяна на профила</string>
-  <string name="version">Версия на апликацията</string>
+  <string name="version">Версия на приложението</string>
   <string name="no">Не</string>
   <string name="not">Не</string>
   <string name="notification_title">Известия</string>
@@ -96,7 +96,7 @@
   <string name="settings_misc">Разни</string>
   <string name="settings_backup">Резервно копие и внасяне</string>
   <string name="backup_click_summary">Архивиране на базата данни на SD карта (%s)</string>
-  <string name="backup_click">Архивиране</string>
+  <string name="backup_click">Резервно копие</string>
   <string name="import_click_summary">Внасяне на базата данни</string>
   <string name="import_click">Внасяне</string>
   <string name="import_sure">Сигурни ли сте?</string>
@@ -115,23 +115,23 @@
   <string name="get_dashclock_summary">Mirakel-разширение за Dashclock</string>
   <string name="import_astrid_click">Внасяне от Astrid</string>
   <string name="astrid_success">Всички данни са успешно внесени!</string>
-  <string name="importing">Пренос</string>
+  <string name="importing">Внасяне</string>
   <string name="astrid_import_title">Изберете Astrid файл</string>
-  <string name="import_any_do_click">Импортиране от Any.Do</string>
+  <string name="import_any_do_click">Внасяне от Any.Do</string>
   <string name="any_do_import_title">Избиране на архивен файл Any.Do</string>
-  <string name="any_do_this_file">Импорт от %s\n ако не моля изберете сами файл</string>
+  <string name="any_do_this_file">Внасяне от %s\n, ако не, моля изберете сами файл</string>
   <string name="any_do_how_to">Моля първо направете резервно копие на Вашите Any.Do данни. За да го направите отидете в Any.Do → Settings → Backup → Create → Backup. След това се върнете и натиснете OK.\nИли сами изберете файла.</string>
-  <string name="select_file">Изберете файл</string>
+  <string name="select_file">Избиране на файл</string>
   <string name="wait">Моля, изчакайте&#8230;</string>
-  <string name="import_wunderlist_click">Импорт от Wunderlist</string>
-  <string name="import_wunderlist_title">Изберете Wunderlist файл</string>
-  <string name="import_wunderlist_howto">Как да импортираме от Wunderlist</string>
+  <string name="import_wunderlist_click">Внасяне от Wunderlist</string>
+  <string name="import_wunderlist_title">Избиране на Wunderlist файл</string>
+  <string name="import_wunderlist_howto">Как се внася от Wunderlist</string>
   <string name="import_wunderlist_howto_text">Андроид приложението на Wunderlist не поддържа функцията архивиране.\n\n За това трябва да влезете в интернет приложението. Отидете в  Preferences → Account → Creat Backup → (изчакайте) →Click to download. Копирайте файла във вашото устройство и после се върнете.</string>
-  <string name="highlightSelected_summary">Маркирайте списъци/задачи като щракнете върху тях</string>
+  <string name="highlightSelected_summary">Маркиране на списъци/задачи като щракнете върху тях</string>
   <string name="highlightSelected">Маркиране на избраното</string>
-  <string name="settings_date_format_relative">Покажи подобни дати</string>
+  <string name="settings_date_format_relative">Показване на подобни дати</string>
   <string name="settings_date_format_relative_summary">Например \"утре\" вместо реалната дата</string>
-  <string name="showDone">Покажи приключените задачи</string>
+  <string name="showDone">Показване на приключените задачи</string>
   <string name="dark_theme">Тъмна тема</string>
   <string name="kill_button">Бутон Kill</string>
   <string name="kill_app">Затваряне на приложението</string>
@@ -146,35 +146,35 @@
   <string name="semantic_new_task">Нов шаблон за задачи</string>
   <string name="semantic_new_task_config_summary">Конфигуриране на условията за създаване на нови задачи</string>
   <string name="semantic_new_task_config">Конфигуриране на шаблоните за задачи</string>
-  <string name="swipeBehavior_title">Превключи за Задачата при докосване</string>
-  <string name="swipeBehavior_summary">Превключи към задача, която е започната или премини към последната избарана задача</string>
+  <string name="swipeBehavior_title">Превключи на Задачата при докосване</string>
+  <string name="swipeBehavior_summary">Превключи към Задача, която е започната или премини към последната избарана задача</string>
   <string name="lock_drawer_in_task_fragment_summary">Така че да не го отворите случайно</string>
   <string name="lock_drawer_in_task_fragment">Заключване на изгледа на списъка в детайлите на задачата</string>
   <string name="useTabletLayout">Използвайте TabletLayout</string>
   <string name="general">Общи</string>
-  <string name="tasks_fragment">Преглед на задачи</string>
+  <string name="tasks_fragment">Преглед на задачите</string>
   <string name="task_fragment">Детайли на задачите</string>
   <string name="do_not_touch">Не пипай</string>
   <string name="list_fragment">Преглед на списъка</string>
   <string name="show_account_name">Показване на профилното име</string>
   <string-array name="tablet_options">
     <item>никога</item>
-    <item>Пейзаж</item>
-    <item>Портрет</item>
-    <item>Портрет &amp; пейзаж</item>
+    <item>пейзаж</item>
+    <item>портрет</item>
+    <item>портрет &amp; пейзаж</item>
   </string-array>
   <string name="delete_done">Изтриване на завършени задачи</string>
   <string name="delete_done_summary">Изтриване на всички завършени задачи</string>
   <string name="delete_done_warning">Сигурни ли сте?</string>
   <string name="delete_done_warning_message">Не можете да отмените това. Направете резервно копие!</string>
-  <string name="delete_done_success">Успешно изтрити завършени задачи.</string>
+  <string name="delete_done_success">Завършените задачи бяха успешно изтрити.</string>
   <string name="menu_color">Смяна на цвят</string>
   <string name="howto_setup_server">Как да настороя сървъра</string>
   <string name="register_server">Ако имате нужда от профил за синхронизацията на нашия сървър, моля пратете ни е-майл. Със следващата версия ще получите възможността да регистрирате профил!</string>
   <string name="special_lists_title">Мета списъци</string>
   <string name="register">Регистрация</string>
   <string name="auto_backup_interval">Автоматично архивиране на интервала</string>
-  <string name="auto_backup_interval_summary">Архивиране на базата данни всеки %s дни</string>
+  <string name="auto_backup_interval_summary">Архивиране на базата данни на всеки %s дни</string>
   <string name="preferences_colorize">Цветове</string>
   <string name="preferences_colorize_tasks">Оцветяване на задачите</string>
   <string name="preferences_colorize_tasks_everywhere">Оцветяване навсякъде на задачаите</string>
@@ -184,10 +184,10 @@
   <string name="settings_semantics_actions">Действия</string>
   <string name="settings_semantics_list">Задаване на списък</string>
   <string name="settings_semantics_priority">Задаване на приоритет</string>
-  <string name="settings_semantics_due">Задайте крайната дата</string>
-  <string name="settings_semantics_weekday">Задайте крайна дата до следващия работен ден</string>
+  <string name="settings_semantics_due">Задаване на крайна дата</string>
+  <string name="settings_semantics_weekday">Задаване на крайна дата до следващия работен ден</string>
   <string-array name="weekdays">
-    <item>Без настройване</item>
+    <item>Не фиксирай</item>
     <item>Понеделник</item>
     <item>Вторник</item>
     <item>Сряда</item>
@@ -197,7 +197,7 @@
     <item>Неделя</item>
   </string-array>
   <string-array name="priority_entries">
-    <item>Без настройка на приоритет</item>
+    <item>Не фиксирай приоритет</item>
     <item>-2</item>
     <item>-1</item>
     <item>0</item>
@@ -205,15 +205,15 @@
     <item>2</item>
   </string-array>
   <string-array name="priority_entry_values">
-    <item>несъществуващ</item>
+    <item>null</item>
     <item>-2</item>
     <item>-1</item>
     <item>0</item>
     <item>1</item>
     <item>2</item>
   </string-array>
-  <string name="semantics_no_list">Не нагласяйте списък</string>
-  <string name="semantics_no_due">Не настройвайте крайна дата</string>
+  <string name="semantics_no_list">Не фиксирай списъка</string>
+  <string name="semantics_no_due">Не фиксирай крайна дата</string>
   <string name="settings_file_default_title">Име на задачата за импортираните файлове</string>
   <string name="semantic_new">Шаблон</string>
   <string name="tag_new">Нов таг</string>
@@ -225,7 +225,7 @@
   <string name="settings_subtask">Подзадачи</string>
   <string name="settings_subtask_default_new">Показване на нова задача по подразбиране</string>
   <string name="settings_subtask_add_to_same_list">Добавяне на Подзадача към списъка на задачата</string>
-  <string name="settings_subtask_add_to_same_list_summary">Или избиране на списък по подразбиране, към който подзадачата ще бъде побавена</string>
+  <string name="settings_subtask_add_to_same_list_summary">Или избиране на списък по подразбиране, към който подзадачата ще бъде добавена</string>
   <string name="settings_subtask_add_to_list_summary">Добавяне на подзадача към %s</string>
   <string name="settings_use_btn_speak">Показване на бутона за разпознаване на речта</string>
   <string name="settings_use_btn_audio">Показване на бутона за записване на аудио</string>
@@ -297,7 +297,7 @@
   <string name="no_special_list_selected">Няма избран металист</string>
   <string name="no_tag_selected">Няма избран таг</string>
   <string name="sharing_title">Споделяне</string>
-  <string name="backup_title">Архивиране</string>
+  <string name="backup_title">Резервно копие</string>
   <string name="third_party_title">Приложения на трети лица</string>
   <string name="title_settings">Настройки</string>
   <string name="subcondition">Подсъстояние</string>
@@ -316,4 +316,5 @@
   <string name="settings_advanced">Напреднал</string>
   <string name="delete_condition">Изтриване на условие</string>
   <string name="delete_semantic">Изтриване на шаблон на задача</string>
+  <string name="delete_special_lists">Изтриване на мета списък</string>
 </resources>
