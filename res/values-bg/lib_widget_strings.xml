@@ -22,7 +22,7 @@
   <string name="widget_list">Списък</string>
   <string name="widget_list_summary">Покажи \"%s\"</string>
   <string name="widget_done">Свършени задачи</string>
-  <string name="fontcolor">Цвят</string>
+  <string name="fontcolor">Цвят на шрифта</string>
   <string name="widget_transparency">Прозрачност</string>
   <string name="widget_transparency_summary">%s%% прозрачност</string>
   <string name="widget_due_colors">Оцвети крайните дати</string>
