@@ -56,7 +56,7 @@
   <string name="inbox">Входящи</string>
   <string name="first_task">Първа задача</string>
   <string-array name="weekdays">
-    <item>Без настройване</item>
+    <item>Не фиксирай</item>
     <item>Понеделник</item>
     <item>Вторник</item>
     <item>Сряда</item>
@@ -71,11 +71,11 @@
   <string name="search_result_title">Търси за %s</string>
   <string name="task_empty">Няма избрана задача&#8230;</string>
   <string name="no_lists">Тази задача не може да бъде синхронизирана, защото нямате списъци</string>
-  <string name="import_any_do_click">Импортиране от Any.Do</string>
+  <string name="import_any_do_click">Внасяне от Any.Do</string>
   <string name="any_do_import_title">Изберете Any.Do резервно копие</string>
-  <string name="any_do_this_file">Импорт от %s\n ако не моля изберете сами файл</string>
+  <string name="any_do_this_file">Внасяне от %s\n, ако не, моля изберете сами файл</string>
   <string name="any_do_how_to">Моля първо направете резервно копие на Вашите Any.Do данни. За да го направите отидете в Any.Do → Settings → Backup → Create → Backup. След това се върнете и натиснете OK.\nИли сами изберете файла.</string>
-  <string name="select_file">Изберете файл</string>
+  <string name="select_file">Избиране на файл</string>
   <string name="wait">Моля, изчакайте&#8230;</string>
   <string name="backup_import_ok">Внасянето мина успешно - моля рестартирайте MIrakel</string>
   <string name="backup_export_ok">Изнесени в %s</string>
