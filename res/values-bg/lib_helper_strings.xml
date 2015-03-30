@@ -50,7 +50,7 @@ SDK-версия: %2$d\n
   <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Опа, списъка със задачата е изчезнал. Съжалявам&#8230;</string>
   <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Това не е файл от базата данни на Mirakel!</string>
   <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Настъпи проблем при внасянето на данни от Astrid!</string>
-  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior файл не беше намерен</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior файла не беше намерен</string>
   <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Конфирурационния файл не може да се изтегли</string>
   <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">URL адресът не е правилен. Наистина ли сканирахте правилния код?</string>
   <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Нямам разрешение да чета този файл</string>
@@ -59,8 +59,8 @@ SDK-версия: %2$d\n
   <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Това име за списък вече съществува. Изберете друго.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Моля актуализирайте DAVdroid</string>
   <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Файловият формат Wunderlist е променен. Моля свържете се с екипа на Mirakel.</string>
-  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с нестандартен подходящ приоритет.</string>
-  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с нестандартен подходящ статус.</string>
-  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с нестандартна подходяща дата.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с несъответстващ стандарт на приоритета.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">.При синхронизирането беше намерена задача с несъответстващ статус на приоритета.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с несъответстваща дата на приоритета.</string>
   <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Анализирането на състоянието на металиста %s се провали. Моля съобщете за случилото се.</string>
 </resources>
