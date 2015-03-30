@@ -52,6 +52,7 @@
   <string name="kill_app">Затваряне на приложението</string>
   <string name="action_settings">Настройки</string>
   <string name="save">Запази</string>
+  <string name="menu_sort_lists">Подредждане списъка</string>
   <string name="as_subtask">Добавяне към задача</string>
   <string name="task_clone">Копиране на задачата</string>
   <string name="task_menu_sorting">Сортиране на задачи</string>
@@ -95,7 +96,7 @@
   <string name="dialog_error_message" formatted="false">Причина: %s\n\n Грешно съобщение: %s</string>
   <string name="use_new_ui">Използвай новия UI (Experimental)</string>
   <string-array name="subtask_task_select">
-    <item>Сано тази задача</item>
+    <item>Само тази задача</item>
     <item>Изтриване и на подзадачата</item>
   </string-array>
   <string name="delete_caldav_lists">Не е позволено изтриване на списъци от caldav account.</string>
