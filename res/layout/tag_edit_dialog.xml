@@ -38,11 +38,5 @@
             android:layout_height="wrap_content"
             layout="@layout/color_picker"/>
 
-        <CheckBox
-            android:id="@+id/tag_dark_text"
-            android:text="@string/tag_has_dark_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
     </LinearLayout>
 </ScrollView>

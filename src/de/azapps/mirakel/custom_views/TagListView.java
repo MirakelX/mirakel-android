@@ -128,9 +128,6 @@ public class TagListView extends View {
         final EditText editName = (EditText) layout
                                   .findViewById(R.id.tag_edit_name);
         editName.setText(tag.getName());
-        final CheckBox darkText = (CheckBox) layout
-                                  .findViewById(R.id.tag_dark_text);
-        darkText.setChecked(tag.isDarkText());
         final ColorPicker picker = (ColorPicker) layout
                                    .findViewById(R.id.color_picker);
         final SVBar op = (SVBar) layout.findViewById(R.id.svbar_color_picker);
@@ -146,7 +143,6 @@ public class TagListView extends View {
                                 final int which) {
                 tag.setBackgroundColor(picker.getColor());
                 tag.setName(editName.getText().toString());
-                tag.setDarkText(darkText.isChecked());
                 final Optional<Tag> other = Tag.getByName(tag.getName());
                 if (!other.isPresent() || (other.get().getId() == tag.getId())) {
                     tag.save();
