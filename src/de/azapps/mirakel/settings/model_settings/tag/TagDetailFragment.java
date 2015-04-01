@@ -52,7 +52,6 @@ public class TagDetailFragment extends GenericModelDetailFragment<Tag> {
     protected void setUp() {
         final Tag tag = mItem;
         final EditTextPreference name = (EditTextPreference) findPreference("tag_name");
-        final SwitchPreference darkBackground = (SwitchPreference) findPreference("tag_dark_text");
         final ColorPickerPref background = (ColorPickerPref) findPreference("tag_background_color");
         name.setSummary(tag.getName());
         name.setText(tag.getName());
@@ -65,17 +64,6 @@ public class TagDetailFragment extends GenericModelDetailFragment<Tag> {
                 tag.save();
                 name.setSummary(tag.getName());
                 updateList();
-                return true;
-            }
-        });
-        darkBackground.setChecked(tag.isDarkText());
-        darkBackground
-        .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(
-                final Preference preference, final Object newValue) {
-                tag.setDarkText((Boolean) newValue);
-                tag.save();
                 return true;
             }
         });
