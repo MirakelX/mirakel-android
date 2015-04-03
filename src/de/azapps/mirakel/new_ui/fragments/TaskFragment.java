@@ -24,15 +24,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -44,7 +44,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -110,6 +110,7 @@ public class TaskFragment extends DialogFragment {
     SubtasksView subtasksView;
     @InjectView(R.id.task_button_add_more)
     Button addMoreButton;
+    PopupMenu addMorePopup;
     @InjectView(R.id.task_button_done)
     Button doneButton;
 
@@ -122,8 +123,11 @@ public class TaskFragment extends DialogFragment {
 
     private MirakelContentObserver observer;
     private InputMethodManager inputMethodManager;
-    private PopupWindow popupWindow;
-    private int popupViews = 3;
+    private int hiddenViews = 3;
+
+    private interface AddViewCallback {
+        void add(final int pos);
+    }
 
 
     public TaskFragment() {
@@ -150,7 +154,7 @@ public class TaskFragment extends DialogFragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Light_Dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
@@ -190,70 +194,74 @@ public class TaskFragment extends DialogFragment {
         ButterKnife.inject(this, layout);
         updateAll();
 
-        setupAddMore(inflater);
+        setupAddMore();
 
         return layout;
     }
 
-    private void setupAddMore(LayoutInflater inflater) {
-        final LinearLayout popupView = (LinearLayout) inflater.inflate(R.layout.add_view_popup, null);
-        popupView.getChildAt(0).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                tagWrapper.setVisibility(View.VISIBLE);
-                v.setVisibility(View.GONE);
-                checkDisableAddButton();
-                popupWindow.dismiss();
-            }
-        });
-        popupView.getChildAt(1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                noteWrapper.setVisibility(View.VISIBLE);
-                v.setVisibility(View.GONE);
-                checkDisableAddButton();
-                popupWindow.dismiss();
-            }
-        });
-        popupView.getChildAt(2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                subtaskWrapper.setVisibility(View.VISIBLE);
-                v.setVisibility(View.GONE);
-                checkDisableAddButton();
-                popupWindow.dismiss();
-            }
-        });
+    private void setupAddMore() {
+        hiddenViews = 3;
+        addMorePopup = new PopupMenu(getActivity(), addMoreButton);
+        addMorePopup.inflate(R.menu.add_more_menu);
+        Menu m = addMorePopup.getMenu();
         if (task.getContent().isEmpty()) {
             noteWrapper.setVisibility(View.GONE);
         } else {
-            popupView.getChildAt(1).setVisibility(View.GONE);
             checkDisableAddButton();
+            disableItem(m, R.id.add_note_menu);
         }
         if (task.getSubtasks().isEmpty()) {
             subtaskWrapper.setVisibility(View.GONE);
         } else {
-            popupView.getChildAt(2).setVisibility(View.GONE);
             checkDisableAddButton();
+            disableItem(m, R.id.add_subtask_menu);
         }
         if (task.getTags().isEmpty()) {
             tagWrapper.setVisibility(View.GONE);
         } else {
-            popupView.getChildAt(0).setVisibility(View.GONE);
             checkDisableAddButton();
+            disableItem(m, R.id.add_tags_menu);
         }
-        popupWindow = new PopupWindow(getActivity());
-        popupWindow.setContentView(popupView);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(ThemeManager.getColor(R.attr.colorTextWhite)));
-        popupWindow.setFocusable(true);
-        popupWindow.setWindowLayoutMode(WindowManager.LayoutParams.WRAP_CONTENT,
-                                        WindowManager.LayoutParams.WRAP_CONTENT);
+        addMorePopup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(final MenuItem item) {
+                item.setVisible(false);
+                if (item.getItemId() == R.id.add_note_menu) {
+                    noteWrapper.setVisibility(View.VISIBLE);
+                } else if (item.getItemId() == R.id.add_subtask_menu) {
+                    subtaskWrapper.setVisibility(View.VISIBLE);
+                } else if (item.getItemId() == R.id.add_tags_menu) {
+                    tagWrapper.setVisibility(View.VISIBLE);
+                }
+                checkDisableAddButton();
+                return false;
+            }
+        });
+    }
+
+    private static void disableItem(final Menu m, final int id) {
+        final MenuItem item = m.findItem(id);
+        if (item != null) {
+            item.setVisible(false);
+        }
+    }
+
+
+    @OnClick(R.id.task_button_add_more)
+    void addMore() {
+        addMorePopup.show();
     }
 
     private void checkDisableAddButton() {
-        if (--popupViews < 1) {
+        if (--hiddenViews < 1) {
             addMoreButton.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     private void toggleKeyboard() {
@@ -295,7 +303,7 @@ public class TaskFragment extends DialogFragment {
     };
 
     @OnFocusChange(R.id.task_name_edit)
-    void taskNameEditFocusChange(boolean hasFocus) {
+    void taskNameEditFocusChange(final boolean hasFocus) {
         if (hasFocus) {
             toggleKeyboard();
         }
@@ -478,17 +486,6 @@ public class TaskFragment extends DialogFragment {
         dismiss();
     }
 
-    @OnClick(R.id.task_button_add_more)
-    void onAddMoreClicked() {
-        if (popupWindow.isShowing()) {
-            popupWindow.dismiss();
-            return;
-        }
-        final int[] pos = new int[2];
-        addMoreButton.getLocationOnScreen(pos);
-        popupWindow.showAtLocation(addMoreButton, Gravity.NO_GRAVITY, pos[0], pos[1] );
-
-    }
 
 }
 

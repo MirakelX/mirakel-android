@@ -46,7 +46,7 @@
 
             <ImageButton
                 android:id="@+id/menu_delete"
-                android:background="@drawable/ripple"
+                android:background="?android:attr/selectableItemBackground"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
@@ -55,7 +55,7 @@
 
             <ImageButton
                 android:id="@+id/menu_move_task"
-                android:background="@drawable/ripple"
+                android:background="?android:attr/selectableItemBackground"
                 android:title="@string/menu_move_task"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -64,8 +64,8 @@
 
             <ImageButton
                 android:id="@+id/menu_set_due"
+                android:background="?android:attr/selectableItemBackground"
                 android:title="@string/menu_set_due"
-                android:background="@drawable/ripple"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
@@ -73,8 +73,8 @@
 
             <ImageButton
                 android:id="@+id/menu_set_priority"
+                android:background="?android:attr/selectableItemBackground"
                 android:title="@string/menu_set_priority"
-                android:background="@drawable/ripple"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
