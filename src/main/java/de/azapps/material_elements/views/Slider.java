@@ -24,7 +24,9 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -37,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsSeekBar;
+import android.widget.AutoCompleteTextView;
 import android.widget.SeekBar;
 
 import java.lang.reflect.Field;
@@ -54,19 +57,16 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
     @NonNull
     private TextDrawable mThumb;
     @NonNull
-    private Drawable mNoThumb;
-    @NonNull
-    private ShapeDrawable mSmallThumb;
+    private ShapeDrawable mSmallThumb=new ShapeDrawable( new OvalShape() );;
     @NonNull
     private final Drawable backgroundThumb;
     private final int bubbleSize;
+    private final int smallThumbSize;
     private final ValueAnimator popupAnimator;
     private final ValueAnimator vanishAnimator;
     @Nullable
     private OnSeekBarChangeListener listener;
     boolean isThumbShown;
-    private int width;
-    private int height;
     private int widgetColor;
 
     public Slider(final Context context, final AttributeSet attrs) {
@@ -83,27 +83,16 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         }
 
         bubbleSize = (int) context.getResources().getDimension(R.dimen.bubbleSize);
-
+        smallThumbSize= (int) context.getResources().getDimension(R.dimen.small_thumb_size);
 
         backgroundThumb=context.getResources().getDrawable(R.drawable.ic_marker);
         mThumb= generateThumbDrawable(bubbleSize, "");
-        mThumb.setTopPadding(-1 * bubbleSize);
-        try {
-            final Field originalThumb = AbsSeekBar.class.getDeclaredField("mThumb");
-            originalThumb.setAccessible(true);
-            mNoThumb= (Drawable) originalThumb.get(this);
 
-        } catch (final NoSuchFieldException e) {
-            Log.wtf(TAG,"mThumb not found",e);
-        } catch (final IllegalAccessException e) {
-            Log.wtf(TAG,"could not access mThumb",e);
-        }
-        mNoThumb.setColorFilter(widgetColor, PorterDuff.Mode.SRC_IN);
-        setThumb(mNoThumb);
-        mSmallThumb=new ShapeDrawable( new OvalShape() );
-        mSmallThumb.setIntrinsicHeight(mNoThumb.getIntrinsicHeight()/3);
-        mSmallThumb.setIntrinsicWidth(mNoThumb.getIntrinsicWidth()/3);
-        mSmallThumb.setColorFilter(widgetColor,PorterDuff.Mode.SRC_IN);
+
+        mSmallThumb.setIntrinsicHeight(smallThumbSize);
+        mSmallThumb.setIntrinsicWidth(smallThumbSize);
+        mSmallThumb.setColorFilter(widgetColor, PorterDuff.Mode.SRC_IN);
+        setThumb(new ColorDrawable(Color.TRANSPARENT));
 
         super.setOnSeekBarChangeListener(this);
 
@@ -111,7 +100,7 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
 
         progress.setColorFilter(widgetColor, PorterDuff.Mode.SRC_IN);
         setProgressDrawable(progress);
-        setPadding(0,0,0,0);
+        setPadding(0, 0, 0, 0);
         popupAnimator = new ValueAnimator();
         popupAnimator.setIntValues(0, bubbleSize);
         popupAnimator.setDuration(ANIMATOR_DURATION);
@@ -125,9 +114,19 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         vanishAnimator.setInterpolator(new LinearInterpolator());
         vanishAnimator.addUpdateListener(this);
         vanishAnimator.addListener(this);
-
+        setBackground(new ColorDrawable(Color.TRANSPARENT));
         bringToFront();
     }
+
+    public void setBackground(final @NonNull Drawable background){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN){
+            super.setBackground(background);
+        }else{
+            setBackgroundDrawable(background);
+        }
+
+    }
+
 
     private TextDrawable generateThumbDrawable(final int size,final String text) {
         return TextDrawable.builder().beginConfig().height(size)
@@ -138,18 +137,26 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
 
     @Override
     public void setPadding(final int left, final int top, final int right, final int bottom) {
-        mThumb.setTopPadding(top - bubbleSize / 2-mSmallThumb.getIntrinsicHeight());
-        mSmallThumb.setPadding(0,top-bubbleSize,0,0);
-        super.setPadding(left+bubbleSize/2, top + bubbleSize/2+7*mSmallThumb.getIntrinsicHeight()/6, right+bubbleSize/2, bottom);
+        final int side_offset,top_offset;
+        if(Build.VERSION.SDK_INT<=Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            side_offset = (int) (bubbleSize * 0.75 * 0.25);
+            if (mSmallThumb != null) {// nullptr because setPadding seems to be called from constructor
+                top_offset = bubbleSize / 2;
+            } else {
+                top_offset = 0;
+            }
+        }else if(Build.VERSION.SDK_INT==Build.VERSION_CODES.JELLY_BEAN){
+            //something is really strange here
+            side_offset= (int) (bubbleSize*0.75*0.125);
+            top_offset= (bubbleSize / 2) - smallThumbSize;
+        }else{
+            side_offset= (int) (bubbleSize*0.75*0.5);
+            top_offset = (bubbleSize / 2) + (2 * smallThumbSize);
+        }
+        super.setPadding(left + side_offset, top + top_offset, right + side_offset, bottom);
     }
 
 
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        width = getMeasuredWidth();
-        height = getMeasuredWidth();
-    }
 
     @Override
     public void setOnSeekBarChangeListener(final OnSeekBarChangeListener l) {
@@ -162,8 +169,6 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
             listener.onProgressChanged(seekBar, progress, fromUser);
         }
         mThumb.setNewText(String.valueOf(progress));
-        final double scale= getScale() -0.5;
-        mThumb.setLeft((int) (((scale * mThumb.getIntrinsicWidth()) / 2.0) + (((-1.0 * Math.abs(scale)) + 0.5) * ((scale < 0) ? -1 : 1))));
         if(isThumbShown) {
             mThumb.invalidateSelf();
         }
@@ -179,7 +184,7 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
 
         mThumb.setHeight(0);
         mThumb.setWidth(0);
-        setThumb(mThumb);
+        setThumb(new ColorDrawable(Color.TRANSPARENT));
 
         popupAnimator.start();
         isThumbShown=true;
@@ -196,19 +201,33 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
                 if (isThumbShown) {
                     vanishAnimator.start();
                 }
-                isThumbShown = false;
             }
-        }, 100L);
+        }, ANIMATOR_DURATION);
     }
 
     @Override
     protected synchronized void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
-        if(isThumbShown){
-            setThumbPos(0, mSmallThumb);
-            mSmallThumb.draw(canvas);
+        int countOldSdk=0;
+        if(Build.VERSION.SDK_INT==Build.VERSION_CODES.JELLY_BEAN){
+            countOldSdk=canvas.save();
+            canvas.translate(0.0F,-0.5F*smallThumbSize);
         }
-
+        if(isThumbShown) {
+            setThumbPos(0, mThumb);
+            final int count = canvas.save();
+            canvas.translate(getPaddingLeft(), getPaddingTop()-bubbleSize*0.75F-0.75F*smallThumbSize);
+            mThumb.draw(canvas);
+            canvas.restoreToCount(count);
+        }
+        setThumbPos(0, mSmallThumb);
+        final int count=canvas.save();
+        canvas.translate(getPaddingLeft() - bubbleSize * 0.75F * 0.5F, getPaddingTop() - bubbleSize * 0.75F - 0.5F * smallThumbSize);
+        mSmallThumb.draw(canvas);
+        canvas.restoreToCount(count);
+        if(Build.VERSION.SDK_INT==Build.VERSION_CODES.JELLY_BEAN){
+            canvas.restoreToCount(countOldSdk);
+        }
     }
 
     private double getScale() {
@@ -246,6 +265,7 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         if (background != null) {
             final int offsetX = getPaddingLeft() - getThumbOffset();
             final int offsetY = getPaddingTop();
+
             if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
                 background.setHotspotBounds(left + offsetX, top + offsetY,
                         right + offsetX, bottom + offsetY);
@@ -262,21 +282,23 @@ public class Slider extends SeekBar implements SeekBar.OnSeekBarChangeListener, 
         mThumb.setWidth((int) (animatedValue * 0.75));
         mThumb.setHeight(animatedValue);
         setThumbPos(animatedValue, mThumb);
-        mThumb.setLeft(0);
-        mThumb.invalidateSelf();
+        mThumb.setTopPadding((-2 * bubbleSize) + (bubbleSize - animatedValue));
+        invalidate();
     }
 
     @Override
     public void onAnimationStart(final Animator animation) {
-
+        invalidate();
     }
 
     @Override
     public void onAnimationEnd(final Animator animation) {
-        if(!isThumbShown){
-            setThumb(mNoThumb);
+        if(mThumb.getIntrinsicHeight()!=bubbleSize){
+            isThumbShown=false;
+        }else {
+            mThumb.setTopPadding(-2 * bubbleSize);
         }
-        mThumb.setLeft(0);
+        invalidate();
     }
 
     @Override

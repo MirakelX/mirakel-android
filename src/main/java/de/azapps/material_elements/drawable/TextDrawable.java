@@ -31,7 +31,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
-import android.util.Log;
 
 
 public class TextDrawable extends Drawable {
@@ -46,7 +45,7 @@ public class TextDrawable extends Drawable {
     private int displacment;
     private int topPadding=0;
     private Drawable background;
-    private int left;
+    private float left;
 
 
     private TextDrawable(final Builder builder) {
@@ -170,11 +169,11 @@ public class TextDrawable extends Drawable {
 
 
 
-    public void setLeft(int left) {
+    public void setLeft(float left) {
         this.left = left;
     }
 
-    public int getLeft() {
+    public float getLeft() {
         return left;
     }
 
