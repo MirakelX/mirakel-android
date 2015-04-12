@@ -62,6 +62,22 @@
     <string name="add_tag_view_string">Tag</string>
     <string name="add_note_view_string">Note</string>
     <string name="add_subtask_view_string">Subtask</string>
+    <string name="add_files_view_string">File</string>
     <string name="add_tag">Add a tag</string>
+    <string name="delete_files">Delete files</string>
+
+    <string-array name="add_file_options">
+        <item>Photo</item>
+        <item>Audio</item>
+        <item>File</item>
+    </string-array>
+
+    <string name="add_file">Add File</string>
+
+    <string-array name="file_options_play">
+        <item>Play loudly</item>
+        <item>Play quietly</item>
+        <item>Open file</item>
+    </string-array>
 
 </resources>

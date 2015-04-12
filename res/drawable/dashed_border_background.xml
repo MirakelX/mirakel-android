@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
@@ -17,29 +18,17 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">24dp</dimen>
-    <dimen name="activity_vertical_margin">24dp</dimen>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:dashGap="8dp"
+        android:dashWidth="8dp"
+        android:width="4dp"
+        android:color="?attr/colorTextGrey"/>
+    <padding
+        android:bottom="5dp"
+        android:left="5dp"
+        android:right="5dp"
+        android:top="5dp" />
+    <corners android:radius="2dp"/>
+</shape>
 
-    <dimen name="priorityDoneSize">@dimen/clickable_item_size</dimen>
-    <dimen name="clickable_item_size">48dp</dimen>
-    <dimen name="padding_drawable">5dp</dimen>
-    <dimen name="dialog_min_width">600dp</dimen>
-    <dimen name="padding_default">16dp</dimen>
-    <dimen name="divider_height">1dp</dimen>
-    <dimen name="padding_default_half">8dp</dimen>
-    <dimen name="small_icon_size">24dp</dimen>
-
-    <dimen name="card_margin">8dp</dimen>
-    <dimen name="card_margin_top">2dp</dimen>
-    <dimen name="card_margin_bottom">6dp</dimen>
-
-    <dimen name="navdrawer_width">260dp</dimen>
-
-    <integer name="file_count_per_line">2</integer>
-    <dimen name="file_preview_padding">20dp</dimen>
-    <dimen name="fft_view_hight">5dp</dimen>
-
-
-</resources>

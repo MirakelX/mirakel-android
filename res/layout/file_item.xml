@@ -17,22 +17,29 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
 
-    <item
-        android:id="@+id/add_note_menu"
-        android:title="@string/add_note_view_string"/>
-
-    <item
-        android:id="@+id/add_subtask_menu"
-        android:title="@string/add_subtask_view_string"/>
-
-    <item
-        android:id="@+id/add_tags_menu"
-        android:title="@string/add_tag_view_string"/>
-    <item
-        android:id="@+id/add_file_menu"
-        android:title="@string/add_files_view_string"/>
-
-</menu>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/file_preview_size"
+    android:layout_height="@dimen/file_preview_size">
+    <ImageView
+        android:id="@+id/file_preview_image"
+        android:layout_width="@dimen/file_preview_size"
+        android:layout_height="@dimen/file_preview_size"
+        android:scaleType="centerInside"/>
+    <FrameLayout
+        android:layout_width="@dimen/file_preview_size"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/file_preview_text"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Here is your text"
+            android:textColor="#FFFFFF"/>
+    </FrameLayout>
+</RelativeLayout>

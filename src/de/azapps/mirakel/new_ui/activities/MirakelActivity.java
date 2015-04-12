@@ -19,6 +19,7 @@
 
 package de.azapps.mirakel.new_ui.activities;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -27,7 +28,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -48,6 +48,7 @@ import com.nispok.snackbar.listeners.EventListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -65,7 +66,6 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
-import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -82,6 +82,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
+    private TaskFragment newFragment;
 
 
     class ActionBarViewHolder {
@@ -217,6 +218,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Other functions
@@ -364,6 +366,14 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         }
     }
 
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if ((requestCode == TaskFragment.REQUEST_IMAGE_CAPTURE ||
+             requestCode == TaskFragment.FILE_SELECT_CODE) && (resultCode == Activity.RESULT_OK)) {
+            newFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private void selectList(ListMirakel item) {
         setList(item);
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
@@ -375,7 +385,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     }
 
     private void selectTask(final Task item) {
-        final DialogFragment newFragment = TaskFragment.newInstance((Task) item);
+        newFragment = TaskFragment.newInstance((Task) item);
         newFragment.show(getSupportFragmentManager(), "dialog");
     }
 

@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -54,6 +55,7 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -69,6 +71,7 @@ import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.views.DatesView;
+import de.azapps.mirakel.new_ui.views.FileView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
@@ -84,6 +87,8 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 public class TaskFragment extends DialogFragment {
 
     private static final String TAG = "TaskFragment";
+    public  static final int REQUEST_IMAGE_CAPTURE = 324;
+    public static final int FILE_SELECT_CODE = 521;
     public static final String ARGUMENT_TASK = "task";
 
     private Task task;
@@ -108,6 +113,9 @@ public class TaskFragment extends DialogFragment {
     TagsView taskTags;
     @InjectView(R.id.task_subtasks)
     SubtasksView subtasksView;
+    @InjectView(R.id.task_files)
+    FileView filesView;
+
     @InjectView(R.id.task_button_add_more)
     Button addMoreButton;
     PopupMenu addMorePopup;
@@ -120,10 +128,15 @@ public class TaskFragment extends DialogFragment {
     LinearLayout noteWrapper;
     @InjectView(R.id.subtask_wrapper)
     LinearLayout subtaskWrapper;
+    @InjectView(R.id.file_wrapper)
+    LinearLayout fileWrapper;
 
     private MirakelContentObserver observer;
     private InputMethodManager inputMethodManager;
     private int hiddenViews = 3;
+    private List<AddViewCallback> addViewCallbackMap;
+    private boolean setUpMore = false;
+    private List<String> addMoreItems;
 
     private interface AddViewCallback {
         void add(final int pos);
@@ -199,16 +212,31 @@ public class TaskFragment extends DialogFragment {
         return layout;
     }
 
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if ((requestCode == REQUEST_IMAGE_CAPTURE) && (resultCode == Activity.RESULT_OK)) {
+            filesView.addPhoto();
+        } else if ((requestCode == FILE_SELECT_CODE) && (resultCode == Activity.RESULT_OK)) {
+            filesView.addFile(data.getData());
+        }
+    }
+
     private void setupAddMore() {
         hiddenViews = 3;
         addMorePopup = new PopupMenu(getActivity(), addMoreButton);
         addMorePopup.inflate(R.menu.add_more_menu);
-        Menu m = addMorePopup.getMenu();
+        final Menu m = addMorePopup.getMenu();
         if (task.getContent().isEmpty()) {
             noteWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
             disableItem(m, R.id.add_note_menu);
+        }
+        if (task.getFiles().isEmpty()) {
+            fileWrapper.setVisibility(View.GONE);
+        } else {
+            checkDisableAddButton();
+            disableItem(m, R.id.add_file_menu);
         }
         if (task.getSubtasks().isEmpty()) {
             subtaskWrapper.setVisibility(View.GONE);
@@ -232,6 +260,8 @@ public class TaskFragment extends DialogFragment {
                     subtaskWrapper.setVisibility(View.VISIBLE);
                 } else if (item.getItemId() == R.id.add_tags_menu) {
                     tagWrapper.setVisibility(View.VISIBLE);
+                }else if(item.getItemId()==R.id.add_file_menu){
+                    fileWrapper.setVisibility(View.VISIBLE);
                 }
                 checkDisableAddButton();
                 return false;
@@ -291,6 +321,8 @@ public class TaskFragment extends DialogFragment {
         taskTags.setTask(task);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
                                  onSubtaskDoneListener);
+        filesView.setFiles(task);
+        filesView.setActivity(getActivity());
     }
 
     private final Procedure<Integer> progressChangedListener = new
@@ -393,7 +425,7 @@ public class TaskFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Dialog dialog = getDialog();
+        final Dialog dialog = getDialog();
         if (dialog != null) {
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             Window window = dialog.getWindow();
