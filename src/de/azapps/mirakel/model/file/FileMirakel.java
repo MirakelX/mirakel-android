@@ -24,33 +24,35 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.TypedValue;
 
 import com.google.common.base.Optional;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
+import de.azapps.material_elements.drawable.RoundedBitmapDrawable;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.ImageUtils;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class FileMirakel extends FileBase {
 
@@ -96,6 +98,12 @@ public class FileMirakel extends FileBase {
                                 .getColumnIndex(PATH))));
     }
 
+    private FileMirakel(final @NonNull Cursor c, final @NonNull Task t) {
+        super(c.getInt(c.getColumnIndex(ID)), c.getString(c
+                .getColumnIndex(NAME)), t, Uri.parse(c.getString(c
+                        .getColumnIndex(PATH))));
+    }
+
     // Static Methods
 
     public static void destroyForTask(final Task t) {
@@ -130,8 +138,16 @@ public class FileMirakel extends FileBase {
 
     @NonNull
     public static List<FileMirakel> getForTask(final Task task) {
-        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task)
-               .getList(FileMirakel.class);
+        final Cursor c = new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task).select(ID, NAME,
+                PATH).query(URI);
+        final List<FileMirakel> ret = new ArrayList<>(c.getCount());
+        if (c.moveToFirst()) {
+            do {
+                ret.add(new FileMirakel(c, task));
+            } while (c.moveToNext());
+        }
+        c.close();
+        return ret;
     }
 
     @NonNull
@@ -140,42 +156,28 @@ public class FileMirakel extends FileBase {
         if (uri == null) {
             return null;
         }
-        InputStream stream;
-        try {
-            stream = FileUtils.getStreamFromUri(ctx, uri);
-        } catch (final FileNotFoundException e1) {
-            ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
-            return null;
-        }
         final String name = FileUtils.getNameFromUri(ctx, uri);
         final FileMirakel newFile = FileMirakel.newFile(task, name, uri);
-        Bitmap myBitmap = null;
         try {
-            myBitmap = BitmapFactory.decodeStream(stream);
-        } catch (final OutOfMemoryError e) {
-            ErrorReporter.report(ErrorType.FILE_TO_LARGE_FOR_THUMBNAIL);
-        }
-        if (myBitmap != null) {
-            final float size = TypedValue.applyDimension(
-                                   TypedValue.COMPLEX_UNIT_DIP, 150, ctx.getResources()
-                                   .getDisplayMetrics());
-            myBitmap = Helpers.getScaleImage(myBitmap, size);
-            // create directory if not exists
-            boolean success = true;
-            if (!FileMirakel.fileCacheDir.exists()) {
-                success = FileMirakel.fileCacheDir.mkdirs();
-            }
-            if (success) {
-                try {
+            final Bitmap bitmap = ImageUtils.getScaleImage(uri, ctx,
+                                  ctx.getResources().getDimension(R.dimen.file_preview_size));
+
+            if (bitmap != null) {
+                // create directory if not exists
+                boolean success = true;
+                if (!FileMirakel.fileCacheDir.exists()) {
+                    success = FileMirakel.fileCacheDir.mkdirs();
+                }
+                if (success) {
                     final File destFile = new File(FileMirakel.fileCacheDir,
                                                    newFile.getId() + ".png");
                     final FileOutputStream out = new FileOutputStream(destFile);
-                    myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 42, out);
                     out.close();
-                } catch (final Exception e) {
-                    Log.e(TAG, "Exception", e);
                 }
             }
+        } catch (final IOException e) {
+            Log.wtf(TAG, "failed to scale image", e);
         }
         return newFile;
     }
@@ -214,12 +216,26 @@ public class FileMirakel extends FileBase {
     }
 
     @NonNull
-    public Optional<Bitmap> getPreview() {
-        final File osFile = new File(fileCacheDir, getId() + ".png");
-        if (osFile.exists()) {
-            return fromNullable(BitmapFactory.decodeFile(osFile.getAbsolutePath()));
+    public Optional<Drawable> getPreview(@NonNull final Context context) {
+        if (FileUtils.isImage(fileUri)) {
+            final File osFile = new File(fileCacheDir, getId() + ".png");
+            if (osFile.exists()) {
+                final Bitmap bpm = BitmapFactory.decodeFile(osFile.getAbsolutePath());
+                return of((Drawable)new RoundedBitmapDrawable(bpm,
+                          context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0));
+            }
         }
-        return absent();
+        final int drawableId;
+        if (FileUtils.isAudio(fileUri)) {
+            drawableId = R.drawable.ic_play_circle_fill_black_48dp;
+        } else {
+            drawableId = R.drawable.ic_description_black_48dp;
+        }
+        final Drawable drawable = context.getResources().getDrawable(drawableId);
+        if (drawable != null) {
+            drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.SRC_IN);
+        }
+        return fromNullable(drawable);
     }
 
     // Parcelable stuff
