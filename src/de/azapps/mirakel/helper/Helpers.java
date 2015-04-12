@@ -117,35 +117,6 @@ public class Helpers {
 
     // MISC
 
-    /*
-     * Scaling down the image
-     * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
-     */
-    public static Bitmap getScaleImage(final Bitmap bitmap,
-                                       final float boundBoxInDp) {
-        // Get current dimensions
-        final int width = bitmap.getWidth();
-        final int height = bitmap.getHeight();
-        // Determine how much to scale: the dimension requiring
-        // less scaling is.
-        // closer to the its side. This way the image always
-        // stays inside your.
-        // bounding box AND either x/y axis touches it.
-        final float xScale = boundBoxInDp / width;
-        final float yScale = boundBoxInDp / height;
-        final float scale = xScale <= yScale ? xScale : yScale;
-        // Create a matrix for the scaling and add the scaling data
-        final Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-        // matrix.postRotate(rotate);
-        // Create a new bitmap and convert it to a format understood
-        // by the
-        // ImageView
-        final Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width,
-                                    height, matrix, false);
-        // Apply the scaled bitmap
-        return scaledBitmap;
-    }
 
     public static boolean isIntentAvailable(final Context context,
                                             final String action) {
