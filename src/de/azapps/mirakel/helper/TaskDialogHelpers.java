@@ -190,7 +190,7 @@ public class TaskDialogHelpers {
             public void onClick(final DialogInterface dialog,
                                 final int which) {
                 Task mTask = task;
-                if (task == null || task.getId() == 0) {
+                if ((task == null) || (task.getId() == 0)) {
                     ListMirakel listMirakel;
                     if (task == null) {
                         listMirakel = MirakelModelPreferences

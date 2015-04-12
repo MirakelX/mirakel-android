@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -113,28 +114,20 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
         Log.d(TAG, "update");
         this.file = f;
         new Thread(new Runnable() {
-            private Optional<Bitmap> preview = absent();
+            private Optional<Drawable> preview = absent();
             @Override
             public void run() {
-                if (FileUtils.isAudio(TaskDetailFilePart.this.file.getFileUri())) {
-                    final int resourceId = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
-                                           : R.drawable.ic_action_play;
-                    this.preview = fromNullable(BitmapFactory.decodeResource(
-                                                    TaskDetailFilePart.this.context.getResources(),
-                                                    resourceId));
-                } else {
-                    this.preview = TaskDetailFilePart.this.file.getPreview();
-                }
+                this.preview = TaskDetailFilePart.this.file.getPreview(context);
                 if (this.preview.isPresent()) {
                     Log.i(TAG, "preview not null");
                     TaskDetailFilePart.this.fileImage.post(new Runnable() {
                         @Override
                         public void run() {
                             TaskDetailFilePart.this.fileImage
-                            .setImageBitmap(preview.get());
+                            .setImageDrawable(preview.get());
                             final LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
                                                         .getLayoutParams();
-                            params.height = preview.get().getHeight();
+                            params.height = preview.get().getIntrinsicHeight();
                             TaskDetailFilePart.this.fileImage
                             .setLayoutParams(params);
                         }
@@ -165,7 +158,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
             this.file.getFileStream(this.context);
             final String name = FileUtils.getNameFromUri(this.context,
                                 this.file.getFileUri());
-            this.filePath.setText(name.length() == 0 ? this.file.getFileUri()
+            this.filePath.setText(name.isEmpty() ? this.file.getFileUri()
                                   .toString() : name);
         } catch (final FileNotFoundException e) {
             this.filePath.setText(R.string.error_FILE_NOT_FOUND);
