@@ -464,6 +464,11 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     }
 
     @Override
+    public void onShowByReplace(final Snackbar snackbar) {
+
+    }
+
+    @Override
     public void onShown(final Snackbar snackbar) {
 
     }
@@ -473,6 +478,11 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
             AnimationHelper.moveViewDown(getActivity(), mFab, snackbar.getHeight());
         }
+    }
+
+    @Override
+    public void onDismissByReplace(final Snackbar snackbar) {
+
     }
 
     @Override

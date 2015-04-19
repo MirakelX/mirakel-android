@@ -430,31 +430,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
             mSnackBar = of(new Pair<>(position, Snackbar.with(getActivity())
                                       .text(getActivity().getString(R.string.delete_semantic))
                                       .actionLabel(R.string.undo)
-            .eventListener(new EventListener() {
-                @Override
-                public void onShow(final Snackbar snackbar) {
-
-                }
-
-                @Override
-                public void onShown(final Snackbar snackbar) {
-
-                }
-
-                @Override
-                public void onDismiss(final Snackbar snackbar) {
-
-                }
-
-                @Override
-                public void onDismissed(final Snackbar snackbar) {
-                    if ((deletedSemantic != null) && (deleteSemanticId == deletedSemantic.getId())) {
-                        removeSemantic(position);
-                        updateScreen(mScreen);
-                    }
-                    mSnackBar = absent();
-                }
-            })
+                                      .eventListener(new SnackbarEventListener(deleteSemanticId, position))
             .actionListener(new ActionClickListener() {
                 @Override
                 public void onActionClicked(final Snackbar snackbar) {
@@ -474,6 +450,50 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         if (deletedSemantic != null) {
             deletedSemantic.destroy();
             deletedSemantic = null;
+        }
+    }
+
+    private class SnackbarEventListener implements EventListener {
+        private final long deleteSemanticId;
+        private final int position;
+
+        public SnackbarEventListener(final long deleteSemanticId, final int position) {
+            this.deleteSemanticId = deleteSemanticId;
+            this.position = position;
+        }
+
+        @Override
+        public void onShow(final Snackbar snackbar) {
+
+        }
+
+        @Override
+        public void onShowByReplace(final Snackbar snackbar) {
+
+        }
+
+        @Override
+        public void onShown(final Snackbar snackbar) {
+
+        }
+
+        @Override
+        public void onDismiss(final Snackbar snackbar) {
+
+        }
+
+        @Override
+        public void onDismissByReplace(final Snackbar snackbar) {
+
+        }
+
+        @Override
+        public void onDismissed(final Snackbar snackbar) {
+            if ((deletedSemantic != null) && (deleteSemanticId == deletedSemantic.getId())) {
+                removeSemantic(position);
+                updateScreen(mScreen);
+            }
+            mSnackBar = absent();
         }
     }
 }
