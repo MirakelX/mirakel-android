@@ -1,15 +1,12 @@
 buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
       dependencies {
-        repositories {
-            mavenCentral()
-            maven {
-                url "file:~/.m2/"
-                artifactUrls "file:~/.m2/"
-            }
-        }
-        classpath 'com.android.tools.build:gradle:1.0.0'
-//        classpath 'com.jakewharton.hugo:hugo-plugin:1.0.+'
-        classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
+        classpath 'com.android.tools.build:gradle:1.2.0-beta1'
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+//        classpath 'org.robolectric:robolectric-gradle-plugin:1.0.0-SNAPSHOT'
     }
 }
 dependencies {
@@ -56,13 +53,13 @@ gradle.projectsEvaluated {
 ext {
     compileSdkVersion = 21
     buildToolsVersion = "21.1.1"
-    minSDKVersion = 8
+    minSDKVersion = 11
 }
 
 configure(allprojects) {
     ext.androidSDKVersion = "21"
     ext.androidBuildToolsVersion = "21.1.0"
-    ext.androidSupportVersion = "21.0.+"
+    ext.androidSupportVersion = "22.0.+"
     ext.androidPluginVersion ="0.14.0"
     ext.androidMinSDKVersion ="14"
     ext.jodaLibraryVersion = "2.2"
@@ -71,9 +68,12 @@ configure(allprojects) {
     ext.gsonVersion = "2.2.+"
     ext.junitVersion = "4.11"
     ext.guavaVersion = "17.0"
-    ext.butterknifeVersion = "6.0.0"
+    ext.butterknifeVersion = "6.1.0"
     ext.dashclockVersion = "2.0.0"
     ext.robolectricVersion= "2.3"
+    ext.FAB_VERSION= "0.0.8"
+    ext.snackbarVersion = "2.10.6"
+    ext.materialdesignVersion = "1.0"
 }
 
 allprojects {
