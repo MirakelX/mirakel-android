@@ -95,4 +95,6 @@ public class ThemeManager {
         icon.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         return icon;
     }
+
+
 }

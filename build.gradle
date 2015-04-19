@@ -19,8 +19,8 @@ android {
 }
 
 dependencies {
-    compile "com.shamanland:fab:0.0.7"
-    compile "com.nispok:snackbar:2.7.4"
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.afollestad:material-dialogs:0.6.4.7'
+    compile "com.shamanland:fab:0.0.8"
+    compile "com.nispok:snackbar:2.10.6"
+    compile "com.android.support:appcompat-v7:$androidSupportVersion"
+    compile "com.afollestad:material-dialogs:0.6.4.7"
 }
