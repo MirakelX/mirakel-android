@@ -58,52 +58,53 @@ public class FFTAudioView extends View {
         public void finishRecording(String path);
     }
 
-    public static class RecordingFailedException extends Exception{
-        RecordingFailedException(final Throwable e){
+    public static class RecordingFailedException extends Exception {
+        RecordingFailedException(final Throwable e) {
             super(e);
         }
     }
 
-    public FFTAudioView(final Context ctx,final String outputPath,final OnRecordFinished finish) throws RecordingFailedException {
+    public FFTAudioView(final Context ctx, final String outputPath,
+                        final OnRecordFinished finish) throws RecordingFailedException {
         super(ctx);
 
-        transformer = new RealDoubleFFT(WavUtil.getBufferSize()/2);
+        transformer = new RealDoubleFFT(WavUtil.getBufferSize() / 2);
         paint = new Paint();
         paint.setColor(ThemeManager.getPrimaryThemeColor());
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(ctx.getResources().getDimension(R.dimen.fft_line_width));
-        path=outputPath;
-        finishListener=finish;
-        padding=ctx.getResources().getDimension(R.dimen.fft_padding);
+        path = outputPath;
+        finishListener = finish;
+        padding = ctx.getResources().getDimension(R.dimen.fft_padding);
         try {
-            tmpFile=File.createTempFile("prefix", "extension", ctx.getCacheDir());
+            tmpFile = File.createTempFile("prefix", "extension", ctx.getCacheDir());
         } catch (final IOException e) {
-            Log.w(TAG,"Failed to create tmp file",e);
+            Log.w(TAG, "Failed to create tmp file", e);
             throw new RecordingFailedException(e);
         }
     }
 
-    public void startRecording(){
-        recordTask=new RecordAudio();
+    public void startRecording() {
+        recordTask = new RecordAudio();
         recordTask.execute();
     }
 
-    public void stopRecording(){
-        recording=false;
+    public void stopRecording() {
+        recording = false;
         finishListener.finishRecording(path);
     }
 
-      public class RecordAudio extends AsyncTask<Void, double[], Void> {
+    public class RecordAudio extends AsyncTask<Void, double[], Void> {
 
         private void writeRawData() {
             final AudioRecord recorder = WavUtil.getRecorder();
-            if(recorder==null){
-                recording=false;
+            if (recorder == null) {
+                recording = false;
                 return;
             }
             recorder.startRecording();
             final byte [] buffer = new byte [WavUtil.getBufferSize()];
-            final double [] toTransform = new double[buffer.length/2];
+            final double [] toTransform = new double[buffer.length / 2];
             try  {
                 final BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(tmpFile));
                 while (recording) {
@@ -113,8 +114,8 @@ public class FFTAudioView extends View {
                     } else {
                         throw new IllegalStateException();
                     }
-                    for(int i=1;i<buffer.length;i+=2){
-                        toTransform[i/2]=getShort(buffer[i - 1], buffer[i])/(Short.MAX_VALUE+1.0);
+                    for (int i = 1; i < buffer.length; i += 2) {
+                        toTransform[i / 2] = getShort(buffer[i - 1], buffer[i]) / (Short.MAX_VALUE + 1.0);
                     }
                     transformer.ft(toTransform);
                     publishProgress(toTransform);
@@ -124,11 +125,11 @@ public class FFTAudioView extends View {
                 recorder.release();
                 fos.close();
                 generateWavFile();
-            } catch (IOException|IllegalStateException e) {
+            } catch (IOException | IllegalStateException e) {
                 Log.e(TAG, "Error writing raw data", e);
                 recording = false;
             } finally {
-                if(recorder.getState()==AudioRecord.RECORDSTATE_RECORDING) {
+                if (recorder.getState() == AudioRecord.RECORDSTATE_RECORDING) {
                     recorder.stop();
                     recorder.release();
                 }
@@ -138,11 +139,11 @@ public class FFTAudioView extends View {
         private void generateWavFile() {
             final File infile = tmpFile;
             final File outfile = new File(path);
-            FileInputStream fis=null;
+            FileInputStream fis = null;
             FileOutputStream out = null;
             try {
-                fis= new FileInputStream(infile);
-                out= new FileOutputStream(outfile);
+                fis = new FileInputStream(infile);
+                out = new FileOutputStream(outfile);
                 final long totalAudioLen = fis.getChannel().size();
                 out.write(WavUtil.getWavHeader(totalAudioLen));
 
@@ -154,7 +155,7 @@ public class FFTAudioView extends View {
                 infile.delete();
                 outfile.delete();
                 Log.e(TAG, "Failed to copy wavefile", e);
-            }finally {
+            } finally {
                 try {
                     if (out != null) {
                         out.flush();
@@ -163,7 +164,7 @@ public class FFTAudioView extends View {
                     if (fis != null) {
                         fis.close();
                     }
-                }catch(final IOException ignored){
+                } catch (final IOException ignored) {
                     //ignore
                 }
                 infile.delete();
@@ -172,7 +173,7 @@ public class FFTAudioView extends View {
 
         @Override
         protected Void doInBackground(final Void... params) {
-            recording=true;
+            recording = true;
             writeRawData();
             return null;
         }
@@ -198,21 +199,21 @@ public class FFTAudioView extends View {
     @Override
     protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        width=w;
-        hight=h;
+        width = w;
+        hight = h;
     }
 
 
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
-        if(mTransformed!=null) {
-            final float factor =  ((width-2*padding) / (2*(float)mTransformed.length));
-            final float upy = hight/2;
-            int counter= (int) (padding/factor);
-            for(int i=mTransformed.length-1;i>=0;i--){
+        if (mTransformed != null) {
+            final float factor =  ((width - 2 * padding) / (2 * (float)mTransformed.length));
+            final float upy = hight / 2;
+            int counter = (int) (padding / factor);
+            for (int i = mTransformed.length - 1; i >= 0; i--) {
                 final float downy = (float) (upy - (mTransformed[i] * 5.0));
-                canvas.drawLine(counter*factor, downy, counter*factor, upy, paint);
+                canvas.drawLine(counter * factor, downy, counter * factor, upy, paint);
                 counter++;
             }
             for (final double aMTransformed : mTransformed) {
