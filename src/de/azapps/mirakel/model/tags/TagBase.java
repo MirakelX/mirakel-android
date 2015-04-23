@@ -40,7 +40,6 @@ abstract class TagBase extends ModelBase {
     public TagBase(final long id, @NonNull final String name, final int backColor, final boolean dark) {
         super(id, name);
         setBackgroundColor(backColor);
-        setDarkText(dark);
     }
 
     public TagBase() {
@@ -66,26 +65,27 @@ abstract class TagBase extends ModelBase {
         return this.backgroundColor;
     }
 
+    //see http://www.w3.org/TR/WCAG20/
     public void setBackgroundColor(final int backgroundColor) {
         this.backgroundColor = backgroundColor;
+        isDarkText = ((0.2126 * Color.red(backgroundColor)) +
+                      (0.7152 * Color.green(backgroundColor)) +
+                      (0.0722 * Color.blue(backgroundColor))) > 0.5 * 255;
     }
 
     public boolean isDarkText() {
-        return this.isDarkText;
+        return isDarkText;
     }
 
-    public void setDarkText(final boolean isDarkText) {
-        this.isDarkText = isDarkText;
-    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int)this.getId();
-        result = prime * result + this.backgroundColor;
-        result = prime * result + (this.isDarkText ? 1231 : 1237);
-        result = prime * result + (this.getName().hashCode());
+        result = (prime * result) + (int) this.getId();
+        result = (prime * result) + this.backgroundColor;
+        result = (prime * result) + (this.isDarkText ? 1231 : 1237);
+        result = (prime * result) + (this.getName().hashCode());
         return result;
     }
 
