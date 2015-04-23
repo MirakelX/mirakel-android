@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.views;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -57,6 +58,7 @@ public class NoteView extends LinearLayout {
 
     private void rebuildLayout() {
         noteText.setText(note);
+        Linkify.addLinks(noteText, Linkify.ALL);
         invalidate();
         requestLayout();
     }
@@ -75,7 +77,7 @@ public class NoteView extends LinearLayout {
         rebuildLayout();
     }
 
-    @OnClick(R.id.task_note_text)
+    @OnClick({R.id.task_note_text, R.id.task_note_title})
     void editNote() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         final EditText editText = new EditText(getContext());
