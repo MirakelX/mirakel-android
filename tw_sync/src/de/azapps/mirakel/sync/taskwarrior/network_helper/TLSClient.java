@@ -64,7 +64,7 @@ public class TLSClient {
             }
             try {
                 certs.add((X509Certificate) CertificateFactory.getInstance("X.509")
-                          .generateCertificate(new StringBufferInputStream(part.trim() + "\n-----END CERTIFICATE-----")));
+                          .generateCertificate(new StringBufferInputStream(part.trim() + "-")));
             } catch (final CertificateException e) {
                 Log.wtf(TAG, "parsing failed:" + part, e);
                 return certs;
