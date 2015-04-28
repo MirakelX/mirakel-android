@@ -389,6 +389,11 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         moveFABUp(snackbar.getHeight());
     }
 
+    @Override
+    public void onShowByReplace(Snackbar snackbar) {
+
+    }
+
     public void moveFABUp(final int height) {
         final FloatingActionButton fab = getTasksFragment().floatingActionButton;
         AnimationHelper.moveViewUp(this, fab, height);
@@ -407,6 +412,11 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     @Override
     public void onDismiss(final Snackbar snackbar) {
         moveFabDown(snackbar.getHeight());
+    }
+
+    @Override
+    public void onDismissByReplace(Snackbar snackbar) {
+
     }
 
     @Override

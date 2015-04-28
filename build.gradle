@@ -28,8 +28,8 @@ buildscript {
         repositories {
             mavenCentral()
         }
-        classpath "com.android.tools.build:gradle:1.0.0"
-        classpath "com.github.jcandksolutions.gradle:android-unit-test:2.1.1"
+        classpath "com.android.tools.build:gradle:1.2.0"
+        //classpath "com.github.jcandksolutions.gradle:android-unit-test:2.1.1"
     }
 }
 
@@ -133,7 +133,7 @@ android {
     }
 }
 
-apply plugin: "android-unit-test"
+/*apply plugin: "android-unit-test"
 
 androidUnitTest {
   sourceSets { //Configures the test source sets.
@@ -158,7 +158,7 @@ androidUnitTest {
       maxHeapSize = '2048m' //Specifies the maxHeapSize.
     }
   }
-}
+}*/
 
 dependencies {
     compile project(':model')
