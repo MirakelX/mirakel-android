@@ -146,7 +146,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @OnClick(R.id.fabbutton)
-    void clickFAB() {
+    public void addTask() {
         final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
                           true, getActivity());
         mListener.onItemSelected(task);
