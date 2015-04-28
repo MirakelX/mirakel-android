@@ -311,7 +311,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         final ListEditView listEditView = new ListEditView(getActivity());
         listEditView.setListMirakel(listMirakel);
         new MaterialDialog.Builder(getActivity()).customView(listEditView, true)
-        .title(listMirakel.getName())
+        .title(R.string.list_edit_title)
         .positiveText(R.string.save)
         .callback(new MaterialDialog.ButtonCallback() {
             @Override

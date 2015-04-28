@@ -26,11 +26,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +79,9 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
         holder.name.setText(listMirakel.getName());
         // First hide the icon and show it if it exists
         holder.icon.setVisibility(View.GONE);
-        new UpdateIconTask(mContext).execute(holder);
+
+        updateIcon(listMirakel, holder);
+
         final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
         if (count != -1) {
             holder.count.setText(String.valueOf(count));
@@ -135,53 +135,33 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
 
     }
 
-    private static class UpdateIconTask extends AsyncTask<ListViewHolder, Void, Drawable> {
-        private ListViewHolder viewHolder;
-        private Context mContext;
-
-        private UpdateIconTask(Context mContext) {
-            this.mContext = mContext;
-        }
-
-        @Override
-        @Nullable
-        protected Drawable doInBackground(final ListViewHolder... holders) {
-            viewHolder = holders[0];
-            final ListMirakel listMirakel = viewHolder.list;
-
-            if (listMirakel.getIconPath().isPresent()) {
-                final Bitmap bitmap;
-                final Uri iconUri = listMirakel.getIconPath().get();
-                final String path = iconUri.toString();
-                try {
-                    if (path.startsWith("file:///android_asset/")) {
-                        bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(path.replace("file:///android_asset/",
-                                                            "")));
-                    } else {
-                        final InputStream inputStream = mContext.getContentResolver().openInputStream(iconUri);
-                        bitmap = BitmapFactory.decodeStream(inputStream);
-                    }
-                } catch (final FileNotFoundException e) {
-                    Log.w(TAG, "Image not found", e);
-                    return null;
-                } catch (final IOException e) {
-                    Log.w(TAG, "Other IO Error", e);
-                    return null;
+    private void updateIcon(final ListMirakel listMirakel, final ListViewHolder holder) {
+        // This is much faster and less annoying than using an async task.
+        if (listMirakel.getIconPath().isPresent()) {
+            final Bitmap bitmap;
+            final Uri iconUri = listMirakel.getIconPath().get();
+            final String path = iconUri.toString();
+            try {
+                if (path.startsWith("file:///android_asset/")) {
+                    bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(path.replace("file:///android_asset/",
+                                                        "")));
+                } else {
+                    final InputStream inputStream = mContext.getContentResolver().openInputStream(iconUri);
+                    bitmap = BitmapFactory.decodeStream(inputStream);
                 }
                 final BitmapDrawable drawable = new BitmapDrawable(mContext.getResources(), bitmap);
                 drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.MULTIPLY);
-                return drawable;
-            } else {
-                return null;
+                holder.icon.setImageDrawable(drawable);
+                holder.icon.setVisibility(View.VISIBLE);
+            } catch (final FileNotFoundException e) {
+                Log.w(TAG, "Image not found", e);
+                holder.icon.setVisibility(View.GONE);
+            } catch (final IOException e) {
+                Log.w(TAG, "Other IO Error", e);
+                holder.icon.setVisibility(View.GONE);
             }
-        }
-
-        @Override
-        protected void onPostExecute(@Nullable final Drawable drawable) {
-            if (drawable != null) {
-                viewHolder.icon.setImageDrawable(drawable);
-                viewHolder.icon.setVisibility(View.VISIBLE);
-            }
+        } else {
+            holder.icon.setVisibility(View.GONE);
         }
     }
 

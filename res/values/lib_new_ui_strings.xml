@@ -55,7 +55,7 @@
     <string name="list_name">List name</string>
     <string name="list_account">List account</string>
     <string name="list_edit_multiple_names">Different names</string>
-    <string name="list_edit_title">Edit %s</string>
+    <string name="list_edit_title">Edit list</string>
     <string name="can_not_edit_list">Can not edit CalDAV lists</string>
     <string name="menu_set_tags">Set tags</string>
 
