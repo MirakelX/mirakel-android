@@ -50,7 +50,6 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.ImageUtils;
 import de.azapps.tools.Log;
 
-import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
@@ -227,9 +226,9 @@ public class FileMirakel extends FileBase {
         }
         final int drawableId;
         if (FileUtils.isAudio(fileUri)) {
-            drawableId = R.drawable.ic_play_circle_fill_black_48dp;
+            drawableId = R.drawable.ic_play_circle_fill_big;
         } else {
-            drawableId = R.drawable.ic_description_black_48dp;
+            drawableId = R.drawable.ic_description_big;
         }
         final Drawable drawable = context.getResources().getDrawable(drawableId);
         if (drawable != null) {
