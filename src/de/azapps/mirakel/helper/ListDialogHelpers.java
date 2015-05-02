@@ -19,25 +19,14 @@
 
 package de.azapps.mirakel.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.Preference;
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.v7.app.AlertDialog;
 import android.widget.TextView;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
-import de.azapps.mirakel.model.list.SpecialList;
 
 public class ListDialogHelpers {
     protected static final String TAG = "ListDialogHelpers";
@@ -81,19 +70,16 @@ public class ListDialogHelpers {
                                            final Preference preferences) {
         final CharSequence[] sortingItems = ctx.getResources().getStringArray(
                                                 R.array.task_sorting_items);
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(ctx);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 
-        builder.title(ctx.getString(R.string.task_sorting_title));
-        builder.items(sortingItems);
-        // Find item
-        builder.itemsCallbackSingleChoice(list.getSortBy().getShort(), new MaterialDialog.ListCallback() {
+        builder.setTitle(ctx.getString(R.string.task_sorting_title));
+        builder.setItems(sortingItems, new DialogInterface.OnClickListener() {
             @Override
-            public void onSelection(MaterialDialog materialDialog, View view, int item,
-                                    CharSequence charSequence) {
-                list.setSortBy(ListMirakel.SORT_BY.fromShort((short) item));
+            public void onClick(DialogInterface dialog, int which) {
+                list.setSortBy(ListMirakel.SORT_BY.fromShort((short) which));
                 list.save();
                 if (preferences != null) {
-                    preferences.setSummary(sortingItems[item]);
+                    preferences.setSummary(sortingItems[which]);
                 }
                 if (callback != null) {
                     callback.exec();
