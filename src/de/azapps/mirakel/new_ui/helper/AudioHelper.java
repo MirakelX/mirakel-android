@@ -21,14 +21,12 @@ package de.azapps.mirakel.new_ui.helper;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.v7.app.AlertDialog;
 import android.widget.Button;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,22 +65,13 @@ public class AudioHelper {
             stream1 = null;
         }
         final FileInputStream stream = stream1;
-        final MaterialDialog dialog = new MaterialDialog.Builder(activity)
-        .showListener(new DialogInterface.OnShowListener() {
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
+        .setTitle(R.string.audio_playback_title)
+        .setPositiveButton(R.string.audio_playback_pause, new DialogInterface.OnClickListener() {
             @Override
-            public void onShow(final DialogInterface dialog) {
-                mPlayer.start();
-            }
-        })
-        .title(R.string.audio_playback_title)
-        .positiveText(R.string.audio_playback_pause)
-        .negativeText(R.string.audio_playback_stop)
-        .callback(new MaterialDialog.ButtonCallback() {
-            @Override
-            public void onPositive(final MaterialDialog dialog) {
-                super.onPositive(dialog);
+            public void onClick(DialogInterface dialog, int which) {
                 final Button button = ((AlertDialog) dialog)
-                                      .getButton(DialogInterface.BUTTON_POSITIVE);
+                        .getButton(DialogInterface.BUTTON_POSITIVE);
                 if (!mPlayer.isPlaying()) {
                     button.setText(R.string.audio_playback_play);
                     mPlayer.start();
@@ -92,26 +81,26 @@ public class AudioHelper {
                 }
                 button.invalidate();
             }
-
-            @Override
-            public void onNegative(final MaterialDialog dialog) {
-                super.onNegative(dialog);
-                dialog.dismiss();
-            }
-        }).autoDismiss(false).dismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(final DialogInterface dialog) {
-                mPlayer.stop();
-                mPlayer.release();
-                if (stream != null) {
-                    try {
-                        stream.close();
-                    } catch (final IOException e) {
-                        Log.wtf(TAG, "cannot close file", e);
+        }).setNegativeButton(R.string.audio_playback_stop, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
-                }
-            }
-        }).show();
+                }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(final DialogInterface dialog) {
+                        mPlayer.stop();
+                        mPlayer.release();
+                        if (stream != null) {
+                            try {
+                                stream.close();
+                            } catch (final IOException e) {
+                                Log.wtf(TAG, "cannot close file", e);
+                            }
+                        }
+                    }
+                }).show();
+        mPlayer.start();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(final MediaPlayer mp) {

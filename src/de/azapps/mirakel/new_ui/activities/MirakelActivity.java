@@ -29,8 +29,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -76,7 +76,7 @@ import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
-public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase>,
+public class MirakelActivity extends AppCompatActivity implements OnItemClickedListener<ModelBase>,
     EventListener, LockableDrawer {
 
     private static final String TAG = "MirakelActivity";

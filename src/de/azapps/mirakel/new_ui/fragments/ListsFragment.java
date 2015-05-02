@@ -21,6 +21,7 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -39,7 +41,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.emtronics.dragsortrecycler.DragSortRecycler;
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
@@ -310,12 +311,11 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     public void editList(ListMirakel listMirakel) {
         final ListEditView listEditView = new ListEditView(getActivity());
         listEditView.setListMirakel(listMirakel);
-        new MaterialDialog.Builder(getActivity()).customView(listEditView, true)
-        .title(R.string.list_edit_title)
-        .positiveText(R.string.save)
-        .callback(new MaterialDialog.ButtonCallback() {
+        new AlertDialog.Builder(getActivity()).setView(listEditView)
+        .setTitle(R.string.list_edit_title)
+        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
-            public void onPositive(MaterialDialog dialog) {
+            public void onClick(DialogInterface dialog, int which) {
                 listEditView.saveList();
             }
         })

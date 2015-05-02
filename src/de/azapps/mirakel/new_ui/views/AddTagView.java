@@ -23,6 +23,7 @@ package de.azapps.mirakel.new_ui.views;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +31,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -53,7 +55,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
@@ -152,13 +153,12 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         picker.addSVBar(op);
         picker.setColor(tag.getBackgroundColor());
         picker.setOldCenterColor(tag.getBackgroundColor());
-        new MaterialDialog.Builder(getContext())
-        .customView(layout, false)
-        .negativeText(android.R.string.cancel)
-        .positiveText(android.R.string.ok)
-        .callback(new MaterialDialog.ButtonCallback() {
+        new AlertDialog.Builder(getContext())
+        .setView(layout)
+        .setNegativeButton(android.R.string.cancel, null)
+        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
-            public void onPositive(final MaterialDialog dialog) {
+            public void onClick(DialogInterface dialog, int which) {
                 tag.setBackgroundColor(picker.getColor());
                 tag.setName(editName.getText().toString());
                 final Optional<Tag> other = Tag.getByName(tag.getName());
