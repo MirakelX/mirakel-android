@@ -30,7 +30,7 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -50,14 +50,13 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
-import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsHelper;
 
 import static com.google.common.base.Optional.absent;
 
 public abstract class GenericModelListActivity<T extends IGenericElementInterface> extends
-    ActionBarActivity implements  GenericModelListFragment.Callbacks, OnItemClickedListener<T> {
+        AppCompatActivity implements  GenericModelListFragment.Callbacks, OnItemClickedListener<T> {
 
     private static final int RESULT_ITEM = 10;
 

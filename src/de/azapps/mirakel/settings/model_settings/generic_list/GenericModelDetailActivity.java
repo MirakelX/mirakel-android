@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +51,7 @@ import de.azapps.tools.Log;
  * more than a {@link de.azapps.mirakel.settings.model_settings.special_list.SpecialListDetailFragment}.
  */
 public class GenericModelDetailActivity<T extends IGenericElementInterface> extends
-    ActionBarActivity {
+        AppCompatActivity {
 
     public static final int NEED_UPDATE = 42;
     public static final int SWITCH_LAYOUT = 43;
