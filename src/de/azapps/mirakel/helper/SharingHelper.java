@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.model.task.Task;
 
 public class SharingHelper {
@@ -54,7 +55,7 @@ public class SharingHelper {
      * @param ctx
      * @param l
      */
-    public static void share(final Context ctx, final ListMirakel l) {
+    public static void share(final Context ctx, final ListMirakelInterface l) {
         final String subject = ctx.getString(R.string.share_list_title,
                                              l.getName(), l.countTasks());
         String body = "";

@@ -216,7 +216,8 @@ public class Task extends TaskBase {
         }
         addBasicFiler(qb);
         if (listMirakelOptional.isPresent()) {
-            ListMirakel.addSortBy(qb, listMirakelOptional.get().getSortBy(), listMirakelOptional.get().getId());
+            ListMirakel.addSortBy(qb, listMirakelOptional.get().getSortBy(),
+                                  listMirakelOptional.get().getId() < 0);
         }
         return qb;
     }
@@ -362,7 +363,7 @@ public class Task extends TaskBase {
                                          final MirakelQueryBuilder qb) {
         addBasicFiler(qb);
         qb.sort(Task.DONE, Sorting.ASC);
-        ListMirakel.addSortBy(qb, sorting, listId);
+        ListMirakel.addSortBy(qb, sorting, listId < 0);
         return qb.select(allColumns).query(URI);
     }
 
@@ -371,7 +372,7 @@ public class Task extends TaskBase {
                    new MirakelQueryBuilder(context).select(
                        addPrefix(allColumns, TABLE)).and(
                        SUBTASK_TABLE + ".parent_id", Operation.EQ, subtask),
-                   SORT_BY.OPT, 0L).query(
+                   SORT_BY.OPT, false).query(
                    MirakelInternalContentProvider.TASK_SUBTASK_URI);
     }
 

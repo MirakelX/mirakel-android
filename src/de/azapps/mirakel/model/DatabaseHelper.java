@@ -79,7 +79,7 @@ import static com.google.common.base.Optional.fromNullable;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String CREATED_AT = "created_at";
-    public static final int DATABASE_VERSION = 50;
+    public static final int DATABASE_VERSION = 51;
 
     private static final String TAG = "DatabaseHelper";
     public static final String UPDATED_AT = "updated_at";
@@ -1028,6 +1028,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        context.getString(R.string.list_overdue) + "';");
         case 49:
             normaliseLfts(db);
+        case 50:
+            db.execSQL("CREATE VIEW autocomplete_helper AS " +
+                       "SELECT 'tag' || tag._id AS _id, tag._id AS obj_id, name AS name, 3 AS score, 'tag' AS type FROM tag INNER JOIN task_tag ON task_tag.tag_id = tag._id "
+                       +
+                       "UNION " +
+                       "SELECT 'task' || _id AS _id, _id AS obj_id, name AS name, - done * 5 AS score, 'task' AS type FROM tasks WHERE sync_state!=-1 AND is_shown_recurring = 1;");
         default:
             break;
         }
