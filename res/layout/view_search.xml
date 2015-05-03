@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
@@ -18,27 +17,28 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/actionbar_switcher"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/actionbar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-        android:textColor="?colorTextActionBar"
-        android:gravity="center_vertical" />
+    <AutoCompleteTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/search_text"
+        android:completionThreshold="1"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:textColor="?colorTextWhite"
+        android:backgroundTint="?colorTextWhite"
+        />
 
-    <Spinner
-        android:id="@+id/actionbar_spinner"
-        android:layout_width="wrap_content"
+    <ImageButton
+        android:layout_width="@dimen/clickable_item_size"
         android:layout_height="match_parent"
-        style="@style/ActionBarSpinner" />
-    <de.azapps.mirakel.new_ui.views.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/ic_search_white_24dp"
+        android:id="@+id/search_button" />
 
-</ViewFlipper>
+</LinearLayout>

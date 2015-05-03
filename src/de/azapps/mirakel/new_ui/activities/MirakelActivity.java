@@ -40,6 +40,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 import android.widget.ViewSwitcher;
 
 import com.google.common.base.Optional;
@@ -62,10 +63,14 @@ import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.list.SearchListMirakel;
+import de.azapps.mirakel.model.search.Autocomplete;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
+import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -77,7 +82,7 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
 public class MirakelActivity extends AppCompatActivity implements OnItemClickedListener<ModelBase>,
-    EventListener, LockableDrawer {
+    EventListener, LockableDrawer, SearchView.SearchCallback {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
@@ -85,11 +90,12 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     private TaskFragment newFragment;
 
 
+
     class ActionBarViewHolder {
         @butterknife.Optional
         @InjectView(R.id.actionbar_switcher)
         @Nullable
-        ViewSwitcher actionbarSwitcher;
+        ViewFlipper actionbarSwitcher;
         @InjectView(R.id.actionbar_spinner)
         @NonNull
         Spinner actionbarSpinner;
@@ -97,6 +103,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         @InjectView(R.id.actionbar_title)
         @Nullable
         TextView actionbarTitle;
+        @InjectView(R.id.search_view)
+        SearchView searchView;
 
         private ActionBarViewHolder(final View v) {
             ButterKnife.inject(this, v);
@@ -208,13 +216,21 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             return true;
         } else if (id == R.id.menu_share) {
             SharingHelper.share(this, getTasksFragment().getList());
+        } else if (id == R.id.menu_search) {
+            updateToolbar(ActionBarState.SEARCH);
         } else if (id == R.id.menu_sort) {
-            ListDialogHelpers.handleSortBy(this, getTasksFragment().getList(), new Helpers.ExecInterface() {
-                @Override
-                public void exec() {
-                    getTasksFragment().resetList();
-                }
-            }, null);
+            ListMirakelInterface listMirakelInterface = getTasksFragment().getList();
+            if (listMirakelInterface instanceof ListMirakel) {
+                ListDialogHelpers.handleSortBy(this, (ListMirakel) listMirakelInterface,
+                new Helpers.ExecInterface() {
+                    @Override
+                    public void exec() {
+                        getTasksFragment().resetList();
+                    }
+                }, null);
+            } else {
+                throw new IllegalArgumentException("It's not a proper List");
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -308,20 +324,23 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         });
     }
 
+    private enum ActionBarState {
+        NORMAL, SWITCHER, SEARCH
+    }
 
-    private void updateToolbar(final boolean showSwitcher) {
-        if (actionBarViewHolder.actionbarSwitcher != null) {
-            // This is for cases when the app wake up in a strange state
-            if (showSwitcher && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 0) {
-                actionBarViewHolder.actionbarSwitcher.showNext();
-            } else if (!showSwitcher && actionBarViewHolder.actionbarSwitcher.getDisplayedChild() == 1) {
-                actionBarViewHolder.actionbarSwitcher.showPrevious();
-            }
-        }
-        if (!showSwitcher) {
-            if (actionBarViewHolder.actionbarTitle != null) {
-                actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName());
-            }
+    private void updateToolbar(final ActionBarState actionBarState) {
+        switch (actionBarState) {
+        case NORMAL:
+            actionBarViewHolder.actionbarSwitcher.setDisplayedChild(0);
+            actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName());
+            break;
+        case SWITCHER:
+            actionBarViewHolder.actionbarSwitcher.setDisplayedChild(1);
+            break;
+        case SEARCH:
+            actionBarViewHolder.actionbarSwitcher.setDisplayedChild(2);
+            actionBarViewHolder.searchView.setSearchCallback(this);
+            break;
         }
     }
 
@@ -448,7 +467,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             super.onDrawerClosed(drawerView);
             invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             getListsFragment().onCloseNavDrawer();
-            updateToolbar(false);
+            updateToolbar(ActionBarState.NORMAL);
             invalidateOptionsMenu();
         }
 
@@ -459,9 +478,16 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         public void onDrawerOpened(final View drawerView) {
             super.onDrawerOpened(drawerView);
             invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            updateToolbar(true);
+            updateToolbar(ActionBarState.SWITCHER);
             invalidateOptionsMenu();
         }
     }
 
+
+    @Override
+    public void performSearch(String searchText) {
+        final ListMirakelInterface listMirakelInterface = new SearchListMirakel(this, searchText);
+        getTasksFragment().setList(listMirakelInterface);
+        updateToolbar(ActionBarState.NORMAL);
+    }
 }

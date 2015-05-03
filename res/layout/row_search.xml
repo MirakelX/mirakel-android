@@ -18,27 +18,24 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/actionbar_switcher"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/actionbar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-        android:textColor="?colorTextActionBar"
-        android:gravity="center_vertical" />
-
-    <Spinner
-        android:id="@+id/actionbar_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/ActionBarSpinner" />
-    <de.azapps.mirakel.new_ui.views.SearchView
-        android:id="@+id/search_view"
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="@dimen/clickable_item_size"
+    android:paddingStart="@dimen/padding_default"
+    android:paddingEnd="@dimen/padding_default"
+    android:id="@+id/view_switcher">
+    <de.azapps.mirakel.new_ui.views.TaskNameView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Regular.Small"
+        android:textColor="?colorTextGrey"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/task_name"/>
+    <de.azapps.mirakel.new_ui.views.AddTagView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/tag_name"/>
 
-</ViewFlipper>
+</ViewSwitcher>

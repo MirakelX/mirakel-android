@@ -22,6 +22,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.azapps.mirakel.new_ui.activities.MirakelActivity">
     <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_share"
         android:icon="@drawable/ic_share_grey600_18dp"
         android:title="@string/share_list"

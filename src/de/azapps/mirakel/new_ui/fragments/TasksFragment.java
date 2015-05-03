@@ -67,8 +67,11 @@ import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
@@ -97,13 +100,13 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @InjectView(R.id.menu_move_task)
     ImageView menuMoveTask;
 
-    private ListMirakel listMirakel;
+    private ListMirakelInterface listMirakel;
 
     public TasksFragment() {
         // Required empty public constructor
     }
 
-    public static TasksFragment newInstance(final ListMirakel listMirakel) {
+    public static TasksFragment newInstance(final ListMirakelInterface listMirakel) {
         final TasksFragment tasksFragment = new TasksFragment();
         // Supply num input as an argument.
         final Bundle args = new Bundle();
@@ -112,7 +115,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         return tasksFragment;
     }
 
-    public ListMirakel getList() {
+    public ListMirakelInterface getList() {
         return listMirakel;
     }
 
@@ -147,12 +150,18 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.fabbutton)
     public void addTask() {
-        final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listMirakel),
+        final ListMirakel listToAdd;
+        if (listMirakel instanceof  ListMirakel) {
+            listToAdd = (ListMirakel) listMirakel;
+        } else {
+            listToAdd = ListMirakel.getInboxList(MirakelModelPreferences.getDefaultAccount());
+        }
+        final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listToAdd),
                           true, getActivity());
         mListener.onItemSelected(task);
     }
 
-    public void setList(final ListMirakel listMirakel) {
+    public void setList(final ListMirakelInterface listMirakel) {
         this.listMirakel = listMirakel;
         final Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_LIST, listMirakel);

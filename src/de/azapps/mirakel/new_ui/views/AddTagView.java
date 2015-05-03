@@ -21,6 +21,7 @@ package de.azapps.mirakel.new_ui.views;
 
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -47,7 +48,9 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
@@ -70,7 +73,7 @@ import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 
 public class AddTagView extends MultiAutoCompleteTextView implements  View.OnClickListener,
-    View.OnKeyListener {
+    View.OnKeyListener, SoftKeyboard.SoftKeyboardChanged {
     private static final String TAG = "AddTagView";
     private final Drawable background;
     @Nullable
@@ -78,14 +81,15 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
     private List<Tag> tags = Tag.all();
     private ArrayAdapter<String> adapter;
     private List<Tag> currentTags = new ArrayList<>();
+    private boolean clickEnabled = true;
 
 
     @Nullable
     private Task task;
     private boolean setText = false;
-    private String postfix="";
+    private String postfix = "";
 
-    private final float ITEM_HEIGHT=getItemHeight();
+    private final float ITEM_HEIGHT = getItemHeight();
 
     public AddTagView(final Context context) {
         this(context, null);
@@ -138,6 +142,10 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         clearFocus();
     }
 
+    public void setClickEnabled(boolean clickEnabled) {
+        this.clickEnabled = clickEnabled;
+    }
+
 
     private void handleTagEdit(final Tag tag) {
         final View layout = inflate(getContext(),
@@ -173,6 +181,11 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
 
 
     public void setTags(final @NonNull Task t) {
+        task = t;
+        setTags(t.getTags());
+    }
+
+    public void setTags(final @NonNull List<Tag> tags) {
         for (final Tag tag : currentTags) {
             adapter.add(tag.getName());
         }
@@ -191,15 +204,24 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        keyboard = new SoftKeyboard((ViewGroup) getParent(),
+                                    (InputMethodManager)getContext().getSystemService(Activity.INPUT_METHOD_SERVICE));
+        keyboard.setSoftKeyboardCallback(this);
         final OnFocusChangeListener onFocus = getOnFocusChangeListener();
         setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(final View v, final boolean hasFocus) {
                 onFocus.onFocusChange(v, hasFocus);
                 if (hasFocus) {
+                    if (keyboard != null) {
+                        keyboard.openSoftKeyboard();
+                    }
                     setBackground(background);
                     setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
                 } else {
+                    if (keyboard != null) {
+                        keyboard.closeSoftKeyboard();
+                    }
                     setInputType(InputType.TYPE_NULL);
                     setBackground(new ColorDrawable(Color.TRANSPARENT));
                     addTag(postfix);
@@ -210,26 +232,36 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         });
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (keyboard != null) {
+            keyboard.unRegisterSoftKeyboardCallback();
+        }
+    }
+
     private void rebuildText() {
         final SpannableStringBuilder text = new SpannableStringBuilder();
         int pos = 0;
         for (final Tag tag : currentTags) {
             final String name = tag.getName();
-            if(!TextUtils.isEmpty(name.trim())) {
+            if (!TextUtils.isEmpty(name.trim())) {
                 text.append(new SpannableString(name));
                 final int textLength = name.length();
                 text.setSpan(new TagSpan(tag, getContext()), pos, pos + textLength,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 text.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        handleTagEdit(tag);
+                        if (clickEnabled) {
+                            handleTagEdit(tag);
+                        }
                     }
                 }, pos, pos + textLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 pos += textLength;
                 text.append(',');
                 text.setSpan(new ForegroundColorSpan(Color.TRANSPARENT), pos, ++pos,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
         text.append(new SpannableString(postfix));
@@ -333,9 +365,9 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
 
     @Override
     public void onClick(final View v) {
-        setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-        if(!requestFocus()){
-            Log.wtf(TAG, "could not get focus");
+        if (clickEnabled) {
+            setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+            requestFocusFromTouch();
         }
     }
 
@@ -353,6 +385,18 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
             return true;
         }
         return false;
+
+    }
+
+
+
+    @Override
+    public void onSoftKeyboardHide() {
+
+    }
+
+    @Override
+    public void onSoftKeyboardShow() {
 
     }
 
