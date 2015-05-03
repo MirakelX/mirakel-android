@@ -57,7 +57,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/task_name"
                     android:textAppearance="@style/TextAppearance.Regular.Large"
                     android:textColor="?colorTextBlack"
                     android:id="@+id/task_name"
