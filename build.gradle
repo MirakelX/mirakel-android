@@ -59,7 +59,7 @@ ext {
 configure(allprojects) {
     ext.androidSDKVersion = "21"
     ext.androidBuildToolsVersion = "21.1.0"
-    ext.androidSupportVersion = "22.0.+"
+    ext.androidSupportVersion = "22.1.+"
     ext.androidPluginVersion ="0.14.0"
     ext.androidMinSDKVersion ="14"
     ext.jodaLibraryVersion = "2.2"
