@@ -117,6 +117,7 @@
             android:theme="@style/MirakelBaseTheme"
             android:label="@string/title_activity_mirakel"
             android:uiOptions="none"
+            android:windowSoftInputMode="stateHidden|adjustPan"
             android:launchMode="singleTop">
         </activity>
         <activity

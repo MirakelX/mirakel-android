@@ -22,7 +22,6 @@ package de.azapps.mirakel.new_ui.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,7 +38,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -55,13 +53,12 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import butterknife.OnFocusChange;
+import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
@@ -84,7 +81,7 @@ import de.azapps.widgets.SupportDateTimeDialog;
 import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 
-public class TaskFragment extends DialogFragment {
+public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKeyboardChanged, MirakelContentObserver.ObserverCallBack {
 
     private static final String TAG = "TaskFragment";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
@@ -119,8 +116,6 @@ public class TaskFragment extends DialogFragment {
     @InjectView(R.id.task_button_add_more)
     Button addMoreButton;
     PopupMenu addMorePopup;
-    @InjectView(R.id.task_button_done)
-    Button doneButton;
 
     @InjectView(R.id.tag_wrapper)
     LinearLayout tagWrapper;
@@ -132,19 +127,35 @@ public class TaskFragment extends DialogFragment {
     LinearLayout fileWrapper;
 
     private MirakelContentObserver observer;
-    private InputMethodManager inputMethodManager;
     private int hiddenViews = 3;
-    private List<AddViewCallback> addViewCallbackMap;
-    private boolean setUpMore = false;
-    private List<String> addMoreItems;
+    private SoftKeyboard keyboard;
+
+    @Override
+    public void onSoftKeyboardHide() {
+
+    }
+
+    @Override
+    public void onSoftKeyboardShow() {
+
+    }
+
+    @Override
+    public void handleChange() {
+        updateTask();
+    }
+
+    @Override
+    public void handleChange(final long id) {
+        if(id==task.getId()){
+            updateTask();
+        }
+    }
 
     private interface AddViewCallback {
         void add(final int pos);
     }
 
-
-    public TaskFragment() {
-    }
 
     public static TaskFragment newInstance(final Task task) {
         final TaskFragment taskFragment = new TaskFragment();
@@ -170,26 +181,13 @@ public class TaskFragment extends DialogFragment {
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
-        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
-        new MirakelContentObserver.ObserverCallBack() {
-            @Override
-            public void handleChange() {
-                updateTask();
-            }
-
-            @Override
-            public void handleChange(final long id) {
-                updateTask();
-            }
-        });
-        inputMethodManager = (InputMethodManager) getActivity().getSystemService(
-                                 Context.INPUT_METHOD_SERVICE);
+        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,this);
     }
 
     @Override
     public void onDismiss(final DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (observer != null && getActivity() != null && getActivity().getContentResolver() != null) {
+        if ((observer != null) && (getActivity() != null) && (getActivity().getContentResolver() != null)) {
             getActivity().getContentResolver().unregisterContentObserver(observer);
         }
     }
@@ -204,6 +202,8 @@ public class TaskFragment extends DialogFragment {
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_task, container, false);
+        keyboard=new SoftKeyboard((ViewGroup) layout);
+        keyboard.setSoftKeyboardCallback(this);
         ButterKnife.inject(this, layout);
         updateAll();
 
@@ -260,7 +260,7 @@ public class TaskFragment extends DialogFragment {
                     subtaskWrapper.setVisibility(View.VISIBLE);
                 } else if (item.getItemId() == R.id.add_tags_menu) {
                     tagWrapper.setVisibility(View.VISIBLE);
-                }else if(item.getItemId()==R.id.add_file_menu){
+                } else if (item.getItemId() == R.id.add_file_menu) {
                     fileWrapper.setVisibility(View.VISIBLE);
                 }
                 checkDisableAddButton();
@@ -294,10 +294,6 @@ public class TaskFragment extends DialogFragment {
         ButterKnife.reset(this);
     }
 
-    private void toggleKeyboard() {
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-    }
-
     private void updateAll() {
         ///////////////////
         // Now the actions
@@ -319,6 +315,7 @@ public class TaskFragment extends DialogFragment {
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
         taskTags.setTask(task);
+        taskTags.setKeyboard(keyboard);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
                                  onSubtaskDoneListener);
         filesView.setFiles(task);
@@ -333,13 +330,6 @@ public class TaskFragment extends DialogFragment {
             task.save();
         }
     };
-
-    @OnFocusChange(R.id.task_name_edit)
-    void taskNameEditFocusChange(final boolean hasFocus) {
-        if (hasFocus) {
-            toggleKeyboard();
-        }
-    }
 
     @OnEditorAction(R.id.task_name_edit)
     boolean onEditorAction(int actionId) {
@@ -358,15 +348,20 @@ public class TaskFragment extends DialogFragment {
         if (task.isStub()) {
             taskNameViewSwitcher.showNext();
             taskNameEdit.selectAll();
-            taskNameEdit.requestFocus();
-            toggleKeyboard();
+            taskNameEdit.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    taskNameEdit.requestFocus();
+                }
+            },10L);
+
         }
         taskNameEdit.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     updateName();
                     return true;
                 }
@@ -375,8 +370,8 @@ public class TaskFragment extends DialogFragment {
         });
     }
 
+
     private void updateName() {
-        toggleKeyboard();
         taskNameEdit.clearFocus();
         task.setName(taskNameEdit.getText().toString());
         taskName.setText(task.getName());
@@ -388,7 +383,9 @@ public class TaskFragment extends DialogFragment {
     void clickTaskName() {
         taskNameViewSwitcher.showNext();
         taskNameEdit.setText(task.getName());
-        taskNameEdit.requestFocus();
+        if(!taskNameEdit.requestFocus()){
+            Log.wtf(TAG,"could not get focus");
+        }
 
     }
 
@@ -427,8 +424,8 @@ public class TaskFragment extends DialogFragment {
         super.onStart();
         final Dialog dialog = getDialog();
         if (dialog != null) {
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window = dialog.getWindow();
+            final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            final Window window = dialog.getWindow();
             lp.copyFrom(window.getAttributes());
             // This makes the dialog take up the full width
 

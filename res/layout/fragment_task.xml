@@ -26,6 +26,7 @@
     android:layout_marginStart="0dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:descendantFocusability="beforeDescendants"
     android:background="@drawable/background_fragment_task"
     android:orientation="vertical">
 
@@ -36,10 +37,12 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:descendantFocusability="beforeDescendants"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:descendantFocusability="beforeDescendants"
             android:orientation="horizontal">
 
             <de.azapps.mirakel.new_ui.views.ProgressDoneView
@@ -57,7 +60,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/task_name"
                     android:textAppearance="@style/TextAppearance.Regular.Large"
                     android:textColor="?colorTextBlack"
                     android:id="@+id/task_name"
@@ -82,9 +84,11 @@
         android:layout_weight="1"
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:descendantFocusability="beforeDescendants"
         android:id="@+id/task_fragment_scroll_container">
         <ScrollView
             android:layout_width="match_parent"
+            android:descendantFocusability="beforeDescendants"
             android:layout_height="wrap_content">
 
             <LinearLayout
@@ -115,6 +119,7 @@
                 <!-- Tags -->
                 <LinearLayout
                     android:id="@+id/tag_wrapper"
+                    android:descendantFocusability="beforeDescendants"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -130,6 +135,7 @@
                 <!-- Notes -->
                 <LinearLayout
                     android:orientation="vertical"
+                    android:descendantFocusability="beforeDescendants"
                     android:id="@+id/note_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -145,6 +151,7 @@
                 <!-- TODO Subtasks -->
                 <LinearLayout
                     android:orientation="vertical"
+                    android:descendantFocusability="beforeDescendants"
                     android:id="@+id/subtask_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -159,6 +166,7 @@
                 <!-- TODO Files -->
                 <LinearLayout
                     android:orientation="vertical"
+                    android:descendantFocusability="beforeDescendants"
                     android:id="@+id/file_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
