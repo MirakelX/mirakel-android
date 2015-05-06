@@ -51,8 +51,9 @@ public class SearchListMirakel implements ListMirakelInterface, android.os.Parce
     }
 
     @Override
-    public Loader getTasksSupportCursorLoader() {
-        return getMirakelQueryBuilder().toSupportCursorLoader(MirakelInternalContentProvider.TASK_URI);
+    public Loader getTaskOverviewSupportCursorLoader() {
+        return ListMirakel.addTaskOverviewSelection(getMirakelQueryBuilder()).toSupportCursorLoader(
+                   MirakelInternalContentProvider.TASK_URI);
     }
 
     @Override

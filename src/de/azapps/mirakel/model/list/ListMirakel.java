@@ -721,6 +721,18 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         return getTasksQueryBuilder().toSupportCursorLoader(MirakelInternalContentProvider.TASK_URI);
     }
 
+    public static MirakelQueryBuilder addTaskOverviewSelection(final MirakelQueryBuilder
+            mirakelQueryBuilder) {
+        return mirakelQueryBuilder.select(Task.ID, Task.NAME, Task.DONE, Task.PROGRESS, Task.DUE,
+                                          Task.LIST_ID, "list_name", "account_id");
+    }
+
+    @NonNull
+    public android.support.v4.content.CursorLoader getTaskOverviewSupportCursorLoader() {
+        return addTaskOverviewSelection(getTasksQueryBuilder()).toSupportCursorLoader(
+                   MirakelInternalContentProvider.TASK_URI);
+    }
+
     @NonNull
     public String toJson() {
         String json = "{";

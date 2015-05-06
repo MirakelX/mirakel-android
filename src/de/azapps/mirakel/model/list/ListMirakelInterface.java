@@ -26,11 +26,8 @@ import java.util.List;
 
 import de.azapps.mirakel.model.task.Task;
 
-/**
- * Created by az on 03.05.15.
- */
 public interface ListMirakelInterface extends Parcelable {
-    Loader getTasksSupportCursorLoader();
+    Loader getTaskOverviewSupportCursorLoader();
 
     String getName();
 
