@@ -41,7 +41,6 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import android.widget.ViewSwitcher;
 
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
@@ -60,13 +59,15 @@ import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.model.list.SearchListMirakel;
-import de.azapps.mirakel.model.search.Autocomplete;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
@@ -380,8 +381,17 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void onItemSelected(final @NonNull ModelBase item) {
         if (item instanceof Task) {
             selectTask((Task) item);
+        } else if (item instanceof TaskOverview) {
+            final Optional<Task> taskOptional = ((TaskOverview) item).getTask();
+            if (taskOptional.isPresent()) {
+                selectTask(taskOptional.get());
+            } else {
+                ErrorReporter.report(ErrorType.TASK_VANISHED);
+            }
         } else if (item instanceof ListMirakel) {
             selectList((ListMirakel) item);
+        } else {
+            throw new IllegalArgumentException("No handler for" + item.getClass().toString());
         }
     }
 

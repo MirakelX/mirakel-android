@@ -74,15 +74,18 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
 import de.azapps.mirakelandroid.R;
+import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks,
-    MultiSelectCursorAdapter.MultiSelectCallbacks<Task>, ActionMode.Callback, ActionClickListener {
+    MultiSelectCursorAdapter.MultiSelectCallbacks<TaskOverview>, ActionMode.Callback,
+    ActionClickListener {
 
     public static final String ARGUMENT_LIST = "list";
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
@@ -92,7 +95,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     RecyclerView mListView;
     @InjectView(R.id.fabbutton)
     public FloatingActionButton floatingActionButton;
-    private OnItemClickedListener<Task> mListener;
+    private OnItemClickedListener<TaskOverview> mListener;
     @Nullable
     private ActionMode mActionMode;
     @InjectView(R.id.tasks_multiselect_menu)
@@ -132,9 +135,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onAttach(final Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnItemClickedListener<Task>) activity;
+            mListener = (OnItemClickedListener<TaskOverview>) activity;
         } catch (final ClassCastException ignored) {
-            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+            throw new ClassCastException(activity.toString() + " OnItemClickedListener<TaskOverview>");
         }
     }
 
@@ -158,7 +161,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listToAdd),
                           true, getActivity());
-        mListener.onItemSelected(task);
+        mListener.onItemSelected(new TaskOverview(task));
     }
 
     public void setList(final ListMirakelInterface listMirakel) {
@@ -171,7 +174,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader onCreateLoader(final int i, final Bundle arguments) {
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
-        return listMirakel.getTasksSupportCursorLoader();
+        return listMirakel.getTaskOverviewSupportCursorLoader();
     }
 
     @Override
@@ -195,7 +198,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public boolean canAddItem(@NonNull Task item) {
+    public boolean canAddItem(@NonNull TaskOverview item) {
         return true;
     }
 
@@ -211,18 +214,29 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void showOrHideMoveTasks() {
-        final ArrayList<Task> tasks = mAdapter.getSelectedItems();
+        final ArrayList<TaskOverview> tasks = mAdapter.getSelectedItems();
         if (tasks.size() == 0) {
             // Do not need to change anything
             return;
         }
-        final long accountMirakel = tasks.get(0).getList().getAccount().getId();
-        final boolean shouldHide = Iterables.all(tasks, new Predicate<Task>() {
-            @Override
-            public boolean apply(@Nullable Task input) {
-                return input.getList().getAccount().getId() == accountMirakel;
-            }
-        });
+        Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
+        final boolean shouldHide;
+        if (accountMirakelOptional.isPresent()) {
+            final long accountMirakelId = accountMirakelOptional.get().getId();
+            shouldHide = Iterables.all(tasks, new Predicate<TaskOverview>() {
+                @Override
+                public boolean apply(@Nullable TaskOverview input) {
+                    final Optional<AccountMirakel> compareAccount = input.getAccountMirakel();
+                    if (compareAccount.isPresent()) {
+                        return compareAccount.get().getId() == accountMirakelId;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+        } else {
+            shouldHide = true;
+        }
         if (shouldHide) {
             menuMoveTask.setVisibility(View.VISIBLE);
         } else {
@@ -231,14 +245,14 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onAddSelectedItem(@NonNull Task item) {
+    public void onAddSelectedItem(@NonNull TaskOverview item) {
         assert mActionMode != null;
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         showOrHideMoveTasks();
     }
 
     @Override
-    public void onRemoveSelectedItem(@NonNull Task item) {
+    public void onRemoveSelectedItem(@NonNull TaskOverview item) {
         assert mActionMode != null;
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         showOrHideMoveTasks();
@@ -294,7 +308,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_delete)
     void onDelete() {
-        final ArrayList<Task> selected = mAdapter.getSelectedItems();
+        final ArrayList<TaskOverview> selected = mAdapter.getSelectedItems();
         // TODO implement deleting
         final int count = selected.size();
         SnackbarManager.show(
@@ -312,38 +326,46 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_move_task)
     void onMoveTask() {
-        final ArrayList<Task> tasks = mAdapter.getSelectedItems();
+        final ArrayList<TaskOverview> tasks = mAdapter.getSelectedItems();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(de.azapps.mirakel.main_activity.R.string.dialog_move);
 
-        final Cursor cursor = ListMirakel.allCursor(of(tasks.get(0).getList().getAccount()), false);
-        builder.setCursor(cursor,
-        new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialog,
-                                final int which) {
-                cursor.moveToPosition(which);
-                ListMirakel listMirakel = new ListMirakel(cursor);
-                for (final Task t : tasks) {
-                    t.setList(listMirakel, true);
-                    t.save();
+        final Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
+        if (accountMirakelOptional.isPresent()) {
+            final Cursor cursor = ListMirakel.allCursor(of(accountMirakelOptional.get()), false);
+            builder.setCursor(cursor,
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog,
+                                    final int which) {
+                    cursor.moveToPosition(which);
+                    final ListMirakel listMirakel = new ListMirakel(cursor);
+                    for (final TaskOverview taskOverview : tasks) {
+                        taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
+                            @Override
+                            public void apply(Task task) {
+                                task.setList(listMirakel, true);
+                                task.save();
+                            }
+                        });
+                    }
+                    cursor.close();
+                    if (mActionMode != null) {
+                        mActionMode.finish();
+                    }
                 }
-                cursor.close();
-                if (mActionMode != null) {
-                    mActionMode.finish();
+            }, ModelBase.NAME).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    cursor.close();
                 }
-            }
-        }, ModelBase.NAME).setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                cursor.close();
-            }
-        }).show();
+            }).show();
+        }
     }
 
     @OnClick(R.id.menu_set_due)
     void onSetDue() {
-        final ArrayList<Task> tasks = mAdapter.getSelectedItems();
+        final ArrayList<TaskOverview> tasks = mAdapter.getSelectedItems();
         final Calendar dueLocal = new GregorianCalendar();
         final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(
         new DatePicker.OnDateSetListener() {
@@ -352,9 +374,14 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                                   final int month, final int day) {
                 final Calendar due = new GregorianCalendar(year, month,
                         day);
-                for (final Task task : tasks) {
-                    task.setDue(of(due));
-                    task.save();
+                for (final TaskOverview taskOverview : tasks) {
+                    taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
+                        @Override
+                        public void apply(Task task) {
+                            task.setDue(of(due));
+                            task.save();
+                        }
+                    });
                 }
                 if (mActionMode != null) {
                     mActionMode.finish();
@@ -363,9 +390,15 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
             @Override
             public void onNoDateSet() {
-                for (final Task task : tasks) {
-                    task.setDue(Optional.<Calendar>absent());
-                    task.save();
+                for (final TaskOverview taskOverview : tasks) {
+
+                    taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
+                        @Override
+                        public void apply(Task task) {
+                            task.setDue(Optional.<Calendar>absent());
+                            task.save();
+                        }
+                    });
                 }
                 if (mActionMode != null) {
                     mActionMode.finish();

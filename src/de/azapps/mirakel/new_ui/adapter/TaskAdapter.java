@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.common.base.Optional;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.ThemeManager;
@@ -36,19 +38,21 @@ import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.TaskNameView;
 
-public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHolder, Task> {
+public class TaskAdapter extends
+    MultiSelectCursorAdapter<TaskAdapter.TaskViewHolder, TaskOverview> {
 
     private final LayoutInflater mInflater;
-    private final OnItemClickedListener<Task> itemClickListener;
+    private final OnItemClickedListener<TaskOverview> itemClickListener;
 
     public TaskAdapter(final Context context, final Cursor cursor,
-                       final OnItemClickedListener<Task> itemClickListener,
-                       final MultiSelectCallbacks<Task> multiSelectCallbacks) {
+                       final OnItemClickedListener<TaskOverview> itemClickListener,
+                       final MultiSelectCallbacks<TaskOverview> multiSelectCallbacks) {
         super(context, cursor, itemClickListener, multiSelectCallbacks);
         mInflater = LayoutInflater.from(context);
         this.itemClickListener = itemClickListener;
@@ -57,8 +61,8 @@ public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHo
 
     @NonNull
     @Override
-    public Task fromCursor(@NonNull Cursor cursor) {
-        return new Task(cursor);
+    public TaskOverview fromCursor(@NonNull Cursor cursor) {
+        return new TaskOverview(cursor);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHo
 
     @Override
     public void onBindViewHolder(final TaskViewHolder holder, final Cursor cursor, int position) {
-        final Task task = new Task(cursor);
+        final TaskOverview task = new TaskOverview(cursor);
         holder.task = task;
         holder.name.setText(task.getName());
         holder.name.setStrikeThrough(task.isDone());
@@ -82,15 +86,20 @@ public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHo
         } else {
             holder.due.setVisibility(View.GONE);
         }
-        holder.list.setText(task.getList().getName());
+        holder.list.setText(task.getListName());
+        // otherwise the OnCheckedChangeListener will be called
+        holder.priorityDone.setOnCheckedChangeListener(null);
         holder.priorityDone.setChecked(task.isDone());
         holder.priorityDone.setProgress(task.getProgress());
         holder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
-                final Task task = holder.task;
-                task.setDone(isChecked);
-                task.save();
+                final Optional<Task> taskOptional = task.getTask();
+                if (taskOptional.isPresent()) {
+                    final Task task = taskOptional.get();
+                    task.setDone(isChecked);
+                    task.save();
+                }
             }
         });
 
@@ -114,7 +123,7 @@ public class TaskAdapter extends MultiSelectCursorAdapter<TaskAdapter.TaskViewHo
         ProgressDoneView priorityDone;
         @InjectView(R.id.task_card)
         CardView card;
-        Task task;
+        TaskOverview task;
 
         public TaskViewHolder(final View view) {
             super(view);
