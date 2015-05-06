@@ -4,7 +4,7 @@ buildscript {
         mavenLocal()
     }
       dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.0-beta1'
+        classpath 'com.android.tools.build:gradle:1.2.0'
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
 //        classpath 'org.robolectric:robolectric-gradle-plugin:1.0.0-SNAPSHOT'
     }
