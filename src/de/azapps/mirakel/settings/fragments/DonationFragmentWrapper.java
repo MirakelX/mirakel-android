@@ -23,7 +23,7 @@ package de.azapps.mirakel.settings.fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import org.sufficientlysecure.donations.DonationsFragment;
 
@@ -43,8 +43,8 @@ public class DonationFragmentWrapper extends DonationsFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (((ActionBarActivity)getActivity()).getSupportActionBar() != null) {
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
         }
     }
 

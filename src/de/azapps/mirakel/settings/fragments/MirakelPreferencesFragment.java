@@ -26,7 +26,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,8 +58,8 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (((ActionBarActivity) getActivity()).getSupportActionBar() != null) {
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(getItem().getName());
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getItem().getName());
         }
     }
 

@@ -23,7 +23,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -87,8 +87,8 @@ public class CreditsFragment extends Fragment implements IDetailFragment<Setting
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        if (((ActionBarActivity)getActivity()).getSupportActionBar() != null) {
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
         }
         final View rootView = inflater.inflate(R.layout.fragment_credits, null);
         final TextView creditTextHead = (TextView) rootView.findViewById(R.id.credits_text_head);

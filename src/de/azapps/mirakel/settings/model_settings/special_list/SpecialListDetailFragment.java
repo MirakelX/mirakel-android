@@ -19,10 +19,8 @@
 
 package de.azapps.mirakel.settings.model_settings.special_list;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -33,19 +31,10 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
-import com.cocosw.undobar.UndoBarController;
 import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
@@ -54,15 +43,11 @@ import com.nispok.snackbar.listeners.EventListener;
 import com.shamanland.fab.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
@@ -136,7 +121,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         final ArrayList<Integer> backStack = new ArrayList<>();
         backStack.add(specialListsBaseProperty.getChilds().size() - 1);
         EditDialogFragment.newInstance(mItem, property, backStack,
-                                       SpecialListDetailFragment.this, specialListsBaseProperty).show(((ActionBarActivity)
+                                       SpecialListDetailFragment.this, specialListsBaseProperty).show(((AppCompatActivity)
                                                mContext).getSupportFragmentManager(), "editdialog");
     }
 
@@ -245,7 +230,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                     }
 
                     EditDialogFragment.newInstance(mItem, specialListsBaseProperty, backStack,
-                                                   SpecialListDetailFragment.this, base).show(((ActionBarActivity)
+                                                   SpecialListDetailFragment.this, base).show(((AppCompatActivity)
                                                            getActivity()).getSupportFragmentManager(), "editdialog");
                     return true;
                 }
