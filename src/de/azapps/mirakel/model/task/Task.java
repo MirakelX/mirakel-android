@@ -83,6 +83,7 @@ public class Task extends TaskBase {
 
     public static final String SUBTASK_TABLE = "subtasks";
     public static final String TABLE = "tasks";
+    public static final String VIEW_TABLE = "tasks_view";
     public static final String NO_PROJECT = "NO_PROJECT";
 
     private static final String TAG = "TasksDataSource";

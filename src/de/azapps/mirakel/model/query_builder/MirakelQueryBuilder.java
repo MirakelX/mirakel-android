@@ -40,6 +40,7 @@ import java.util.List;
 
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
@@ -262,6 +263,10 @@ public class MirakelQueryBuilder {
             query.append(" ORDER BY ").append(this.sortOrder);
         }
         return query.toString();
+    }
+
+    public String toString() {
+        return getQuery(MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
     }
 
     public String getSelection() {

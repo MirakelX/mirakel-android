@@ -51,6 +51,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 
@@ -723,7 +724,8 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     public static MirakelQueryBuilder addTaskOverviewSelection(final MirakelQueryBuilder
             mirakelQueryBuilder) {
-        return mirakelQueryBuilder.select(Task.ID, Task.NAME, Task.DONE, Task.PROGRESS, Task.DUE,
+        return mirakelQueryBuilder.select(Task.VIEW_TABLE + '.' + Task.ID + " AS " + Task.ID,
+                                          Task.VIEW_TABLE + '.' + Task.NAME + " AS " + Task.NAME, Task.DONE, Task.PROGRESS, Task.DUE,
                                           Task.LIST_ID, "list_name", "account_id");
     }
 

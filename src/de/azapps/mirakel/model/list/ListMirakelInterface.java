@@ -29,7 +29,7 @@ import de.azapps.mirakel.model.task.Task;
 public interface ListMirakelInterface extends Parcelable {
     Loader getTaskOverviewSupportCursorLoader();
 
-    String getName();
+    CharSequence getName();
 
     List<Task> tasks();
 

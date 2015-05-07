@@ -54,7 +54,6 @@ import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
-import de.azapps.mirakel.model.search.Autocomplete;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -91,6 +90,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
 
     // Join table constants
     public static final String TASK_TAG_JOIN = "task_tag_join";
+    public static final String TASK_VIEW_TAG_JOIN = "task_view_tag_join";
     public static final String TASK_RECURRING_TW_CHILD_JOIN = "task_recurring_child_tw";
     public static final String TASK_RECURRING_TW_PARENT_JOIN = "task_recurring_parent_tw";
     public static final String LISTS_SORT_JOIN = "lists_sort";
@@ -107,10 +107,11 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String LIST_WITH_SPECIAL = "list_with_special";
 
     // Uris
-    public static final Uri AUTOCOMPLETE_URI = getUri(Autocomplete.TABLE);
+    public static final Uri AUTOCOMPLETE_URI = getUri("autocomplete_helper");
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
     public static final Uri TASK_TAG_JOIN_URI = getUri(TASK_TAG_JOIN);
+    public static final Uri TASK_VIEW_TAG_JOIN_URI = getUri(TASK_VIEW_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
     public static final Uri LIST_WITH_SPECIAL_URI = getUri(LIST_WITH_SPECIAL);
@@ -164,11 +165,11 @@ public class MirakelInternalContentProvider extends ContentProvider implements
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_CHILD_JOIN, TASK_RECURRING_TW_PARENT_JOIN, TASK_SUBTASK_JOIN,
-                    TASK_TAG_JOIN,
+                    TASK_TAG_JOIN, TASK_VIEW_TAG_JOIN,
                     LISTS_SORT_JOIN, LIST_WITH_SPECIAL);
     private static final List<String> BLACKLISTED_FOR_DELETION = Arrays
             .asList("", TASK_RECURRING_TW_CHILD_JOIN, TASK_RECURRING_TW_PARENT_JOIN, TASK_SUBTASK_JOIN,
-                    TASK_TAG_JOIN,
+                    TASK_TAG_JOIN, TASK_VIEW_TAG_JOIN,
                     LISTS_SORT_JOIN, UPDATE_LIST_MOVE_DOWN, UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN,
                     UPDATE_LIST_FIX_RGT, LIST_WITH_SPECIAL);
 
@@ -344,6 +345,12 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         case TASK_TAG_JOIN:
             builder.setTables(Tag.TAG_CONNECTION_TABLE + " INNER JOIN "
                               + Tag.TABLE + " ON " + Tag.TAG_CONNECTION_TABLE
+                              + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID);
+            break;
+        case TASK_VIEW_TAG_JOIN:
+            builder.setTables("tasks_view INNER JOIN " + Tag.TAG_CONNECTION_TABLE + " ON " +
+                              Tag.TAG_CONNECTION_TABLE + ".task_id=tasks_view." + ModelBase.ID
+                              + " INNER JOIN " + Tag.TABLE + " ON " + Tag.TAG_CONNECTION_TABLE
                               + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID);
             break;
         case LISTS_SORT_JOIN:
