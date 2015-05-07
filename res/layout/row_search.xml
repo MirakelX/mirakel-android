@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
@@ -18,24 +17,20 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minHeight="@dimen/clickable_item_size"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:paddingStart="@dimen/padding_default"
-    android:paddingEnd="@dimen/padding_default"
-    android:id="@+id/view_switcher">
-    <de.azapps.mirakel.new_ui.views.TaskNameView
+    android:paddingEnd="@dimen/padding_default">
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/clickable_item_size"
         android:textAppearance="@style/TextAppearance.Regular.Small"
         android:textColor="?colorTextGrey"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/task_name"/>
-    <de.azapps.mirakel.new_ui.views.AddTagView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:id="@+id/tag_name"/>
+        android:gravity="center_vertical"
+        android:id="@+id/task_name" />
 
-</ViewSwitcher>
+</LinearLayout>

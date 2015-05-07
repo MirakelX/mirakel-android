@@ -65,7 +65,6 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
-import de.azapps.mirakel.model.list.SearchListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
@@ -83,7 +82,7 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
 public class MirakelActivity extends AppCompatActivity implements OnItemClickedListener<ModelBase>,
-    EventListener, LockableDrawer, SearchView.SearchCallback {
+    EventListener, LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
@@ -218,7 +217,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         } else if (id == R.id.menu_share) {
             SharingHelper.share(this, getTasksFragment().getList());
         } else if (id == R.id.menu_search) {
-            updateToolbar(ActionBarState.SEARCH);
+            getTasksFragment().handleShowSearch();
         } else if (id == R.id.menu_sort) {
             ListMirakelInterface listMirakelInterface = getTasksFragment().getList();
             if (listMirakelInterface instanceof ListMirakel) {
@@ -325,23 +324,22 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         });
     }
 
-    private enum ActionBarState {
-        NORMAL, SWITCHER, SEARCH
+    public enum ActionBarState {
+        NORMAL, SWITCHER
     }
 
-    private void updateToolbar(final ActionBarState actionBarState) {
-        switch (actionBarState) {
-        case NORMAL:
-            actionBarViewHolder.actionbarSwitcher.setDisplayedChild(0);
-            actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName());
-            break;
-        case SWITCHER:
-            actionBarViewHolder.actionbarSwitcher.setDisplayedChild(1);
-            break;
-        case SEARCH:
-            actionBarViewHolder.actionbarSwitcher.setDisplayedChild(2);
-            actionBarViewHolder.searchView.setSearchCallback(this);
-            break;
+    public void updateToolbar(final ActionBarState actionBarState) {
+        if (actionBarViewHolder != null) {
+            switch (actionBarState) {
+            case NORMAL:
+                actionBarViewHolder.actionbarSwitcher.setDisplayedChild(0);
+                actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName(),
+                        TextView.BufferType.SPANNABLE);
+                break;
+            case SWITCHER:
+                actionBarViewHolder.actionbarSwitcher.setDisplayedChild(1);
+                break;
+            }
         }
     }
 
@@ -373,7 +371,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             }
         });
         if (actionBarViewHolder.actionbarTitle != null) {
-            actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName());
+            actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName(),
+                    TextView.BufferType.SPANNABLE);
         }
     }
 
@@ -491,13 +490,5 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             updateToolbar(ActionBarState.SWITCHER);
             invalidateOptionsMenu();
         }
-    }
-
-
-    @Override
-    public void performSearch(String searchText) {
-        final ListMirakelInterface listMirakelInterface = new SearchListMirakel(this, searchText);
-        getTasksFragment().setList(listMirakelInterface);
-        updateToolbar(ActionBarState.NORMAL);
     }
 }

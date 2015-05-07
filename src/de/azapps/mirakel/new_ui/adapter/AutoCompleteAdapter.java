@@ -21,27 +21,23 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
-
-import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.azapps.mirakel.model.search.Autocomplete;
 import de.azapps.mirakel.model.tags.Tag;
-import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.new_ui.views.AddTagView;
-import de.azapps.mirakel.new_ui.views.TaskNameView;
+import de.azapps.mirakel.new_ui.search.SearchObject;
+import de.azapps.mirakel.new_ui.views.TagSpan;
 import de.azapps.mirakelandroid.R;
-import de.azapps.tools.OptionalUtils;
 
 public class AutoCompleteAdapter extends CursorAdapter {
 
@@ -63,30 +59,28 @@ public class AutoCompleteAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         final AutocompleteViewHolder viewHolder = (AutocompleteViewHolder) view.getTag();
-        final Autocomplete autocomplete = new Autocomplete(cursor);
+        final SearchObject searchObject = new SearchObject(cursor);
         // This is ok for tasks and a fallback variant for tags
-        viewHolder.taskName.setText(autocomplete.getName());
-        viewHolder.taskName.setStrikeThrough(false);
-        switch (autocomplete.getAutocompleteType()) {
+        viewHolder.taskName.setText(searchObject.getName());
+        //viewHolder.taskName.setStrikeThrough(false);
+        switch (searchObject.getAutocompleteType()) {
         case TASK:
-            viewHolder.viewSwitcher.setDisplayedChild(0);
-            OptionalUtils.withOptional(Task.get(autocomplete.getObjId()), new OptionalUtils.Procedure<Task>() {
-                @Override
-                public void apply(Task task) {
-                    viewHolder.taskName.setStrikeThrough(task.isDone());
-                }
-            });
+            if (searchObject.isDone()) {
+                viewHolder.taskName.setPaintFlags(viewHolder.taskName.getPaintFlags() |
+                                                  Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                viewHolder.taskName.setPaintFlags(viewHolder.taskName.getPaintFlags() &
+                                                  ~Paint.STRIKE_THRU_TEXT_FLAG);
+            }
             break;
         case TAG:
-            final Tag tag = Tag.get(autocomplete.getObjId()).orNull();
-            if (tag != null) {
-                ArrayList<Tag> tags = new ArrayList<>(1);
-                tags.add(tag);
-                viewHolder.tagView.setTags(tags);
-                viewHolder.viewSwitcher.setDisplayedChild(1);
-            } else {
-                viewHolder.viewSwitcher.setDisplayedChild(0);
-            }
+            final Tag tag = new Tag(searchObject.getObjId(), searchObject.getName(),
+                                    searchObject.getBackgroundColor(), false);
+            TagSpan tagSpan = new TagSpan(tag, context);
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+            stringBuilder.append(new SpannableString(tag.getName()));
+            stringBuilder.setSpan(tagSpan, 0, tag.getName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            viewHolder.taskName.setText(stringBuilder, TextView.BufferType.SPANNABLE);
             break;
         }
     }
@@ -94,29 +88,24 @@ public class AutoCompleteAdapter extends CursorAdapter {
 
     @Override
     public CharSequence convertToString(Cursor cursor) {
-        final Autocomplete autocomplete = new Autocomplete(cursor);
-        return autocomplete.getName();
+        final SearchObject searchObject = new SearchObject(cursor);
+        return searchObject.getName();
     }
 
 
     @Override
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-        return Autocomplete.autocomplete(mContext, constraint.toString());
+        return SearchObject.autocomplete(mContext, constraint.toString());
     }
 
 
     public class AutocompleteViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.tag_name)
-        AddTagView tagView;
         @InjectView(R.id.task_name)
-        TaskNameView taskName;
-        @InjectView(R.id.view_switcher)
-        ViewSwitcher viewSwitcher;
+        TextView taskName;
 
         public AutocompleteViewHolder(final View view) {
             super(view);
             ButterKnife.inject(this, view);
-            tagView.setClickEnabled(false);
         }
     }
 }

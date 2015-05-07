@@ -72,11 +72,14 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
+import de.azapps.mirakel.new_ui.search.SearchObject;
+import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
@@ -84,7 +87,7 @@ import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks,
-    MultiSelectCursorAdapter.MultiSelectCallbacks<TaskOverview>, ActionMode.Callback,
+    MultiSelectCursorAdapter.MultiSelectCallbacks<TaskOverview>,
     ActionClickListener {
 
     public static final String ARGUMENT_LIST = "list";
@@ -104,6 +107,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     ImageView menuMoveTask;
 
     private ListMirakelInterface listMirakel;
+    @Nullable
+    private SearchObject lastSearch;
 
     public TasksFragment() {
         // Required empty public constructor
@@ -167,6 +172,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public void setList(final ListMirakelInterface listMirakel) {
         this.listMirakel = listMirakel;
         final Bundle args = new Bundle();
+        ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.NORMAL);
+        if (listMirakel instanceof SearchListMirakel) {
+            lastSearch = ((SearchListMirakel) listMirakel).getSearch();
+        } else {
+            lastSearch = null;
+        }
         args.putParcelable(ARGUMENT_LIST, listMirakel);
         getLoaderManager().restartLoader(0, args, this);
     }
@@ -190,7 +201,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onSelectModeChanged(boolean selectMode) {
         if (selectMode) {
-            mActionMode = getActivity().startActionMode(this);
+            mActionMode = getActivity().startActionMode(new MultiSelectCallbacks());
         } else {
             assert mActionMode != null;
             mActionMode.finish();
@@ -256,49 +267,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         assert mActionMode != null;
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         showOrHideMoveTasks();
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        final MenuInflater inflater = actionMode
-                                      .getMenuInflater();
-        inflater.inflate(R.menu.multiselect_tasks, menu);
-
-        AnimationHelper.slideIn(getActivity(), multiselectMenu);
-        ((MirakelActivity) getActivity()).moveFABUp(multiselectMenu.getHeight());
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
-        }
-        final int count = mAdapter.getSelectedItemCount();
-        actionMode.setTitle(getResources().getQuantityString(R.plurals.task_multiselect_title, count,
-                            count));
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-        return true;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-        return false;
-    }
-
-
-    @Override
-    public void onDestroyActionMode(ActionMode actionMode) {
-        mAdapter.clearSelections();
-        mActionMode = null;
-
-        AnimationHelper.slideOut(getActivity(), multiselectMenu);
-        ((MirakelActivity) getActivity()).moveFabDown(multiselectMenu.getHeight());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
-        }
     }
 
     @Override
@@ -422,5 +390,97 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void resetList() {
         setList(listMirakel);
+    }
+
+    public void handleShowSearch() {
+        getActivity().startActionMode(new SearchCallbacks());
+    }
+
+    private class MultiSelectCallbacks implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            final MenuInflater inflater = actionMode
+                                          .getMenuInflater();
+            inflater.inflate(R.menu.multiselect_tasks, menu);
+
+            AnimationHelper.slideIn(getActivity(), multiselectMenu);
+            ((MirakelActivity) getActivity()).moveFABUp(multiselectMenu.getHeight());
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
+            }
+            final int count = mAdapter.getSelectedItemCount();
+            actionMode.setTitle(getResources().getQuantityString(R.plurals.task_multiselect_title, count,
+                                count));
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            mAdapter.clearSelections();
+            mActionMode = null;
+
+            AnimationHelper.slideOut(getActivity(), multiselectMenu);
+            ((MirakelActivity) getActivity()).moveFabDown(multiselectMenu.getHeight());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
+            }
+        }
+    }
+
+    private class SearchCallbacks implements ActionMode.Callback, SearchView.SearchCallback {
+        private ActionMode privateActionMode;
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            privateActionMode = actionMode;
+            SearchView searchView = new SearchView(getActivity());
+            searchView.setSearchCallback(this);
+            if (lastSearch != null) {
+                searchView.setSearch(lastSearch);
+            }
+            actionMode.setCustomView(searchView);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
+            }
+        }
+
+        @Override
+        public void performSearch(SearchObject searchText) {
+            assert privateActionMode != null;
+            privateActionMode.finish();
+            final ListMirakelInterface listMirakelInterface = new SearchListMirakel(getActivity(), searchText);
+            setList(listMirakelInterface);
+        }
     }
 }
