@@ -726,7 +726,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
             mirakelQueryBuilder) {
         return mirakelQueryBuilder.select(Task.VIEW_TABLE + '.' + Task.ID + " AS " + Task.ID,
                                           Task.VIEW_TABLE + '.' + Task.NAME + " AS " + Task.NAME, Task.DONE, Task.PROGRESS, Task.DUE,
-                                          Task.LIST_ID, "list_name", "account_id");
+                                          Task.LIST_ID, "list_name", "account_id", Task.PRIORITY);
     }
 
     @NonNull

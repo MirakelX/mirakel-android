@@ -46,6 +46,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
     @NonNull
     private Optional<Task> taskOptional = absent();
     private boolean done;
+    private int priority;
     private int progress;
     @NonNull
     protected Optional<Calendar> due = absent();
@@ -64,6 +65,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
         listMirakelOptional = of(task.getList());
         listId = listMirakelOptional.get().getId();
         listName = listMirakelOptional.get().getName();
+        priority = task.getPriority();
     }
 
     public TaskOverview(final Cursor cursor) {
@@ -76,6 +78,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
         listId = cg.getLong(Task.LIST_ID);
         listName = cg.getString("list_name");
         accountId = cg.getLong("account_id");
+        priority = cg.getInt(Task.PRIORITY);
     }
 
     public boolean isDone() {
@@ -97,6 +100,10 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
 
     public String getListName() {
         return listName;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 
     @Override
@@ -133,6 +140,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
     }
 
     // Parcelable stuff
+
     @Override
     public int describeContents() {
         return 0;
@@ -141,22 +149,26 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(done ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.priority);
         dest.writeInt(this.progress);
         dest.writeSerializable(this.due);
         dest.writeLong(this.listId);
         dest.writeString(this.listName);
+        dest.writeLong(this.accountId);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
     }
 
     private TaskOverview(Parcel in) {
         this.done = in.readByte() != 0;
+        this.priority = in.readInt();
         this.progress = in.readInt();
         this.due = (Optional<Calendar>) in.readSerializable();
         this.listId = in.readLong();
         this.listName = in.readString();
-        this.setId(in.readLong());
-        this.setName(in.readString());
+        this.accountId = in.readLong();
+        setId(in.readLong());
+        setName(in.readString());
     }
 
     public static final Creator<TaskOverview> CREATOR = new Creator<TaskOverview>() {
