@@ -47,6 +47,7 @@
     <attr name="colorPrio0" format="color" />
     <attr name="colorPrio1" format="color" />
     <attr name="colorPrio2" format="color" />
+    <attr name="colorPriorityBackground" format="color" />
 
 
     <attr name="colorDivider" format="color" />

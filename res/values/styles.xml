@@ -66,6 +66,7 @@
         <item name="colorPrio0">#33B5E5</item>
         <item name="colorPrio1">#FFBB33</item>
         <item name="colorPrio2">#FF4444</item>
+        <item name="colorPriorityBackground">#808080</item>
 
         <item name="colorDivider">#e6e6e6</item>
         <!-- The CAB should overlay the normal ActionBar -->
