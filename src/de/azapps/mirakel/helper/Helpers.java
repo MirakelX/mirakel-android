@@ -156,7 +156,7 @@ public class Helpers {
                          0,
                          new Intent(
                              context,
-                             Class.forName("de.azapps.mirakel.static_activities.SplashScreenActivity")),
+                             Class.forName("de.azapps.mirakel.new_ui.activities.SplashScreenActivity")),
                          0);
         } catch (final ClassNotFoundException e) {
             Log.wtf(TAG, "splashscreen not found");
