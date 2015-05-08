@@ -39,6 +39,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
+import de.azapps.mirakel.new_ui.views.PriorityView;
 import de.azapps.mirakelandroid.R;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
@@ -87,11 +88,12 @@ public class TaskAdapter extends
             holder.due.setVisibility(View.GONE);
         }
         holder.list.setText(task.getListName());
+        holder.priority.setPriority(task.getPriority());
         // otherwise the OnCheckedChangeListener will be called
-        holder.priorityDone.setOnCheckedChangeListener(null);
-        holder.priorityDone.setChecked(task.isDone());
-        holder.priorityDone.setProgress(task.getProgress());
-        holder.priorityDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.progressDone.setOnCheckedChangeListener(null);
+        holder.progressDone.setChecked(task.isDone());
+        holder.progressDone.setProgress(task.getProgress());
+        holder.progressDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                 final Optional<Task> taskOptional = task.getTask();
@@ -119,10 +121,12 @@ public class TaskAdapter extends
         TextView due;
         @InjectView(R.id.task_list)
         TextView list;
-        @InjectView(R.id.task_priority_done)
-        ProgressDoneView priorityDone;
+        @InjectView(R.id.task_progress_done)
+        ProgressDoneView progressDone;
         @InjectView(R.id.task_card)
         CardView card;
+        @InjectView(R.id.priority)
+        PriorityView priority;
         TaskOverview task;
 
         public TaskViewHolder(final View view) {

@@ -80,4 +80,10 @@
         <item>Open file</item>
     </string-array>
 
+    <string name="priority_2">Very important</string>
+    <string name="priority_1">Important</string>
+    <string name="priority_0">Normal</string>
+    <string name="priority_m1">Unimportant</string>
+    <string name="priority_m2">Very unimportant</string>
+
 </resources>

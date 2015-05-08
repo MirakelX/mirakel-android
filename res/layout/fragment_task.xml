@@ -53,8 +53,9 @@
                 custom:progress_background_color="?colorProgressBackground" />
 
             <ViewSwitcher
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:id="@+id/task_name_view_switcher">
 
                 <TextView
@@ -73,8 +74,10 @@
                     android:inputType="text"
                     android:id="@+id/task_name_edit" />
             </ViewSwitcher>
-
-            <!-- TODO priorities -->
+            <de.azapps.mirakel.new_ui.views.PriorityChangeView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/priority"/>
         </LinearLayout>
         <include layout="@layout/task_divider" />
     </LinearLayout>

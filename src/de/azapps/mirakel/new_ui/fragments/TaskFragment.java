@@ -70,6 +70,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.FileView;
 import de.azapps.mirakel.new_ui.views.NoteView;
+import de.azapps.mirakel.new_ui.views.PriorityChangeView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
@@ -99,6 +100,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     EditText taskNameEdit;
     @InjectView(R.id.task_name_view_switcher)
     ViewSwitcher taskNameViewSwitcher;
+    @InjectView(R.id.priority)
+    PriorityChangeView priorityChangeView;
     @InjectView(R.id.task_progress)
     ProgressView progressView;
 
@@ -314,6 +317,14 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
+        priorityChangeView.setPriority(task.getPriority());
+        priorityChangeView.setOnPriorityChangeListener(new PriorityChangeView.OnPriorityChangeListener() {
+            @Override
+            public void priorityChanged(int priority) {
+                task.setPriority(priority);
+                task.save();
+            }
+        });
         taskTags.setTask(task);
         taskTags.setKeyboard(keyboard);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
