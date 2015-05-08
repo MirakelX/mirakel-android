@@ -25,4 +25,5 @@
     android:layout_height="match_parent"
     android:dividerHeight="0dp"
     android:divider="@color/transparent"
-    android:background="?colorListsBackground"/>
+    android:background="?colorListsBackground"
+    android:scrollbars="vertical"/>
