@@ -22,15 +22,6 @@
     android:title="@string/ui_settings_title" >
 
     <PreferenceCategory android:title="@string/general" >
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="false"
-            android:key="DarkTheme"
-            android:title="@string/dark_theme" />
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="false"
-            android:key="highlightSelected"
-            android:summary="@string/highlightSelected_summary"
-            android:title="@string/highlightSelected" />
         <ListPreference
             android:key="useTabletLayoutNew"
             android:title="@string/useTabletLayout" />
@@ -45,36 +36,5 @@
             android:key="startupList"
             android:summary="@string/startup_list_summary"
             android:title="@string/startup_list" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/list_fragment" >
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:key="show_account_name"
-            android:title="@string/show_account_name" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/tasks_fragment" >
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="true"
-            android:key="useBtnAudioRecord"
-            android:title="@string/settings_use_btn_audio" />
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="false"
-            android:key="useBtnSpeak"
-            android:title="@string/settings_use_btn_speak" />
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="true"
-            android:key="useBtnCamera"
-            android:title="@string/settings_use_btn_camera" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/task_fragment" >
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="false"
-            android:key="lockDrawerInTaskFragment"
-            android:summary="@string/lock_drawer_in_task_fragment_summary"
-            android:title="@string/lock_drawer_in_task_fragment" />
-
-        <Preference
-            android:key="task_fragment"
-            android:title="@string/settings_task_fragment" >
-        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

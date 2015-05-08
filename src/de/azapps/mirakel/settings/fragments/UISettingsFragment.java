@@ -31,10 +31,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.custom_views.Settings;
-import de.azapps.mirakel.settings.custom_views.SwitchCompatPreference;
-import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
 public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
@@ -47,34 +44,14 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
         final List<ListMirakel> lists = ListMirakel.all();
         final CharSequence entryValues[] = new String[lists.size()];
         final CharSequence entries[] = new String[lists.size()];
-        final CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
-        final CharSequence entriesWithDefault[] = new String[lists.size() + 1];
         int i = 0;
         for (final ListMirakel list : lists) {
             final String id = String.valueOf(list.getId());
             final String name = list.getName();
             entryValues[i] = id;
             entries[i] = name;
-            entryValuesWithDefault[i + 1] = id;
-            entriesWithDefault[i + 1] = name;
             i++;
         }
-        entriesWithDefault[0] = getString(R.string.default_list);
-        entryValuesWithDefault[0] = "default";
-
-        // Dark theme
-        final SwitchCompatPreference darkTheme = (SwitchCompatPreference) findPreference("DarkTheme");
-        darkTheme
-        .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(
-                final Preference preference,
-                final Object newValue) {
-                MirakelCommonPreferences.setIsDark((Boolean) newValue);
-                Helpers.restartApp(getActivity());
-                return true;
-            }
-        });
 
         final ListPreference isTablet = (ListPreference) findPreference("useTabletLayoutNew");
         final String[] values = {"0", "1", "2", "3"};
@@ -111,19 +88,6 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
         startupListPreference.setEntries(entries);
         startupListPreference.setEntryValues(entryValues);
         startupListPreference.setEnabled(true);
-
-        final Preference taskFragment = findPreference("task_fragment");
-        taskFragment.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (getActivity() instanceof SettingsActivity) {
-                    ((SettingsActivity) getActivity()).onItemSelected(Settings.TASKUI);
-                } else {
-                    ((GenericModelDetailActivity) getActivity()).setFragment(Settings.TASKUI.getFragment());
-                }
-                return true;
-            }
-        });
     }
 
     private void setLanguageSummary(final ListPreference language,
