@@ -216,6 +216,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
   <string name="semantic_new">Vorlage</string>
   <string name="tag_new">Neues Tag</string>
+  <string name="tag_settings">Tageinstellungen</string>
   <string name="color">Farbe</string>
   <string name="tag_name">Name</string>
   <string name="tag_dark_text">Soll der Text schwarz sein?</string>
@@ -299,6 +300,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="subcondition">Unterbedingung</string>
   <string name="done_text">Nur erledigte Aufgaben</string>
   <string name="file_text">Nur Aufgaben mit Datei</string>
+  <string name="due_exist_text">Nur Aufgaben ohne Termin</string>
   <string name="reminder_text">Nur Aufgaben mit Erinnerung</string>
   <string name="is_subtask_parent">Ist Hauptaufgabe</string>
   <string name="has_subtasks">Besitzt Unteraufgaben</string>
@@ -307,4 +309,9 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="Undo">Bedingung entfernen rückgängig machen</string>
   <string name="add_condition">Bedingung hinzufügen</string>
   <string name="undo_taskui_change">Entfernen von %s rückgängig machen</string>
+  <string name="due_dialog_negated">Nicht nach</string>
+  <string name="settings_advanced">Erweitert</string>
+  <string name="delete_condition">Bedingung löschen</string>
+  <string name="delete_semantic">Aufgabenvorlage löschen</string>
+  <string name="delete_special_lists">Meta-Liste löschen</string>
 </resources>
