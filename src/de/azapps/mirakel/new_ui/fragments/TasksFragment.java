@@ -46,22 +46,25 @@ import android.widget.Toast;
 
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
-import com.nispok.snackbar.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.azapps.material_elements.utils.AnimationHelper;
+import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
@@ -73,6 +76,7 @@ import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.new_ui.search.SearchListMirakel;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
@@ -286,16 +290,49 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_delete)
     void onDelete() {
-        final ArrayList<TaskOverview> selected = mAdapter.getSelectedItems();
-        // TODO implement deleting
-        final int count = selected.size();
+        final List<TaskOverview> tasksToDelete=mAdapter.getSelectedItems();
+        final List<Long> ids= new ArrayList<>(Collections2.transform(tasksToDelete, new Function<TaskOverview, Long>() {
+            @Override
+            public Long apply(@Nullable final TaskOverview input) {
+                if (input != null) {
+                    return input.getId();
+                } else {
+                    return 0L;
+                }
+            }
+        }));
+        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().and(Task.ID, MirakelQueryBuilder.Operation.NOT_IN,ids).query(Task.URI));
         SnackbarManager.show(
-            Snackbar.with(getActivity())
-            .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, count, count))
-            .actionLabel(R.string.undo)
-            .actionListener(this)
-            .eventListener((EventListener) getActivity())
-            , getActivity());
+                Snackbar.with(getActivity())
+                        .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, ids.size(), ids.size()))
+                        .actionLabel(R.string.undo)
+                        .actionListener(new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(final Snackbar snackbar) {
+                                tasksToDelete.clear();
+                            }
+                        })
+                        .eventListener(new SnackBarEventListener(){
+                            @Override
+                            public void onDismiss(final Snackbar snackbar) {
+                                super.onDismiss(snackbar);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for(final TaskOverview t:tasksToDelete){
+                                            t.destroy();
+                                        }
+                                        mListView.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().query(Task.URI));
+                                            }
+                                        });
+                                    }
+                                }).start();
+                            }
+                        })
+                , getActivity());
 
         if (mActionMode != null) {
             mActionMode.finish();

@@ -35,11 +35,11 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 
-public class SearchListMirakel implements ListMirakelInterface, android.os.Parcelable {
+public class SearchListMirakel implements ListMirakelInterface {
     private SearchObject search;
     private Context context;
 
-    public SearchListMirakel(Context context, SearchObject search) {
+    public SearchListMirakel(final Context context, final SearchObject search) {
         this.context = context;
         this.search = search;
     }
@@ -54,12 +54,13 @@ public class SearchListMirakel implements ListMirakelInterface, android.os.Parce
         throw new IllegalArgumentException("The autocomplete type is not set");
     }
 
-    private MirakelQueryBuilder getMirakelQueryBuilder() {
-        MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
+    @Override
+    public MirakelQueryBuilder getTasksQueryBuilder() {
+        final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
         switch (search.getAutocompleteType()) {
         case TASK:
             mirakelQueryBuilder.and(Task.VIEW_TABLE + '.' + Task.NAME, MirakelQueryBuilder.Operation.LIKE,
-                                    "%" + search.getName() + "%");
+                    '%' + search.getName() + '%');
             break;
         case TAG:
             mirakelQueryBuilder.and(Tag.TABLE + '.' + Tag.ID, MirakelQueryBuilder.Operation.EQ,
@@ -73,8 +74,8 @@ public class SearchListMirakel implements ListMirakelInterface, android.os.Parce
 
     @Override
     public Loader getTaskOverviewSupportCursorLoader() {
-        return ListMirakel.addTaskOverviewSelection(getMirakelQueryBuilder()).toSupportCursorLoader(
-                   getUri());
+        return ListMirakel.addTaskOverviewSelection(getTasksQueryBuilder()).toSupportCursorLoader(
+                getUri());
     }
 
     @Override
@@ -89,12 +90,12 @@ public class SearchListMirakel implements ListMirakelInterface, android.os.Parce
 
     @Override
     public List<Task> tasks() {
-        return getMirakelQueryBuilder().getList(Task.class);
+        return getTasksQueryBuilder().getList(Task.class);
     }
 
     @Override
     public long countTasks() {
-        return getMirakelQueryBuilder().count(getUri());
+        return getTasksQueryBuilder().count(getUri());
     }
 
 
@@ -104,20 +105,20 @@ public class SearchListMirakel implements ListMirakelInterface, android.os.Parce
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeParcelable(this.search, 0);
     }
 
-    private SearchListMirakel(Parcel in) {
+    private SearchListMirakel(final Parcel in) {
         this.search = in.readParcelable(SearchObject.class.getClassLoader());
     }
 
     public static final Creator<SearchListMirakel> CREATOR = new Creator<SearchListMirakel>() {
-        public SearchListMirakel createFromParcel(Parcel source) {
+        public SearchListMirakel createFromParcel(final Parcel source) {
             return new SearchListMirakel(source);
         }
 
-        public SearchListMirakel[] newArray(int size) {
+        public SearchListMirakel[] newArray(final int size) {
             return new SearchListMirakel[size];
         }
     };

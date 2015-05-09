@@ -36,26 +36,25 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.views.TagSpan;
 
-/**
- * Created by az on 07.05.15.
- */
-public class SearchTagList implements ListMirakelInterface, android.os.Parcelable {
+
+public class SearchTagList implements ListMirakelInterface {
     private Tag tag;
     private Context context;
 
 
-    public SearchTagList(Context context, Tag tag) {
+    public SearchTagList(final Context context, final Tag tag) {
         this.tag = tag;
         this.context = context;
     }
 
-    private SearchTagList(Parcel in) {
+    private SearchTagList(final Parcel in) {
         this.tag = in.readParcelable(Tag.class.getClassLoader());
     }
 
 
-    private MirakelQueryBuilder getMirakelQueryBuilder() {
-        MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
+    @Override
+    public MirakelQueryBuilder getTasksQueryBuilder() {
+        final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
         mirakelQueryBuilder.and(Tag.TABLE + '.' + Tag.ID, MirakelQueryBuilder.Operation.EQ, tag.getId());
         Task.addBasicFiler(mirakelQueryBuilder);
         ListMirakel.addSortBy(mirakelQueryBuilder, ListMirakel.SORT_BY.OPT, true);
@@ -64,24 +63,25 @@ public class SearchTagList implements ListMirakelInterface, android.os.Parcelabl
 
     @Override
     public Loader getTaskOverviewSupportCursorLoader() {
-        return ListMirakel.addTaskOverviewSelection(getMirakelQueryBuilder()).toSupportCursorLoader(
-                   MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
+        return ListMirakel.addTaskOverviewSelection(getTasksQueryBuilder()).toSupportCursorLoader(
+                MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
     }
 
     @Override
     public List<Task> tasks() {
-        return getMirakelQueryBuilder().getList(Task.class);
+        return getTasksQueryBuilder().getList(Task.class);
     }
 
     @Override
     public long countTasks() {
-        return getMirakelQueryBuilder().count(MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
+        return getTasksQueryBuilder().count(MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
     }
+
 
     @Override
     public CharSequence getName() {
-        TagSpan tagSpan = new TagSpan(tag, context);
-        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        final TagSpan tagSpan = new TagSpan(tag, context);
+        final SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
         stringBuilder.append(new SpannableString(tag.getName()));
         stringBuilder.setSpan(tagSpan, 0, tag.getName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return context.getString(de.azapps.mirakel.model.R.string.search_title, stringBuilder);
@@ -95,16 +95,16 @@ public class SearchTagList implements ListMirakelInterface, android.os.Parcelabl
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeParcelable(this.tag, flags);
     }
 
     public static final Creator<SearchTagList> CREATOR = new Creator<SearchTagList>() {
-        public SearchTagList createFromParcel(Parcel source) {
+        public SearchTagList createFromParcel(final Parcel source) {
             return new SearchTagList(source);
         }
 
-        public SearchTagList[] newArray(int size) {
+        public SearchTagList[] newArray(final int size) {
             return new SearchTagList[size];
         }
     };
