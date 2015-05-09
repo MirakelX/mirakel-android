@@ -83,4 +83,6 @@ Für weitergehende Informationen siehe <a href="https://mirakel.atlassian.net/br
   <string name="message_parse_message">Konnte die Aufgabe nicht auswerten – bitte schreib uns, wie das passiert ist</string>
   <string name="message_message_error">Unbekannte Antwort vom Server - Bitte schreib uns wie das passieren konnte</string>
   <string name="finish_sync">Synchronisation abgeschlossen</string>
+  <string name="account_vanished">Account verschwunden. Das sollte niemals passieren</string>
+  <string name="create_account">Account erstellen</string>
 </resources>
