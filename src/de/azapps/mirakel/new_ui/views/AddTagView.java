@@ -282,22 +282,28 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
                     addTag(tag);
                 }
             }
-            boolean hasPrefix=!text.toString().endsWith(",");
-            if(hasPrefix && (lengthAfter < lengthBefore) && !tagsToRemove.isEmpty()){
+            boolean hasPostfix=!text.toString().endsWith(",");
+            if(hasPostfix && (lengthAfter < lengthBefore) && !tagsToRemove.isEmpty()){
                 final String last=tags.get(tags.size()-1);
-                hasPrefix=true;
+                hasPostfix=true;
                 for(final Tag tag:tagsToRemove){
                     if(tag.getName().startsWith(last)){
-                        hasPrefix=false;
+                        hasPostfix=false;
                         break;
                     }
                 }
             }
 
-            if(hasPrefix){
+            if(hasPostfix){
                 postfix=tags.get(tags.size()-1);
             }else{
                 postfix="";
+            }
+            if(hasPostfix && (lengthAfter < lengthBefore)){
+                final String last=this.currentTags.get(this.currentTags.size()-1).getName();
+                if(postfix.equals(last)){
+                    postfix="";
+                }
             }
             if(!tagsToRemove.isEmpty()||!currentTags.isEmpty()){
                 rebuildText();
