@@ -142,7 +142,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         try {
             mListener = (OnItemClickedListener<TaskOverview>) activity;
         } catch (final ClassCastException ignored) {
-            throw new ClassCastException(activity.toString() + " OnItemClickedListener<TaskOverview>");
+            throw new ClassCastException(activity.toString() +
+                                         " must implement OnItemClickedListener<TaskOverview>");
         }
     }
 
@@ -203,19 +204,23 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         if (selectMode) {
             mActionMode = getActivity().startActionMode(new MultiSelectCallbacks());
         } else {
-            assert mActionMode != null;
+            if (mActionMode == null) {
+                throw new IllegalArgumentException("ActionMode is null this must not happen");
+            }
             mActionMode.finish();
         }
     }
 
     @Override
-    public boolean canAddItem(@NonNull TaskOverview item) {
+    public boolean canAddItem(@NonNull final TaskOverview item) {
         return true;
     }
 
 
     public void onSelectedItemCountChanged(final int itemCount) {
-        assert mActionMode != null;
+        if (mActionMode == null) {
+            throw new IllegalArgumentException("ActionMode is null this must not happen");
+        }
         if (itemCount == 0) {
             mActionMode.finish();
         } else {
@@ -256,15 +261,20 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onAddSelectedItem(@NonNull TaskOverview item) {
-        assert mActionMode != null;
+    public void onAddSelectedItem(@NonNull final TaskOverview item) {
+        if (mActionMode == null) {
+            throw new IllegalArgumentException("ActionMode is null this must not happen");
+        }
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         showOrHideMoveTasks();
     }
 
     @Override
-    public void onRemoveSelectedItem(@NonNull TaskOverview item) {
-        assert mActionMode != null;
+    public void onRemoveSelectedItem(@NonNull final TaskOverview item) {
+        if (mActionMode == null) {
+            throw new IllegalArgumentException("ActionMode is null this must not happen");
+        }
+
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
         showOrHideMoveTasks();
     }
@@ -477,7 +487,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
         @Override
         public void performSearch(SearchObject searchText) {
-            assert privateActionMode != null;
+            if (privateActionMode == null) {
+                throw new IllegalArgumentException("ActionMode is null this must not happen");
+            }
             privateActionMode.finish();
             final ListMirakelInterface listMirakelInterface = new SearchListMirakel(getActivity(), searchText);
             setList(listMirakelInterface);

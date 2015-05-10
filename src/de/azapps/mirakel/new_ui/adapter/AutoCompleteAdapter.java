@@ -62,7 +62,6 @@ public class AutoCompleteAdapter extends CursorAdapter {
         final SearchObject searchObject = new SearchObject(cursor);
         // This is ok for tasks and a fallback variant for tags
         viewHolder.taskName.setText(searchObject.getName());
-        //viewHolder.taskName.setStrikeThrough(false);
         switch (searchObject.getAutocompleteType()) {
         case TASK:
             if (searchObject.isDone()) {

@@ -17,20 +17,14 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="@dimen/clickable_item_size"
+    android:textAppearance="@style/TextAppearance.Regular.Small"
+    android:textColor="?colorTextGrey"
+    android:gravity="center_vertical"
     android:paddingStart="@dimen/padding_default"
-    android:paddingEnd="@dimen/padding_default">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/clickable_item_size"
-        android:textAppearance="@style/TextAppearance.Regular.Small"
-        android:textColor="?colorTextGrey"
-        android:gravity="center_vertical"
-        android:id="@+id/task_name" />
-
-</LinearLayout>
+    android:paddingEnd="@dimen/padding_default"
+    android:id="@+id/task_name" />

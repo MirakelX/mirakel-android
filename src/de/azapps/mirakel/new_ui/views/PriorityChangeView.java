@@ -20,13 +20,13 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakelandroid.R;
 
@@ -36,6 +36,7 @@ import de.azapps.mirakelandroid.R;
 public class PriorityChangeView extends PriorityView implements View.OnClickListener {
     @InjectView(R.id.priority_button)
     LinearLayout priorityButton;
+    @Nullable
     private OnPriorityChangeListener onPriorityChangeListener;
 
 
@@ -55,6 +56,7 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
         super(context, attrs, defStyleAttr);
         setOnClickListener(this);
     }
+
     protected int getLayout() {
         return R.layout.view_priority_change;
     }
@@ -72,21 +74,29 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 final int priority;
-                if (item.getItemId() == R.id.priority_2) {
+                switch (item.getItemId()) {
+                case R.id.priority_2:
                     priority = 2;
-                } else if (item.getItemId() == R.id.priority_1) {
+                    break;
+                case R.id.priority_1:
                     priority = 1;
-                } else if (item.getItemId() == R.id.priority_0) {
+                    break;
+                case R.id.priority_0:
                     priority = 0;
-                } else if (item.getItemId() == R.id.priority_m1) {
+                    break;
+                case R.id.priority_m1:
                     priority = -1;
-                } else if (item.getItemId() == R.id.priority_m2) {
+                    break;
+                case R.id.priority_m2:
                     priority = -2;
-                } else {
+                    break;
+                default:
                     throw new IllegalArgumentException("Can not handle this priority");
                 }
                 setPriority(priority);
-                onPriorityChangeListener.priorityChanged(priority);
+                if (onPriorityChangeListener != null) {
+                    onPriorityChangeListener.priorityChanged(priority);
+                }
                 return true;
             }
         });

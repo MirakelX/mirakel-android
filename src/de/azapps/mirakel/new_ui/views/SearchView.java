@@ -74,7 +74,6 @@ public class SearchView extends LinearLayout {
         ButterKnife.inject(this, this);
         softKeyboard = new SoftKeyboard(this,
                                         (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE));
-        softKeyboard.openSoftKeyboard();
         searchText.requestFocus();
         final AutoCompleteAdapter adapter = new AutoCompleteAdapter(context,
                 SearchObject.autocomplete(context,
@@ -142,7 +141,6 @@ public class SearchView extends LinearLayout {
 
     @OnClick(R.id.search_button)
     public void searchButtonClick() {
-        softKeyboard.closeSoftKeyboard();
         if (searchCallback != null) {
             if (lastSearch != null) {
                 searchCallback.performSearch(lastSearch);

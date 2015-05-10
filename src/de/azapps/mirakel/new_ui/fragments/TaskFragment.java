@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -82,7 +84,8 @@ import de.azapps.widgets.SupportDateTimeDialog;
 import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 
-public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKeyboardChanged, MirakelContentObserver.ObserverCallBack {
+public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKeyboardChanged,
+    PriorityChangeView.OnPriorityChangeListener, MirakelContentObserver.ObserverCallBack {
 
     private static final String TAG = "TaskFragment";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
@@ -150,7 +153,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @Override
     public void handleChange(final long id) {
-        if(id==task.getId()){
+        if (id == task.getId()) {
             updateTask();
         }
     }
@@ -184,7 +187,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
-        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,this);
+        observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
+                                              this);
     }
 
     @Override
@@ -205,7 +209,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         final View layout = inflater.inflate(R.layout.fragment_task, container, false);
-        keyboard=new SoftKeyboard((ViewGroup) layout);
+        keyboard = new SoftKeyboard((ViewGroup) layout);
         keyboard.setSoftKeyboardCallback(this);
         ButterKnife.inject(this, layout);
         updateAll();
@@ -257,14 +261,19 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
             @Override
             public boolean onMenuItemClick(final MenuItem item) {
                 item.setVisible(false);
-                if (item.getItemId() == R.id.add_note_menu) {
+                switch (item.getItemId()) {
+                case R.id.add_note_menu:
                     noteWrapper.setVisibility(View.VISIBLE);
-                } else if (item.getItemId() == R.id.add_subtask_menu) {
+                    break;
+                case R.id.add_subtask_menu:
                     subtaskWrapper.setVisibility(View.VISIBLE);
-                } else if (item.getItemId() == R.id.add_tags_menu) {
+                    break;
+                case R.id.add_tags_menu:
                     tagWrapper.setVisibility(View.VISIBLE);
-                } else if (item.getItemId() == R.id.add_file_menu) {
+                    break;
+                case R.id.add_file_menu:
                     fileWrapper.setVisibility(View.VISIBLE);
+                    break;
                 }
                 checkDisableAddButton();
                 return false;
@@ -318,19 +327,20 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
         priorityChangeView.setPriority(task.getPriority());
-        priorityChangeView.setOnPriorityChangeListener(new PriorityChangeView.OnPriorityChangeListener() {
-            @Override
-            public void priorityChanged(int priority) {
-                task.setPriority(priority);
-                task.save();
-            }
-        });
+        priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTask(task);
         taskTags.setKeyboard(keyboard);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
                                  onSubtaskDoneListener);
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
+    }
+
+
+    @Override
+    public void priorityChanged(int priority) {
+        task.setPriority(priority);
+        task.save();
     }
 
     private final Procedure<Integer> progressChangedListener = new
@@ -364,7 +374,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                 public void run() {
                     taskNameEdit.requestFocus();
                 }
-            },10L);
+            }, 10L);
 
         }
         taskNameEdit.setOnKeyListener(new View.OnKeyListener() {
@@ -372,7 +382,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
             public boolean onKey(final View v, final int keyCode, final KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     updateName();
                     return true;
                 }
@@ -380,7 +390,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
             }
         });
     }
-
 
     private void updateName() {
         taskNameEdit.clearFocus();
@@ -394,8 +403,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     void clickTaskName() {
         taskNameViewSwitcher.showNext();
         taskNameEdit.setText(task.getName());
-        if(!taskNameEdit.requestFocus()){
-            Log.wtf(TAG,"could not get focus");
+        if (!taskNameEdit.requestFocus()) {
+            Log.wtf(TAG, "could not get focus");
         }
 
     }

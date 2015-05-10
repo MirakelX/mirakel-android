@@ -81,7 +81,6 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
     private List<Tag> tags = Tag.all();
     private ArrayAdapter<String> adapter;
     private List<Tag> currentTags = new ArrayList<>();
-    private boolean clickEnabled = true;
 
 
     @Nullable
@@ -140,10 +139,6 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         setEnabled(true);
         setInputType(InputType.TYPE_NULL);
         clearFocus();
-    }
-
-    public void setClickEnabled(boolean clickEnabled) {
-        this.clickEnabled = clickEnabled;
     }
 
 
@@ -253,9 +248,8 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
                 text.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
-                        if (clickEnabled) {
-                            handleTagEdit(tag);
-                        }
+                        handleTagEdit(tag);
+
                     }
                 }, pos, pos + textLength, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 pos += textLength;
@@ -365,10 +359,8 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
 
     @Override
     public void onClick(final View v) {
-        if (clickEnabled) {
-            setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-            requestFocusFromTouch();
-        }
+        setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+        requestFocusFromTouch();
     }
 
     @Override

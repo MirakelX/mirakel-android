@@ -51,8 +51,7 @@ public class SearchListMirakel implements ListMirakelInterface, android.os.Parce
         case TAG:
             return MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI;
         }
-        // This can't happen
-        return null;
+        throw new IllegalArgumentException("The autocomplete type is not set");
     }
 
     private MirakelQueryBuilder getMirakelQueryBuilder() {

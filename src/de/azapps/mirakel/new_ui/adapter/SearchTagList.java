@@ -80,12 +80,10 @@ public class SearchTagList implements ListMirakelInterface, android.os.Parcelabl
 
     @Override
     public CharSequence getName() {
-
         TagSpan tagSpan = new TagSpan(tag, context);
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
         stringBuilder.append(new SpannableString(tag.getName()));
         stringBuilder.setSpan(tagSpan, 0, tag.getName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//return stringBuilder;
         return context.getString(de.azapps.mirakel.model.R.string.search_title, stringBuilder);
     }
 
