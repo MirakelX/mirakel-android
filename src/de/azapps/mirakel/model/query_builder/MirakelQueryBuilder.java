@@ -510,7 +510,6 @@ public class MirakelQueryBuilder {
         return uri;
     }
 
-
     public MirakelQueryBuilder sort(final String field, final Sorting s) {
         sort(field, s, null);
         return this;

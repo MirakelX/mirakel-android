@@ -54,6 +54,7 @@ import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.model.search.Autocomplete;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -106,6 +107,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String LIST_WITH_SPECIAL = "list_with_special";
 
     // Uris
+    public static final Uri AUTOCOMPLETE_URI = getUri(Autocomplete.TABLE);
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
     public static final Uri TASK_TAG_JOIN_URI = getUri(TASK_TAG_JOIN);

@@ -60,7 +60,7 @@ import static com.google.common.base.Optional.of;
 /**
  * @author az
  */
-public class ListMirakel extends ListBase {
+public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     /**
      * This is used by the Spinner in the MirakelActivity to identify the All Accounts selection
@@ -132,12 +132,12 @@ public class ListMirakel extends ListBase {
 
     @NonNull
     public MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb) {
-        return addSortBy(qb, getSortBy(), getId());
+        return addSortBy(qb, getSortBy(), getId() < 0);
     }
 
     @NonNull
     public static MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb, final SORT_BY sorting,
-            final long listId) {
+            final boolean isSpecial) {
         final String dueSort = "CASE WHEN (" + Task.DUE
                                + " IS NULL) THEN datetime('now','+50 years') ELSE datetime("
                                + Task.DUE
@@ -163,7 +163,7 @@ public class ListMirakel extends ListBase {
         default:
             qb.sort(Task.ID, Sorting.ASC);
         }
-        if (listId < 0) {
+        if (isSpecial) {
             qb.sort(Task.LIST_ID, Sorting.ASC);
         }
         return qb;
