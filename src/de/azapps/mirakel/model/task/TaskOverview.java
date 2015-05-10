@@ -129,7 +129,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
         if (!listMirakelOptional.isPresent()) {
             listMirakelOptional = ListMirakel.get(listId);
         }
-        return ListMirakel.get(listId);
+        return listMirakelOptional;
     }
     @NonNull
     public Optional<AccountMirakel> getAccountMirakel() {
