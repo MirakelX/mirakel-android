@@ -58,7 +58,6 @@ import de.azapps.mirakel.settings.fragments.TaskSettingsFragment;
 import de.azapps.mirakel.settings.fragments.UISettingsFragment;
 import de.azapps.mirakel.settings.model_settings.account.AccountSettingsActivity;
 import de.azapps.mirakel.settings.model_settings.special_list.SpecialListListActivity;
-import de.azapps.mirakel.settings.taskfragment.TaskFragmentSettingsFragment;
 import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
@@ -73,7 +72,6 @@ public enum  Settings implements IGenericElementInterface {
     NOTIFICATION(R.string.notification_title, R.drawable.ic_notifications_24px),
     TASK( R.string.settings_tasks_title, R.drawable.ic_done_24px),
     UI( R.string.ui_settings_title, R.drawable.ic_stay_current_portrait_24px),
-    TASKUI(R.string.settings_task_fragment),
     DONATE( R.string.title_donations, R.drawable.ic_favorite_24px),
     CREDITS(R.string.action_credits),
     SYNC( R.string.sync_title, R.drawable.ic_sync_24px),
@@ -102,8 +100,6 @@ public enum  Settings implements IGenericElementInterface {
             return TaskSettingsFragment.class.getName();
         case UI:
             return UISettingsFragment.class.getName();
-        case TASKUI:
-            return TaskFragmentSettingsFragment.class.getName();
         case DONATE:
             return DonationFragmentWrapper.class.getName();
         case CREDITS:
@@ -133,8 +129,6 @@ public enum  Settings implements IGenericElementInterface {
             return new TaskSettingsFragment();
         case UI:
             return new UISettingsFragment();
-        case TASKUI:
-            return new TaskFragmentSettingsFragment();
         case CREDITS:
             return new CreditsFragment();
         case DONATE:
@@ -273,7 +267,6 @@ public enum  Settings implements IGenericElementInterface {
         case NOTIFICATION:
         case TASK:
         case UI:
-        case TASKUI:
         case DONATE:
         case CREDITS:
         case TASK_TEMPLATES:
@@ -289,7 +282,7 @@ public enum  Settings implements IGenericElementInterface {
             screen.addPreference(cat);
             cat.setTitle(id.getKey());
             for (final Settings setting : id.getValue()) {
-                if ((setting == DEV) && !MirakelCommonPreferences.isEnabledDebugMenu()) {
+                if ((setting == DEV || setting == SYNC) && !MirakelCommonPreferences.isEnabledDebugMenu()) {
                     continue;
                 }
                 cat.addItemFromInflater(setting.getPreference(onClick));

@@ -88,16 +88,12 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="notifications_list_open">Open List</string>
     <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
-    <string name="notifications_big">Show big notifications</string>
-    <string name="notifications_zero_show">Hide notification if empty</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
     <string name="reminders_persistent_summary">Make it impossible to close the reminder</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
-    <string name="startup_show_lists">Show all lists</string>
-    <string name="startup_show_lists_summary">Show all lists on startup</string>
     <string name="startup_list">Select Startup List</string>
     <string name="startup_list_summary">Show tasks of \"%s\"</string>
 
@@ -146,36 +142,16 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="import_wunderlist_howto">Howto import from Wunderlist</string>
     <string name="import_wunderlist_howto_text">The Android-app of Wunderlist does not support a backup functionality.\n\n So you have to login in the web-app. Go to Preferences → Account → Create Backup → (wait) → Click to download. Copy this file to your device and then come back.</string>
     <!-- GUI -->
-    <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
-    <string name="highlightSelected">Highlight selected</string>
-    <string name="settings_date_format_relative">Show relative dates</string>
-    <string name="settings_date_format_relative_summary">For example "tomorrow" instead of the real date</string>
     <string name="showDone">Show done tasks</string>
-    <string name="dark_theme">Dark theme</string>
-    <string name="kill_button">Kill button</string>
-    <string name="kill_app">Close app</string>
-    <string name="kill_sure">Are you really sure???</string>
-    <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider only disabling the notification (or make it non-persistent, so you can remove it.)</string>
     <string name="ui_settings_title">User Interface</string>
-    <string name="hide_keyboard">Hide keyboard</string>
-    <string name="hide_keyboard_summary">Hide keyboard when new task is being created</string>
     <string name="undo_number">Number of changes saved</string>
     <string name="undo_number_summary">Undo %s changes</string>
     <string name="settings_semantic">Task templates</string>
     <string name="semantic_new_task">New task template</string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
     <string name="semantic_new_task_config">Configure task templates</string>
-    <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
-    <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
-    <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
-    <string name="lock_drawer_in_task_fragment">Lock List-view in the Task details</string>
     <string name="useTabletLayout">Use TabletLayout</string>
     <string name="general">General</string>
-    <string name="tasks_fragment">Tasks overview</string>
-    <string name="task_fragment">Task details</string>
-    <string name="do_not_touch">Do not touch</string>
-    <string name="list_fragment">List overview</string>
-    <string name="show_account_name">Show account name</string>
 
     <string-array name="tablet_options">
         <item>never</item>
@@ -189,42 +165,38 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
 
     <string-array name="language_values" translatable="false">
         <item>Default</item>
-        <item>English</item>
-        <item>Deutsch</item>
-        <item>Français</item>
-        <item>Русский</item>
-        <item>Español</item>
-        <item>Slovenščina</item>
-        <item>Norsk</item>
+        <item>български</item>
         <item>čeština</item>
-        <item>العربية</item>
-        <item>Portuguese</item>
+        <item>Deutsch</item>
+        <item>English</item>
+        <item>Español</item>
+        <item>Euskal</item>
+        <item>Français</item>
         <item>Italiano</item>
-        <item>Български</item>
-        <item>Polskie</item>
         <item>Nederlands</item>
+        <item>Polski</item>
+        <item>Português</item>
+        <item>Русский</item>
+        <item>Slovenščina</item>
+        <item>العربية</item>
         <item>日本人</item>
-        <!--
-        <item>Catalan</item>
-        <item>Polish</item>
-        -->
     </string-array>
     <string-array name="language_keys" translatable="false">
         <item>-1</item>
-        <item>en</item>
-        <item>de</item>
-        <item>fr</item>
-        <item>ru</item>
-        <item>es</item>
-        <item>sl</item>
-        <item>no</item>
-        <item>cs</item>
-        <item>ar</item>
-        <item>pt</item>
-        <item>it</item>
         <item>bg</item>
-        <item>pl</item>
+        <item>cs</item>
+        <item>de</item>
+        <item>en</item>
+        <item>es</item>
+        <item>eu</item>
+        <item>fr</item>
+        <item>it</item>
         <item>nl</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>ru</item>
+        <item>sl</item>
+        <item>ar</item>
         <item>ja</item>
     </string-array>
 
@@ -241,12 +213,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="register">Register</string>
     <string name="auto_backup_interval">Auto backup interval</string>
     <string name="auto_backup_interval_summary">Backup the database every %s days</string>
-
-    <!-- Colors -->
-    <string name="preferences_colorize">Colors</string>
-    <string name="preferences_colorize_tasks">Colorize tasks</string>
-    <string name="preferences_colorize_tasks_everywhere">Colorize tasks everywhere</string>
-    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the meta lists?</string>
 
     <!-- Semantics -->
     <string name="settings_semantics_title">Configure task templates</string>
@@ -300,12 +266,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="settings_subtask_add_to_same_list">Add Subtask to the list of the task</string>
     <string name="settings_subtask_add_to_same_list_summary">Or select a default list, where the subtask will be added</string>
     <string name="settings_subtask_add_to_list_summary">Add subtask to %s</string>
-    <string name="settings_use_btn_speak">Show the speech recognition button</string>
-    <string name="settings_use_btn_audio">Show the record audio button</string>
-    <string name="settings_use_btn_camera">Show the camera button</string>
     <string name="preferences_colorize_subtasks">Colorize subtasks?</string>
     <string name="settings_tasks_title">Tasks</string>
-    <string name="settings_task_fragment">Task Overview settings</string>
 
     <!-- Dev Settings -->
     <string name="settings_dev">Development Settings</string>
@@ -349,9 +311,9 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="demo_drop_db">Reset demo database</string>
     <string name="write_logs_to_file">Write logs to file</string>
 
-    <string name="alert_caldav"><![CDATA[The CalDAV sync is not 100%% stable. Please try it carefully and report bugs!]]></string>
+    <string name="alert_caldav"><![CDATA[The CalDAV sync is buggy and we do not have the time to support CalDAV anymore. Please backup your data before proceeding.]]></string>
     <string name="alert_caldav_title">Informations for CalDAV</string>
-    <string name="alert_taskwarrior"><![CDATA[The taskwarrior sync seems to work but please make a backup of your data! Please report issues and bugs so we can fix them!]]></string>
+    <string name="alert_taskwarrior"><![CDATA[The Taskwarrior sync is buggy and we do not have the time to support Taskwarrior anymore. Please backup your data before proceeding.]]></string>
     <string name="alert_taskwarrior_title">Informations for Taskwarrior</string>
 
     <string name="special_list_where_subtask_title_text">Subtasks</string>

@@ -25,11 +25,6 @@
             android:defaultValue="false"
             android:key="showDoneMain"
             android:title="@string/showDone"/>
-        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
-            android:defaultValue="true"
-            android:key="hideKeyboard"
-            android:summary="@string/hide_keyboard_summary"
-            android:title="@string/hide_keyboard"/>
         <Preference
             android:key="semanticNewTaskSettings"
             android:summary="@string/semantic_new_task_config_summary"
