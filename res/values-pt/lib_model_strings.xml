@@ -229,4 +229,5 @@
   </plurals>
   <string name="accounts_all">Todas as contas</string>
   <string name="stub_list_name">Nova lista</string>
+  <string name="search_title">Pesquisa: </string>
 </resources>
