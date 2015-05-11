@@ -22,7 +22,6 @@ package de.azapps.mirakel.new_ui.fragments;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,7 +53,6 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -329,7 +327,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         priorityChangeView.setPriority(task.getPriority());
         priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTask(task);
-        taskTags.setKeyboard(keyboard);
         subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
                                  onSubtaskDoneListener);
         filesView.setFiles(task);

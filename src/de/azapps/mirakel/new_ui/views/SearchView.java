@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.new_ui.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
@@ -29,7 +28,6 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -72,8 +70,7 @@ public class SearchView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_search, this);
         ButterKnife.inject(this, this);
-        softKeyboard = new SoftKeyboard(this,
-                                        (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE));
+        softKeyboard = new SoftKeyboard(this);
         searchText.requestFocus();
         final AutoCompleteAdapter adapter = new AutoCompleteAdapter(context,
                 SearchObject.autocomplete(context,

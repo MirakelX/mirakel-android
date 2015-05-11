@@ -21,7 +21,6 @@ package de.azapps.mirakel.new_ui.views;
 
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -48,9 +47,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
@@ -70,14 +67,12 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
-import de.azapps.tools.Log;
 
 public class AddTagView extends MultiAutoCompleteTextView implements  View.OnClickListener,
     View.OnKeyListener, SoftKeyboard.SoftKeyboardChanged {
     private static final String TAG = "AddTagView";
     private final Drawable background;
     @Nullable
-    private SoftKeyboard keyboard;
     private List<Tag> tags = Tag.all();
     private ArrayAdapter<String> adapter;
     private List<Tag> currentTags = new ArrayList<>();
@@ -184,39 +179,25 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         for (final Tag tag : currentTags) {
             adapter.add(tag.getName());
         }
-        task = t;
-        currentTags = t.getTags();
+        currentTags = tags;
         for (final Tag tag : currentTags) {
             adapter.remove(tag.getName());
         }
         rebuildText();
     }
 
-    public void setKeyboard(final @NonNull SoftKeyboard keyboard){
-        this.keyboard=keyboard;
-    }
-
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        keyboard = new SoftKeyboard((ViewGroup) getParent(),
-                                    (InputMethodManager)getContext().getSystemService(Activity.INPUT_METHOD_SERVICE));
-        keyboard.setSoftKeyboardCallback(this);
         final OnFocusChangeListener onFocus = getOnFocusChangeListener();
         setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(final View v, final boolean hasFocus) {
                 onFocus.onFocusChange(v, hasFocus);
                 if (hasFocus) {
-                    if (keyboard != null) {
-                        keyboard.openSoftKeyboard();
-                    }
                     setBackground(background);
                     setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
                 } else {
-                    if (keyboard != null) {
-                        keyboard.closeSoftKeyboard();
-                    }
                     setInputType(InputType.TYPE_NULL);
                     setBackground(new ColorDrawable(Color.TRANSPARENT));
                     addTag(postfix);
@@ -230,9 +211,6 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (keyboard != null) {
-            keyboard.unRegisterSoftKeyboardCallback();
-        }
     }
 
     private void rebuildText() {

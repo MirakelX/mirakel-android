@@ -27,7 +27,6 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
@@ -70,7 +69,4 @@ public class TagsView extends LinearLayout {
         rebuildLayout();
     }
 
-    public void setKeyboard(final SoftKeyboard keyboard) {
-        addTagView.setKeyboard(keyboard);
-    }
 }
