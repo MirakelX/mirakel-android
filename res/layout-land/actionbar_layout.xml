@@ -19,8 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/actionbar_switcher"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
     <Spinner
@@ -28,5 +28,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         style="@style/ActionBarSpinner" />
+    <de.azapps.mirakel.new_ui.views.SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</LinearLayout>
+</ViewFlipper>

@@ -94,7 +94,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     class ActionBarViewHolder {
         @butterknife.Optional
         @InjectView(R.id.actionbar_switcher)
-        @Nullable
         ViewFlipper actionbarSwitcher;
         @InjectView(R.id.actionbar_spinner)
         @NonNull
@@ -340,7 +339,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void updateToolbar(final ActionBarState actionBarState) {
         if (actionBarViewHolder != null) {
             actionBarViewHolder.actionbarSwitcher.setDisplayedChild(actionBarState.getPosition());
-            if (actionBarState == ActionBarState.NORMAL) {
+            if (actionBarState == ActionBarState.NORMAL && actionBarViewHolder.actionbarTitle != null) {
                 actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName(),
                         TextView.BufferType.SPANNABLE);
             }
