@@ -87,6 +87,7 @@ import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
@@ -113,6 +114,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private ListMirakelInterface listMirakel;
     @Nullable
     private SearchObject lastSearch;
+
+    private Optional<Snackbar> snackbar=absent();
 
     public TasksFragment() {
         // Required empty public constructor
@@ -175,6 +178,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void setList(final ListMirakelInterface listMirakel) {
+        if(snackbar.isPresent()){
+            snackbar.get().dismiss();
+        }
         this.listMirakel = listMirakel;
         final Bundle args = new Bundle();
         ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.NORMAL);
@@ -301,37 +307,42 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         }));
-        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().and(Task.ID, MirakelQueryBuilder.Operation.NOT_IN,ids).query(Task.URI));
-        SnackbarManager.show(
-                Snackbar.with(getActivity())
-                        .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, ids.size(), ids.size()))
-                        .actionLabel(R.string.undo)
-                        .actionListener(new ActionClickListener() {
+        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().and(Task.ID, MirakelQueryBuilder.Operation.NOT_IN, ids).query(Task.URI));
+        final Snackbar snackbar = Snackbar.with(getActivity())
+                .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, ids.size(), ids.size()))
+                .actionLabel(R.string.undo)
+                .actionListener(new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(final Snackbar snackbar) {
+                        tasksToDelete.clear();
+                    }
+                })
+                .eventListener(new SnackBarEventListener() {
+                    @Override
+                    public void onDismiss(final Snackbar snackbar) {
+                        super.onDismiss(snackbar);
+                        new Thread(new Runnable() {
                             @Override
-                            public void onActionClicked(final Snackbar snackbar) {
-                                tasksToDelete.clear();
-                            }
-                        })
-                        .eventListener(new SnackBarEventListener(){
-                            @Override
-                            public void onDismiss(final Snackbar snackbar) {
-                                super.onDismiss(snackbar);
-                                new Thread(new Runnable() {
+                            public void run() {
+                                for (final TaskOverview t : tasksToDelete) {
+                                    t.destroy();
+                                }
+                                mListView.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        for(final TaskOverview t:tasksToDelete){
-                                            t.destroy();
-                                        }
-                                        mListView.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().query(Task.URI));
-                                            }
-                                        });
+                                        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().query(Task.URI));
                                     }
-                                }).start();
+                                });
+                                if(TasksFragment.this.snackbar.isPresent()){
+                                    TasksFragment.this.snackbar=absent();
+                                }
                             }
-                        })
+                        }).start();
+                    }
+                });
+        TasksFragment.this.snackbar=of(snackbar);
+        SnackbarManager.show(
+                snackbar
                 , getActivity());
 
         if (mActionMode != null) {
