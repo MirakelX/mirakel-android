@@ -226,4 +226,5 @@
   </plurals>
   <string name="accounts_all">すべてのアカウント</string>
   <string name="stub_list_name">新しいリスト</string>
+  <string name="search_title">検索: </string>
 </resources>

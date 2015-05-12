@@ -229,4 +229,5 @@
   </plurals>
   <string name="accounts_all">Kontu guztiak</string>
   <string name="stub_list_name">Zerrenda berria</string>
+  <string name="search_title">Bilatu: </string>
 </resources>
