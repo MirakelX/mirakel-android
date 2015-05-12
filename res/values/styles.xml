@@ -69,12 +69,14 @@
         <item name="colorPriorityBackground">#808080</item>
 
         <item name="colorDivider">#e6e6e6</item>
+
         <!-- The CAB should overlay the normal ActionBar -->
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">?colorCAB</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
         <item name="android:actionModeStyle">@style/ActionModeStyle</item>
     </style>
+
 
     <style name="MirakelBaseTheme.PopupMenuStyle" parent="@style/ThemeOverlay.AppCompat.Light">
         <item name="android:colorBackground">?colorTaskCard</item>
@@ -89,8 +91,7 @@
     <style name="ActionModeStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">?colorCAB</item>
         <item name="android:titleTextStyle">@style/ActionModeStyle.Title</item>
-        <!-- I don't know how to fix this :( Any ideas how to not hard code this but use the Lollipop default -->
-        <item name="android:height">56dp</item>
+        <item name="android:height">?actionBarSize</item>
         <item name="android:minHeight">?actionBarSize</item>
     </style>
 

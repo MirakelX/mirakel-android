@@ -52,4 +52,5 @@
 
     <attr name="colorDivider" format="color" />
     <attr name="colorTaskFragmentBackground" format="color" />
+
 </resources>
