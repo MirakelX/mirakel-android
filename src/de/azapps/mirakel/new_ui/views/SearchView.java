@@ -53,6 +53,11 @@ public class SearchView extends LinearLayout {
     @Nullable
     private SearchObject lastSearch = null;
 
+    public void showKeyboard() {
+        searchText.clearFocus();
+        searchText.requestFocus();
+    }
+
     public interface SearchCallback {
         public void performSearch(SearchObject searchObject);
     }

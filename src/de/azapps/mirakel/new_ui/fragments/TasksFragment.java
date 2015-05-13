@@ -240,24 +240,25 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void showOrHideMoveTasks() {
-        final ArrayList<TaskOverview> tasks = mAdapter.getSelectedItems();
-        if (tasks.size() == 0) {
+        final List<TaskOverview> tasks = mAdapter.getSelectedItems();
+        if (tasks.isEmpty()) {
             // Do not need to change anything
             return;
         }
-        Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
+        final Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
         final boolean shouldHide;
         if (accountMirakelOptional.isPresent()) {
             final long accountMirakelId = accountMirakelOptional.get().getId();
             shouldHide = Iterables.all(tasks, new Predicate<TaskOverview>() {
                 @Override
                 public boolean apply(@Nullable TaskOverview input) {
-                    final Optional<AccountMirakel> compareAccount = input.getAccountMirakel();
-                    if (compareAccount.isPresent()) {
-                        return compareAccount.get().getId() == accountMirakelId;
-                    } else {
-                        return false;
+                    final Optional<AccountMirakel> compareAccount;
+                    if (input != null) {
+                        compareAccount = input.getAccountMirakel();
+                    }else{
+                        compareAccount=absent();
                     }
+                    return compareAccount.isPresent() && (compareAccount.get().getId() == accountMirakelId);
                 }
             });
         } else {
@@ -352,7 +353,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_move_task)
     void onMoveTask() {
-        final ArrayList<TaskOverview> tasks = mAdapter.getSelectedItems();
+        final List<TaskOverview> tasks = mAdapter.getSelectedItems();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(de.azapps.mirakel.main_activity.R.string.dialog_move);
 
@@ -365,12 +366,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 public void onClick(final DialogInterface dialog,
                                     final int which) {
                     cursor.moveToPosition(which);
-                    final ListMirakel listMirakel = new ListMirakel(cursor);
+                    final ListMirakel list = new ListMirakel(cursor);
                     for (final TaskOverview taskOverview : tasks) {
                         taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
                             @Override
                             public void apply(Task task) {
-                                task.setList(listMirakel, true);
+                                task.setList(list, true);
                                 task.save();
                             }
                         });
@@ -391,7 +392,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_set_due)
     void onSetDue() {
-        final ArrayList<TaskOverview> tasks = mAdapter.getSelectedItems();
+        final List<TaskOverview> tasks = mAdapter.getSelectedItems();
         final Calendar dueLocal = new GregorianCalendar();
         final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(
         new DatePicker.OnDateSetListener() {
@@ -503,12 +504,18 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             privateActionMode = actionMode;
-            SearchView searchView = new SearchView(getActivity());
+            final SearchView searchView = new SearchView(getActivity());
             searchView.setSearchCallback(this);
             if (lastSearch != null) {
                 searchView.setSearch(lastSearch);
             }
             actionMode.setCustomView(searchView);
+            searchView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    searchView.showKeyboard();
+                }
+            },10L);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
