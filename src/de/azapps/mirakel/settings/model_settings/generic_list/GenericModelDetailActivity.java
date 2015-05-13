@@ -64,7 +64,7 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
     @NonNull
     private Class<? extends GenericModelListActivity> backActivity;
     @NonNull
-    private List<Object> backstack = new ArrayList<>();
+    protected List<Object> backstack = new ArrayList<>();
 
 
 

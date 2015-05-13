@@ -76,7 +76,8 @@ public enum  Settings implements IGenericElementInterface {
     CREDITS(R.string.action_credits),
     SYNC( R.string.sync_title, R.drawable.ic_sync_24px),
     SPECIAL_LISTS( R.string.special_lists_click, R.drawable.ic_local_offer_24px),
-    TASK_TEMPLATES(R.string.settings_semantics_title);
+    TASK_TEMPLATES(R.string.settings_semantics_title),
+    WIDGET(R.string.settings_widget_title);
 
     private static final Map<Integer, List<Settings>> all = new ArrayMap<>(4);
     static{
