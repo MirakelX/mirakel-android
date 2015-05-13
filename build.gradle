@@ -50,5 +50,7 @@ dependencies {
     compile project(':model')
     compile project(':helper')
     compile project(':colorpickerpreference')
+    compile project(':settings')
+    compile project(':material-elements')
 }
 

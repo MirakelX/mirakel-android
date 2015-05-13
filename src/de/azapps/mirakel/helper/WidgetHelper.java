@@ -40,7 +40,7 @@ import de.azapps.mirakel.widget.R;
 
 public class WidgetHelper {
     public static RemoteViews configureItem(final RemoteViews rv,
-                                            final Task task, final Context context, final long listId,
+                                            final Task task, final Context context,
                                             final int widgetId) {
 
         final Optional<Class<?>> main = Helpers.getMainActivity();

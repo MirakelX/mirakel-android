@@ -111,7 +111,7 @@ class MainWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                                          R.layout.widget_row_minimal);
         // Set the Contents of the Row
         rv = WidgetHelper.configureItem(rv, task, this.mContext,
-                                        this.list.getId(), this.widgetId);
+                this.widgetId);
         // Set the Click–Intent
         // We need to do so, because we can not start the Activity directly from
         // the Service
