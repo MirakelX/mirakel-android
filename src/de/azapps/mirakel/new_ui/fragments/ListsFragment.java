@@ -42,16 +42,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.emtronics.dragsortrecycler.DragSortRecycler;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
 import com.nispok.snackbar.listeners.EventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
@@ -59,17 +63,23 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
+import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.LockableDrawer;
+import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakel.new_ui.views.ListEditView;
 import de.azapps.mirakelandroid.R;
 
+import static com.google.common.base.Optional.absent;
+
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     MultiSelectCursorAdapter.MultiSelectCallbacks<ListMirakel>, ActionMode.Callback,
-    ActionClickListener,
     DragSortRecycler.OnItemMovedListener {
 
     private static final String ARGUMENT_ACCOUNT = "ARGUMENT_ACCOUNT";
+    public static final String LISTS_TO_DELETE = "LISTS_TO_DELETE";
     private ListAdapter mAdapter;
     private OnItemClickedListener<ListMirakel> mListener;
     @NonNull
@@ -167,11 +177,30 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader onCreateLoader(final int id, final Bundle args) {
         if (args != null) {
-            accountMirakelOptional = Optional.of((AccountMirakel) args.getParcelable(
-                    ARGUMENT_ACCOUNT));
-            if (accountMirakelOptional.get().getType() == AccountMirakel.ACCOUNT_TYPES.ALL) {
+            accountMirakelOptional = Optional.fromNullable((AccountMirakel) args.getParcelable(
+                                         ARGUMENT_ACCOUNT));
+            if (accountMirakelOptional.isPresent() &&
+                accountMirakelOptional.get().getType() == AccountMirakel.ACCOUNT_TYPES.ALL) {
                 accountMirakelOptional = Optional.absent(); // Remove the hack as soon as possible
             }
+            ArrayList<ListMirakel> listsToDelete = args.getParcelableArrayList(LISTS_TO_DELETE);
+            if (listsToDelete != null) {
+                final List<Long> ids = new ArrayList<>(Collections2.transform(listsToDelete,
+                new Function<ListMirakel, Long>() {
+                    @Override
+                    public Long apply(@Nullable final ListMirakel input) {
+                        if (input != null) {
+                            return input.getId();
+                        } else {
+                            return 0L;
+                        }
+                    }
+                }));
+                return ListMirakel.allWithSpecialMQB(accountMirakelOptional).and(ListMirakel.ID,
+                        MirakelQueryBuilder.Operation.NOT_IN,
+                        ids).toSupportCursorLoader(MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
+            }
+
         }
         return ListMirakel.allWithSpecialSupportCursorLoader(accountMirakelOptional);
     }
@@ -288,15 +317,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         final ArrayList<ListMirakel> selected = mAdapter.getSelectedItems();
         switch (item.getItemId()) {
         case R.id.menu_delete:
-            // TODO implement deleting
-            final int count = selected.size();
-            SnackbarManager.show(
-                Snackbar.with(getActivity())
-                .text(getResources().getQuantityString(R.plurals.list_multiselect_deleted, count, count))
-                .actionLabel(R.string.undo)
-                .actionListener(this)
-                .eventListener((EventListener) getActivity())
-                , getActivity());
+            handleDelete(selected);
             break;
         case R.id.menu_edit:
             editList(selected.get(0));
@@ -306,6 +327,52 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         mode.finish();
         return true;
+    }
+
+    private void handleDelete(final ArrayList<ListMirakel> listsToDelete) {
+        final Bundle args = new Bundle();
+        args.putParcelable(ARGUMENT_ACCOUNT, accountMirakelOptional.orNull());
+        args.putParcelableArrayList(LISTS_TO_DELETE, listsToDelete);
+        getLoaderManager().restartLoader(0, args, this);
+        final int count = listsToDelete.size();
+
+        SnackbarManager.show(
+            Snackbar.with(getActivity())
+            .text(getResources().getQuantityString(R.plurals.list_multiselect_deleted, count, count))
+            .actionLabel(R.string.undo)
+        .actionListener(new ActionClickListener() {
+            @Override
+            public void onActionClicked(Snackbar snackbar) {
+                listsToDelete.clear();
+            }
+        })
+        .eventListener(new SnackBarEventListener() {
+            @Override
+            public void onDismiss(final Snackbar snackbar) {
+                super.onDismiss(snackbar);
+                ((MirakelActivity) getActivity()).moveFabDown(snackbar.getHeight());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (final ListMirakel listMirakel : listsToDelete) {
+                            listMirakel.destroy();
+                        }
+                        mListView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                setAccount(accountMirakelOptional);
+                            }
+                        });
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onShow(final Snackbar snackbar) {
+                ((MirakelActivity) getActivity()).moveFABUp(snackbar.getHeight());
+            }
+        })
+        , getActivity());
     }
 
     public void editList(ListMirakel listMirakel) {
@@ -331,11 +398,6 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
         }
-    }
-
-    @Override
-    public void onActionClicked(final Snackbar snackbar) {
-        // TODO implement undo
     }
 
     /**
