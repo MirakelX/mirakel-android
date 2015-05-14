@@ -4,7 +4,7 @@ buildscript {
         mavenLocal()
     }
       dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
 //        classpath 'org.robolectric:robolectric-gradle-plugin:1.0.0-SNAPSHOT'
     }
@@ -88,5 +88,6 @@ allprojects {
     }
 
 }
-
-
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
