@@ -221,11 +221,14 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     }
 
     @NonNull
-    private static MirakelQueryBuilder allWithSpecialMQB(@NonNull final Optional<AccountMirakel>
+    public static MirakelQueryBuilder allWithSpecialMQB(@NonNull final Optional<AccountMirakel>
             accountMirakelOptional) {
         final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
         if (accountMirakelOptional.isPresent()) {
             mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, accountMirakelOptional.get());
+        } else {
+            mirakelQueryBuilder.and(new MirakelQueryBuilder(context).or(ModelBase.ID, Operation.GE,
+                                    0).or(ACCOUNT_ID, Operation.EQ, (ModelBase) null));
         }
         return mirakelQueryBuilder;
     }
