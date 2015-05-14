@@ -115,7 +115,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Nullable
     private SearchObject lastSearch;
 
-    private Optional<Snackbar> snackbar=absent();
+    private Optional<Snackbar> snackbar = absent();
 
     public TasksFragment() {
         // Required empty public constructor
@@ -178,7 +178,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void setList(final ListMirakelInterface listMirakel) {
-        if(snackbar.isPresent()){
+        if (snackbar.isPresent()) {
             snackbar.get().dismiss();
         }
         this.listMirakel = listMirakel;
@@ -255,8 +255,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                     final Optional<AccountMirakel> compareAccount;
                     if (input != null) {
                         compareAccount = input.getAccountMirakel();
-                    }else{
-                        compareAccount=absent();
+                    } else {
+                        compareAccount = absent();
                     }
                     return compareAccount.isPresent() && (compareAccount.get().getId() == accountMirakelId);
                 }
@@ -297,8 +297,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_delete)
     void onDelete() {
-        final List<TaskOverview> tasksToDelete=mAdapter.getSelectedItems();
-        final List<Long> ids= new ArrayList<>(Collections2.transform(tasksToDelete, new Function<TaskOverview, Long>() {
+        final List<TaskOverview> tasksToDelete = mAdapter.getSelectedItems();
+        final List<Long> ids = new ArrayList<>(Collections2.transform(tasksToDelete,
+        new Function<TaskOverview, Long>() {
             @Override
             public Long apply(@Nullable final TaskOverview input) {
                 if (input != null) {
@@ -308,43 +309,50 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         }));
-        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().and(Task.ID, MirakelQueryBuilder.Operation.NOT_IN, ids).query(Task.URI));
+        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().and(Task.ID,
+                            MirakelQueryBuilder.Operation.NOT_IN, ids).query(Task.URI));
         final Snackbar snackbar = Snackbar.with(getActivity())
-                .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, ids.size(), ids.size()))
-                .actionLabel(R.string.undo)
-                .actionListener(new ActionClickListener() {
+                                  .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, ids.size(), ids.size()))
+                                  .actionLabel(R.string.undo)
+        .actionListener(new ActionClickListener() {
+            @Override
+            public void onActionClicked(final Snackbar snackbar) {
+                tasksToDelete.clear();
+            }
+        })
+        .eventListener(new SnackBarEventListener() {
+            @Override
+            public void onDismiss(final Snackbar snackbar) {
+                super.onDismiss(snackbar);
+                ((MirakelActivity) getActivity()).moveFabDown(snackbar.getHeight());
+                new Thread(new Runnable() {
                     @Override
-                    public void onActionClicked(final Snackbar snackbar) {
-                        tasksToDelete.clear();
-                    }
-                })
-                .eventListener(new SnackBarEventListener() {
-                    @Override
-                    public void onDismiss(final Snackbar snackbar) {
-                        super.onDismiss(snackbar);
-                        new Thread(new Runnable() {
+                    public void run() {
+                        for (final TaskOverview t : tasksToDelete) {
+                            t.destroy();
+                        }
+                        mListView.post(new Runnable() {
                             @Override
                             public void run() {
-                                for (final TaskOverview t : tasksToDelete) {
-                                    t.destroy();
-                                }
-                                mListView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().query(Task.URI));
-                                    }
-                                });
-                                if(TasksFragment.this.snackbar.isPresent()){
-                                    TasksFragment.this.snackbar=absent();
-                                }
+                                mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().query(Task.URI));
                             }
-                        }).start();
+                        });
+                        if (TasksFragment.this.snackbar.isPresent()) {
+                            TasksFragment.this.snackbar = absent();
+                        }
                     }
-                });
-        TasksFragment.this.snackbar=of(snackbar);
+                }).start();
+            }
+
+            @Override
+            public void onShow(final Snackbar snackbar) {
+                ((MirakelActivity) getActivity()).moveFABUp(snackbar.getHeight());
+            }
+        });
+        TasksFragment.this.snackbar = of(snackbar);
         SnackbarManager.show(
-                snackbar
-                , getActivity());
+            snackbar
+            , getActivity());
 
         if (mActionMode != null) {
             mActionMode.finish();
@@ -515,7 +523,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 public void run() {
                     searchView.showKeyboard();
                 }
-            },10L);
+            }, 10L);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));

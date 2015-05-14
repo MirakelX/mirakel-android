@@ -82,7 +82,7 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
 public class MirakelActivity extends AppCompatActivity implements OnItemClickedListener<ModelBase>,
-    EventListener, LockableDrawer {
+    LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
     private Optional<DrawerLayout> mDrawerLayout = absent();
@@ -424,17 +424,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         return !mDrawerLayout.isPresent() || mDrawerLayout.get().isDrawerOpen(Gravity.START);
     }
 
-    // Snackbar stuff
-    @Override
-    public void onShow(final Snackbar snackbar) {
-        moveFABUp(snackbar.getHeight());
-    }
-
-    @Override
-    public void onShowByReplace(Snackbar snackbar) {
-
-    }
-
     public void moveFABUp(final int height) {
         final FloatingActionButton fab = getTasksFragment().floatingActionButton;
         AnimationHelper.moveViewUp(this, fab, height);
@@ -443,26 +432,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void moveFabDown(final int height) {
         final FloatingActionButton fab = getTasksFragment().floatingActionButton;
         AnimationHelper.moveViewDown(this, fab, height);
-    }
-
-    @Override
-    public void onShown(final Snackbar snackbar) {
-
-    }
-
-    @Override
-    public void onDismiss(final Snackbar snackbar) {
-        moveFabDown(snackbar.getHeight());
-    }
-
-    @Override
-    public void onDismissByReplace(Snackbar snackbar) {
-
-    }
-
-    @Override
-    public void onDismissed(final Snackbar snackbar) {
-
     }
 
     private class DrawerToggle extends ActionBarDrawerToggle {
