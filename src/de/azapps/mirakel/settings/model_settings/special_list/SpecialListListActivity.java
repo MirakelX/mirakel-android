@@ -35,6 +35,7 @@ import com.google.common.base.Optional;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -104,7 +105,8 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
     protected Cursor getQuery() {
         return new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
                 MirakelQueryBuilder.Operation.NOT_EQ,
-                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).query(SpecialList.URI);
+                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).sort(ListMirakel.LFT,
+                        MirakelQueryBuilder.Sorting.ASC).query(SpecialList.URI);
     }
 
 }

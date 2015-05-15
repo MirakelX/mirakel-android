@@ -37,4 +37,15 @@
             android:summary="@string/startup_list_summary"
             android:title="@string/startup_list" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_tasks_title" >
+        <Preference
+            android:key="semanticNewTaskSettings"
+            android:summary="@string/semantic_new_task_config_summary"
+            android:title="@string/semantic_new_task_config"/>
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
+            android:defaultValue="false"
+            android:key="subtaskAddToSameList"
+            android:summary="@string/settings_subtask_add_to_same_list_summary"
+            android:title="@string/settings_subtask_add_to_same_list"/>
+    </PreferenceCategory>
 </PreferenceScreen>

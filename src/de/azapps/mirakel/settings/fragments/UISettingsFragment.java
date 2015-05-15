@@ -31,7 +31,9 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.custom_views.Settings;
+import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
 public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
@@ -88,6 +90,23 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
         startupListPreference.setEntries(entries);
         startupListPreference.setEntryValues(entryValues);
         startupListPreference.setEnabled(true);
+
+
+
+        final Preference semantics = findPreference("semanticNewTaskSettings");
+        if (semantics != null) {
+            semantics.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    if (getActivity() instanceof SettingsActivity) {
+                        ((SettingsActivity) getActivity()).onItemSelected(Settings.TASK_TEMPLATES);
+                    } else {
+                        ((GenericModelDetailActivity) getActivity()).setFragment(Settings.TASK_TEMPLATES.getFragment());
+                    }
+                    return true;
+                }
+            });
+        }
     }
 
     private void setLanguageSummary(final ListPreference language,

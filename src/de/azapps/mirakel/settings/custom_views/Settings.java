@@ -54,7 +54,6 @@ import de.azapps.mirakel.settings.fragments.DevSettingsFragment;
 import de.azapps.mirakel.settings.fragments.DonationFragmentWrapper;
 import de.azapps.mirakel.settings.fragments.NotificationSettingsFragment;
 import de.azapps.mirakel.settings.fragments.SemanticFragment;
-import de.azapps.mirakel.settings.fragments.TaskSettingsFragment;
 import de.azapps.mirakel.settings.fragments.UISettingsFragment;
 import de.azapps.mirakel.settings.model_settings.account.AccountSettingsActivity;
 import de.azapps.mirakel.settings.model_settings.special_list.SpecialListListActivity;
@@ -70,7 +69,6 @@ public enum  Settings implements IGenericElementInterface {
     BACKUP(R.string.settings_backup, R.drawable.ic_settings_backup_restore_24px),
     DEV(R.string.settings_dev, R.drawable.ic_settings_development),
     NOTIFICATION(R.string.notification_title, R.drawable.ic_notifications_24px),
-    TASK( R.string.settings_tasks_title, R.drawable.ic_done_24px),
     UI( R.string.ui_settings_title, R.drawable.ic_stay_current_portrait_24px),
     DONATE( R.string.title_donations, R.drawable.ic_favorite_24px),
     CREDITS(R.string.action_credits),
@@ -81,9 +79,9 @@ public enum  Settings implements IGenericElementInterface {
 
     private static final Map<Integer, List<Settings>> all = new ArrayMap<>(4);
     static{
-        all.put(R.string.general, Arrays.asList(UI, SYNC, TASK, NOTIFICATION));
+        all.put(R.string.general, Arrays.asList(UI, NOTIFICATION));
         all.put(R.string.settings_about, Arrays.asList(DONATE, ABOUT));
-        all.put(R.string.settings_advanced, Arrays.asList(SPECIAL_LISTS, BACKUP, DEV));
+        all.put(R.string.settings_advanced, Arrays.asList(SPECIAL_LISTS, BACKUP, SYNC, DEV));
     }
 
     @Override
@@ -97,8 +95,6 @@ public enum  Settings implements IGenericElementInterface {
             return DevSettingsFragment.class.getName();
         case NOTIFICATION:
             return NotificationSettingsFragment.class.getName();
-        case TASK:
-            return TaskSettingsFragment.class.getName();
         case UI:
             return UISettingsFragment.class.getName();
         case DONATE:
@@ -126,8 +122,6 @@ public enum  Settings implements IGenericElementInterface {
             return new DevSettingsFragment();
         case NOTIFICATION:
             return new NotificationSettingsFragment();
-        case TASK:
-            return new TaskSettingsFragment();
         case UI:
             return new UISettingsFragment();
         case CREDITS:
@@ -266,7 +260,6 @@ public enum  Settings implements IGenericElementInterface {
         case BACKUP:
         case DEV:
         case NOTIFICATION:
-        case TASK:
         case UI:
         case DONATE:
         case CREDITS:
