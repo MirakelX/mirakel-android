@@ -1722,8 +1722,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
     private void updateCurrentTaskMissing() {
-        final List<Task> currentTasks = this.currentList
-                                        .tasks(MirakelCommonPreferences.showDoneMain());
+        final List<Task> currentTasks = this.currentList.tasks(false);
         if (currentTasks.isEmpty()) {
             this.currentTask = Task.getDummy(getApplicationContext(), getCurrentList());
         } else {
