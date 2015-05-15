@@ -223,7 +223,8 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     @NonNull
     public static MirakelQueryBuilder allWithSpecialMQB(@NonNull final Optional<AccountMirakel>
             accountMirakelOptional) {
-        final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
+        final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context).and(
+            DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ, SYNC_STATE.DELETE.toString());
         if (accountMirakelOptional.isPresent()) {
             mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, accountMirakelOptional.get());
         } else {
