@@ -41,7 +41,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("subtaskAddToSameList", false);
     }
 
-
     public static boolean containsHighlightSelected() {
         return settings.contains("highlightSelected");
     }
@@ -117,10 +116,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
             listId = Integer.parseInt(listOpen);
         }
         return listId;
-    }
-
-    public static int getOldVersion() {
-        return settings.getInt("mirakel_old_version", -1);
     }
 
     public static String getPhotoDefaultTitle() {
@@ -243,10 +238,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     public static void setTaskFragmentLayout(final List<Integer> newV) {
         MirakelCommonPreferences.saveIntArray("task_fragment_adapter_settings",
                                               newV);
-    }
-
-    public static boolean showDoneMain() {
-        return settings.getBoolean("showDoneMain", false);
     }
 
     public static void toogleDebugMenu() {
