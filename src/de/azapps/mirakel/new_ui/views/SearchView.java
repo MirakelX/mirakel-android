@@ -52,6 +52,7 @@ public class SearchView extends LinearLayout {
     private SearchCallback searchCallback;
     @Nullable
     private SearchObject lastSearch = null;
+    private AutoCompleteAdapter adapter;
 
     public void showKeyboard() {
         searchText.clearFocus();
@@ -77,9 +78,9 @@ public class SearchView extends LinearLayout {
         ButterKnife.inject(this, this);
         softKeyboard = new SoftKeyboard(this);
         searchText.requestFocus();
-        final AutoCompleteAdapter adapter = new AutoCompleteAdapter(context,
-                SearchObject.autocomplete(context,
-                                          ""));
+        adapter = new AutoCompleteAdapter(context,
+                                          SearchObject.autocomplete(context,
+                                                  ""));
         searchText.setAdapter(adapter);
 
         searchText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -143,6 +144,10 @@ public class SearchView extends LinearLayout {
 
     @OnClick(R.id.search_button)
     public void searchButtonClick() {
+        Cursor cursor = adapter.getCursor();
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
         if (searchCallback != null) {
             if (lastSearch != null) {
                 searchCallback.performSearch(lastSearch);
