@@ -216,25 +216,24 @@ public class FileMirakel extends FileBase {
 
     @NonNull
     public Optional<Drawable> getPreview(@NonNull final Context context) {
-        if (FileUtils.isImage(fileUri)) {
-            final File osFile = new File(fileCacheDir, getId() + ".png");
-            if (osFile.exists()) {
-                final Bitmap bpm = BitmapFactory.decodeFile(osFile.getAbsolutePath());
-                return of((Drawable)new RoundedBitmapDrawable(bpm,
-                          context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0));
-            }
-        }
-        final int drawableId;
-        if (FileUtils.isAudio(fileUri)) {
-            drawableId = R.drawable.ic_play_circle_fill_big;
+        final File osFile = new File(fileCacheDir, getId() + ".png");
+        if (osFile.exists()) {
+            final Bitmap bpm = BitmapFactory.decodeFile(osFile.getAbsolutePath());
+            return of((Drawable) new RoundedBitmapDrawable(bpm,
+                      context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0));
         } else {
-            drawableId = R.drawable.ic_description_big;
+            final int drawableId;
+            if (FileUtils.isAudio(fileUri)) {
+                drawableId = R.drawable.ic_play_circle_fill_big;
+            } else {
+                drawableId = R.drawable.ic_description_big;
+            }
+            final Drawable drawable = context.getResources().getDrawable(drawableId);
+            if (drawable != null) {
+                drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.SRC_IN);
+            }
+            return fromNullable(drawable);
         }
-        final Drawable drawable = context.getResources().getDrawable(drawableId);
-        if (drawable != null) {
-            drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.SRC_IN);
-        }
-        return fromNullable(drawable);
     }
 
     // Parcelable stuff
