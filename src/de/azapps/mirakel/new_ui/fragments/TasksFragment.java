@@ -97,6 +97,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public static final String ARGUMENT_LIST = "list";
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
+    public static final String TASKS_TO_DELETE = "tasks to delete";
 
     private TaskAdapter mAdapter;
     @InjectView(R.id.task_listview)
@@ -196,6 +197,23 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public Loader onCreateLoader(final int i, final Bundle arguments) {
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
+        ArrayList<TaskOverview> tasksToDelete = arguments.getParcelableArrayList(TASKS_TO_DELETE);
+        if (tasksToDelete != null) {
+
+            final List<Long> ids = new ArrayList<>(Collections2.transform(tasksToDelete,
+            new Function<TaskOverview, Long>() {
+                @Override
+                public Long apply(@Nullable final TaskOverview input) {
+                    if (input != null) {
+                        return input.getId();
+                    } else {
+                        return 0L;
+                    }
+                }
+            }));
+            return listMirakel.getTasksQueryBuilder().and(Task.ID,
+                    MirakelQueryBuilder.Operation.NOT_IN, ids).toSupportCursorLoader(Task.URI);
+        }
         return listMirakel.getTaskOverviewSupportCursorLoader();
     }
 
@@ -297,22 +315,14 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_delete)
     void onDelete() {
-        final List<TaskOverview> tasksToDelete = mAdapter.getSelectedItems();
-        final List<Long> ids = new ArrayList<>(Collections2.transform(tasksToDelete,
-        new Function<TaskOverview, Long>() {
-            @Override
-            public Long apply(@Nullable final TaskOverview input) {
-                if (input != null) {
-                    return input.getId();
-                } else {
-                    return 0L;
-                }
-            }
-        }));
-        mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().and(Task.ID,
-                            MirakelQueryBuilder.Operation.NOT_IN, ids).query(Task.URI));
+        final ArrayList<TaskOverview> tasksToDelete = mAdapter.getSelectedItems();
+        final Bundle arguments = new Bundle();
+        arguments.putParcelable(ARGUMENT_LIST, listMirakel);
+        arguments.putParcelableArrayList(TASKS_TO_DELETE, tasksToDelete);
+        getLoaderManager().restartLoader(0, arguments, this);
         final Snackbar snackbar = Snackbar.with(getActivity())
-                                  .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, ids.size(), ids.size()))
+                                  .text(getResources().getQuantityString(R.plurals.task_multiselect_deleted, tasksToDelete.size(),
+                                          tasksToDelete.size()))
                                   .actionLabel(R.string.undo)
         .actionListener(new ActionClickListener() {
             @Override
@@ -334,7 +344,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                         mListView.post(new Runnable() {
                             @Override
                             public void run() {
-                                mAdapter.swapCursor(listMirakel.getTasksQueryBuilder().query(Task.URI));
+                                setList(listMirakel);
+
                             }
                         });
                         if (TasksFragment.this.snackbar.isPresent()) {
