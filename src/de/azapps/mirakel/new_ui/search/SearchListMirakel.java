@@ -60,7 +60,7 @@ public class SearchListMirakel implements ListMirakelInterface {
         switch (search.getAutocompleteType()) {
         case TASK:
             mirakelQueryBuilder.and(Task.VIEW_TABLE + '.' + Task.NAME, MirakelQueryBuilder.Operation.LIKE,
-                    '%' + search.getName() + '%');
+                                    '%' + search.getName() + '%');
             break;
         case TAG:
             mirakelQueryBuilder.and(Tag.TABLE + '.' + Tag.ID, MirakelQueryBuilder.Operation.EQ,
@@ -75,7 +75,7 @@ public class SearchListMirakel implements ListMirakelInterface {
     @Override
     public Loader getTaskOverviewSupportCursorLoader() {
         return ListMirakel.addTaskOverviewSelection(getTasksQueryBuilder()).toSupportCursorLoader(
-                getUri());
+                   getUri());
     }
 
     @Override
@@ -96,6 +96,12 @@ public class SearchListMirakel implements ListMirakelInterface {
     @Override
     public long countTasks() {
         return getTasksQueryBuilder().count(getUri());
+    }
+
+    @Override
+    public boolean shouldShowDoneToggle() {
+        // yes a search list is kind of special ;)
+        return true;
     }
 
 

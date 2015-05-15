@@ -86,4 +86,7 @@
     <string name="priority_m1">Unimportant</string>
     <string name="priority_m2">Very unimportant</string>
 
+    <string name="hide_done_tasks">Hide done tasks</string>
+    <string name="show_done_tasks">Show done tasks</string>
+
 </resources>
