@@ -93,11 +93,12 @@ import static com.google.common.base.Optional.of;
 
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     MultiSelectCursorAdapter.MultiSelectCallbacks<TaskOverview>,
-    ActionClickListener {
+    ActionClickListener, TaskAdapter.TaskAdapterCallbacks {
 
     public static final String ARGUMENT_LIST = "list";
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
     public static final String TASKS_TO_DELETE = "tasks to delete";
+    public static final String SHOULD_SHOW_DONE_TASKS = "should show done tasks";
 
     private TaskAdapter mAdapter;
     @InjectView(R.id.task_listview)
@@ -117,6 +118,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private SearchObject lastSearch;
 
     private Optional<Snackbar> snackbar = absent();
+
+    private boolean shouldShowDoneTasks = false;
 
     public TasksFragment() {
         // Required empty public constructor
@@ -138,7 +141,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new TaskAdapter(getActivity(), null, mListener, this);
+        mAdapter = new TaskAdapter(getActivity(), null, mListener, this, this);
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
@@ -179,6 +182,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void setList(final ListMirakelInterface listMirakel) {
+        setList(listMirakel, false);
+    }
+    public void setList(final ListMirakelInterface listMirakel, final boolean shouldShowDoneTasks) {
         if (snackbar.isPresent()) {
             snackbar.get().dismiss();
         }
@@ -191,12 +197,15 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             lastSearch = null;
         }
         args.putParcelable(ARGUMENT_LIST, listMirakel);
+        args.putBoolean(SHOULD_SHOW_DONE_TASKS, shouldShowDoneTasks);
         getLoaderManager().restartLoader(0, args, this);
     }
 
     @Override
     public Loader onCreateLoader(final int i, final Bundle arguments) {
+        MirakelQueryBuilder mirakelQueryBuilder = listMirakel.getTasksQueryBuilder();
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
+        shouldShowDoneTasks = arguments.getBoolean(SHOULD_SHOW_DONE_TASKS);
         ArrayList<TaskOverview> tasksToDelete = arguments.getParcelableArrayList(TASKS_TO_DELETE);
         if (tasksToDelete != null) {
 
@@ -211,10 +220,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                     }
                 }
             }));
-            return listMirakel.getTasksQueryBuilder().and(Task.ID,
-                    MirakelQueryBuilder.Operation.NOT_IN, ids).toSupportCursorLoader(Task.URI);
+            mirakelQueryBuilder.and(Task.ID, MirakelQueryBuilder.Operation.NOT_IN, ids);
         }
-        return listMirakel.getTaskOverviewSupportCursorLoader();
+        if (!shouldShowDoneTasks) {
+            mirakelQueryBuilder.and(Task.DONE, MirakelQueryBuilder.Operation.EQ, false);
+        }
+        return mirakelQueryBuilder.toSupportCursorLoader(Task.URI);
     }
 
     @Override
@@ -472,6 +483,22 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public void handleShowSearch() {
         getActivity().startActionMode(new SearchCallbacks());
+    }
+
+
+    @Override
+    public void toggleShowDoneTasks() {
+        setList(listMirakel, !shouldShowDoneTasks);
+    }
+
+    @Override
+    public boolean shouldShowDone() {
+        return shouldShowDoneTasks;
+    }
+
+    @Override
+    public boolean shouldShowDoneToggle() {
+        return listMirakel.shouldShowDoneToggle();
     }
 
     private class MultiSelectCallbacks implements ActionMode.Callback {
