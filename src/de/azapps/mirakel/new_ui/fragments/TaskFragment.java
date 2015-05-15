@@ -65,6 +65,7 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
+import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.views.DatesView;
@@ -133,6 +134,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private MirakelContentObserver observer;
     private int hiddenViews = 3;
     private SoftKeyboard keyboard;
+    private boolean taskNameInitialized = false;
 
     @Override
     public void onSoftKeyboardHide() {
@@ -185,6 +187,12 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
+        task.setDirectContentObserver(new ModelBase.DirectContentObserver() {
+            @Override
+            public void onChange() {
+                updateTask();
+            }
+        });
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
                                               this);
     }
@@ -363,7 +371,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private void initTaskNameEdit() {
         taskNameEdit.setText(task.getName());
         // Show Keyboard if stub
-        if (task.isStub()) {
+        if (task.isStub() && !taskNameInitialized) {
+            taskNameInitialized = true;
             taskNameViewSwitcher.showNext();
             taskNameEdit.postDelayed(new Runnable() {
                 @Override
