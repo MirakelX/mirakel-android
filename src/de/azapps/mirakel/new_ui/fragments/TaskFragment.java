@@ -365,11 +365,11 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         // Show Keyboard if stub
         if (task.isStub()) {
             taskNameViewSwitcher.showNext();
-            taskNameEdit.selectAll();
             taskNameEdit.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     taskNameEdit.requestFocus();
+                    taskNameEdit.selectAll();
                 }
             }, 10L);
 
