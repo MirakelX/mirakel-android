@@ -209,9 +209,6 @@ public class Task extends TaskBase {
         final MirakelQueryBuilder qb;
         if (!listMirakelOptional.isPresent()) {
             qb = new MirakelQueryBuilder(context);
-            if (MirakelCommonPreferences.showDoneMain()) {
-                qb.and(Task.DONE, Operation.EQ, false);
-            }
         } else {
             qb = listMirakelOptional.get().getWhereQueryForTasks();
         }

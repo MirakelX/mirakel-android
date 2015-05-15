@@ -570,6 +570,11 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         return Task.addBasicFiler(qb).count(Task.URI);
     }
 
+    @Override
+    public boolean shouldShowDoneToggle() {
+        return !isSpecial() && getId() > 0;
+    }
+
 
     public void destroy() {
         destroy(false);
@@ -756,12 +761,8 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @NonNull
     public MirakelQueryBuilder getWhereQueryForTasks() {
-        final MirakelQueryBuilder qb = Task.addBasicFiler(new MirakelQueryBuilder(context).and(Task.LIST_ID,
-                                       Operation.EQ, this));
-        if (!MirakelCommonPreferences.showDoneMain()) {
-            qb.and(Task.DONE, Operation.EQ, false);
-        }
-        return qb;
+        return Task.addBasicFiler(new MirakelQueryBuilder(context).and(Task.LIST_ID,
+                                  Operation.EQ, this));
     }
 
     // Parcelable stuff
