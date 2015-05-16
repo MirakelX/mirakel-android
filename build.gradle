@@ -55,10 +55,10 @@ dependencies {
     compile project(':helper')
     compile project(':tw_sync')
     compile project(':changelog')
-    compile project(':custom_views')
     compile project(':donationslib')
     compile project(':drag-sort-listview')
     compile project(':colorpickerpreference')
+    compile project(':colorpicker')
     compile 'com.cocosw:undobar:1.4@aar'
 }
 
