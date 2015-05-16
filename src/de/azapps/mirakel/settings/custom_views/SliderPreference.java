@@ -8,12 +8,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 
 import de.azapps.material_elements.views.Slider;
 import de.azapps.mirakel.settings.R;
 
-public class SliderPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener {
+public class SliderPreference extends DialogPreference {
 
     private int max = 100;
     private int current = 0;
@@ -31,7 +30,6 @@ public class SliderPreference extends DialogPreference implements SeekBar.OnSeek
         slider = (Slider) v.findViewById(R.id.progress_bar);
         slider.setMax(max);
         slider.setProgress(current);
-        slider.setOnSeekBarChangeListener(this);
         builder.setView(v);
     }
 
@@ -52,30 +50,14 @@ public class SliderPreference extends DialogPreference implements SeekBar.OnSeek
     @Override
     protected void onDialogClosed(final boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        if (positiveResult) {
-            callChangeListener(current);
+        if (positiveResult && (slider != null)) {
+            current = slider.getProgress();
+            callChangeListener(slider.getProgress());
         }
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
+    protected View onCreateView(final ViewGroup parent) {
         return super.onCreateView(parent);
-    }
-
-    @Override
-    public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
-        if (fromUser) {
-            current = progress;
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(final SeekBar seekBar) {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(final SeekBar seekBar) {
-
     }
 }
