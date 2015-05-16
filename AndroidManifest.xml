@@ -20,8 +20,29 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakel.widget">
-        <uses-sdk android:minSdkVersion="14"
-                 android:targetSdkVersion="21" />
-                         <!-- need to build with gradle-->
-                                 <application />
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="22" />
+    <!-- need to build with gradle-->
+    <application>
+
+
+        <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/provider_widget" />
+        </receiver>
+
+
+        <!-- The service serving the RemoteViews to the collection widget -->
+        <service
+            android:name="de.azapps.mirakel.widget.MainWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+    </application>
 </manifest>
