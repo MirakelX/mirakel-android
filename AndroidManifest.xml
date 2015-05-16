@@ -20,8 +20,40 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.azapps.mirakel.model">
-        <uses-sdk android:minSdkVersion="14"
-                 android:targetSdkVersion="21" />
-                         <!-- need to build with gradle-->
-                                 <application />
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="21" />
+    <!-- need to build with gradle-->
+    <application>
+        <provider
+            android:name="de.azapps.mirakel.model.MirakelContentProvider"
+            android:authorities="de.azapps.mirakel.provider"
+            android:exported="true"
+            android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
+            android:readPermission="de.azapps.mirakel.provider.READ_DATA"
+            android:writePermission="de.azapps.mirakel.provider.WRITE_DATA" />
+        <provider
+            android:name="de.azapps.mirakel.model.MirakelInternalContentProvider"
+            android:authorities="de.azapps.mirakel.provider.internal"
+            android:exported="true" />
+        <receiver
+            android:name="de.azapps.mirakel.receivers.BootUpReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="de.azapps.mirakel.services.NotificationService" />
+        <service android:name="de.azapps.mirakel.services.TaskService" />
+
+        <receiver
+            android:name="de.azapps.mirakel.reminders.ReminderAlarm"
+            android:enabled="true" >
+        </receiver>
+    </application>
 </manifest>
