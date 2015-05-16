@@ -29,7 +29,7 @@ def String getProjectProperty(String propertyName) {
 
 
 gradle.projectsEvaluated {
-    def projects=["custom_views","date-time-picker","widget","settings","colorpickerpreference","donationslib","new_ui","main"]
+    def projects=["date-time-picker","widget","settings","colorpickerpreference","donationslib","new_ui"]
     for(String proj:projects){
         def res_dir=rootDir.toString()+"/"+proj+"/res"
         def res_v14_dir=rootDir.toString()+"/"+proj+"/res-v14"
