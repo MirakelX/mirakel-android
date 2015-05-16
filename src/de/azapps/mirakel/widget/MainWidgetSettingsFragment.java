@@ -20,18 +20,17 @@ package de.azapps.mirakel.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
+
 import de.azapps.mirakel.helper.PreferencesWidgetHelper;
+import de.azapps.mirakel.settings.custom_views.Settings;
+import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.tools.Log;
 
 @SuppressLint("NewApi")
-public class MainWidgetSettingsFragment extends PreferenceFragment {
+public class MainWidgetSettingsFragment extends MirakelPreferencesFragment<Settings> {
     private static final String TAG = "MainWidgetSettingsFragment";
     private int widgetId;
-
-    public MainWidgetSettingsFragment() {
-        super();
-    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -45,5 +44,12 @@ public class MainWidgetSettingsFragment extends PreferenceFragment {
     public void setup(final int widgetId) {
         this.widgetId = widgetId;
     }
+
+    @NonNull
+    @Override
+    public Settings getItem() {
+        return Settings.WIDGET;
+    }
+
 
 }
