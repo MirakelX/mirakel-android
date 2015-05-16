@@ -154,11 +154,7 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
 
     protected void setUpActionbar() {
         final Toolbar actionBar = (Toolbar) findViewById(R.id.actionbar);
-        if (MirakelCommonPreferences.useNewUI()) {
-            actionBar.setBackgroundResource(R.color.colorPrimary);
-        } else {
-            actionBar.setBackgroundResource(R.color.dialog_dark_gray);
-        }
+        actionBar.setBackgroundResource(R.color.colorPrimary);
         actionBar.setVisibility(View.VISIBLE);
         setSupportActionBar(actionBar);
         getSupportActionBar().setElevation(getResources().getDimension(R.dimen.actionbar_elevation));
