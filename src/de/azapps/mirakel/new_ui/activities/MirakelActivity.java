@@ -206,10 +206,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             final Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.action_toggle_ui) {
-            MirakelCommonPreferences.setUseNewUI(false);
-            Helpers.restartApp(this);
-            return true;
         } else if (id == R.id.action_create_list) {
             getListsFragment().editList(ListMirakel.getStub());
             return true;
