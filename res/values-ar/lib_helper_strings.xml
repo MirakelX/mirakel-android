@@ -56,4 +56,123 @@ SDK-نسخة: %2$d\n
   <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">عجباً لقد طارت القائمة&#8230;</string>
   <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">لا نعرف كيفية إصلاح هذه العلة. تجري إعادة تشغيل ميركل.</string>
   <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">يرجى تحديث DAVdroid</string>
+  <string name="permission_group_desc">إذن للوصول إلى Mirakel</string>
+  <string name="permission_group_lbl">إذن Mirakel</string>
+  <string name="permission_read_lbl">قراءة البيانات من Mirakel</string>
+  <string name="permission_read_desc">إذن قراءة البيانات من Mirakel</string>
+  <string name="permission_write_lbl">كتابة البيانات إلى Mirakel</string>
+  <string name="permission_write_desc">إذن لكتابة البيانات إلى Mirakel</string>
+  <string name="permission_read_write_lbl">القراءة/الكتابة Mirakel-البيانات</string>
+  <string name="permission_read_write_desc">إذن قراءة البيانات من وكتابة البيانات إلى Mirakel</string>
+  <string name="title_settings">إعدادات</string>
+  <string name="search_hint">البحث في المهام</string>
+  <string name="search">بحث</string>
+  <string name="search_result_title">البحث عن %s</string>
+  <string name="tasks_new_str">مهمة جديدة</string>
+  <string name="takePhoto">التقاط صورة</string>
+  <string name="speak">تكلّم</string>
+  <string name="delete_content">هل أنت متأكد أنك تريد حذف %s؟</string>
+  <string name="dialog_move">نقل المهمة</string>
+  <string name="list_title">القوائم</string>
+  <string name="menu_delete_list">حذف قائمة</string>
+  <string name="menu_delete_task">حذف المهمة</string>
+  <string name="menu_settings">إعدادات</string>
+  <string name="menu_move_task">نقل المهمة</string>
+  <string name="menu_edit_task">تحرير مهمة</string>
+  <string name="menu_set_due">تعيين وقت التسليم</string>
+  <string name="menu_set_priority">تعيين الأولوية</string>
+  <string name="menu_edit_list">إعادة تسمية القائمة</string>
+  <string name="menu_do_task">تعيين المهمة منجزة</string>
+  <string name="action_undo">التراجع عن التغيير الأخير</string>
+  <string name="action_sync_now">مزامنة الآن</string>
+  <string name="action_contact">جهات الاتصال/تقرير الشوائب</string>
+  <string name="kill_app">إغلاق التطبيق</string>
+  <string name="action_settings">إعدادات</string>
+  <string name="save">حفظ</string>
+  <string name="as_subtask">إضافة إلى مهمة</string>
+  <string name="task_clone">استنساخ مهمة</string>
+  <string name="task_menu_sorting">فرز المهام</string>
+  <string name="list_menu_new_list">قائمة جديدة</string>
+  <string name="share_using">مشاركة مع</string>
+  <string name="share_task">مشاركة المهمة</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">مشاركة القائمة</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="list_change_color">تغيير اللون</string>
+  <string name="set_color">تحديد لون</string>
+  <string name="unset_color">لا لون</string>
+  <string name="list_change_name_cont">عنوان القائمة الجديدة</string>
+  <string name="list_change_name_title">تغيير اسم القائمة</string>
+  <string-array name="list_actions_items">
+    <item>تحديد اللون</item>
+    <item>اعادة تسمية</item>
+    <item>حذف</item>
+    <item>مشاركة</item>
+  </string-array>
+  <string name="crash_dialog_comment_prompt">يمكنك إضافة تعليق حول المشكلة أدناه:</string>
+  <string name="crash_dialog_ok_toast">شكرا!</string>
+  <string name="speak_lang_code">ar-AR</string>
+  <string-array name="audio_playback_options">
+    <item>فتح ملف</item>
+    <item>تشغيل بصوت عال</item>
+    <item>تشغيل بصمت</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>تحرير</item>
+    <item>نقل</item>
+    <item>حذف</item>
+  </string-array>
+  <string name="message_notification">إشعار</string>
+  <string name="destroy_recurring_task">حذف %s</string>
+  <string name="dialog_error_message" formatted="false">السبب: %s\n\nError رسالة الخطأ: %s</string>
+  <string-array name="subtask_task_select">
+    <item>هذه المهمة فقط</item>
+    <item>Delete also subtask</item>
+  </string-array>
+  <string name="edit">تحرير</string>
+  <string name="no_reminder">تعيين تذكير</string>
+  <string name="add_files">إضافة ملف...</string>
+  <string name="file_select">حدد ملف</string>
+  <string name="save_label">منجز</string>
+  <string name="audio_record_file">تسجيل الصوت</string>
+  <string name="image_file">الصورة</string>
+  <string name="task_fragment_header">رأس</string>
+  <string name="task_fragment_file">الملفات</string>
+  <string name="task_fragment_due">الواجب</string>
+  <string name="task_fragment_reminder">تذكير</string>
+  <string name="task_fragment_content">الملاحظات</string>
+  <string name="task_fragment_subtask">المهام الفرعية</string>
+  <string name="task_fragment_progress">التقدم</string>
+  <string name="audio_record_title">تسجيل الصوت...</string>
+  <string name="audio_record_message">جاري التسجيل&#8230;</string>
+  <string name="audio_playback_select_title">ماذا تريد أن تفعل؟</string>
+  <string name="audio_playback_pause">توقف</string>
+  <string name="audio_playback_play">تشغيل</string>
+  <string name="audio_playback_stop">إيقاف</string>
+  <string name="task_change_prio_title">تغيير الأولوية</string>
+  <string name="remove_subtask">إزالة مهمة فرعية</string>
+  <string name="remove_files_summary">هل تريد إزالة %1$s  من %2$s ؟</string>
+  <string name="add_existing">إضافة المهمة الحالية</string>
+  <string name="subtask_add_options">تصفية &gt;&gt;</string>
+  <string name="subtask_done">مهمة منجَزَة؟</string>
+  <string name="subtask_reminder">مهمة مع تذكير؟</string>
+  <string name="subtask_content">مهمة مع ملاحظة؟</string>
+  <string name="new_task">مهمة جديدة</string>
+  <string name="add_subtasks">إضافة مهمة فرعية...</string>
+  <string name="add_tags">أضف علامة&#8230;</string>
+  <string name="add">إضافة</string>
+  <string name="add_subtask">إضافة مهمة فرعية</string>
+  <string name="file_no_activity">لا أعرف كيفية فتح هذا الملف – عذراً</string>
+  <string name="remove_files">إزالة الملفات من المهمة</string>
+  <string name="search_tag">إبحث عن علامة</string>
+  <string-array name="tag_menu">
+    <item>تعديل علامة</item>
+    <item>حذف العلامة</item>
+  </string-array>
+  <string name="tag_has_dark_text">النص لونه أسود</string>
+  <string-array name="recurring_task_select">
+    <item>هذا التكرار فقط</item>
+    <item>أينما وُجِدَت</item>
+  </string-array>
 </resources>

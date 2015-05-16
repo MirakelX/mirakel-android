@@ -63,4 +63,133 @@ SDK-версия: %2$d\n
   <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">.При синхронизирането беше намерена задача с несъответстващ статус на приоритета.</string>
   <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с несъответстваща дата на приоритета.</string>
   <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Анализирането на състоянието на металиста %s се провали. Моля съобщете за случилото се.</string>
+  <string name="permission_group_desc">Позволение за достъп до Mirakel</string>
+  <string name="permission_group_lbl">Mirakel позволение</string>
+  <string name="permission_read_lbl">Четене на данни от Mirakel</string>
+  <string name="permission_read_desc">Разрешение за четене на данни от Mirakel</string>
+  <string name="permission_write_lbl">Запис на данни до Mirakel</string>
+  <string name="permission_write_desc">Разрешение за записване на данни до Mirakel</string>
+  <string name="permission_read_write_lbl">Четене/Записване на Mirakel данни</string>
+  <string name="permission_read_write_desc">Позволение за четене и записване на дата от и до Mirakel</string>
+  <string name="title_settings">Настройки</string>
+  <string name="search_hint">Търсене на задачи</string>
+  <string name="search">Търсене</string>
+  <string name="search_result_title">Търси за %s</string>
+  <string name="tasks_new_str">Нова задача</string>
+  <string name="takePhoto">Направи снимка</string>
+  <string name="speak">Прочети</string>
+  <string name="delete_content">Сигурни ли сте, че искате да изтриете %s?</string>
+  <string name="dialog_move">Преместване на задачата</string>
+  <string name="list_title">Списъци</string>
+  <string name="menu_delete_list">Изтриване на списък</string>
+  <string name="menu_delete_task">Изтриване на задача</string>
+  <string name="menu_settings">Настройки</string>
+  <string name="menu_move_task">Преместване на задача</string>
+  <string name="menu_edit_task">Редактиране на задача</string>
+  <string name="menu_set_due">Задаване на краен срок</string>
+  <string name="menu_set_priority">Задаване на приоритет</string>
+  <string name="menu_edit_list">Преименуване на списък</string>
+  <string name="menu_do_task">Задаване на задачата като завършена</string>
+  <string name="action_undo">Отмени последната промяна</string>
+  <string name="action_sync_now">Синхронизирай сега</string>
+  <string name="action_contact">Контакт / съобщаване за грешки</string>
+  <string name="kill_app">Затваряне на приложението</string>
+  <string name="action_settings">Настройки</string>
+  <string name="save">Запази</string>
+  <string name="menu_sort_lists">Подредждане списъка</string>
+  <string name="as_subtask">Добавяне към задача</string>
+  <string name="task_clone">Копиране на задачата</string>
+  <string name="task_menu_sorting">Сортиране на задачи</string>
+  <string name="list_menu_new_list">Нов списък</string>
+  <string name="share_using">Споделяне с</string>
+  <string name="share_task">Споделяне на задача</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Сподели списък</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Споделено чрез Mirakel\n свободнитят ToDo-List инструмент за Андроид и мрежата\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Смяна на цвета</string>
+  <string name="set_color">Задаване на цвят</string>
+  <string name="unset_color">Без цвят</string>
+  <string name="list_change_name_cont">Име на нов списък</string>
+  <string name="list_change_name_title">Смяна на заглавието на списъка</string>
+  <string-array name="list_actions_items">
+    <item>Избиране на цвят</item>
+    <item>Преименуване</item>
+    <item>Изтрий</item>
+    <item>Сподели</item>
+  </string-array>
+  <string name="crash_toast_text">Опа! Блокирах! Моля, стартирайте приложението отново, за да мога да изпратя съобщение на моя разработчик</string>
+  <string name="crash_dialog_title">Mirakel блокира</string>
+  <string name="crash_dialog_text">Възникна неочаквана грешка, която принуди приложението да спре. Моля, помогнете ни да я поправим като ни изпратите данни за грешката, всичко, което трябва да направите е да натиснете OK.</string>
+  <string name="crash_dialog_comment_prompt">Можете да добавите коментар относно проблема отдолу:</string>
+  <string name="crash_dialog_ok_toast">Благодарим!</string>
+  <string name="speak_lang_code">англ- САЩ</string>
+  <string-array name="audio_playback_options">
+    <item>Отваряне на файл</item>
+    <item>Пусни силно</item>
+    <item>Пусни тихо</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Промени</item>
+    <item>Премести</item>
+    <item>Изтрий</item>
+  </string-array>
+  <string name="message_notification">Известие</string>
+  <string name="destroy_recurring_task">Изтриване на %s</string>
+  <string name="dialog_error_message" formatted="false">Причина: %s\n\n Грешно съобщение: %s</string>
+  <string name="use_new_ui">Използвай новия UI (Experimental)</string>
+  <string-array name="subtask_task_select">
+    <item>Само тази задача</item>
+    <item>Изтриване и на подзадачата</item>
+  </string-array>
+  <string name="delete_caldav_lists">Не е позволено изтриване на списъци от caldav account.</string>
+  <string name="edit">Промени</string>
+  <string name="no_reminder">Задаване на напомняне</string>
+  <string name="add_files">Добавяне на файл&#8230;</string>
+  <string name="file_select">Избиране на файл</string>
+  <string name="save_label">Свършено</string>
+  <string name="audio_record_file">Аудио запис</string>
+  <string name="image_file">Изображение</string>
+  <string name="task_fragment_header">Горен</string>
+  <string name="task_fragment_file">Файлове</string>
+  <string name="task_fragment_due">Краен срок</string>
+  <string name="task_fragment_reminder">Напомняне</string>
+  <string name="task_fragment_content">Бележки</string>
+  <string name="task_fragment_subtask">Подзадачи</string>
+  <string name="task_fragment_progress">Прогрес</string>
+  <string name="task_fragment_tags">Тагове</string>
+  <string name="audio_record_title">Аудио запис&#8230;</string>
+  <string name="audio_record_message">Записване&#8230;</string>
+  <string name="audio_playback_title">Аудио възпроизвеждане&#8230;</string>
+  <string name="audio_playback_select_title">Какво искате да правите?</string>
+  <string name="audio_playback_pause">Пауза</string>
+  <string name="audio_playback_play">Пускане</string>
+  <string name="audio_playback_stop">Спиране</string>
+  <string name="task_change_prio_title">Смяна на приоритета</string>
+  <string name="remove_subtask">Премахване на подзадача</string>
+  <string name="remove_files_summary">Искате ли да премахнете %1$s от \"%2$s\"?</string>
+  <string name="add_existing">Добавяне на съществуваща задача</string>
+  <string name="task_name">Име на задачата</string>
+  <string name="subtask_add_options">Филтър &gt;&gt;</string>
+  <string name="subtask_done">Задачата е готова?</string>
+  <string name="subtask_reminder">Задача с напомняне?</string>
+  <string name="subtask_content">Задача с бележка?</string>
+  <string name="new_task">Нова задача</string>
+  <string name="add_subtasks">Добавяне на подзадача&#8230;</string>
+  <string name="add_tags">Прибави таг&#8230;</string>
+  <string name="add">Добавяне</string>
+  <string name="add_subtask">Добавяне на подзадача</string>
+  <string name="file_no_activity">Не знам как да отворя този файл - съжалявам</string>
+  <string name="remove_files">Пемахване на файлове от задачата</string>
+  <string name="search_tag">Търси таг</string>
+  <string-array name="tag_menu">
+    <item>Промени таг</item>
+    <item>Премахни таг</item>
+  </string-array>
+  <string name="tag_has_dark_text">Текстът е черен</string>
+  <string-array name="recurring_task_select">
+    <item>Само това повторение</item>
+    <item>Всички повторения</item>
+  </string-array>
 </resources>
