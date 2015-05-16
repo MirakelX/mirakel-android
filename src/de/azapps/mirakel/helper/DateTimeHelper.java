@@ -38,20 +38,10 @@ import java.util.TimeZone;
 
 public class DateTimeHelper {
 
-    public static final SimpleDateFormat caldavFormat = new SimpleDateFormat(
-        "yyyyMMdd'T'kkmmss", Locale.getDefault());
-    public static final SimpleDateFormat caldavDueFormat = new SimpleDateFormat(
-        "yyyyMMdd", Locale.getDefault());
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat(
         "yyyy-MM-dd", Locale.getDefault());
     public static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
         "yyyy-MM-dd'T'kkmmss'Z'", Locale.getDefault());
-
-    public static final SimpleDateFormat dbDateTimeFormat = new SimpleDateFormat(
-        "yyyy-MM-dd kk:mm:ss", Locale.getDefault());
-
-    public static final SimpleDateFormat taskwarriorFormat = new SimpleDateFormat(
-        "yyyyMMdd'T'kkmmss'Z'", Locale.getDefault());
 
     public static String formatDate(final Calendar c) {
         return (c == null) ? null : dateFormat.format(c.getTime());
@@ -129,43 +119,11 @@ public class DateTimeHelper {
     }
 
     /**
-     *
-     * @param c
-     *            the local Calendar
-     * @return the calendar in UTC, null if c is null
-     */
-    public static Calendar getUTCCalendar(final @NonNull Optional<Calendar> c) {
-        if (!c.isPresent()) {
-            return null;
-        }
-        final Calendar ret = (Calendar) c.get().clone();
-        ret.setTimeInMillis(c.get().getTimeInMillis()
-                            - DateTimeHelper.getTimeZoneOffset(true, c.get()));
-        return ret;
-    }
-
-    /**
-     * Use the optional version instead!
-     * @param c
-     *            the local Calendar
-     * @return utc time in s, 0 if calendar is null
-     */
-    @Deprecated
-    public static long getUTCTime(final Calendar c) {
-        if (c == null) {
-            return 0;
-        }
-        return (c.getTimeInMillis() / 1000)
-               - DateTimeHelper.getTimeZoneOffset(false, c);
-    }
-
-    /**
      * Use the optional version instead!
      * @param c
      *            the local Calendar
      * @return the calendar in UTC, null if c is null
      */
-    @Deprecated
     public static Calendar getUTCCalendar(final Calendar c) {
         if (c == null) {
             return null;
@@ -242,25 +200,9 @@ public class DateTimeHelper {
         }
     }
 
-    public static String formatDBDateTime(final Calendar c) {
-        return (c == null) ? null : dbDateTimeFormat.format(c.getTime());
-    }
-
-    public static String formateCalDav(final Calendar c) {
-        return (c == null) ? null : caldavFormat.format(c.getTime());
-    }
-
-    public static String formateCalDavDue(final Calendar c) {
-        return (c == null) ? null : caldavDueFormat.format(c.getTime());
-    }
-
     public static CharSequence formatReminder(final Context ctx,
             final Calendar date) {
         return getRelativeDate(ctx, date, true);
-    }
-
-    public static String formatTaskWarrior(final Calendar c) {
-        return (c == null) ? null : taskwarriorFormat.format(c.getTime());
     }
 
     /**
@@ -285,15 +227,6 @@ public class DateTimeHelper {
         return !(output.contains(" AM") || output.contains(" PM"));
     }
 
-    public static Calendar parseCalDav(final String date) throws ParseException {
-        if ((date == null) || date.isEmpty()) {
-            return null;
-        }
-        final GregorianCalendar temp = new GregorianCalendar();
-        temp.setTime(caldavFormat.parse(date));
-        return temp;
-    }
-
     private static Calendar parseDate(final String date,
                                       final SimpleDateFormat format) throws ParseException {
         if ((date == null) || date.isEmpty()) {
@@ -302,11 +235,6 @@ public class DateTimeHelper {
         final GregorianCalendar temp = new GregorianCalendar();
         temp.setTime(format.parse(date));
         return temp;
-    }
-
-    public static Calendar parseCalDavDue(final String date)
-    throws ParseException {
-        return parseDate(date, caldavDueFormat);
     }
 
     public static Calendar parseDate(final String date) throws ParseException {
@@ -318,36 +246,6 @@ public class DateTimeHelper {
         return parseDate(date, dateTimeFormat);
     }
 
-    public static Calendar parseDBDateTime(final String date)
-    throws ParseException {
-        return parseDate(date, dbDateTimeFormat);
-    }
-
-    public static Calendar parseTaskWarrior(final String date)
-    throws ParseException {
-        return parseDate(date, taskwarriorFormat);
-    }
-
-
-    /**
-     * Use Optional implementation instead!
-     * @param a
-     * @param b
-     * @return
-     */
-    @Deprecated
-    public static boolean equalsCalendar(final Calendar a, final Calendar b) {
-        if ((a == null) || (b == null)) {
-            if (a != b) {
-                return false;
-            }
-        } else {
-            final long ta = a.getTimeInMillis() / 1000L;
-            final long tb = b.getTimeInMillis() / 1000L;
-            return Math.abs(ta - tb) < 1L;
-        }
-        return true;
-    }
 
     public static boolean equalsCalendar(@NonNull final Optional<Calendar> a,
                                          @NonNull final Optional<Calendar> b) {

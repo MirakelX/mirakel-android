@@ -41,14 +41,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getBoolean("subtaskAddToSameList", false);
     }
 
-    public static boolean containsHighlightSelected() {
-        return settings.contains("highlightSelected");
-    }
-
-    public static boolean containsStartupList() {
-        return settings.contains("startupList");
-    }
-
     public static int getAlarmLater() {
         return settings.getInt("alarm_later", 15);
     }
@@ -118,19 +110,10 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return listId;
     }
 
-    public static String getPhotoDefaultTitle() {
-        return settings.getString("photoDefaultTitle",
-                                  context.getString(R.string.photo_default_title));
-    }
-
     public static int getUndoNumber() {
         return settings.getInt("UndoNumber", 10);
     }
 
-
-    public static boolean hideKeyboard() {
-        return settings.getBoolean("hideKeyboard", true);
-    }
 
     public static boolean highlightSelected() {
         return settings.getBoolean("highlightSelected", isTablet());
@@ -165,10 +148,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         final String listOpen = settings.getString("notificationsListOpen",
                                 "default");
         return "default".equals(listOpen);
-    }
-
-    public static boolean isShowAccountName() {
-        return settings.getBoolean("show_account_name", false);
     }
 
 
@@ -245,18 +224,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         .putBoolean("enableDebugMenu",
                     !MirakelCommonPreferences.isEnabledDebugMenu())
         .apply();
-    }
-
-    public static boolean useBtnAudioRecord() {
-        return settings.getBoolean("useBtnAudioRecord", true);
-    }
-
-    public static boolean useBtnCamera() {
-        return settings.getBoolean("useBtnCamera", true);
-    }
-
-    public static boolean useBtnSpeak() {
-        return settings.getBoolean("useBtnSpeak", false);
     }
 
     public static boolean useNotifications() {
