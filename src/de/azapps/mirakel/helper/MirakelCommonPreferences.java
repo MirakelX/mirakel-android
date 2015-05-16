@@ -137,7 +137,7 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
     public static boolean isDark() {
-        return !useNewUI() && settings.getBoolean("DarkTheme", false);
+        return false;
     }
 
     public static void setIsDark(final boolean isDark) {
@@ -283,16 +283,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static boolean writeLogsToFile() {
         return (settings != null) && settings.getBoolean("writeLogsToFile", false);
-    }
-
-    public static boolean useNewUI() {
-        return (settings != null) && settings.getBoolean("newUI", false);
-    }
-
-    public static void setUseNewUI(final boolean val) {
-        final Editor ed = settings.edit();
-        ed.putBoolean("newUI", val);
-        ed.commit(); // Use commit here because we are restarting the app afterwards
     }
 
 }

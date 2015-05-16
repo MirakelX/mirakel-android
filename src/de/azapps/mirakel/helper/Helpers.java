@@ -196,11 +196,7 @@ public class Helpers {
 
     public static Optional<Class<?>> getMainActivity() {
         try {
-            if (MirakelCommonPreferences.useNewUI()) {
-                return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
-            } else {
-                return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-            }
+            return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
         } catch (ClassNotFoundException e) {
             return absent();
         }

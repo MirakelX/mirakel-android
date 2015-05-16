@@ -81,5 +81,109 @@ Device: %3$s\n]]>
     <string name="error_" tools:ignore="UnusedResources"></string>
     <string name="error_" tools:ignore="UnusedResources"></string>
      -->
-    
+    <!-- From main -->
+    <!-- Permissions -->
+    <string name="permission_group_desc">Permission for access Mirakel</string>
+    <string name="permission_group_lbl">Mirakel permission</string>
+    <string name="permission_read_lbl">Read data from Mirakel</string>
+    <string name="permission_read_desc">Permission to read data from Mirakel</string>
+    <string name="permission_write_lbl">Write data to Mirakel</string>
+    <string name="permission_write_desc">Permission to write data to Mirakel</string>
+    <string name="permission_read_write_lbl">Read/Write Mirakel-data</string>
+    <string name="permission_read_write_desc">Permission to read data from and write data to Mirakel</string>
+
+    <string name="title_settings">Settings</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search tasks</string>
+    <string name="search">Search</string>
+    <string name="search_result_title">Search for %s</string>
+
+    <string name="tasks_new_str">New Task</string>
+    <string name="takePhoto">Take a photo</string>
+    <string name="speak">Speak</string>
+
+    <string name="delete_content">Are you sure you want to delete %s?</string>
+    <string name="dialog_move">Move Task</string>
+    <string name="list_title">Lists</string>
+
+    <!-- Menu -->
+    <string name="menu_delete_list">Delete list</string>
+    <string name="menu_delete_task">Delete task</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_move_task">Move task</string>
+    <string name="menu_edit_task">Edit task</string>
+    <string name="menu_set_due">Set due</string>
+    <string name="menu_set_priority">Set priority</string>
+    <string name="menu_edit_list">Rename list</string>
+    <string name="menu_do_task">Set task as done</string>
+    <string name="action_undo">Undo the last Change</string>
+    <string name="action_sync_now">Sync Now</string>
+    <string name="action_contact">Contact / report bug</string>
+    <string name="kill_app">Close app</string>
+    <string name="action_settings">Settings</string>
+    <string name="save">Save</string>
+    <string name="menu_sort_lists">Sort list</string>
+    <string name="as_subtask">Add to a task</string>
+    <string name="task_clone">Clone task</string>
+    <string name="task_menu_sorting">Sort tasks</string>
+    <string name="list_menu_new_list">New List</string>
+
+    <!-- Sharing -->
+    <string name="share_using">Share with</string>
+    <string name="share_task">Share task</string>
+    <string name="share_task_title_with_date">%1$s (%2$s)</string>
+    <string name="share_task_title">%s</string>
+    <string name="share_list">Share list</string>
+    <string name="share_list_title">%1$s (%2$d)</string>
+    <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
+
+    <string name="list_change_color">Change Color</string>
+    <string name="set_color">Set Color</string>
+    <string name="unset_color">No Color</string>
+    <string name="list_change_name_cont">New list title</string>
+    <string name="list_change_name_title">Change list name</string>
+
+    <string-array name="list_actions_items">
+        <item>Select color</item>
+        <item>Rename</item>
+        <item>Delete</item>
+        <item>Share</item>
+    </string-array>
+
+    <!-- ACRA -->
+    <string name="crash_toast_text">Yikes! I crashed! Please start the app again, so I can send a message to my developer</string>
+    <string name="crash_dialog_title">Mirakel has crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the
+    application to stop. Please help us fix this by sending us error data,
+    all you have to do is to press OK.</string>
+    <string name="crash_dialog_comment_prompt">You can add a comment about the problem below:</string>
+    <string name="crash_dialog_ok_toast">Thank you !</string>
+
+    <string name="speak_lang_code">en-US</string>
+
+    <string-array name="audio_playback_options">
+        <item>Open file</item>
+        <item>Play loud</item>
+        <item>Play silent</item>
+    </string-array>
+
+    <string-array name="task_actions_items">
+        <item>Edit</item>
+        <item>Move</item>
+        <item>Delete</item>
+    </string-array>
+    <!-- Misc -->
+    <string name="message_notification">Notification</string>
+    <string name="destroy_recurring_task">Delete %s</string>
+    <string name="dialog_error_message" formatted="false">Reason: %s\n\nError message: %s</string>
+    <string name="use_new_ui">Use new UI (Experimental)</string>
+
+    <string-array name="subtask_task_select">
+        <item>Only this task</item>
+        <item>Delete also subtask</item>
+    </string-array>
+
+    <string name="delete_caldav_lists">It\'s not allowed to delete lists of a caldav account.</string>
+
 </resources>
