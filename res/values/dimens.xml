@@ -41,5 +41,6 @@
     <dimen name="file_preview_padding">20dp</dimen>
     <dimen name="fft_view_hight">5dp</dimen>
 
+    <dimen name="subtitle_font_size">18sp</dimen>
 
 </resources>

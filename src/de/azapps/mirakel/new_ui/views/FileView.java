@@ -54,7 +54,6 @@ import java.util.List;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.views.FFTAudioView;
-import de.azapps.mirakel.helper.TaskDialogHelpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -67,7 +66,7 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class FileView extends LinearLayout implements View.OnClickListener,
-    View.OnLongClickListener,DialogInterface.OnClickListener, FFTAudioView.OnRecordFinished {
+    View.OnLongClickListener, DialogInterface.OnClickListener, FFTAudioView.OnRecordFinished {
     private static final String TAG = "FileView";
     private final LayoutInflater inflater;
     private List<FileMirakel> files = new ArrayList<>(0);
@@ -79,7 +78,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     private Activity activity;
     @Nullable
     private Uri photoUri;
-    private boolean isDelete=false;
+    private boolean isDelete = false;
     private ImageView fileActionIcon;
     private View fileAction;
     private TextView fileActionText;
@@ -98,7 +97,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         super(context, attrs, defStyleAttr);
         COUNT_PER_LINE = getResources().getInteger(R.integer.file_count_per_line);
         final int size = (int) getResources().getDimension(R.dimen.file_preview_size);
-        final int padding=(int) getResources().getDimension(R.dimen.padding_default_half);
+        final int padding = (int) getResources().getDimension(R.dimen.padding_default_half);
         PREVIEW_SIZE = new LinearLayout.LayoutParams(size, size);
         MIN_PREVIEW_PADDING = (int) (getResources().getDimension(R.dimen.file_preview_padding) /
                                      2.0F);
@@ -116,15 +115,15 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         }
         COUNT_PER_LINE = count;
         final int padding = (int) ((w - (count * PREVIEW_SIZE.width)) / ((count + 1.0F) * 2.0F));
-        PREVIEW_SIZE.leftMargin=padding;
-        PREVIEW_SIZE.rightMargin=padding;
+        PREVIEW_SIZE.leftMargin = padding;
+        PREVIEW_SIZE.rightMargin = padding;
         fixChilds();
     }
 
     private void addFile() {
         new AlertDialog.Builder(getContext())
         .setTitle(R.string.add_files)
-        .setItems(R.array.add_file_options,this).show();
+        .setItems(R.array.add_file_options, this).show();
     }
 
     public void addPhoto() {
@@ -147,7 +146,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
 
 
     public void setFiles(final @NonNull Task t) {
-        if((task != null) && (t.getId() == task.getId())){
+        if ((task != null) && (t.getId() == task.getId())) {
             return;
         }
         task = t;
@@ -202,7 +201,8 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         fixChilds();
     }
 
-    private int getPreviewLine(int counter, final List<ImageView> imageViews, final LinearLayout wrapper) {
+    private int getPreviewLine(int counter, final List<ImageView> imageViews,
+                               final LinearLayout wrapper) {
         for (int i = 0; i < COUNT_PER_LINE; i++) {
             if (counter < files.size()) {
                 final FileMirakel file = files.get(counter);
@@ -226,9 +226,9 @@ public class FileView extends LinearLayout implements View.OnClickListener,
                 fileAction.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        if(isDelete){
+                        if (isDelete) {
                             deleteMarkedFiles();
-                        }else{
+                        } else {
                             addFile();
                         }
                     }
@@ -242,11 +242,11 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     }
 
     private void setFileActionBackground(final int backgroundColor) {
-        final GradientDrawable background= (GradientDrawable) fileAction.getBackground();
+        final GradientDrawable background = (GradientDrawable) fileAction.getBackground();
         background.setColor(backgroundColor);
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.JELLY_BEAN){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             fileAction.setBackgroundDrawable(background);
-        }else {
+        } else {
             fileAction.setBackground(background);
         }
     }
@@ -258,7 +258,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         setFileActionBackground(getResources().getColor(android.R.color.transparent));
         fileActionText.setText(R.string.add_file);
         fileActionText.setTextColor(color);
-        isDelete=false;
+        isDelete = false;
     }
 
 
@@ -269,7 +269,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         fileActionIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         fileActionText.setText(R.string.delete_files);
         fileActionText.setTextColor(color);
-        isDelete=true;
+        isDelete = true;
     }
 
 
@@ -283,28 +283,28 @@ public class FileView extends LinearLayout implements View.OnClickListener,
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
                         switch (which) {
-                            case 0:
-                                AudioHelper.playBack(activity, fileMirakel, true);
-                                break;
-                            case 1:
-                                AudioHelper.playBack(activity, fileMirakel, false);
-                                break;
-                            case 2:
-                                TaskDialogHelpers.openFile(getContext(), fileMirakel);
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Unknown options");
+                        case 0:
+                            AudioHelper.playBack(activity, fileMirakel, true);
+                            break;
+                        case 1:
+                            AudioHelper.playBack(activity, fileMirakel, false);
+                            break;
+                        case 2:
+                            openFile(getContext(), fileMirakel);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unknown options");
                         }
                     }
                 }).show();
 
             } else {
-                TaskDialogHelpers.openFile(getContext(), fileMirakel);
+                openFile(getContext(), fileMirakel);
             }
         } else if (markedFiles.contains(fileMirakel)) {
             colorImage(v, Color.TRANSPARENT);
             markedFiles.remove(fileMirakel);
-            if (isDelete&&markedFiles.isEmpty()) {
+            if (isDelete && markedFiles.isEmpty()) {
                 setAddFile();
             }
         } else {
@@ -336,6 +336,19 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         return false;
     }
 
+    public static void openFile(final Context context, final FileMirakel file) {
+        // We can't move this to helpers because we need the model dependency
+        final String mimetype = FileUtils.getMimeType(file.getFileUri());
+        final Intent i2 = new Intent();
+        i2.setAction(android.content.Intent.ACTION_VIEW);
+        i2.setDataAndType(file.getFileUri(), mimetype);
+        try {
+            context.startActivity(i2);
+        } catch (final ActivityNotFoundException e) {
+            ErrorReporter.report(ErrorType.FILE_NO_ACTIVITY);
+        }
+    }
+
 
     private void recordAudio() {
         final FrameLayout wrapper = new FrameLayout(getContext());
@@ -350,7 +363,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
             Log.wtf(TAG, "failed to create outputfile", e);
             return;
         } catch (final FFTAudioView.RecordingFailedException e) {
-            Log.wtf(TAG,"failed to record audio");
+            Log.wtf(TAG, "failed to record audio");
             ErrorReporter.report(ErrorType.NO_SPEACH_RECOGNITION);
             return;
         }
@@ -378,45 +391,45 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         switch (which) {
-            case 0://Photo
-                try {
-                    final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    photoUri = FileUtils.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
-                    if (photoUri == null) {
-                        return;
-                    }
-                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                    activity.startActivityForResult(cameraIntent,
-                            TaskFragment.REQUEST_IMAGE_CAPTURE);
-                } catch (final ActivityNotFoundException a) {
-                    ErrorReporter.report (ErrorType.PHOTO_NO_CAMERA);
-                } catch (final IOException e) {
-                    if (e.getMessage ().equals (FileUtils.ERROR_NO_MEDIA_DIR)) {
-                        ErrorReporter
-                                .report(ErrorType.PHOTO_NO_MEDIA_DIRECTORY);
-                    }
+        case 0://Photo
+            try {
+                final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                photoUri = FileUtils.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
+                if (photoUri == null) {
+                    return;
                 }
-                break;
-            case 1://Audio
-                recordAudio();
-                break;
-            case 2://File
-                final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                activity.startActivityForResult(cameraIntent,
+                                                TaskFragment.REQUEST_IMAGE_CAPTURE);
+            } catch (final ActivityNotFoundException a) {
+                ErrorReporter.report (ErrorType.PHOTO_NO_CAMERA);
+            } catch (final IOException e) {
+                if (e.getMessage ().equals (FileUtils.ERROR_NO_MEDIA_DIR)) {
+                    ErrorReporter
+                    .report(ErrorType.PHOTO_NO_MEDIA_DIRECTORY);
+                }
+            }
+            break;
+        case 1://Audio
+            recordAudio();
+            break;
+        case 2://File
+            final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-                try {
-                    activity.startActivityForResult(
-                            Intent.createChooser(intent, "Select a File to Upload"),
-                            TaskFragment.FILE_SELECT_CODE);
-                } catch (final android.content.ActivityNotFoundException ignored) {
-                    // Potentially direct the user to the Market with a Dialog
-                    Toast.makeText(getContext(), "Please install a File Manager.",
-                            Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown filetype");
+            try {
+                activity.startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    TaskFragment.FILE_SELECT_CODE);
+            } catch (final android.content.ActivityNotFoundException ignored) {
+                // Potentially direct the user to the Market with a Dialog
+                Toast.makeText(getContext(), "Please install a File Manager.",
+                               Toast.LENGTH_SHORT).show();
+            }
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown filetype");
         }
     }
 }
