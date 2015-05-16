@@ -24,9 +24,12 @@ import android.support.v4.content.Loader;
 
 import java.util.List;
 
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;
 
 public interface ListMirakelInterface extends Parcelable {
+    MirakelQueryBuilder getTasksQueryBuilder();
+
     Loader getTaskOverviewSupportCursorLoader();
 
     CharSequence getName();

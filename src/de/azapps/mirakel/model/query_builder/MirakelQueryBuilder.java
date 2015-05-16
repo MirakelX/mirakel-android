@@ -116,6 +116,11 @@ public class MirakelQueryBuilder {
         return count;
     }
 
+
+    private <T extends ModelBase> String getId(T filter) {
+        return filter == null ? null : String.valueOf(filter.getId());
+    }
+
     /**
      * Appends a selection to the current WHERE part
      *
@@ -295,7 +300,7 @@ public class MirakelQueryBuilder {
 
     public <T extends ModelBase> MirakelQueryBuilder and (final String field,
             final Operation op, final T filter) {
-        return and (field, op, String.valueOf(filter.getId()));
+        return and (field, op, getId(filter));
     }
 
     public MirakelQueryBuilder and (final String field, final Operation op,
@@ -368,7 +373,7 @@ public class MirakelQueryBuilder {
 
     public <T extends ModelBase> MirakelQueryBuilder or (final String field,
             final Operation op, final T filter) {
-        return or (field, op, String.valueOf(filter.getId()));
+        return or (field, op, getId(filter));
     }
 
     public <T extends Number> MirakelQueryBuilder or (final String field,

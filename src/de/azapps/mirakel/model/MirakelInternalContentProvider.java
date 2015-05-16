@@ -48,7 +48,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -104,7 +103,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String CALDAV_INSTANCE_PROPERTIES = "caldav_instance_properties";
     public static final String CALDAV_INSTANCES = "caldav_instances";
 
-    public static final String LIST_WITH_SPECIAL = "list_with_special";
+    public static final String LIST_WITH_SPECIAL = "lists_with_special";
 
     // Uris
     public static final Uri AUTOCOMPLETE_URI = getUri("autocomplete_helper");
@@ -361,41 +360,8 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         default:
             builder.setTables(table);
         }
-        final Cursor c;
-        if (LIST_WITH_SPECIAL.equals(table)) {
-            final String where;
-            final ArrayList<String> args;
-            if (selectionArgs.length > 0) {
-                where = " where " + selection;
-                args = new ArrayList<>(Arrays.asList(selectionArgs));
-                args.add(args.get(0)); // dirty hack to set the account_id of the special lists
-            } else {
-                where = "";
-                args = new ArrayList<>();
-            }
-
-            String whereLists = "";
-            // If we hide done tasks
-            if (!MirakelCommonPreferences.showDoneMain()) {
-                if (where.isEmpty()) {
-                    whereLists = " where ";
-                } else {
-                    whereLists = " and ";
-                }
-                whereLists += "(tasks." + ModelBase.ID + " IS NULL OR " + Task.getBasicFilter() +
-                              " AND tasks.done = 0 )";
-            }
-            c = getReadableDatabase().rawQuery(
-                    "select lists._id as _id, lists.name as name, sort_by, lists.created_at as created_at, lists.updated_at updated_at, lists.sync_state as sync_state, lft, rgt,color, account_id, icon_path, 1 as isNormal, count(tasks._id) as task_count from lists left join tasks on tasks.list_id = lists._id  "
-                    + where + whereLists + " group by lists._id\n"
-                    +
-                    "    UNION\n" +
-                    "    select -_id AS _id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, ? as account_id, icon_path, 0 as isNormal, -1 as task_count from special_lists where active = 1 ORDER BY lft ASC;",
-                    args.toArray(selectionArgs));
-        } else {
-            c = builder.query(getReadableDatabase(), projection,
-                              selection, selectionArgs, groupBy, null, sortOrder);
-        }
+        final Cursor c = builder.query(getReadableDatabase(), projection,
+                                       selection, selectionArgs, groupBy, null, sortOrder);
         if (c == null) {
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
