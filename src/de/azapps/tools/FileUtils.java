@@ -105,7 +105,7 @@ public class FileUtils {
     /**
      * Unzip a File and Copy it to a location
      *
-     * @param zipFile
+     * @param fin
      * @param location
      */
     public static void unzip(final FileInputStream fin, final File location)

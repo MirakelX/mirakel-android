@@ -52,19 +52,4 @@ public class PreferencesHelper {
         return ((PreferenceActivity) this.ctx).findPreference(key);
     }
 
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
-    protected void removePreference(final String which) {
-        final Preference pref = findPreference(which);
-        if (pref != null) {
-            if (this.v4_0) {
-                ((PreferenceFragment) this.ctx).getPreferenceScreen()
-                .removePreference(pref);
-            } else {
-                ((PreferenceActivity) this.activity).getPreferenceScreen()
-                .removePreference(pref);
-            }
-        }
-    }
-
 }

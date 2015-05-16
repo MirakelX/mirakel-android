@@ -23,19 +23,15 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import com.google.common.base.Optional;
 
-import java.util.List;
 import java.util.Locale;
 
 import de.azapps.mirakel.DefinitionsHelper;
@@ -53,7 +49,7 @@ public class Helpers {
      * @author az
      */
     public interface ExecInterface {
-        public void exec();
+        void exec();
     }
 
     private static String TAG = "Helpers";
@@ -91,14 +87,6 @@ public class Helpers {
         }
     }
 
-    public static int getHighlightedColor(final Context ctx) {
-        if (MirakelCommonPreferences.isDark()) {
-            return ctx.getResources().getColor(
-                       R.color.highlighted_text_holo_dark);
-        }
-        return ctx.getResources().getColor(R.color.highlighted_text_holo_light);
-    }
-
     public static Locale getLocal(final Context ctx) {
         final String current = MirakelCommonPreferences.getLanguage();
         final Locale locale = current.equals("-1") ? Locale.getDefault()
@@ -117,28 +105,6 @@ public class Helpers {
 
     // MISC
 
-
-    public static boolean isIntentAvailable(final Context context,
-                                            final String action) {
-        final PackageManager packageManager = context.getPackageManager();
-        final Intent intent = new Intent(action);
-        final List<ResolveInfo> list = packageManager.queryIntentActivities(
-                                           intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
-
-    // Help
-    public static void openHelp(final Context ctx) {
-        openHelp(ctx, null);
-    }
-
-    public static void openHelp(final Context ctx, final String title) {
-        String url = "http://mirakel.azapps.de/help_en.html";
-        if (title != null) {
-            url += "#" + title;
-        }
-        openURL(ctx, url);
-    }
 
     public static void openURL(final Context ctx, final String url) {
         final Intent i2 = new Intent(Intent.ACTION_VIEW);

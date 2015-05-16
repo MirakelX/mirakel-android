@@ -51,15 +51,12 @@ public class DefinitionsHelper {
         static final long serialVersionUID = 1374828058L;
     }
 
-    public static final int RESULT_SPEECH_NAME = 1, RESULT_SPEECH = 3,
-                            RESULT_SETTINGS = 4, RESULT_ADD_FILE = 5, RESULT_CAMERA = 6,
-                            RESULT_ADD_PICTURE = 7;
+    public static final int RESULT_ADD_FILE = 5;
     public static final String TW_NO_PROJECT = "NO_PROJECT";
     public static final String BUNDLE_CERT = "de.azapps.mirakel.cert";
     public static final String BUNDLE_CERT_CLIENT = "de.azapps.mirakel.cert.client";
     public static final String BUNDLE_KEY_CLIENT = "de.azapps.mirakel.key.client";
     public static final String BUNDLE_SERVER_TYPE = "type";
-    public static final String TYPE_TW_SYNC = "TaskWarrior";
     public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
     public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
     public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
@@ -85,7 +82,6 @@ public class DefinitionsHelper {
     public static int GRAVITY_LEFT, GRAVITY_RIGHT;
     public static boolean freshInstall;
     public static final int REQUEST_FILE_ANY_DO = 3;
-    public static final int REQUEST_FILE_WUNDERLIST = 4;
     public static final String AUTHORITY_INTERNAL = "de.azapps.mirakel.provider.internal";
     private static final String TAG = "DefinitionsHelper";
 
