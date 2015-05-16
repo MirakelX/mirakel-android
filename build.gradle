@@ -171,7 +171,6 @@ dependencies {
     compile project(':custom_views')
     compile project(':acra')
     compile project(':drag-sort-listview')
-    compile project(':main')
     compile "com.jakewharton:butterknife:$butterknifeVersion"
 
     //for tests

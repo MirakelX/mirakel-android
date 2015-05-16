@@ -385,7 +385,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     void onMoveTask() {
         final List<TaskOverview> tasks = mAdapter.getSelectedItems();
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(de.azapps.mirakel.main_activity.R.string.dialog_move);
+        builder.setTitle(R.string.dialog_move);
 
         final Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
         if (accountMirakelOptional.isPresent()) {

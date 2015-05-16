@@ -17,16 +17,7 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
 <resources>
-
-    <style name="task_header" >
-        <item name="android:textStyle">bold</item>
-    </style>
-    <style name="DialogStyle" parent="@style/Theme.AppCompat.Light"></style>
-    <style name="Theme.Dialog" parent="@style/Theme.AppCompat.Light" />
-    <style name="Theme.SplashScreenDark" parent="android:Theme.Material">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@drawable/splashscreen_background_dark</item>
-    </style>
+    <bool name="is_playstore">false</bool>
+    
 </resources>

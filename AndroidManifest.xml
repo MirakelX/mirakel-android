@@ -79,8 +79,6 @@
         android:label="your tests label"
         android:targetPackage="de.azapps.mirakelandroid" />
 
-
-
     <application
         android:name="de.azapps.mirakel.Mirakel"
         android:allowBackup="true"

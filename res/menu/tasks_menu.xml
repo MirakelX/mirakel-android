@@ -41,8 +41,4 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_settings_grey600_18dp"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_toggle_ui"
-        android:title="Use old UI"
-        app:showAsAction="never" />
 </menu>
