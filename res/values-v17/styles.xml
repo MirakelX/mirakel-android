@@ -25,7 +25,7 @@
     </style>
     <style name="DialogStyle" parent="@style/Theme.AppCompat.Light"></style>
     <style name="Theme.Dialog" parent="@style/Theme.AppCompat.Light" />
-    <style name="Theme.SplashScreenDark" parent="android:Theme.Material">
+    <style name="Theme.SplashScreenDark" parent="@style/Theme.AppCompat">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/splashscreen_background_dark</item>
     </style>
