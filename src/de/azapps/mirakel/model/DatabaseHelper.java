@@ -1033,12 +1033,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        "SELECT 'task' || _id AS _id, _id AS obj_id, name AS name, - done * 5 AS score, 'task' AS type, 0 AS color, done as done FROM tasks WHERE sync_state!=-1 AND is_shown_recurring = 1;");
         case 51:
             db.execSQL("CREATE VIEW lists_with_special AS " +
-                       "SELECT lists._id AS _id, lists.name AS name, sort_by, lists.created_at AS created_at, lists.updated_at updated_at, lists.sync_state AS sync_state, lft, rgt,color, account_id, icon_path, 1 AS isNormal, COUNT(tasks._id) AS task_count FROM lists LEFT JOIN tasks ON tasks.list_id = lists._id WHERE tasks._id IS NULL OR (tasks.sync_state != -1 AND tasks.is_shown_recurring = 1 AND tasks.done = 0) GROUP BY lists._id "
+                       "SELECT lists._id AS _id, lists.name AS name, sort_by, lists.created_at AS created_at, lists.updated_at updated_at, lists.sync_state AS sync_state, lft, rgt,color, account_id, icon_path, 1 AS isNormal, COUNT(tasks._id) AS task_count "
                        +
-                       "    UNION " +
-                       "SELECT -special_lists._id AS _id, special_lists.name, sort_by, DATE(\"now\") AS created_at, DATE(\"now\") AS updated_at, 0 AS sync_state, lft, rgt, color, account._id AS account_id, icon_path, 0 AS isNormal, -1 AS task_count from special_lists, (select  _id from account union select null) as account where active = 1 ORDER BY lft ASC;"
-                      );
-
+                       "FROM lists LEFT JOIN tasks ON tasks.list_id = lists._id AND tasks.sync_state != -1 AND tasks.is_shown_recurring = 1 AND tasks.done = 0"
+                       +
+                       " GROUP BY lists._id " +
+                       " UNION " +
+                       "SELECT -special_lists._id AS _id, special_lists.name, sort_by, DATE(\"now\") AS created_at, DATE(\"now\") AS updated_at, 0 AS sync_state, lft, rgt, color, account._id AS account_id, icon_path, 0 AS isNormal, -1 AS task_count from special_lists, (select  _id from account union select null) as account where active = 1 ORDER BY lft ASC;");
         default:
             break;
         }
