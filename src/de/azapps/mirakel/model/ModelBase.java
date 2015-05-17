@@ -25,7 +25,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.tools.Log;
@@ -40,13 +39,6 @@ abstract public class ModelBase implements IGenericElementInterface {
 
     private long id = INVALID_ID;
     private String name = "";
-
-    public interface DirectContentObserver {
-        public void onChange();
-    }
-
-    @Nullable
-    protected DirectContentObserver directContentObserver;
 
     protected static Context context;
 
@@ -158,10 +150,6 @@ abstract public class ModelBase implements IGenericElementInterface {
             ret[i] = prefix + '.' + columns[i];
         }
         return ret;
-    }
-
-    public void setDirectContentObserver(@Nullable DirectContentObserver directContentObserver) {
-        this.directContentObserver = directContentObserver;
     }
 
     public final boolean isStub() {

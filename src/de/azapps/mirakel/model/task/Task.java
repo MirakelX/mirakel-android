@@ -649,9 +649,6 @@ public class Task extends TaskBase {
     public void save(final boolean log, final boolean calledFromSync) {
         try {
             unsafeSave(log, calledFromSync, true);
-            if (directContentObserver != null) {
-                directContentObserver.onChange();
-            }
         } catch (final NoSuchListException e) {
             Log.w(Task.TAG, "List did vanish");
         }
