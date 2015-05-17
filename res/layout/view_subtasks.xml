@@ -31,14 +31,29 @@
     </LinearLayout>
 
 
-    <Button
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/subtask_add"
-        android:id="@+id/task_subtasks_add"
-        android:drawableStart="@android:drawable/ic_menu_add"
-        style="?android:attr/borderlessButtonStyle"
-        android:drawablePadding="@dimen/padding_drawable"
-        android:textAppearance="@style/TextAppearance.Regular"
-        android:gravity="start|center_vertical"/>
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/task_subtasks_add"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/padding_drawable"
+            android:drawableStart="@drawable/ic_plus_grey600_18dp"
+            android:gravity="start|center_vertical"
+            android:text="@string/subtask_add"
+            android:textAppearance="@style/TextAppearance.Regular"
+            android:textColor="?colorTextGrey" />
+
+        <EditText
+            android:id="@+id/task_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:hint="@string/subtask_add"
+            android:singleLine="true" />
+    </ViewSwitcher>
 </merge>

@@ -62,12 +62,13 @@ import butterknife.OnEditorAction;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.views.AddTagView;
 import de.azapps.mirakel.new_ui.views.DatesView;
@@ -86,7 +87,8 @@ import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 
 public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKeyboardChanged,
-    PriorityChangeView.OnPriorityChangeListener, MirakelContentObserver.ObserverCallBack {
+    PriorityChangeView.OnPriorityChangeListener, MirakelContentObserver.ObserverCallBack,
+    SubtasksView.SubtaskListener {
 
     private static final String TAG = "TaskFragment";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
@@ -162,10 +164,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         }
     }
 
-    private interface AddViewCallback {
-        void add(final int pos);
-    }
-
 
     public static TaskFragment newInstance(final Task task) {
         final TaskFragment taskFragment = new TaskFragment();
@@ -191,6 +189,10 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
+        setContentObserver();
+    }
+
+    private void setContentObserver() {
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
                                               this);
     }
@@ -212,7 +214,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         keyboard.setSoftKeyboardCallback(this);
         ButterKnife.inject(this, layout);
         updateAll();
-
         setupAddMore();
 
         return layout;
@@ -306,6 +307,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     private void updateAll() {
+        subtasksView.initListeners(this);
         ///////////////////
         // Now the actions
         progressDoneView.setProgress(task.getProgress());
@@ -329,8 +331,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         priorityChangeView.setPriority(task.getPriority());
         priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTask(task);
-        subtasksView.setSubtasks(task.getSubtasks(), onSubtaskAddListener, onSubtaskClickListener,
-                                 onSubtaskDoneListener);
+        subtasksView.setSubtasks(task.getSubtasks());
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
     }
@@ -397,6 +398,19 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         taskName.setText(task.getName());
         task.save();
         taskNameViewSwitcher.showPrevious();
+
+        // we create a new task when the user presses done because this is not unexpected for the
+        // user and makes our life a lot easier
+        if (task.isStub()) {
+            try {
+                // set the current task to the created one
+                task = task.create();
+                setContentObserver();
+            } catch (final DefinitionsHelper.NoSuchListException e) {
+                ErrorReporter.report(ErrorType.TASKS_NO_LIST);
+                Log.e(TAG, "NoSuchListException", e);
+            }
+        }
     }
 
     @OnClick(R.id.task_name)
@@ -527,32 +541,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         }
     };
 
-
-    private final Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
-        @Override
-        public void apply(final Task task) {
-            task.toggleDone();
-            task.save();
-        }
-    };
-    private final View.OnClickListener onSubtaskAddListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View view) {
-            final AddSubtaskFragment addSubtaskFragment = AddSubtaskFragment.newInstance(task);
-            addSubtaskFragment.show(getFragmentManager(), "subtaskAddDialog");
-        }
-    };
-
-    private final OnItemClickedListener<Task> onSubtaskClickListener = new
-    OnItemClickedListener<Task>() {
-
-        @Override
-        public void onItemSelected(final @NonNull Task item) {
-            final DialogFragment newFragment = TaskFragment.newInstance(task);
-            newFragment.show(getFragmentManager(), "dialog");
-        }
-    };
-
     @OnClick(R.id.task_button_done)
     void doneClick() {
         if (task.isStub()) {
@@ -566,6 +554,32 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         taskNameEdit.clearFocus();
         tagView.clearFocus();
         dismiss();
+    }
+
+
+
+    @Override
+    public void onAddSubtask(String taskName) {
+        final ListMirakel list = MirakelModelPreferences
+                                 .getListForSubtask(task);
+        final Task subtask = Semantic.createTask(taskName, Optional.fromNullable(list),
+                             true);
+        task.addSubtask(subtask);
+        task.save();
+    }
+
+    @Override
+    public void onSubtaskClick(Task subtask) {
+        final DialogFragment newFragment = TaskFragment.newInstance(subtask);
+        newFragment.show(getFragmentManager(), "dialog");
+
+    }
+
+    @Override
+    public void onSubtaskDone(Task subtask) {
+        task.toggleDone();
+        task.save();
+
     }
 
 
