@@ -76,42 +76,41 @@ abstract class SemanticBase  extends ModelBase {
         setName(condition.toLowerCase(Locale.getDefault()));
     }
 
-    @Nullable
-    public Integer getPriority() {
-        return this.priority.orNull();
+    @NonNull
+    public Optional<Integer> getPriority() {
+        return priority;
     }
 
-    public void setPriority(final @Nullable Integer priority) {
-        this.priority = fromNullable(priority);
+    public void setPriority(final @NonNull Optional<Integer> priority) {
+        this.priority = priority;
     }
 
-    @Nullable
-    public Integer getDue() {
-        return this.due.orNull();
+    @NonNull
+    public Optional<Integer> getDue() {
+        return due;
     }
 
-    public void setDue(final @Nullable Integer due) {
-        this.due = fromNullable(due);
+    public void setDue(final @NonNull Optional<Integer> due) {
+        this.due = due;
     }
 
     @NonNull
     public Optional<ListMirakel> getList() {
-        return this.list;
+        return list;
     }
 
     public void setList(final @NonNull Optional<ListMirakel> list) {
         this.list = list;
     }
 
-    @Nullable
-    public Integer getWeekday() {
-        return this.weekday.orNull();
+    @NonNull
+    public Optional<Integer> getWeekday() {
+        return weekday;
     }
 
-    public void setWeekday(final @Nullable Integer weekday) {
-        this.weekday = fromNullable(weekday);
+    public void setWeekday(final @NonNull Optional<Integer> weekday) {
+        this.weekday = weekday;
     }
-
 
     @Override
     @NonNull
