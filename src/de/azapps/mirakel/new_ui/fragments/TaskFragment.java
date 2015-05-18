@@ -193,16 +193,21 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     private void setContentObserver() {
+        unregisterContentObserver();
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
                                               this);
+    }
+
+    private void unregisterContentObserver() {
+        if ((observer != null) && (getActivity() != null) && (getActivity().getContentResolver() != null)) {
+            getActivity().getContentResolver().unregisterContentObserver(observer);
+        }
     }
 
     @Override
     public void onDismiss(final DialogInterface dialog) {
         super.onDismiss(dialog);
-        if ((observer != null) && (getActivity() != null) && (getActivity().getContentResolver() != null)) {
-            getActivity().getContentResolver().unregisterContentObserver(observer);
-        }
+        unregisterContentObserver();
     }
 
 
@@ -307,7 +312,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     private void updateAll() {
-        subtasksView.initListeners(this);
         ///////////////////
         // Now the actions
         progressDoneView.setProgress(task.getProgress());
@@ -394,10 +398,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private void updateName() {
         taskNameEdit.clearFocus();
-        task.setName(taskNameEdit.getText().toString());
-        taskName.setText(task.getName());
-        task.save();
-        taskNameViewSwitcher.showPrevious();
+        Semantic.applySemantics(task, taskNameEdit.getText().toString());
 
         // we create a new task when the user presses done because this is not unexpected for the
         // user and makes our life a lot easier
@@ -406,11 +407,15 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                 // set the current task to the created one
                 task = task.create();
                 setContentObserver();
+                updateAll();
             } catch (final DefinitionsHelper.NoSuchListException e) {
                 ErrorReporter.report(ErrorType.TASKS_NO_LIST);
                 Log.e(TAG, "NoSuchListException", e);
             }
+        } else {
+            task.save();
         }
+        taskNameViewSwitcher.showPrevious();
     }
 
     @OnClick(R.id.task_name)
