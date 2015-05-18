@@ -22,7 +22,6 @@ package de.azapps.mirakel.new_ui.search;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
-import android.support.v4.content.Loader;
 import android.text.SpannableStringBuilder;
 
 import java.util.List;
@@ -70,12 +69,6 @@ public class SearchListMirakel implements ListMirakelInterface {
         Task.addBasicFiler(mirakelQueryBuilder);
         ListMirakel.addSortBy(mirakelQueryBuilder, ListMirakel.SORT_BY.OPT, true);
         return mirakelQueryBuilder;
-    }
-
-    @Override
-    public Loader getTaskOverviewSupportCursorLoader() {
-        return ListMirakel.addTaskOverviewSelection(getTasksQueryBuilder()).toSupportCursorLoader(
-                   getUri());
     }
 
     @Override
