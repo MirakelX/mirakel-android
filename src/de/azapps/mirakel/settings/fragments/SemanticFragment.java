@@ -59,6 +59,7 @@ import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.DueDialog;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 
@@ -154,12 +155,12 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if (NULL_STR.equals(newValue)) {
-                    item.setPriority(null);
+                    item.setPriority(Optional.<Integer>absent());
                     semanticsPriority.setValueIndex(0);
                     semanticsPriority.setSummary(semanticsPriority
                                                  .getEntries()[0]);
                 } else {
-                    item.setPriority(Integer.parseInt((String) newValue));
+                    item.setPriority(of(Integer.parseInt((String) newValue)));
                     semanticsPriority.setValue((String)newValue);
                     semanticsPriority.setSummary((String)newValue);
                 }
@@ -169,12 +170,12 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         });
         semanticsPriority.setEntries(R.array.priority_entries);
         semanticsPriority.setEntryValues(R.array.priority_entry_values);
-        if (item.getPriority() == null) {
+        if (!item.getPriority().isPresent()) {
             semanticsPriority.setValueIndex(0);
             semanticsPriority.setSummary(getResources()
                                          .getStringArray(R.array.priority_entries)[0]);
         } else {
-            semanticsPriority.setValue(item.getPriority()
+            semanticsPriority.setValue(item.getPriority().get()
                                        .toString());
             semanticsPriority
             .setSummary(semanticsPriority.getValue());
@@ -202,7 +203,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                     public void onClick(
                         final DialogInterface dialog,
                         final int which) {
-                        item.setDue(null);
+                        item.setDue(Optional.<Integer>absent());
                         semanticsDue.setSummary(updateDueStuff(item));
                         item.save();
                     }
@@ -218,13 +219,13 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                                                         .getDayYear();
                         switch (dayYear) {
                         case DAY:
-                            item.setDue(val);
+                            item.setDue(of(val));
                             break;
                         case MONTH:
-                            item.setDue(val * 30);
+                            item.setDue(of(val * 30));
                             break;
                         case YEAR:
-                            item.setDue(val * 365);
+                            item.setDue(of(val * 365));
                             break;
                         case HOUR:
                         case MINUTE:
@@ -234,8 +235,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                             // about them
                             break;
                         }
-                        semanticsDue
-                        .setSummary(updateDueStuff(item));
+                        semanticsDue.setSummary(updateDueStuff(item));
                         item.save();
                     }
                 });
@@ -246,7 +246,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         conditions.addPreference(semanticsDue);
 
         // Weekday
-        final Integer weekday = item.getWeekday();
+        final Optional<Integer> weekday = item.getWeekday();
         final ListPreference semanticsWeekday = new ListPreference(mContext);
         semanticsWeekday.setTitle(R.string.settings_semantics_weekday);
         semanticsWeekday.setDialogTitle(R.string.settings_semantics_weekday);
@@ -258,7 +258,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                 if (weekday == 0) {
                     weekday = null;
                 }
-                item.setWeekday(weekday);
+                item.setWeekday(fromNullable(weekday));
                 semanticsWeekday.setValue((String)newValue);
                 semanticsWeekday.setSummary(semanticsWeekday.getEntry());
                 item.save();
@@ -271,10 +271,10 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
                                             "7"
                                            };
         semanticsWeekday.setEntryValues(weekdaysNum);
-        if (weekday == null) {
-            semanticsWeekday.setValueIndex(0);
+        if (weekday.isPresent()) {
+            semanticsWeekday.setValueIndex(weekday.get());
         } else {
-            semanticsWeekday.setValueIndex(weekday);
+            semanticsWeekday.setValueIndex(0);
         }
         semanticsWeekday.setSummary(semanticsWeekday.getEntry());
         conditions.addPreference(semanticsWeekday);
@@ -331,32 +331,36 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
     }
 
     protected String updateDueStuff(final @NonNull Semantic item) {
-        final Integer due = item.getDue();
+        final Optional<Integer> dueOptional = item.getDue();
         final String summary;
-        if (due == null) {
+        if (!dueOptional.isPresent()) {
             this.dueDialogValue = 0;
             summary = getString(R.string.semantics_no_due);
-        } else if (((due % 365) == 0) && (due != 0)) {
-            this.dueDialogValue = due / 365;
-            summary = this.dueDialogValue
-                      + " "
-                      + getResources().getQuantityString(
-                          R.plurals.due_year, this.dueDialogValue);
-        } else if (((due % 30) == 0) && (due != 0)) {
-            this.dueDialogValue = due / 30;
-            summary = this.dueDialogValue
-                      + " "
-                      + getResources().getQuantityString(
-                          R.plurals.due_month, this.dueDialogValue);
         } else {
-            this.dueDialogValue = due;
-            summary = this.dueDialogValue
-                      + " "
-                      + getResources().getQuantityString(
-                          R.plurals.due_day, this.dueDialogValue);
+            final Integer due = dueOptional.get();
+            if (((due % 365) == 0) && (due != 0)) {
+                this.dueDialogValue = due / 365;
+                summary = this.dueDialogValue
+                          + " "
+                          + getResources().getQuantityString(
+                              R.plurals.due_year, this.dueDialogValue);
+            } else if (((due % 30) == 0) && (due != 0)) {
+                this.dueDialogValue = due / 30;
+                summary = this.dueDialogValue
+                          + " "
+                          + getResources().getQuantityString(
+                              R.plurals.due_month, this.dueDialogValue);
+            } else {
+                this.dueDialogValue = due;
+                summary = this.dueDialogValue
+                          + " "
+                          + getResources().getQuantityString(
+                              R.plurals.due_day, this.dueDialogValue);
+            }
         }
         return summary;
     }
+    @NonNull
     public View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         final View v = super.onCreateView(inflater, container, savedInstanceState);

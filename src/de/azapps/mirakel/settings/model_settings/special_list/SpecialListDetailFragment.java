@@ -61,6 +61,7 @@ import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
@@ -253,7 +254,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         final int [] values = getResources().getIntArray(R.array.special_list_def_date_picker_val);
         final String [] valueStrings = new String[values.length];
         int currentItem = 0;
-        final Integer ddate = mItem.getDefaultDate();
+        final Integer ddate = mItem.getDefaultDate().or(SpecialList.NULL_DATE_VALUE);
         for (int i = 0; i < values.length; i++) {
             valueStrings[i] = String.valueOf(values[i]);
             if (((Integer) values[i]).equals(ddate)) {
@@ -266,7 +267,11 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         defDate.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(final Preference preference, final Object newValue) {
-                mItem.setDefaultDate(Integer.valueOf((String)newValue));
+                Optional<Integer> newDate = of(Integer.valueOf((String) newValue));
+                if (newDate.get() == SpecialList.NULL_DATE_VALUE) {
+                    newDate = Optional.absent();
+                }
+                mItem.setDefaultDate(newDate);
                 mItem.save();
                 setDefaultDateSummary(defDate, mContext, mItem);
                 return true;
@@ -377,10 +382,10 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         final int[] values = ctx.getResources().getIntArray(
                                  R.array.special_list_def_date_picker_val);
         for (int j = 0; j < values.length; j++) {
-            if (list.getDefaultDate() == null) {
+            if (!list.getDefaultDate().isPresent()) {
                 defDate.setSummary(ctx.getResources().getStringArray(
                                        R.array.special_list_def_date_picker)[0]);
-            } else if (values[j] == list.getDefaultDate()) {
+            } else if (values[j] == list.getDefaultDate().get()) {
                 defDate.setSummary(ctx.getResources().getStringArray(
                                        R.array.special_list_def_date_picker)[j]);
             }
