@@ -31,4 +31,5 @@
   <string name="empty_list">Нет дел</string>
   <string name="preferences">Установки</string>
   <string name="widget_use_gradient">Использовать градиент</string>
+  <string name="widget_style">Стиль виджета</string>
 </resources>
