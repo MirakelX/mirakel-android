@@ -25,7 +25,6 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Optional;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -38,6 +37,8 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -469,7 +470,13 @@ abstract class TaskBase extends ModelBase {
             return;
         }
         if (newList.isSpecial()) {
-            this.list = ((SpecialList) newList).getDefaultList();
+            Optional<SpecialList> specialListOptional = newList.toSpecial();
+            if (specialListOptional.isPresent()) {
+                this.list = specialListOptional.get().getDefaultList();
+            } else {
+                ErrorReporter.report(ErrorType.LIST_VANISHED);
+                return;
+            }
         } else {
             this.list = newList;
         }

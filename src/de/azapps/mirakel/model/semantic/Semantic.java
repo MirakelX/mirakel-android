@@ -148,7 +148,7 @@ public class Semantic extends SemanticBase {
         int prio = 0;
         if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
-                final SpecialList slist = (SpecialList) currentList.get();
+                final SpecialList slist = currentList.get().toSpecial().get();
                 currentList = Optional.fromNullable(slist.getDefaultList());
                 if (slist.getDefaultDate() != null) {
                     due = of((Calendar)new GregorianCalendar());

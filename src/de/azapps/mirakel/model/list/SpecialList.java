@@ -70,6 +70,7 @@ public class SpecialList extends ListMirakel {
     }
 
     @Override
+    @NonNull
     public MirakelQueryBuilder getWhereQueryForTasks() {
         final MirakelQueryBuilder mirakelQueryBuilder = packWhere(getWhere());
         if (getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
@@ -83,7 +84,6 @@ public class SpecialList extends ListMirakel {
         return URI;
     }
 
-    @NonNull
     @Override
     public long getId() {
         return -1 * super.getId();
@@ -146,7 +146,6 @@ public class SpecialList extends ListMirakel {
         this.whereString = serializeWhere(whereQuery);
         this.defaultList = defaultList;
         this.defaultDate = defaultDate;
-        this.isSpecial = true;
         setLft(lft);
         setRgt(rgt);
     }
@@ -157,6 +156,7 @@ public class SpecialList extends ListMirakel {
      * @return
      */
     @Override
+    @NonNull
     public List<Task> tasks() {
         return tasks(false);
     }
@@ -168,6 +168,7 @@ public class SpecialList extends ListMirakel {
      * @return
      */
     @Override
+    @NonNull
     public List<Task> tasks(final boolean showDone) {
         if (showDone) {
             return addSortBy(getWhereQueryForTasks()).getList(Task.class);
@@ -218,7 +219,8 @@ public class SpecialList extends ListMirakel {
     public static SpecialList newSpecialList(final String name,
             final Optional<SpecialListsBaseProperty> whereQuery,
             final boolean active) {
-        final SpecialList s = new SpecialList(0, name, whereQuery, active, null, null, SORT_BY.OPT,
+        final SpecialList s = new SpecialList(0, name, whereQuery, active, Optional.<ListMirakel>absent(),
+                                              null, SORT_BY.OPT,
                                               SYNC_STATE.ADD, 0,
                                               0, 0, Optional.<Uri>absent());
         return s.create();
@@ -379,7 +381,6 @@ public class SpecialList extends ListMirakel {
      * Create a List from a Cursor
      *
      * @param c
-     * @return
      */
     public SpecialList(final Cursor c) {
         super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
@@ -392,17 +393,8 @@ public class SpecialList extends ListMirakel {
         setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
         setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
         setDefaultDate(c.isNull(defDateCol) ? null : c.getInt(defDateCol));
-        isSpecial = true;
     }
 
-
-    public static long getSpecialListCount(final boolean respectEnable) {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(context);
-        if (respectEnable) {
-            qb.and(ACTIVE, Operation.EQ, true);
-        }
-        return qb.count(URI);
-    }
 
     // Parcelable stuff
 
@@ -426,7 +418,6 @@ public class SpecialList extends ListMirakel {
         dest.writeInt(this.rgt);
         dest.writeInt(this.color);
         dest.writeLong(this.accountID);
-        dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
         dest.writeString(getIconPathString());
@@ -450,7 +441,6 @@ public class SpecialList extends ListMirakel {
         this.rgt = in.readInt();
         this.color = in.readInt();
         this.accountID = in.readLong();
-        this.isSpecial = in.readByte() != 0;
         this.setId(-1 * in.readLong());
         this.setName(in.readString());
         this.setIconPath(FileUtils.parsePath(in.readString()));

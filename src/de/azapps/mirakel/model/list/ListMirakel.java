@@ -20,7 +20,6 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,10 +38,11 @@ import java.util.List;
 import java.util.Locale;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -117,9 +117,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         }
     }
     public static final Uri URI = MirakelInternalContentProvider.LIST_URI;
-
-
-    // private static final String TAG = "ListMirakel";
 
 
     public static final String TABLE = "lists";
@@ -202,10 +199,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     }
 
     @NonNull
-    private static MirakelQueryBuilder getBasicMQB() {
-        return getBasicMQB(Optional.<AccountMirakel>absent());
-    }
-    @NonNull
     private static MirakelQueryBuilder getBasicMQB(@NonNull final Optional<AccountMirakel>
             accountMirakelOptional) {
         final MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context).and(
@@ -231,13 +224,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
                                     0).or(ACCOUNT_ID, Operation.EQ, (ModelBase) null));
         }
         return mirakelQueryBuilder;
-    }
-
-    @NonNull
-    public static CursorLoader allWithSpecialCursorLoader(@NonNull final Optional<AccountMirakel>
-            accountMirakelOptional) {
-        return allWithSpecialMQB(accountMirakelOptional).toCursorLoader(
-                   MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
     }
 
     @NonNull
@@ -369,20 +355,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     @NonNull
     public static ListMirakel safeNewList(final String name, final AccountMirakel accountMirakel) {
         return safeNewList(name, accountMirakel, 0);
-    }
-
-    /**
-     * Create and insert a new List
-     *
-     * @param name    Name of the List
-     * @param sort_by the default sorting
-     * @return new List
-     */
-    @NonNull
-    private static ListMirakel newList(final String name,
-                                       final SORT_BY sort_by) throws ListAlreadyExistsException {
-        return newList(name, sort_by,
-                       MirakelModelPreferences.getDefaultAccount());
     }
 
     @NonNull
@@ -572,7 +544,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @Override
     public boolean shouldShowDoneToggle() {
-        return !isSpecial() && getId() > 0;
+        return !isSpecial();
     }
 
 
@@ -693,7 +665,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         return Task.getTasks(this, getSortBy(), showDone);
     }
 
-    private Optional<SpecialList> toSpecial() {
+    public Optional<SpecialList> toSpecial() {
         final Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
         if (specialListOptional.isPresent() && accountID != ALL_ACCOUNTS_ID &&
             getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
@@ -704,7 +676,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @NonNull
     public MirakelQueryBuilder getTasksQueryBuilder() {
-        if (getId() < 0L) {
+        if (isSpecial()) {
             // We look like a List but we are better than one MUHAHA
             final Optional<SpecialList> specialListOptional = toSpecial();
             if (specialListOptional.isPresent()) {
@@ -713,6 +685,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
                 addSortBy(mirakelQueryBuilder);
                 return mirakelQueryBuilder;
             } else {
+                ErrorReporter.report(ErrorType.LIST_VANISHED);
                 throw new RuntimeException("No such special list");
             }
         } else {
@@ -720,27 +693,11 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         }
     }
 
-    @NonNull
-    public CursorLoader getTasksCursorLoader() {
-        return getTasksQueryBuilder().toCursorLoader(MirakelInternalContentProvider.TASK_URI);
-    }
-
-    @NonNull
-    public android.support.v4.content.CursorLoader getTasksSupportCursorLoader() {
-        return getTasksQueryBuilder().toSupportCursorLoader(MirakelInternalContentProvider.TASK_URI);
-    }
-
     public static MirakelQueryBuilder addTaskOverviewSelection(final MirakelQueryBuilder
             mirakelQueryBuilder) {
         return mirakelQueryBuilder.select(Task.VIEW_TABLE + '.' + Task.ID + " AS " + Task.ID,
                                           Task.VIEW_TABLE + '.' + Task.NAME + " AS " + Task.NAME, Task.DONE, Task.PROGRESS, Task.DUE,
                                           Task.LIST_ID, "list_name", ACCOUNT_ID, Task.PRIORITY);
-    }
-
-    @NonNull
-    public android.support.v4.content.CursorLoader getTaskOverviewSupportCursorLoader() {
-        return addTaskOverviewSelection(getTasksQueryBuilder()).toSupportCursorLoader(
-                   MirakelInternalContentProvider.TASK_URI);
     }
 
     @NonNull
@@ -783,7 +740,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         dest.writeInt(this.rgt);
         dest.writeInt(this.color);
         dest.writeLong(this.accountID);
-        dest.writeByte(isSpecial ? (byte) 1 : (byte) 0);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
     }
@@ -799,7 +755,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         this.rgt = in.readInt();
         this.color = in.readInt();
         this.accountID = in.readLong();
-        this.isSpecial = in.readByte() != 0;
         this.setId(in.readLong());
         this.setName(in.readString());
     }

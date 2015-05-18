@@ -59,7 +59,6 @@ abstract class ListBase extends ModelBase {
     protected long accountID;
     @Nullable
     private AccountMirakel accountMirakel;
-    protected boolean isSpecial = false;
 
     @NonNull
     protected Optional<Uri> iconPath;
@@ -84,10 +83,6 @@ abstract class ListBase extends ModelBase {
         this.setColor(color);
         this.setAccount(a);
         this.setIconPath(iconPath);
-    }
-
-    ListBase(final long id, @NonNull final String name) {
-        super(id, name);
     }
 
     protected ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
@@ -115,6 +110,7 @@ abstract class ListBase extends ModelBase {
         setName(name);
     }
 
+    @NonNull
     public String getCreatedAt() {
         return this.createdAt;
     }
@@ -123,9 +119,8 @@ abstract class ListBase extends ModelBase {
         this.createdAt = createdAt;
     }
 
-    public
     @NonNull
-    String getUpdatedAt() {
+    public String getUpdatedAt() {
         return this.updatedAt;
     }
 
@@ -210,7 +205,7 @@ abstract class ListBase extends ModelBase {
     }
 
     public boolean isSpecial() {
-        return this.isSpecial;
+        return this instanceof SpecialList || getId() < 0;
     }
 
 
@@ -257,7 +252,6 @@ abstract class ListBase extends ModelBase {
         result = prime * result + this.color;
         result = prime * result + (this.createdAt.hashCode());
         result = prime * result + (int) getId();
-        result = prime * result + (this.isSpecial ? 1231 : 1237);
         result = prime * result + this.lft;
         result = prime * result + (getName().hashCode());
         result = prime * result + this.rgt;
@@ -290,9 +284,6 @@ abstract class ListBase extends ModelBase {
             return false;
         }
         if (this.getId() != other.getId()) {
-            return false;
-        }
-        if (this.isSpecial != other.isSpecial) {
             return false;
         }
         if (this.lft != other.lft) {
