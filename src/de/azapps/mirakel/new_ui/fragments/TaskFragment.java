@@ -47,6 +47,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
@@ -65,9 +66,10 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.new_ui.views.AddTagView;
 import de.azapps.mirakel.new_ui.views.DatesView;
 import de.azapps.mirakel.new_ui.views.FileView;
 import de.azapps.mirakel.new_ui.views.NoteView;
@@ -117,6 +119,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     SubtasksView subtasksView;
     @InjectView(R.id.task_files)
     FileView filesView;
+    @InjectView(R.id.task_tag_add_view)
+    AddTagView tagView;
 
     @InjectView(R.id.task_button_add_more)
     Button addMoreButton;
@@ -187,12 +191,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
-        task.setDirectContentObserver(new ModelBase.DirectContentObserver() {
-            @Override
-            public void onChange() {
-                updateTask();
-            }
-        });
         observer = new MirakelContentObserver(new Handler(Looper.getMainLooper()), getActivity(), Task.URI,
                                               this);
     }
@@ -203,11 +201,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         if ((observer != null) && (getActivity() != null) && (getActivity().getContentResolver() != null)) {
             getActivity().getContentResolver().unregisterContentObserver(observer);
         }
-    }
-
-    @Override
-    public void onAttach(final Activity activity) {
-        super.onAttach(activity);
     }
 
 
@@ -331,7 +324,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         noteView.setNote(task.getContent());
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
-        datesView.setListeners(dueEditListener, listEditListener, reminderEditListener);
+        datesView.setListeners(dueEditListener, listEditListener, reminderEditListener,
+                               dueRecurrenceEditListener, reminderRecurrenceEditListener);
         priorityChangeView.setPriority(task.getPriority());
         priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTask(task);
@@ -409,9 +403,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     void clickTaskName() {
         taskNameViewSwitcher.showNext();
         taskNameEdit.setText(task.getName());
-        if (!taskNameEdit.requestFocus()) {
-            Log.wtf(TAG, "could not get focus");
-        }
+        taskNameEdit.requestFocus();
 
     }
 
@@ -503,6 +495,39 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     };
 
 
+    private final View.OnClickListener dueRecurrenceEditListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(new
+            RecurrencePickerDialog.OnRecurrenceSetListener() {
+
+                @Override
+                public void onRecurrenceSet(@NonNull Optional<Recurring> r) {
+                    task.setRecurrence(r);
+                    task.save();
+                }
+            }, task.getRecurrence(), true, false);
+            rp.show(getFragmentManager(), "recurrencePickerDue");
+        }
+    };
+
+    private final View.OnClickListener reminderRecurrenceEditListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(new
+            RecurrencePickerDialog.OnRecurrenceSetListener() {
+
+                @Override
+                public void onRecurrenceSet(@NonNull final Optional<Recurring> r) {
+                    task.setRecurringReminder(r);
+                    task.save();
+                }
+            }, task.getRecurringReminder(), false, true);
+            rp.show(getFragmentManager(), "recurrencePickerReminder");
+        }
+    };
+
+
     private final Procedure<Task> onSubtaskDoneListener = new Procedure<Task>() {
         @Override
         public void apply(final Task task) {
@@ -538,6 +563,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                 Log.e(TAG, "NoSuchListException", e);
             }
         }
+        taskNameEdit.clearFocus();
+        tagView.clearFocus();
         dismiss();
     }
 

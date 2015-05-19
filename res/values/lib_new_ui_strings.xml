@@ -89,4 +89,7 @@
     <string name="hide_done_tasks">Hide done tasks</string>
     <string name="show_done_tasks">Show done tasks</string>
 
+    <string name="task_due_recurrence_header">Recurrence:</string>
+    <string name="none_recurring">Not recurring</string>
+
 </resources>

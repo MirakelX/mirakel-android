@@ -69,19 +69,18 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
-import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
+import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.new_ui.search.SearchObject;
 import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakelandroid.R;
@@ -462,8 +461,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         }, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
-        dueLocal.get(Calendar.DAY_OF_MONTH), false,
-        MirakelCommonPreferences.isDark(), true);
+        dueLocal.get(Calendar.DAY_OF_MONTH), false, true);
         datePickerDialog.show(getActivity().getSupportFragmentManager(), "datepicker");
     }
 
