@@ -77,7 +77,7 @@ import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 52;
+    public static final int DATABASE_VERSION = 53;
 
     private static final String TAG = "DatabaseHelper";
     public static final String CREATED_AT = "created_at";
@@ -1041,6 +1041,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        " GROUP BY lists._id " +
                        " UNION " +
                        "SELECT -special_lists._id AS _id, special_lists.name, sort_by, DATE(\"now\") AS created_at, DATE(\"now\") AS updated_at, 0 AS sync_state, lft, rgt, color, account._id AS account_id, icon_path, 0 AS isNormal, -1 AS task_count from special_lists, (select  _id from account union select null) as account where active = 1 ORDER BY lft ASC;");
+        case 52:
+            db.execSQL("UPDATE special_lists SET icon_path" +
+                       "='file:///android_asset/list_icons/all_tasks.png' WHERE name= '" +
+                       context.getString(R.string.list_all) + "';");
         default:
             break;
         }
