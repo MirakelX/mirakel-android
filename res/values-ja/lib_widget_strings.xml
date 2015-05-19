@@ -31,4 +31,5 @@
   <string name="empty_list">タスクがありません</string>
   <string name="preferences">設定</string>
   <string name="widget_use_gradient">グラデーションを使用</string>
+  <string name="widget_style">ウィジェットのスタイル</string>
 </resources>
