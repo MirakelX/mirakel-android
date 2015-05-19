@@ -29,12 +29,12 @@ import android.os.StrictMode;
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
-import de.azapps.material_elements.utils.ThemeManager;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -52,6 +52,8 @@ import de.azapps.tools.Log;
 @ReportsCrashes(
     formUri = "http://couchdb.azapps.de/acra-mirakel/_design/acra-storage/_update/report",
     formUriBasicAuthLogin = "mirakel", formUriBasicAuthPassword = "Ieshi8Egheic0etaipeeTeibo",
+    reportType = org.acra.sender.HttpSender.Type.JSON,
+    httpMethod = org.acra.sender.HttpSender.Method.PUT,
     mode = ReportingInteractionMode.DIALOG,
     resToastText =
         R.string.crash_toast_text, // optional, displayed as soon as the crash occurs, before collecting data which can take a few seconds

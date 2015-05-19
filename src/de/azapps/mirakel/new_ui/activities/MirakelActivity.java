@@ -56,7 +56,6 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -141,6 +140,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             setupActionbar();
         }
     }
+
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
