@@ -52,5 +52,6 @@
     <string name="save_label">Done</string>
     <string name="set_date">Set Date</string>
     <string name="set_time">Set Time</string>
+    <string name="no_recurrence">No Recurrence</string>
 
 </resources>

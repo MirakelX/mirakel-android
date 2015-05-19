@@ -58,23 +58,22 @@ public class SupportDatePickerDialog extends DialogFragment {
         final int year = notNullDate.get(Calendar.YEAR);
         final int month = notNullDate.get(Calendar.MONTH);
         final int day = notNullDate.get(Calendar.DAY_OF_MONTH);
-        return newInstance(onDateSetListener, year, month, day, dark, hasNoDate);
+        return newInstance(onDateSetListener, year, month, day, hasNoDate);
     }
     public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
-        final int month, final int day, final boolean dark,
+        final int month, final int day,
         final boolean hasNoDate) {
-        return newInstance(onDateSetListener, year, month, day, true, dark,
+        return newInstance(onDateSetListener, year, month, day, true,
                            hasNoDate);
     }
 
     public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
-        final int month, final int day, final boolean vibrate,
-        final boolean dark, final boolean hasNoDate) {
+        final int month, final int day, final boolean vibrate, final boolean hasNoDate) {
         final SupportDatePickerDialog datePickerDialog = new SupportDatePickerDialog();
         datePickerDialog.initialize(onDateSetListener, year, month, day,
-                                    vibrate, dark, hasNoDate);
+                                    vibrate, hasNoDate);
         return datePickerDialog;
     }
 
@@ -84,7 +83,7 @@ public class SupportDatePickerDialog extends DialogFragment {
 
     public void initialize(final OnDateSetListener onDateSetListener,
                            final int year, final int month, final int day,
-                           final boolean vibrate, final boolean dark, final boolean hasNoDate) {
+                           final boolean vibrate, final boolean hasNoDate) {
         this.mCallback = new OnDateSetListener() {
             @Override
             public void onNoDateSet() {

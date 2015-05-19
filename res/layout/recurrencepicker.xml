@@ -14,19 +14,22 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recurrence_picker_dialog"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="0dp"
-    tools:ignore="newApi" >
+<LinearLayout android:id="@+id/recurrence_picker_dialog"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:paddingEnd="@dimen/abc_dialog_padding_material"
+              android:paddingStart="@dimen/abc_dialog_padding_material"
+              android:paddingTop="@dimen/abc_dialog_padding_top_material"
+              android:paddingBottom="@dimen/abc_dialog_padding_top_material"
+              tools:ignore="newApi">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,30 +37,7 @@
             android:descendantFocusability="beforeDescendants"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/recurrence_picker_head"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingBottom="4dip"
-                android:paddingEnd="12dip"
-                android:paddingStart="12dip"
-                android:paddingTop="12dip" >
-
-                <Spinner
-                    android:id="@+id/freqSpinner"
-                    style="@style/TextAppearance.RecurrencePickerStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:padding="0dp" />
-
-                <include layout="@layout/repeat_switch" />
-            </LinearLayout>
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/options"
@@ -68,21 +48,21 @@
                 android:paddingBottom="4dp"
                 android:paddingEnd="12dp"
                 android:paddingStart="12dp"
-                android:paddingTop="4dp" >
+                android:paddingTop="4dp">
 
                 <LinearLayout
                     android:id="@+id/intervalGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:paddingStart="4dp" >
+                    android:paddingStart="4dp">
 
                     <TextView
                         android:id="@+id/intervalPreText"
                         style="@style/TextAppearance.RecurrencePickerStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/every" />
+                        android:text="@string/every"/>
 
                     <EditText
                         android:id="@+id/interval_count"
@@ -96,20 +76,13 @@
                         android:paddingStart="4dp"
                         android:selectAllOnFocus="true"
                         android:singleLine="true"
-                        android:textSize="15sp" >
+                        android:textSize="15sp">
                     </EditText>
 
                     <Spinner
                         android:id="@+id/interval_type"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <!--
-                         <TextView
-                        android:id="@+id/intervalPostText"
-                        style="@style/TextAppearance.RecurrencePickerStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    -->
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
@@ -119,11 +92,11 @@
                     android:layout_marginEnd="4dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="8dp"
+                    android:visibility="gone"
                     android:gravity="center_horizontal"
-                    android:orientation="horizontal" >
-                </com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth>
+                    android:orientation="horizontal"/>
 
-               <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
+                <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
                     android:id="@+id/weekGroup2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -131,28 +104,26 @@
                     android:layout_marginStart="4dp"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:visibility="gone" >
-
-                </com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth>
+                    android:visibility="gone"/>
 
                 <RadioGroup
                     android:id="@+id/monthGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
                     <RadioButton
                         android:id="@+id/repeatMonthlyByNthDayOfMonth"
                         style="@style/TextAppearance.RecurrencePickerStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/recurrence_month_pattern_by_day" />
+                        android:text="@string/recurrence_month_pattern_by_day"/>
 
                     <RadioButton
                         android:id="@+id/repeatMonthlyByNthDayOfTheWeek"
                         style="@style/TextAppearance.RecurrencePickerStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"/>
                 </RadioGroup>
 
                 <LinearLayout
@@ -161,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingStart="0dp" >
+                    android:paddingStart="0dp">
 
                     <Spinner
                         android:id="@+id/startSpinner"
@@ -171,10 +142,10 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="-4dp"
                         android:gravity="start|center_vertical"
-                        android:padding="0dp" />
+                        android:padding="0dp"/>
 
                     <TextView
-                        android:id="@+id/startDate_light"
+                        android:id="@+id/startDate"
                         style="@style/TextAppearance.EditEvent_SpinnerButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -189,29 +160,8 @@
                         android:paddingEnd="12dp"
                         android:paddingStart="12dp"
                         android:singleLine="true"
-                        android:textColor="@color/recurrence_spinner_text_color"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/startDate_dark"
-                        style="@style/TextAppearance.EditEvent_SpinnerButton_Dark"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="3dp"
-                        android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
-                        android:gravity="center_horizontal|bottom"
-                        android:minWidth="80dp"
-                        android:paddingBottom="8dp"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="12dp"
-                        android:singleLine="true"
-                        android:textColor="@color/recurrence_spinner_text_color"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:textColor="?colorTextBlack"
+                        android:textSize="15sp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -220,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:orientation="horizontal"
-                    android:paddingStart="0dp" >
+                    android:paddingStart="0dp">
 
                     <Spinner
                         android:id="@+id/endSpinner"
@@ -230,7 +180,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="-4dp"
                         android:gravity="start|center_vertical"
-                        android:padding="0dp" />
+                        android:padding="0dp"/>
 
                     <EditText
                         android:id="@+id/endCount"
@@ -245,7 +195,7 @@
                         android:selectAllOnFocus="true"
                         android:singleLine="true"
                         android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/postEndCount"
@@ -256,10 +206,10 @@
                         android:layout_marginBottom="-3dp"
                         android:gravity="bottom"
                         android:singleLine="true"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <TextView
-                        android:id="@+id/endDate_light"
+                        android:id="@+id/endDate"
                         style="@style/TextAppearance.EditEvent_SpinnerButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -274,29 +224,9 @@
                         android:paddingEnd="16dp"
                         android:paddingStart="12dp"
                         android:singleLine="true"
-                        android:textColor="@color/recurrence_spinner_text_color"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
+                        android:textColor="?colorTextBlack"
+                        android:textSize="15sp"/>
 
-                    <TextView
-                        android:id="@+id/endDate_dark"
-                        style="@style/TextAppearance.EditEvent_SpinnerButton_Dark"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="3dp"
-                        android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
-                        android:gravity="center_horizontal|bottom"
-                        android:minWidth="80dp"
-                        android:paddingBottom="8dp"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="12dp"
-                        android:singleLine="true"
-                        android:textColor="@color/recurrence_spinner_text_color"
-                        android:textSize="15sp"
-                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -305,7 +235,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/use_exact_recurrence" />
+                android:text="@string/use_exact_recurrence"/>
         </LinearLayout>
     </ScrollView>
 
@@ -314,21 +244,40 @@
         android:layout_height="1px"
         android:layout_marginTop="8dp"
         android:background="?android:attr/listDivider"
-        tools:ignore="PxUsage" />
+        tools:ignore="PxUsage"/>
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@android:string/cancel"
+            android:textColor="?colorAccent"/>
+
+        <Button
+            android:id="@+id/not_recurring"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/no_recurrence"
+            android:textColor="?colorAccent"/>
 
         <Button
             android:id="@+id/done"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/save_label"
-            android:textColor="@color/done_text_color" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@android:string/ok"
+            android:textColor="?colorAccent"/>
     </LinearLayout>
 
 </LinearLayout>
