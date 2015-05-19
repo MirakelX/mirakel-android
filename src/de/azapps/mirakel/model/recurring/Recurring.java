@@ -421,4 +421,85 @@ public class Recurring extends RecurringBase {
             return all.get(0);
         }
     }
+
+    public String generateDescription() {
+        final StringBuilder ret = new StringBuilder();
+        if (startDate.isPresent()) {
+            ret.append(context.getString(R.string.begin_repeat, DateTimeHelper.formatDate(context, startDate)));
+            ret.append(' ');
+        }
+        final StringBuilder text = new StringBuilder();
+        boolean first = true;
+        for (final int day : getWeekdays()) {
+            if (first) {
+                first = false;
+            } else {
+                text.append(", ");
+            }
+            switch (day) {
+            case Calendar.MONDAY:
+                text.append(context.getString(R.string.monday));
+                break;
+            case Calendar.TUESDAY:
+                text.append(context.getString(R.string.tuesday));
+                break;
+            case Calendar.WEDNESDAY:
+                text.append(context.getString(R.string.wednesday));
+                break;
+            case Calendar.THURSDAY:
+                text.append(context.getString(R.string.thursday));
+                break;
+            case Calendar.FRIDAY:
+                text.append(context.getString(R.string.friday));
+                break;
+            case Calendar.SATURDAY:
+                text.append(context.getString(R.string.saturday));
+                break;
+            case Calendar.SUNDAY:
+                text.append(context.getString(R.string.sunday));
+                break;
+            }
+        }
+        if (text.length() == 0) {
+            if (years > 0) {
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_year, years, years));
+            }
+            if (months > 0) {
+                if (text.length() > 0) {
+                    text.append(", ");
+                }
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_month, months, months));
+            }
+            if (this.days > 0) {
+                if (text.length() > 0) {
+                    text.append(", ");
+                }
+                if ((this.days % 7) == 0) {
+                    text.append(context.getResources().getQuantityString(R.plurals.repeat_week, this.days / 7,
+                                this.days / 7));
+                } else {
+                    text.append(context.getResources().getQuantityString(R.plurals.repeat_day, this.days, this.days));
+                }
+            }
+            if (hours > 0) {
+                if (text.length() > 0) {
+                    text.append(", ");
+                }
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_hour, hours, hours));
+            }
+            if (minutes > 0) {
+                if (text.length() > 0) {
+                    text.append(", ");
+                }
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_minute, minutes, minutes));
+            }
+
+        }
+        ret.append(context.getString(R.string.every_repeat, text.toString()));
+        if (endDate.isPresent()) {
+            ret.append(' ');
+            ret.append(context.getString(R.string.end_repeat, DateTimeHelper.formatDate(context, endDate)));
+        }
+        return ret.toString();
+    }
 }

@@ -260,6 +260,43 @@
         <item quantity="one">year</item>
         <item quantity="other">years</item>
     </plurals>
+
+    <plurals name="repeat_day">
+        <item quantity="one">day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="repeat_week">
+        <item quantity="one">week</item>
+        <item quantity="other">%d weeks</item>
+    </plurals>
+    <plurals name="repeat_month">
+        <item quantity="one">month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+    <plurals name="repeat_year">
+        <item quantity="one">year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
+    <plurals name="repeat_hour">
+        <item quantity="one">hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="repeat_minute">
+        <item quantity="one">minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="begin_repeat">Begin %s</string>
+    <string name="end_repeat">till %s</string>
+    <string name="every_repeat">every %s</string>
+    <string name="weekday">Weekday</string>
+
     <string name="accounts_all">All Accounts</string>
     <string name="stub_list_name">New List</string>
     <string name="search_title">Search: </string>
