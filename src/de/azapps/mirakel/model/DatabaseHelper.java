@@ -73,6 +73,7 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -906,8 +907,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 } else if (!recurring.containsKey(t)) {// its recurring master
                     recurring.put(t, new ArrayList<Task>(0));
                 }
-                t.setRecurrence(CompatibilityHelper.parseTaskWarriorRecurrence(
-                                    recurString).getId());
+                t.setRecurrence(of(CompatibilityHelper.parseTaskWarriorRecurrence(
+                                       recurString)));
                 t.save();
             }
             StringBuilder idsToHide = new StringBuilder();

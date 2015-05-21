@@ -19,18 +19,6 @@
 
 package de.azapps.mirakel.helper.export_import;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -47,6 +35,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -59,7 +59,6 @@ import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
-
 import static de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 
 public class AnyDoImport {
@@ -239,7 +238,7 @@ public class AnyDoImport {
         }
         if (jsonTask.has("priority")) {
             int prio = 0;
-            if (jsonTask.get("priority").getAsString().equals("High")) {
+            if ("High".equals(jsonTask.get("priority").getAsString())) {
                 prio = 2;
             }
             t.setPriority(prio);
@@ -247,7 +246,7 @@ public class AnyDoImport {
         if (jsonTask.has("status")) {
             boolean done = false;
             final String status = jsonTask.get("status").getAsString();
-            if (status.equals("DONE") || status.equals("CHECKED")) {
+            if ("DONE".equals(status) || "CHECKED".equals(status)) {
                 done = true;
             } else if (status.equals("UNCHECKED")) {
                 done = false;
@@ -258,7 +257,8 @@ public class AnyDoImport {
             final String repeat = jsonTask.get("repeatMethod").getAsString();
             if (!repeat.equals("TASK_REPEAT_OFF")) {
                 Optional<Recurring> recurringOptional = absent();
-                if (repeat.equals("TASK_REPEAT_DAY")) {
+                switch (repeat) {
+                case "TASK_REPEAT_DAY":
                     recurringOptional = Recurring.get(1, 0, 0);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
@@ -266,7 +266,8 @@ public class AnyDoImport {
                                                    true, null, null, false, false,
                                                    new SparseBooleanArray()));
                     }
-                } else if (repeat.equals("TASK_REPEAT_WEEK")) {
+                    break;
+                case "TASK_REPEAT_WEEK":
                     recurringOptional = Recurring.get(7, 0, 0);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
@@ -274,7 +275,8 @@ public class AnyDoImport {
                                                    true, null, null, false, false,
                                                    new SparseBooleanArray()));
                     }
-                } else if (repeat.equals("TASK_REPEAT_MONTH")) {
+                    break;
+                case "TASK_REPEAT_MONTH":
                     recurringOptional = Recurring.get(0, 1, 0);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
@@ -282,7 +284,8 @@ public class AnyDoImport {
                                                    true, null, null, false, false,
                                                    new SparseBooleanArray()));
                     }
-                } else if (repeat.equals("TASK_REPEAT_YEAR")) {
+                    break;
+                case "TASK_REPEAT_YEAR":
                     recurringOptional = Recurring.get(0, 0, 1);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
@@ -290,12 +293,9 @@ public class AnyDoImport {
                                                    true, null, null, false, false,
                                                    new SparseBooleanArray()));
                     }
+                    break;
                 }
-                if (recurringOptional.isPresent()) {
-                    t.setRecurrence(recurringOptional.get().getId());
-                } else {
-                    Log.d(TAG, repeat);
-                }
+                t.setRecurrence(recurringOptional);
             }
         }
         t.save(false);

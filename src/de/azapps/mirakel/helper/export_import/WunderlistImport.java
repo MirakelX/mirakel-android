@@ -288,7 +288,7 @@ public class WunderlistImport {
             default:
                 throw new JsonParseException("Unknown recurring " + type);
             }
-            t.setRecurrence(r.getId());
+            t.setRecurrence(of(r));
         }
         t.save(false);
     }
