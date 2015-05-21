@@ -203,5 +203,12 @@
     <item>Mleko</item>
     <item>Sir</item>
   </string-array>
+  <string name="monday">Ponedeljek</string>
+  <string name="tuesday">Torek</string>
+  <string name="wednesday">Sreda</string>
+  <string name="thursday">Četrtek</string>
+  <string name="friday">Petek</string>
+  <string name="saturday">Sobota</string>
+  <string name="sunday">Nedelja</string>
   <string name="stub_list_name">Nov seznam</string>
 </resources>

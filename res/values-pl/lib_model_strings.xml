@@ -203,5 +203,12 @@
     <item>Mleko</item>
     <item>Ser</item>
   </string-array>
+  <string name="monday">Poniedziałek</string>
+  <string name="tuesday">Wtorek</string>
+  <string name="wednesday">Środa</string>
+  <string name="thursday">Czwartek</string>
+  <string name="friday">Piątek</string>
+  <string name="saturday">Sobota</string>
+  <string name="sunday">Niedziela</string>
   <string name="stub_list_name">Nowa lista</string>
 </resources>

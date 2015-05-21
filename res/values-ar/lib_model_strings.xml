@@ -202,5 +202,12 @@
     <item>حليب</item>
     <item>جبن</item>
   </string-array>
+  <string name="monday">الاثنين</string>
+  <string name="tuesday">الثلاثاء</string>
+  <string name="wednesday">الأربعاء</string>
+  <string name="thursday">الخميس</string>
+  <string name="friday">الجمعة</string>
+  <string name="saturday">السبت</string>
+  <string name="sunday">الأحد</string>
   <string name="stub_list_name">قائمة جديدة</string>
 </resources>

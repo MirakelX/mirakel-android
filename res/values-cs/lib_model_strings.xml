@@ -230,6 +230,13 @@
     <item quantity="few">roky</item>
     <item quantity="other">let</item>
   </plurals>
+  <string name="monday">Pondělí</string>
+  <string name="tuesday">Úterý</string>
+  <string name="wednesday">Středa</string>
+  <string name="thursday">Čtvrtek</string>
+  <string name="friday">Pátek</string>
+  <string name="saturday">Sobota</string>
+  <string name="sunday">Neděle</string>
   <string name="accounts_all">Všechny účty</string>
   <string name="stub_list_name">Nový seznam</string>
 </resources>

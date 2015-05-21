@@ -227,6 +227,13 @@
     <item quantity="one">ano</item>
     <item quantity="other">anos</item>
   </plurals>
+  <string name="monday">segunda</string>
+  <string name="tuesday">terça</string>
+  <string name="wednesday">quarta</string>
+  <string name="thursday">quinta</string>
+  <string name="friday">sexta</string>
+  <string name="saturday">sábado</string>
+  <string name="sunday">domingo</string>
   <string name="accounts_all">Todas as contas</string>
   <string name="stub_list_name">Nova lista</string>
   <string name="search_title">Pesquisa: </string>

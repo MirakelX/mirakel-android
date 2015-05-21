@@ -205,5 +205,12 @@
     <item>Lait</item>
     <item>Fromage</item>
   </string-array>
+  <string name="monday">Lundi</string>
+  <string name="tuesday">Mardi</string>
+  <string name="wednesday">Mercredi</string>
+  <string name="thursday">Jeudi</string>
+  <string name="friday">Vendredi</string>
+  <string name="saturday">Samedi</string>
+  <string name="sunday">Dimanche</string>
   <string name="stub_list_name">Nouvelle liste</string>
 </resources>

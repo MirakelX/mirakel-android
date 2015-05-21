@@ -227,6 +227,13 @@
     <item quantity="one">година</item>
     <item quantity="other">години</item>
   </plurals>
+  <string name="monday">Понеделник</string>
+  <string name="tuesday">Вторник</string>
+  <string name="wednesday">Сряда</string>
+  <string name="thursday">Четвъртък</string>
+  <string name="friday">Петък</string>
+  <string name="saturday">Събота</string>
+  <string name="sunday">Неделя</string>
   <string name="accounts_all">Всички профили</string>
   <string name="stub_list_name">Нов списък</string>
 </resources>

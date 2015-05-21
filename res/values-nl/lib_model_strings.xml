@@ -227,6 +227,13 @@
     <item quantity="one">jaar</item>
     <item quantity="other">jaar</item>
   </plurals>
+  <string name="monday">Maandag</string>
+  <string name="tuesday">Dinsdag</string>
+  <string name="wednesday">Woensdag</string>
+  <string name="thursday">Donderdag</string>
+  <string name="friday">Vrijdag</string>
+  <string name="saturday">Zaterdag</string>
+  <string name="sunday">Zondag</string>
   <string name="accounts_all">Alle accounts</string>
   <string name="stub_list_name">Nieuwe lijst</string>
 </resources>

@@ -230,6 +230,13 @@
     <item quantity="few">года</item>
     <item quantity="other">лет</item>
   </plurals>
+  <string name="monday">Понедельник</string>
+  <string name="tuesday">Вторник</string>
+  <string name="wednesday">Среда</string>
+  <string name="thursday">Четверг</string>
+  <string name="friday">Пятница</string>
+  <string name="saturday">Суббота</string>
+  <string name="sunday">Воскресенье</string>
   <string name="accounts_all">Все Аккаунты</string>
   <string name="stub_list_name">Новый список</string>
 </resources>

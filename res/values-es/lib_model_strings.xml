@@ -227,6 +227,13 @@
     <item quantity="one">año</item>
     <item quantity="other">años</item>
   </plurals>
+  <string name="monday">Lunes</string>
+  <string name="tuesday">Martes</string>
+  <string name="wednesday">Miércoles</string>
+  <string name="thursday">Jueves</string>
+  <string name="friday">Viernes</string>
+  <string name="saturday">Sábado</string>
+  <string name="sunday">Domingo</string>
   <string name="accounts_all">Todas las cuentas</string>
   <string name="stub_list_name">Nueva lista</string>
 </resources>

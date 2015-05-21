@@ -227,6 +227,13 @@
     <item quantity="one">urte</item>
     <item quantity="other">urte</item>
   </plurals>
+  <string name="monday">Astelehena</string>
+  <string name="tuesday">Asteartea</string>
+  <string name="wednesday">Asteazkena</string>
+  <string name="thursday">Osteguna</string>
+  <string name="friday">Ostirala</string>
+  <string name="saturday">Larunbata</string>
+  <string name="sunday">Igandea</string>
   <string name="accounts_all">Kontu guztiak</string>
   <string name="stub_list_name">Zerrenda berria</string>
   <string name="search_title">Bilatu: </string>
