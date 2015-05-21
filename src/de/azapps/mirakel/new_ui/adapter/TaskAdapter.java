@@ -28,12 +28,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.common.base.Optional;
-
-import java.net.InterfaceAddress;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -75,56 +72,57 @@ public class TaskAdapter extends
 
     @NonNull
     @Override
-    public TaskOverview fromCursor(@NonNull Cursor cursor) {
+    public TaskOverview fromCursor(@NonNull final Cursor cursor) {
         return new TaskOverview(cursor);
     }
 
     @Override
-    public TaskViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int i) {
-        final View view = mInflater.inflate(R.layout.row_task, viewGroup, false);
+    public TaskViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final View view = mInflater.inflate(R.layout.row_task, parent, false);
         return new TaskViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final TaskViewHolder holder, final Cursor cursor, int position) {
-        if (position == getItemCount() - 1) {
-            holder.viewSwitcher.setDisplayedChild(1);
+    public void onBindViewHolder(final TaskViewHolder viewHolder, final Cursor cursor,
+                                 final int position) {
+        if (position == (getItemCount() - 1)) {
+            viewHolder.viewSwitcher.setDisplayedChild(1);
             if (taskAdapterCallbacks.shouldShowDoneToggle()) {
-                holder.showDoneTasks.setVisibility(View.VISIBLE);
+                viewHolder.showDoneTasks.setVisibility(View.VISIBLE);
                 if (taskAdapterCallbacks.shouldShowDone()) {
-                    holder.showDoneTasks.setText(R.string.hide_done_tasks);
+                    viewHolder.showDoneTasks.setText(R.string.hide_done_tasks);
                 } else {
                     // if no tasks are displayed it would be useless to not show the done tasks
-                    if (getItemCount() == 1 && taskAdapterCallbacks.shouldShowDoneToggle()) {
+                    if ((getItemCount() == 1) && taskAdapterCallbacks.shouldShowDoneToggle()) {
                         taskAdapterCallbacks.toggleShowDoneTasks();
                     }
-                    holder.showDoneTasks.setText(R.string.show_done_tasks);
+                    viewHolder.showDoneTasks.setText(R.string.show_done_tasks);
                 }
             } else {
-                holder.showDoneTasks.setVisibility(View.GONE);
+                viewHolder.showDoneTasks.setVisibility(View.GONE);
             }
         } else {
-            holder.viewSwitcher.setDisplayedChild(0);
+            viewHolder.viewSwitcher.setDisplayedChild(0);
             final TaskOverview task = new TaskOverview(cursor);
-            holder.task = task;
-            holder.name.setText(task.getName());
-            holder.name.setStrikeThrough(task.isDone());
+            viewHolder.task = task;
+            viewHolder.name.setText(task.getName());
+            viewHolder.name.setStrikeThrough(task.isDone());
             if (task.getDue().isPresent()) {
-                holder.due.setVisibility(View.VISIBLE);
-                holder.due.setText(DateTimeHelper.formatDate(mContext,
-                                   task.getDue()));
-                holder.due.setTextColor(TaskHelper.getTaskDueColor(task.getDue(),
-                                        task.isDone()));
+                viewHolder.due.setVisibility(View.VISIBLE);
+                viewHolder.due.setText(DateTimeHelper.formatDate(mContext,
+                                       task.getDue()));
+                viewHolder.due.setTextColor(TaskHelper.getTaskDueColor(task.getDue(),
+                                            task.isDone()));
             } else {
-                holder.due.setVisibility(View.GONE);
+                viewHolder.due.setVisibility(View.GONE);
             }
-            holder.list.setText(task.getListName());
-            holder.priority.setPriority(task.getPriority());
+            viewHolder.list.setText(task.getListName());
+            viewHolder.priority.setPriority(task.getPriority());
             // otherwise the OnCheckedChangeListener will be called
-            holder.progressDone.setOnCheckedChangeListener(null);
-            holder.progressDone.setChecked(task.isDone());
-            holder.progressDone.setProgress(task.getProgress());
-            holder.progressDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            viewHolder.progressDone.setOnCheckedChangeListener(null);
+            viewHolder.progressDone.setChecked(task.isDone());
+            viewHolder.progressDone.setProgress(task.getProgress());
+            viewHolder.progressDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
                     final Optional<Task> taskOptional = task.getTask();
@@ -137,9 +135,9 @@ public class TaskAdapter extends
             });
 
             if (selectedItems.get(position)) {
-                holder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+                viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
             } else {
-                holder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+                viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
             }
         }
     }

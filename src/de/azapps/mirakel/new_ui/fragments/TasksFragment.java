@@ -496,7 +496,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean shouldShowDoneToggle() {
-        return listMirakel.shouldShowDoneToggle();
+        return listMirakel.shouldShowDoneToggle() &&
+               (!(listMirakel instanceof ListMirakel) ||
+                (new MirakelQueryBuilder(getActivity()).and(Task.LIST_ID,
+                        MirakelQueryBuilder.Operation.EQ,
+                        (ListMirakel) listMirakel).and(Task.DONE, MirakelQueryBuilder.Operation.EQ,
+                                true).count(Task.URI) > 0L));
     }
 
     private class MultiSelectCallbacks implements ActionMode.Callback {
