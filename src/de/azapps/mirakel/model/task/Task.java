@@ -57,12 +57,12 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
-import de.azapps.mirakel.services.NotificationService;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class Task extends TaskBase {
 
@@ -755,11 +755,14 @@ public class Task extends TaskBase {
         .sort(Recurring.TW_TABLE + '.' + Recurring.OFFSET_COUNT,
               Sorting.ASC)
         .query(MirakelInternalContentProvider.TASK_RECURRING_TW_PARENT_URI);
+        final Optional<Task> ret;
         if (c.moveToFirst()) {
-            return Optional.of(new Task(c));
+            ret = of(new Task(c));
         } else {
-            return absent();
+            ret = absent();
         }
+        c.close();
+        return ret;
     }
 
     @NonNull
