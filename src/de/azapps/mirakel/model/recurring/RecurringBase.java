@@ -247,13 +247,13 @@ abstract class RecurringBase extends ModelBase {
      * @return
      */
     public long getInterval() {
-        final long minute = 60;
-        final long hour = 3600;
-        final long day = 86400;
-        final long month = 2592000; // That's not right, but who cares?
-        final long year = 31536000; // nobody need this…
-        return (this.minutes * minute + this.hours * hour + this.days * day
-                + this.months * month + this.years * year) * 1000;
+        final long minute = 60L;
+        final long hour = 3600L;
+        final long day = 86400L;
+        final long month = 2592000L; // That's not right, but who cares?
+        final long year = 31536000L; // nobody need this…
+        return ((this.minutes * minute) + (this.hours * hour) + (this.days * day)
+                + (this.months * month) + (this.years * year)) * 1000L;
     }
 
     @NonNull
