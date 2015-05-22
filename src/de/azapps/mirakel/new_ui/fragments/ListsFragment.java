@@ -59,20 +59,17 @@ import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
-import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.LockableDrawer;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.ListAdapter;
 import de.azapps.mirakel.new_ui.views.ListEditView;
 import de.azapps.mirakelandroid.R;
-
-import static com.google.common.base.Optional.absent;
 
 public class ListsFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     MultiSelectCursorAdapter.MultiSelectCallbacks<ListMirakel>, ActionMode.Callback,
@@ -422,11 +419,35 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
      * 1. Increment the lft-values by 2 of the lists with lft>=lft(B) && lft < lft(D)
      * 2. Set the lft of D to the old lft(B)
      *
-     * @param from List to move
-     * @param to Target list to move the `from` list to. If the user is moving from down, than it should be moved below `to` otherwise above
+     * @param tmpFrom List to move
+     * @param tmpTo Target list to move the `from` list to. If the user is moving from down, than it should be moved below `to` otherwise above
      */
     @Override
-    public void onItemMoved(final int from, final int to) {
+    public void onItemMoved(final int tmpFrom, final int tmpTo) {
+        // update divider position
+        final int dividerPosition = MirakelModelPreferences.getDividerPosition();
+        final int from;
+        final int to;
+        final boolean changedPosition;
+        if (tmpFrom < dividerPosition && tmpTo >= dividerPosition) {
+            MirakelModelPreferences.setDividerPosition(dividerPosition - 1);
+            from = tmpFrom;
+            to = tmpTo - 1;
+            changedPosition = true;
+        } else if (tmpFrom > dividerPosition && tmpTo <= dividerPosition) {
+            MirakelModelPreferences.setDividerPosition(dividerPosition + 1);
+            from = tmpFrom - 1;
+            to = tmpTo;
+            changedPosition = true;
+        } else if (tmpFrom > dividerPosition && tmpTo > dividerPosition) {
+            from = tmpFrom - 1;
+            to = tmpTo - 1;
+            changedPosition = false;
+        } else {
+            from = tmpFrom;
+            to = tmpTo;
+            changedPosition = false;
+        }
         final Cursor cursor = mAdapter.getCursor();
         cursor.moveToPosition(from);
         final ListMirakel fromList = new ListMirakel(cursor);
@@ -438,18 +459,21 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
                 for (final String table : new String[] {SpecialList.TABLE, ListMirakel.TABLE}) {
                     final ContentValues cv = new ContentValues();
                     cv.put("TABLE", table);
-                    if (to < from) {// move list up
+                    if (to < from) { // move list up
                         getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_UP_URI,
                                 cv,
                                 ListMirakel.LFT + " >= "
                                 + toList.getLft() + " and " + ListMirakel.LFT + " < "
                                 + fromList.getLft(), null);
-                    } else if (to > from) {// move list down
+                    } else if (to > from) { // move list down
                         getActivity().getContentResolver().update(MirakelInternalContentProvider.UPDATE_LIST_MOVE_DOWN_URI,
                                 cv,
                                 ListMirakel.LFT + " > "
                                 + fromList.getLft() + " and " + ListMirakel.LFT + " <= "
                                 + toList.getLft(), null);
+                    } else if (changedPosition) {
+                        setAccount(accountMirakelOptional);
+                        return;
                     } else {
                         return;
                     }

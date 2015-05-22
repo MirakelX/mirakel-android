@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,6 +45,7 @@ import butterknife.InjectView;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -74,30 +76,35 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
 
     @Override
     public void onBindViewHolder(final ListViewHolder holder, final Cursor cursor, int position) {
-        final ListMirakel listMirakel = new ListMirakel(cursor);
-        holder.list = listMirakel;
-        holder.name.setText(listMirakel.getName());
-        // First hide the icon and show it if it exists
-        holder.icon.setVisibility(View.GONE);
-
-        updateIcon(listMirakel, holder);
-
-        final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
-        if (count != -1) {
-            holder.count.setText(String.valueOf(count));
+        if (position == MirakelModelPreferences.getDividerPosition()) {
+            holder.viewSwitcher.setDisplayedChild(1);
         } else {
-            new UpdateTaskCountTask().execute(holder);
-        }
+            holder.viewSwitcher.setDisplayedChild(0);
+            final ListMirakel listMirakel = getItemAt(position);
+            holder.list = listMirakel;
+            holder.name.setText(listMirakel.getName());
+            // First hide the icon and show it if it exists
+            holder.icon.setVisibility(View.GONE);
 
-        if (selectedItems.get(position)) {
-            holder.itemView.setBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
-        } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-        }
-        if (selectMode) {
-            holder.dragImage.setVisibility(View.VISIBLE);
-        } else {
-            holder.dragImage.setVisibility(View.GONE);
+            updateIcon(listMirakel, holder);
+
+            final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
+            if (count != -1) {
+                holder.count.setText(String.valueOf(count));
+            } else {
+                new UpdateTaskCountTask().execute(holder);
+            }
+
+            if (selectedItems.get(position)) {
+                holder.itemView.setBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+            } else {
+                holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            }
+            if (selectMode) {
+                holder.dragImage.setVisibility(View.VISIBLE);
+            } else {
+                holder.dragImage.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -110,6 +117,8 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
         TextView name;
         @InjectView(R.id.list_count)
         TextView count;
+        @InjectView(R.id.view_switcher)
+        ViewSwitcher viewSwitcher;
         ListMirakel list;
 
         public ListViewHolder(final View view) {
@@ -165,6 +174,22 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
         }
     }
 
+    @Override
+    public int getItemCount() {
+        int count = super.getItemCount();
+        if (count == 0 || count < MirakelModelPreferences.getDividerPosition()) {
+            return count;
+        } else {
+            return count + 1;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(final ListViewHolder viewHolder, int position) {
+        // do not move the cursor! We are moving it later on. This is needed 'cause we are using this divider.
+        onBindViewHolder(viewHolder, getCursor(), position);
+    }
+
 
     // For Multi-select
 
@@ -173,7 +198,17 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
     /**
      * We need to override this for the DragSortRecycler
      */
-    public long getItemId(int position) {
+    public long getItemId(final int position) {
         return position;
+    }
+
+    @NonNull
+    protected ListMirakel getItemAt(int position) {
+        final Cursor cursor = getCursor();
+        if (position > 0 && position > MirakelModelPreferences.getDividerPosition()) {
+            position--;
+        }
+        cursor.moveToPosition(position);
+        return fromCursor(cursor);
     }
 }
