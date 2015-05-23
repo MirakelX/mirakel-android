@@ -224,6 +224,24 @@
   <plurals name="year">
     <item quantity="other"> 年</item>
   </plurals>
+  <plurals name="repeat_day">
+    <item quantity="other">%d 日</item>
+  </plurals>
+  <plurals name="repeat_week">
+    <item quantity="other">%d 週間</item>
+  </plurals>
+  <plurals name="repeat_month">
+    <item quantity="other">%d ヶ月</item>
+  </plurals>
+  <plurals name="repeat_year">
+    <item quantity="other">%d 年</item>
+  </plurals>
+  <plurals name="repeat_hour">
+    <item quantity="other">%d 時間</item>
+  </plurals>
+  <plurals name="repeat_minute">
+    <item quantity="other">%d 分</item>
+  </plurals>
   <string name="monday">月曜日</string>
   <string name="tuesday">火曜日</string>
   <string name="wednesday">水曜日</string>
@@ -231,6 +249,10 @@
   <string name="friday">金曜日</string>
   <string name="saturday">土曜日</string>
   <string name="sunday">日曜日</string>
+  <string name="begin_repeat">開始 %s</string>
+  <string name="end_repeat">終了 %s</string>
+  <string name="every_repeat">%s ごと</string>
+  <string name="weekday">平日</string>
   <string name="accounts_all">すべてのアカウント</string>
   <string name="stub_list_name">新しいリスト</string>
   <string name="search_title">検索: </string>

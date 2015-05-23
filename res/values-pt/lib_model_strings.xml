@@ -227,6 +227,30 @@
     <item quantity="one">ano</item>
     <item quantity="other">anos</item>
   </plurals>
+  <plurals name="repeat_day">
+    <item quantity="one">dia</item>
+    <item quantity="other">%d dias</item>
+  </plurals>
+  <plurals name="repeat_week">
+    <item quantity="one">semana</item>
+    <item quantity="other">%d semanas</item>
+  </plurals>
+  <plurals name="repeat_month">
+    <item quantity="one">mês</item>
+    <item quantity="other">%d meses</item>
+  </plurals>
+  <plurals name="repeat_year">
+    <item quantity="one">ano</item>
+    <item quantity="other">%d anos</item>
+  </plurals>
+  <plurals name="repeat_hour">
+    <item quantity="one">hora</item>
+    <item quantity="other">%d horas</item>
+  </plurals>
+  <plurals name="repeat_minute">
+    <item quantity="one">minuto</item>
+    <item quantity="other">%d minutos</item>
+  </plurals>
   <string name="monday">segunda</string>
   <string name="tuesday">terça</string>
   <string name="wednesday">quarta</string>
@@ -234,6 +258,10 @@
   <string name="friday">sexta</string>
   <string name="saturday">sábado</string>
   <string name="sunday">domingo</string>
+  <string name="begin_repeat">Inicia %s</string>
+  <string name="end_repeat">até %s</string>
+  <string name="every_repeat">a cada %s</string>
+  <string name="weekday">Dia da semana</string>
   <string name="accounts_all">Todas as contas</string>
   <string name="stub_list_name">Nova lista</string>
   <string name="search_title">Pesquisa: </string>
