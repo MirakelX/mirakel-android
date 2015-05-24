@@ -19,12 +19,12 @@
 
 package de.azapps.mirakel.helper;
 
-import java.util.List;
-
 import android.content.SharedPreferences.Editor;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
+
+import java.util.List;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -182,5 +182,13 @@ public class MirakelModelPreferences extends MirakelPreferences {
             db_name = "demo_" + MirakelCommonPreferences.getLanguage() + ".db";
         }
         return db_name;
+    }
+
+    public static int getDividerPosition() {
+        return settings.getInt("dividerPosition", 4);
+    }
+
+    public static void setDividerPosition(final int dividerPosition) {
+        getEditor().putInt("dividerPosition", dividerPosition).apply();
     }
 }

@@ -170,8 +170,13 @@ public abstract class
         notifyItemChanged(pos);
     }
 
+    /**
+     * Do not override this unless you know exactly what you are doing
+     * @param position
+     * @return
+     */
     @NonNull
-    private T getItemAt(final int position) {
+    protected T getItemAt(final int position) {
         final Cursor cursor = getCursor();
         cursor.moveToPosition(position);
         return fromCursor(cursor);
