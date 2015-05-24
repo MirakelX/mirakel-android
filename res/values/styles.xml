@@ -41,6 +41,7 @@
         <item name="colorSelectedRow">#D3EAFD</item>
         <item name="colorCAB">#2196F3</item>
         <item name="colorCABStatus">#1A78C2</item>
+        <item name="colorLightGrey">#EAEAEA</item>
 
         <!-- Black 60% -->
         <item name="colorTextGrey">#666666</item>
