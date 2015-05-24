@@ -227,6 +227,30 @@
     <item quantity="one">urte</item>
     <item quantity="other">urte</item>
   </plurals>
+  <plurals name="repeat_day">
+    <item quantity="one">egunero</item>
+    <item quantity="other">%d egunetik behin</item>
+  </plurals>
+  <plurals name="repeat_week">
+    <item quantity="one">astero</item>
+    <item quantity="other">%d astetik behin</item>
+  </plurals>
+  <plurals name="repeat_month">
+    <item quantity="one">hilero</item>
+    <item quantity="other">%d hiletik behin</item>
+  </plurals>
+  <plurals name="repeat_year">
+    <item quantity="one">urtero</item>
+    <item quantity="other">%d urtetik behin</item>
+  </plurals>
+  <plurals name="repeat_hour">
+    <item quantity="one">orduro</item>
+    <item quantity="other">%d ordutik behin</item>
+  </plurals>
+  <plurals name="repeat_minute">
+    <item quantity="one">minuturo</item>
+    <item quantity="other">%d minututik behin</item>
+  </plurals>
   <string name="monday">Astelehena</string>
   <string name="tuesday">Asteartea</string>
   <string name="wednesday">Asteazkena</string>
@@ -234,6 +258,10 @@
   <string name="friday">Ostirala</string>
   <string name="saturday">Larunbata</string>
   <string name="sunday">Igandea</string>
+  <string name="begin_repeat">Hasi %s</string>
+  <string name="end_repeat">%s arte</string>
+  <string name="every_repeat">%stik behin</string>
+  <string name="weekday">Asteguna</string>
   <string name="accounts_all">Kontu guztiak</string>
   <string name="stub_list_name">Zerrenda berria</string>
   <string name="search_title">Bilatu: </string>
