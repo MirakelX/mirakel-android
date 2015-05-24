@@ -521,12 +521,20 @@ abstract class TaskBase extends ModelBase {
         this.progress = newProgress;
     }
 
-    public void setRecurrence(final long newRecurrence) {
+    protected void setRecurrence(final long newRecurrence) {
         if (this.recurrence == newRecurrence) {
             return;
         }
         this.recurrence = newRecurrence;
         this.edited.put(TaskBase.RECURRING, true);
+    }
+
+    public void setRecurrence(final @NonNull Optional<Recurring> newRecurrence) {
+        if (newRecurrence.isPresent()) {
+            setRecurrence(newRecurrence.get().getId());
+        } else {
+            setRecurrence(-1L);
+        }
     }
 
     public void setRecurringReminder(final long newRecurrence) {
@@ -535,6 +543,14 @@ abstract class TaskBase extends ModelBase {
         }
         this.recurringReminder = newRecurrence;
         this.edited.put(TaskBase.RECURRING_REMINDER, true);
+    }
+
+    public void setRecurringReminder(final @NonNull Optional<Recurring> newRecurrence) {
+        if (newRecurrence.isPresent()) {
+            setRecurringReminder(newRecurrence.get().getId());
+        } else {
+            setRecurringReminder(-1L);
+        }
     }
 
     public void setReminder(final @NonNull Optional<Calendar> newReminder) {
