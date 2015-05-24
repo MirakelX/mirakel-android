@@ -31,6 +31,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -68,7 +69,7 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
-public class AddTagView extends MultiAutoCompleteTextView implements  View.OnClickListener,
+public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  View.OnClickListener,
     View.OnKeyListener, SoftKeyboard.SoftKeyboardChanged {
     private static final String TAG = "AddTagView";
     private final Drawable background;
@@ -253,20 +254,21 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         }
         if (!TextUtils.isEmpty(text) && !TextUtils.isEmpty(text.toString().trim())) {
             final List<String> tags = Arrays.asList(text.toString().split(","));
-            final List<String> currentTags=new ArrayList<>(Collections2.transform(tags, new Function<String, String>() {
+            final List<String> currentTags = new ArrayList<>(Collections2.transform(tags,
+            new Function<String, String>() {
                 @Nullable
                 @Override
                 public String apply(@Nullable final String input) {
                     return (input == null) ? null : input.trim();
                 }
             }));
-            final List<Tag> tagsToRemove=new ArrayList<>(currentTags.size());
-            for(final Tag t:this.currentTags){
-                if((t != null) && !currentTags.remove(t.getName())){
+            final List<Tag> tagsToRemove = new ArrayList<>(currentTags.size());
+            for (final Tag t : this.currentTags) {
+                if ((t != null) && !currentTags.remove(t.getName())) {
                     tagsToRemove.add(t);
                 }
             }
-            if(lengthAfter<lengthBefore) {
+            if (lengthAfter < lengthBefore) {
                 for (final Tag t : tagsToRemove) {
                     if (task != null) {
                         task.removeTag(t);
@@ -274,7 +276,7 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
                     adapter.add(t.getName());
                 }
             }
-            if(lengthBefore<lengthAfter) {
+            if (lengthBefore < lengthAfter) {
                 if (!text.toString().endsWith(",") && !currentTags.isEmpty()) {
                     currentTags.remove(currentTags.size() - 1);
                 }
@@ -282,30 +284,30 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
                     addTag(tag);
                 }
             }
-            boolean hasPostfix=!text.toString().endsWith(",");
-            if(hasPostfix && (lengthAfter < lengthBefore) && !tagsToRemove.isEmpty()){
-                final String last=tags.get(tags.size()-1);
-                hasPostfix=true;
-                for(final Tag tag:tagsToRemove){
-                    if(tag.getName().startsWith(last)){
-                        hasPostfix=false;
+            boolean hasPostfix = !text.toString().endsWith(",");
+            if (hasPostfix && (lengthAfter < lengthBefore) && !tagsToRemove.isEmpty()) {
+                final String last = tags.get(tags.size() - 1);
+                hasPostfix = true;
+                for (final Tag tag : tagsToRemove) {
+                    if (tag.getName().startsWith(last)) {
+                        hasPostfix = false;
                         break;
                     }
                 }
             }
 
-            if(hasPostfix){
-                postfix=tags.get(tags.size()-1);
-            }else{
-                postfix="";
+            if (hasPostfix) {
+                postfix = tags.get(tags.size() - 1);
+            } else {
+                postfix = "";
             }
-            if(hasPostfix && (lengthAfter < lengthBefore)){
-                final String last=this.currentTags.get(this.currentTags.size()-1).getName();
-                if(postfix.equals(last)){
-                    postfix="";
+            if (hasPostfix && (lengthAfter < lengthBefore)) {
+                final String last = this.currentTags.get(this.currentTags.size() - 1).getName();
+                if (postfix.equals(last)) {
+                    postfix = "";
                 }
             }
-            if(!tagsToRemove.isEmpty()||!currentTags.isEmpty()){
+            if (!tagsToRemove.isEmpty() || !currentTags.isEmpty()) {
                 rebuildText();
             }
         }
@@ -381,9 +383,9 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
         final DisplayMetrics metrics = new DisplayMetrics();
 
         getContext().getTheme().resolveAttribute(
-                android.R.attr.listPreferredItemHeight, value, true);
+            android.R.attr.listPreferredItemHeight, value, true);
         ((WindowManager) (getContext().getSystemService(Context.WINDOW_SERVICE)))
-                .getDefaultDisplay().getMetrics(metrics);
+        .getDefaultDisplay().getMetrics(metrics);
 
         return TypedValue.complexToDimension(value.data, metrics);
     }
@@ -392,7 +394,7 @@ public class AddTagView extends MultiAutoCompleteTextView implements  View.OnCli
     public void onFilterComplete(final int count) {
         final int height = (int) (((count > 4) ? 4 : count) * ITEM_HEIGHT);
         setDropDownHeight(height);
-        setDropDownVerticalOffset(-1*height-getHeight());
+        setDropDownVerticalOffset(-1 * height - getHeight());
 
         super.onFilterComplete(count);
     }
