@@ -33,6 +33,7 @@
     <attr name="colorProgress" format="color" />
     <attr name="colorProgressBackground" format="color" />
     <attr name="colorDisabled" format="color" />
+    <attr name="colorLightGrey" format="color" />
 
     <!-- Due -->
     <attr name="colorDueOverdue" format="color" />
