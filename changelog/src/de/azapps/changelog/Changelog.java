@@ -1,16 +1,5 @@
 package de.azapps.changelog;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +12,18 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.ContextThemeWrapper;
 import android.webkit.WebView;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.azapps.mirakel.changelog.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.tools.Log;
@@ -52,6 +53,11 @@ public class Changelog {
     private static final String TAG = "de.azapps.changelog";
     private final Context context;
     private final SharedPreferences settings;
+    private OnChangelogShown listener;
+
+    public interface OnChangelogShown{
+        public void changelogShown();
+    }
 
     public Changelog(final Context context) {
         this.settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -68,6 +74,10 @@ public class Changelog {
 
     public boolean isUpdated() {
         return this.current_version > this.last_version;
+    }
+
+    public void setOnShowChangelog(final OnChangelogShown listener){
+        this.listener=listener;
     }
 
     public void showChangelog() {
@@ -123,6 +133,9 @@ public class Changelog {
             public void onClick(final DialogInterface dialog,
                                 final int which) {
                 dialog.cancel();
+                if(listener!=null){
+                    listener.changelogShown();
+                }
             }
         });
         // "more …" button

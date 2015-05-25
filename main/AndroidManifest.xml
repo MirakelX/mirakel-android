@@ -20,8 +20,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.azapps.mirakelandroid"
-    android:versionCode="72"
-    android:versionName="2.8.1" >
+    android:versionCode="74"
+    android:versionName="2.8.2" >
 
     <!-- TODO Remove Unused Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -149,6 +149,10 @@
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
             android:theme="@style/Dialog" />
+        <activity
+            android:name="de.azapps.mirakel.main_activity.SurveyActivity"
+            android:parentActivityName="de.azapps.mirakel.main_activity.MainActivity"
+            android:theme="@style/AppTheme"/>
 
         <receiver android:name="de.azapps.mirakel.widget.MainWidgetProvider" >
             <intent-filter>
