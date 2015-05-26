@@ -100,6 +100,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.static_activities.SurveyActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
@@ -1223,9 +1224,7 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
         cl.setOnShowChangelog(new Changelog.OnChangelogShown() {
             @Override
             public void changelogShown(){
-                final Intent intent = new Intent(MainActivity.this,
-                        SurveyActivity.class);
-                startActivity(intent);
+                showSurvey();
             }
         });
         cl.showChangelog();
@@ -1244,6 +1243,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             };
             ilfs.show();
         }
+    }
+
+    private void showSurvey() {
+        final Intent intent = new Intent(MainActivity.this,
+                SurveyActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -1415,6 +1420,9 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 Log.wtf(MainActivity.TAG, "List vanished on task cloning");
             }
             break;
+            case R.id.menu_survey:
+                showSurvey();
+                break;
         default:
             return super.onOptionsItemSelected(item);
         }

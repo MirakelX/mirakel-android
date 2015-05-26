@@ -68,5 +68,9 @@
         android:id="@+id/menu_settings"
         android:title="@string/action_settings"
         android:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_survey"
+        android:title="@string/mirakel_survey"
+        android:showAsAction="never"/>
 
 </menu>

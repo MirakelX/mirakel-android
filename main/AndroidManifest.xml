@@ -150,7 +150,7 @@
             android:launchMode="singleInstance"
             android:theme="@style/Dialog" />
         <activity
-            android:name="de.azapps.mirakel.main_activity.SurveyActivity"
+            android:name="de.azapps.mirakel.static_activities.SurveyActivity"
             android:parentActivityName="de.azapps.mirakel.main_activity.MainActivity"
             android:theme="@style/AppTheme"/>
 
