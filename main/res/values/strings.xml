@@ -102,5 +102,6 @@
     </string-array>
 
     <string name="delete_caldav_lists">It\'s not allowed to delete lists of a caldav account.</string>
+    <string name="mirakel_survey">Mirakel Survey</string>
     
 </resources>

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
-apply plugin: 'robolectric'
+//apply plugin: 'robolectric'
 
 def getVersionCode() {
 	def manifestFile = file("AndroidManifest.xml")
@@ -34,7 +34,7 @@ android {
         testApplicationId "de.azapps.mirakelandroid.test"
         //testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 22
     }
     signingConfigs {
     	release {
@@ -99,25 +99,7 @@ android {
 }
 
 
-robolectric {
-    // configure the set of classes for JUnit tests
-    include '**/*Test.class'
-    //exclude '**/espresso/**/*.class'
 
-    // configure max heap size of the test JVM
-    //maxHeapSize = '2048m'
-
-    // configure the test JVM arguments
-     //jvmArgs '-Xmx1024m', '-XX:MaxPermSize=256m', '-XX:+HeapDumpOnOutOfMemoryError'
-
-    // configure whether failing tests should fail the build
-    //ignoreFailures false
-
-    // use afterTest to listen to the test execution results
-    afterTest { descriptor, result ->
-        println "Executing test for {$descriptor.name} with result: ${result.resultType}"
-    }
-}
 
 dependencies {
     compile project(':model')
