@@ -30,7 +30,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -42,10 +41,12 @@ import java.util.regex.Pattern;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
@@ -129,8 +130,8 @@ public class Semantic extends SemanticBase {
 
     @NonNull
     public static Task createTask(final String taskName, final Optional<ListMirakel> currentList,
-                                  final boolean useSemantic, final Context context) {
-        Task stubTask = createStubTask(taskName, currentList, useSemantic, context);
+                                  final boolean useSemantic) {
+        Task stubTask = createStubTask(taskName, currentList, useSemantic);
         try {
             return stubTask.create();
         } catch (final DefinitionsHelper.NoSuchListException e) {
@@ -141,19 +142,81 @@ public class Semantic extends SemanticBase {
         }
     }
 
+    private static Calendar getNormalizedCalendar() {
+        Calendar due = new GregorianCalendar();
+        due.set(Calendar.HOUR_OF_DAY, 0);
+        due.set(Calendar.MINUTE, 0);
+        due.set(Calendar.SECOND, 0);
+        due.add(Calendar.SECOND, DateTimeHelper.getTimeZoneOffset(false, due));
+        return due;
+    }
+
+    public void apply(@NonNull final Task task) {
+        if (getPriority().isPresent()) {
+            task.setPriority(getPriority().get());
+        }
+        if (getDue().isPresent()) {
+            Calendar due = getNormalizedCalendar();
+            due.add(Calendar.DAY_OF_MONTH, getDue().get());
+            task.setDue(of(due));
+        }
+        if (getList().isPresent()) {
+            task.setList(getList().get());
+        }
+        if (getWeekday().isPresent()) {
+            Calendar due = getNormalizedCalendar();
+            int nextWeekday = getWeekday().get() + 1;
+            // Because there are some dudes which means, sunday is the
+            // first day of the week… That's obviously wrong!
+            if (nextWeekday == 8) {
+                nextWeekday = 1;
+            }
+            do {
+                due.add(Calendar.DAY_OF_YEAR, 1);
+            } while (due.get(Calendar.DAY_OF_WEEK) != nextWeekday);
+            task.setDue(of(due));
+        }
+    }
+
+    public static void applySemantics(@NonNull final Task task, @NonNull String taskName) {
+        final String lowername = taskName.toLowerCase(Locale.getDefault());
+        final String[] words = SPLIT_BY_WHITESPACE.split(lowername);
+        for (String word : words) {
+            final Semantic semantic = semantics.get(word);
+            if (semantic == null) {
+                break;
+            }
+            semantic.apply(task);
+            taskName = taskName.substring(word.length()).trim();
+        }
+        task.setName(taskName);
+    }
+
+    private static ListMirakel getDefaultList(final @NonNull Optional<AccountMirakel>
+            accountMirakelOptional) {
+        if (accountMirakelOptional.isPresent()) {
+            return ListMirakel.getInboxList(accountMirakelOptional.get());
+        } else {
+            return getDefaultList(of(MirakelModelPreferences.getDefaultAccount()));
+        }
+    }
+
     @NonNull
-    public static Task createStubTask(String taskName, Optional<ListMirakel> currentList,
-                                      final boolean useSemantic, final Context context) {
+    public static Task createStubTask(final @NonNull String taskName,
+                                      @NonNull Optional<ListMirakel> currentList,
+                                      final boolean useSemantic) {
+        ListMirakel listMirakel;
         Optional<Calendar> due = absent();
         int prio = 0;
         if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
                 final SpecialList slist = currentList.get().toSpecial().get();
                 currentList = Optional.fromNullable(slist.getDefaultList());
-                if (slist.getDefaultDate() != null) {
+                if (slist.getDefaultDate().isPresent()) {
                     due = of((Calendar)new GregorianCalendar());
-                    due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate());
+                    due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate().get());
                 }
+                // calculate Priority
                 if (slist.getWhere().isPresent() &&
                 slist.getWhere().transform(new Function<SpecialListsBaseProperty, Boolean>() {
                 @Override
@@ -177,60 +240,19 @@ public class Semantic extends SemanticBase {
                     }
                 }
             } catch (final NullPointerException ignored) {
-                currentList = Optional.fromNullable(ListMirakel.safeFirst());
-            }
-        }
-        if (useSemantic) {
-            Calendar tempdue = new GregorianCalendar();
-            final String lowername = taskName.toLowerCase(Locale.getDefault());
-            final List<String> words = new ArrayList<>(Arrays.asList(SPLIT_BY_WHITESPACE.split(lowername)));
-            while (words.size() > 1) {
-                final String word = words.get(0);
-                final Semantic s = semantics.get(word);
-                if (s == null) {
-                    break;
-                }
-                // Set due
-                if (s.getDue() != null) {
-                    tempdue.add(Calendar.DAY_OF_MONTH, s.getDue());
-                    due = of(tempdue);
-                }
-                // Set priority
-                if (s.getPriority() != null) {
-                    prio = s.getPriority();
-                }
-                // Set list
-                if (s.getList().isPresent()) {
-                    currentList = s.getList();
-                }
-                // Weekday?
-                if (s.getWeekday() != null) {
-                    tempdue = new GregorianCalendar();
-                    int nextWeekday = s.getWeekday() + 1;
-                    // Because there are some dudes which means, sunday is the
-                    // first day of the week… That's obviously wrong!
-                    if (nextWeekday == 8) {
-                        nextWeekday = 1;
-                    }
-                    do {
-                        tempdue.add(Calendar.DAY_OF_YEAR, 1);
-                    } while (tempdue.get(Calendar.DAY_OF_WEEK) != nextWeekday);
-                    due = of(tempdue);
-                }
-                taskName = taskName.substring(word.length()).trim();
-                words.remove(0);
-            }
-            if (due.isPresent()) {
-                due.get().set(Calendar.HOUR_OF_DAY, 0);
-                due.get().set(Calendar.MINUTE, 0);
-                due.get().set(Calendar.SECOND, 0);
-                due.get().add(Calendar.SECOND, DateTimeHelper.getTimeZoneOffset(false, due.get()));
+                currentList = of(getDefaultList(of(currentList.get().getAccount())));
             }
         }
         if (!currentList.isPresent()) {
-            currentList = Optional.fromNullable(ListMirakel.safeFirst());
+            listMirakel = getDefaultList(Optional.<AccountMirakel>absent());
+        } else {
+            listMirakel = currentList.get();
         }
-        return new Task(taskName, currentList.get(), due, prio);
+        Task task = new Task(taskName, listMirakel, due, 0);
+        if (useSemantic) {
+            applySemantics(task, taskName);
+        }
+        return task;
     }
 
     public static Optional<Semantic> first() {
@@ -260,7 +282,7 @@ public class Semantic extends SemanticBase {
 
     private static void initAll() {
         for (final Semantic s : all()) {
-            semantics.put(s.getCondition(), s);
+            semantics.put(s.getCondition().toLowerCase(), s);
         }
     }
 

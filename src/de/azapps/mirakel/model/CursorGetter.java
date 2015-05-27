@@ -68,4 +68,8 @@ public class CursorGetter {
                                     cursor.getLong(index), true));
         }
     }
+
+    public boolean isNull(final String column) {
+        return cursor.isNull(getColumnIndex(column));
+    }
 }

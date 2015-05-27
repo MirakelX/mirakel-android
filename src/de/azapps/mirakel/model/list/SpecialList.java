@@ -24,7 +24,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
+import de.azapps.mirakel.model.CursorGetter;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
@@ -54,7 +54,8 @@ public class SpecialList extends ListMirakel {
     private boolean active;
     @NonNull
     private Optional<ListMirakel> defaultList = absent();
-    private Integer defaultDate;
+    @NonNull
+    private Optional<Integer> defaultDate;
     @NonNull
     private Optional<SpecialListsBaseProperty> where = absent();
     private String whereString;
@@ -124,19 +125,19 @@ public class SpecialList extends ListMirakel {
         this.defaultList = defaultList;
     }
 
-    @Nullable
-    public Integer getDefaultDate() {
-        return this.defaultDate;
+    @NonNull
+    public Optional<Integer> getDefaultDate() {
+        return defaultDate;
     }
 
-    public void setDefaultDate(final @Nullable Integer defaultDate) {
+    public void setDefaultDate(@NonNull Optional<Integer> defaultDate) {
         this.defaultDate = defaultDate;
     }
 
     SpecialList(final long id, @NonNull final String name,
                 final @NonNull Optional<SpecialListsBaseProperty> whereQuery,
                 final boolean active, @NonNull final Optional<ListMirakel> defaultList,
-                final @Nullable Integer defaultDate, final SORT_BY sort_by,
+                final @NonNull Optional<Integer> defaultDate, final SORT_BY sort_by,
                 final SYNC_STATE sync_state, final int color, final int lft,
                 final int rgt, @NonNull final Optional<Uri> iconPath) {
         super(-id, name, sort_by, "", "", sync_state, 0, 0, color,
@@ -305,7 +306,7 @@ public class SpecialList extends ListMirakel {
                 return input.getId();
             }
         }));
-        cv.put(DEFAULT_DUE, this.defaultDate);
+        cv.put(DEFAULT_DUE, this.defaultDate.orNull());
         cv.put(COLOR, getColor());
         cv.put(LFT, getLft());
         cv.put(RGT, getRgt());
@@ -388,27 +389,29 @@ public class SpecialList extends ListMirakel {
               SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
               c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
               getAccountFromCursor(c), FileUtils.parsePath(c.getString(c.getColumnIndex(ICON_PATH))));
-        final int defDateCol = c.getColumnIndex(DEFAULT_DUE);
-        whereString = c.getString(c.getColumnIndex(WHERE_QUERY));
-        setActive(c.getShort(c.getColumnIndex(ACTIVE)) == 1);
-        setDefaultList(ListMirakel.get(c.getInt(c.getColumnIndex(DEFAULT_LIST))));
-        setDefaultDate(c.isNull(defDateCol) ? null : c.getInt(defDateCol));
+        final CursorGetter cursorGetter = new CursorGetter(c);
+        whereString = cursorGetter.getString(WHERE_QUERY);
+        setActive(cursorGetter.getBoolean(ACTIVE));
+        setDefaultList(ListMirakel.get(cursorGetter.getInt(DEFAULT_LIST)));
+        setDefaultDate(cursorGetter.isNull(DEFAULT_DUE) ? Optional.<Integer>absent() : Optional.of(
+                           cursorGetter.getInt(
+                               DEFAULT_DUE)));
     }
 
 
     // Parcelable stuff
 
-
     @Override
     public int describeContents() {
         return 0;
     }
+    public static final int NULL_DATE_VALUE = -1337;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(active ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.defaultList.orNull(), 0);
-        dest.writeValue(this.defaultDate);
+        dest.writeInt(this.defaultDate.or(NULL_DATE_VALUE));
         dest.writeString(this.whereString);
         dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
         dest.writeString(this.createdAt);
@@ -418,18 +421,18 @@ public class SpecialList extends ListMirakel {
         dest.writeInt(this.rgt);
         dest.writeInt(this.color);
         dest.writeLong(this.accountID);
+        dest.writeString(getIconPathString());
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
-        dest.writeString(getIconPathString());
     }
 
-    @SuppressWarnings("unchecked")
     private SpecialList(Parcel in) {
-        super();
         this.active = in.readByte() != 0;
         this.defaultList = fromNullable((ListMirakel) in.readParcelable(
                                             ListMirakel.class.getClassLoader()));
-        this.defaultDate = (Integer) in.readValue(Integer.class.getClassLoader());
+        int tmpDefaultDate = in.readInt();
+        this.defaultDate = tmpDefaultDate == NULL_DATE_VALUE ? Optional.<Integer>absent() : Optional.of(
+                               tmpDefaultDate);
         this.whereString = in.readString();
         int tmpSortBy = in.readInt();
         this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
@@ -441,15 +444,16 @@ public class SpecialList extends ListMirakel {
         this.rgt = in.readInt();
         this.color = in.readInt();
         this.accountID = in.readLong();
-        this.setId(-1 * in.readLong());
-        this.setName(in.readString());
         this.setIconPath(FileUtils.parsePath(in.readString()));
+        this.setId(in.readLong());
+        this.setName(in.readString());
     }
 
     public static final Creator<SpecialList> CREATOR = new Creator<SpecialList>() {
         public SpecialList createFromParcel(Parcel source) {
             return new SpecialList(source);
         }
+
         public SpecialList[] newArray(int size) {
             return new SpecialList[size];
         }
