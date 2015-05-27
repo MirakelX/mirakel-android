@@ -71,7 +71,6 @@ import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.ed
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.StringPropertyFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.SubtaskPropertyFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.TagPropertyFragment;
-import de.azapps.mirakel.settings.model_settings.special_list.helper.SpecialListsConditionAdapter;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.of;
@@ -299,10 +298,14 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             @Override
             public void onTreeExists(final int position,
                                      @NonNull final SpecialListsConjunctionList currentProperty) {
-
-                if (backStack.get(position) != SpecialListsConditionAdapter.NEW_PROPERTY) {
+                if (position >= backStack.size()) {
+                    return;
+                }
+                if (backStack.get(position) != ConjunctionFragment.NEW_PROPERTY) {
                     if (backStack.get(position) < currentProperty.getChilds().size()) {
                         currentProperty.getChilds().set(backStack.get(position), property);
+                    } else {
+                        currentProperty.addChild(property);
                     }
                 } else {
                     currentProperty.getChilds().add(property);
@@ -337,10 +340,10 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     }
 
     public interface WorkOnTree {
-        public abstract void onTreeExists(final int position,
-                                          @NonNull final SpecialListsConjunctionList currentProperty);
+        void onTreeExists(final int position,
+                          @NonNull final SpecialListsConjunctionList currentProperty);
         @NonNull
-        public abstract Optional<SpecialListsBaseProperty> onTreeNotExists();
+        Optional<SpecialListsBaseProperty> onTreeNotExists();
     }
 
     @NonNull

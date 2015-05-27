@@ -25,18 +25,16 @@
     android:orientation="horizontal"
     tools:ignore="NewApi" >
 
-    <NumberPicker
+    <de.azapps.material_elements.views.MaterialNumberPicker
         android:id="@+id/progress_op"
-        style="@android:style/Theme.Holo.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
         android:descendantFocusability="blocksDescendants"
         android:width="100dip" />
 
-    <NumberPicker
+    <de.azapps.material_elements.views.MaterialNumberPicker
         android:id="@+id/progress_value"
-        style="@android:style/Theme.Holo.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:descendantFocusability="blocksDescendants"

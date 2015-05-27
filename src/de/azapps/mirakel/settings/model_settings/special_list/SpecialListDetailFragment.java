@@ -39,7 +39,6 @@ import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
-import com.nispok.snackbar.listeners.EventListener;
 import com.shamanland.fab.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -47,6 +46,7 @@ import java.util.List;
 import java.util.UUID;
 
 import de.azapps.material_elements.utils.AnimationHelper;
+import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -61,12 +61,11 @@ import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 
-import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
     CompoundButton.OnCheckedChangeListener, EditDialogFragment.OnPropertyEditListener,
-    SwipeLinearLayout.OnItemRemoveListener, EventListener {
+    SwipeLinearLayout.OnItemRemoveListener {
 
 
     protected SpecialList mItem;
@@ -94,9 +93,9 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     }
 
     @Override
-    protected void configureFab(FloatingActionButton fab) {
+    protected void configureFab(final FloatingActionButton fab) {
         super.configureFab(fab);
-        fab.setImageResource(android.R.drawable.ic_input_add);
+        fab.setImageResource(R.drawable.ic_plus_white_24dp);
     }
 
     @Override
@@ -198,17 +197,13 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     private void setupConditions(final @NonNull PreferenceGroup conditions,
                                  final @NonNull SpecialListsBaseProperty specialListsBaseProperty, final boolean first,
                                  final @NonNull ArrayList<Integer> backStack) {
-        if (specialListsBaseProperty instanceof SpecialListsConjunctionList) {
-            PreferenceGroup group = conditions;
-            if (!first) {
-                group = new PreferenceCategory(mContext);
-                group.setTitle(specialListsBaseProperty.getTitle(mContext));
-            }
+        if (first && (specialListsBaseProperty instanceof SpecialListsConjunctionList)) {
             for (int i = 0; i < ((SpecialListsConjunctionList) specialListsBaseProperty).getChilds().size();
                  i++) {
                 final ArrayList<Integer> localBackstack = new ArrayList<>(backStack);
                 localBackstack.add(i);
-                setupConditions(group, ((SpecialListsConjunctionList) specialListsBaseProperty).getChilds().get(i),
+                setupConditions(conditions, ((SpecialListsConjunctionList)
+                                             specialListsBaseProperty).getChilds().get(i),
                                 false, localBackstack);
             }
         } else {
@@ -236,7 +231,11 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                     return true;
                 }
             });
-            conditions.addItemFromInflater(p);
+            try {
+                conditions.addItemFromInflater(p);
+            } catch (NullPointerException e) {
+                //eat it
+            }
         }
     }
 
@@ -359,9 +358,9 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(final Preference preference, final Object newValue) {
-                mItem.setName((String)newValue);
+                mItem.setName((String) newValue);
                 mItem.save();
-                name.setSummary((String)newValue);
+                name.setSummary((String) newValue);
                 return true;
             }
         });
@@ -441,42 +440,27 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                 .text(getActivity().getString(R.string.delete_condition))
                 .actionLabel(R.string.undo)
                 .actionListener(undo)
-                .eventListener(this));
+                .eventListener(snackBarListener));
         }
     }
 
-    @Override
-    public void onShow(final Snackbar snackbar) {
+    private final LocalEventListener snackBarListener = new LocalEventListener();
 
-        if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
-            AnimationHelper.moveViewUp(getActivity(), mFab, snackbar.getHeight());
+    private class LocalEventListener extends SnackBarEventListener {
+        @Override
+        public void onShow(final Snackbar snackbar) {
+            super.onShow(snackbar);
+            if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
+                AnimationHelper.moveViewUp(getActivity(), mFab, snackbar.getHeight());
+            }
         }
-    }
 
-    @Override
-    public void onShowByReplace(final Snackbar snackbar) {
-
-    }
-
-    @Override
-    public void onShown(final Snackbar snackbar) {
-
-    }
-
-    @Override
-    public void onDismiss(final Snackbar snackbar) {
-        if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
-            AnimationHelper.moveViewDown(getActivity(), mFab, snackbar.getHeight());
+        @Override
+        public void onDismiss(final Snackbar snackbar) {
+            super.onDismiss(snackbar);
+            if (((FrameLayout.LayoutParams)snackbar.getLayoutParams()).bottomMargin == 0) {
+                AnimationHelper.moveViewDown(getActivity(), mFab, snackbar.getHeight());
+            }
         }
-    }
-
-    @Override
-    public void onDismissByReplace(final Snackbar snackbar) {
-
-    }
-
-    @Override
-    public void onDismissed(final Snackbar snackbar) {
-
     }
 }

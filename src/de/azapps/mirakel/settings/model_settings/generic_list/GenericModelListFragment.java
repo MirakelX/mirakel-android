@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
@@ -32,9 +31,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -42,7 +38,6 @@ import android.widget.ListView;
 import com.shamanland.fab.FloatingActionButton;
 
 import de.azapps.material_elements.utils.ThemeManager;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 
@@ -157,7 +152,7 @@ public class GenericModelListFragment extends PreferenceFragment implements View
         final View rootView = inflater.inflate(R.layout.generic_list_fragment, container, false);
         listView = (RecyclerView)rootView.findViewById(R.id.generic_list);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fabbutton);
-        fab.setColorFilter(Color.WHITE);
+        fab.setColorFilter(ThemeManager.getColor(R.attr.colorTextWhite));
         fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
         fab.setOnClickListener(this);
         fab.setVisibility(mCallbacks.hasFab() ? View.VISIBLE : View.GONE);

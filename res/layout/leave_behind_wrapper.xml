@@ -18,37 +18,50 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<LinearLayout
+<ViewSwitcher
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:background="@drawable/leave_behind_background_left"
-        android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/left_leave_behind"
-        android:src="@drawable/ic_delete_24px"
-        android:background="@android:color/transparent"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    </RelativeLayout>
-    <FrameLayout
-        android:id="@+id/leave_behind_center"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/swipe_child_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:background="@drawable/leave_behind_background_right"
-        android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/right_leave_behind"
-            android:src="@drawable/ic_delete_24px"
-            android:background="@android:color/transparent"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:background="@drawable/leave_behind_background_left"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/left_leave_behind"
+                android:src="@drawable/ic_delete_24px"
+                android:background="@android:color/transparent"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/leave_behind_center"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </RelativeLayout>
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:background="@drawable/leave_behind_background_right"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/right_leave_behind"
+                android:src="@drawable/ic_delete_24px"
+                android:background="@android:color/transparent"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/undo"
+        android:layout_width="match_parent"
+        android:background="@android:color/transparent"
+        android:textColor="?android:colorAccent"
+        android:text="@string/undo"
+        android:layout_height="42dp"/>
+
+</ViewSwitcher>

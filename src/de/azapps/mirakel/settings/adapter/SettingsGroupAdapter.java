@@ -94,7 +94,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
             if (onRemove.isPresent()) {
                 ll.setOnItemRemovedListener(new SwipeLinearLayout.OnItemRemoveListener() {
                     @Override
-                    public void onRemove(final int p, final int index) {
+                    public void onRemove(final int position, final int index) {
                         onRemove.get().onRemove(position, index);
                     }
                 });

@@ -99,7 +99,7 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
     protected void configureFab(final FloatingActionButton fab) {
         if (isFabVisible()) {
             fab.setColorStateList(ColorStateList.valueOf(ThemeManager.getAccentThemeColor()));
-            fab.setColorFilter(Color.WHITE);
+            fab.setColorFilter(ThemeManager.getColor(R.attr.colorTextWhite));
             fab.setImageResource(R.drawable.ic_delete_24px);
             fab.setOnClickListener(this);
         } else {

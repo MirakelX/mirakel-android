@@ -28,11 +28,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/property_spinner"/>
-
-    <FrameLayout
-        android:id="@+id/property_dialog_container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_weight="1"
+        android:layout_height="0px">
+        <FrameLayout
+            android:id="@+id/property_dialog_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
 
     <LinearLayout
         android:orientation="vertical"
