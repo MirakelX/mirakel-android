@@ -92,7 +92,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
+            minifyEnabled false
             proguardFile 'proguard-android.txt'
         }
         debug {
@@ -169,7 +169,6 @@ dependencies {
     compile project(':settings')
     compile project(':ilovefs-android')
     compile project(':acra')
-    compile project(':drag-sort-listview')
     compile project(':date-time-picker')
     compile project(':colorpicker')
     compile "com.jakewharton:butterknife:$butterknifeVersion"
