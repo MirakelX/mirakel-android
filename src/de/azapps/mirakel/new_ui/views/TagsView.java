@@ -25,21 +25,20 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.ThemeManager;
-import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakelandroid.R;
 
 public class TagsView extends LinearLayout {
 
     @InjectView(R.id.task_tags_title)
     TextView title;
-    @InjectView(R.id.task_tags_wrapper)
-    LinearLayout tagList;
     @InjectView(R.id.task_tag_add_view)
     AddTagView addTagView;
-    private Task task;
 
     public TagsView(final Context context) {
         this(context, null);
@@ -58,15 +57,18 @@ public class TagsView extends LinearLayout {
         title.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
-    private void rebuildLayout() {
-        addTagView.setTags(task);
+    public void setTags(final List<Tag> tags) {
+        addTagView.setTags(tags);
         invalidate();
         requestLayout();
     }
 
-    public void setTask(final Task task) {
-        this.task = task;
-        rebuildLayout();
+    public List<Tag> getTags() {
+        return addTagView.getTags();
+    }
+
+    public void setTagChangedListener(AddTagView.TagChangedListener tagChangedListener) {
+        addTagView.setTagChangedListener(tagChangedListener);
     }
 
 }

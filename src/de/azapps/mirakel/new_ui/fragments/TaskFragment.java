@@ -69,6 +69,7 @@ import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.new_ui.views.AddTagView;
 import de.azapps.mirakel.new_ui.views.DatesView;
@@ -334,7 +335,18 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                                dueRecurrenceEditListener, reminderRecurrenceEditListener);
         priorityChangeView.setPriority(task.getPriority());
         priorityChangeView.setOnPriorityChangeListener(this);
-        taskTags.setTask(task);
+        taskTags.setTags(task.getTags());
+        taskTags.setTagChangedListener(new AddTagView.TagChangedListener() {
+            @Override
+            public void onTagAdded(Tag tag) {
+                task.addTag(tag);
+            }
+
+            @Override
+            public void onTagRemoved(Tag tag) {
+                task.removeTag(tag);
+            }
+        });
         subtasksView.setSubtasks(task.getSubtasks());
         filesView.setFiles(task);
         filesView.setActivity(getActivity());

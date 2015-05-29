@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Rect;
@@ -44,6 +45,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -70,6 +73,7 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.SnackBarEventListener;
+import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
@@ -81,12 +85,14 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
+import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
 import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.new_ui.search.SearchObject;
+import de.azapps.mirakel.new_ui.views.AddTagView;
 import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
@@ -324,7 +330,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @OnLongClick({R.id.menu_delete, R.id.menu_move_task, R.id.menu_set_due, R.id.menu_set_priority, R.id.menu_set_tags})
-    public boolean onLongClick(View v) {
+    public boolean onLongClick(final View v) {
         final int[] screenPos = new int[2];
         final Rect displayFrame = new Rect();
         v.getLocationOnScreen(screenPos);
@@ -338,7 +344,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             final int screenWidth = getActivity().getResources().getDisplayMetrics().widthPixels;
             referenceX = screenWidth - referenceX; // mirror
         }
-        Toast cheatSheet = Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_SHORT);
+        final Toast cheatSheet = Toast.makeText(getActivity(), v.getContentDescription(),
+                                                Toast.LENGTH_SHORT);
         final int gravityY;
         if (midy < displayFrame.height()) {
             gravityY = Gravity.TOP;
@@ -524,7 +531,57 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_set_tags)
     void onSetTag() {
-        Toast.makeText(getActivity(), "Implement set tags", Toast.LENGTH_LONG).show();
+        final LayoutInflater li = LayoutInflater.from(getActivity());
+        final View wrapper = li.inflate(R.layout.add_tags_dialog, null);
+        final AddTagView addTagView = (AddTagView) wrapper.findViewById(R.id.add_tags_dialog);
+        addTagView.setTags(new ArrayList<Tag>(0));
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                final List<Tag> tags = addTagView.getTags();
+                final List<TaskOverview> tasks = mAdapter.getSelectedItems();
+                for (final TaskOverview taskOverview : tasks) {
+                    final Optional<Task> taskOptional = taskOverview.getTask();
+                    OptionalUtils.withOptional(taskOptional, new OptionalUtils.Procedure<Task>() {
+                        @Override
+                        public void apply(final Task task) {
+                            task.setTags(tags);
+                        }
+                    });
+                }
+            }
+        });
+        builder.setTitle(R.string.menu_set_tags);
+        final SoftKeyboard keyboard = new SoftKeyboard((ViewGroup) wrapper);
+        builder.setView(wrapper);
+
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                addTagView.performClick();
+                final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                                                   Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                addTagView.performClick();
+
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                                                   Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            }
+        });
+        dialog.show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                                      WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+
+
     }
 
     public void resetList() {
@@ -562,7 +619,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             final MenuInflater inflater = actionMode
                                           .getMenuInflater();
             inflater.inflate(R.menu.multiselect_tasks, menu);
-
             AnimationHelper.slideIn(getActivity(), multiselectMenu);
             ((MirakelActivity) getActivity()).moveFABUp(multiselectMenu.getHeight());
 
