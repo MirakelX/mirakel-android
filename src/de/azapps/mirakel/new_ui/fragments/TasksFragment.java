@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -31,9 +32,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,6 +67,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.material_elements.utils.ThemeManager;
@@ -92,7 +97,7 @@ import static com.google.common.base.Optional.of;
 
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     MultiSelectCursorAdapter.MultiSelectCallbacks<TaskOverview>,
-    ActionClickListener, TaskAdapter.TaskAdapterCallbacks {
+    TaskAdapter.TaskAdapterCallbacks {
 
     public static final String ARGUMENT_LIST = "list";
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
@@ -318,10 +323,34 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         showOrHideMoveTasks();
     }
 
-    @Override
-    public void onActionClicked(Snackbar snackbar) {
-        // TODO implement undo
+    @OnLongClick({R.id.menu_delete, R.id.menu_move_task, R.id.menu_set_due, R.id.menu_set_priority, R.id.menu_set_tags})
+    public boolean onLongClick(View v) {
+        final int[] screenPos = new int[2];
+        final Rect displayFrame = new Rect();
+        v.getLocationOnScreen(screenPos);
+        v.getWindowVisibleDisplayFrame(displayFrame);
+
+        final int width = v.getWidth();
+        final int height = v.getHeight();
+        final int midy = screenPos[1] + height / 2;
+        int referenceX = screenPos[0] + width / 2;
+        if (ViewCompat.getLayoutDirection(v) == ViewCompat.LAYOUT_DIRECTION_LTR) {
+            final int screenWidth = getActivity().getResources().getDisplayMetrics().widthPixels;
+            referenceX = screenWidth - referenceX; // mirror
+        }
+        Toast cheatSheet = Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_SHORT);
+        final int gravityY;
+        if (midy < displayFrame.height()) {
+            gravityY = Gravity.TOP;
+        } else {
+            gravityY = Gravity.BOTTOM;
+        }
+
+        cheatSheet.setGravity(gravityY | GravityCompat.END, referenceX, height);
+        cheatSheet.show();
+        return true;
     }
+
 
     @OnClick(R.id.menu_delete)
     void onDelete() {
@@ -467,12 +496,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_set_priority)
     void onSetPriority() {
-        Toast.makeText(getActivity(), "Implement set priority", Toast.LENGTH_LONG);
+        Toast.makeText(getActivity(), "Implement set priority", Toast.LENGTH_LONG).show();
     }
 
     @OnClick(R.id.menu_set_tags)
     void onSetTag() {
-        Toast.makeText(getActivity(), "Implement set tags", Toast.LENGTH_LONG);
+        Toast.makeText(getActivity(), "Implement set tags", Toast.LENGTH_LONG).show();
     }
 
     public void resetList() {

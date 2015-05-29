@@ -412,12 +412,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     }
 
     private void selectTask(final Task item) {
-        newFragment = TaskFragment.newInstance((Task) item);
+        newFragment = TaskFragment.newInstance(item);
         newFragment.show(getSupportFragmentManager(), "dialog");
-    }
-
-    private boolean shouldShowSpinner() {
-        return !mDrawerLayout.isPresent() || mDrawerLayout.get().isDrawerOpen(Gravity.START);
     }
 
     public void moveFABUp(final int height) {

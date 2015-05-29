@@ -42,7 +42,7 @@
             android:layout_alignParentBottom="true"
             android:id="@+id/tasks_multiselect_menu"
             android:orientation="horizontal"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:background="?colorCAB">
 
             <ImageButton
@@ -52,12 +52,14 @@
                 android:layout_weight="1"
                 android:layout_height="48dp"
                 android:title="@string/menu_delete_task"
+                android:contentDescription="@string/menu_delete_task"
                 android:src="@drawable/ic_delete_white_24dp" />
 
             <ImageButton
                 android:id="@+id/menu_move_task"
                 android:background="?android:attr/selectableItemBackground"
                 android:title="@string/menu_move_task"
+                android:contentDescription="@string/menu_move_task"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
@@ -67,6 +69,7 @@
                 android:id="@+id/menu_set_due"
                 android:background="?android:attr/selectableItemBackground"
                 android:title="@string/menu_set_due"
+                android:contentDescription="@string/menu_set_due"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
@@ -76,6 +79,7 @@
                 android:id="@+id/menu_set_priority"
                 android:background="?android:attr/selectableItemBackground"
                 android:title="@string/menu_set_priority"
+                android:contentDescription="@string/menu_set_priority"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
@@ -84,6 +88,7 @@
             <ImageButton
                 android:id="@+id/menu_set_tags"
                 android:title="@string/menu_set_tags"
+                android:contentDescription="@string/menu_set_tags"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_width="0dp"
                 android:layout_weight="1"
