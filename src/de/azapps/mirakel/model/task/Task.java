@@ -40,7 +40,6 @@ import java.util.List;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -934,6 +933,17 @@ public class Task extends TaskBase {
         } catch (final NoSuchListException e) {
             Log.w(Task.TAG, "List did vanish");
         }
+    }
+
+    public void setTags(final List<Tag> tags) {
+        for (Tag tag : getTags()) {
+            // super because we do not need to save() on every change
+            super.removeTag(tag);
+        }
+        for (Tag tag : tags) {
+            super.addTag(tag);
+        }
+        save();
     }
 
     private boolean saveTag(final Tag t) {
