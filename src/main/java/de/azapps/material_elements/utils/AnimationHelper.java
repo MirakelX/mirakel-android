@@ -11,35 +11,16 @@ import de.azapps.material_elements.R;
 public class AnimationHelper {
 
     public static void moveViewUp(final Context context, final View view, final int height) {
-        final TranslateAnimation anim = new TranslateAnimation(0, 0, 0, -height);
-        anim.setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration));
-        anim.setFillEnabled(true);
-        anim.setInterpolator(context, R.interpolator.decelerate_cubic);
-        // You do not need the animationlistener when moving it down. I do not understand it totally but it works the way it is now
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                // This is a bit hacky, but it works
-                view.layout(view.getLeft(), view.getTop() - height, view.getRight(), view.getBottom() - height);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        view.startAnimation(anim);
+        view.animate()
+        .translationYBy(-height)
+        .setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration))
+        .setInterpolator(new DecelerateInterpolator()).start();
     }
     public static void moveViewDown(final Context context, final View view, final int height) {
-        final TranslateAnimation anim = new TranslateAnimation(0, 0, -height, 0);
-        anim.setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration));
-        anim.setFillEnabled(true);
-        anim.setInterpolator(context, R.interpolator.accelerate_cubic);
-        view.startAnimation(anim);
+        view.animate()
+        .translationYBy(height)
+        .setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration))
+        .setInterpolator(new DecelerateInterpolator()).start();
     }
 
     public static void slideIn(final Context context, final View view) {
@@ -60,7 +41,7 @@ public class AnimationHelper {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                view.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.GONE);
             }
 
             @Override
