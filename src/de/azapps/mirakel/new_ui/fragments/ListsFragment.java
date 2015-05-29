@@ -424,6 +424,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
      */
     @Override
     public void onItemMoved(final int tmpFrom, final int tmpTo) {
+        mAdapter.onItemMoved(tmpFrom, tmpTo);
         // update divider position
         final int dividerPosition = MirakelModelPreferences.getDividerPosition();
         final int from;

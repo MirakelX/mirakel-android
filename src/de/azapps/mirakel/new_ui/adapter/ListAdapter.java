@@ -78,6 +78,7 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
     public void onBindViewHolder(final ListViewHolder holder, final Cursor cursor, int position) {
         if (position == MirakelModelPreferences.getDividerPosition()) {
             holder.viewSwitcher.setDisplayedChild(1);
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         } else {
             holder.viewSwitcher.setDisplayedChild(0);
             final ListMirakel listMirakel = getItemAt(position);
@@ -210,5 +211,26 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
         }
         cursor.moveToPosition(position);
         return fromCursor(cursor);
+    }
+
+    public void onItemMoved(final int from, final int to) {
+        if (from == to) {
+            return;
+        }
+        final boolean tmpVal = selectedItems.get(from);
+        selectedItems.delete(from);
+        final int start = Math.min(from, to);
+        final int end = Math.max(from, to);
+        final int delta = from > to ? 1 : -1;
+        for (int i = start; i <= end; i++) {
+            final boolean tmp = selectedItems.get(i);
+            selectedItems.delete(i);
+            if (tmp) {
+                selectedItems.put(i + delta, true);
+            }
+        }
+        if (tmpVal) {
+            selectedItems.put(to, true);
+        }
     }
 }
