@@ -20,6 +20,7 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
@@ -61,7 +62,8 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
         return R.layout.view_priority_change;
     }
 
-    public void setOnPriorityChangeListener(OnPriorityChangeListener onPriorityChangeListener) {
+    public void setOnPriorityChangeListener(@NonNull final OnPriorityChangeListener
+                                            onPriorityChangeListener) {
         this.onPriorityChangeListener = onPriorityChangeListener;
         rebuildLayout();
     }
