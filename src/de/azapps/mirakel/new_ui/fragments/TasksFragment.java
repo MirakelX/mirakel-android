@@ -496,7 +496,30 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_set_priority)
     void onSetPriority() {
-        Toast.makeText(getActivity(), "Implement set priority", Toast.LENGTH_LONG).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        String[] items = {getString(R.string.priority_2), getString(R.string.priority_1), getString(R.string.priority_0), getString(R.string.priority_m1), getString(R.string.priority_m2)};
+        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int i) {
+                final List<TaskOverview> tasks = mAdapter.getSelectedItems();
+                for (TaskOverview taskOverview : tasks) {
+                    Optional<Task> taskOptional = taskOverview.getTask();
+                    OptionalUtils.withOptional(taskOptional, new OptionalUtils.Procedure<Task>() {
+                        @Override
+                        public void apply(Task task) {
+                            task.setPriority(2 - i);
+                            task.save();
+                        }
+                    });
+                }
+                dialogInterface.dismiss();
+                if (mActionMode != null) {
+                    mActionMode.finish();
+                }
+            }
+        });
+        builder.setTitle(R.string.menu_set_priority);
+        builder.show();
     }
 
     @OnClick(R.id.menu_set_tags)

@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_delete_white_24dp" />
+                android:src="@drawable/ic_folder_download_white_24dp" />
 
             <ImageButton
                 android:id="@+id/menu_set_due"
@@ -83,7 +83,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_delete_white_24dp" />
+                android:src="@drawable/ic_alert_circle_white_24dp" />
 
             <ImageButton
                 android:id="@+id/menu_set_tags"
