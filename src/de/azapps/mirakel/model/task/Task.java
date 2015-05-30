@@ -936,12 +936,11 @@ public class Task extends TaskBase {
     }
 
     public void setTags(final List<Tag> tags) {
-        for (Tag tag : getTags()) {
-            // super because we do not need to save() on every change
-            super.removeTag(tag);
-        }
-        for (Tag tag : tags) {
-            super.addTag(tag);
+        if (super.tags.isPresent()) {
+            super.tags.get().clear();
+            super.tags.get().addAll(tags);
+        } else {
+            super.tags = of(tags);
         }
         save();
     }
@@ -953,7 +952,7 @@ public class Task extends TaskBase {
             // already exists;
             return false;
         }
-        if (getId() != 0) {
+        if (getId() != 0L) {
             final ContentValues cv = new ContentValues();
             cv.put("tag_id", t.getId());
             cv.put("task_id", getId());
