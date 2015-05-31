@@ -19,6 +19,7 @@
 
 package de.azapps.material_elements.utils;
 
+import android.support.v7.internal.view.menu.MenuBuilder;
 import android.util.Log;
 import android.view.Menu;
 
@@ -31,15 +32,15 @@ public class MenuHelper {
      * Source: http://stackoverflow.com/questions/18374183/how-to-show-icons-in-overflow-menu-in-actionbar
      */
     public static void showMenuIcons(final Menu menu) {
-        if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+        if (menu instanceof MenuBuilder) {
             try {
-                Method m = menu.getClass().getDeclaredMethod(
-                        "setOptionalIconsVisible", Boolean.TYPE);
+                final Method m = menu.getClass().getDeclaredMethod(
+                                     "setOptionalIconsVisible", Boolean.TYPE);
                 m.setAccessible(true);
                 m.invoke(menu, true);
-            } catch (NoSuchMethodException e) {
+            } catch (final NoSuchMethodException e) {
                 Log.e(TAG, "onMenuOpened", e);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
         }
