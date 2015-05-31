@@ -61,30 +61,35 @@ import com.larswerkman.colorpicker.SVBar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.tags.Tag;
-import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
 public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  View.OnClickListener,
     View.OnKeyListener, SoftKeyboard.SoftKeyboardChanged {
     private static final String TAG = "AddTagView";
     private final Drawable background;
-    @Nullable
-    private List<Tag> tags = Tag.all();
-    private ArrayAdapter<String> adapter;
+    private ArrayAdapter adapter;
+    private Set<String> adapterData = new HashSet<>();
     private List<Tag> currentTags = new ArrayList<>();
 
-
-    @Nullable
-    private Task task;
     private boolean setText = false;
     private String postfix = "";
 
+    @Nullable
+    private TagChangedListener tagChangedListener;
+
     private final float ITEM_HEIGHT = getItemHeight();
+
+    public interface TagChangedListener {
+        void onTagAdded(Tag tag);
+        void onTagRemoved(Tag tag);
+    }
 
     public AddTagView(final Context context) {
         this(context, null);
@@ -96,12 +101,14 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
 
     public AddTagView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        final List<String> tagNames = new ArrayList<>(tags.size());
+        final List<Tag> tags = Tag.all();
         for (final Tag t : tags) {
-            tagNames.add(t.getName());
+            adapterData.add(t.getName());
         }
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, tagNames);
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1,
+                                           new ArrayList<String>());
         setAdapter(adapter);
+        updateAdapter();
 
         background = getBackground();
         background.setColorFilter(ThemeManager.getPrimaryThemeColor(), PorterDuff.Mode.SRC_IN);
@@ -137,6 +144,14 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         clearFocus();
     }
 
+    public void setTagChangedListener(@Nullable TagChangedListener tagChangedListener) {
+        this.tagChangedListener = tagChangedListener;
+    }
+
+    @Nullable
+    public List<Tag> getTags() {
+        return currentTags;
+    }
 
     private void handleTagEdit(final Tag tag) {
         final View layout = inflate(getContext(),
@@ -161,52 +176,54 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
                 final Optional<Tag> other = Tag.getByName(tag.getName());
                 if (!other.isPresent() || (other.get().getId() == tag.getId())) {
                     tag.save();
-                } else if (task != null) {
-                    task.removeTag(tag);
-                    task.addTag(other.get());
+                } else if (tagChangedListener != null) {
+                    tagChangedListener.onTagRemoved(tag);
+                    tagChangedListener.onTagAdded(other.get());
                 }
                 rebuildText();
             }
         }).show();
     }
 
-
-    public void setTags(final @NonNull Task t) {
-        task = t;
-        setTags(t.getTags());
-    }
-
     public void setTags(final @NonNull List<Tag> tags) {
         for (final Tag tag : currentTags) {
-            adapter.add(tag.getName());
+            adapterData.add(tag.getName());
         }
         currentTags = tags;
         for (final Tag tag : currentTags) {
-            adapter.remove(tag.getName());
+            adapterData.remove(tag.getName());
         }
+        updateAdapter();
         rebuildText();
+    }
+
+    private void updateAdapter() {
+        adapter.clear();
+        adapter.addAll(adapterData);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         final OnFocusChangeListener onFocus = getOnFocusChangeListener();
-        setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(final View v, final boolean hasFocus) {
-                onFocus.onFocusChange(v, hasFocus);
-                if (hasFocus) {
-                    setBackground(background);
-                    setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-                } else {
-                    setInputType(InputType.TYPE_NULL);
-                    setBackground(new ColorDrawable(Color.TRANSPARENT));
-                    addTag(postfix);
-                    postfix = "";
-                    rebuildText();
+        if (onFocus != null) {
+            setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(final View v, final boolean hasFocus) {
+                    onFocus.onFocusChange(v, hasFocus);
+                    if (hasFocus) {
+                        setBackground(background);
+                        setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+                    } else {
+                        setInputType(InputType.TYPE_NULL);
+                        setBackground(new ColorDrawable(Color.TRANSPARENT));
+                        addTag(postfix);
+                        postfix = "";
+                        rebuildText();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -270,10 +287,11 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
             }
             if (lengthAfter < lengthBefore) {
                 for (final Tag t : tagsToRemove) {
-                    if (task != null) {
-                        task.removeTag(t);
+                    if (tagChangedListener != null) {
+                        tagChangedListener.onTagRemoved(t);
                     }
-                    adapter.add(t.getName());
+                    this.currentTags.remove(t);
+                    adapterData.add(t.getName());
                 }
             }
             if (lengthBefore < lengthAfter) {
@@ -301,7 +319,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
             } else {
                 postfix = "";
             }
-            if (hasPostfix && (lengthAfter < lengthBefore)) {
+            if (hasPostfix && (lengthAfter < lengthBefore) && !currentTags.isEmpty()) {
                 final String last = this.currentTags.get(this.currentTags.size() - 1).getName();
                 if (postfix.equals(last)) {
                     postfix = "";
@@ -310,6 +328,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
             if (!tagsToRemove.isEmpty() || !currentTags.isEmpty()) {
                 rebuildText();
             }
+            updateAdapter();
         }
     }
 
@@ -324,10 +343,11 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         } else {
             newTag = Tag.newTag(name);
         }
-        if (task != null) {
-            task.addTag(newTag);
+        if (tagChangedListener != null) {
+            tagChangedListener.onTagAdded(newTag);
         }
-        adapter.remove(newTag.getName());
+        currentTags.add(newTag);
+        adapterData.remove(newTag.getName());
     }
 
 
