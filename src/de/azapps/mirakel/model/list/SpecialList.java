@@ -20,7 +20,6 @@
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -28,17 +27,17 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.model.CursorGetter;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
@@ -108,17 +107,6 @@ public class SpecialList extends ListMirakel {
         } else {
             return this.defaultList.get();
         }
-    }
-
-    public static List<SpecialList> cursorToSpecialLists(final Cursor c) {
-        List<SpecialList> ret = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new SpecialList(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
     }
 
     public void setDefaultList(@NonNull final Optional<ListMirakel> defaultList) {
@@ -204,14 +192,19 @@ public class SpecialList extends ListMirakel {
                 values.put(ACTIVE, active);
                 values.put(DEFAULT_LIST, listId);
                 setId(insert(URI, values));
-                final Cursor c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ')').query(URI);
-                c.moveToFirst();
-                final int maxRGT = c.getInt(0);
-                c.close();
-                final ContentValues cv = new ContentValues();
-                cv.put(LFT, maxRGT + 1);
-                cv.put(RGT, maxRGT + 2);
-                update(URI, cv, ModelBase.ID + '=' + getId(), null);
+                final CursorWrapper c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ')').query(URI);
+                c.doWithCursor(new CursorWrapper.WithCursor() {
+                    @Override
+                    public void withOpenCursor(@NonNull final CursorGetter getter) {
+                        getter.moveToFirst();
+                        final int maxRGT = getter.getInt(0);
+                        final ContentValues cv = new ContentValues();
+                        cv.put(LFT, maxRGT + 1);
+                        cv.put(RGT, maxRGT + 2);
+                        update(URI, cv, ModelBase.ID + '=' + getId(), null);
+                    }
+                });
+
             }
         });
         return getSpecial(getId()).get();
@@ -221,7 +214,7 @@ public class SpecialList extends ListMirakel {
     public static SpecialList newSpecialList(final String name,
             final Optional<SpecialListsBaseProperty> whereQuery,
             final boolean active) {
-        final SpecialList s = new SpecialList(0, name, whereQuery, active, Optional.<ListMirakel>absent(),
+        final SpecialList s = new SpecialList(0L, name, whereQuery, active, Optional.<ListMirakel>absent(),
                                               null, SORT_BY.OPT,
                                               SYNC_STATE.ADD, 0,
                                               0, 0, Optional.<Uri>absent());
@@ -261,8 +254,8 @@ public class SpecialList extends ListMirakel {
      */
     @Override
     public void save() {
-        setSyncState(getSyncState() == SYNC_STATE.ADD ||
-                     getSyncState() == SYNC_STATE.IS_SYNCED ? getSyncState() : SYNC_STATE.NEED_SYNC);
+        setSyncState(((getSyncState() == SYNC_STATE.ADD) ||
+                      (getSyncState() == SYNC_STATE.IS_SYNCED)) ? getSyncState() : SYNC_STATE.NEED_SYNC);
         update(URI, getContentValues(),
                ModelBase.ID + " = " + Math.abs(getId()), null);
     }
@@ -281,13 +274,13 @@ public class SpecialList extends ListMirakel {
                     setActive(false);
                     final ContentValues values = new ContentValues();
                     values.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
-                    update(URI, values, ModelBase.ID + "=" + id, null);
+                    update(URI, values, ModelBase.ID + '=' + id, null);
                 } else {
-                    delete(URI, ModelBase.ID + "=" + id, null);
+                    delete(URI, ModelBase.ID + '=' + id, null);
                 }
                 final ContentValues cv = new ContentValues();
                 cv.put("TABLE", TABLE);
-                update(MirakelInternalContentProvider.UPDATE_LIST_ORDER_URI, cv, LFT + ">" + getLft(), null);
+                update(MirakelInternalContentProvider.UPDATE_LIST_ORDER_URI, cv, LFT + '>' + getLft(), null);
             }
         });
     }
@@ -371,7 +364,7 @@ public class SpecialList extends ListMirakel {
         return s.get();
     }
 
-    private static AccountMirakel getAccountFromCursor(final Cursor cursor) {
+    private static AccountMirakel getAccountFromCursor(final CursorGetter cursor) {
         final int columnIndex = cursor.getColumnIndex(ACCOUNT_ID);
         if (columnIndex >= 0) {
             return AccountMirakel.get(cursor.getInt(columnIndex)).or(AccountMirakel.getLocal());
@@ -384,19 +377,16 @@ public class SpecialList extends ListMirakel {
      *
      * @param c
      */
-    public SpecialList(final Cursor c) {
-        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))), "", "",
-              SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
-              c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
-              getAccountFromCursor(c), FileUtils.parsePath(c.getString(c.getColumnIndex(ICON_PATH))));
-        final CursorGetter cursorGetter = new CursorGetter(c);
-        whereString = cursorGetter.getString(WHERE_QUERY);
-        setActive(cursorGetter.getBoolean(ACTIVE));
-        setDefaultList(ListMirakel.get(cursorGetter.getInt(DEFAULT_LIST)));
-        setDefaultDate(cursorGetter.isNull(DEFAULT_DUE) ? Optional.<Integer>absent() : Optional.of(
-                           cursorGetter.getInt(
-                               DEFAULT_DUE)));
+    public SpecialList(final @NonNull CursorGetter c) {
+        super(c.getLong(ID), c.getString(NAME),
+              SORT_BY.fromShort(c.getShort(SORT_BY_FIELD)), "", "",
+              SYNC_STATE.valueOf(c.getShort(DatabaseHelper.SYNC_STATE_FIELD)),
+              c.getInt(LFT), c.getInt(RGT), c.getInt(COLOR),
+              getAccountFromCursor(c), FileUtils.parsePath(c.getString(ICON_PATH)));
+        this.whereString = c.getString(WHERE_QUERY);
+        this.active = c.getBoolean(ACTIVE);
+        this.defaultList = ListMirakel.get(c.getLong(DEFAULT_LIST));
+        this.defaultDate = c.getOptional(DEFAULT_DUE, Integer.class);
     }
 
 
@@ -409,15 +399,15 @@ public class SpecialList extends ListMirakel {
     public static final int NULL_DATE_VALUE = -1337;
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeByte(active ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.defaultList.orNull(), 0);
         dest.writeInt(this.defaultDate.or(NULL_DATE_VALUE));
         dest.writeString(this.whereString);
-        dest.writeInt(this.sortBy == null ? -1 : this.sortBy.ordinal());
+        dest.writeInt((this.sortBy == null) ? -1 : this.sortBy.ordinal());
         dest.writeString(this.createdAt);
         dest.writeString(this.updatedAt);
-        dest.writeInt(this.syncState == null ? -1 : this.syncState.ordinal());
+        dest.writeInt((this.syncState == null) ? -1 : this.syncState.ordinal());
         dest.writeInt(this.lft);
         dest.writeInt(this.rgt);
         dest.writeInt(this.color);
@@ -431,16 +421,16 @@ public class SpecialList extends ListMirakel {
         this.active = in.readByte() != 0;
         this.defaultList = fromNullable((ListMirakel) in.readParcelable(
                                             ListMirakel.class.getClassLoader()));
-        int tmpDefaultDate = in.readInt();
-        this.defaultDate = tmpDefaultDate == NULL_DATE_VALUE ? Optional.<Integer>absent() : Optional.of(
+        final int tmpDefaultDate = in.readInt();
+        this.defaultDate = (tmpDefaultDate == NULL_DATE_VALUE) ? Optional.<Integer>absent() : Optional.of(
                                tmpDefaultDate);
         this.whereString = in.readString();
-        int tmpSortBy = in.readInt();
-        this.sortBy = tmpSortBy == -1 ? null : SORT_BY.values()[tmpSortBy];
+        final int tmpSortBy = in.readInt();
+        this.sortBy = (tmpSortBy == -1) ? null : SORT_BY.values()[tmpSortBy];
         this.createdAt = in.readString();
         this.updatedAt = in.readString();
-        int tmpSyncState = in.readInt();
-        this.syncState = tmpSyncState == -1 ? null : SYNC_STATE.values()[tmpSyncState];
+        final int tmpSyncState = in.readInt();
+        this.syncState = (tmpSyncState == -1) ? null : SYNC_STATE.values()[tmpSyncState];
         this.lft = in.readInt();
         this.rgt = in.readInt();
         this.color = in.readInt();
@@ -451,11 +441,11 @@ public class SpecialList extends ListMirakel {
     }
 
     public static final Creator<SpecialList> CREATOR = new Creator<SpecialList>() {
-        public SpecialList createFromParcel(Parcel source) {
+        public SpecialList createFromParcel(final Parcel source) {
             return new SpecialList(source);
         }
 
-        public SpecialList[] newArray(int size) {
+        public SpecialList[] newArray(final int size) {
             return new SpecialList[size];
         }
     };

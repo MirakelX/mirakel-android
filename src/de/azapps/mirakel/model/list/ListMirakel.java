@@ -21,7 +21,6 @@ package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -48,6 +47,9 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.query_builder.Cursor2List;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
@@ -66,6 +68,8 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
      * This is used by the Spinner in the MirakelActivity to identify the All Accounts selection
      */
     public static final int ALL_ACCOUNTS_ID = 0;
+    private static final CursorWrapper.CursorConverter<List<ListMirakel>> LIST_FROM_CURSOR = new
+    Cursor2List<>(ListMirakel.class);
 
     public static class ListAlreadyExistsException extends Exception {
         public ListAlreadyExistsException(String detailMessage) {
@@ -178,24 +182,11 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @NonNull
     public static List<ListMirakel> all(final boolean withSpecial) {
-        final Cursor cursor = allCursor(withSpecial);
-        final List<ListMirakel> lists = new ArrayList<>(cursor.getCount());
-        while (cursor.moveToNext()) {
-            lists.add(new ListMirakel(cursor));
-        }
-        cursor.close();
-        return lists;
+        return allCursor(withSpecial).doWithCursor(LIST_FROM_CURSOR);
     }
 
-    public static List<ListMirakel> cursorToList(Cursor c) {
-        final List<ListMirakel> ret = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new ListMirakel(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
+    public static List<ListMirakel> cursorToList(final @NonNull CursorWrapper c) {
+        return  c.doWithCursor(LIST_FROM_CURSOR);
     }
 
     @NonNull
@@ -234,12 +225,13 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     }
 
     @NonNull
-    public static Cursor allCursor(final boolean withSpecial) {
+    public static CursorWrapper allCursor(final boolean withSpecial) {
         return  allCursor(Optional.<AccountMirakel>absent(), withSpecial);
     }
     @NonNull
-    public static Cursor allCursor(@NonNull final Optional<AccountMirakel> accountMirakelOptional,
-                                   final boolean withSpecial) {
+    public static CursorWrapper allCursor(@NonNull final Optional<AccountMirakel>
+                                          accountMirakelOptional,
+                                          final boolean withSpecial) {
         if (withSpecial) {
             return allWithSpecialMQB(Optional.<AccountMirakel>absent()).query(
                        MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
@@ -257,15 +249,15 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
      *
      * @param c cursor
      */
-    public ListMirakel(final Cursor c) {
-        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              SORT_BY.fromShort(c.getShort(c.getColumnIndex(SORT_BY_FIELD))),
-              c.getString(c.getColumnIndex(DatabaseHelper.CREATED_AT)),
-              c.getString(c.getColumnIndex(DatabaseHelper.UPDATED_AT)),
-              SYNC_STATE.valueOf(c.getShort(c.getColumnIndex(DatabaseHelper.SYNC_STATE_FIELD))),
-              c.getInt(c.getColumnIndex(LFT)), c.getInt(c.getColumnIndex(RGT)), c.getInt(c.getColumnIndex(COLOR)),
-              c.getInt(c.getColumnIndex(ACCOUNT_ID)),
-              FileUtils.parsePath(c.getString(c.getColumnIndex(ICON_PATH))));
+    public ListMirakel(final @NonNull CursorGetter c) {
+        super(c.getLong(ID), c.getString(NAME),
+              SORT_BY.fromShort(c.getShort(SORT_BY_FIELD)),
+              c.getString(DatabaseHelper.CREATED_AT),
+              c.getString(DatabaseHelper.UPDATED_AT),
+              SYNC_STATE.valueOf(c.getShort(DatabaseHelper.SYNC_STATE_FIELD)),
+              c.getInt(LFT), c.getInt(RGT), c.getInt(COLOR),
+              c.getInt(ACCOUNT_ID),
+              FileUtils.parsePath(c.getString(ICON_PATH)));
     }
 
     @NonNull
@@ -412,14 +404,18 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
             public void exec() {
                 setId(insert(URI, values));
                 // Dirty workaround
-                final Cursor c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ')').query(URI);
-                c.moveToFirst();
-                final int maxRGT = c.getInt(0);
-                final ContentValues cv = new ContentValues();
-                cv.put(LFT, maxRGT + 1);
-                cv.put(RGT, maxRGT + 2);
-                update(URI, cv, ModelBase.ID + '=' + getId(), null);
-                c.close();
+                final CursorWrapper c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ')').query(URI);
+                c.doWithCursor(new CursorWrapper.WithCursor() {
+                    @Override
+                    public void withOpenCursor(@NonNull final CursorGetter getter) {
+                        getter.moveToFirst();
+                        final int maxRGT = getter.getInt(0);
+                        final ContentValues cv = new ContentValues();
+                        cv.put(LFT, maxRGT + 1);
+                        cv.put(RGT, maxRGT + 2);
+                        update(URI, cv, ModelBase.ID + '=' + getId(), null);
+                    }
+                });
             }
         });
         final ListMirakel newList = get(getId()).get();
@@ -477,9 +473,10 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @NonNull
     public static ListMirakel safeFirst() {
-        Optional<ListMirakel> s = new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
-                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
-                        Sorting.ASC).get(ListMirakel.class);
+        final Optional<ListMirakel> s = new MirakelQueryBuilder(context).and(
+            DatabaseHelper.SYNC_STATE_FIELD,
+            Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
+                    Sorting.ASC).get(ListMirakel.class);
         if (!s.isPresent()) {
             return getInboxList(MirakelModelPreferences.getDefaultAccount());
         } else {
@@ -530,8 +527,8 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
      * @return
      */
     public long countTasks() {
-        MirakelQueryBuilder qb;
-        if (getId() < 0) {
+        final MirakelQueryBuilder qb;
+        if (getId() < 0L) {
             final Optional<SpecialList> specialList = toSpecial();
             qb = specialList.isPresent() ? specialList.get().getWhereQueryForTasks() : new MirakelQueryBuilder(
                      context);
@@ -667,8 +664,8 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     public Optional<SpecialList> toSpecial() {
         final Optional<SpecialList> specialListOptional = SpecialList.getSpecial(getId());
-        if (specialListOptional.isPresent() && accountID != ALL_ACCOUNTS_ID &&
-            getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
+        if (specialListOptional.isPresent() && (accountID != ALL_ACCOUNTS_ID) &&
+            (getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL)) {
             specialListOptional.get().setAccount(getAccount());
         }
         return specialListOptional;
@@ -744,7 +741,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         dest.writeString(this.getName());
     }
 
-    private ListMirakel(Parcel in) {
+    private ListMirakel(final Parcel in) {
         final int tmpSortBy = in.readInt();
         this.sortBy = SORT_BY.values()[tmpSortBy];
         this.createdAt = in.readString();
@@ -772,8 +769,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     };
 
     public boolean isEditable() {
-        // TODO This is buggy I think we need to refactor the ListMirakel handling
-        if (getId() < 0 || accountID == INVALID_ID) {
+        if (isSpecial() || (accountID == INVALID_ID)) {
             return true;
         } else {
             return getAccount().getType().isListEditable();

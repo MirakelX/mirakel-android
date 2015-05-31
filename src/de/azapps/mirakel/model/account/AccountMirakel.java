@@ -45,6 +45,9 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.Cursor2List;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
@@ -54,6 +57,8 @@ import static com.google.common.base.Optional.fromNullable;
 public class AccountMirakel extends AccountBase {
     private static final List<Integer> MOVABLE_TO_ACCOUNT_TYPES = new ArrayList<>(Arrays.asList(
                 ACCOUNT_TYPES.LOCAL.toInt(), ACCOUNT_TYPES.TASKWARRIOR.toInt()));
+    private static final CursorWrapper.CursorConverter<List<AccountMirakel>> LIST_FROM_CURSOR = new
+    Cursor2List<>(AccountMirakel.class);
 
     public enum ACCOUNT_TYPES {
         ALL, CALDAV, LOCAL, TASKWARRIOR;
@@ -174,21 +179,12 @@ public class AccountMirakel extends AccountBase {
         return URI;
     }
 
-    public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
-        final List<AccountMirakel> l = new ArrayList<>(c.getCount());
-        if (c.moveToFirst()) {
-            do {
-                l.add(new AccountMirakel(c));
-            } while (c.moveToNext());
-        }
-        return l;
-    }
 
 
-    public AccountMirakel(final Cursor c) {
-        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              ACCOUNT_TYPES.parseInt(c.getInt(c.getColumnIndex(TYPE))), c.getInt(c.getColumnIndex(ENABLED)) == 1,
-              fromNullable(c.getString(c.getColumnIndex(SYNC_KEY))));
+    public AccountMirakel(final CursorGetter c) {
+        super(c.getInt(ID), c.getString(NAME),
+              ACCOUNT_TYPES.parseInt(c.getInt(TYPE)), c.getInt(ENABLED) == 1,
+              fromNullable(c.getString(SYNC_KEY)));
     }
 
     public static Optional<AccountMirakel> get(final Account account) {
@@ -226,14 +222,14 @@ public class AccountMirakel extends AccountBase {
     public static Cursor allCursorWithAllAccounts() {
         final MatrixCursor extras = new MatrixCursor(allColumns);
         extras.addRow(new String[] {"-1", ACCOUNT_TYPES.ALL.typeName(context), null, String.valueOf(ACCOUNT_TYPES.ALL.toInt()), "1", null});
-        final Cursor allCursor = allCursor();
-        return new MergeCursor(new Cursor[] {extras, allCursor});
+        final CursorWrapper allCursor = allCursor();
+        return new MergeCursor(new Cursor[] {extras, allCursor.getRawCursor()});
     }
 
-    public static Cursor allCursor() {
+    public static CursorWrapper allCursor() {
         return new MirakelQueryBuilder(context).query(MirakelInternalContentProvider.ACCOUNT_URI);
     }
-    public static Cursor allMovableToCursor() {
+    public static CursorWrapper allMovableToCursor() {
         return allMovableToMQB().query(MirakelInternalContentProvider.ACCOUNT_URI);
     }
 
@@ -274,7 +270,7 @@ public class AccountMirakel extends AccountBase {
     public static void update(final Account[] accounts) {
         final List<AccountMirakel> accountList = AccountMirakel.all();
         final long countRemotes = AccountMirakel.countRemoteAccounts();
-        final Map<String, AccountMirakel> map = new HashMap<>();
+        final Map<String, AccountMirakel> map = new HashMap<>(accountList.size());
         for (final AccountMirakel a : accountList) {
             map.put(a.getName(), a);
         }
@@ -298,17 +294,17 @@ public class AccountMirakel extends AccountBase {
             }
         }
         final long countRemotesNow = AccountMirakel.countRemoteAccounts();
-        if (countRemotes == 0 && countRemotesNow == 1) {
+        if ((countRemotes == 0L) && (countRemotesNow == 1L)) {
             // If we just added our first remote account we want to set it as
             // the default one.
             final List<AccountMirakel> remotes = AccountMirakel.getRemote();
             // This could happen, the operations are not atomar
-            if (remotes.size() != 0 && remotes.get(0).getType() != ACCOUNT_TYPES.CALDAV) {
+            if ((!remotes.isEmpty()) && (remotes.get(0).getType() != ACCOUNT_TYPES.CALDAV)) {
                 final AccountMirakel account = remotes.get(0);
                 MirakelModelPreferences.setDefaultAccount(account);
                 ListMirakel.setDefaultAccount(account);
             }
-        } else if (countRemotes == 1 && countRemotesNow > 1) {
+        } else if ((countRemotes == 1L) && (countRemotesNow > 1L)) {
             // If we have now more than one remote account we want to show the
             // account name in the listfragment
             MirakelCommonPreferences.setShowAccountName(true);
@@ -368,7 +364,7 @@ public class AccountMirakel extends AccountBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(this.type.toInt());
         dest.writeByte(enabled ? (byte) 1 : (byte) 0);
         dest.writeString(this.syncKey.orNull());
@@ -386,11 +382,11 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static final Creator<AccountMirakel> CREATOR = new Creator<AccountMirakel>() {
-        public AccountMirakel createFromParcel(Parcel source) {
+        public AccountMirakel createFromParcel(final Parcel source) {
             return new AccountMirakel(source);
         }
 
-        public AccountMirakel[] newArray(int size) {
+        public AccountMirakel[] newArray(final int size) {
             return new AccountMirakel[size];
         }
     };

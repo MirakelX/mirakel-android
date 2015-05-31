@@ -22,7 +22,6 @@ package de.azapps.mirakel.model.query_builder;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -40,7 +39,6 @@ import java.util.List;
 
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
-import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
@@ -107,18 +105,21 @@ public class MirakelQueryBuilder {
 
     public long count(final Uri uri) {
         select("count(*)");
-        final Cursor c = query(uri);
-        long count = 0L;
-        if (c.moveToFirst()) {
-            count = c.getLong(0);
-        }
-        c.close();
-        return count;
+        return query(uri).doWithCursor(new CursorWrapper.CursorConverter<Long>() {
+            @Override
+            public Long convert(@NonNull CursorGetter getter) {
+                if (getter.moveToFirst()) {
+                    return getter.getLong(0);
+                } else {
+                    return 0L;
+                }
+            }
+        });
     }
 
 
     private <T extends ModelBase> String getId(T filter) {
-        return filter == null ? null : String.valueOf(filter.getId());
+        return (filter == null) ? null : String.valueOf(filter.getId());
     }
 
     /**
@@ -216,7 +217,7 @@ public class MirakelQueryBuilder {
         if (NOT.contains(op)) {
             not = "NOT ";
         }
-        if (op == Operation.IN || op == Operation.NOT_IN) {
+        if ((op == Operation.IN) || (op == Operation.NOT_IN)) {
             appendConjunction(conjunction);
             this.selection.append(not).append(field).append(' ')
             .append(op.toString()).append('(');
@@ -286,14 +287,14 @@ public class MirakelQueryBuilder {
         return this.selectionArgs;
     }
 
-    public Cursor query(final Uri uri) {
+    public CursorWrapper query(final Uri uri) {
         final ContentResolver contentResolver = this.context
                                                 .getContentResolver();
-        return contentResolver.query(uri, this.projection
-                                     .toArray(new String[this.projection.size()]), this.selection
-                                     .toString(), this.selectionArgs
-                                     .toArray(new String[this.selectionArgs.size()]), this.sortOrder
-                                     .toString());
+        return new CursorWrapper(contentResolver.query(uri, this.projection
+                                 .toArray(new String[this.projection.size()]), this.selection
+                                 .toString(), this.selectionArgs
+                                 .toArray(new String[this.selectionArgs.size()]), this.sortOrder
+                                 .toString()));
     }
 
     // and
@@ -317,7 +318,7 @@ public class MirakelQueryBuilder {
         if (filter == null) {
             return and (field, op, Arrays.asList(new String[] { null }),
                         new ArrayList<String>(0));
-        } else if (op == Operation.IN || op == Operation.NOT_IN) {
+        } else if ((op == Operation.IN) || (op == Operation.NOT_IN)) {
             return appendCondition(Conjunction.AND, field, op, Collections.singletonList(filter),
                                    new ArrayList<String>(0));
         }
@@ -452,32 +453,21 @@ public class MirakelQueryBuilder {
         return this;
     }
 
-    public static <T> T cursorToObject(final Cursor c, final Class<T> clazz) {
+    public static <T> T cursorToObject(final CursorGetter c, final Class<T> clazz) {
         try {
-            final Constructor<T> constructor = clazz.getConstructor(Cursor.class);
+            final Constructor<T> constructor = clazz.getConstructor(CursorGetter.class);
             return constructor.newInstance(c);
         } catch (final NoSuchMethodException e) {
-            Log.wtf(TAG, "go and implement a the constructor " + clazz.getCanonicalName() + "(Cursor)");
             throw new IllegalArgumentException("go and implement a the constructor " + clazz.getCanonicalName()
-                                               + "(Cursor)", e);
+                                               + "(CursorWrapper.CursorGetter)", e);
         } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            Log.wtf(TAG, "go and make the constructor " + clazz.getCanonicalName() + "(Cursor) accessible");
             throw new IllegalArgumentException("go and make the constructor " + clazz.getCanonicalName() +
-                                               "(Cursor) accessible", e);
+                                               "(CursorWrapper.CursorGetter) accessible", e);
         }
     }
 
     public <T extends ModelBase> List<T> getList(final Class<T> clazz) {
-        final Cursor c = query(setupQueryBuilder(clazz));
-        final List<T> l = new ArrayList<>(c.getCount());
-        if (c.moveToFirst()) {
-            do {
-                final T obj = cursorToObject(c, clazz);
-                l.add(obj);
-            } while (c.moveToNext());
-        }
-        c.close();
-        return l;
+        return query(setupQueryBuilder(clazz)).doWithCursor(new Cursor2List<T>(clazz));
     }
 
     @NonNull
@@ -488,13 +478,17 @@ public class MirakelQueryBuilder {
 
     @NonNull
     public <T extends ModelBase> Optional<T> get(final Class<T> clazz) {
-        Optional<T> a = absent();
-        final Cursor c = query(setupQueryBuilder(clazz));
-        if (c.moveToFirst()) {
-            a = of(cursorToObject(c, clazz));
-        }
-        c.close();
-        return a;
+        return query(setupQueryBuilder(clazz)).doWithCursor(new
+        CursorWrapper.CursorConverter<Optional<T>>() {
+            @Override
+            public Optional<T> convert(@NonNull final CursorGetter getter) {
+                if (getter.moveToFirst()) {
+                    return of(cursorToObject(getter, clazz));
+                } else {
+                    return absent();
+                }
+            }
+        });
     }
 
     private <T> Uri setupQueryBuilder(final Class<T> clazz) {
@@ -502,8 +496,6 @@ public class MirakelQueryBuilder {
         try {
             uri = (Uri) clazz.getField("URI").get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            Log.wtf(TAG,
-                    "go and implement a URI  for" + clazz.getCanonicalName());
             throw new IllegalArgumentException("go and implement a URI for "
                                                + clazz.getCanonicalName(), e);
         }
@@ -513,9 +505,6 @@ public class MirakelQueryBuilder {
                 this.projection = Arrays.asList((String[]) clazz.getField(
                                                     "allColumns").get(null));
             } catch (NoSuchFieldException | IllegalAccessException e) {
-                Log.wtf(TAG,
-                        "go and implement allColumns for "
-                        + clazz.getCanonicalName());
                 throw new IllegalArgumentException(
                     "go and implement allColumns for "
                     + clazz.getCanonicalName(), e);

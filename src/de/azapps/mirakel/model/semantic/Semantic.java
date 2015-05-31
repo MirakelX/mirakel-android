@@ -21,7 +21,6 @@ package de.azapps.mirakel.model.semantic;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -29,7 +28,6 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -51,6 +49,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
@@ -71,22 +70,12 @@ public class Semantic extends SemanticBase {
     public static final String TABLE = "semantic_conditions";
     public static final Uri URI = MirakelInternalContentProvider.SEMANTIC_URI;
 
-    public Semantic(final Cursor c) {
-        super(c.getLong(c.getColumnIndex(ID)), c.getString(c
-                .getColumnIndex(CONDITION)));
-        if (!c.isNull(c.getColumnIndex(PRIORITY))) {
-            priority = of(c.getInt(c.getColumnIndex(PRIORITY)));
-        }
-        if (!c.isNull(c.getColumnIndex(DUE))) {
-            due = of(c.getInt(c.getColumnIndex(DUE)));
-        }
-        if (!c.isNull(c.getColumnIndex(LIST))) {
-            list = ListMirakel.get(c.getLong(c.getColumnIndex(LIST)));
-        }
-        if (!c.isNull(c.getColumnIndex(WEEKDAY))) {
-            weekday = of(c.getInt(c.getColumnIndex(WEEKDAY)));
-        }
-
+    public Semantic(final @NonNull CursorGetter c) {
+        super(c.getLong(ID), c.getString(CONDITION));
+        priority = c.getOptional(PRIORITY, Integer.class);
+        due = c.getOptional(DUE, Integer.class);
+        list = c.getOptional(LIST, ListMirakel.class);
+        weekday = c.getOptional(WEEKDAY, Integer.class);
     }
 
     private Semantic(final Parcel in) {
@@ -116,22 +105,11 @@ public class Semantic extends SemanticBase {
 
     // Static
 
-    @NonNull
-    public static List<Semantic> cursorToSemanticList(final Cursor c) {
-        final List<Semantic> ret = new ArrayList<>(c.getCount());
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new Semantic(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
-    }
 
     @NonNull
     public static Task createTask(final String taskName, final Optional<ListMirakel> currentList,
                                   final boolean useSemantic) {
-        Task stubTask = createStubTask(taskName, currentList, useSemantic);
+        final Task stubTask = createStubTask(taskName, currentList, useSemantic);
         try {
             return stubTask.create();
         } catch (final DefinitionsHelper.NoSuchListException e) {
@@ -143,7 +121,7 @@ public class Semantic extends SemanticBase {
     }
 
     private static Calendar getNormalizedCalendar() {
-        Calendar due = new GregorianCalendar();
+        final Calendar due = new GregorianCalendar();
         due.set(Calendar.HOUR_OF_DAY, 0);
         due.set(Calendar.MINUTE, 0);
         due.set(Calendar.SECOND, 0);
@@ -156,7 +134,7 @@ public class Semantic extends SemanticBase {
             task.setPriority(getPriority().get());
         }
         if (getDue().isPresent()) {
-            Calendar due = getNormalizedCalendar();
+            final Calendar due = getNormalizedCalendar();
             due.add(Calendar.DAY_OF_MONTH, getDue().get());
             task.setDue(of(due));
         }
@@ -164,7 +142,7 @@ public class Semantic extends SemanticBase {
             task.setList(getList().get());
         }
         if (getWeekday().isPresent()) {
-            Calendar due = getNormalizedCalendar();
+            final Calendar due = getNormalizedCalendar();
             int nextWeekday = getWeekday().get() + 1;
             // Because there are some dudes which means, sunday is the
             // first day of the week… That's obviously wrong!
@@ -181,7 +159,7 @@ public class Semantic extends SemanticBase {
     public static void applySemantics(@NonNull final Task task, @NonNull String taskName) {
         final String lowername = taskName.toLowerCase(Locale.getDefault());
         final String[] words = SPLIT_BY_WHITESPACE.split(lowername);
-        for (String word : words) {
+        for (final String word : words) {
             final Semantic semantic = semantics.get(word);
             if (semantic == null) {
                 break;
@@ -205,9 +183,7 @@ public class Semantic extends SemanticBase {
     public static Task createStubTask(final @NonNull String taskName,
                                       @NonNull Optional<ListMirakel> currentList,
                                       final boolean useSemantic) {
-        ListMirakel listMirakel;
         Optional<Calendar> due = absent();
-        int prio = 0;
         if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
                 final SpecialList slist = currentList.get().toSpecial().get();
@@ -227,7 +203,7 @@ public class Semantic extends SemanticBase {
                     final SpecialListsPriorityProperty prop = (SpecialListsPriorityProperty) slist
                             .getWhere().get();
                     final boolean not = prop.isSet();
-                    prio = not ? -2 : 2;
+                    int prio = not ? -2 : 2;
                     final List<Integer> content = prop.getContent();
                     Collections.sort(content);
                     final int length = prop.getContent().size();
@@ -243,12 +219,13 @@ public class Semantic extends SemanticBase {
                 currentList = of(getDefaultList(of(currentList.get().getAccount())));
             }
         }
+        final ListMirakel listMirakel;
         if (!currentList.isPresent()) {
             listMirakel = getDefaultList(Optional.<AccountMirakel>absent());
         } else {
             listMirakel = currentList.get();
         }
-        Task task = new Task(taskName, listMirakel, due, 0);
+        final Task task = new Task(taskName, listMirakel, due, 0);
         if (useSemantic) {
             applySemantics(task, taskName);
         }

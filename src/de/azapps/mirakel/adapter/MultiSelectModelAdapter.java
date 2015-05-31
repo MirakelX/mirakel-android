@@ -35,8 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.azapps.mirakel.model.ModelBase;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter {
@@ -65,9 +66,9 @@ public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(final View view, final Context context, final Cursor cursor) {
         final ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
-        viewHolder.model = MirakelQueryBuilder.cursorToObject(cursor, tClass);
+        viewHolder.model = MirakelQueryBuilder.cursorToObject(CursorGetter.unsafeGetter(cursor), tClass);
         viewHolder.name.setText(cursor.getString(cursor.getColumnIndex(ModelBase.NAME)));
         viewHolder.checkBox.setChecked(selectedItems.contains(viewHolder.model));
         viewHolder.checkBox.setTag(viewHolder.model);

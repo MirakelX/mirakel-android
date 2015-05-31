@@ -24,12 +24,12 @@ import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
@@ -65,6 +65,9 @@ import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.query_builder.Cursor2List;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
@@ -677,10 +680,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             final AccountManager accountManager = AccountManager
                                                   .get(this.context);
-            Cursor c = db.query("account",
-                                AccountMirakel.allColumns, null, null, null, null, null);
-            final List<AccountMirakel> accounts = AccountMirakel.cursorToAccountList(c);
-            c.close();
+            List<AccountMirakel> accounts = new CursorWrapper(db.query("account",
+                    AccountMirakel.allColumns, null, null, null, null,
+                    null)).doWithCursor(new Cursor2List<>(AccountMirakel.class));
             for (final AccountMirakel a : accounts) {
                 if (a.getType() == ACCOUNT_TYPES.TASKWARRIOR) {
                     final Account account = a.getAndroidAccount(this.context);
@@ -708,58 +710,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + "whereQuery"
                        + ",'date(due',\"date(due,'unixepoch'\")");
         case 34:
-            Cursor cursor = db.query("special_lists", new String[] { "_id",
-                                     "whereQuery"
-                                                                   }, null, null, null, null, null);
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor
-                 .moveToNext()) {
-                final int id = cursor.getInt(0);
-                final ContentValues contentValues = new ContentValues();
-                final String[] where = cursor.getString(1).toLowerCase()
-                                       .split("and");
-                final Map<String, SpecialListsBaseProperty> whereMap = new HashMap<>(where.length);
-                for (final String p : where) {
-                    try {
-                        if (p.contains("list_id")) {
-                            whereMap.put("list_id", CompatibilityHelper
-                                         .getSetProperty(p,
-                                                         SpecialListsListProperty.class,
-                                                         "list_id"));
-                        } else if (p.contains("name")) {
-                            whereMap.put("name",
-                                         CompatibilityHelper.getStringProperty(p,
-                                                 SpecialListsNameProperty.class,
-                                                 "name"));
-                        } else if (p.contains("priority")) {
-                            whereMap.put("priority", CompatibilityHelper
-                                         .getSetProperty(p,
-                                                         SpecialListsPriorityProperty.class,
-                                                         "priority"));
-                        } else if (p.contains("done")) {
-                            whereMap.put("done",
-                                         CompatibilityHelper.getDoneProperty(p));
-                        } else if (p.contains("due")) {
-                            whereMap.put("due",
-                                         CompatibilityHelper.getDueProperty(p));
-                        } else if (p.contains("content")) {
-                            whereMap.put("content", CompatibilityHelper
-                                         .getStringProperty(p,
-                                                            SpecialListsContentProperty.class,
-                                                            "content"));
-                        } else if (p.contains("reminder")) {
-                            whereMap.put("reminder",
-                                         CompatibilityHelper.getReminderProperty(p));
-                        }
-                    } catch (final TransformerException e) {
-                        Log.w(TAG, "due cannot be transformed", e);
-                    }
-                }
-                contentValues.put("whereQuery",
-                                  CompatibilityHelper.serializeWhereSpecialLists(whereMap));
-                db.update("special_lists", contentValues, "_id=?",
-                          new String[] {String.valueOf(id)});
-            }
-            cursor.close();
+            new CursorWrapper(db.query("special_lists", new String[] { "_id",
+                                       "whereQuery"
+                                                                     }, null, null, null, null, null))
+            .doWithCursor(new SpecialListsConverter(db));
         case 35:
             am = AccountManager.get(this.context);
             for (final Account a : am
@@ -772,25 +726,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
         case 36:
-            cursor = db.query("files",
-                              new String[] { "_id", "path" }, null, null, null, null,
-                              null);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    final File f = new File(cursor.getString(1));
-                    if (f.exists()) {
-                        cv = new ContentValues();
-                        cv.put("path", Uri.fromFile(f).toString());
-                        db.update("files", cv, "_id=?",
-                                  new String[] { cursor.getString(0) });
-                    } else {
-                        db.delete("files", "_id=?",
-                                  new String[] { cursor.getString(0) });
+            new CursorWrapper(db.query("files",
+                                       new String[] { "_id", "path" }, null, null, null, null,
+            null)).doWithCursor(new CursorWrapper.WithCursor() {
+                @Override
+                public void withOpenCursor(@NonNull CursorGetter getter) {
+                    if (getter.getCount() > 0) {
+                        getter.moveToFirst();
+                        do {
+                            final File f = new File(getter.getString("path"));
+                            String[] id = new String[] {getter.getString("_id")};
+                            if (f.exists()) {
+                                final ContentValues cv = new ContentValues();
+                                cv.put("path", Uri.fromFile(f).toString());
+                                db.update("files", cv, "_id=?",
+                                          id);
+                            } else {
+                                db.delete("files", "_id=?",
+                                          id);
+                            }
+                        } while (getter.moveToNext());
                     }
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
+                }
+            });
         case 37:
             // Introduce tags
             db.execSQL("CREATE TABLE tag (_id"
@@ -814,56 +772,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + "ON DELETE CASCADE ON UPDATE CASCADE,tag_id INTEGER REFERENCES "
                        + "tag (_id"
                        + ") ON DELETE CASCADE ON UPDATE CASCADE);");
-            cursor = db.query("tasks", new String[] { "_id",
-                              "additional_entries"
-                                                    },
-                              "additional_entries LIKE '%\"tags\":[\"%'", null, null,
-                              null, null);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                int count = 0;
-                do {
-                    final int taskId = cursor.getInt(0);
-                    final Map<String, String> entryMap = Task
-                                                         .parseAdditionalEntries(cursor.getString(1));
-                    String entries = entryMap.get("tags").trim();
-                    entries = entries.replace("[", "");
-                    entries = entries.replace("]", "");
-                    entries = entries.replace("\"", "");
-                    final String[] tags = entries.split(",");
-                    for (final String tag : tags) {
-                        c = db.query("tag", new String[] { "_id" }, "name"
-                                     + "=?", new String[] { tag }, null, null, null);
-                        final int tagId;
-                        if (c.getCount() > 0) {
-                            c.moveToFirst();
-                            tagId = c.getInt(0);
-                        } else {
-                            // create tag;
-                            final int color = Tag.getNextColor(count++,
-                                                               this.context);
-                            cv = new ContentValues();
-                            cv.put("name", tag);
-                            cv.put("color_r", Color.red(color));
-                            cv.put("color_g", Color.green(color));
-                            cv.put("color_b", Color.blue(color));
-                            cv.put("color_a", Color.alpha(color));
-                            tagId = (int) db.insert("tag", null, cv);
-                        }
-                        cv = new ContentValues();
-                        cv.put("tag_id", tagId);
-                        cv.put("task_id", taskId);
-                        db.insert("task_tag", null, cv);
-                        entryMap.remove("tags");
-                        cv = new ContentValues();
-                        cv.put("additional_entries",
-                               Task.serializeAdditionalEntries(entryMap));
-                        db.update("tasks", cv, "_id=?",
-                                  new String[] {String.valueOf(taskId)});
-                    }
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
+            new CursorWrapper(db.query("tasks", new String[] { "_id",
+                                       "additional_entries"
+                                                             },
+                                       "additional_entries LIKE '%\"tags\":[\"%'", null, null,
+                                       null, null))
+            .doWithCursor(new ConvertTags(db));
             if (!DefinitionsHelper.freshInstall) {
                 final List<Integer> parts = MirakelCommonPreferences
                                             .loadIntArray("task_fragment_adapter_settings");
@@ -877,41 +791,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 39:
             db.execSQL("ALTER TABLE tasks add column "
                        + "is_shown_recurring INTEGER DEFAULT 1;");
-            c = db.query("tasks", Task.allColumns,
-                         "additional_entries LIKE ?",
-                         new String[] { "%\"status\":\"recurring\"%" }, null, null,
-                         null);
-            final Map<Task, List<Task>> recurring = new HashMap<>(c.getCount());
-            for (c.moveToFirst(); c.moveToNext();) {
-                final Task t = new Task(c);
-                final String recurString = t.getAdditionalString("recur");
-                if (recurString == null) {
-                    continue;
-                }
-                // check if is childtask
-                if (t.existAdditional("parent")) {
-                    final Optional<Task> masterOptional = Task.getByUUID(t
-                                                          .getAdditionalString("parent"));
-
-                    if (masterOptional.isPresent()) {
-                        final Task master = masterOptional.get();
-                        final List<Task> list;
-                        if (recurring.containsKey(master)) {
-                            list = recurring.get(master);
-                        } else {
-                            list = new ArrayList<>(1);
+            final Map<Task, List<Task>> recurring = new HashMap<>();
+            new CursorWrapper(db.query("tasks", Task.allColumns,
+                                       "additional_entries LIKE ?",
+                                       new String[] { "%\"status\":\"recurring\"%" }, null, null,
+            null)).doWithCursor(new CursorWrapper.WithCursor() {
+                @Override
+                public void withOpenCursor(@NonNull final CursorGetter getter) {
+                    for (getter.moveToFirst(); getter.moveToNext();) {
+                        final Task t = new Task(getter);
+                        final String recurString = t.getAdditionalString("recur");
+                        if (recurString == null) {
+                            continue;
                         }
-                        list.add(t);
-                        recurring.put(master, list);
+                        // check if is childtask
+                        if (t.existAdditional("parent")) {
+                            final Optional<Task> masterOptional = Task.getByUUID(t
+                                                                  .getAdditionalString("parent"));
+
+                            if (masterOptional.isPresent()) {
+                                final Task master = masterOptional.get();
+                                final List<Task> list;
+                                if (recurring.containsKey(master)) {
+                                    list = recurring.get(master);
+                                } else {
+                                    list = new ArrayList<>(1);
+                                }
+                                list.add(t);
+                                recurring.put(master, list);
+                            }
+                        } else if (!recurring.containsKey(t)) {// its recurring master
+                            recurring.put(t, new ArrayList<Task>(0));
+                        }
+                        t.setRecurrence(of(CompatibilityHelper.parseTaskWarriorRecurrence(
+                                               recurString)));
+                        t.save();
                     }
-                } else if (!recurring.containsKey(t)) {// its recurring master
-                    recurring.put(t, new ArrayList<Task>(0));
                 }
-                t.setRecurrence(of(CompatibilityHelper.parseTaskWarriorRecurrence(
-                                       recurString)));
-                t.save();
-            }
-            StringBuilder idsToHide = new StringBuilder();
+            });
+
+            final StringBuilder idsToHide = new StringBuilder();
             boolean first = true;
             for (final Entry<Task, List<Task>> rec : recurring.entrySet()) {
                 if (rec.getValue().isEmpty()) {
@@ -950,7 +869,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 db.update("tasks", cv, "_id IN (?)",
                           new String[] { idsToHide.toString() });
             }
-            c.close();
         case 40:
             // Update settings
             updateSettings();
@@ -964,27 +882,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("INSERT INTO tag" +
                        " (_id,name,dark_text) SELECT _id,name,dark_text FROM tmp_tags;");
             final String[] tagColumns = new String[] {"_id", "color_a", "color_r", "color_g", "color_b"};
-            final Cursor tagCursor = db.query("tmp_tags", tagColumns, null, null, null, null, null);
-            if (tagCursor.moveToFirst()) {
-                do {
-                    int i = 0;
-                    final int id = tagCursor.getInt(i++);
-                    final int rgba = tagCursor.getInt(i++);
-                    final int rgbr = tagCursor.getInt(i++);
-                    final int rgbg = tagCursor.getInt(i++);
-                    final int rgbb = tagCursor.getInt(i);
-                    final int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
-                    final Cursor tagC = db.query("tag", Tag.allColumns, "_id"
-                                                 + "=?", new String[] {String.valueOf(id)}, null, null, null);
-                    if (tagC.moveToFirst()) {
-                        final Tag newTag = new Tag(tagC);
-                        tagC.close();
-                        newTag.setBackgroundColor(newColor);
-                        db.update("tag", newTag.getContentValues(), "_id=?", new String[] {String.valueOf(newTag.getId())});
+            new CursorWrapper(db.query("tmp_tags", tagColumns, null, null, null, null,
+            null)).doWithCursor(new CursorWrapper.WithCursor() {
+                @Override
+                public void withOpenCursor(@NonNull CursorGetter getter) {
+                    if (getter.moveToFirst()) {
+                        do {
+                            int i = 0;
+                            final int id = getter.getInt(i++);
+                            final int rgba = getter.getInt(i++);
+                            final int rgbr = getter.getInt(i++);
+                            final int rgbg = getter.getInt(i++);
+                            final int rgbb = getter.getInt(i);
+                            final int newColor = Color.argb(rgba, rgbr, rgbg, rgbb);
+                            new CursorWrapper(db.query("tag", Tag.allColumns, "_id"
+                                                       + "=?", new String[] {String.valueOf(id)}, null, null,
+                            null)).doWithCursor(new CursorWrapper.WithCursor() {
+                                @Override
+                                public void withOpenCursor(@NonNull CursorGetter getter) {
+                                    if (getter.moveToFirst()) {
+                                        final Tag newTag = new Tag(getter);
+                                        newTag.setBackgroundColor(newColor);
+                                        db.update("tag", newTag.getContentValues(), "_id=?", new String[] {String.valueOf(newTag.getId())});
+                                    }
+                                }
+                            });
+
+                        } while (getter.moveToNext());
                     }
-                } while (tagCursor.moveToNext());
-            }
-            tagCursor.close();
+                }
+            });
             db.execSQL("DROP TABLE tmp_tags;");
             db.execSQL("create unique index tag_unique ON tag (name);");
         case 41:
@@ -1056,93 +983,99 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param db
      */
     private void normaliseLfts(final SQLiteDatabase db) {
-        final Cursor allListsCursor = db.rawQuery(
-                                          "select _id, 1 as isNormal, lft from lists WHERE sync_state !=  -1 "
-                                          + " UNION "
-                                          + " select _id, 0 as isNormal, lft from special_lists WHERE sync_state !=  -1 ORDER BY isNormal ASC, lft ASC;",
-                                          null);
-        int lft = 1;
-        while (allListsCursor.moveToNext()) {
-            final long id = allListsCursor.getLong(0);
-            final boolean isNormal = allListsCursor.getInt(1) == 1;
-            final String table;
-            if (isNormal) {
-                table = "lists";
-            } else {
-                table = "special_lists";
+        new CursorWrapper(db.rawQuery(
+                              "select _id, 1 as isNormal, lft from lists WHERE sync_state !=  -1 "
+                              + " UNION "
+                              + " select _id, 0 as isNormal, lft from special_lists WHERE sync_state !=  -1 ORDER BY isNormal ASC, lft ASC;",
+        null)).doWithCursor(new CursorWrapper.WithCursor() {
+            @Override
+            public void withOpenCursor(@NonNull CursorGetter getter) {
+                int lft = 1;
+                while (getter.moveToNext()) {
+                    final long id = getter.getLong("_id");
+                    final boolean isNormal = getter.getInt("isNormal") == 1;
+                    final String table;
+                    if (isNormal) {
+                        table = "lists";
+                    } else {
+                        table = "special_lists";
+                    }
+                    final ContentValues contentValues = new ContentValues(2);
+                    contentValues.put("lft", lft);
+                    contentValues.put("rgt", lft + 1);
+                    db.update(table, contentValues, "_id = ?", new String[] {String.valueOf(id)});
+                    lft += 2;
+                }
             }
-            final ContentValues contentValues = new ContentValues(2);
-            contentValues.put("lft", lft);
-            contentValues.put("rgt", lft + 1);
-            db.update(table, contentValues, "_id = ?", new String[] {String.valueOf(id)});
-            lft += 2;
-        }
-        allListsCursor.close();
+        });
     }
 
     private void updateSpecialLists(final SQLiteDatabase db) {
-        final Cursor updateSpecial = db.query("special_lists", new String[] {"whereQuery", "_id"},
-                                              null,
-                                              null, null, null, null);
-        while (updateSpecial.moveToNext()) {
-            final String query = updateSpecial.getString(0);
-            StringBuilder newQuery = new StringBuilder();
-            int counter = 0;
-            boolean isMultiPart = false;
-            boolean isArgument = false;
-            boolean lastIsBracket = false;
-            for (int i = 0; i < query.length(); i++) {
-                char p = query.charAt(i);
-                switch (p) {
-                case '"':
-                    lastIsBracket = false;
-                    isArgument = !isArgument;
-                    newQuery.append(p);
-                    break;
-                case '{':
-                    if (!lastIsBracket) {
-                        newQuery.append(p);
-                    }
-                    if (!isArgument) {
-                        if (!lastIsBracket) {
-                            counter++;
+        new CursorWrapper(db.query("special_lists", new String[] {"whereQuery", "_id"},
+                                   null,
+        null, null, null, null)).doWithCursor(new CursorWrapper.WithCursor() {
+            @Override
+            public void withOpenCursor(@NonNull CursorGetter getter) {
+                while (getter.moveToNext()) {
+                    final String query = getter.getString("whereQuery");
+                    StringBuilder newQuery = new StringBuilder();
+                    int counter = 0;
+                    boolean isMultiPart = false;
+                    boolean isArgument = false;
+                    boolean lastIsBracket = false;
+                    for (int i = 0; i < query.length(); i++) {
+                        char p = query.charAt(i);
+                        switch (p) {
+                        case '"':
+                            lastIsBracket = false;
+                            isArgument = !isArgument;
+                            newQuery.append(p);
+                            break;
+                        case '{':
+                            if (!lastIsBracket) {
+                                newQuery.append(p);
+                            }
+                            if (!isArgument) {
+                                if (!lastIsBracket) {
+                                    counter++;
+                                }
+                                lastIsBracket = true;
+                            }
+                            break;
+                        case '}':
+                            lastIsBracket = false;
+                            if (counter > 0) {
+                                newQuery.append(p);
+                                if (!isArgument) {
+                                    counter--;
+                                }
+                            }
+                            break;
+                        case ',':
+                            lastIsBracket = false;
+                            if (DefinitionsHelper.freshInstall && (counter == 0)) {
+                                isMultiPart = true;
+                                newQuery.append(p);
+                                break;
+                            } else if (!DefinitionsHelper.freshInstall && (counter == 1)) {
+                                isMultiPart = true;
+                                newQuery.append('}').append(p).append('{');
+                                break;
+                            }
+                        default:
+                            lastIsBracket = false;
+                            newQuery.append(p);
                         }
-                        lastIsBracket = true;
                     }
-                    break;
-                case '}':
-                    lastIsBracket = false;
-                    if (counter > 0) {
-                        newQuery.append(p);
-                        if (!isArgument) {
-                            counter--;
-                        }
+                    final ContentValues newWhere = new ContentValues();
+                    if (isMultiPart) {
+                        newQuery = new StringBuilder("[" + newQuery + ']');
                     }
-                    break;
-                case ',':
-                    lastIsBracket = false;
-                    if (DefinitionsHelper.freshInstall && (counter == 0)) {
-                        isMultiPart = true;
-                        newQuery.append(p);
-                        break;
-                    } else if (!DefinitionsHelper.freshInstall && (counter == 1)) {
-                        isMultiPart = true;
-                        newQuery.append('}').append(p).append('{');
-                        break;
-                    }
-                default:
-                    lastIsBracket = false;
-                    newQuery.append(p);
+                    newWhere.put("whereQuery", newQuery.toString());
+                    db.update("special_lists", newWhere, "_id=?", new String[] {getter.getString("_id")});
                 }
             }
-            final ContentValues newWhere = new ContentValues();
-            if (isMultiPart) {
-                newQuery = new StringBuilder("[" + newQuery + ']');
-            }
-            newWhere.put("whereQuery", newQuery.toString());
-            db.update("special_lists", newWhere, "_id=?", new String[] {String.valueOf(updateSpecial.getLong(1))});
-        }
-        updateSpecial.close();
+        });
     }
 
 
@@ -1726,4 +1659,122 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    private static class SpecialListsConverter implements CursorWrapper.WithCursor {
+        private final SQLiteDatabase db;
+
+        public SpecialListsConverter(SQLiteDatabase db) {
+            this.db = db;
+        }
+
+        @Override
+        public void withOpenCursor(@NonNull CursorGetter getter) {
+            for (getter.moveToFirst(); !getter.isAfterLast(); getter
+                 .moveToNext()) {
+                final int id = getter.getInt("_id");
+                final ContentValues contentValues = new ContentValues();
+                final String[] where = getter.getString("whereQuery").toLowerCase()
+                                       .split("and");
+                final Map<String, SpecialListsBaseProperty> whereMap = new HashMap<>(where.length);
+                for (final String p : where) {
+                    try {
+                        if (p.contains("list_id")) {
+                            whereMap.put("list_id", CompatibilityHelper
+                                         .getSetProperty(p,
+                                                         SpecialListsListProperty.class,
+                                                         "list_id"));
+                        } else if (p.contains("name")) {
+                            whereMap.put("name",
+                                         CompatibilityHelper.getStringProperty(p,
+                                                 SpecialListsNameProperty.class,
+                                                 "name"));
+                        } else if (p.contains("priority")) {
+                            whereMap.put("priority", CompatibilityHelper
+                                         .getSetProperty(p,
+                                                         SpecialListsPriorityProperty.class,
+                                                         "priority"));
+                        } else if (p.contains("done")) {
+                            whereMap.put("done",
+                                         CompatibilityHelper.getDoneProperty(p));
+                        } else if (p.contains("due")) {
+                            whereMap.put("due",
+                                         CompatibilityHelper.getDueProperty(p));
+                        } else if (p.contains("content")) {
+                            whereMap.put("content", CompatibilityHelper
+                                         .getStringProperty(p,
+                                                            SpecialListsContentProperty.class,
+                                                            "content"));
+                        } else if (p.contains("reminder")) {
+                            whereMap.put("reminder",
+                                         CompatibilityHelper.getReminderProperty(p));
+                        }
+                    } catch (final TransformerException e) {
+                        Log.w(TAG, "due cannot be transformed", e);
+                    }
+                }
+                contentValues.put("whereQuery",
+                                  CompatibilityHelper.serializeWhereSpecialLists(whereMap));
+                db.update("special_lists", contentValues, "_id=?",
+                          new String[] {String.valueOf(id)});
+            }
+        }
+    }
+
+    private class ConvertTags implements CursorWrapper.WithCursor {
+        private final SQLiteDatabase db;
+        private int count = 0;
+
+        public ConvertTags(final SQLiteDatabase db) {
+            this.db = db;
+        }
+
+        @Override
+        public void withOpenCursor(@NonNull final CursorGetter getter) {
+            if (getter.getCount() > 0) {
+                getter.moveToFirst();
+                do {
+                    final int taskId = getter.getInt("_id");
+                    final Map<String, String> entryMap = Task
+                                                         .parseAdditionalEntries(getter.getString("additional_entries"));
+                    String entries = entryMap.get("tags").trim();
+                    entries = entries.replace("[", "");
+                    entries = entries.replace("]", "");
+                    entries = entries.replace("\"", "");
+                    final String[] tags = entries.split(",");
+                    for (final String tag : tags) {
+                        final Long tagId = new CursorWrapper(db.query("tag", new String[] {"_id"}, "name"
+                                                             + "=?", new String[] {tag}, null, null, null))
+                        .doWithCursor(new CursorWrapper.CursorConverter<Long>() {
+                            @Override
+                            public Long convert(@NonNull CursorGetter getter) {
+                                if (getter.getCount() > 0) {
+                                    getter.moveToFirst();
+                                    return getter.getLong("_id");
+                                } else {
+                                    // create tag;
+                                    final int color = Tag.getNextColor(count++, context);
+                                    ContentValues cv = new ContentValues();
+                                    cv.put("name", tag);
+                                    cv.put("color_r", Color.red(color));
+                                    cv.put("color_g", Color.green(color));
+                                    cv.put("color_b", Color.blue(color));
+                                    cv.put("color_a", Color.alpha(color));
+                                    return db.insert("tag", null, cv);
+                                }
+                            }
+                        });
+                        ContentValues cv = new ContentValues();
+                        cv.put("tag_id", tagId);
+                        cv.put("task_id", taskId);
+                        db.insert("task_tag", null, cv);
+                        entryMap.remove("tags");
+                        cv = new ContentValues();
+                        cv.put("additional_entries",
+                               Task.serializeAdditionalEntries(entryMap));
+                        db.update("tasks", cv, "_id=?",
+                                  new String[] {String.valueOf(taskId)});
+                    }
+                } while (getter.moveToNext());
+            }
+        }
+    }
 }

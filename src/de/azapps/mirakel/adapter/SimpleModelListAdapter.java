@@ -27,9 +27,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.azapps.mirakel.model.R;
-
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 
 import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.cursorToObject;
 
@@ -61,14 +61,14 @@ public class SimpleModelListAdapter<T extends ModelBase> extends CursorAdapter {
 
     @Override
     public T getItem(final int position) {
-        return cursorToObject((Cursor) super.getItem(position), tClass);
+        return cursorToObject(CursorGetter.unsafeGetter((Cursor) super.getItem(position)), tClass);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void bindView(final View view, final Context context, final Cursor cursor) {
         final ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
-        viewHolder.model = cursorToObject(cursor, tClass);
+        viewHolder.model = cursorToObject(CursorGetter.unsafeGetter(cursor), tClass);
         viewHolder.setText(viewHolder.model.getName());
     }
 

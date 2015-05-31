@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.model.task;
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -28,11 +27,11 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 
-import de.azapps.mirakel.model.CursorGetter;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
@@ -68,17 +67,16 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
         priority = task.getPriority();
     }
 
-    public TaskOverview(final Cursor cursor) {
-        final CursorGetter cg = new CursorGetter(cursor);
-        setId(cg.getLong(ModelBase.ID));
-        setName(cg.getString(ModelBase.NAME));
-        done = cg.getBoolean(Task.DONE);
-        progress = cg.getInt(Task.PROGRESS);
-        due = cg.getOptionalCalendar(Task.DUE);
-        listId = cg.getLong(Task.LIST_ID);
-        listName = cg.getString("list_name");
-        accountId = cg.getLong("account_id");
-        priority = cg.getInt(Task.PRIORITY);
+    public TaskOverview(final CursorGetter cursor) {
+        setId(cursor.getLong(ModelBase.ID));
+        setName(cursor.getString(ModelBase.NAME));
+        done = cursor.getBoolean(Task.DONE);
+        progress = cursor.getInt(Task.PROGRESS);
+        due = cursor.getOptional(Task.DUE, Calendar.class);
+        listId = cursor.getLong(Task.LIST_ID);
+        listName = cursor.getString("list_name");
+        accountId = cursor.getLong("account_id");
+        priority = cursor.getInt(Task.PRIORITY);
     }
 
     public boolean isDone() {

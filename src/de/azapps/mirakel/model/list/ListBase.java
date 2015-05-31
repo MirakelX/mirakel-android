@@ -205,7 +205,7 @@ abstract class ListBase extends ModelBase {
     }
 
     public boolean isSpecial() {
-        return this instanceof SpecialList || getId() < 0;
+        return (this instanceof SpecialList) || (getId() < 0);
     }
 
 
