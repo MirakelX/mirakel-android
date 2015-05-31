@@ -92,8 +92,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
-            proguardFile 'proguard-android.txt'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),'proguard-mirakel.txt'
         }
         debug {
             minifyEnabled false
