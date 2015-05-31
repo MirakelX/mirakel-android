@@ -1,8 +1,6 @@
 package de.azapps.mirakel.new_ui.views;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -71,9 +69,9 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
         listEditName.setText(listMirakel.getName());
 
         // You can only move new lists
-        if (listMirakel.isStub() && AccountMirakel.countMovableTo() > 1) {
+        if (listMirakel.isStub() && (AccountMirakel.countMovableTo() > 1)) {
             final SimpleModelListAdapter<AccountMirakel> adapter = new SimpleModelListAdapter<>(getContext(),
-                    AccountMirakel.allMovableToCursor(), 0, AccountMirakel.class);
+                    AccountMirakel.allMovableToCursor().getRawCursor(), 0, AccountMirakel.class);
             listEditAccount.setAdapter(adapter);
             listEditAccount.setOnItemSelectedListener(this);
             listEditAccount.setVisibility(View.VISIBLE);

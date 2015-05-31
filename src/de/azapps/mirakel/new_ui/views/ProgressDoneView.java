@@ -228,7 +228,7 @@ public class ProgressDoneView extends CheckBox implements Runnable {
         invalidate();
     }
 
-    private int getAVG(final List<Integer> boarderY) {
+    private static int getAVG(final List<Integer> boarderY) {
         int sum = 0;
         for (final int s : boarderY) {
             sum += s;

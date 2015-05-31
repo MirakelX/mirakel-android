@@ -40,6 +40,7 @@ import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.views.PriorityView;
@@ -73,7 +74,7 @@ public class TaskAdapter extends
     @NonNull
     @Override
     public TaskOverview fromCursor(@NonNull final Cursor cursor) {
-        return new TaskOverview(cursor);
+        return new TaskOverview(CursorGetter.unsafeGetter(cursor));
     }
 
     @Override
@@ -103,7 +104,7 @@ public class TaskAdapter extends
             }
         } else {
             viewHolder.viewSwitcher.setDisplayedChild(0);
-            final TaskOverview task = new TaskOverview(cursor);
+            final TaskOverview task = new TaskOverview(CursorGetter.unsafeGetter(cursor));
             viewHolder.task = task;
             viewHolder.name.setText(task.getName());
             viewHolder.name.setStrikeThrough(task.isDone());
