@@ -158,7 +158,7 @@ public class AccountSettingsActivity extends GenericModelListActivity<AccountMir
 
     @Override
     protected Cursor getQuery() {
-        return new MirakelQueryBuilder(this).query(AccountMirakel.URI);
+        return new MirakelQueryBuilder(this).query(AccountMirakel.URI).getRawCursor();
     }
 
 

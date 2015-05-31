@@ -38,6 +38,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
@@ -106,7 +107,7 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
         return new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
                 MirakelQueryBuilder.Operation.NOT_EQ,
                 DefinitionsHelper.SYNC_STATE.DELETE.toInt()).sort(ListMirakel.LFT,
-                        MirakelQueryBuilder.Sorting.ASC).query(SpecialList.URI);
+                        MirakelQueryBuilder.Sorting.ASC).query(SpecialList.URI).getRawCursor();
     }
 
 }
