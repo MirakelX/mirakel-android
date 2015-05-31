@@ -378,4 +378,5 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="delete_special_lists">Delete meta list</string>
 
     <string name="settings_widget_title">Widget Preferences</string>
+    <string name="version_string">Version: %1$s build on %2$s</string>
 </resources>

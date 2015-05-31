@@ -21,19 +21,28 @@ package de.azapps.mirakel.settings.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import de.azapps.changelog.Changelog;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
-import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
 public class AboutSettingsFragment extends MirakelPreferencesFragment<Settings> {
@@ -93,7 +102,18 @@ public class AboutSettingsFragment extends MirakelPreferencesFragment<Settings> 
         }
 
         final Preference version = findPreference("version");
-        version.setSummary(DefinitionsHelper.VERSIONS_NAME);
+        String buildDate;
+        try {
+            final ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(
+                                           getActivity().getPackageName(), 0);
+            final ZipFile zf = new ZipFile(ai.sourceDir);
+            final ZipEntry ze = zf.getEntry("META-INF/MANIFEST.MF");
+            buildDate = DateFormat.getDateTimeInstance().format(new Date((ze.getTime())));
+            zf.close();
+        } catch (final Exception ignored) {
+            buildDate = "unknown";
+        }
+        version.setSummary(getString(R.string.version_string, DefinitionsHelper.VERSIONS_NAME, buildDate));
         version.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             private Toast toast;
 
