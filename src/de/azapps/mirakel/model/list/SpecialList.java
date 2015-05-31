@@ -204,13 +204,14 @@ public class SpecialList extends ListMirakel {
                 values.put(ACTIVE, active);
                 values.put(DEFAULT_LIST, listId);
                 setId(insert(URI, values));
-                final Cursor c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ")").query(URI);
+                final Cursor c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ')').query(URI);
                 c.moveToFirst();
-                int maxRGT = c.getInt(0);
-                ContentValues cv = new ContentValues();
+                final int maxRGT = c.getInt(0);
+                c.close();
+                final ContentValues cv = new ContentValues();
                 cv.put(LFT, maxRGT + 1);
                 cv.put(RGT, maxRGT + 2);
-                update(URI, cv, ModelBase.ID + "=" + getId(), null);
+                update(URI, cv, ModelBase.ID + '=' + getId(), null);
             }
         });
         return getSpecial(getId()).get();
