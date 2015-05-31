@@ -231,11 +231,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
                     return true;
                 }
             });
-            try {
-                conditions.addItemFromInflater(p);
-            } catch (NullPointerException e) {
-                //eat it
-            }
+            conditions.addItemFromInflater(p);
         }
     }
 
