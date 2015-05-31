@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.DecelerateInterpolator;
 
 import de.azapps.material_elements.R;
 
