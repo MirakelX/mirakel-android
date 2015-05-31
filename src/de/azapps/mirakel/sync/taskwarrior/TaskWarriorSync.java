@@ -22,7 +22,6 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
-import android.database.Cursor;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -57,12 +56,13 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTask;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
@@ -201,15 +201,16 @@ public class TaskWarriorSync {
                         throw new TaskWarriorSyncFailedException(TW_ERRORS.CANNOT_PARSE_MESSAGE, e);
                     }
                     if (!newUUIDS.isEmpty()) {
-                        final Cursor cursor = new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID).and(Task.UUID,
+                        new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID).and(Task.UUID,
                                 Operation.IN,
-                                newUUIDS).query(Task.URI);
-                        final int uuidColumn = cursor.getColumnIndex(Task.UUID);
-                        final int idColumn = cursor.getColumnIndex(Task.ID);
-                        while (cursor.moveToNext()) {
-                            idMapping.put(cursor.getString(uuidColumn), cursor.getLong(idColumn));
-                        }
-                        cursor.close();
+                        newUUIDS).query(Task.URI).doWithCursor(new CursorWrapper.WithCursor() {
+                            @Override
+                            public void doWithCursor(@NonNull CursorGetter getter) {
+                                while (getter.moveToNext()) {
+                                    idMapping.put(getter.getString(Task.UUID), getter.getLong(Task.ID));
+                                }
+                            }
+                        });
                     }
                 }
                 // delete deleted tasks
@@ -410,34 +411,33 @@ public class TaskWarriorSync {
             final @NonNull ListMirakel inbox, final @NonNull List<Long> allUpdatedTasks,
             final @NonNull List<Long> allDeletedTasks, final @NonNull List<String> uuids,
             final @NonNull Map<String, Long> idMapping) {
-        final Cursor cursor = new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID,
-                Task.ADDITIONAL_ENTRIES).and(Task.UUID, Operation.IN, uuids).query(Task.URI);
         final ArrayList<ContentProviderOperation> pendingOperations = new ArrayList<>(remoteTasks.size());
-
-        final int uuidColumn = cursor.getColumnIndex(Task.UUID);
-        final int idColumn = cursor.getColumnIndex(Task.ID);
-        final int additionalColumn = cursor.getColumnIndex(Task.ADDITIONAL_ENTRIES);
-
-        while (cursor.moveToNext()) {
-            final String uuid = cursor.getString(uuidColumn);
-            final long localId = cursor.getLong(idColumn);
-            final String additionals = cursor.getString(additionalColumn);
-            final TaskWarriorTask remoteTask = remoteTasks.get(uuid);
-            if (remoteTask.isNotDeleted()) {
-                try {
-                    pendingOperations.add(remoteTask.getUpdate(localId, additionals, projectMapping, inbox.getId()));
-                    allUpdatedTasks.add(localId);
-                    idMapping.put(uuid, localId);
-                } catch (final TaskWarriorTaskDeletedException e) {
-                    Log.w(TAG, "however this task can be deleted here, anyway delete it", e);
-                    allDeletedTasks.add(localId);
+        new MirakelQueryBuilder(mContext).select(Task.UUID, Task.ID,
+                Task.ADDITIONAL_ENTRIES).and(Task.UUID, Operation.IN,
+        uuids).query(Task.URI).doWithCursor(new CursorWrapper.WithCursor() {
+            @Override
+            public void doWithCursor(@NonNull CursorGetter getter) {
+                while (getter.moveToNext()) {
+                    final String uuid = getter.getString(Task.UUID);
+                    final long localId = getter.getLong(Task.ID);
+                    final String additionals = getter.getString(Task.ADDITIONAL_ENTRIES);
+                    final TaskWarriorTask remoteTask = remoteTasks.get(uuid);
+                    if (remoteTask.isNotDeleted()) {
+                        try {
+                            pendingOperations.add(remoteTask.getUpdate(localId, additionals, projectMapping, inbox.getId()));
+                            allUpdatedTasks.add(localId);
+                            idMapping.put(uuid, localId);
+                        } catch (final TaskWarriorTaskDeletedException e) {
+                            Log.w(TAG, "however this task can be deleted here, anyway delete it", e);
+                            allDeletedTasks.add(localId);
+                        }
+                    } else {
+                        allDeletedTasks.add(localId);
+                    }
+                    uuids.remove(uuid);
                 }
-            } else {
-                allDeletedTasks.add(localId);
             }
-            uuids.remove(uuid);
-        }
-        cursor.close();
+        });
         return pendingOperations;
     }
 
@@ -450,17 +450,21 @@ public class TaskWarriorSync {
             }
         }
         final Map<String, Long> projectMapping = new HashMap<>(projects.size());
-        final Cursor cursor = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
-                new ArrayList<>(projects))
+        new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
+                                              new ArrayList<>(projects))
         .and(ListMirakel.ACCOUNT_ID, Operation.EQ, taskWarriorAccount.getAccountMirakel().getId())
-        .select(Arrays.asList(new String[] {ListMirakel.ID, ListMirakel.NAME})).query(ListMirakel.URI);
-        final int idColumn = cursor.getColumnIndex(ListMirakel.ID);
-        final int nameColumn = cursor.getColumnIndex(ListMirakel.NAME);
-        while (cursor.moveToNext()) {
-            final String name = cursor.getString(nameColumn);
-            projectMapping.put(name, cursor.getLong(idColumn));
-            projects.remove(name);
-        }
+        .select(Arrays.asList(new String[] {ListMirakel.ID, ListMirakel.NAME})).query(ListMirakel.URI)
+        .doWithCursor(new CursorWrapper.WithCursor() {
+            @Override
+            public void doWithCursor(@NonNull CursorGetter getter) {
+                while (getter.moveToNext()) {
+                    final String name = getter.getString(ListMirakel.NAME);
+                    projectMapping.put(name, getter.getLong(ListMirakel.ID));
+                    projects.remove(name);
+                }
+            }
+        });
+
         for (final String project : projects) {
             try {
                 final ListMirakel list = ListMirakel.newList(project, ListMirakel.SORT_BY.DUE,
@@ -483,15 +487,18 @@ public class TaskWarriorSync {
         }
 
         final Map<String, Long> tagMapping = new HashMap<>(tagList.size());
-        final Cursor cursor = new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
-                new ArrayList<>(tagList)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI);
-        final int idColumn = cursor.getColumnIndex(Tag.ID);
-        final int nameColumn = cursor.getColumnIndex(Tag.NAME);
-        while (cursor.moveToNext()) {
-            final String name = cursor.getString(nameColumn);
-            tagMapping.put(name.replace(" ", "_"), cursor.getLong(idColumn));
-            tagList.remove(name);
-        }
+        new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
+                                              new ArrayList<>(tagList)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI)
+        .doWithCursor(new CursorWrapper.WithCursor() {
+            @Override
+            public void doWithCursor(@NonNull CursorGetter getter) {
+                while (getter.moveToNext()) {
+                    final String name = getter.getString(Tag.NAME);
+                    tagMapping.put(name.replace(" ", "_"), getter.getLong(Tag.ID));
+                    tagList.remove(name);
+                }
+            }
+        });
         for (final String tag : tagList) {
             final Tag t = Tag.newTag(tag);
             tagMapping.put(t.getName().replace(" ", "_"), t.getId());
