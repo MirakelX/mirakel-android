@@ -23,7 +23,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-import android.view.Gravity;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +50,6 @@ public class DefinitionsHelper {
         static final long serialVersionUID = 1374828058L;
     }
 
-    public static final int RESULT_ADD_FILE = 5;
     public static final String TW_NO_PROJECT = "NO_PROJECT";
     public static final String BUNDLE_CERT = "de.azapps.mirakel.cert";
     public static final String BUNDLE_CERT_CLIENT = "de.azapps.mirakel.cert.client";
@@ -79,7 +77,6 @@ public class DefinitionsHelper {
     public static final String SHOW_TASK_FROM_WIDGET = "de.azapps.mirakel.SHOW_TASK_FROM_WIDGET";
     public static final String SHOW_MESSAGE = "de.azapps.mirakel.SHOW_MESSAGE";
     public static final String BUNDLE_WRAPPER = "de.azapps.mirakel.Bundle.Wrapper";
-    public static int GRAVITY_LEFT, GRAVITY_RIGHT;
     public static boolean freshInstall;
     public static final int REQUEST_FILE_ANY_DO = 3;
     public static final String AUTHORITY_INTERNAL = "de.azapps.mirakel.provider.internal";
@@ -98,13 +95,6 @@ public class DefinitionsHelper {
         } catch (final NameNotFoundException e) {
             Log.wtf(TAG, "App not found", e);
             VERSIONS_NAME = "";
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            GRAVITY_LEFT = Gravity.START;
-            GRAVITY_RIGHT = Gravity.END;
-        } else {
-            GRAVITY_LEFT = Gravity.LEFT;
-            GRAVITY_RIGHT = Gravity.RIGHT;
         }
     }
 
