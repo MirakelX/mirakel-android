@@ -30,6 +30,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -54,7 +56,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
-import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
@@ -184,7 +185,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public boolean onPrepareOptionsMenu(final Menu menu) {
         if (mDrawerLayout.isPresent()) {
             // For phones
-            final boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(Gravity.START);
+            final boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(GravityCompat.START);
             if (drawerOpen) {
                 getMenuInflater().inflate(R.menu.lists_menu, menu);
             } else {
@@ -378,7 +379,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             public void apply(final DrawerLayout mDrawerLayout) {
                 final ActionBarDrawerToggle mDrawerToggle = new DrawerToggle(mDrawerLayout);
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
-                mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
+                mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
                 MirakelActivity.this.mDrawerToggle = of(mDrawerToggle);
             }
         });
@@ -491,7 +492,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         withOptional(mDrawerLayout, new Procedure<DrawerLayout>() {
             @Override
             public void apply(final DrawerLayout input) {
-                input.closeDrawer(Gravity.START);
+                input.closeDrawer(GravityCompat.START);
             }
         });
     }

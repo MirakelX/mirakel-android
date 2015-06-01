@@ -97,7 +97,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <de.azapps.material_elements.views.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,8 +105,8 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_plus_white_24dp"
-        app:floatingActionButtonSize="normal"
-        app:floatingActionButtonColor="?colorAccent" />
+        app:borderWidth="0dp"
+        />
 
     <!--
     Your layouts here. Do not put anything below the FAB layout
