@@ -37,7 +37,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +53,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.changelog.Changelog;
+import de.azapps.ilovefs.ILoveFS;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -79,6 +80,7 @@ import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
 import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
@@ -147,6 +149,28 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         if ((getTasksFragment() != null) && (getTasksFragment().getList() != null)) {
             setSupportActionBar(actionbar);
             setupActionbar();
+        }
+        initThirdParty();
+    }
+
+    private void initThirdParty() {
+        // Show ChangeLog
+        final Changelog cl = new Changelog(this);
+        cl.showChangelog();
+        final ILoveFS ilfs = new ILoveFS(this, "mirakel@azapps.de",
+                                         DefinitionsHelper.APK_NAME);
+        if (ilfs.isILFSDay()) {
+            ilfs.donateListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog,
+                                    final int which) {
+                    final Intent intent = new Intent(MirakelActivity.this,
+                                                     SettingsActivity.class);
+                    intent.putExtra(SettingsActivity.SHOW_FRAGMENT, Settings.DONATE);
+                    startActivity(intent);
+                }
+            };
+            ilfs.show();
         }
     }
 
