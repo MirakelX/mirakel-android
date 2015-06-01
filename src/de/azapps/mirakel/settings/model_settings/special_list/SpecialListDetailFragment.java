@@ -31,6 +31,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -39,7 +40,6 @@ import com.google.common.base.Optional;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
-import com.shamanland.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +61,7 @@ import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
