@@ -40,7 +40,8 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="de.azapps.mirakel.new_ui.activities.MirakelActivity">
+        tools:context="de.azapps.mirakel.new_ui.activities.MirakelActivity"
+        >
 
         <fragment
             android:layout_width="match_parent"

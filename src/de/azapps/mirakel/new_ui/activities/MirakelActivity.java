@@ -22,14 +22,17 @@ package de.azapps.mirakel.new_ui.activities;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -43,8 +46,9 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.google.common.base.Optional;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.EventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -56,6 +60,8 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
 import de.azapps.mirakel.helper.TaskHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -64,6 +70,7 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
@@ -73,6 +80,7 @@ import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
+import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -258,7 +266,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             break;
         case Intent.ACTION_SEND:
         case Intent.ACTION_SEND_MULTIPLE:
-            // TODO
+            handleAddFileTask(intent);
             break;
         case DefinitionsHelper.SHOW_LIST:
         case DefinitionsHelper.SHOW_LIST_FROM_WIDGET:
@@ -267,9 +275,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             } else {
                 Log.d(TAG, "show_list does not pass list, so ignore this");
             }
-            break;
-        case Intent.ACTION_SEARCH:
-            // TODO
             break;
         case DefinitionsHelper.ADD_TASK_FROM_WIDGET:
             if (intent.hasExtra(DefinitionsHelper.EXTRA_LIST)) {
@@ -282,6 +287,86 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         case DefinitionsHelper.SHOW_MESSAGE:
             // TODO
             break;
+        }
+        if (getTasksFragment().getList() == null) {
+            setList(MirakelModelPreferences.getStartupList());
+        }
+    }
+
+
+
+    private void handleAddFileTask(@NonNull final Intent intent) {
+        String newTaskContent = intent.getStringExtra(Intent.EXTRA_TEXT);
+        String newTaskSubject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+        // If from google now, the content is the subject…
+        if ((intent.getCategories() != null)
+            && intent.getCategories().contains(
+                "com.google.android.voicesearch.SELF_NOTE")
+            && !newTaskContent.isEmpty()) {
+            newTaskSubject = newTaskContent;
+            newTaskContent = "";
+        }
+        if (!"text/plain".equals(intent.getType())
+            && (newTaskSubject == null)) {
+            newTaskSubject = MirakelCommonPreferences.getImportFileTitle();
+        }
+        final Optional<ListMirakel> listFromSharing = MirakelModelPreferences.getImportDefaultList();
+        if (listFromSharing.isPresent()) {
+            final Task task = Semantic.createTask(newTaskSubject, listFromSharing, true);
+            addFiles(task, intent);
+        } else {
+            final Task stubTask = Semantic.createStubTask(newTaskSubject, listFromSharing, true);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.import_to);
+            final List<CharSequence> items = new ArrayList<>();
+            final List<Long> listIds = new ArrayList<>();
+            final int currentItem = 0;
+            for (final ListMirakel list : ListMirakel.all()) {
+                if (list.getId() > 0) {
+                    items.add(list.getName());
+                    listIds.add(list.getId());
+                }
+            }
+            builder.setSingleChoiceItems(
+                items.toArray(new CharSequence[items.size()]),
+            currentItem, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog,
+                                    final int which) {
+                    final Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listIds.get(which));
+                    if (listMirakelOptional.isPresent()) {
+                        try {
+                            stubTask.setList(listMirakelOptional.get());
+                            final Task task = stubTask.create();
+                            withOptional(listMirakelOptional, new OptionalUtils.Procedure<ListMirakel>() {
+                                @Override
+                                public void apply(final ListMirakel listMirakel) {
+                                    addFiles(task, intent);
+                                    dialog.dismiss();
+                                }
+                            });
+                            setList(listMirakelOptional.get());
+                        } catch (DefinitionsHelper.NoSuchListException e) {
+                            ErrorReporter.report(ErrorType.LIST_VANISHED);
+                        }
+                    }
+                }
+            });
+            builder.create().show();
+        }
+    }
+
+    private void addFiles(@NonNull final Task task, @NonNull final Intent intent) {
+        final String action = intent.getAction();
+        final String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && (type != null)) {
+            final Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            task.addFile(this, uri);
+        } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && (type != null)) {
+            final List<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            for (final Uri uri : imageUris) {
+                task.addFile(this, uri);
+            }
         }
     }
 
