@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile "com.shamanland:fab:0.0.8"
+    compile 'com.android.support:design:22.2.0'
     compile "com.nispok:snackbar:2.10.6"
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
 }
