@@ -168,9 +168,9 @@ dependencies {
     compile project(':changelog')
     compile project(':settings')
     compile project(':ilovefs-android')
-    compile project(':acra')
     compile project(':date-time-picker')
     compile project(':colorpicker')
+    compile "ch.acra:acra:$acraVersion"
     compile "com.jakewharton:butterknife:$butterknifeVersion"
 
     //for tests

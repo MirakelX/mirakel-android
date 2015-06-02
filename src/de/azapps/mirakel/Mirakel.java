@@ -43,6 +43,7 @@ import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.new_ui.helper.AcraLog;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -95,6 +96,7 @@ public class Mirakel extends Application {
         NotificationService.updateServices(this);
         // And now, after the Database initialization!!! We init ACRA
         ACRA.init(this);
+        ACRA.setLog(new AcraLog());
         // Stuff we can do in another thread
         final Mirakel that = this;
         new Thread (new Runnable () {
@@ -131,6 +133,7 @@ public class Mirakel extends Application {
     public void onTerminate() {
         super.onTerminate();
         ReminderAlarm.destroy(this);
+        Log.destroy();
     }
 
     public static void init (final Context ctx) {
