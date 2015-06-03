@@ -31,10 +31,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.widget.CheckBox;
 
 import com.google.common.base.Optional;
 
@@ -46,7 +46,7 @@ import de.azapps.mirakelandroid.R;
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
-public class ProgressDoneView extends CheckBox implements Runnable {
+public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
     private int progress;
     private int progressColor;
     private int progressBackgroundColor;
@@ -64,7 +64,7 @@ public class ProgressDoneView extends CheckBox implements Runnable {
     private static final boolean isJellyBeanMR1 = Build.VERSION.SDK_INT >=
             Build.VERSION_CODES.JELLY_BEAN_MR1;
 
-    public ProgressDoneView(Context context, AttributeSet attrs) {
+    public ProgressDoneView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
@@ -100,6 +100,8 @@ public class ProgressDoneView extends CheckBox implements Runnable {
     public void onDraw(@NonNull final Canvas canvas) {
         final Drawable buttonDrawable = mButtonDrawable;
         if (buttonDrawable != null) {
+            int save = canvas.save();
+            canvas.translate(dpToPx(3), 0);
             final int verticalGravity = getGravity() & Gravity.VERTICAL_GRAVITY_MASK;
             final int drawableHeight = buttonDrawable.getIntrinsicHeight();
             final int drawableWidth = buttonDrawable.getIntrinsicWidth();
@@ -115,14 +117,9 @@ public class ProgressDoneView extends CheckBox implements Runnable {
                 top = 0;
                 break;
             }
-            //top+=dpToPx(5);
-            final int bottom = top + drawableHeight;
             int left = (isJellyBeanMR1 &&
                         (getLayoutDirection() == LAYOUT_DIRECTION_RTL)) ? (getWidth() - drawableWidth) : 0;
-            int right = (isJellyBeanMR1 &&
-                         (getLayoutDirection() == LAYOUT_DIRECTION_RTL)) ? getWidth() : drawableWidth;
             left += dpToPx(5);
-            right += dpToPx(5);
             final int x = (checkboxLeft.or(0) + (widthCheckbox.or(heightCheckbox.or(0)) / 2)) + left;
             final int y = (checkboxTop.or(0) + (heightCheckbox.or(widthCheckbox.or(0)) / 2)) + top;
             final int size = Math.max(widthCheckbox.or(0), heightCheckbox.or(0)) + dpToPx(3);
@@ -138,8 +135,9 @@ public class ProgressDoneView extends CheckBox implements Runnable {
                                         heightCheckbox.or(widthCheckbox.or(0)) + top + checkboxTop.or(0));
             canvas.drawRect(box, checkBoxPaint);
             //checkbox
-            buttonDrawable.setBounds(left, top, right, bottom);
+            canvas.translate(dpToPx(5), dpToPx(8));
             buttonDrawable.draw(canvas);
+            canvas.restoreToCount(save);
         }
     }
 
