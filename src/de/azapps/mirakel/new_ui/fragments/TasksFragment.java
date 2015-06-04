@@ -74,6 +74,7 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.SnackBarEventListener;
+import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
