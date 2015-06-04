@@ -42,6 +42,7 @@ import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -88,12 +89,12 @@ public class Mirakel extends Application {
                 //happend during tests;)
             }
         }
-        super.onCreate ();
+        super.onCreate();
 
-        init (this);
-        NotificationService.updateServices (this);
+        init(this);
+        NotificationService.updateServices(this);
         // And now, after the Database initialization!!! We init ACRA
-        ACRA.init (this);
+        ACRA.init(this);
         // Stuff we can do in another thread
         final Mirakel that = this;
         new Thread (new Runnable () {
@@ -134,20 +135,21 @@ public class Mirakel extends Application {
 
     public static void init (final Context ctx) {
         // This we have to initialize as early as possible
-        DefinitionsHelper.init (ctx);
-        MirakelPreferences.init (ctx);
-        ErrorReporter.init (ctx);
+        DefinitionsHelper.init(ctx);
+        MirakelPreferences.init(ctx);
+        ErrorReporter.init(ctx);
         ThemeManager.init(ctx, R.style.MirakelBaseTheme, R.style.MirakelDialogTheme);
+        CursorGetter.init(ctx);
         ModelBase.init(ctx);
         Settings.init(ctx);
-        final Locale locale = Helpers.getLocal (ctx);
-        Locale.setDefault (locale);
-        BuildHelper.setPlaystore (ctx.getResources ().getBoolean (
-                                      R.bool.is_playstore));
+        final Locale locale = Helpers.getLocal(ctx);
+        Locale.setDefault(locale);
+        BuildHelper.setPlaystore(ctx.getResources ().getBoolean (
+                                     R.bool.is_playstore));
         final Configuration config = new Configuration ();
         config.locale = locale;
-        ctx.getResources ().updateConfiguration (config,
-                ctx.getResources ().getDisplayMetrics ());
+        ctx.getResources().updateConfiguration(config,
+                                               ctx.getResources().getDisplayMetrics());
     }
 
 }

@@ -64,6 +64,7 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.new_ui.activities.LockableDrawer;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
@@ -451,9 +452,9 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         }
         final Cursor cursor = mAdapter.getCursor();
         cursor.moveToPosition(from);
-        final ListMirakel fromList = new ListMirakel(cursor);
+        final ListMirakel fromList = new ListMirakel(CursorGetter.unsafeGetter(cursor));
         cursor.moveToPosition(to);
-        final ListMirakel toList = new ListMirakel(cursor);
+        final ListMirakel toList = new ListMirakel(CursorGetter.unsafeGetter(cursor));
         MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
             @Override
             public void exec() {

@@ -128,15 +128,19 @@ public class FileView extends LinearLayout implements View.OnClickListener,
 
     public void addPhoto() {
         if ((photoUri != null) && (task != null)) {
-            files.add(FileMirakel.newFile(getContext(), task, photoUri));
+            //the new file is present because photouri/=null
+            files.add(FileMirakel.newFile(getContext(), task, photoUri).get());
             photoUri = null;
             fixChilds();
         }
     }
 
     public void addFile(final @NonNull Uri uri) {
-        files.add(FileMirakel.newFile(getContext(), task, uri));
-        fixChilds();
+        final Optional<FileMirakel> fileMirakelOptional = FileMirakel.newFile(getContext(), task, uri);
+        if (fileMirakelOptional.isPresent()) {
+            files.add(fileMirakelOptional.get());
+            fixChilds();
+        }
     }
 
 

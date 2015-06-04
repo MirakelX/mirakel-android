@@ -28,9 +28,9 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 
-import de.azapps.mirakel.model.CursorGetter;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -78,7 +78,7 @@ public class SearchObject implements Parcelable {
     }
 
     public SearchObject(@NonNull final Cursor cursor) {
-        final CursorGetter cursorGetter = new CursorGetter(cursor);
+        final CursorGetter cursorGetter = CursorGetter.unsafeGetter(cursor);
         this.objId = cursorGetter.getInt(OBJ_ID);
         this.name = cursorGetter.getString(ModelBase.NAME);
         this.autocompleteType = AUTOCOMPLETE_TYPE.fromString(cursorGetter.getString(TYPE));
@@ -136,11 +136,11 @@ public class SearchObject implements Parcelable {
 
     public static Cursor autocomplete(@NonNull final Context context, @NonNull final String input) {
         MirakelQueryBuilder mirakelQueryBuilder = new MirakelQueryBuilder(context);
-        mirakelQueryBuilder.and("name", MirakelQueryBuilder.Operation.LIKE, "%" + input + "%")
+        mirakelQueryBuilder.and("name", MirakelQueryBuilder.Operation.LIKE, '%' + input + '%')
         .select(ModelBase.ID, OBJ_ID, ModelBase.NAME, TYPE, Tag.BACKGROUND_COLOR, Task.DONE,
                 "score + length(" + input.length() + ") - length(name) as score")
         .sort("score", MirakelQueryBuilder.Sorting.DESC);
-        return mirakelQueryBuilder.query(MirakelInternalContentProvider.AUTOCOMPLETE_URI);
+        return mirakelQueryBuilder.query(MirakelInternalContentProvider.AUTOCOMPLETE_URI).getRawCursor();
     }
 
 

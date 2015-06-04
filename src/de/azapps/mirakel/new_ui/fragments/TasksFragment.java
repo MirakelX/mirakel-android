@@ -82,6 +82,8 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
@@ -423,24 +425,28 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
         final Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
         if (accountMirakelOptional.isPresent()) {
-            final Cursor cursor = ListMirakel.allCursor(of(accountMirakelOptional.get()), false);
+            final Cursor cursor = ListMirakel.allCursor(of(accountMirakelOptional.get()), false).getRawCursor();
             builder.setCursor(cursor,
             new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(final DialogInterface dialog,
                                     final int which) {
-                    cursor.moveToPosition(which);
-                    final ListMirakel list = new ListMirakel(cursor);
-                    for (final TaskOverview taskOverview : tasks) {
-                        taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
-                            @Override
-                            public void apply(Task task) {
-                                task.setList(list, true);
-                                task.save();
+                    new CursorWrapper(cursor).doWithCursor(new CursorWrapper.WithCursor() {
+                        @Override
+                        public void withOpenCursor(@NonNull CursorGetter getter) {
+                            getter.moveToPosition(which);
+                            final ListMirakel list = new ListMirakel(getter);
+                            for (final TaskOverview taskOverview : tasks) {
+                                taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
+                                    @Override
+                                    public void apply(Task task) {
+                                        task.setList(list, true);
+                                        task.save();
+                                    }
+                                });
                             }
-                        });
-                    }
-                    cursor.close();
+                        }
+                    });
                     if (mActionMode != null) {
                         mActionMode.finish();
                     }
