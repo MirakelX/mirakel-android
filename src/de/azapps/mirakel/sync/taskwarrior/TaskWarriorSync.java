@@ -205,7 +205,7 @@ public class TaskWarriorSync {
                                 Operation.IN,
                         newUUIDS).query(Task.URI).doWithCursor(new CursorWrapper.WithCursor() {
                             @Override
-                            public void doWithCursor(@NonNull CursorGetter getter) {
+                            public void withOpenCursor(@NonNull CursorGetter getter) {
                                 while (getter.moveToNext()) {
                                     idMapping.put(getter.getString(Task.UUID), getter.getLong(Task.ID));
                                 }
@@ -416,7 +416,7 @@ public class TaskWarriorSync {
                 Task.ADDITIONAL_ENTRIES).and(Task.UUID, Operation.IN,
         uuids).query(Task.URI).doWithCursor(new CursorWrapper.WithCursor() {
             @Override
-            public void doWithCursor(@NonNull CursorGetter getter) {
+            public void withOpenCursor(@NonNull CursorGetter getter) {
                 while (getter.moveToNext()) {
                     final String uuid = getter.getString(Task.UUID);
                     final long localId = getter.getLong(Task.ID);
@@ -456,7 +456,7 @@ public class TaskWarriorSync {
         .select(Arrays.asList(new String[] {ListMirakel.ID, ListMirakel.NAME})).query(ListMirakel.URI)
         .doWithCursor(new CursorWrapper.WithCursor() {
             @Override
-            public void doWithCursor(@NonNull CursorGetter getter) {
+            public void withOpenCursor(@NonNull CursorGetter getter) {
                 while (getter.moveToNext()) {
                     final String name = getter.getString(ListMirakel.NAME);
                     projectMapping.put(name, getter.getLong(ListMirakel.ID));
@@ -491,7 +491,7 @@ public class TaskWarriorSync {
                                               new ArrayList<>(tagList)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI)
         .doWithCursor(new CursorWrapper.WithCursor() {
             @Override
-            public void doWithCursor(@NonNull CursorGetter getter) {
+            public void withOpenCursor(@NonNull CursorGetter getter) {
                 while (getter.moveToNext()) {
                     final String name = getter.getString(Tag.NAME);
                     tagMapping.put(name.replace(" ", "_"), getter.getLong(Tag.ID));
