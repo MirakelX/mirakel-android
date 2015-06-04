@@ -23,17 +23,10 @@ import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -57,10 +50,6 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
         return of((Fragment)new SpecialListDetailFragment());
     }
 
-    @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(parent, name, context, attrs);
-    }
 
     @NonNull
     @Override
@@ -106,7 +95,7 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
         return new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
                 MirakelQueryBuilder.Operation.NOT_EQ,
                 DefinitionsHelper.SYNC_STATE.DELETE.toInt()).sort(ListMirakel.LFT,
-                        MirakelQueryBuilder.Sorting.ASC).query(SpecialList.URI);
+                        MirakelQueryBuilder.Sorting.ASC).query(SpecialList.URI).getRawCursor();
     }
 
 }

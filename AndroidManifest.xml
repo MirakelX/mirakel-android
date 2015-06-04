@@ -30,8 +30,8 @@
             android:theme="@style/MirakelBaseTheme"
             android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize"
+            android:parentActivityName="de.azapps.mirakel.new_ui.activities.MirakelActivity"
             android:label="@string/title_settings"
-            android:parentActivityName="de.azapps.mirakel.main_activity.MainActivity"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
@@ -52,13 +52,6 @@
             android:name=".model_settings.special_list.SpecialListListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/special_lists_title"
-            android:parentActivityName=".SettingsActivity"
-            android:theme="@style/MirakelBaseTheme" >
-        </activity>
-        <activity
-            android:name=".model_settings.semantic.SemanticSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/settings_semantic"
             android:parentActivityName=".SettingsActivity"
             android:theme="@style/MirakelBaseTheme" >
         </activity>

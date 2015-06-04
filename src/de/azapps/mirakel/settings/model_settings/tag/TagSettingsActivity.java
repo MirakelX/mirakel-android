@@ -82,7 +82,7 @@ public class TagSettingsActivity extends GenericModelListActivity<Tag> {
 
     @Override
     protected Cursor getQuery() {
-        return new MirakelQueryBuilder(this).query(Tag.URI);
+        return new MirakelQueryBuilder(this).query(Tag.URI).getRawCursor();
     }
 
 }

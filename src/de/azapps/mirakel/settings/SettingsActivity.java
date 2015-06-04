@@ -27,15 +27,16 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.google.common.base.Optional;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
@@ -72,6 +73,7 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
             onItemSelected(Settings.values()[getIntent().getIntExtra(SHOW_FRAGMENT, 0)]);
         }
     }
+
 
     @NonNull
     @Override
@@ -112,12 +114,20 @@ public class SettingsActivity extends GenericModelListActivity<Settings> {
         return getString(R.string.title_settings);
     }
 
+
+
     @Override
-    protected void setUpActionBar() {
-        final Toolbar bar = (Toolbar) findViewById(R.id.actionbar);
-        bar.setBackgroundColor(ThemeManager.getPrimaryThemeColor());
-        setSupportActionBar(bar);
-        getSupportActionBar().setElevation(getResources().getDimension(R.dimen.actionbar_elevation));
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+        // Respond to the action bar's Up/Home button
+        case android.R.id.home:
+            final Optional<Class<?>> main = Helpers.getMainActivity();
+            if (main.isPresent()) {
+                NavUtils.navigateUpTo(this, new Intent(this, main.get()));
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Nullable

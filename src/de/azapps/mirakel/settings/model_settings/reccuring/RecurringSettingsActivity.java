@@ -81,7 +81,7 @@ public class RecurringSettingsActivity extends GenericModelListActivity<Recurrin
 
     @Override
     protected Cursor getQuery() {
-        return new MirakelQueryBuilder(this).query(Recurring.URI);
+        return new MirakelQueryBuilder(this).query(Recurring.URI).getRawCursor();
     }
 
     @Override

@@ -101,7 +101,7 @@ public class SettingsGroupAdapter extends RecyclerView.Adapter<SettingsGroupAdap
             }
             ll.setOrientation(LinearLayout.VERTICAL);
             final View header = preference.getView(null, null);
-            TextView title = (TextView) header.findViewById(android.R.id.title);
+            final TextView title = (TextView) header.findViewById(android.R.id.title);
             title.setTypeface(Typeface.DEFAULT_BOLD);
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0F);
             title.setTextColor(ThemeManager.getAccentThemeColor());
