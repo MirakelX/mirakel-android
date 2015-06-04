@@ -37,6 +37,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,9 +48,8 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.listeners.EventListener;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -57,6 +57,7 @@ import de.azapps.changelog.Changelog;
 import de.azapps.ilovefs.ILoveFS;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
+import de.azapps.material_elements.views.FloatingActionButton;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
@@ -275,8 +276,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         fragmentTransaction.commit();
     }
 
-    private void handleIntent(final Intent intent) {
-        if (intent == null) {
+    private synchronized void handleIntent(@Nullable final Intent intent) {
+        if ((intent == null) || (intent.getExtras() == null)) {
             return;
         }
         switch (intent.getAction()) {
