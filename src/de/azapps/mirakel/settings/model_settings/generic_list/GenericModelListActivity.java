@@ -51,12 +51,13 @@ import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.SettingsHelper;
 
 import static com.google.common.base.Optional.absent;
 
 public abstract class GenericModelListActivity<T extends IGenericElementInterface> extends
-        AppCompatActivity implements  GenericModelListFragment.Callbacks, OnItemClickedListener<T> {
+    AppCompatActivity implements  GenericModelListFragment.Callbacks, OnItemClickedListener<T> {
 
     private static final int RESULT_ITEM = 10;
 
@@ -131,7 +132,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDetailContainer = (FrameLayout)findViewById(R.id.generic_model_detail_container);
 
-        mTwoPane = MirakelCommonPreferences.isTablet();
+        mTwoPane = false;
         mDetailContainer.setVisibility(mTwoPane ? View.VISIBLE : View.GONE);
         final FragmentTransaction transaction = getFragmentManager().beginTransaction().replace(
                 R.id.generic_model_list_container, new GenericModelListFragment());
@@ -156,6 +157,7 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
 
     protected void setUpActionBar() {
         final Toolbar bar = (Toolbar) findViewById(R.id.actionbar);
+        bar.setClickable(true);
         bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final MenuItem menuItem) {
@@ -166,6 +168,10 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
         bar.setVisibility(View.VISIBLE);
         setSupportActionBar(bar);
         getSupportActionBar().setElevation(getResources().getDimension(R.dimen.actionbar_elevation));
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
     }
 
     @Override
@@ -210,6 +216,9 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
     @Override
     @SuppressWarnings("unchecked")
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if (getIntent() != null && getIntent().hasExtra(SettingsActivity.SHOW_FRAGMENT)) {
+            finish();
+        }
         if (requestCode == RESULT_ITEM) {
             switch (resultCode) {
             case GenericModelDetailActivity.NEED_UPDATE:
@@ -253,17 +262,17 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        if (hasMenu()) {
-            final MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.generic_model_menu, menu);
-            if (!MirakelCommonPreferences.isTablet()) {
-                final MenuItem item = menu.findItem(R.id.action_delete_special);
-                item.setEnabled(false);
-                item.setVisible(false);
-            }
-            return true;
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.generic_model_menu, menu);
+        final MenuItem item = menu.findItem(R.id.action_delete_special);
+        item.setEnabled(false);
+        item.setVisible(false);
+        if (!hasMenu()) {
+            final MenuItem add = menu.findItem(R.id.action_create_special);
+            add.setEnabled(false);
+            add.setVisible(false);
         }
-        return false;
+        return true;
     }
 
 

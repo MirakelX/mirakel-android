@@ -23,22 +23,14 @@ import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
-import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
@@ -58,10 +50,6 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
         return of((Fragment)new SpecialListDetailFragment());
     }
 
-    @Override
-    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(parent, name, context, attrs);
-    }
 
     @NonNull
     @Override
