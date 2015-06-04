@@ -32,19 +32,22 @@ import de.azapps.material_elements.utils.ThemeManager;
 
 
 public class MaterialNumberPicker extends NumberPicker {
-    private final String TAG="MaterialNumberPicker";
+    private final String TAG = "MaterialNumberPicker";
 
+    public MaterialNumberPicker(final Context context) {
+        this(context, null);
+    }
     public MaterialNumberPicker(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         try {
             //dirty hack to override the divider
             final Field mSelectionDivider = NumberPicker.class.getDeclaredField("mSelectionDivider");
             mSelectionDivider.setAccessible(true);
-            final Drawable divider= (Drawable) mSelectionDivider.get(this);
+            final Drawable divider = (Drawable) mSelectionDivider.get(this);
             divider.setColorFilter(ThemeManager.getPrimaryThemeColor(), PorterDuff.Mode.SRC_IN);
-            mSelectionDivider.set(this,divider);
+            mSelectionDivider.set(this, divider);
         } catch (final NoSuchFieldException e) {
-            Log.wtf(TAG,"mSelectionDivider not found");
+            Log.wtf(TAG, "mSelectionDivider not found");
         } catch (IllegalAccessException e) {
             Log.wtf(TAG, "mSelectionDivider not accessible");
         }
