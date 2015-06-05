@@ -382,7 +382,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             @Override
             public void onDismiss(final Snackbar snackbar) {
                 super.onDismiss(snackbar);
-                ((MirakelActivity) getActivity()).moveFabDown(snackbar.getHeight());
+                snackbar.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MirakelActivity)getActivity()).moveFabDown(snackbar.getHeight());
+                    }
+                }, 100L);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -402,20 +407,16 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                     }
                 }).start();
             }
-
-            @Override
-            public void onShow(final Snackbar snackbar) {
-                ((MirakelActivity) getActivity()).moveFABUp(snackbar.getHeight());
-            }
         });
         TasksFragment.this.snackbar = of(snackbar);
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
         SnackbarManager.show(
             snackbar
             , getActivity());
 
-        if (mActionMode != null) {
-            mActionMode.finish();
-        }
+
     }
 
     @OnClick(R.id.menu_move_task)
@@ -654,7 +655,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             mActionMode = null;
 
             AnimationHelper.slideOut(getActivity(), multiselectMenu);
-            ((MirakelActivity) getActivity()).moveFabDown(multiselectMenu.getHeight());
+            if (!snackbar.isPresent()) {
+                ((MirakelActivity) getActivity()).moveFabDown(multiselectMenu.getHeight());
+            }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
