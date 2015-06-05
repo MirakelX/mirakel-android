@@ -160,6 +160,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         notifyUris.put(TASK_URI, LIST_URI);
         notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
         notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(SPECIAL_LISTS_URI, LIST_WITH_SPECIAL_URI);
     }
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
