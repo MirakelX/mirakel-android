@@ -558,8 +558,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         if (!force) {
             UndoHistory.updateLog(this, context);
         }
-        final long id = getId();
-        if (id <= 0L) {
+        if (isSpecial()) {
             final SpecialList slist = (SpecialList) this;
             slist.destroy();
             return;
@@ -568,6 +567,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         MirakelInternalContentProvider.DBTransaction() {
             @Override
             public void exec() {
+                final long id = getId();
                 if ((getSyncState() == SYNC_STATE.ADD) || force) {
                     delete(MirakelInternalContentProvider.TASK_URI,
                            Task.LIST_ID + " = " + id, null);
