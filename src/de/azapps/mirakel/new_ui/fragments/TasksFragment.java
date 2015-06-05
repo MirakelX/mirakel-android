@@ -36,6 +36,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -622,12 +623,13 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private class MultiSelectCallbacks implements ActionMode.Callback {
         @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
             final MenuInflater inflater = actionMode
                                           .getMenuInflater();
             inflater.inflate(R.menu.multiselect_tasks, menu);
             AnimationHelper.slideIn(getActivity(), multiselectMenu);
             ((MirakelActivity) getActivity()).moveFABUp(multiselectMenu.getHeight());
+            ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.EMPTY);
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -653,6 +655,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         public void onDestroyActionMode(ActionMode actionMode) {
             mAdapter.clearSelections();
             mActionMode = null;
+            ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.NORMAL);
 
             AnimationHelper.slideOut(getActivity(), multiselectMenu);
             if (!snackbar.isPresent()) {
@@ -668,7 +671,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private class SearchCallbacks implements ActionMode.Callback, SearchView.SearchCallback {
         private ActionMode privateActionMode;
         @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
+            ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.EMPTY);
             privateActionMode = actionMode;
             final SearchView searchView = new SearchView(getActivity());
             searchView.setSearchCallback(this);
@@ -690,24 +694,25 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        public boolean onPrepareActionMode(final ActionMode actionMode, final Menu menu) {
             return true;
         }
 
         @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
             return false;
         }
 
         @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
+        public void onDestroyActionMode(final ActionMode actionMode) {
+            ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.NORMAL);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorPrimaryDark));
             }
         }
 
         @Override
-        public void performSearch(SearchObject searchText) {
+        public void performSearch(final SearchObject searchText) {
             if (privateActionMode == null) {
                 throw new IllegalArgumentException("ActionMode is null this must not happen");
             }

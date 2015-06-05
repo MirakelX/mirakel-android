@@ -430,7 +430,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     }
 
     public enum ActionBarState {
-        NORMAL(0), SWITCHER(1);
+        NORMAL(0), SWITCHER(1), EMPTY(3);
 
         private final int position;
         ActionBarState(final int position) {
@@ -445,7 +445,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void updateToolbar(final ActionBarState actionBarState) {
         if (actionBarViewHolder != null) {
             actionBarViewHolder.actionbarSwitcher.setDisplayedChild(actionBarState.getPosition());
-            if (actionBarState == ActionBarState.NORMAL && actionBarViewHolder.actionbarTitle != null) {
+            if ((actionBarState == ActionBarState.NORMAL) && (actionBarViewHolder.actionbarTitle != null)) {
                 actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName(),
                         TextView.BufferType.SPANNABLE);
             }

@@ -20,6 +20,7 @@
 
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/actionbar_switcher"
+    android:measureAllChildren="false"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
@@ -40,5 +41,9 @@
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <LinearLayout
+        android:id="@+id/actionbar_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </ViewFlipper>
