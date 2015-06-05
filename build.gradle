@@ -51,15 +51,15 @@ gradle.projectsEvaluated {
     }
 }
 ext {
-    compileSdkVersion = 21
-    buildToolsVersion = "21.1.1"
+    compileSdkVersion = 22
+    buildToolsVersion = "22.0.1"
     minSDKVersion = 11
 }
 
 configure(allprojects) {
-    ext.androidSDKVersion = "21"
-    ext.androidBuildToolsVersion = "21.1.0"
-    ext.androidSupportVersion = "22.1.+"
+    ext.androidSDKVersion = "22"
+    ext.androidBuildToolsVersion = "22.0.1"
+    ext.androidSupportVersion = "22.2.0"
     ext.androidPluginVersion ="0.14.0"
     ext.androidMinSDKVersion ="14"
     ext.jodaLibraryVersion = "2.2"
