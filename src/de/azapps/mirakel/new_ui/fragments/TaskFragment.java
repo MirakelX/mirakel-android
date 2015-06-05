@@ -348,6 +348,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
             }
         });
         subtasksView.setSubtasks(task.getSubtasks());
+        subtasksView.initListeners(this);
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
     }
@@ -593,9 +594,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     @Override
-    public void onSubtaskDone(Task subtask) {
-        task.toggleDone();
-        task.save();
+    public void onSubtaskDone(Task subtask, boolean done) {
+        subtask.setDone(done);
+        subtask.save();
 
     }
 
