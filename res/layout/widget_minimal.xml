@@ -44,7 +44,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:background="@android:color/transparent"
-                android:contentDescription="@string/preferences"
+                android:contentDescription="@string/new_task"
                 android:src="@drawable/ic_action_new" />
 
             <ImageButton

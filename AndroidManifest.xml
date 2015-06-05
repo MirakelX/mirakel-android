@@ -38,6 +38,11 @@
                 android:resource="@xml/provider_widget" />
         </receiver>
 
+        <activity
+            android:name="de.azapps.mirakel.widget.MainWidgetSettingsActivity"
+            android:label="@string/app_name" >
+        </activity>
+
 
         <!-- The service serving the RemoteViews to the collection widget -->
         <service
