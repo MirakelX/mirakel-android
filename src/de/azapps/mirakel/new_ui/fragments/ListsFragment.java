@@ -312,7 +312,16 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
-        final ArrayList<ListMirakel> selected = mAdapter.getSelectedItems();
+        final ArrayList<ListMirakel> selected = new ArrayList<>(Collections2.transform(
+        mAdapter.getSelectedItems(), new Function<ListMirakel, ListMirakel>() {
+            @Override
+            public ListMirakel apply(@Nullable ListMirakel input) {
+                if ((input != null) && input.isSpecial()) {
+                    return SpecialList.get(input.getId()).get();
+                }
+                return input;
+            }
+        }));
         switch (item.getItemId()) {
         case R.id.menu_delete:
             handleDelete(selected);
