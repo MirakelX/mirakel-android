@@ -1,25 +1,26 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.list;
 
 import android.content.ContentValues;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -41,6 +42,7 @@ abstract class ListBase extends ModelBase {
     public final static String COLOR = "color";
     public final static String SORT_BY_FIELD = "sort_by";
     public final static String ACCOUNT_ID = "account_id";
+    public final static String ICON_PATH = "icon_path";
 
 
     @NonNull
@@ -57,7 +59,9 @@ abstract class ListBase extends ModelBase {
     protected long accountID;
     @Nullable
     private AccountMirakel accountMirakel;
-    protected boolean isSpecial = false;
+
+    @NonNull
+    protected Optional<Uri> iconPath;
 
     private static final String TAG = "ListBase";
 
@@ -68,7 +72,7 @@ abstract class ListBase extends ModelBase {
     ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
              @NonNull final String createdAt, @NonNull final String updatedAt,
              @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-             final int color, @NonNull final AccountMirakel a) {
+             final int color, @NonNull final AccountMirakel a, @NonNull final Optional<Uri> iconPath) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -78,16 +82,13 @@ abstract class ListBase extends ModelBase {
         this.setRgt(rgt);
         this.setColor(color);
         this.setAccount(a);
-    }
-
-    ListBase(final long id, @NonNull final String name) {
-        super(id, name);
+        this.setIconPath(iconPath);
     }
 
     protected ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
                        @NonNull final String createdAt, @NonNull final String updatedAt,
                        @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-                       final int color, final int account) {
+                       final int color, final int accountId, @NonNull final Optional<Uri> iconPath) {
         super(id, name);
         this.setCreatedAt(createdAt);
         this.setUpdatedAt(updatedAt);
@@ -96,11 +97,12 @@ abstract class ListBase extends ModelBase {
         this.setLft(lft);
         this.setRgt(rgt);
         this.setColor(color);
-        this.setAccount(account);
+        this.setAccount(accountId);
+        this.setIconPath(iconPath);
     }
 
     public void setListName(@NonNull final String name) throws ListMirakel.ListAlreadyExistsException {
-        Optional<ListMirakel> listMirakel = ListMirakel.getByName(name, getAccount());
+        final Optional<ListMirakel> listMirakel = ListMirakel.getByName(name, getAccount());
         if (listMirakel.isPresent() && listMirakel.get().getId() != getId()) {
             throw new ListMirakel.ListAlreadyExistsException("List " + getName() + " already exists as ID: " +
                     listMirakel.get().getId());
@@ -108,6 +110,7 @@ abstract class ListBase extends ModelBase {
         setName(name);
     }
 
+    @NonNull
     public String getCreatedAt() {
         return this.createdAt;
     }
@@ -116,9 +119,8 @@ abstract class ListBase extends ModelBase {
         this.createdAt = createdAt;
     }
 
-    public
     @NonNull
-    String getUpdatedAt() {
+    public String getUpdatedAt() {
         return this.updatedAt;
     }
 
@@ -161,13 +163,32 @@ abstract class ListBase extends ModelBase {
     }
 
     @NonNull
+    public Optional<Uri> getIconPath() {
+        return iconPath;
+    }
+
+    @Nullable
+    protected String getIconPathString() {
+        if (iconPath.isPresent()) {
+            return iconPath.get().toString();
+        } else {
+            return null;
+        }
+    }
+
+
+    public void setIconPath(@NonNull Optional<Uri> iconPath) {
+        this.iconPath = iconPath;
+    }
+
+    @NonNull
     public AccountMirakel getAccount() {
         if (this.accountMirakel == null) {
             Optional<AccountMirakel> accountMirakelOptional = AccountMirakel.get(this.accountID);
             if (accountMirakelOptional.isPresent()) {
                 this.accountMirakel = accountMirakelOptional.get();
             } else {
-                throw new AccountVanishedException(accountID);
+                throw new AccountVanishedException(accountID, getId());
             }
         }
         return this.accountMirakel;
@@ -184,7 +205,7 @@ abstract class ListBase extends ModelBase {
     }
 
     public boolean isSpecial() {
-        return this.isSpecial;
+        return (this instanceof SpecialList) || (getId() < 0);
     }
 
 
@@ -197,14 +218,18 @@ abstract class ListBase extends ModelBase {
             Log.wtf(TAG, "dies could not happen", e);
             return new ContentValues();
         }
-        cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
-        cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
+        // If it's a special list we can't put this values into the database
+        if (getId() > 0) {
+            cv.put(ACCOUNT_ID, this.accountID);
+            cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
+            cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
+        }
         cv.put(SORT_BY_FIELD, this.sortBy.getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(LFT, this.lft);
         cv.put(RGT, this.rgt);
         cv.put(COLOR, this.color);
-        cv.put(ACCOUNT_ID, this.accountID);
+        cv.put(ICON_PATH, getIconPathString());
         return cv;
     }
 
@@ -227,13 +252,13 @@ abstract class ListBase extends ModelBase {
         result = prime * result + this.color;
         result = prime * result + (this.createdAt.hashCode());
         result = prime * result + (int) getId();
-        result = prime * result + (this.isSpecial ? 1231 : 1237);
         result = prime * result + this.lft;
         result = prime * result + (getName().hashCode());
         result = prime * result + this.rgt;
         result = prime * result + this.sortBy.getShort();
         result = prime * result + (this.syncState.hashCode());
         result = prime * result + (this.updatedAt.hashCode());
+        result = prime * result + (this.iconPath.hashCode());
         return result;
     }
 
@@ -261,9 +286,6 @@ abstract class ListBase extends ModelBase {
         if (this.getId() != other.getId()) {
             return false;
         }
-        if (this.isSpecial != other.isSpecial) {
-            return false;
-        }
         if (this.lft != other.lft) {
             return false;
         }
@@ -277,6 +299,9 @@ abstract class ListBase extends ModelBase {
             return false;
         }
         if (this.syncState != other.syncState) {
+            return false;
+        }
+        if (this.iconPath != other.iconPath) {
             return false;
         }
         return true;

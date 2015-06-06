@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.recurring;
@@ -247,13 +247,13 @@ abstract class RecurringBase extends ModelBase {
      * @return
      */
     public long getInterval() {
-        final long minute = 60;
-        final long hour = 3600;
-        final long day = 86400;
-        final long month = 2592000; // That's not right, but who cares?
-        final long year = 31536000; // nobody need this…
-        return (this.minutes * minute + this.hours * hour + this.days * day
-                + this.months * month + this.years * year) * 1000;
+        final long minute = 60L;
+        final long hour = 3600L;
+        final long day = 86400L;
+        final long month = 2592000L; // That's not right, but who cares?
+        final long year = 31536000L; // nobody need this…
+        return ((this.minutes * minute) + (this.hours * hour) + (this.days * day)
+                + (this.months * month) + (this.years * year)) * 1000L;
     }
 
     @NonNull

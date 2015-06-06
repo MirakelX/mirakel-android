@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model;
@@ -24,21 +24,18 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.tools.Log;
 
-/**
- * Created by weiznich on 02.07.14.
- */
-abstract public class ModelBase implements Parcelable {
+
+abstract public class ModelBase implements IGenericElementInterface {
     private static final String TAG = "ModelBase";
 
     public static final String ID = "_id";
     public static final String NAME = "name";
-    public static final long INVALID_ID = -1L;
+    protected static final long INVALID_ID = 0L;
 
     private long id = INVALID_ID;
     private String name = "";
@@ -71,10 +68,10 @@ abstract public class ModelBase implements Parcelable {
         context = ctx;
     }
 
-    @NonNull
     public long getId() {
         return this.id;
     }
+    @Override
     @NonNull
     public String getName() {
         return this.name;
@@ -92,9 +89,9 @@ abstract public class ModelBase implements Parcelable {
     }
 
     @NonNull
-    public ContentValues getContentValues()throws DefinitionsHelper.NoSuchListException {
+    public ContentValues getContentValues() throws DefinitionsHelper.NoSuchListException {
         final ContentValues cv = new ContentValues();
-        cv.put(ID, id);
+        cv.put(ID, Math.abs(id));
         cv.put(NAME, name);
         return cv;
     }
@@ -153,5 +150,9 @@ abstract public class ModelBase implements Parcelable {
             ret[i] = prefix + '.' + columns[i];
         }
         return ret;
+    }
+
+    public final boolean isStub() {
+        return getId() == INVALID_ID;
     }
 }

@@ -1,59 +1,64 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.file;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.TypedValue;
 
 import com.google.common.base.Optional;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
-import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
+import de.azapps.material_elements.drawable.RoundedBitmapDrawable;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.Cursor2List;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
+import de.azapps.tools.ImageUtils;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
+import static com.google.common.base.Optional.of;
 
 public class FileMirakel extends FileBase {
 
+    private static final CursorWrapper.CursorConverter<List<FileMirakel>> LIST_FROM_CURSOR = new
+    Cursor2List<>(FileMirakel.class);
     public static final String[] allColumns = { ID, NAME, TASK, PATH };
     public static final String cacheDirPath = FileUtils.getMirakelDir()
             + "image_cache";
@@ -78,22 +83,14 @@ public class FileMirakel extends FileBase {
         return new MirakelQueryBuilder(context).getList(FileMirakel.class);
     }
 
-    public static List<FileMirakel> cursorToFileList(final Cursor c) {
-        List<FileMirakel> ret = new ArrayList<>();
-        if (c.moveToFirst()) {
-            do {
-                ret.add(new FileMirakel(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return ret;
+
+    public FileMirakel(final CursorGetter c) {
+        super(c.getInt(ID), c.getString(NAME), Task.get(c.getLong(TASK)).orNull(),
+              Uri.parse(c.getString(PATH)));
     }
 
-    public FileMirakel(final Cursor c) {
-        super(c.getInt(c.getColumnIndex(ID)), c.getString(c
-                .getColumnIndex(NAME)), Task.get(c.getInt(c
-                        .getColumnIndex(TASK))).orNull(), Uri.parse(c.getString(c
-                                .getColumnIndex(PATH))));
+    private FileMirakel(final @NonNull CursorGetter c, final @NonNull Task t) {
+        super(c.getInt(ID), c.getString(NAME), t, Uri.parse(c.getString(PATH)));
     }
 
     // Static Methods
@@ -130,54 +127,46 @@ public class FileMirakel extends FileBase {
 
     @NonNull
     public static List<FileMirakel> getForTask(final Task task) {
-        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task)
-               .getList(FileMirakel.class);
+        return new MirakelQueryBuilder(context).and(TASK, Operation.EQ, task).select(ID,
+                NAME,
+        PATH).query(URI).doWithCursor(new Cursor2List<>(new CursorWrapper.CursorConverter<FileMirakel>() {
+            @Override
+            public FileMirakel convert(@NonNull final CursorGetter getter) {
+                return new FileMirakel(getter, task);
+            }
+        }));
     }
 
     @NonNull
-    public static FileMirakel newFile(final Context ctx, final Task task,
-                                      final Uri uri) {
+    public static Optional<FileMirakel> newFile(final Context ctx, final Task task,
+            final Uri uri) {
         if (uri == null) {
-            return null;
-        }
-        InputStream stream;
-        try {
-            stream = FileUtils.getStreamFromUri(ctx, uri);
-        } catch (final FileNotFoundException e1) {
-            ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
-            return null;
+            return absent();
         }
         final String name = FileUtils.getNameFromUri(ctx, uri);
         final FileMirakel newFile = FileMirakel.newFile(task, name, uri);
-        Bitmap myBitmap = null;
         try {
-            myBitmap = BitmapFactory.decodeStream(stream);
-        } catch (final OutOfMemoryError e) {
-            ErrorReporter.report(ErrorType.FILE_TO_LARGE_FOR_THUMBNAIL);
-        }
-        if (myBitmap != null) {
-            final float size = TypedValue.applyDimension(
-                                   TypedValue.COMPLEX_UNIT_DIP, 150, ctx.getResources()
-                                   .getDisplayMetrics());
-            myBitmap = Helpers.getScaleImage(myBitmap, size);
-            // create directory if not exists
-            boolean success = true;
-            if (!FileMirakel.fileCacheDir.exists()) {
-                success = FileMirakel.fileCacheDir.mkdirs();
-            }
-            if (success) {
-                try {
+            final Bitmap bitmap = ImageUtils.getScaleImage(uri, ctx,
+                                  ctx.getResources().getDimension(R.dimen.file_preview_size));
+
+            if (bitmap != null) {
+                // create directory if not exists
+                boolean success = true;
+                if (!FileMirakel.fileCacheDir.exists()) {
+                    success = FileMirakel.fileCacheDir.mkdirs();
+                }
+                if (success) {
                     final File destFile = new File(FileMirakel.fileCacheDir,
                                                    newFile.getId() + ".png");
                     final FileOutputStream out = new FileOutputStream(destFile);
-                    myBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 42, out);
                     out.close();
-                } catch (final Exception e) {
-                    Log.e(TAG, "Exception", e);
                 }
             }
+        } catch (final IOException e) {
+            Log.wtf(TAG, "failed to scale image", e);
         }
-        return newFile;
+        return of(newFile);
     }
 
     /**
@@ -191,11 +180,11 @@ public class FileMirakel extends FileBase {
     @NonNull
     public static FileMirakel newFile(final Task task, final String name,
                                       final Uri uri) {
-        final FileMirakel m = new FileMirakel(0, name, task, uri);
+        final FileMirakel m = new FileMirakel(0L, name, task, uri);
         return m.create();
     }
 
-    FileMirakel(final int id, final String name, final Task task, final Uri uri) {
+    FileMirakel(final long id, final String name, final Task task, final Uri uri) {
         super(id, name, task, uri);
     }
 
@@ -214,12 +203,25 @@ public class FileMirakel extends FileBase {
     }
 
     @NonNull
-    public Optional<Bitmap> getPreview() {
+    public Optional<Drawable> getPreview(@NonNull final Context context) {
         final File osFile = new File(fileCacheDir, getId() + ".png");
         if (osFile.exists()) {
-            return fromNullable(BitmapFactory.decodeFile(osFile.getAbsolutePath()));
+            final Bitmap bpm = BitmapFactory.decodeFile(osFile.getAbsolutePath());
+            return of((Drawable) new RoundedBitmapDrawable(bpm,
+                      context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0));
+        } else {
+            final int drawableId;
+            if (FileUtils.isAudio(fileUri)) {
+                drawableId = R.drawable.ic_play_circle_fill_big;
+            } else {
+                drawableId = R.drawable.ic_description_big;
+            }
+            final Drawable drawable = context.getResources().getDrawable(drawableId);
+            if (drawable != null) {
+                drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.SRC_IN);
+            }
+            return fromNullable(drawable);
         }
-        return absent();
     }
 
     // Parcelable stuff
@@ -231,14 +233,14 @@ public class FileMirakel extends FileBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeParcelable(this.task, 0);
         dest.writeParcelable(this.fileUri, 0);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
     }
 
-    private FileMirakel(Parcel in) {
+    private FileMirakel(final Parcel in) {
         super();
         this.task = in.readParcelable(Task.class.getClassLoader());
         this.fileUri = in.readParcelable(Uri.class.getClassLoader());
@@ -248,10 +250,10 @@ public class FileMirakel extends FileBase {
 
     public static final Parcelable.Creator<FileMirakel> CREATOR = new
     Parcelable.Creator<FileMirakel>() {
-        public FileMirakel createFromParcel(Parcel source) {
+        public FileMirakel createFromParcel(final Parcel source) {
             return new FileMirakel(source);
         }
-        public FileMirakel[] newArray(int size) {
+        public FileMirakel[] newArray(final int size) {
             return new FileMirakel[size];
         }
     };

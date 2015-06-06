@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <resources
     xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="subtask_list_name">Subtasks</string>
@@ -108,7 +127,7 @@
 
    <string name="special_list_name">Name</string>
     <string name="special_list_active">Show</string>
-    <string name="special_list_where">SQL-Where Query</string>
+    <string name="special_list_where">SQL where query</string>
     <string name="special_list_sort_by">Sort by</string>
     <string name="special_list_def_list">Default list</string>
     <string name="special_list_def_date">Default date</string>
@@ -241,4 +260,44 @@
         <item quantity="one">year</item>
         <item quantity="other">years</item>
     </plurals>
+
+    <plurals name="repeat_day">
+        <item quantity="one">day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="repeat_week">
+        <item quantity="one">week</item>
+        <item quantity="other">%d weeks</item>
+    </plurals>
+    <plurals name="repeat_month">
+        <item quantity="one">month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+    <plurals name="repeat_year">
+        <item quantity="one">year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
+    <plurals name="repeat_hour">
+        <item quantity="one">hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="repeat_minute">
+        <item quantity="one">minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="begin_repeat">Begin %s</string>
+    <string name="end_repeat">till %s</string>
+    <string name="every_repeat">every %s</string>
+    <string name="weekday">Weekday</string>
+
+    <string name="accounts_all">All Accounts</string>
+    <string name="stub_list_name">New List</string>
+    <string name="search_title">Search: </string>
 </resources>

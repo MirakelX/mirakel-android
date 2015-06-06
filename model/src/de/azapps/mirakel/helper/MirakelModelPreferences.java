@@ -1,30 +1,30 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.helper;
-
-import java.util.List;
 
 import android.content.SharedPreferences.Editor;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
+
+import java.util.List;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -85,7 +85,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
             String listName = context.getString(R.string.subtask_list_name);
             list = ListMirakel.findByName(listName);
             if (!list.isPresent()) {
-                list = of(ListMirakel.saveNewList(listName));
+                list = of(ListMirakel.safeNewList(listName));
             }
             setSubtaskAddToList(list.get());
         }
@@ -182,5 +182,13 @@ public class MirakelModelPreferences extends MirakelPreferences {
             db_name = "demo_" + MirakelCommonPreferences.getLanguage() + ".db";
         }
         return db_name;
+    }
+
+    public static int getDividerPosition() {
+        return settings.getInt("dividerPosition", 4);
+    }
+
+    public static void setDividerPosition(final int dividerPosition) {
+        getEditor().putInt("dividerPosition", dividerPosition).apply();
     }
 }

@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.semantic;
@@ -34,7 +34,6 @@ import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 abstract class SemanticBase  extends ModelBase {
     @NonNull
@@ -77,42 +76,41 @@ abstract class SemanticBase  extends ModelBase {
         setName(condition.toLowerCase(Locale.getDefault()));
     }
 
-    @Nullable
-    public Integer getPriority() {
-        return this.priority.orNull();
+    @NonNull
+    public Optional<Integer> getPriority() {
+        return priority;
     }
 
-    public void setPriority(final @Nullable Integer priority) {
-        this.priority = fromNullable(priority);
+    public void setPriority(final @NonNull Optional<Integer> priority) {
+        this.priority = priority;
     }
 
-    @Nullable
-    public Integer getDue() {
-        return this.due.orNull();
+    @NonNull
+    public Optional<Integer> getDue() {
+        return due;
     }
 
-    public void setDue(final @Nullable Integer due) {
-        this.due = fromNullable(due);
+    public void setDue(final @NonNull Optional<Integer> due) {
+        this.due = due;
     }
 
     @NonNull
     public Optional<ListMirakel> getList() {
-        return this.list;
+        return list;
     }
 
     public void setList(final @NonNull Optional<ListMirakel> list) {
         this.list = list;
     }
 
-    @Nullable
-    public Integer getWeekday() {
-        return this.weekday.orNull();
+    @NonNull
+    public Optional<Integer> getWeekday() {
+        return weekday;
     }
 
-    public void setWeekday(final @NonNull Integer weekday) {
-        this.weekday = fromNullable(weekday);
+    public void setWeekday(final @NonNull Optional<Integer> weekday) {
+        this.weekday = weekday;
     }
-
 
     @Override
     @NonNull

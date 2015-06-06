@@ -1,52 +1,83 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.CursorAdapter;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.CursorAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
-public class SimpleModelAdapter<T extends ModelBase> extends CursorAdapter {
-    private LayoutInflater mInflater;
-    private Class<T> tClass;
+public class SimpleModelAdapter<T extends IGenericElementInterface> extends
+    CursorAdapter<SimpleModelAdapter.ModelViewHolder> {
+    @NonNull
+    private final Class<T> tClass;
+    @NonNull
+    private final OnItemClickedListener<T> onItemClickedListener;
 
-    public SimpleModelAdapter(Context context, Cursor c, int flags, Class<T> tClass) {
-        super(context, c, flags);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    public SimpleModelAdapter(final Context context, final Cursor c,
+                              final Class<T> tClass, final @NonNull OnItemClickedListener<T> onClick) {
+        super(context, c);
         this.tClass = tClass;
+        this.onItemClickedListener = onClick;
     }
+
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = mInflater.inflate(android.R.layout.simple_list_item_1, null);
-        ViewHolder viewHolder = new ViewHolder(view);
-        view.setTag(viewHolder);
-        return view;
+    public void onBindViewHolder(final SimpleModelAdapter.ModelViewHolder holder, final Cursor cursor,
+                                 final int position) {
+        holder.model = MirakelQueryBuilder.cursorToObject(CursorGetter.unsafeGetter(cursor), tClass);
+        holder.name.setText(holder.model.getName());
     }
 
-    public T getItem(final int pos) {
-        return MirakelQueryBuilder.cursorToObject((Cursor)super.getItem(pos), tClass);
-    }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
-        viewHolder.model = MirakelQueryBuilder.cursorToObject(cursor, tClass);
-        viewHolder.name.setText(viewHolder.model.getName());
+    public ModelViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        final View view = LayoutInflater.from(viewGroup.getContext()).inflate(
+                              android.R.layout.simple_list_item_1, null);
+        view.setMinimumWidth(viewGroup.getWidth());
+        return new ModelViewHolder(view);
     }
 
-    public static class ViewHolder<T extends ModelBase> {
+    public class ModelViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private T model;
 
-        private ViewHolder(View view) {
+        ModelViewHolder(final View view) {
+            super(view);
             name = (TextView) view.findViewById(android.R.id.text1);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickedListener.onItemSelected(model);
+                }
+            });
         }
 
         public T getModel() {

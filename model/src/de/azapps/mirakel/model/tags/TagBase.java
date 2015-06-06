@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.tags;
@@ -40,7 +40,6 @@ abstract class TagBase extends ModelBase {
     public TagBase(final long id, @NonNull final String name, final int backColor, final boolean dark) {
         super(id, name);
         setBackgroundColor(backColor);
-        setDarkText(dark);
     }
 
     public TagBase() {
@@ -66,26 +65,27 @@ abstract class TagBase extends ModelBase {
         return this.backgroundColor;
     }
 
+    //see http://www.w3.org/TR/WCAG20/
     public void setBackgroundColor(final int backgroundColor) {
         this.backgroundColor = backgroundColor;
+        isDarkText = ((0.2126 * Color.red(backgroundColor)) +
+                      (0.7152 * Color.green(backgroundColor)) +
+                      (0.0722 * Color.blue(backgroundColor))) > 0.5 * 255;
     }
 
     public boolean isDarkText() {
-        return this.isDarkText;
+        return isDarkText;
     }
 
-    public void setDarkText(final boolean isDarkText) {
-        this.isDarkText = isDarkText;
-    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int)this.getId();
-        result = prime * result + this.backgroundColor;
-        result = prime * result + (this.isDarkText ? 1231 : 1237);
-        result = prime * result + (this.getName().hashCode());
+        result = (prime * result) + (int) this.getId();
+        result = (prime * result) + this.backgroundColor;
+        result = (prime * result) + (this.isDarkText ? 1231 : 1237);
+        result = (prime * result) + (this.getName().hashCode());
         return result;
     }
 

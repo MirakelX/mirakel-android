@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.task;
@@ -25,7 +25,6 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Optional;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -38,6 +37,8 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.DateTimeHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -92,11 +93,10 @@ abstract class TaskBase extends ModelBase {
     protected String uuid = "";
     @NonNull
     protected Optional<List<Tag>> tags = absent();
-    private boolean isStub;
 
     TaskBase() {
         // nothing
-        super(0L, "");
+        super(INVALID_ID, "");
     }
 
     TaskBase(final long newId, @NonNull final String newUuid, @NonNull final ListMirakel newList,
@@ -130,7 +130,7 @@ abstract class TaskBase extends ModelBase {
 
 
     TaskBase(@NonNull final String newName, @NonNull final ListMirakel list) {
-        super(0L, newName);
+        super(INVALID_ID, newName);
         this.uuid = java.util.UUID.randomUUID().toString();
         setList(list, false);
         setContent("");
@@ -470,7 +470,13 @@ abstract class TaskBase extends ModelBase {
             return;
         }
         if (newList.isSpecial()) {
-            this.list = ((SpecialList) newList).getDefaultList();
+            Optional<SpecialList> specialListOptional = newList.toSpecial();
+            if (specialListOptional.isPresent()) {
+                this.list = specialListOptional.get().getDefaultList();
+            } else {
+                ErrorReporter.report(ErrorType.LIST_VANISHED);
+                return;
+            }
         } else {
             this.list = newList;
         }
@@ -515,12 +521,20 @@ abstract class TaskBase extends ModelBase {
         this.progress = newProgress;
     }
 
-    public void setRecurrence(final long newRecurrence) {
+    protected void setRecurrence(final long newRecurrence) {
         if (this.recurrence == newRecurrence) {
             return;
         }
         this.recurrence = newRecurrence;
         this.edited.put(TaskBase.RECURRING, true);
+    }
+
+    public void setRecurrence(final @NonNull Optional<Recurring> newRecurrence) {
+        if (newRecurrence.isPresent()) {
+            setRecurrence(newRecurrence.get().getId());
+        } else {
+            setRecurrence(-1L);
+        }
     }
 
     public void setRecurringReminder(final long newRecurrence) {
@@ -529,6 +543,14 @@ abstract class TaskBase extends ModelBase {
         }
         this.recurringReminder = newRecurrence;
         this.edited.put(TaskBase.RECURRING_REMINDER, true);
+    }
+
+    public void setRecurringReminder(final @NonNull Optional<Recurring> newRecurrence) {
+        if (newRecurrence.isPresent()) {
+            setRecurringReminder(newRecurrence.get().getId());
+        } else {
+            setRecurringReminder(-1L);
+        }
     }
 
     public void setReminder(final @NonNull Optional<Calendar> newReminder) {
@@ -589,14 +611,6 @@ abstract class TaskBase extends ModelBase {
     protected void removeTag(@NonNull final Tag tag) {
         checkTags();
         this.tags.get().remove(tag);
-    }
-
-    public boolean isStub() {
-        return isStub;
-    }
-
-    public void setStub(final boolean isStub) {
-        this.isStub = isStub;
     }
 
     @Override

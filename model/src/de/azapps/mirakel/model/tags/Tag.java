@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.tags;
@@ -22,7 +22,6 @@ package de.azapps.mirakel.model.tags;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Parcel;
@@ -31,19 +30,21 @@ import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.Cursor2List;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 
-import static com.google.common.base.Optional.fromNullable;
-
 public class Tag extends TagBase {
 
+    private static final CursorWrapper.CursorConverter<List<Tag>> LIST_FROM_CURSOR = new
+    Cursor2List<>(Tag.class);
     public static final String TABLE = "tag";
     public static final String TAG_CONNECTION_TABLE = "task_tag";
     public static final String[] allColumns = {ModelBase.ID, ModelBase.NAME, DARK_TEXT,
@@ -55,9 +56,9 @@ public class Tag extends TagBase {
         super(id, name, backColor, isDarkBackground);
     }
 
-    public Tag(final Cursor c) {
-        super(c.getLong(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              c.getInt(c.getColumnIndex(BACKGROUND_COLOR)), c.getShort(c.getColumnIndex(DARK_TEXT)) == 1);
+    public Tag(final @NonNull CursorGetter c) {
+        super(c.getLong(ID), c.getString(NAME),
+              c.getInt(BACKGROUND_COLOR), c.getBoolean(DARK_TEXT) );
     }
 
 
@@ -82,9 +83,9 @@ public class Tag extends TagBase {
 
     @NonNull
     public static List<Tag> getTagsForTask(final long id) {
-        return Tag.cursorToTagList(new MirakelQueryBuilder(context).select(addPrefix(allColumns,
-                                   TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
-                                   .query(MirakelInternalContentProvider.TASK_TAG_JOIN_URI));
+        return new MirakelQueryBuilder(context).select(addPrefix(allColumns,
+                TABLE)).and(TAG_CONNECTION_TABLE + ".task_id", Operation.EQ, id)
+               .query(MirakelInternalContentProvider.TASK_TAG_JOIN_URI).doWithCursor(LIST_FROM_CURSOR);
     }
 
     @NonNull
@@ -128,29 +129,24 @@ public class Tag extends TagBase {
     public static int getNextColor(final long count, final Context ctx) {
         final TypedArray ta = ctx.getResources().obtainTypedArray(
                                   R.array.default_colors);
-        final int transparency[] = ctx.getResources().getIntArray(
-                                       R.array.default_transparency);
-        final int alpha = ((int) count / ta.length()) % transparency.length;
-        final int colorPos = (int)count % ta.length();
-        final int color = android.graphics.Color.argb(transparency[alpha],
-                          Color.red(ta.getColor(colorPos, 0)),
-                          Color.green(ta.getColor(colorPos, 0)),
-                          Color.blue(ta.getColor(colorPos, 0)));
+        final int color;
+        if (ta.length() == 0) {
+            //Robolectic does not load the typedarray in the right way, so bypass the calculation of the nec color for this case
+            color = Color.RED;
+        } else {
+            final int transparency[] = ctx.getResources().getIntArray(
+                                           R.array.default_transparency);
+            final int alpha = ((int) count / ta.length()) % transparency.length;
+            final int colorPos = (int) count % ta.length();
+            color = android.graphics.Color.argb(transparency[alpha],
+                                                Color.red(ta.getColor(colorPos, 0)),
+                                                Color.green(ta.getColor(colorPos, 0)),
+                                                Color.blue(ta.getColor(colorPos, 0)));
+        }
         ta.recycle();
         return color;
     }
 
-    @NonNull
-    private static List<Tag> cursorToTagList(final Cursor c) {
-        final List<Tag> tags = new ArrayList<>(c.getCount());
-        if (c.moveToFirst()) {
-            do {
-                tags.add(new Tag(c));
-            } while (c.moveToNext());
-        }
-        c.close();
-        return tags;
-    }
 
     @NonNull
     public static Optional<Tag> getByName(final String name) {

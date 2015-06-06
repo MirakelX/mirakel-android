@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model.account;
@@ -24,6 +24,8 @@ import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.net.Uri;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
@@ -43,16 +45,23 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.Cursor2List;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.fromNullable;
-import static com.google.common.base.Optional.of;
 
 public class AccountMirakel extends AccountBase {
+    private static final List<Integer> MOVABLE_TO_ACCOUNT_TYPES = new ArrayList<>(Arrays.asList(
+                ACCOUNT_TYPES.LOCAL.toInt(), ACCOUNT_TYPES.TASKWARRIOR.toInt()));
+    private static final CursorWrapper.CursorConverter<List<AccountMirakel>> LIST_FROM_CURSOR = new
+    Cursor2List<>(AccountMirakel.class);
+
     public enum ACCOUNT_TYPES {
-        CALDAV, LOCAL, TASKWARRIOR;
+        ALL, CALDAV, LOCAL, TASKWARRIOR;
 
         public static ACCOUNT_TYPES parseAccountType(final String type) {
             switch (type) {
@@ -61,6 +70,8 @@ public class AccountMirakel extends AccountBase {
                 return CALDAV;
             case ACCOUNT_TYPE_MIRAKEL:
                 return TASKWARRIOR;
+            case ACCOUNT_TYPE_ALL:
+                return ALL;
             default:
                 return LOCAL;
             }
@@ -74,6 +85,8 @@ public class AccountMirakel extends AccountBase {
                 return CALDAV;
             case 2:
                 return TASKWARRIOR;
+            case 3:
+                return ALL;
             default:
                 throw new IllegalArgumentException();
             }
@@ -85,6 +98,8 @@ public class AccountMirakel extends AccountBase {
                 return ACCOUNT_TYPE_DAVDROID;
             case TASKWARRIOR:
                 return ACCOUNT_TYPE_MIRAKEL;
+            case ALL:
+                return ACCOUNT_TYPE_ALL;
             case LOCAL:
             default:
                 return null;
@@ -99,6 +114,8 @@ public class AccountMirakel extends AccountBase {
                 return -1;
             case TASKWARRIOR:
                 return 2;
+            case ALL:
+                return 3;
             default:
                 throw new RuntimeException();
             }
@@ -112,12 +129,33 @@ public class AccountMirakel extends AccountBase {
                 return ctx.getString(R.string.local_account);
             case TASKWARRIOR:
                 return ctx.getString(R.string.tw_account);
+            case ALL:
+                return ctx.getString(R.string.accounts_all);
             default:
                 return "Unknown account type";
             }
         }
+
+        public boolean isListEditable() {
+            switch (this) {
+            case CALDAV:
+                return false;
+            case LOCAL:
+                return true;
+            case TASKWARRIOR:
+                return true;
+            case ALL:
+            default:
+                throw new RuntimeException("Unknown account type");
+            }
+        }
+
+        public boolean isListDeletable() {
+            return isListEditable();
+        }
     }
 
+    public static final String ACCOUNT_TYPE_ALL = "universe.all";
     public static final String ACCOUNT_TYPE_DAVDROID = "bitfire.at.davdroid";
     public static final String ACCOUNT_TYPE_DAVDROID_MIRAKEL = "bitfire.at.davdroid.mirakel";
     public static final String ACCOUNT_TYPE_DMFS = "org.dmfs.caldav.account";
@@ -127,8 +165,8 @@ public class AccountMirakel extends AccountBase {
     private static final List<String> allowedAccounts = Arrays.asList(ACCOUNT_TYPE_DAVDROID_MIRAKEL,
             ACCOUNT_TYPE_DAVDROID, ACCOUNT_TYPE_MIRAKEL, ACCOUNT_TYPE_DMFS);
 
-    public static final String[] allColumns = { ModelBase.ID,
-                                                ModelBase.NAME, TYPE, ENABLED, SYNC_KEY
+    public static final String[] allColumns = {ModelBase.ID,
+                                               ModelBase.NAME, "content", TYPE, ENABLED, SYNC_KEY
                                               };
     public static final Uri URI = MirakelInternalContentProvider.ACCOUNT_URI;
 
@@ -141,21 +179,12 @@ public class AccountMirakel extends AccountBase {
         return URI;
     }
 
-    public static List<AccountMirakel> cursorToAccountList(final Cursor c) {
-        final List<AccountMirakel> l = new ArrayList<>(c.getCount());
-        if (c.moveToFirst()) {
-            do {
-                l.add(new AccountMirakel(c));
-            } while (c.moveToNext());
-        }
-        return l;
-    }
 
 
-    public AccountMirakel(final Cursor c) {
-        super(c.getInt(c.getColumnIndex(ID)), c.getString(c.getColumnIndex(NAME)),
-              ACCOUNT_TYPES.parseInt(c.getInt(c.getColumnIndex(TYPE))), c.getInt(c.getColumnIndex(ENABLED)) == 1,
-              fromNullable(c.getString(c.getColumnIndex(SYNC_KEY))));
+    public AccountMirakel(final CursorGetter c) {
+        super(c.getInt(ID), c.getString(NAME),
+              ACCOUNT_TYPES.parseInt(c.getInt(TYPE)), c.getInt(ENABLED) == 1,
+              fromNullable(c.getString(SYNC_KEY)));
     }
 
     public static Optional<AccountMirakel> get(final Account account) {
@@ -175,6 +204,33 @@ public class AccountMirakel extends AccountBase {
 
     public static List<AccountMirakel> all() {
         return new MirakelQueryBuilder(context).getList(AccountMirakel.class);
+    }
+
+    public static long countMovableTo() {
+        return allMovableToMQB().count(AccountMirakel.URI);
+    }
+
+    private static MirakelQueryBuilder allMovableToMQB() {
+        return new MirakelQueryBuilder(context).and(TYPE, Operation.IN, MOVABLE_TO_ACCOUNT_TYPES);
+    }
+
+    /**
+     * This is a hack to add the "All Accounts" item in the Spinner
+     *
+     * @return
+     */
+    public static Cursor allCursorWithAllAccounts() {
+        final MatrixCursor extras = new MatrixCursor(allColumns);
+        extras.addRow(new String[] {"-1", ACCOUNT_TYPES.ALL.typeName(context), null, String.valueOf(ACCOUNT_TYPES.ALL.toInt()), "1", null});
+        final CursorWrapper allCursor = allCursor();
+        return new MergeCursor(new Cursor[] {extras, allCursor.getRawCursor()});
+    }
+
+    public static CursorWrapper allCursor() {
+        return new MirakelQueryBuilder(context).query(MirakelInternalContentProvider.ACCOUNT_URI);
+    }
+    public static CursorWrapper allMovableToCursor() {
+        return allMovableToMQB().query(MirakelInternalContentProvider.ACCOUNT_URI);
     }
 
     public static List<AccountMirakel> getEnabled(final boolean isEnabled) {
@@ -214,13 +270,13 @@ public class AccountMirakel extends AccountBase {
     public static void update(final Account[] accounts) {
         final List<AccountMirakel> accountList = AccountMirakel.all();
         final long countRemotes = AccountMirakel.countRemoteAccounts();
-        final Map<String, AccountMirakel> map = new HashMap<>();
+        final Map<String, AccountMirakel> map = new HashMap<>(accountList.size());
         for (final AccountMirakel a : accountList) {
             map.put(a.getName(), a);
         }
         for (final Account a : accounts) {
             if (allowedAccounts.contains(a.type)) {
-                Log.d(TAG, "is supportet Account");
+                Log.d(TAG, "is supported Account");
                 if (!map.containsKey(a.name)) {
                     // Add new account here....
                     AccountMirakel.newAccount(a.name,
@@ -238,17 +294,17 @@ public class AccountMirakel extends AccountBase {
             }
         }
         final long countRemotesNow = AccountMirakel.countRemoteAccounts();
-        if (countRemotes == 0 && countRemotesNow == 1) {
+        if ((countRemotes == 0L) && (countRemotesNow == 1L)) {
             // If we just added our first remote account we want to set it as
             // the default one.
             final List<AccountMirakel> remotes = AccountMirakel.getRemote();
             // This could happen, the operations are not atomar
-            if (remotes.size() != 0 && remotes.get(0).getType() != ACCOUNT_TYPES.CALDAV) {
+            if ((!remotes.isEmpty()) && (remotes.get(0).getType() != ACCOUNT_TYPES.CALDAV)) {
                 final AccountMirakel account = remotes.get(0);
                 MirakelModelPreferences.setDefaultAccount(account);
                 ListMirakel.setDefaultAccount(account);
             }
-        } else if (countRemotes == 1 && countRemotesNow > 1) {
+        } else if ((countRemotes == 1L) && (countRemotesNow > 1L)) {
             // If we have now more than one remote account we want to show the
             // account name in the listfragment
             MirakelCommonPreferences.setShowAccountName(true);
@@ -308,7 +364,7 @@ public class AccountMirakel extends AccountBase {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeInt(this.type.toInt());
         dest.writeByte(enabled ? (byte) 1 : (byte) 0);
         dest.writeString(this.syncKey.orNull());
@@ -326,10 +382,11 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static final Creator<AccountMirakel> CREATOR = new Creator<AccountMirakel>() {
-        public AccountMirakel createFromParcel(Parcel source) {
+        public AccountMirakel createFromParcel(final Parcel source) {
             return new AccountMirakel(source);
         }
-        public AccountMirakel[] newArray(int size) {
+
+        public AccountMirakel[] newArray(final int size) {
             return new AccountMirakel[size];
         }
     };

@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.helper.export_import;
@@ -207,7 +207,7 @@ public class WunderlistImport {
     private static SparseArray<ListMirakel> parseList(final JsonObject jsonList) {
         final String name = jsonList.get("title").getAsString();
         final int id = jsonList.get("id").getAsInt();
-        final ListMirakel l = ListMirakel.saveNewList(name);
+        final ListMirakel l = ListMirakel.safeNewList(name);
         l.setCreatedAt(jsonList.get("created_at").getAsString());
         if (jsonList.get("updated_at") != null) {
             l.setUpdatedAt(jsonList.get("updated_at").getAsString());
@@ -288,7 +288,7 @@ public class WunderlistImport {
             default:
                 throw new JsonParseException("Unknown recurring " + type);
             }
-            t.setRecurrence(r.getId());
+            t.setRecurrence(of(r));
         }
         t.save(false);
     }

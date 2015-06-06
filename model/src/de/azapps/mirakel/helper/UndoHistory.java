@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.helper;
@@ -83,7 +83,7 @@ public class UndoHistory {
                         Log.wtf(TAG, "unkown Type");
                         break;
                     }
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     Log.e(TAG, "cannot parse String", e);
                 }
             } else {
@@ -94,7 +94,7 @@ public class UndoHistory {
                     final Gson gson = new GsonBuilder().registerTypeAdapter(
                         Task.class, new TaskDeserializer()).create();
                     final Task t = gson.fromJson(json, Task.class);
-                    if (t.getId() != Task.INVALID_ID) {
+                    if (t.isStub()) {
                         t.save(false);
                         break;
                     }
@@ -106,12 +106,12 @@ public class UndoHistory {
 
                     break;
                 case LIST:
-                    final ListMirakel l = ListMirakel.unsafeParseJson(json);
-                    if (l.getId() != ListMirakel.INVALID_ID) {
-                        l.save(false);
+                    final ListMirakel listMirakel = ListMirakel.unsafeParseJson(json);
+                    if (listMirakel.isStub()) {
+                        listMirakel.save(false);
                     } else {
                         try {
-                            final ContentValues cv = l.getContentValues();
+                            final ContentValues cv = listMirakel.getContentValues();
                             cv.remove(ListMirakel.ID);
                             ctx.getContentResolver()
                             .insert(MirakelInternalContentProvider.LIST_URI,

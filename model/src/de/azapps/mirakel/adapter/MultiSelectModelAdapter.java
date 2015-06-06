@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.adapter;
@@ -35,8 +35,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.azapps.mirakel.model.ModelBase;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter {
@@ -65,9 +66,9 @@ public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(final View view, final Context context, final Cursor cursor) {
         final ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
-        viewHolder.model = MirakelQueryBuilder.cursorToObject(cursor, tClass);
+        viewHolder.model = MirakelQueryBuilder.cursorToObject(CursorGetter.unsafeGetter(cursor), tClass);
         viewHolder.name.setText(cursor.getString(cursor.getColumnIndex(ModelBase.NAME)));
         viewHolder.checkBox.setChecked(selectedItems.contains(viewHolder.model));
         viewHolder.checkBox.setTag(viewHolder.model);

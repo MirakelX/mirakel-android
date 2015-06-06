@@ -1,36 +1,23 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.model;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -39,7 +26,6 @@ import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -49,8 +35,17 @@ import android.os.Build;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multiset;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -65,7 +60,6 @@ import de.azapps.tools.Log;
 
 public class MirakelInternalContentProvider extends ContentProvider implements
     OnAccountsUpdateListener {
-
 
 
     public interface DBTransaction {
@@ -95,6 +89,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
 
     // Join table constants
     public static final String TASK_TAG_JOIN = "task_tag_join";
+    public static final String TASK_VIEW_TAG_JOIN = "task_view_tag_join";
     public static final String TASK_RECURRING_TW_CHILD_JOIN = "task_recurring_child_tw";
     public static final String TASK_RECURRING_TW_PARENT_JOIN = "task_recurring_parent_tw";
     public static final String LISTS_SORT_JOIN = "lists_sort";
@@ -108,12 +103,14 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String CALDAV_INSTANCE_PROPERTIES = "caldav_instance_properties";
     public static final String CALDAV_INSTANCES = "caldav_instances";
 
-    public static final String LIST_WITH_SPECIAL = "list_with_special";
+    public static final String LIST_WITH_SPECIAL = "lists_with_special";
 
     // Uris
+    public static final Uri AUTOCOMPLETE_URI = getUri("autocomplete_helper");
     public static final Uri TASK_URI = getUri(Task.TABLE);
     public static final Uri TASK_SUBTASK_URI = getUri(TASK_SUBTASK_JOIN);
     public static final Uri TASK_TAG_JOIN_URI = getUri(TASK_TAG_JOIN);
+    public static final Uri TASK_VIEW_TAG_JOIN_URI = getUri(TASK_VIEW_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
     public static final Uri LIST_WITH_SPECIAL_URI = getUri(LIST_WITH_SPECIAL);
@@ -143,12 +140,13 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri UPDATE_LIST_FIX_RGT_URI = getUri(UPDATE_LIST_FIX_RGT);
 
     private static final Map<String, String> views = new HashMap<>();
+
     static {
         views.put("caldav_lists", ListMirakel.TABLE);
         views.put("caldav_tasks", Task.TABLE);
     }
 
-    private static final ListMultimap<Uri, Uri> notifyUris =  ArrayListMultimap.create();
+    private static final ListMultimap<Uri, Uri> notifyUris = ArrayListMultimap.create();
 
     static {
         notifyUris.put(CALDAV_TASKS_URI, TASK_URI);
@@ -162,15 +160,16 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         notifyUris.put(TASK_URI, LIST_URI);
         notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
         notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(SPECIAL_LISTS_URI, LIST_WITH_SPECIAL_URI);
     }
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_CHILD_JOIN, TASK_RECURRING_TW_PARENT_JOIN, TASK_SUBTASK_JOIN,
-                    TASK_TAG_JOIN,
+                    TASK_TAG_JOIN, TASK_VIEW_TAG_JOIN,
                     LISTS_SORT_JOIN, LIST_WITH_SPECIAL);
     private static final List<String> BLACKLISTED_FOR_DELETION = Arrays
             .asList("", TASK_RECURRING_TW_CHILD_JOIN, TASK_RECURRING_TW_PARENT_JOIN, TASK_SUBTASK_JOIN,
-                    TASK_TAG_JOIN,
+                    TASK_TAG_JOIN, TASK_VIEW_TAG_JOIN,
                     LISTS_SORT_JOIN, UPDATE_LIST_MOVE_DOWN, UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN,
                     UPDATE_LIST_FIX_RGT, LIST_WITH_SPECIAL);
 
@@ -322,7 +321,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             throw new IllegalArgumentException(table
                                                + " is blacklisted for query");
         } else if (IGNORED.contains(table)) {
-            return new MatrixCursor(new String [0]);
+            return new MatrixCursor(new String[0]);
         }
         switch (table) {
         case TASK_SUBTASK_JOIN:
@@ -340,9 +339,18 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                               + " ON " + Task.TABLE + "." + ModelBase.ID + "="
                               + Recurring.TW_TABLE + "." + Recurring.PARENT);
             break;
+        case Task.TABLE:
+            builder.setTables("tasks_view");
+            break;
         case TASK_TAG_JOIN:
             builder.setTables(Tag.TAG_CONNECTION_TABLE + " INNER JOIN "
                               + Tag.TABLE + " ON " + Tag.TAG_CONNECTION_TABLE
+                              + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID);
+            break;
+        case TASK_VIEW_TAG_JOIN:
+            builder.setTables("tasks_view INNER JOIN " + Tag.TAG_CONNECTION_TABLE + " ON " +
+                              Tag.TAG_CONNECTION_TABLE + ".task_id=tasks_view." + ModelBase.ID
+                              + " INNER JOIN " + Tag.TABLE + " ON " + Tag.TAG_CONNECTION_TABLE
                               + ".tag_id=" + Tag.TABLE + "." + ModelBase.ID);
             break;
         case LISTS_SORT_JOIN:
@@ -353,19 +361,8 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         default:
             builder.setTables(table);
         }
-        final Cursor c;
-        if (LIST_WITH_SPECIAL.equals(table)) {
-            // TODO Account centric view
-            c = getReadableDatabase().rawQuery(
-                    "select _id, name, sort_by, created_at, updated_at, sync_state, lft, rgt,color, account_id, 1 as isNormal from lists\n"
-                    +
-                    "    UNION\n" +
-                    "    select -_id, name, sort_by, date(\"now\") as created_at, date(\"now\") as updated_at, 0 as sync_state, lft, rgt, color, 0 as account_id, 0 as isNormal from special_lists where active = 1 ORDER BY isNormal ASC, lft ASC;",
-                    null);
-        } else {
-            c = builder.query(getReadableDatabase(), projection,
-                              selection, selectionArgs, groupBy, null, sortOrder);
-        }
+        final Cursor c = builder.query(getReadableDatabase(), projection,
+                                       selection, selectionArgs, groupBy, null, sortOrder);
         if (c == null) {
             Log.wtf(TAG, "cursor to query " + builder.toString() + " is null");
             return new MatrixCursor(projection);
@@ -422,7 +419,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                        selection + ";");
             break;
         case UPDATE_LIST_FIX_RGT:
-            db.execSQL ("UPDATE " + update_table + " SET rgt=lft+1;");
+            db.execSQL("UPDATE " + update_table + " SET rgt=lft+1;");
             break;
         default:
             u = db.update(table, values, selection, selectionArgs);
@@ -452,20 +449,17 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                           e);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         throw new android.database.SQLException(
-                            "General error while executing witTransaction",
+                            "General error while executing withTransaction",
                             e);
                     } else {
                         throw new android.database.SQLException(
-                            "General error while executing witTransaction");
+                            "General error while executing withTransaction");
                     }
                 } finally {
                     db.endTransaction();
                 }
             } else {
-                if (!isPreInit) {
-                    throw new DataBaseLockedException(
-                        "Database already in a transaction");
-                }
+                what.exec();
             }
         }
     }
