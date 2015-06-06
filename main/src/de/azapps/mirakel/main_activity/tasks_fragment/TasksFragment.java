@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.tasks_fragment;
 
@@ -66,7 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
+import de.azapps.mirakel.DefinitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -81,7 +81,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
@@ -91,6 +91,7 @@ import static de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting.
 public class TasksFragment extends Fragment implements
     LoaderManager.LoaderCallbacks<Cursor>, FilterQueryProvider {
     private static final String TAG = "TasksFragment";
+    private static final String TAG_NEWTASK = "NewTask";
     private static final int TASK_RENAME = 0, TASK_MOVE = 1, TASK_DESTROY = 2;
     protected TaskAdapter adapter;
     protected boolean created = false;
@@ -232,6 +233,15 @@ public class TasksFragment extends Fragment implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // save state
+        super.onSaveInstanceState(outState);
+        final EditText task_editText = (EditText) getView().findViewById(R.id.tasks_new);
+        final String newTask = task_editText.getText().toString();
+        outState.putString(TAG_NEWTASK, newTask);
+    }
+
+    @Override
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container, final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -244,11 +254,19 @@ public class TasksFragment extends Fragment implements
         this.listView = (ListView) this.view.findViewById(R.id.tasks_list);
         this.listView
         .setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        // Events
+
         this.newTask = (EditText) this.view.findViewById(R.id.tasks_new);
         if (MirakelCommonPreferences.isTablet()) {
             this.newTask.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
         }
+
+        // restore saved state
+        if (savedInstanceState != null) {
+            final String newTask = savedInstanceState.getString(TAG_NEWTASK);
+            this.newTask.setText(newTask);
+        }
+
+        // Events
         this.newTask.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(final TextView v, final int actionId,
@@ -405,34 +423,33 @@ public class TasksFragment extends Fragment implements
                 @Override
                 public boolean onActionItemClicked(
                     final ActionMode mode, final MenuItem item) {
-                    switch (item.getItemId()) {
-                    case R.id.menu_delete:
+                    int i = item.getItemId();
+                    if (i == R.id.menu_delete) {
                         TasksFragment.this.main
                         .handleDestroyTask(TasksFragment.this.selectedTasks);
-                        break;
-                    case R.id.menu_move:
+
+                    } else if (i == R.id.menu_move) {
                         TasksFragment.this.main
                         .handleMoveTask(TasksFragment.this.selectedTasks);
-                        break;
-                    case R.id.menu_set_due:
+
+                    } else if (i == R.id.menu_set_due) {
                         TasksFragment.this.main
                         .handleSetDue(TasksFragment.this.selectedTasks);
-                        break;
-                    case R.id.edit_task:
+
+                    } else if (i == R.id.edit_task) {
                         TasksFragment.this.main.setCurrentTask(
                             TasksFragment.this.selectedTasks.get(0),
                             true);
-                        break;
-                    case R.id.done_task:
+
+                    } else if (i == R.id.done_task) {
                         for (final Task t : TasksFragment.this.selectedTasks) {
                             t.setDone(true);
                             t.save();
                         }
                         getLoaderManager().restartLoader(0, null,
                                                          TasksFragment.this);
-                        break;
-                    default:
-                        break;
+
+                    } else {
                     }
                     mode.finish();
                     return false;

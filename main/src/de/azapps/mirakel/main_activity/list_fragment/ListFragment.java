@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.main_activity.list_fragment;
 
@@ -68,7 +68,7 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
-import de.azapps.mirakelandroid.R;
+import de.azapps.mirakel.main_activity.R;
 import de.azapps.tools.Log;
 
 public class ListFragment extends MirakelFragment {
@@ -172,7 +172,7 @@ public class ListFragment extends MirakelFragment {
                     ListMirakel l = list;
                     if (l == null) {
                         l = ListMirakel
-                            .saveNewList(ListFragment.this.input
+                            .safeNewList(ListFragment.this.input
                                          .getText().toString());
                     } else {
                         l.setListName(ListFragment.this.input.getText()
@@ -395,24 +395,23 @@ public class ListFragment extends MirakelFragment {
                     final ActionMode mode, final MenuItem item) {
                     final List<ListMirakel> lists = ListFragment.this.adapter
                                                     .getSelected ();
-                    switch (item.getItemId ()) {
-                    case R.id.menu_delete:
-                        ListFragment.this.main.handleDestroyList (lists);
-                        break;
-                    case R.id.menu_color:
-                        editColor (lists);
-                        break;
-                    case R.id.edit_list:
-                        editList (lists.get (0));
-                        break;
-                    case R.id.share_list_from_lists:
-                        SharingHelper.share (getActivity (), lists.get (0));
-                        break;
-                    case R.id.edit_listaccount:
-                        editListAccount (lists);
-                        break;
-                    default:
-                        break;
+                    int i = item.getItemId();
+                    if (i == R.id.menu_delete) {
+                        ListFragment.this.main.handleDestroyList(lists);
+
+                    } else if (i == R.id.menu_color) {
+                        editColor(lists);
+
+                    } else if (i == R.id.edit_list) {
+                        editList(lists.get(0));
+
+                    } else if (i == R.id.share_list_from_lists) {
+                        SharingHelper.share(getActivity(), lists.get(0));
+
+                    } else if (i == R.id.edit_listaccount) {
+                        editListAccount(lists);
+
+                    } else {
                     }
                     mode.finish ();
                     return false;

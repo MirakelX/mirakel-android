@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright(c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -100,12 +100,12 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.SettingsActivity;
-import de.azapps.mirakel.static_activities.SurveyActivity;
 import de.azapps.mirakel.widget.MainWidgetProvider;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 
+import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
@@ -601,15 +601,15 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             @Override
             public void onClick(final DialogInterface dialog, final int which) {
                 switch (which) {
-                    case 0: // Only this task
-                        task.destroy();
-                        updateAfterDestroy();
-                        break;
-                    case 1: // also subtasks
-                        task.destroySubtasks();
-                        task.destroy();
-                        updateAfterDestroy();
-                        break;
+                case 0: // Only this task
+                    task.destroy();
+                    updateAfterDestroy();
+                    break;
+                case 1: // also subtasks
+                    task.destroySubtasks();
+                    task.destroy();
+                    updateAfterDestroy();
+                    break;
                 }
             }
         }).show();
@@ -622,13 +622,12 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
 
     private void handleDestroyRecurringTask(final Task task) {
         TaskDialogHelpers.handleChangeRecurringTask(this, getString(R.string.destroy_recurring_task,
-                task.getName()), new TaskDialogHelpers.OnRecurrenceChange() {
+        task.getName()), new TaskDialogHelpers.OnRecurrenceChange() {
             @Override
             public void handleSingleChange() {
                 task.destroy();
                 updateAfterDestroy();
             }
-
             @Override
             public void handleMultiChange() {
                 Optional<Task> master = task.getRecurrenceMaster();
@@ -999,11 +998,11 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
                 inflater.inflate(newmenu, MainActivity.this.menu);
                 if (MainActivity.this.menu.findItem(R.id.menu_sync_now) != null) {
                     MainActivity.this.menu.findItem(R.id.menu_sync_now)
-                            .setVisible(MirakelModelPreferences.useSync());
+                    .setVisible(MirakelModelPreferences.useSync());
                 }
                 if (MainActivity.this.menu.findItem(R.id.menu_contact) != null) {
                     MainActivity.this.menu.findItem(R.id.menu_contact)
-                            .setVisible(BuildHelper.isBeta());
+                    .setVisible(BuildHelper.isBeta());
                 }
                 if (!fromShare) {
                     updateShare();
@@ -1221,12 +1220,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
     private void initThirdParty() {
         // Show ChangeLog
         final Changelog cl = new Changelog(this);
-        cl.setOnShowChangelog(new Changelog.OnChangelogShown() {
-            @Override
-            public void changelogShown(){
-                showSurvey();
-            }
-        });
         cl.showChangelog();
         final ILoveFS ilfs = new ILoveFS(this, "mirakel@azapps.de",
                                          DefinitionsHelper.APK_NAME);
@@ -1243,12 +1236,6 @@ public class MainActivity extends FragmentActivity implements ViewPager.OnPageCh
             };
             ilfs.show();
         }
-    }
-
-    private void showSurvey() {
-        final Intent intent = new Intent(MainActivity.this,
-                SurveyActivity.class);
-        startActivity(intent);
     }
 
     @Override
