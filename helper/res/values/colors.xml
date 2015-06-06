@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Mirakel is an Android App for Managing your ToDo-Lists
-  
-  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
-  
-      This program is free software: you can redistribute it and/or modify
-      it under the terms of the GNU General Public License as published by
-      the Free Software Foundation, either version 3 of the License, or
-      any later version.
-  
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
-  
-      You should have received a copy of the GNU General Public License
-      along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
 
     <color name="Grey">#7F7F7F</color>
@@ -24,10 +24,6 @@
     <color name="Orange">#EF0381</color>
     <color name="Yellow">#FFA500</color>
     <color name="Green">#00c400</color>
-    <color name="due_overdue">#FF0000</color>
-    <color name="due_today">#EF0381</color>
-    <color name="due_next">#FFA500</color>
-    <color name="due_future">#00c400</color>
     <color name="pressed_color">#6633b5e5</color>
     <color name="White">#FFFFFF</color>
     <color name="highlighted_text_holo_dark">#6633b5e5</color>
@@ -69,5 +65,4 @@
     <color name="colorPrimary">#8C2E58</color>
     <color name="colorPrimaryDark">#400725</color>
     <color name="colorAccent">#144F59</color>
-
 </resources>

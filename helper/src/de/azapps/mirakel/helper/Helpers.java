@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
@@ -23,19 +23,15 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import com.google.common.base.Optional;
 
-import java.util.List;
 import java.util.Locale;
 
 import de.azapps.mirakel.DefinitionsHelper;
@@ -53,7 +49,7 @@ public class Helpers {
      * @author az
      */
     public interface ExecInterface {
-        public void exec();
+        void exec();
     }
 
     private static String TAG = "Helpers";
@@ -91,14 +87,6 @@ public class Helpers {
         }
     }
 
-    public static int getHighlightedColor(final Context ctx) {
-        if (MirakelCommonPreferences.isDark()) {
-            return ctx.getResources().getColor(
-                       R.color.highlighted_text_holo_dark);
-        }
-        return ctx.getResources().getColor(R.color.highlighted_text_holo_light);
-    }
-
     public static Locale getLocal(final Context ctx) {
         final String current = MirakelCommonPreferences.getLanguage();
         final Locale locale = current.equals("-1") ? Locale.getDefault()
@@ -117,57 +105,6 @@ public class Helpers {
 
     // MISC
 
-    /*
-     * Scaling down the image
-     * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
-     */
-    public static Bitmap getScaleImage(final Bitmap bitmap,
-                                       final float boundBoxInDp) {
-        // Get current dimensions
-        final int width = bitmap.getWidth();
-        final int height = bitmap.getHeight();
-        // Determine how much to scale: the dimension requiring
-        // less scaling is.
-        // closer to the its side. This way the image always
-        // stays inside your.
-        // bounding box AND either x/y axis touches it.
-        final float xScale = boundBoxInDp / width;
-        final float yScale = boundBoxInDp / height;
-        final float scale = xScale <= yScale ? xScale : yScale;
-        // Create a matrix for the scaling and add the scaling data
-        final Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-        // matrix.postRotate(rotate);
-        // Create a new bitmap and convert it to a format understood
-        // by the
-        // ImageView
-        final Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width,
-                                    height, matrix, false);
-        // Apply the scaled bitmap
-        return scaledBitmap;
-    }
-
-    public static boolean isIntentAvailable(final Context context,
-                                            final String action) {
-        final PackageManager packageManager = context.getPackageManager();
-        final Intent intent = new Intent(action);
-        final List<ResolveInfo> list = packageManager.queryIntentActivities(
-                                           intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
-    }
-
-    // Help
-    public static void openHelp(final Context ctx) {
-        openHelp(ctx, null);
-    }
-
-    public static void openHelp(final Context ctx, final String title) {
-        String url = "http://mirakel.azapps.de/help_en.html";
-        if (title != null) {
-            url += "#" + title;
-        }
-        openURL(ctx, url);
-    }
 
     public static void openURL(final Context ctx, final String url) {
         final Intent i2 = new Intent(Intent.ACTION_VIEW);
@@ -185,7 +122,7 @@ public class Helpers {
                          0,
                          new Intent(
                              context,
-                             Class.forName("de.azapps.mirakel.static_activities.SplashScreenActivity")),
+                             Class.forName("de.azapps.mirakel.new_ui.activities.SplashScreenActivity")),
                          0);
         } catch (final ClassNotFoundException e) {
             Log.wtf(TAG, "splashscreen not found");
@@ -225,11 +162,7 @@ public class Helpers {
 
     public static Optional<Class<?>> getMainActivity() {
         try {
-            if (MirakelCommonPreferences.useNewUI()) {
-                return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
-            } else {
-                return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
-            }
+            return (Optional<Class<?>>) of(Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
         } catch (ClassNotFoundException e) {
             return absent();
         }

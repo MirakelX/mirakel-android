@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name" translatable="false">Mirakel</string>
@@ -62,5 +81,165 @@ Device: %3$s\n]]>
     <string name="error_" tools:ignore="UnusedResources"></string>
     <string name="error_" tools:ignore="UnusedResources"></string>
      -->
-    
+    <!-- From main -->
+    <!-- Permissions -->
+    <string name="permission_group_desc">Permission for access Mirakel</string>
+    <string name="permission_group_lbl">Mirakel permission</string>
+    <string name="permission_read_lbl">Read data from Mirakel</string>
+    <string name="permission_read_desc">Permission to read data from Mirakel</string>
+    <string name="permission_write_lbl">Write data to Mirakel</string>
+    <string name="permission_write_desc">Permission to write data to Mirakel</string>
+    <string name="permission_read_write_lbl">Read/Write Mirakel-data</string>
+    <string name="permission_read_write_desc">Permission to read data from and write data to Mirakel</string>
+
+    <string name="title_settings">Settings</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search tasks</string>
+    <string name="search">Search</string>
+    <string name="search_result_title">Search for %s</string>
+
+    <string name="tasks_new_str">New Task</string>
+    <string name="takePhoto">Take a photo</string>
+    <string name="speak">Speak</string>
+
+    <string name="delete_content">Are you sure you want to delete %s?</string>
+    <string name="dialog_move">Move Task</string>
+    <string name="list_title">Lists</string>
+
+    <!-- Menu -->
+    <string name="menu_delete_list">Delete list</string>
+    <string name="menu_delete_task">Delete task</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_move_task">Move task</string>
+    <string name="menu_edit_task">Edit task</string>
+    <string name="menu_set_due">Set due</string>
+    <string name="menu_set_priority">Set priority</string>
+    <string name="menu_edit_list">Rename list</string>
+    <string name="menu_do_task">Set task as done</string>
+    <string name="action_undo">Undo the last Change</string>
+    <string name="action_sync_now">Sync Now</string>
+    <string name="action_contact">Contact / report bug</string>
+    <string name="kill_app">Close app</string>
+    <string name="action_settings">Settings</string>
+    <string name="save">Save</string>
+    <string name="menu_sort_lists">Sort list</string>
+    <string name="as_subtask">Add to a task</string>
+    <string name="task_clone">Clone task</string>
+    <string name="task_menu_sorting">Sort tasks</string>
+    <string name="list_menu_new_list">New List</string>
+
+    <!-- Sharing -->
+    <string name="share_using">Share with</string>
+    <string name="share_task">Share task</string>
+    <string name="share_task_title_with_date">%1$s (%2$s)</string>
+    <string name="share_task_title">%s</string>
+    <string name="share_list">Share list</string>
+    <string name="share_list_title">%1$s (%2$d)</string>
+    <string name="share_footer">Shared with Mirakel\nThe free (like in freedom) ToDo–List tool for Android and the Web\nhttp://mirakel.azapps.de</string>
+
+    <string name="list_change_color">Change Color</string>
+    <string name="set_color">Set Color</string>
+    <string name="unset_color">No Color</string>
+    <string name="list_change_name_cont">New list title</string>
+    <string name="list_change_name_title">Change list name</string>
+
+    <string-array name="list_actions_items">
+        <item>Select color</item>
+        <item>Rename</item>
+        <item>Delete</item>
+        <item>Share</item>
+    </string-array>
+
+    <!-- ACRA -->
+    <string name="crash_toast_text">Yikes! I crashed! Please start the app again, so I can send a message to my developer</string>
+    <string name="crash_dialog_title">Mirakel has crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing the
+    application to stop. Please help us fix this by sending us error data,
+    all you have to do is to press OK.</string>
+    <string name="crash_dialog_comment_prompt">You can add a comment about the problem below:</string>
+    <string name="crash_dialog_ok_toast">Thank you !</string>
+
+    <string name="speak_lang_code">en-US</string>
+
+    <string-array name="audio_playback_options">
+        <item>Open file</item>
+        <item>Play loud</item>
+        <item>Play silent</item>
+    </string-array>
+
+    <string-array name="task_actions_items">
+        <item>Edit</item>
+        <item>Move</item>
+        <item>Delete</item>
+    </string-array>
+    <!-- Misc -->
+    <string name="message_notification">Notification</string>
+    <string name="destroy_recurring_task">Delete %s</string>
+    <string name="dialog_error_message" formatted="false">Reason: %s\n\nError message: %s</string>
+    <string name="use_new_ui">Use new UI (Experimental)</string>
+
+    <string-array name="subtask_task_select">
+        <item>Only this task</item>
+        <item>Delete also subtask</item>
+    </string-array>
+
+    <string name="delete_caldav_lists">It\'s not allowed to delete lists of a caldav account.</string>
+
+    <!-- from custom_views -->
+
+    <string name="edit">Edit</string>
+    <string name="no_reminder">Set a reminder</string>
+    <string name="add_files">Add file…</string>
+    <string name="file_select">Select a file</string>
+    <string name="save_label">Done</string>
+    <string name="audio_record_file">Audio record</string>
+    <string name="image_file">Image</string>
+
+    <!-- Task Fragment settings -->
+    <string name="task_fragment_header">Header</string>
+    <string name="task_fragment_file">Files</string>
+    <string name="task_fragment_due">Due</string>
+    <string name="task_fragment_reminder">Reminder</string>
+    <string name="task_fragment_content">Notes</string>
+    <string name="task_fragment_subtask">Subtasks</string>
+    <string name="task_fragment_progress">Progress</string>
+    <string name="task_fragment_tags">Tags</string>
+
+    <string name="audio_record_title">Audio recording…</string>
+    <string name="audio_record_message">Recording…</string>
+    <string name="audio_playback_title">Audio playback…</string>
+    <string name="audio_playback_select_title">What do you want to do?</string>
+    <string name="audio_playback_pause">Pause</string>
+    <string name="audio_playback_play">Play</string>
+    <string name="audio_playback_stop">Stop</string>
+
+    <string name="task_change_prio_title">Change Priority</string>
+    <string name="remove_subtask">Remove Subtask</string>
+    <string name="remove_files_summary">Do you want to remove %1$s from \"%2$s\"?</string>
+
+    <string name="add_existing">Add existing Task</string>
+    <string name="task_name">Task Name</string>
+    <string name="subtask_add_options">Filter >></string>
+    <string name="subtask_done">Task done?</string>
+    <string name="subtask_reminder">Task with reminder?</string>
+    <string name="subtask_content">Task with note?</string>
+    <string name="new_task">New Task</string>
+    <string name="add_subtasks">Add subtask…</string>
+    <string name="add_tags">Add tag…</string>
+    <string name="add">Add</string>
+    <string name="add_subtask">Add Subtask</string>
+    <string name="file_no_activity">I don\'t know, how to open this file – sorry</string>
+
+    <string name="remove_files">Remove Files from Task</string>
+    <string name="search_tag">Search tag</string>
+    <string-array name="tag_menu">
+        <item>Edit tag</item>
+        <item>Remove tag</item>
+    </string-array>
+    <string name="tag_has_dark_text">Text is black</string>
+    <string-array name="recurring_task_select">
+        <item>Only this recurrence</item>
+        <item>All recurrences</item>
+    </string-array>
 </resources>

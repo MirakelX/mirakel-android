@@ -1,22 +1,35 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.tools;
+
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.webkit.MimeTypeMap;
+
+import com.google.common.base.Optional;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,15 +46,9 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.webkit.MimeTypeMap;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 
 public class FileUtils {
     private static final String TAG = "FileUtils";
@@ -98,7 +105,7 @@ public class FileUtils {
     /**
      * Unzip a File and Copy it to a location
      *
-     * @param zipFile
+     * @param fin
      * @param location
      */
     public static void unzip(final FileInputStream fin, final File location)
@@ -152,32 +159,33 @@ public class FileUtils {
         return mime.getMimeTypeFromExtension(extension);
     }
 
-    public static String getNameFromUri(final Context ctx, final Uri uri) {
-        final ContentResolver cr = ctx.getContentResolver();
-        String ret = "";
-        Cursor metaCursor = null;
-        try {
-            metaCursor = cr.query(uri,
-                                  new String[] { MediaStore.MediaColumns.DISPLAY_NAME },
-                                  null, null, null);
-        } catch (final SecurityException e) {
-            Log.wtf(TAG, "no permission to read uri " + uri);
-            // Log.w(TAG, Log.getStackTraceString(e));
-            if (metaCursor != null) {
-                metaCursor.close();
-            }
-            return "";
-        }
-        if (metaCursor != null) {
+    public static String getNameFromUri(final Context ctx, final @NonNull Uri uri) {
+        if ("file".equals(uri.getScheme())) {
+            return new File(uri.getPath()).getName();
+        } else {
+            final ContentResolver cr = ctx.getContentResolver();
+            String ret = "";
+            Cursor metaCursor = null;
             try {
-                if (metaCursor.moveToFirst()) {
-                    ret = metaCursor.getString(0);
-                }
-            } finally {
-                metaCursor.close();
+                metaCursor = cr.query(uri,
+                                      new String[] {MediaStore.MediaColumns.DISPLAY_NAME},
+                                      null, null, null);
+            } catch (final SecurityException e) {
+                Log.wtf(TAG, "no permission to read uri " + uri, e);
+                ErrorReporter.report(ErrorType.FILE_NO_PERMISSION);
+                return "";
             }
+            if (metaCursor != null) {
+                try {
+                    if (metaCursor.moveToFirst()) {
+                        ret = metaCursor.getString(0);
+                    }
+                } finally {
+                    metaCursor.close();
+                }
+            }
+            return ret;
         }
-        return ret;
     }
 
     public static String getFileExtension(final Uri uri) {
@@ -207,8 +215,8 @@ public class FileUtils {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         final String state = Environment.getExternalStorageState();
-        if (state == null || !state.equals(Environment.MEDIA_MOUNTED)
-            && !state.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+        if ((state == null) || (!state.equals(Environment.MEDIA_MOUNTED)
+                                && !state.equals(Environment.MEDIA_MOUNTED_READ_ONLY))) {
             throw new IOException("External Storage Dir not mounted");
         }
         final File mediaStorageDir = FileUtils.getMediaStorageDir(type);
@@ -216,9 +224,9 @@ public class FileUtils {
             throw new IOException(ERROR_NO_MEDIA_DIR);
         }
         // Create a media file name
-        final String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+        final String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss",
                 Locale.getDefault()).format(new Date());
-        File mediaFile;
+        final File mediaFile;
         switch (type) {
         case MEDIA_TYPE_IMAGE:
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
@@ -230,7 +238,7 @@ public class FileUtils {
             break;
         case MEDIA_TYPE_AUDIO:
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                                 + "AUD_" + timeStamp + ".mp3");
+                                 + "AUD_" + timeStamp + ".wav");
             break;
         default:
             return null;
@@ -286,7 +294,7 @@ public class FileUtils {
         }
         if (MIRAKEL_DIR == null) {
             MIRAKEL_DIR = Environment.getDataDirectory() + "/data/"
-                          + DefinitionsHelper.APK_NAME + "/";
+                          + DefinitionsHelper.APK_NAME + '/';
         }
         return MIRAKEL_DIR;
     }
@@ -338,10 +346,17 @@ public class FileUtils {
 
     private static boolean checkMimeBaseType(final Uri uri, final String type) {
         final String mimeType = getMimeType(uri);
-        if (mimeType == null) {
-            return false;
-        }
-        return mimeType.startsWith(type);
+        return (mimeType != null) && mimeType.startsWith(type);
     }
 
+    @NonNull
+    public static Optional<Uri> parsePath(@Nullable final String path) {
+        final Optional<Uri> uri;
+        if (path == null) {
+            uri = Optional.absent();
+        } else {
+            uri = Optional.fromNullable(Uri.parse(path));
+        }
+        return uri;
+    }
 }

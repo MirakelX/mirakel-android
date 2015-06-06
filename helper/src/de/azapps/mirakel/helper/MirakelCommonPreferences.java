@@ -1,12 +1,20 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013 Anatolij Zelenin, Georg
- * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
- * of the GNU General Public License as published by the Free Software Foundation, either version 3
- * of the License, or any later version. This program is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have
- * received a copy of the GNU General Public License along with this program. If not, see
- * <http://www.gnu.org/licenses/>.
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
@@ -31,15 +39,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static boolean addSubtaskToSameList() {
         return settings.getBoolean("subtaskAddToSameList", false);
-    }
-
-
-    public static boolean containsHighlightSelected() {
-        return settings.contains("highlightSelected");
-    }
-
-    public static boolean containsStartupList() {
-        return settings.contains("startupList");
     }
 
     public static int getAlarmLater() {
@@ -111,30 +110,17 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return listId;
     }
 
-    public static int getOldVersion() {
-        return settings.getInt("mirakel_old_version", -1);
-    }
-
-    public static String getPhotoDefaultTitle() {
-        return settings.getString("photoDefaultTitle",
-                                  context.getString(R.string.photo_default_title));
-    }
-
     public static int getUndoNumber() {
         return settings.getInt("UndoNumber", 10);
     }
 
-
-    public static boolean hideKeyboard() {
-        return settings.getBoolean("hideKeyboard", true);
-    }
 
     public static boolean highlightSelected() {
         return settings.getBoolean("highlightSelected", isTablet());
     }
 
     public static boolean isDark() {
-        return !useNewUI() && settings.getBoolean("DarkTheme", false);
+        return false;
     }
 
     public static void setIsDark(final boolean isDark) {
@@ -162,10 +148,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         final String listOpen = settings.getString("notificationsListOpen",
                                 "default");
         return "default".equals(listOpen);
-    }
-
-    public static boolean isShowAccountName() {
-        return settings.getBoolean("show_account_name", false);
     }
 
 
@@ -237,27 +219,11 @@ public class MirakelCommonPreferences extends MirakelPreferences {
                                               newV);
     }
 
-    public static boolean showDoneMain() {
-        return settings.getBoolean("showDoneMain", false);
-    }
-
     public static void toogleDebugMenu() {
         settings.edit()
         .putBoolean("enableDebugMenu",
                     !MirakelCommonPreferences.isEnabledDebugMenu())
         .apply();
-    }
-
-    public static boolean useBtnAudioRecord() {
-        return settings.getBoolean("useBtnAudioRecord", true);
-    }
-
-    public static boolean useBtnCamera() {
-        return settings.getBoolean("useBtnCamera", true);
-    }
-
-    public static boolean useBtnSpeak() {
-        return settings.getBoolean("useBtnSpeak", false);
     }
 
     public static boolean useNotifications() {
@@ -284,16 +250,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static boolean writeLogsToFile() {
         return (settings != null) && settings.getBoolean("writeLogsToFile", false);
-    }
-
-    public static boolean useNewUI() {
-        return (settings != null) && settings.getBoolean("newUI", false);
-    }
-
-    public static void setUseNewUI(final boolean val) {
-        final Editor ed = settings.edit();
-        ed.putBoolean("newUI", val);
-        ed.commit(); // Use commit here because we are restarting the app afterwards
     }
 
 }

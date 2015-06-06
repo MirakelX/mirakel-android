@@ -1,23 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  Mirakel is an Android App for Managing your ToDo-Lists
-  
-  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
-  
-      This program is free software: you can redistribute it and/or modify
-      it under the terms of the GNU General Public License as published by
-      the Free Software Foundation, either version 3 of the License, or
-      any later version.
-  
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
-  
-      You should have received a copy of the GNU General Public License
-      along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -25,7 +24,9 @@
     -->
     <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar"></style>
 
-    <style name="AppBaseThemeDARK" parent="@android:style/Theme.Holo"></style>
+    <style name="AppBaseThemeDARK" parent="@android:style/Theme.Holo">
+
+    </style>
 
     <!-- new ui-->
     <style name="MirakelBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -34,15 +35,94 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorTextActionBar">#FFFFFF</item>
+        <item name="colorTextActionBarHighlight">#FFFFFF</item>
+        <item name="colorTaskCard">#FFFFFF</item>
+        <item name="colorSelectedRow">#D3EAFD</item>
+        <item name="colorCAB">#2196F3</item>
+        <item name="colorCABStatus">#1A78C2</item>
+        <item name="colorLightGrey">#EAEAEA</item>
+
+        <!-- Black 60% -->
+        <item name="colorTextGrey">#666666</item>
+        <!-- Black 87% -->
+        <item name="colorTextBlack">#de000000</item>
+        <item name="colorTextWhite">#FFFFFF</item>
+        <item name="colorBackground">#E6E6E6</item>
+        <item name="colorTaskFragmentBackground">#F5F5F5</item>
+        <item name="colorListsBackground">#FFFFFF</item>
+        <item name="colorProgress">#AC7D92</item>
+        <item name="colorProgressBackground">#CCCCCC</item>
+        <item name="colorDisabled">#CCCCCC</item>
+
+        <item name="colorDueOverdue">#D0021B</item>
+        <item name="colorDueToday">#D0021B</item>
+        <item name="colorDueNext">#DA6807</item>
+        <item name="colorDueFuture">#166BA8</item>
+
+        <item name="colorNavDrawerScrim">#77000000</item>
+
+        <item name="colorPrio_2">#669900</item>
+        <item name="colorPrio_1">#99CC00</item>
+        <item name="colorPrio0">#33B5E5</item>
+        <item name="colorPrio1">#FFBB33</item>
+        <item name="colorPrio2">#FF4444</item>
+        <item name="colorPriorityBackground">#808080</item>
+
+        <item name="colorDivider">#e6e6e6</item>
+
+        <!-- The CAB should overlay the normal ActionBar -->
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:actionModeBackground">?colorCAB</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
+        <item name="android:actionModeStyle">@style/ActionModeStyle</item>
     </style>
 
-    <style name="MirakelSettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+
+    <style name="MirakelBaseTheme.PopupMenuStyle" parent="@style/ThemeOverlay.AppCompat.Light">
+        <item name="android:colorBackground">?colorTaskCard</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
+        <item name="android:textAppearanceSmallPopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
+    </style>
+
+    <style name="MirakelBaseTheme.PopupMenuText" parent="TextAppearance.Light.Large">
+        <item name="android:textColor">?colorTextGrey</item>
+    </style>
+
+    <style name="ActionModeStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:background">?colorCAB</item>
+        <item name="android:titleTextStyle">@style/ActionModeStyle.Title</item>
+        <item name="android:height">?actionBarSize</item>
+        <item name="android:minHeight">?actionBarSize</item>
+    </style>
+
+    <style name="ActionModeStyle.Title" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?colorTextActionBar</item>
+    </style>
+
+    <style name="MirakelDialogTheme" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/colorPrimary</item>
         <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    -
+
+    <style name="FlatButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textSize">@dimen/flatbutton_text_size</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_height">@dimen/flatbutton_height</item>
+        <item name="android:minWidth">@dimen/flatbutton_min_width</item>
+    </style>
+
+
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
@@ -68,13 +148,28 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
-	<style name="Dialog" parent="@android:style/Theme.Dialog"/>
+
+    <style name="Dialog" parent="@android:style/Theme.Dialog" />
+
     <style name="Button" parent="@android:style/ButtonBar"></style>
-  
+
     <style name="selectableButton" parent="@style/Button"></style>
-     <style name="buttonDivider">
+
+    <style name="buttonDivider">
         <item name="android:background">@color/White</item>
         <item name="android:layout_width">2dp</item>
     </style>
-    
+
+    <style name="ActionBarSpinner">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="android:theme">@style/ActionBarThemeOverlay</item>
+    </style>
+
+    <style name="ActionBarThemeOverlay" parent="">
+        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorControlNormal">?colorTextActionBar</item>
+        <item name="colorControlHighlight">?colorTextActionBarHighlight</item>
+    </style>
+
 </resources>
