@@ -58,7 +58,7 @@ public class SubtasksView extends LinearLayout {
     public interface SubtaskListener {
         void onAddSubtask(String taskName);
         void onSubtaskClick(Task subtask);
-        void onSubtaskDone(Task subtask);
+        void onSubtaskDone(Task subtask, boolean done);
     }
 
     public SubtasksView(final Context context) {
@@ -94,7 +94,7 @@ public class SubtasksView extends LinearLayout {
                 subtaskDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(final CompoundButton compoundButton, final boolean isChecked) {
-                        subtaskListener.onSubtaskDone(subtask);
+                        subtaskListener.onSubtaskDone(subtask, isChecked);
                     }
                 });
 
