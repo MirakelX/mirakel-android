@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.helper;
 
@@ -23,10 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,8 +40,8 @@ import de.azapps.mirakel.widget.R;
 
 public class WidgetHelper {
     public static RemoteViews configureItem(final RemoteViews rv,
-                                            final Task task, final Context context, final long listId,
-                                            final boolean isMinimal, final int widgetId) {
+                                            final Task task, final Context context,
+                                            final int widgetId) {
 
         final Optional<Class<?>> main = Helpers.getMainActivity();
         if (!main.isPresent()) {
@@ -64,23 +60,21 @@ public class WidgetHelper {
                                           openIntent, 0);
         rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
         rv.setOnClickPendingIntent(R.id.tasks_row_name, pOpenIntent);
-        if (isMinimal) {
-            if (task.getDue().isPresent()) {
-                rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-                rv.setTextViewText(R.id.tasks_row_due,
-                                   DateTimeHelper.formatDate(context, task.getDue()));
-            } else {
-                rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
-            }
-            rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
-                      TaskHelper.getPrioColor(task.getPriority()));
+        if (task.getDue().isPresent()) {
+            rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
+            rv.setTextViewText(R.id.tasks_row_due,
+                               DateTimeHelper.formatDate(context, task.getDue()));
+        } else {
+            rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
         }
+        rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
+                  TaskHelper.getPrioColor(task.getPriority()));
         rv.setTextColor(R.id.tasks_row_name,
                         WidgetHelper.getFontColor(context, widgetId));
         if (getBoolean(context, widgetId, "widgetDueColors", true)) {
             rv.setTextColor(
                 R.id.tasks_row_due,
-                TaskHelper.getTaskDueColor(context, task.getDue(),
+                TaskHelper.getTaskDueColor(task.getDue(),
                                            task.isDone()));
         } else {
             rv.setTextColor(R.id.tasks_row_due,
@@ -90,39 +84,6 @@ public class WidgetHelper {
         if (task.isDone()) {
             rv.setTextColor(R.id.tasks_row_name, context.getResources()
                             .getColor(R.color.Grey));
-        }
-        if (!isMinimal) {
-            rv.setTextViewText(R.id.tasks_row_priority, String.valueOf(task.getPriority()));
-            rv.setTextColor(R.id.tasks_row_priority, context.getResources()
-                            .getColor(R.color.Black));
-            final GradientDrawable drawable = (GradientDrawable) context
-                                              .getResources().getDrawable(R.drawable.priority_rectangle);
-            drawable.setColor(TaskHelper.getPrioColor(task.getPriority()));
-            final Bitmap bitmap = Bitmap.createBitmap(40, 40, Config.ARGB_8888);
-            final Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-            rv.setImageViewBitmap(R.id.label_bg, bitmap);
-            if (listId <= 0L) {
-                rv.setViewVisibility(R.id.tasks_row_list_name, View.VISIBLE);
-                rv.setTextViewText(R.id.tasks_row_list_name, task.getList()
-                                   .getName());
-            } else {
-                rv.setViewVisibility(R.id.tasks_row_list_name, View.GONE);
-            }
-            if ((!task.getContent().isEmpty()) || (task.countSubtasks() > 0L)
-                || (!task.getFiles().isEmpty())) {
-                rv.setViewVisibility(R.id.tasks_row_has_content, View.VISIBLE);
-            } else {
-                rv.setViewVisibility(R.id.tasks_row_has_content, View.GONE);
-            }
-            rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-            rv.setTextViewText(R.id.tasks_row_due,
-                               DateTimeHelper.formatDate(context, task.getDue()));
-            rv.setTextColor(
-                R.id.tasks_row_due,
-                TaskHelper.getTaskDueColor(context, task.getDue(),
-                                           task.isDone()));
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             rv.setTextColor(
@@ -164,11 +125,6 @@ public class WidgetHelper {
 
     public static boolean isDark(final Context context, final int widgetId) {
         return getBoolean(context, widgetId, "isDark", true);
-    }
-
-    public static boolean isMinimalistic(final Context context,
-                                         final int widgetId) {
-        return true;
     }
 
     public static boolean showDone(final Context context, final int widgetId) {
@@ -224,11 +180,6 @@ public class WidgetHelper {
     public static void setDone(final Context context, final int widgetId,
                                final boolean done) {
         putBool(context, widgetId, "showDone", done);
-    }
-
-    public static void setMinimalistic(final Context context,
-                                       final int widgetId, final boolean minimalistic) {
-        putBool(context, widgetId, "isMinimalistic", minimalistic);
     }
 
     public static void setDark(final Context context, final int widgetId,

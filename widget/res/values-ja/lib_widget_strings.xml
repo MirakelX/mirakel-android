@@ -19,17 +19,17 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="widget_list">Lista</string>
-  <string name="widget_list_summary">Mostrar \"%s\"</string>
-  <string name="widget_done">Tarefas terminadas</string>
-  <string name="fontcolor">Cor de letra</string>
-  <string name="widget_transparency">Transparência</string>
-  <string name="widget_transparency_summary">%s%% transparente</string>
-  <string name="widget_due_colors">Datas de vencimento coloridas</string>
-  <string name="dark_theme">Tema escuro</string>
-  <string name="notifications_list_summary">Mostrar \"%s\"</string>
-  <string name="empty_list">Nenhuma tarefa</string>
-  <string name="preferences">Preferências</string>
-  <string name="widget_use_gradient">Utilizar gradiente</string>
-  <string name="widget_style">Estilo do widget</string>
+  <string name="widget_list">リスト</string>
+  <string name="widget_list_summary">\"%s\" を表示</string>
+  <string name="widget_done">タスクを完了</string>
+  <string name="fontcolor">フォントの色</string>
+  <string name="widget_transparency">透明度</string>
+  <string name="widget_transparency_summary">%s%% 透明</string>
+  <string name="widget_due_colors">期限を色付け</string>
+  <string name="dark_theme">ダークテーマ</string>
+  <string name="notifications_list_summary">\"%s\" を表示</string>
+  <string name="empty_list">タスクがありません</string>
+  <string name="preferences">設定</string>
+  <string name="widget_use_gradient">グラデーションを使用</string>
+  <string name="widget_style">ウィジェットのスタイル</string>
 </resources>

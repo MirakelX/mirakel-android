@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.widget;
 
@@ -53,7 +53,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
                                EXTRA_WIDGET_LAYOUT = "de.azapps.mirakel.EXTRA_WIDGET_LAYOUT",
                                EXTRA_WIDGET_ID = "de.azapps.mirakel.EXTRA_WIDGET_ID";
 
-    public static final int MINIMAL_WIDGET = 1;
     public static final int NORMAL_WIDGET = 0;
 
     @Override
@@ -63,15 +62,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
         for (final int widgetId : appWidgetIds) {
             Log.v(TAG, "update Widget: " + widgetId);
             final boolean isDark = WidgetHelper.isDark(context, widgetId);
-            boolean isMinimalistic = WidgetHelper.isMinimalistic(context,
-                                     widgetId);
-            final int layout_id;
-            if (isMinimalistic) {
-                layout_id = R.layout.widget_minimal;
-            } else {
-                isMinimalistic = false;
-                layout_id = R.layout.widget_main;
-            }
+            final int layout_id = R.layout.widget_minimal;
             final RemoteViews views = new RemoteViews(context.getPackageName(),
                     layout_id);
             // Main Intent
@@ -97,21 +88,11 @@ public class MainWidgetProvider extends AppWidgetProvider {
 
             final int widgetBackground;
             if (WidgetHelper.gethasGradient(context, widgetId)) {
-                if (isMinimalistic) {
-                    widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark
-                                       : R.drawable.widget_background_minimalistic;
-                } else {
-                    widgetBackground = isDark ? R.drawable.widget_background_dark
-                                       : R.drawable.widget_background;
-                }
+                widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark
+                                   : R.drawable.widget_background_minimalistic;
             } else {
-                if (isMinimalistic) {
-                    widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark_wo_gradient
-                                       : R.drawable.widget_background_minimalistic_wo_gradient;
-                } else {
-                    widgetBackground = isDark ? R.drawable.widget_background_dark_wo_gradient
-                                       : R.drawable.widget_background_wo_gradient;
-                }
+                widgetBackground = isDark ? R.drawable.widget_background_minimalistic_dark_wo_gradient
+                                   : R.drawable.widget_background_minimalistic_wo_gradient;
             }
             final GradientDrawable drawable = (GradientDrawable) context
                                               .getResources().getDrawable(widgetBackground);
@@ -152,15 +133,6 @@ public class MainWidgetProvider extends AppWidgetProvider {
                         R.drawable.ic_action_new), new int[] {
                         52, 52, 52
                     }, 3));
-            if (!isMinimalistic) {
-                views.setImageViewBitmap(
-                    R.id.widget_add_task,
-                    colorizeBitmap(
-                        WidgetHelper.getFontColor(context, widgetId),
-                        context.getResources().getDrawable(
-                            android.R.drawable.ic_menu_add),
-                        new int[] { 250, 250, 250 }, 200));
-            }
             // Create an Intent to launch MainActivity and show the List
             final Optional<Class<?>> main = Helpers.getMainActivity();
             if (!main.isPresent()) {
@@ -169,6 +141,7 @@ public class MainWidgetProvider extends AppWidgetProvider {
             final Intent mainIntent = new Intent(context, main.get());
             mainIntent.setAction(DefinitionsHelper.SHOW_LIST_FROM_WIDGET);
             mainIntent.putExtra(DefinitionsHelper.EXTRA_LIST, list);
+            mainIntent.setData(Uri.parse(DefinitionsHelper.SHOW_LIST_FROM_WIDGET + list.getId()));
             final PendingIntent mainPendingIntent = PendingIntent.getActivity(
                     context, 0, mainIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_list_name,
@@ -178,8 +151,9 @@ public class MainWidgetProvider extends AppWidgetProvider {
             // Create an Intent to launch MainActivity and create a new Task
 
             final Intent addIntent = new Intent(context, main.get());
-            addIntent.setAction(DefinitionsHelper.ADD_TASK_FROM_WIDGET
-                                + list.getId());
+            addIntent.setAction(DefinitionsHelper.ADD_TASK_FROM_WIDGET);
+            addIntent.putExtra(DefinitionsHelper.EXTRA_LIST, list);
+            addIntent.setData(Uri.parse(DefinitionsHelper.ADD_TASK_FROM_WIDGET + list.getId()));
             final PendingIntent addPendingIntent = PendingIntent.getActivity(
                     context, 0, addIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_add_task,
@@ -188,6 +162,8 @@ public class MainWidgetProvider extends AppWidgetProvider {
             try {
                 appWidgetManager.updateAppWidget(new int[] { widgetId },
                                                  views);
+
+                appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_tasks_list);
             } catch (final RuntimeException e) {
                 Log.d(TAG, "cannot create widget", e);
                 return;

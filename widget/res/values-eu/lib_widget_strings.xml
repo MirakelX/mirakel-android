@@ -19,17 +19,17 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="widget_list">Lista</string>
-  <string name="widget_list_summary">Mostrar \"%s\"</string>
-  <string name="widget_done">Tarefas terminadas</string>
-  <string name="fontcolor">Cor de letra</string>
-  <string name="widget_transparency">Transparência</string>
-  <string name="widget_transparency_summary">%s%% transparente</string>
-  <string name="widget_due_colors">Datas de vencimento coloridas</string>
-  <string name="dark_theme">Tema escuro</string>
-  <string name="notifications_list_summary">Mostrar \"%s\"</string>
-  <string name="empty_list">Nenhuma tarefa</string>
-  <string name="preferences">Preferências</string>
-  <string name="widget_use_gradient">Utilizar gradiente</string>
-  <string name="widget_style">Estilo do widget</string>
+  <string name="widget_list">Zerrenda</string>
+  <string name="widget_list_summary">Erakutsi \"%s\"</string>
+  <string name="widget_done">Egindako zereginak</string>
+  <string name="fontcolor">Letra-tipoaren kolorea</string>
+  <string name="widget_transparency">Gardentasuna</string>
+  <string name="widget_transparency_summary">%s%% gardena</string>
+  <string name="widget_due_colors">Koloreztatu epemugak</string>
+  <string name="dark_theme">Gai iluna</string>
+  <string name="notifications_list_summary">Erakutsi \"%s\"</string>
+  <string name="empty_list">Zereginik ez</string>
+  <string name="preferences">Hobespenak</string>
+  <string name="widget_use_gradient">Erabili gradientea</string>
+  <string name="widget_style">Trepetaren estiloa</string>
 </resources>
