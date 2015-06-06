@@ -121,8 +121,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>
     <string name="settings_help">Help</string>
-    <string name="get_dashclock">Get Mirakel-Dashclock</string>
-    <string name="get_dashclock_summary">The Mirakel-Extension for Dashclock</string>
+    <string name="get_dashclock">Get Mirakel Dashclock</string>
+    <string name="get_dashclock_summary">Get the Mirakel extension for Dashclock</string>
 
     <!-- Astrid -->
     <string name="import_astrid_click">Import from Astrid</string>
@@ -150,14 +150,14 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="semantic_new_task">New task template</string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
     <string name="semantic_new_task_config">Configure task templates</string>
-    <string name="useTabletLayout">Use TabletLayout</string>
+    <string name="useTabletLayout">Use Tablet Layout</string>
     <string name="general">General</string>
 
     <string-array name="tablet_options">
         <item>never</item>
         <item>landscape</item>
         <item>portrait</item>
-        <item>portrait &amp; landscape</item>
+        <item>portrait and landscape</item>
     </string-array>
 
     <!-- Language -->
@@ -272,14 +272,14 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <!-- Dev Settings -->
     <string name="settings_dev">Development Settings</string>
     <string name="settings_dev_sync">Sync</string>
-    <string name="settings_dev_dump_tw_summary">Dump the received text to /sdcard/mirakel/</string>
-    <string name="settings_dev_dump_tw">Dump received TW-Messages</string>
+    <string name="settings_dev_dump_tw_summary">Safe the received text in /sdcard/mirakel/</string>
+    <string name="settings_dev_dump_tw">Store received sync messages</string>
     <string name="enable">enabling</string>
     <string name="disable">disabling</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="change_dev_mode">You have %s the development settings!</string>
-    <string name="enableDebugLog">Enable Debug-Logcat?</string>
+    <string name="enableDebugLog">Enable debug Logcat?</string>
     <string name="action_contact">Contact / report bug</string>
     <string name="action_contact_summary">Write us an e-mail!</string>
     <string name="title_donations">Donate</string>
@@ -287,7 +287,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="action_credits">Credits</string>
     <string name="action_credits_summary">About us</string>
     <string name="title_activity_credits">Credits and about</string>
-    <string name="credits_github_description">Fork us on github</string>
+    <string name="credits_github_description">Fork us on GitHub</string>
     <string name="credits_googleplus_description">Join our G+ community</string>
     <string name="credits_text_head">
 <![CDATA[
