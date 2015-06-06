@@ -2,27 +2,35 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
-  ~ Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
   ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     any later version.
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
   ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
   ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
+<<<<<<< HEAD
     <version name="2.8.2" date="2015-05-25" code="74">
         <text><![CDATA[Preparing the release of Mirakel 3.0 we would like to do a small survey to learn more about our users.
         Mirakel 3.0 and therefore the new user interface will be released soon.]]></text>
         <feature>Nothing new here</feature>
+=======
+    <version name="3.0-beta1" date="2015-06-02" code="75">
+        <text><![CDATA[Welcome Mirakel 3.0! This is a whole redesign of the App. If you want faster releases, then help us developing Mirakel!]]></text>
+        <feature>Better!</feature>
+        <feature>Faster!</feature>
+        <feature>More beautiful!</feature>
+>>>>>>> 4f270578edcae45acb77a0615fdae2598bef69ff
     </version>
     <version name="2.8.1" date="2014-11-25" code="72">
         <feature>Bugfix release</feature>
