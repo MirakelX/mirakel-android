@@ -127,7 +127,7 @@
 
    <string name="special_list_name">Name</string>
     <string name="special_list_active">Show</string>
-    <string name="special_list_where">SQL-Where Query</string>
+    <string name="special_list_where">SQL where query</string>
     <string name="special_list_sort_by">Sort by</string>
     <string name="special_list_def_list">Default list</string>
     <string name="special_list_def_date">Default date</string>
