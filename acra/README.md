@@ -6,7 +6,6 @@ Some modifications by us
 Please tell us how you use ACRA
 ===============================
 
-
 In order to focus future developments on what is really important to you, please [take this survey](https://spreadsheets.google.com/viewform?hl=en&formkey=dDV5ek03OS1SOWNlZlBxNkFXbV9kSmc6MQ#gid=0)!
 
 You can view the survey results [here](https://spreadsheets.google.com/spreadsheet/viewanalytics?hl=en&formkey=dDV5ek03OS1SOWNlZlBxNkFXbV9kSmc6MQ).
@@ -19,6 +18,8 @@ What is ACRA ?
 ==============
 
 ACRA is a library enabling Android Application to automatically post their crash reports to a GoogleDoc form. It is targetted to android applications developers to help them get data from their applications when they crash or behave erroneously.
+
+ACRA is used in 2.76% ([See AppBrain/stats](http://www.appbrain.com/stats/libraries/details/acra/acra)) of all apps on Google Play as of Jan 2015. That's over 40M **apps** using ACRA. And since the average US user has 41 apps installed on their phone that means there is a 70% that ACRA is running on any phone. That means ACRA is running on over a **billion devices**.
 
 See [BasicSetup](http://github.com/ACRA/acra/wiki/BasicSetup) for a step-by-step installation and usage guide.
 
@@ -44,6 +45,15 @@ Change Log
 ==========
 
 For a complete changelog, please see the [ChangeLog page](http://github.com/ACRA/acra/wiki/ChangeLog) in the Wiki.
+
+ACRA v4.6
+===============================
+
+The summarized changelog is here: https://github.com/ACRA/acra/wiki/ChangeLog
+
+Included in this release (summarized summary):
+- CustomReportDialog using @ReportCrashes#reportDialogClass (NB must extend from BaseCrashReportDialog).
+- many bugfixes
 
 ACRA v4.5 - enabling the future
 ===============================
