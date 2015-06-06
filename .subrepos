@@ -1,2 +1,2 @@
 #!/bin/bash/
-declare -a repos=('acra' 'build' 'colorpicker' 'custom_views' 'donationslib' 'ilovefs-android' 'model' 'settings' 'widget' 'appcompat' 'changelog' 'colorpickerpreference' 'date-time-picker' 'helper' 'main' 'progresswheel' 'tw_sync' 'drag-sort-listview' 'main/tests' 'dashclock' 'new_ui')
+declare -a repos=('build' 'colorpicker' 'donationslib' 'ilovefs-android' 'model' 'settings' 'widget' 'changelog' 'colorpickerpreference' 'date-time-picker' 'helper' 'progresswheel' 'tw_sync' 'main/tests' 'dashclock' 'new_ui' 'material-elements')
