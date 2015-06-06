@@ -1,20 +1,22 @@
 /*******************************************************************************
- * Mirakel is an Android App for managing your ToDo-Lists Copyright (c) 2013-2014 Anatolij Zelenin, Georg
- * Semmler. This program is free software: you can redistribute it and/or modify it under the terms
- * of the GNU General Public License as published by the Free Software Foundation, either version 3
- * of the License, or any later version. This program is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have
- * received a copy of the GNU General Public License along with this program. If not, see
- * <http://www.gnu.org/licenses/>.
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.helper;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -60,7 +62,13 @@ import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog.OnRecurrenceSetListener;
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.DefenitionsModel.ExecInterfaceWithTask;
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import de.azapps.mirakel.DefinitionsModel.ExecInterfaceWithTask;
 import de.azapps.mirakel.adapter.SubtaskAdapter;
 import de.azapps.mirakel.custom_views.BaseTaskDetailRow.OnTaskChangedListner;
 import de.azapps.mirakel.customviews.R;
@@ -82,6 +90,7 @@ import de.azapps.tools.Log;
 import de.azapps.tools.OptionalUtils;
 import de.azapps.widgets.SupportDateTimeDialog;
 import de.azapps.widgets.SupportDateTimeDialog.OnDateTimeSetListener;
+
 import static com.google.common.base.Optional.of;
 
 public class TaskDialogHelpers {
@@ -181,7 +190,7 @@ public class TaskDialogHelpers {
             public void onClick(final DialogInterface dialog,
                                 final int which) {
                 Task mTask = task;
-                if (task == null || task.getId() == 0) {
+                if ((task == null) || (task.getId() == 0)) {
                     ListMirakel listMirakel;
                     if (task == null) {
                         listMirakel = MirakelModelPreferences
@@ -356,8 +365,7 @@ public class TaskDialogHelpers {
         }, reminder.get(Calendar.YEAR), reminder.get(Calendar.MONTH),
         reminder.get(Calendar.DAY_OF_MONTH), reminder
         .get(Calendar.HOUR_OF_DAY), reminder
-        .get(Calendar.MINUTE), true, MirakelCommonPreferences
-        .isDark());
+        .get(Calendar.MINUTE));
         dtDialog.show(fm, "datetimedialog");
     }
 

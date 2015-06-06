@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.custom_views;
 
@@ -128,9 +128,6 @@ public class TagListView extends View {
         final EditText editName = (EditText) layout
                                   .findViewById(R.id.tag_edit_name);
         editName.setText(tag.getName());
-        final CheckBox darkText = (CheckBox) layout
-                                  .findViewById(R.id.tag_dark_text);
-        darkText.setChecked(tag.isDarkText());
         final ColorPicker picker = (ColorPicker) layout
                                    .findViewById(R.id.color_picker);
         final SVBar op = (SVBar) layout.findViewById(R.id.svbar_color_picker);
@@ -146,7 +143,6 @@ public class TagListView extends View {
                                 final int which) {
                 tag.setBackgroundColor(picker.getColor());
                 tag.setName(editName.getText().toString());
-                tag.setDarkText(darkText.isChecked());
                 final Optional<Tag> other = Tag.getByName(tag.getName());
                 if (!other.isPresent() || (other.get().getId() == tag.getId())) {
                     tag.save();

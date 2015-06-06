@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.custom_views;
 
@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -113,28 +114,20 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
         Log.d(TAG, "update");
         this.file = f;
         new Thread(new Runnable() {
-            private Optional<Bitmap> preview = absent();
+            private Optional<Drawable> preview = absent();
             @Override
             public void run() {
-                if (FileUtils.isAudio(TaskDetailFilePart.this.file.getFileUri())) {
-                    final int resourceId = MirakelCommonPreferences.isDark() ? R.drawable.ic_action_play_dark
-                                           : R.drawable.ic_action_play;
-                    this.preview = fromNullable(BitmapFactory.decodeResource(
-                                                    TaskDetailFilePart.this.context.getResources(),
-                                                    resourceId));
-                } else {
-                    this.preview = TaskDetailFilePart.this.file.getPreview();
-                }
+                this.preview = TaskDetailFilePart.this.file.getPreview(context);
                 if (this.preview.isPresent()) {
                     Log.i(TAG, "preview not null");
                     TaskDetailFilePart.this.fileImage.post(new Runnable() {
                         @Override
                         public void run() {
                             TaskDetailFilePart.this.fileImage
-                            .setImageBitmap(preview.get());
+                            .setImageDrawable(preview.get());
                             final LayoutParams params = (LayoutParams) TaskDetailFilePart.this.fileImage
                                                         .getLayoutParams();
-                            params.height = preview.get().getHeight();
+                            params.height = preview.get().getIntrinsicHeight();
                             TaskDetailFilePart.this.fileImage
                             .setLayoutParams(params);
                         }
@@ -165,7 +158,7 @@ public class TaskDetailFilePart extends TaskDetailSubListBase<FileMirakel> {
             this.file.getFileStream(this.context);
             final String name = FileUtils.getNameFromUri(this.context,
                                 this.file.getFileUri());
-            this.filePath.setText(name.length() == 0 ? this.file.getFileUri()
+            this.filePath.setText(name.isEmpty() ? this.file.getFileUri()
                                   .toString() : name);
         } catch (final FileNotFoundException e) {
             this.filePath.setText(R.string.error_FILE_NOT_FOUND);
