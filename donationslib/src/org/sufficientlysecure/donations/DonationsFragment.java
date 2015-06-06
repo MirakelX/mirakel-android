@@ -47,24 +47,36 @@ import org.sufficientlysecure.donations.google.util.IabResult;
 import org.sufficientlysecure.donations.google.util.Purchase;
 
 import de.azapps.mirakel.donationslib.R;
+import de.azapps.mirakel.helper.BuildHelper;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class DonationsFragment extends Fragment {
 
-    public static final String ARG_DEBUG = "debug";
+    /**
+     * Flattr
+     */
+    private static final String FLATTR_PROJECT_URL = "http://mirakel.azapps.de/";
+    // FLATTR_URL without http:// !
+    private static final String FLATTR_URL = "flattr.com/thing/2188714";
 
-    public static final String ARG_GOOGLE_ENABLED = "googleEnabled";
-    public static final String ARG_GOOGLE_PUBKEY = "googlePubkey";
-    public static final String ARG_GOOGLE_CATALOG = "googleCatalog";
-    public static final String ARG_GOOGLE_CATALOG_VALUES = "googleCatalogValues";
+    private static final String[] GOOGLE_CATALOG = new String[] {
+        "mirakel.donation.50", "mirakel.donation.100",
+        "mirakel.donation.200", "mirakel.donation.500",
+        "mirakel.donation.1000", "mirakel.donation.1500",
+        "mirakel.donation.2500", "mirakel.donation.19900",
+    };
+    /**
+     * Google
+     */
+    private static final String GOOGLE_PUBKEY =
+        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmjcA2Hmr/HVH5raLa6RMTbY/n5QbhqnGOvcLCVQqxj+A4N2vWke7N0Y2tvSS8LYvpdSt5INHtyl1DNaJ/42fdMoFnwLO9lEYvQ1AMPBPt7BtBm2qw/L4hybqYCg/nyzZ2GI/Te6pDgHBUxcaIR0b8IRFwc+3lZHCIxIqq7VjEcxV6hgbNC5Tx5Lt69eTDvZIPwIjU0h/hVDUNxZxWEOGpWRfSqCtTQWSA8Vo8ssAK7n/s8NtpAGn84ZJWFF8SyZc0Y3jjCb9FCRgF7D6xXLPbl1O6ekLIU6zG4RqaaxqymHiXpkq9cYmV/9A3RJathc9WyvPlj7oRlCYo12vmqIV+QIDAQAB";
 
-    public static final String ARG_PAYPAL_ENABLED = "paypalEnabled";
-    public static final String ARG_PAYPAL_USER = "paypalUser";
-    public static final String ARG_PAYPAL_CURRENCY_CODE = "paypalCurrencyCode";
-    public static final String ARG_PAYPAL_ITEM_NAME = "mPaypalItemName";
+    private static final String PAYPAL_CURRENCY_CODE = "EUR";
+    /**
+     * PayPal
+     */
+    private static final String PAYPAL_USER = "anatolij.z@web.de";
 
-    public static final String ARG_FLATTR_ENABLED = "flattrEnabled";
-    public static final String ARG_FLATTR_PROJECT_URL = "flattrProjectUrl";
-    public static final String ARG_FLATTR_URL = "flattrUrl";
 
     private static final String TAG = "Donations Library";
 
@@ -80,109 +92,23 @@ public class DonationsFragment extends Fragment {
     // Google Play helper object
     protected IabHelper mHelper;
 
-    private static boolean mDebug = false;
+    private boolean mDebug = false;
 
-    private static boolean mGoogleEnabled = false;
-    private static String mGooglePubkey = "";
-    private static String[] mGoogleCatalog = new String[] {};
-    private static String[] mGoogleCatalogValues = new String[] {};
+    private boolean mGoogleEnabled = false;
 
-    private static boolean mPaypalEnabled = false;
-    private static String mPaypalUser = "";
-    private static String mPaypalCurrencyCode = "";
-    private static String mPaypalItemName = "";
+    private boolean mPaypalEnabled = false;
 
-    private static boolean mFlattrEnabled = false;
-    private static String mFlattrProjectUrl = "";
-    private static String mFlattrUrl = "";
+    private boolean mFlattrEnabled = false;
 
     public DonationsFragment() {
         super();
+        mDebug = MirakelCommonPreferences.isDebug();
+        mGoogleEnabled = BuildHelper.isForPlayStore();
+        mPaypalEnabled = BuildHelper.isForFDroid();
+        mFlattrEnabled = BuildHelper.isForFDroid();
     }
 
-    /**
-     * Instantiate DonationsFragment.
-     *
-     * @param debug
-     *            You can use BuildHelper.DEBUG to propagate the debug flag from
-     *            your app to the Donations library
-     * @param googleEnabled
-     *            Enabled Google Play donations
-     * @param googlePubkey
-     *            Your Google Play public key
-     * @param googleCatalog
-     *            Possible item names that can be purchased from Google Play
-     * @param googleCatalogValues
-     *            Values for the names
-     * @param paypalEnabled
-     *            Enable PayPal donations
-     * @param paypalUser
-     *            Your PayPal email address
-     * @param paypalCurrencyCode
-     *            Currency code like EUR. See here for other codes:
-     *            https://developer
-     *            .paypal.com/webapps/developer/docs/classic/api
-     *            /currency_codes/#id09A6G0U0GYK
-     * @param paypalItemName
-     *            Display item name on PayPal, like "Donation for NTPSync"
-     * @param flattrEnabled
-     *            Enable Flattr donations
-     * @param flattrProjectUrl
-     *            The project URL used on Flattr
-     * @param flattrUrl
-     *            The Flattr URL to your thing. NOTE: Enter without http://
-     * @return DonationsFragment
-     */
-    public static DonationsFragment newInstance(final boolean debug,
-            final boolean googleEnabled, final String googlePubkey,
-            final String[] googleCatalog, final String[] googleCatalogValues,
-            final boolean paypalEnabled, final String paypalUser,
-            final String paypalCurrencyCode, final String paypalItemName,
-            final boolean flattrEnabled, final String flattrProjectUrl,
-            final String flattrUrl) {
-        final DonationsFragment donationsFragment = new DonationsFragment();
-        final Bundle args = new Bundle();
-        args.putBoolean(ARG_DEBUG, debug);
-        args.putBoolean(ARG_GOOGLE_ENABLED, googleEnabled);
-        args.putString(ARG_GOOGLE_PUBKEY, googlePubkey);
-        args.putStringArray(ARG_GOOGLE_CATALOG, googleCatalog);
-        args.putStringArray(ARG_GOOGLE_CATALOG_VALUES, googleCatalogValues);
-        args.putBoolean(ARG_PAYPAL_ENABLED, paypalEnabled);
-        args.putString(ARG_PAYPAL_USER, paypalUser);
-        args.putString(ARG_PAYPAL_CURRENCY_CODE, paypalCurrencyCode);
-        args.putString(ARG_PAYPAL_ITEM_NAME, paypalItemName);
-        args.putBoolean(ARG_FLATTR_ENABLED, flattrEnabled);
-        args.putString(ARG_FLATTR_PROJECT_URL, flattrProjectUrl);
-        args.putString(ARG_FLATTR_URL, flattrUrl);
-        donationsFragment.setArguments(args);
-        return donationsFragment;
-    }
 
-    @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            this.mDebug = getArguments().getBoolean(ARG_DEBUG);
-            this.mGoogleEnabled = getArguments().getBoolean(ARG_GOOGLE_ENABLED);
-            this.mGooglePubkey = getArguments().getString(ARG_GOOGLE_PUBKEY);
-            this.mGoogleCatalog = getArguments()
-                                  .getStringArray(ARG_GOOGLE_CATALOG);
-            this.mGoogleCatalogValues = getArguments().getStringArray(
-                                            ARG_GOOGLE_CATALOG_VALUES);
-            this.mPaypalEnabled = getArguments().getBoolean(ARG_PAYPAL_ENABLED);
-            this.mPaypalUser = getArguments().getString(ARG_PAYPAL_USER);
-            this.mPaypalCurrencyCode = getArguments().getString(
-                                           ARG_PAYPAL_CURRENCY_CODE);
-            this.mPaypalItemName = getArguments().getString(ARG_PAYPAL_ITEM_NAME);
-            this.mFlattrEnabled = getArguments().getBoolean(ARG_FLATTR_ENABLED);
-            this.mFlattrProjectUrl = getArguments().getString(
-                                         ARG_FLATTR_PROJECT_URL);
-            this.mFlattrUrl = getArguments().getString(ARG_FLATTR_URL);
-        }
-        if ((getActivity() != null) && (getActivity().getActionBar() != null)) {
-            getActivity().getActionBar().setTitle(R.string.title_donations);
-        }
-    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -213,7 +139,7 @@ public class DonationsFragment extends Fragment {
                                       R.id.donations__google_android_market_spinner);
             final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(
                 getActivity(), android.R.layout.simple_spinner_item,
-                mGoogleCatalogValues);
+                getResources().getStringArray(R.array.donation_google_catalog_values));
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             this.mGoogleSpinner.setAdapter(adapter);
             final Button btGoogle = (Button) getActivity().findViewById(
@@ -229,7 +155,7 @@ public class DonationsFragment extends Fragment {
             if (mDebug) {
                 Log.d(TAG, "Creating IAB helper.");
             }
-            this.mHelper = new IabHelper(getActivity(), mGooglePubkey);
+            this.mHelper = new IabHelper(getActivity(), GOOGLE_PUBKEY);
             // enable debug logging (for a production application, you should
             // set this to false).
             this.mHelper.enableDebugLogging(mDebug);
@@ -318,7 +244,8 @@ public class DonationsFragment extends Fragment {
                                             this.mPurchaseFinishedListener, null);
         } else {
             this.mHelper.launchPurchaseFlow(getActivity(),
-                                            mGoogleCatalog[index], IabHelper.ITEM_TYPE_INAPP, 0,
+                                            getResources().getStringArray(R.array.donation_google_catalog_values)[index],
+                                            IabHelper.ITEM_TYPE_INAPP, 0,
                                             this.mPurchaseFinishedListener, null);
         }
     }
@@ -415,14 +342,15 @@ public class DonationsFragment extends Fragment {
         uriBuilder.scheme("https").authority("www.paypal.com")
         .path("cgi-bin/webscr");
         uriBuilder.appendQueryParameter("cmd", "_donations");
-        uriBuilder.appendQueryParameter("business", mPaypalUser);
+        uriBuilder.appendQueryParameter("business", PAYPAL_USER);
         uriBuilder.appendQueryParameter("lc", "US");
-        uriBuilder.appendQueryParameter("item_name", mPaypalItemName);
+        uriBuilder.appendQueryParameter("item_name",
+                                        view.getContext().getString(R.string.donation_paypal_item));
         uriBuilder.appendQueryParameter("no_note", "1");
         // uriBuilder.appendQueryParameter("no_note", "0");
         // uriBuilder.appendQueryParameter("cn", "Note to the developer");
         uriBuilder.appendQueryParameter("no_shipping", "1");
-        uriBuilder.appendQueryParameter("currency_code", mPaypalCurrencyCode);
+        uriBuilder.appendQueryParameter("currency_code", PAYPAL_CURRENCY_CODE);
         final Uri payPalUri = uriBuilder.build();
         if (mDebug) {
             Log.d(TAG,
@@ -513,13 +441,11 @@ public class DonationsFragment extends Fragment {
             }
         });
         // get flattr values from xml config
-        final String projectUrl = mFlattrProjectUrl;
-        final String flattrUrl = mFlattrUrl;
         // make text white and background transparent
         // set url of flattr link
         this.mFlattrUrlTextView = (TextView) getActivity().findViewById(
                                       R.id.donations__flattr_url);
-        this.mFlattrUrlTextView.setText("https://" + flattrUrl);
+        this.mFlattrUrlTextView.setText("https://" + FLATTR_URL);
         final String flattrJavascript = "<script type='text/javascript'>"
                                         + "/* <![CDATA[ */"
                                         + "(function() {"
@@ -531,9 +457,9 @@ public class DonationsFragment extends Fragment {
                                         + "</script>";
         final String htmlMiddle = "</head> <body> <div align='center'>";
         final String flattrHtml = "<a class='FlattrButton' style='display:none;' href='"
-                                  + projectUrl
+                                  + FLATTR_PROJECT_URL
                                   + "' target='_blank'></a> <noscript><a href='https://"
-                                  + flattrUrl
+                                  + FLATTR_URL
                                   + "' target='_blank'> <img src='https://"
                                   + "api.flattr.com/button/flattr-badge-large.png' alt='Flattr this' title='Flattr this' border='0' /></a></noscript>";
         final String htmlEnd = "</div> </body> </html>";
