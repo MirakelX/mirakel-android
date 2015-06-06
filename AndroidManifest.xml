@@ -42,13 +42,6 @@
             android:theme="@style/MirakelBaseTheme" >
         </activity>
         <activity
-            android:name="de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/recurring"
-            android:parentActivityName=".SettingsActivity"
-            android:theme="@style/MirakelBaseTheme" >
-        </activity>
-        <activity
             android:name=".model_settings.special_list.SpecialListListActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/special_lists_title"

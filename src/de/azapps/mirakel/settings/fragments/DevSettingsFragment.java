@@ -41,7 +41,6 @@ import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.custom_views.Settings;
-import de.azapps.mirakel.settings.model_settings.reccuring.RecurringSettingsActivity;
 import de.azapps.mirakel.settings.model_settings.tag.TagSettingsActivity;
 import de.azapps.tools.FileUtils;
 
@@ -182,11 +181,6 @@ public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
                 return false;
             }
         });
-
-        final Intent startRecurringIntent = new Intent(getActivity(),
-                RecurringSettingsActivity.class);
-        final Preference recurring = findPreference("recurring");
-        recurring.setIntent(startRecurringIntent);
 
         final Intent startTagIntent = new Intent(getActivity(),
                 TagSettingsActivity.class);
