@@ -1,27 +1,26 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.dashclock;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -32,9 +31,10 @@ import android.widget.NumberPicker;
 
 import com.google.common.base.Optional;
 
-import de.azapps.mirakel.adapter.SimpleModelAdapter;
+import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 public class MirakelSettingsActivity extends PreferenceActivity {
@@ -68,10 +68,10 @@ public class MirakelSettingsActivity extends PreferenceActivity {
         startupListPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                final Cursor cursor = new MirakelQueryBuilder(MirakelSettingsActivity.this).query(
+                final CursorWrapper cursor = new MirakelQueryBuilder(MirakelSettingsActivity.this).query(
                     MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
-                final SimpleModelAdapter<ListMirakel> adapter = new SimpleModelAdapter<>
-                (MirakelSettingsActivity.this, cursor, 0, ListMirakel.class);
+                final SimpleModelListAdapter<ListMirakel> adapter = new SimpleModelListAdapter<>
+                (MirakelSettingsActivity.this, cursor.getRawCursor(), 0, ListMirakel.class);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(MirakelSettingsActivity.this);
                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
