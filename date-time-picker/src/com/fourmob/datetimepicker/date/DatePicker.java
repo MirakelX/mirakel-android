@@ -1,19 +1,28 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package com.fourmob.datetimepicker.date;
-
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Locale;
-
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,8 +42,18 @@ import com.fourmob.datetimepicker.Utils;
 import com.fourmob.datetimepicker.date.SimpleMonthAdapter.CalendarDay;
 import com.nineoldandroids.animation.ObjectAnimator;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.tools.Log;
 
 public class DatePicker extends LinearLayout implements View.OnClickListener,
@@ -44,7 +63,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     private static final int VIEW_DATE_PICKER_YEAR = 1;
     private static final int VIEW_DATE_PICKER_MONTH_DAY = 0;
     private static final String TAG = "DatePicker";
-    // TODO use jda time to allow dates after 2037
     // TODO use local from pref...
     // private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd",
     // Locale.getDefault());
@@ -59,7 +77,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     private int mMaxYear;
     private int mMinYear;
     private View layout;
-    private boolean mDark;
     private TextView mSelectedMonthTextView;
     private TextView mDayOfWeekView;
     private LinearLayout mMonthAndDayView;
@@ -107,7 +124,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     private void setupView(final Context context) {
-        this.mDark = MirakelCommonPreferences.isDark();// Dirty get Theme or so
         this.ctx = context;
         this.layout = View.inflate(context, R.layout.date_picker_view, this);
         initLayout();
@@ -115,14 +131,14 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     void setMaxYear(final int max) {
-        if (max >= this.mMinYear && max < MAX_YEAR) {
+        if ((max >= this.mMinYear) && (max < MAX_YEAR)) {
             this.mMaxYear = max;
             updateYearRange();
         }
     }
 
     void setMinYear(final int min) {
-        if (min <= this.mMaxYear && min > MIN_YEAR) {
+        if ((min <= this.mMaxYear) && (min > MIN_YEAR)) {
             this.mMinYear = min;
             updateYearRange();
         }
@@ -147,7 +163,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     public void setDay(final int day) {
-        Log.d(TAG, "SET DAY: " + day);
         this.mCalendar.set(Calendar.DAY_OF_MONTH, day);
         update();
     }
@@ -161,13 +176,11 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     public void setMonth(final int month) {
-        Log.d(TAG, "SET MONTH: " + month);
         this.mCalendar.set(Calendar.MONTH, month);
         update();
     }
 
     public void setYear(final int year) {
-        Log.d(TAG, "SET YEAR: " + year);
         this.mCalendar.set(Calendar.YEAR, year);
         update();
     }
@@ -181,12 +194,12 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     @Override
-    public void onClick(final View view) {
+    public void onClick(final View v) {
         tryVibrate();
-        if (view.getId() == R.id.date_picker_year) {
+        if (v.getId() == R.id.date_picker_year) {
             setCurrentView(VIEW_DATE_PICKER_YEAR);
             this.yearSelected = true;
-        } else if (view.getId() == R.id.date_picker_month_and_day) {
+        } else if (v.getId() == R.id.date_picker_month_and_day) {
             setCurrentView(VIEW_DATE_PICKER_MONTH_DAY);
             this.yearSelected = false;
         }
@@ -258,12 +271,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     private void initLayout() {
         final View datepicker_dialog = this.layout
                                        .findViewById(R.id.datepicker_dialog);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            datepicker_dialog.setBackgroundColor(this.ctx.getResources()
-                                                 .getColor(
-                                                         this.mDark ? android.R.color.black
-                                                         : android.R.color.white));
-        }
         this.mDayOfWeekView = (TextView) this.layout
                               .findViewById(R.id.date_picker_header);
         this.mMonthAndDayView = (LinearLayout) this.layout
@@ -271,46 +278,26 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         this.mMonthAndDayView.setOnClickListener(this);
         this.mSelectedMonthTextView = (TextView) this.layout
                                       .findViewById(R.id.date_picker_month);
-        this.mSelectedMonthTextView.setTextColor(getResources()
-                .getColorStateList(
-                    this.mDark ? R.color.date_picker_selector_dark
-                    : R.color.date_picker_selector));
+
+        final ColorStateList selectorColorStates = getSelectorColorStates();
+
+        this.mSelectedMonthTextView.setTextColor(selectorColorStates);
         this.mSelectedDayTextView = (TextView) this.layout
                                     .findViewById(R.id.date_picker_day);
-        this.mSelectedDayTextView.setTextColor(getResources()
-                                               .getColorStateList(
-                                                       this.mDark ? R.color.date_picker_selector_dark
-                                                       : R.color.date_picker_selector));
+        this.mSelectedDayTextView.setTextColor(selectorColorStates);
         this.mYearView = (TextView) this.layout
                          .findViewById(R.id.date_picker_year);
-        this.mYearView.setTextColor(getResources().getColorStateList(
-                                        this.mDark ? R.color.date_picker_selector_dark
-                                        : R.color.date_picker_selector));
+        this.mYearView.setTextColor(selectorColorStates);
         this.mYearView.setOnClickListener(this);
-        final int listPosition = -1;
-        final int currentView = VIEW_DATE_PICKER_MONTH_DAY;
-        final int listPositionOffset = 0;
-        /*
-         * if (bundle != null) { this.mWeekStart = bundle.getInt("week_start");
-         * this.mMinYear = bundle.getInt("year_start"); this.mMaxYear =
-         * bundle.getInt("year_end"); currentView =
-         * bundle.getInt("current_view"); listPosition =
-         * bundle.getInt("list_position"); listPositionOffset =
-         * bundle.getInt("list_position_offset"); }
-         */
+
+
         this.mDayPickerView = new DayPickerView(this.ctx, this);
         this.mYearPickerView = new YearPickerView(this.ctx, this);
-        final Resources resources = getResources();
-        this.mDayPickerDescription = resources
-                                     .getString(R.string.day_picker_description);
-        // this.mSelectDay = resources.getString(R.string.select_day);
-        this.mYearPickerDescription = resources
-                                      .getString(R.string.year_picker_description);
-        // this.mSelectYear = resources.getString(R.string.select_year);
+        this.mDayPickerDescription = getResources().getString(R.string.day_picker_description);
+        this.mYearPickerDescription = getResources().getString(R.string.year_picker_description);
         this.mAnimator = (ViewAnimator) this.layout.findViewById(R.id.animator);
         this.mAnimator.addView(this.mDayPickerView);
         this.mAnimator.addView(this.mYearPickerView);
-        // this.mAnimator.setDateMillis(this.mCalendar.getTimeInMillis());
         final AlphaAnimation inAlphaAnimation = new AlphaAnimation(0.0F, 1.0F);
         inAlphaAnimation.setDuration(300L);
         this.mAnimator.setInAnimation(inAlphaAnimation);
@@ -342,26 +329,37 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
             }
         });
         updateDisplay();
+        final int currentView = VIEW_DATE_PICKER_MONTH_DAY;
         setCurrentView(currentView, true);
+        final int listPosition = -1;
+        final int listPositionOffset = 0;
         setScroll(listPosition, currentView, listPositionOffset);
-        final Resources res = getResources();
-        if (this.mDark) {
-            datepicker_dialog.setBackgroundColor(res
-                                                 .getColor(R.color.dialog_gray));
-            final View header = this.layout
-                                .findViewById(R.id.datepicker_header);
-            header.setBackgroundColor(res.getColor(R.color.dialog_dark_gray));
-            if (this.mDayOfWeekView != null) {
-                this.mDayOfWeekView.setBackgroundColor(res
-                                                       .getColor(R.color.clock_gray));
-            }
-            this.mNoDateButton.setTextColor(res.getColor(R.color.clock_white));
-            this.mDoneButton.setTextColor(res.getColor(R.color.clock_white));
-        } else {
-            final View header = this.layout
-                                .findViewById(R.id.datepicker_header);
-            header.setBackgroundColor(res.getColor(R.color.white));
+        datepicker_dialog.setBackgroundColor(ThemeManager.getColor(R.attr.colorBackground));
+        final View header = this.layout
+                            .findViewById(R.id.datepicker_header);
+        header.setBackgroundColor(ThemeManager.getPrimaryThemeColor());
+        if (this.mDayOfWeekView != null) {
+            this.mDayOfWeekView.setBackgroundColor(ThemeManager.getPrimaryDarkThemeColor());
+            this.mDayOfWeekView.setTextColor(ThemeManager.getColor(R.attr.colorControlNormal));
         }
+        this.mNoDateButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
+        this.mDoneButton.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
+    }
+
+    public static ColorStateList getSelectorColorStates() {
+        final int[][] states = new int[][] {
+            new int[] {android.R.attr.state_pressed},
+            new int[] {android.R.attr.state_selected},
+            new int[]{}
+        };
+
+        final int[] colors = new int[] {
+            ThemeManager.getPrimaryDarkThemeColor(),
+            ThemeManager.getColor(R.attr.colorTextWhite),
+            ThemeManager.getColor(R.attr.colorControlNormal)
+        };
+
+        return new ColorStateList(states, colors);
     }
 
     private void setScroll(final int listPosition, final int currentView,
@@ -476,7 +474,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     @Override
     protected void onConfigurationChanged(final Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.d("foo", "config changed");
         // on display rotate reload dialog
         final Parcelable yearState = this.mYearPickerView.onSaveInstanceState();
         final Parcelable monthState = this.mDayPickerView.onSaveInstanceState();
@@ -577,7 +574,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     public void hideNoDate() {
-        Log.d(TAG, "hide");
         this.mNoDateButton.setVisibility(View.GONE);
     }
 

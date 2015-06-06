@@ -1,9 +1,23 @@
-package com.fourmob.datetimepicker.date;
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+package com.fourmob.datetimepicker.date;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,9 +29,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.tools.Log;
 
 @SuppressLint("ViewConstructor")
 public class YearPickerView extends ListView implements
@@ -37,10 +56,7 @@ public class YearPickerView extends ListView implements
                     .getView(position, convertView, parent);
             textViewWithCircularIndicator.requestLayout();
             textViewWithCircularIndicator
-            .setTextColor(getResources()
-                          .getColorStateList(
-                              YearPickerView.this.mDark ? R.color.date_picker_year_selector_dark
-                              : R.color.date_picker_year_selector));
+            .setTextColor(DatePicker.getSelectorColorStates());
             final int year = getYearFromTextView(textViewWithCircularIndicator);
             textViewWithCircularIndicator
             .drawIndicator(YearPickerView.this.mController
@@ -48,23 +64,26 @@ public class YearPickerView extends ListView implements
             textViewWithCircularIndicator.setBackgroundColor(getResources()
                     .getColor(android.R.color.transparent));
             if (year == new GregorianCalendar().get(Calendar.YEAR)) {
-                Log.wtf("foo", "current year " + year);
                 textViewWithCircularIndicator
                 .setTextColor(YearPickerView.this.mCurrentYear);
+            } else if (mSelectedView != null &&
+                       String.valueOf(mController.getSelectedDay().year).equals(mSelectedView.getText())) {
+                textViewWithCircularIndicator.setTextColor(ThemeManager.getAccentThemeColor());
+            } else {
+                textViewWithCircularIndicator.setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
             }
             return textViewWithCircularIndicator;
         }
     }
 
     protected static int getYearFromTextView(final TextView textView) {
-        return Integer.valueOf(textView.getText().toString()).intValue();
+        return Integer.valueOf(textView.getText().toString());
     }
 
     private YearAdapter mAdapter;
     private final int mChildSize;
     private final DatePickerController mController;
     protected final int mCurrentYear;
-    public boolean mDark;
 
     private TextViewWithCircularIndicator mSelectedView;
 
@@ -77,13 +96,11 @@ public class YearPickerView extends ListView implements
         this.mController.registerOnDateChangedListener(this);
         setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         final Resources resources = context.getResources();
-        this.mDark = MirakelCommonPreferences.isDark();
         this.mViewSize = resources
                          .getDimensionPixelOffset(R.dimen.date_picker_view_animator_height);
         this.mChildSize = resources
                           .getDimensionPixelOffset(R.dimen.year_label_height);
-        this.mCurrentYear = getResources().getColor(
-                                this.mDark ? R.color.Red : R.color.clock_blue);
+        this.mCurrentYear = ThemeManager.getPrimaryDarkThemeColor();
         setVerticalFadingEdgeEnabled(true);
         setFadingEdgeLength(this.mChildSize / 3);
         init(context);
@@ -102,7 +119,8 @@ public class YearPickerView extends ListView implements
     }
 
     private void init(final Context context) {
-        final ArrayList<String> years = new ArrayList<String>();
+        final ArrayList<String> years = new ArrayList<>(mController.getMaxYear() -
+                mController.getMinYear());
         for (int year = this.mController.getMinYear(); year <= this.mController
              .getMaxYear(); year++) {
             years.add(String.format("%d", year));
@@ -114,7 +132,6 @@ public class YearPickerView extends ListView implements
 
     @Override
     public void onDateChanged() {
-        Log.d("foo", "data changed");
         this.mAdapter.notifyDataSetChanged();
         postSetSelectionCentered(this.mController.getSelectedDay().year
                                  - this.mController.getMinYear());

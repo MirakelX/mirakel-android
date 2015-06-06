@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.widgets;
@@ -41,6 +41,7 @@ import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
@@ -139,6 +140,7 @@ public class DateTimeDialog extends DialogFragment {
                 }
                 dismiss();
             }
+
             @Override
             public void onNoTimeSet() {
                 if (DateTimeDialog.this.mCallback != null) {
@@ -155,6 +157,7 @@ public class DateTimeDialog extends DialogFragment {
                 }
                 dismiss();
             }
+
             @Override
             public void onDateSet(final DatePicker datePickerDialog,
                                   final int year, final int month, final int day) {
@@ -166,6 +169,7 @@ public class DateTimeDialog extends DialogFragment {
                 dismiss();
             }
         });
+        switchToDate.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
         switchToDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
@@ -175,6 +179,7 @@ public class DateTimeDialog extends DialogFragment {
                 }
             }
         });
+        switchToTime.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
         switchToTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {

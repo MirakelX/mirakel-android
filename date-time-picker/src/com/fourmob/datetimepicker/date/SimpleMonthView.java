@@ -1,13 +1,25 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package com.fourmob.datetimepicker.date;
 
-import java.security.InvalidParameterException;
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
-
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -18,9 +30,15 @@ import android.view.View;
 
 import com.fourmob.datetimepicker.Utils;
 
+import java.security.InvalidParameterException;
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class SimpleMonthView extends View {
     public static abstract interface OnDayClickListener {
@@ -40,7 +58,6 @@ public class SimpleMonthView extends View {
     protected static float mScale = 0.0F;
     private final int mBackground;
     private final Calendar mCalendar;
-    private boolean mdark = false;
     private final DateFormatSymbols mDateFormatSymbols = new DateFormatSymbols();
     private final Calendar mDayLabelCalendar;
     private int mDayOfWeekStart = 0;
@@ -77,37 +94,29 @@ public class SimpleMonthView extends View {
 
     public SimpleMonthView(final Context context) {
         super(context);
-        this.mdark = MirakelCommonPreferences.isDark();
-        final Resources resources = context.getResources();
         this.mDayLabelCalendar = Calendar.getInstance();
         this.mCalendar = Calendar.getInstance();
-        this.mDayOfWeekTypeface = resources
+        this.mDayOfWeekTypeface = getResources()
                                   .getString(R.string.day_of_week_label_typeface);
-        this.mMonthTitleTypeface = resources.getString(R.string.sans_serif);
-        this.mDayTextColor = resources.getColor(this.mdark ? R.color.white
-                                                : R.color.date_picker_text_normal);
-        this.mTodayNumberColor = resources.getColor(this.mdark ? R.color.Red
-                                 : R.color.clock_blue);
-        this.mMonthTitleColor = resources.getColor(this.mdark ? R.color.black
-                                : R.color.white);
-        this.mMonthTitleBGColor = resources
-                                  .getColor(this.mdark ? R.color.blackish
-                                            : R.color.circle_background);
+        this.mMonthTitleTypeface = getResources().getString(R.string.sans_serif);
+        this.mDayTextColor = ThemeManager.getColor(R.attr.colorTextBlack);
+        this.mTodayNumberColor = ThemeManager.getPrimaryThemeColor();
+        this.mMonthTitleColor = ThemeManager.getColor(R.attr.colorTextGrey);
+        this.mMonthTitleBGColor = ThemeManager.getColor(R.attr.colorBackground);
         this.mStringBuilder = new StringBuilder(50);
-        MINI_DAY_NUMBER_TEXT_SIZE = resources
+        MINI_DAY_NUMBER_TEXT_SIZE = getResources()
                                     .getDimensionPixelSize(R.dimen.day_number_size);
-        MONTH_LABEL_TEXT_SIZE = resources
+        MONTH_LABEL_TEXT_SIZE = getResources()
                                 .getDimensionPixelSize(R.dimen.month_label_size);
-        MONTH_DAY_LABEL_TEXT_SIZE = resources
+        MONTH_DAY_LABEL_TEXT_SIZE = getResources()
                                     .getDimensionPixelSize(R.dimen.month_day_label_text_size);
-        MONTH_HEADER_SIZE = resources
+        MONTH_HEADER_SIZE = getResources()
                             .getDimensionPixelOffset(R.dimen.month_list_item_header_height);
-        DAY_SELECTED_CIRCLE_SIZE = resources
+        DAY_SELECTED_CIRCLE_SIZE = getResources()
                                    .getDimensionPixelSize(R.dimen.day_number_select_circle_radius);
-        this.mRowHeight = (resources
+        this.mRowHeight = (getResources()
                            .getDimensionPixelOffset(R.dimen.date_picker_view_animator_height) - MONTH_HEADER_SIZE) / 6;
-        this.mBackground = resources.getColor(this.mdark ? R.color.dialog_gray
-                                              : R.color.white);
+        this.mBackground = ThemeManager.getColor(R.attr.colorBackground);
         initView();
     }
 
@@ -231,7 +240,7 @@ public class SimpleMonthView extends View {
         this.mSelectedCirclePaint.setColor(this.mTodayNumberColor);
         this.mSelectedCirclePaint.setTextAlign(Paint.Align.CENTER);
         this.mSelectedCirclePaint.setStyle(Paint.Style.FILL);
-        this.mSelectedCirclePaint.setAlpha(this.mdark ? 80 : 60);
+        this.mSelectedCirclePaint.setAlpha(70);
         this.mMonthDayLabelPaint = new Paint();
         this.mMonthDayLabelPaint.setAntiAlias(true);
         this.mMonthDayLabelPaint.setTextSize(MONTH_DAY_LABEL_TEXT_SIZE);

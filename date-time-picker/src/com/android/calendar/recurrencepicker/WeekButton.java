@@ -21,12 +21,11 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 
 public class WeekButton extends android.widget.ToggleButton {
-
-    private static boolean mDark;
 
     public WeekButton(final Context context) {
         super(context);
@@ -34,18 +33,18 @@ public class WeekButton extends android.widget.ToggleButton {
     }
 
     private void setTheme() {
-        mDark = MirakelCommonPreferences.isDark();
-        if (mDark) {
-            // setBackground(getResources().getDrawable(R.drawable.recurrence_bubble_fill_dark));
-            setBackgroundDrawable(getResources().getDrawable(
-                                      R.drawable.recurrence_bubble_fill_dark));
-            setTextColor(getResources().getColorStateList(
-                             R.color.recurrence_bubble_text_color_dark));
+        setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.oval_filled,
+                              getContext().getTheme()));
+        setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
+    }
+
+    @Override
+    protected void drawableStateChanged() {
+        super.drawableStateChanged();
+        if (isChecked()) {
+            setTextColor(ThemeManager.getColor(R.attr.colorTextWhite));
         } else {
-            setBackgroundDrawable(getResources().getDrawable(
-                                      R.drawable.recurrence_bubble_fill));
-            setTextColor(getResources().getColorStateList(
-                             R.color.recurrence_bubble_text_color));
+            setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
         }
     }
 

@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package com.fourmob.datetimepicker.date;
 
 import android.app.Activity;
@@ -39,23 +58,22 @@ public class SupportDatePickerDialog extends DialogFragment {
         final int year = notNullDate.get(Calendar.YEAR);
         final int month = notNullDate.get(Calendar.MONTH);
         final int day = notNullDate.get(Calendar.DAY_OF_MONTH);
-        return newInstance(onDateSetListener, year, month, day, dark, hasNoDate);
+        return newInstance(onDateSetListener, year, month, day, hasNoDate);
     }
     public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
-        final int month, final int day, final boolean dark,
+        final int month, final int day,
         final boolean hasNoDate) {
-        return newInstance(onDateSetListener, year, month, day, true, dark,
+        return newInstance(onDateSetListener, year, month, day, true,
                            hasNoDate);
     }
 
     public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
-        final int month, final int day, final boolean vibrate,
-        final boolean dark, final boolean hasNoDate) {
+        final int month, final int day, final boolean vibrate, final boolean hasNoDate) {
         final SupportDatePickerDialog datePickerDialog = new SupportDatePickerDialog();
         datePickerDialog.initialize(onDateSetListener, year, month, day,
-                                    vibrate, dark, hasNoDate);
+                                    vibrate, hasNoDate);
         return datePickerDialog;
     }
 
@@ -65,7 +83,7 @@ public class SupportDatePickerDialog extends DialogFragment {
 
     public void initialize(final OnDateSetListener onDateSetListener,
                            final int year, final int month, final int day,
-                           final boolean vibrate, final boolean dark, final boolean hasNoDate) {
+                           final boolean vibrate, final boolean hasNoDate) {
         this.mCallback = new OnDateSetListener() {
             @Override
             public void onNoDateSet() {
@@ -137,9 +155,6 @@ public class SupportDatePickerDialog extends DialogFragment {
                 .setDay(SupportDatePickerDialog.this.mInitDay);
             }
         }, 0);
-        if (!this.mHasNoDate) {
-            this.mDatePicker.hideNoDate();
-        }
         return view;
     }
 

@@ -16,8 +16,6 @@ package com.sleepbot.datetimepicker.time;
  * limitations under the License.
  */
 
-import java.text.DateFormatSymbols;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -26,6 +24,10 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
+
+import java.text.DateFormatSymbols;
+
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 
 /**
@@ -54,7 +56,6 @@ public class AmPmCirclesView extends View {
     private int mAmXCenter;
     private float mCircleRadiusMultiplier;
 
-    private boolean mDark;
     private boolean mDrawValuesReady;
     private boolean mIsInitialized;
     private final Paint mPaint = new Paint();
@@ -93,20 +94,16 @@ public class AmPmCirclesView extends View {
         return -1;
     }
 
-    public void initialize(final Context context, final int amOrPm,
-                           final boolean dark) {
+    public void initialize(final Context context, final int amOrPm) {
         if (this.mIsInitialized) {
             Log.e(TAG, "AmPmCirclesView may only be initialized once.");
             return;
         }
-        this.mDark = dark;
         final Resources res = context.getResources();
-        this.mUnselected = res.getColor(dark ? R.color.grey : R.color.white);
-        this.mAmPmTextColorUnselected = res.getColor(dark ? R.color.white
-                                        : R.color.dialog_dark_gray);
-        this.mAmPmTextColorSelected = res.getColor(dark ? R.color.Red
-                                      : R.color.clock_blue);
-        this.mSelected = res.getColor(dark ? R.color.Red : R.color.blue);
+        this.mUnselected = ThemeManager.getPrimaryThemeColor();
+        this.mAmPmTextColorUnselected = ThemeManager.getColor(R.attr.colorControlNormal);
+        this.mAmPmTextColorSelected = ThemeManager.getPrimaryDarkThemeColor();
+        this.mSelected = ThemeManager.getPrimaryThemeColor();
         final String typefaceFamily = res.getString(R.string.sans_serif);
         final Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
         this.mPaint.setTypeface(tf);
@@ -180,11 +177,11 @@ public class AmPmCirclesView extends View {
         }
         // Draw the two circles.
         this.mPaint.setColor(amColor);
-        this.mPaint.setAlpha(this.mDark ? (int) (amAlpha * 1.5) : amAlpha);
+        this.mPaint.setAlpha(amAlpha);
         canvas.drawCircle(this.mAmXCenter, this.mAmPmYCenter,
                           this.mAmPmCircleRadius, this.mPaint);
         this.mPaint.setColor(pmColor);
-        this.mPaint.setAlpha(this.mDark ? (int) (pmAlpha * 1.5) : pmAlpha);
+        this.mPaint.setAlpha(pmAlpha);
         canvas.drawCircle(this.mPmXCenter, this.mAmPmYCenter,
                           this.mAmPmCircleRadius, this.mPaint);
         // Draw the AM/PM texts on top.
