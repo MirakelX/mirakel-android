@@ -144,6 +144,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         clearFocus();
     }
 
+
     public void setTagChangedListener(@Nullable TagChangedListener tagChangedListener) {
         this.tagChangedListener = tagChangedListener;
     }
