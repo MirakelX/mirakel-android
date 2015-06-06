@@ -18,10 +18,7 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.azapps.mirakel.colorpicker_pref">
-        <uses-sdk android:minSdkVersion="14"
-                 android:targetSdkVersion="21" />
-        <!-- need to build with gradle-->
-                <application />
-</manifest>
+<resources>
+    <dimen name="colorbox_width" >32dip</dimen>
+    <dimen name="colorbox_heigth" >42dp</dimen>
+</resources>

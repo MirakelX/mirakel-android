@@ -1,18 +1,35 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.settings;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.larswerkman.colorpicker.ColorPicker;
 import com.larswerkman.colorpicker.SVBar;
@@ -25,33 +42,42 @@ public class ColorPickerPref extends DialogPreference {
     private final Context ctx;
     protected int COLOR;
     private int OLD_COLOR;
-    protected View colorBox;
+    protected LinearLayout colorBox;
 
     public ColorPickerPref(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         this.ctx = context;
         this.COLOR = this.ctx.getResources().getColor(R.color.holo_orange_dark);
         this.OLD_COLOR = this.COLOR;
+        getColorBox(context);
     }
 
-    @SuppressLint("NewApi")
+    private void getColorBox(Context context) {
+        colorBox = new LinearLayout(ctx);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)
+                context.getResources().getDimension(R.dimen.colorbox_width),
+                (int)context.getResources().getDimension(R.dimen.colorbox_heigth));
+        colorBox.setLayoutParams(params);
+    }
+
+
     @Override
-    public View getView(final View convertView, final ViewGroup parent) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            return new View(this.ctx);
+    protected void onBindView(View view) {
+        super.onBindView(view);
+        colorBox.setBackgroundColor(COLOR);
+    }
+
+    @Override
+    protected View onCreateView(ViewGroup parent) {
+        View layout = super.onCreateView(parent);
+        final ViewGroup widgetFrame = (ViewGroup) layout
+                                      .findViewById(android.R.id.widget_frame);
+        if (widgetFrame != null) {
+            widgetFrame.setVisibility(View.VISIBLE);
+            getColorBox(ctx);
+            widgetFrame.addView(colorBox);
         }
-        final View v = ((Activity) this.ctx).getLayoutInflater().inflate(
-                           R.layout.color_pref, null);
-        /*
-         * if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-         * v.setBackground(ctx.getResources().getDrawable(
-         * android.R.attr.selectableItemBackground)); }
-         */
-        this.colorBox = v.findViewById(R.id.color_box);
-        this.colorBox.setBackgroundColor(this.COLOR);
-        ((TextView) v.findViewById(android.R.id.title)).setText(getTitle());
-        v.findViewById(android.R.id.summary).setVisibility(View.GONE);
-        return v;
+        return layout;
     }
 
     @SuppressLint("NewApi")
