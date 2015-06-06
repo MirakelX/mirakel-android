@@ -1,22 +1,29 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
- * 
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.model.task;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,8 +34,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
-import android.test.suitebuilder.annotation.MediumTest;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,6 +46,7 @@ import com.google.gson.JsonPrimitive;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTask;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
@@ -48,13 +54,18 @@ import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import static com.google.common.base.Optional.of;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * This test cases tests if the Deserializer is working properly.
- * 
+ *
  * @author az
- * 
+ *
  */
-public class TaskDeserializerTest extends MirakelTestCase {
+@RunWith(RobolectricTestRunner.class)
+public class TaskDeserializerTest extends MirakelTestCase{
 
 	private boolean compare(final String taskString, final TaskWarriorTask task) {
 		final JsonParser parser = new JsonParser();
@@ -64,7 +75,7 @@ public class TaskDeserializerTest extends MirakelTestCase {
 
 		final String outputTask = new GsonBuilder()
 				.registerTypeAdapter(Task.class,
-						new TaskWarriorTaskSerializer(getContext())).create()
+						new TaskWarriorTaskSerializer(RuntimeEnvironment.application)).create()
 				.toJson(t);
 		final JsonObject o2 = (JsonObject) parser.parse(outputTask);
 		return equalJson(o2, o);
@@ -199,16 +210,16 @@ public class TaskDeserializerTest extends MirakelTestCase {
 		final TaskWarriorTask task = gson.fromJson(inputTask, TaskWarriorTask.class);
 		assertTrue(message, compare(inputTask, task));
 	}
-	
+
 	#foreach ($JSON in $JSON_LIST)
-	@SmallTest
+	@Test
 	public void testTaskJSON${foreach.count}() throws Exception {
 		final String inputTask = "$JSON";
 		testString("Tasks are not equal", inputTask);
 	}
 	#end
 
-    @MediumTest
+    @Test
     public void testSerialize1(){
         Task t=new Task();
         t.setUUID(java.util.UUID.randomUUID().toString());
@@ -230,7 +241,7 @@ public class TaskDeserializerTest extends MirakelTestCase {
 
         String serialized=new GsonBuilder()
                 .registerTypeAdapter(Task.class,
-                        new TaskWarriorTaskSerializer(getContext())).create()
+                        new TaskWarriorTaskSerializer(RuntimeEnvironment.application)).create()
                 .toJson(t);
         SimpleDateFormat format=DateTimeHelper.taskwarriorFormat;
 
@@ -240,15 +251,15 @@ public class TaskDeserializerTest extends MirakelTestCase {
 
         String json="{\"uuid\":\""+t.getUUID()+"\","+
                 "\"status\":\"pending\","+
-                "\"entry:\":\""+format.format(created.getTime())+"\","+
+                "\"entry\":\""+format.format(created.getTime())+"\","+
                 "\"description\":\""+t.getName()+"\","+
-                "\"due:\":\""+format.format(due.getTime())+"\","+
-                "\"modified:\":\""+format.format(updated.getTime())+"\","+
+                "\"due\":\""+format.format(due.getTime())+"\","+
+                "\"modified\":\""+format.format(updated.getTime())+"\","+
                 "\"priority\":\"H\"}";
 
         JsonParser parser=new JsonParser();
 
         assert(equalJson(parser.parse(serialized),parser.parse(json)));
     }
-	
+
 }

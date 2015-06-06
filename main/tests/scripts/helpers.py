@@ -28,7 +28,7 @@ def getParams(p_string):
     if len(p_string) == 0:
         return []
     params = []
-    parar = p_string.replace("final","").split(",")
+    parar = p_string.replace("final","").replace("@NonNull ","").replace("@Nullable ","").split(",")
     countParens = 0
     curr = ""
     for par in parar:

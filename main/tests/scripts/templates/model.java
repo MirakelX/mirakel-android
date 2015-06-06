@@ -1,24 +1,31 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
 package $FULLPACKAGE;
 
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.List;
 import java.util.Random;
@@ -29,23 +36,28 @@ import android.database.sqlite.SQLiteDatabase;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.MirakelContentProvider;
 
-import android.test.suitebuilder.annotation.MediumTest;
 
 import com.google.common.base.Optional;
 
 import de.azapps.mirakelandroid.test.MirakelTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 import de.azapps.mirakelandroid.test.TestHelper;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
 
-public class ${TESTCLASS}Test extends MirakelTestCase {
+@RunWith(RobolectricTestRunner.class)
+public class ${TESTCLASS}Test extends MirakelTestCase{
     private static SQLiteDatabase database;
 
-    @Override
-    protected void setUp() throws Exception{
+    @Before
+    public void setUp() throws Exception{
         super.setUp();
-        database = DatabaseHelper.getDatabaseHelper(getContext()).getWritableDatabase();
-        RandomHelper.init(getContext());
+        database = DatabaseHelper.getDatabaseHelper(RuntimeEnvironment.application).getWritableDatabase();
         // Create at least one item to have something to test with
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
         ${CREATEFUNCTION.function};
@@ -59,7 +71,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     }
 
 #foreach($CREATEFUNCTION in $CREATEFUNCTIONS)
-    @MediumTest
+    @Test
     public void testNewCount${CREATEFUNCTION.name}${foreach.count}() {
         final int countBefore = countElems();
 #if($CREATEFUNCTION.throw)
@@ -76,7 +88,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
                      countBefore + 1, countAfter);
     }
 
-    @MediumTest
+    @Test
     public void testNewInserted${CREATEFUNCTION.name}${foreach.count}() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
 #if($CREATEFUNCTION.throw)
@@ -94,7 +106,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
 #end
     }
 
-    @MediumTest
+    @Test
     public void testNewEquals${CREATEFUNCTION.name}${foreach.count}() {
 #if($CREATEFUNCTION.throw)
         try {
@@ -113,6 +125,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
 #end
 
     // If nothing was changed the database should not be updated
+    @Test
     public void testUpdateEqual() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
         final int randomItem = new Random().nextInt(elems.size());
@@ -124,7 +137,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     }
 
 #foreach($UPDATEFUNCTION in $UPDATEFUNCTIONS)
-    @MediumTest
+    @Test
     public void test${UPDATEFUNCTION.name}${foreach.count}() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
         final int randomItem = new Random().nextInt(elems.size());
@@ -144,7 +157,7 @@ public class ${TESTCLASS}Test extends MirakelTestCase {
     }
 #end
 
-    @MediumTest
+    @Test
     public void testDestroy() {
         final List<$TESTCLASS>elems = ${TESTCLASS}.${GETALL_FUNCTION};
         final int randomItem = new Random().nextInt(elems.size());

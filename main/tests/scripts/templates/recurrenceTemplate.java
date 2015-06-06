@@ -1,37 +1,48 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
- * 
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- * 
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package de.azapps.mirakel.sync.taskwarrior.model.test;
 
-import android.test.suitebuilder.annotation.SmallTest;
+
 
 import com.google.common.base.Optional;
 import com.google.gson.JsonObject;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Calendar;
 
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorRecurrence;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
+import de.azapps.mirakelandroid.test.MirakelTestCase;
+import de.azapps.mirakelandroid.test.MirakelTestRunner;
 
-public class RecurrenceTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+@RunWith(RobolectricTestRunner.class)
+public class RecurrenceTest extends MirakelTestCase {
 
     private void performBackCheck(String rec,Recurring r) {
         final JsonObject e=new JsonObject();
@@ -53,7 +64,7 @@ public class RecurrenceTest extends TestCase {
     }
 
 	#foreach ($F in $FUNCTIONS)
-	@SmallTest
+	@Test
 	public void test_${F.get('name')}() {
 		final String rec = "${F.get('name')}";
         final Recurring r = parseRecurring(rec);
@@ -64,7 +75,7 @@ public class RecurrenceTest extends TestCase {
 	}
 	#end
 	
-	@SmallTest
+	@Test
 	public void test_weekdays() {
 		final String rec = "weekdays";
 		final Recurring r = parseRecurring(rec);
