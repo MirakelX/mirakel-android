@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.settings.fragments;
@@ -23,10 +23,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
+import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
@@ -35,6 +35,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.material_elements.views.MaterialNumberPicker;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -44,9 +45,10 @@ import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsActivity;
+import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.tools.FileUtils;
 
-public class BackupSettingsFragment extends PreferenceFragment {
+public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings> {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +57,7 @@ public class BackupSettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.settings_backup);
 
 
-        final CheckBoxPreference importDefaultList = (CheckBoxPreference)
+        final SwitchPreference importDefaultList = (SwitchPreference)
                 findPreference("importDefaultList");
         final Optional<ListMirakel> list = MirakelModelPreferences
                                            .getImportDefaultList();
@@ -220,8 +222,7 @@ public class BackupSettingsFragment extends PreferenceFragment {
                                     .getAutoBackupInterval();
                 final int max = 31;
                 final int min = 0;
-                final NumberPicker numberPicker = new NumberPicker(
-                    getActivity());
+                final NumberPicker numberPicker = new MaterialNumberPicker(getActivity());
                 numberPicker.setMaxValue(max);
                 numberPicker.setMinValue(min);
                 numberPicker.setWrapSelectorWheel(false);
@@ -249,5 +250,11 @@ public class BackupSettingsFragment extends PreferenceFragment {
                 return false;
             }
         });
+    }
+
+    @NonNull
+    @Override
+    public Settings getItem() {
+        return Settings.BACKUP;
     }
 }

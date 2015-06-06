@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.settings.model_settings.account;
@@ -25,9 +25,9 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
 
@@ -36,7 +36,6 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
-
 import de.azapps.mirakel.sync.taskwarrior.services.SyncAdapter;
 import de.azapps.tools.Log;
 
@@ -56,6 +55,16 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
     }
 
     @Override
+    protected boolean hasMenu() {
+        return true;
+    }
+
+    @Override
+    protected boolean isFabVisible() {
+        return false;
+    }
+
+    @Override
     protected void setUp() {
         final AccountManager accountManager = AccountManager.get(getActivity());
         final AccountMirakel accountMirakel = mItem;
@@ -63,9 +72,9 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
         // Preference Fields
         final Preference syncUsername = findPreference("syncUsername");
         final EditTextPreference syncServer = (EditTextPreference) findPreference("syncServer");
-        final CheckBoxPreference syncUse = (CheckBoxPreference) findPreference("syncUse");
+        final SwitchPreference syncUse = (SwitchPreference) findPreference("syncUse");
         final Preference syncType = findPreference("sync_type");
-        final CheckBoxPreference defaultAccount = (CheckBoxPreference) findPreference("defaultAccount");
+        final SwitchPreference defaultAccount = (SwitchPreference) findPreference("defaultAccount");
         final Preference syncInterval = findPreference("syncFrequency");
         // Set Preferences
         syncUsername.setEnabled(false);
@@ -230,6 +239,8 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
             syncInterval.setEnabled(true);
         }
     }
+
+
 
 
 }

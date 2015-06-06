@@ -3,57 +3,50 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
-  ~ Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
   ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     any later version.
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
   ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
   ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:dslv="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <com.mobeta.android.dslv.DragSortListView
+    <de.azapps.mirakel.settings.custom_views.SwipeLinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/speciallist_items"
         android:layout_width="match_parent"
+        android:orientation="vertical"
         android:minHeight="80dp"
         android:layout_height="0dp"
-        dslv:drag_enabled="true"
-        dslv:remove_enabled="true"
-        dslv:remove_mode="flingRemove"
-        dslv:fling_handle_id="@id/remove_handle"
-        dslv:float_alpha="0.25"
-        dslv:drag_handle_id="@+id/row_taskfragment_settings_drag"
-        android:descendantFocusability="beforeDescendants"
-        android:layout_below="@+id/active_speciallist"
-        android:layout_alignParentStart="true"
-        android:layout_weight="1"/>
-    <LinearLayout
-        android:orientation="vertical"
-        style="?android:attr/buttonBarStyle"
-        android:divider="?android:attr/dividerVertical"
-        android:showDividers="beginning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button style="?android:buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:text="@string/add_condition"
-                android:id="@+id/speciallist_add_condition"
-                android:drawableStart="@android:drawable/ic_menu_add"
-                android:background="@android:color/transparent"/>
-    </LinearLayout>
-
-</LinearLayout>
+        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/speciallist_add_condition"
+            style="?android:attr/buttonBarStyle"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/speciallist_add_condition_image"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_plus_white_24dp"
+                />
+            <Button style="?android:buttonBarButtonStyle"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:text="@string/add_condition"
+                    android:id="@+id/speciallist_add_condition_button"
+                    android:background="@android:color/transparent"/>
+        </LinearLayout>
+    </de.azapps.mirakel.settings.custom_views.SwipeLinearLayout>

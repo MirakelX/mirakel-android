@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Mirakel is an Android App for Managing your ToDo-Lists
-  
-  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
-  
-      This program is free software: you can redistribute it and/or modify
-      it under the terms of the GNU General Public License as published by
-      the Free Software Foundation, either version 3 of the License, or
-      any later version.
-  
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
-  
-      You should have received a copy of the GNU General Public License
-      along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/sync_title" >
+                  android:title="@string/sync_title">
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="syncUse"
-        android:title="@string/sync_use" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="defaultAccount"
-        android:title="@string/sync_defaultAccount" />
+    <PreferenceCategory android:title="@string/general">
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
+            android:defaultValue="false"
+            android:key="syncUse"
+            android:title="@string/sync_use"/>
+        <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
+            android:defaultValue="false"
+            android:key="defaultAccount"
+            android:title="@string/sync_defaultAccount"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/account_informations">
+        <Preference
+            android:enabled="false"
+            android:key="sync_type"
+            android:title="@string/type"/>
 
-    <Preference
-        android:enabled="false"
-        android:key="sync_type"
-        android:title="@string/type" />
-
-    <EditTextPreference
-        android:inputType="textUri"
-        android:key="syncServer"
-        android:summary="@string/sync_server_summary"
-        android:title="@string/sync_server" />
-    <EditTextPreference
-        android:inputType="text"
-        android:key="syncUsername"
-        android:summary="@string/sync_user_summary"
-        android:title="@string/sync_user" />
-    <!--
-         <EditTextPreference
-        android:inputType="textPassword"
-        android:key="syncPassword"
-        android:summary="@string/sync_password_summary"
-        android:title="@string/sync_password" />
-    -->
-
-    <Preference
-        android:key="syncFrequency"
-        android:summary="@string/sync_frequency_summary"
-        android:title="@string/sync_frequency" />
+        <EditTextPreference
+            android:inputType="textUri"
+            android:key="syncServer"
+            android:summary="@string/sync_server_summary"
+            android:title="@string/sync_server"/>
+        <EditTextPreference
+            android:inputType="text"
+            android:key="syncUsername"
+            android:summary="@string/sync_user_summary"
+            android:title="@string/sync_user"/>
+        <!--
+             <EditTextPreference
+            android:inputType="textPassword"
+            android:key="syncPassword"
+            android:summary="@string/sync_password_summary"
+            android:title="@string/sync_password" />
+        -->
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_misc">
+        <Preference
+            android:key="syncFrequency"
+            android:summary="@string/sync_frequency_summary"
+            android:title="@string/sync_frequency"/>
+    </PreferenceCategory>
 
 </PreferenceScreen>

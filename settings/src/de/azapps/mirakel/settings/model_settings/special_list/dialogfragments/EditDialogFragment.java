@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.settings.model_settings.special_list.dialogfragments;
@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -39,6 +40,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsBooleanProperty;
@@ -69,7 +71,6 @@ import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.ed
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.StringPropertyFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.SubtaskPropertyFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.editfragments.TagPropertyFragment;
-import de.azapps.mirakel.settings.model_settings.special_list.helper.SpecialListsConditionAdapter;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.of;
@@ -112,7 +113,7 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     @NonNull
     private SpecialListsBaseProperty property;
     @NonNull
-    private ArrayList<Integer> backStack;
+    private ArrayList<Integer> backStack = new ArrayList<>();
 
 
     public static EditDialogFragment newInstance(@NonNull final SpecialList list,
@@ -137,6 +138,18 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
         mList = getArguments().getParcelable(LIST_KEY);
         property = getArguments().getParcelable(PROPERTY_KEY);
         backStack = getArguments().getIntegerArrayList(BACK_STACK_KEY);
+    }
+
+    @Override
+    public int getTheme() {
+        return ThemeManager.getDialogTheme();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                                          WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
     /**
@@ -285,10 +298,14 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
             @Override
             public void onTreeExists(final int position,
                                      @NonNull final SpecialListsConjunctionList currentProperty) {
-
-                if (backStack.get(position) != SpecialListsConditionAdapter.NEW_PROPERTY) {
+                if (position >= backStack.size()) {
+                    return;
+                }
+                if (backStack.get(position) != ConjunctionFragment.NEW_PROPERTY) {
                     if (backStack.get(position) < currentProperty.getChilds().size()) {
                         currentProperty.getChilds().set(backStack.get(position), property);
+                    } else {
+                        currentProperty.addChild(property);
                     }
                 } else {
                     currentProperty.getChilds().add(property);
@@ -323,10 +340,10 @@ public class EditDialogFragment extends DialogFragment implements Spinner.OnItem
     }
 
     public interface WorkOnTree {
-        public abstract void onTreeExists(final int position,
-                                          @NonNull final SpecialListsConjunctionList currentProperty);
+        void onTreeExists(final int position,
+                          @NonNull final SpecialListsConjunctionList currentProperty);
         @NonNull
-        public abstract Optional<SpecialListsBaseProperty> onTreeNotExists();
+        Optional<SpecialListsBaseProperty> onTreeNotExists();
     }
 
     @NonNull

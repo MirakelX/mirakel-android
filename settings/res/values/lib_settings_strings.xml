@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Mirakel is an Android App for Managing your ToDo-Lists
-  
-  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
-  
-      This program is free software: you can redistribute it and/or modify
-      it under the terms of the GNU General Public License as published by
-      the Free Software Foundation, either version 3 of the License, or
-      any later version.
-  
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
-  
-      You should have received a copy of the GNU General Public License
-      along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools"  tools:ignore="MissingTranslation">
 
     <!-- Sync -->
@@ -36,6 +36,7 @@
     <string name="sync_frequency">Frequency</string>
     <string name="sync_frequency_summary">Sync every %s min</string>
     <string name="sync_frequency_summary_man">Sync manually only</string>
+    <string name="account_informations">Information</string>
 
     <string-array name="sync_types">
         <item>CalDAV sync</item>
@@ -87,16 +88,12 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="notifications_list_open">Open List</string>
     <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
-    <string name="notifications_big">Show big notifications</string>
-    <string name="notifications_zero_show">Hide notification if empty</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
     <string name="reminders_persistent_summary">Make it impossible to close the reminder</string>
 
     <!-- startup -->
     <string name="startup_title">App Start</string>
-    <string name="startup_show_lists">Show all lists</string>
-    <string name="startup_show_lists_summary">Show all lists on startup</string>
     <string name="startup_list">Select Startup List</string>
     <string name="startup_list_summary">Show tasks of \"%s\"</string>
 
@@ -124,8 +121,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>
     <string name="settings_help">Help</string>
-    <string name="get_dashclock">Get Mirakel-Dashclock</string>
-    <string name="get_dashclock_summary">The Mirakel-Extension for Dashclock</string>
+    <string name="get_dashclock">Get Mirakel Dashclock</string>
+    <string name="get_dashclock_summary">Get the Mirakel extension for Dashclock</string>
 
     <!-- Astrid -->
     <string name="import_astrid_click">Import from Astrid</string>
@@ -145,42 +142,22 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="import_wunderlist_howto">Howto import from Wunderlist</string>
     <string name="import_wunderlist_howto_text">The Android-app of Wunderlist does not support a backup functionality.\n\n So you have to login in the web-app. Go to Preferences → Account → Create Backup → (wait) → Click to download. Copy this file to your device and then come back.</string>
     <!-- GUI -->
-    <string name="highlightSelected_summary">Highlight lists/tasks when you click on them</string>
-    <string name="highlightSelected">Highlight selected</string>
-    <string name="settings_date_format_relative">Show relative dates</string>
-    <string name="settings_date_format_relative_summary">For example "tomorrow" instead of the real date</string>
     <string name="showDone">Show done tasks</string>
-    <string name="dark_theme">Dark theme</string>
-    <string name="kill_button">Kill button</string>
-    <string name="kill_app">Close app</string>
-    <string name="kill_sure">Are you really sure???</string>
-    <string name="kill_sure_message">When you close the app, you do not get any reminders! Please consider only disabling the notification (or make it non-persistent, so you can remove it.)</string>
     <string name="ui_settings_title">User Interface</string>
-    <string name="hide_keyboard">Hide keyboard</string>
-    <string name="hide_keyboard_summary">Hide keyboard when new task is being created</string>
     <string name="undo_number">Number of changes saved</string>
     <string name="undo_number_summary">Undo %s changes</string>
     <string name="settings_semantic">Task templates</string>
     <string name="semantic_new_task">New task template</string>
     <string name="semantic_new_task_config_summary">Configure the conditions for creating new tasks</string>
     <string name="semantic_new_task_config">Configure task templates</string>
-    <string name="swipeBehavior_title">Switch on swipe to touched Task</string>
-    <string name="swipeBehavior_summary">Switch to Task which is touched or switch to last selected task</string>
-    <string name="lock_drawer_in_task_fragment_summary">So you don\'t open it accidentally</string>
-    <string name="lock_drawer_in_task_fragment">Lock List-view in the Task details</string>
-    <string name="useTabletLayout">Use TabletLayout</string>
+    <string name="useTabletLayout">Use Tablet Layout</string>
     <string name="general">General</string>
-    <string name="tasks_fragment">Tasks overview</string>
-    <string name="task_fragment">Task details</string>
-    <string name="do_not_touch">Do not touch</string>
-    <string name="list_fragment">List overview</string>
-    <string name="show_account_name">Show account name</string>
 
     <string-array name="tablet_options">
         <item>never</item>
         <item>landscape</item>
         <item>portrait</item>
-        <item>portrait &amp; landscape</item>
+        <item>portrait and landscape</item>
     </string-array>
 
     <!-- Language -->
@@ -188,41 +165,39 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
 
     <string-array name="language_values" translatable="false">
         <item>Default</item>
-        <item>English</item>
-        <item>Deutsch</item>
-        <item>Français</item>
-        <item>Русский</item>
-        <item>Español</item>
-        <item>Slovenščina</item>
-        <item>Norsk</item>
+        <item>български</item>
         <item>čeština</item>
-        <item>العربية</item>
-        <item>Portuguese</item>
+        <item>Deutsch</item>
+        <item>English</item>
+        <item>Español</item>
+        <item>Euskal</item>
+        <item>Français</item>
         <item>Italiano</item>
-        <item>Български</item>
-        <item>Polskie</item>
         <item>Nederlands</item>
-        <!--
-        <item>Catalan</item>
-        <item>Polish</item>
-        -->
+        <item>Polski</item>
+        <item>Português</item>
+        <item>Русский</item>
+        <item>Slovenščina</item>
+        <item>العربية</item>
+        <item>日本人</item>
     </string-array>
     <string-array name="language_keys" translatable="false">
         <item>-1</item>
-        <item>en</item>
-        <item>de</item>
-        <item>fr</item>
-        <item>ru</item>
-        <item>es</item>
-        <item>sl</item>
-        <item>no</item>
-        <item>cs</item>
-        <item>ar</item>
-        <item>pt</item>
-        <item>it</item>
         <item>bg</item>
-        <item>pl</item>
+        <item>cs</item>
+        <item>de</item>
+        <item>en</item>
+        <item>es</item>
+        <item>eu</item>
+        <item>fr</item>
+        <item>it</item>
         <item>nl</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>ru</item>
+        <item>sl</item>
+        <item>ar</item>
+        <item>ja</item>
     </string-array>
 
     <!-- Delete done -->
@@ -238,12 +213,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="register">Register</string>
     <string name="auto_backup_interval">Auto backup interval</string>
     <string name="auto_backup_interval_summary">Backup the database every %s days</string>
-
-    <!-- Colors -->
-    <string name="preferences_colorize">Colors</string>
-    <string name="preferences_colorize_tasks">Colorize tasks</string>
-    <string name="preferences_colorize_tasks_everywhere">Colorize tasks everywhere</string>
-    <string name="preferences_colorize_tasks_everywhere_summary">…or only in the meta lists?</string>
 
     <!-- Semantics -->
     <string name="settings_semantics_title">Configure task templates</string>
@@ -297,24 +266,20 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="settings_subtask_add_to_same_list">Add Subtask to the list of the task</string>
     <string name="settings_subtask_add_to_same_list_summary">Or select a default list, where the subtask will be added</string>
     <string name="settings_subtask_add_to_list_summary">Add subtask to %s</string>
-    <string name="settings_use_btn_speak">Show the speech recognition button</string>
-    <string name="settings_use_btn_audio">Show the record audio button</string>
-    <string name="settings_use_btn_camera">Show the camera button</string>
     <string name="preferences_colorize_subtasks">Colorize subtasks?</string>
     <string name="settings_tasks_title">Tasks</string>
-    <string name="settings_task_fragment">Task Overview settings</string>
 
     <!-- Dev Settings -->
     <string name="settings_dev">Development Settings</string>
     <string name="settings_dev_sync">Sync</string>
-    <string name="settings_dev_dump_tw_summary">Dump the received text to /sdcard/mirakel/</string>
-    <string name="settings_dev_dump_tw">Dump received TW-Messages</string>
+    <string name="settings_dev_dump_tw_summary">Safe the received text in /sdcard/mirakel/</string>
+    <string name="settings_dev_dump_tw">Store received sync messages</string>
     <string name="enable">enabling</string>
     <string name="disable">disabling</string>
     <string name="enabled">enabled</string>
     <string name="disabled">disabled</string>
     <string name="change_dev_mode">You have %s the development settings!</string>
-    <string name="enableDebugLog">Enable Debug-Logcat?</string>
+    <string name="enableDebugLog">Enable debug Logcat?</string>
     <string name="action_contact">Contact / report bug</string>
     <string name="action_contact_summary">Write us an e-mail!</string>
     <string name="title_donations">Donate</string>
@@ -322,7 +287,7 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="action_credits">Credits</string>
     <string name="action_credits_summary">About us</string>
     <string name="title_activity_credits">Credits and about</string>
-    <string name="credits_github_description">Fork us on github</string>
+    <string name="credits_github_description">Fork us on GitHub</string>
     <string name="credits_googleplus_description">Join our G+ community</string>
     <string name="credits_text_head">
 <![CDATA[
@@ -346,9 +311,9 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="demo_drop_db">Reset demo database</string>
     <string name="write_logs_to_file">Write logs to file</string>
 
-    <string name="alert_caldav"><![CDATA[The CalDAV sync is not 100%% stable. Please try it carefully and report bugs!]]></string>
+    <string name="alert_caldav"><![CDATA[The CalDAV sync is buggy and we do not have the time to support CalDAV anymore. Please backup your data before proceeding.]]></string>
     <string name="alert_caldav_title">Informations for CalDAV</string>
-    <string name="alert_taskwarrior"><![CDATA[The taskwarrior sync seems to work but please make a backup of your data! Please report issues and bugs so we can fix them!]]></string>
+    <string name="alert_taskwarrior"><![CDATA[The Taskwarrior sync is buggy and we do not have the time to support Taskwarrior anymore. Please backup your data before proceeding.]]></string>
     <string name="alert_taskwarrior_title">Informations for Taskwarrior</string>
 
     <string name="special_list_where_subtask_title_text">Subtasks</string>
@@ -407,4 +372,11 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="add_condition">Add condition</string>
     <string name="undo_taskui_change">Undo remove of %s</string>
     <string name="due_dialog_negated">Not after</string>
+    <string name="settings_advanced">Advanced</string>
+    <string name="delete_condition">Delete Condition</string>
+    <string name="delete_semantic">Delete task template</string>
+    <string name="delete_special_lists">Delete meta list</string>
+
+    <string name="settings_widget_title">Widget Preferences</string>
+    <string name="version_string">Version: %1$s build on %2$s</string>
 </resources>

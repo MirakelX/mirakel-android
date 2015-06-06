@@ -1,8 +1,29 @@
+/*******************************************************************************
+ * Mirakel is an Android App for managing your ToDo-Lists
+ *
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+ *
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
+ *
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
+ *
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package de.azapps.mirakel.settings.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -14,8 +35,10 @@ import android.widget.TextView;
 
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.custom_views.Settings;
+import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 
-public class CreditsFragment extends Fragment {
+public class CreditsFragment extends Fragment implements IDetailFragment<Settings> {
     private static final String[][] LIBRARIES = {
         { "Gson", "Apache 2.0", "https://code.google.com/p/google-gson/" },
         { "Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net" },
@@ -64,6 +87,9 @@ public class CreditsFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
+        }
         final View rootView = inflater.inflate(R.layout.fragment_credits, null);
         final TextView creditTextHead = (TextView) rootView.findViewById(R.id.credits_text_head);
         creditTextHead.setText(Html
@@ -119,4 +145,9 @@ public class CreditsFragment extends Fragment {
         return rootView;
     }
 
+    @NonNull
+    @Override
+    public Settings getItem() {
+        return Settings.CREDITS;
+    }
 }

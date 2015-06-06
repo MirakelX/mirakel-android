@@ -1,33 +1,34 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- * Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package de.azapps.mirakel.settings.model_settings.generic_list;
 
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
+import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 
-public abstract class GenericModelDetailFragment<T extends ModelBase> extends PreferenceFragment
-    implements IDetailFragment<T> {
+public abstract class GenericModelDetailFragment<T extends IGenericElementInterface> extends
+    MirakelPreferencesFragment<T> {
 
     protected static final int NO_PREFERENCES = -1;
     /**
@@ -58,21 +59,18 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         if (getArguments().containsKey(ARG_ITEM)) {
             mItem = getArguments().getParcelable(ARG_ITEM);
         } else {
             // Load the dummy content
             mItem = getDummyItem();
         }
-        if ((getActivity() != null) && (getActivity().getActionBar() != null)) {
-            getActivity().getActionBar().setTitle(mItem.getName());
-        }
+        super.onCreate(savedInstanceState);
         final int preferencesResource = getResourceId();
         if (preferencesResource != NO_PREFERENCES) {
             addPreferencesFromResource(getResourceId());
             setUp();
+
         }
     }
 
@@ -81,6 +79,12 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
     public void onPause() {
         super.onPause();
         mItem.save();
+    }
+
+    protected void updateList() {
+        if (MirakelCommonPreferences.isTablet() && (getActivity() instanceof GenericModelListActivity)) {
+            ((GenericModelListActivity) getActivity()).updateList();
+        }
     }
 
     @NonNull
@@ -96,4 +100,22 @@ public abstract class GenericModelDetailFragment<T extends ModelBase> extends Pr
         }
     }
 
+    @Override
+    protected void onFABClicked() {
+        super.onFABClicked();
+        if (mItem != null) {
+            mItem.destroy();
+            if (getActivity() instanceof GenericModelDetailActivity) {
+                getActivity().setResult(GenericModelDetailActivity.NEED_UPDATE, null);
+                getActivity().finish();
+            }
+            updateList();
+        }
+    }
+
+
+    @Override
+    protected void handleDelete() {
+        mItem.destroy();
+    }
 }
