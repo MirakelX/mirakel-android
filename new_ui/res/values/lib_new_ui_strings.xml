@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<resources>
+
+    <string name="title_activity_mirakel">MirakelActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="list_title">Lists</string>
+    <string name="progress_header">Progress:</string>
+    <string name="notes">Notes</string>
+    <string name="task_list_header">List:</string>
+    <string name="task_due_header">Due:</string>
+    <string name="task_reminder_header">Reminder:</string>
+    <string name="task_add_more">Add more</string>
+    <string name="task_button_done">DONE</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="save">Save</string>
+    <string name="task_move_to">Move task to</string>
+    <string name="task_tags">Tags:</string>
+    <string name="subtask_add">Add subtask…</string>
+    <string name="task_new">New task</string>
+    <plurals name="list_multiselect_title">
+        <item quantity="one">1 list selected</item>
+        <item quantity="other">%d lists selected</item>
+    </plurals>
+    <plurals name="list_multiselect_deleted">
+        <item quantity="one">1 list deleted</item>
+        <item quantity="other">%d lists deleted</item>
+    </plurals>
+    <plurals name="task_multiselect_title">
+        <item quantity="one">1 task selected</item>
+        <item quantity="other">%d tasks selected</item>
+    </plurals>
+    <plurals name="task_multiselect_deleted">
+        <item quantity="one">1 task deleted</item>
+        <item quantity="other">%d tasks deleted</item>
+    </plurals>
+    <string name="list_name">List name</string>
+    <string name="list_account">List account</string>
+    <string name="list_edit_multiple_names">Different names</string>
+    <string name="list_edit_title">Edit list</string>
+    <string name="can_not_edit_list">Can not edit CalDAV lists</string>
+    <string name="menu_set_tags">Set tags</string>
+
+    <string name="add_tag_view_string">Tag</string>
+    <string name="add_note_view_string">Note</string>
+    <string name="add_subtask_view_string">Subtask</string>
+    <string name="add_files_view_string">File</string>
+    <string name="add_tag">Add a tag</string>
+    <string name="delete_files">Delete files</string>
+
+    <string-array name="add_file_options">
+        <item>Photo</item>
+        <item>Audio</item>
+        <item>File</item>
+    </string-array>
+
+    <string name="add_file">Add File</string>
+
+    <string-array name="file_options_play">
+        <item>Play loudly</item>
+        <item>Play quietly</item>
+        <item>Open file</item>
+    </string-array>
+
+    <string name="priority_2">Very important</string>
+    <string name="priority_1">Important</string>
+    <string name="priority_0">Normal</string>
+    <string name="priority_m1">Unimportant</string>
+    <string name="priority_m2">Very unimportant</string>
+
+    <string name="hide_done_tasks">Hide done tasks</string>
+    <string name="show_done_tasks">Show done tasks</string>
+
+    <string name="task_due_recurrence_header">Recurrence:</string>
+    <string name="none_recurring">Not recurring</string>
+
+</resources>

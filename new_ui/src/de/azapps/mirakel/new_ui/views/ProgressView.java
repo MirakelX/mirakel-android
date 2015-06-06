@@ -1,64 +1,78 @@
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
- *  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+ *   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
  *
- *      This program is free software: you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
- *      the Free Software Foundation, either version 3 of the License, or
- *      any later version.
+ *       This program is free software: you can redistribute it and/or modify
+ *       it under the terms of the GNU General Public License as published by
+ *       the Free Software Foundation, either version 3 of the License, or
+ *       any later version.
  *
- *      This program is distributed in the hope that it will be useful,
- *      but WITHOUT ANY WARRANTY; without even the implied warranty of
- *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
+ *       This program is distributed in the hope that it will be useful,
+ *       but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *       GNU General Public License for more details.
  *
- *      You should have received a copy of the GNU General Public License
- *      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *       You should have received a copy of the GNU General Public License
+ *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
-import de.azapps.mirakel.new_ui.R;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 
 public class ProgressView extends LinearLayout {
     private int progress;
 
-    private SeekBar progressBar;
+    @InjectView(R.id.progress_bar)
+    SeekBar progressBar;
+    @InjectView(R.id.progress_text)
+    TextView progressText;
 
-    public ProgressView(Context context) {
+    public ProgressView(final Context context) {
         this(context, null);
     }
 
-    public ProgressView(Context context, AttributeSet attrs) {
+    public ProgressView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ProgressView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ProgressView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_progress, this);
-        progressBar = (SeekBar) findViewById(R.id.progress_bar);
+        ButterKnife.inject(this, this);
+        final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_track_changes_white_18dp,
+                              ThemeManager.getColor(R.attr.colorTextGrey));
+        progressText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     public void setOnProgressChangeListener(final OptionalUtils.Procedure<Integer>
                                             onProgressChangeListener) {
         progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
                 // Do nothing
             }
+
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(final SeekBar seekBar) {
                 // Do nothing
             }
+
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(final SeekBar seekBar) {
                 onProgressChangeListener.apply(seekBar.getProgress());
             }
         });
@@ -74,7 +88,7 @@ public class ProgressView extends LinearLayout {
         return progress;
     }
 
-    public void setProgress(int progress) {
+    public void setProgress(final int progress) {
         this.progress = progress;
         rebuildLayout();
     }

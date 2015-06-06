@@ -3,20 +3,20 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
-  ~  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
   ~
-  ~      This program is free software: you can redistribute it and/or modify
-  ~      it under the terms of the GNU General Public License as published by
-  ~      the Free Software Foundation, either version 3 of the License, or
-  ~      any later version.
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
   ~
-  ~      This program is distributed in the hope that it will be useful,
-  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~      GNU General Public License for more details.
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
   ~
-  ~      You should have received a copy of the GNU General Public License
-  ~      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
@@ -31,14 +31,29 @@
     </LinearLayout>
 
 
-    <Button
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/subtask_add"
-        android:id="@+id/task_subtasks_add"
-        android:drawableStart="@android:drawable/ic_menu_add"
-        style="?android:attr/borderlessButtonStyle"
-        android:drawablePadding="@dimen/padding_drawable"
-        android:textColor="@color/mirakel_light_grey"
-        android:gravity="start|center_vertical"/>
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/task_subtasks_add"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/padding_drawable"
+            android:drawableStart="@drawable/ic_plus_grey600_18dp"
+            android:gravity="start|center_vertical"
+            android:text="@string/subtask_add"
+            android:textAppearance="@style/TextAppearance.Regular"
+            android:textColor="?colorTextGrey" />
+
+        <EditText
+            android:id="@+id/task_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:hint="@string/subtask_add"
+            android:singleLine="true" />
+    </ViewSwitcher>
 </merge>

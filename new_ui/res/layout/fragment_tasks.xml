@@ -1,42 +1,112 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
-  ~  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
   ~
-  ~      This program is free software: you can redistribute it and/or modify
-  ~      it under the terms of the GNU General Public License as published by
-  ~      the Free Software Foundation, either version 3 of the License, or
-  ~      any later version.
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
   ~
-  ~      This program is distributed in the hope that it will be useful,
-  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~      GNU General Public License for more details.
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
   ~
-  ~      You should have received a copy of the GNU General Public License
-  ~      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="de.azapps.mirakel.new_ui.fragments.TasksFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/task_listview"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="0dp"
-        android:divider="@color/transparent"/>
+        android:layout_height="match_parent">
 
-    <com.faizmalkani.floatingactionbutton.FloatingActionButton
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/task_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="0dp"
+            android:divider="@color/transparent"
+            android:scrollbars="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/tasks_multiselect_menu"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            android:background="?colorCAB">
+
+            <ImageButton
+                android:id="@+id/menu_delete"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:title="@string/menu_delete_task"
+                android:contentDescription="@string/menu_delete_task"
+                android:src="@drawable/ic_delete_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/menu_move_task"
+                android:background="?android:attr/selectableItemBackground"
+                android:title="@string/menu_move_task"
+                android:contentDescription="@string/menu_move_task"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_folder_download_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/menu_set_due"
+                android:background="?android:attr/selectableItemBackground"
+                android:title="@string/menu_set_due"
+                android:contentDescription="@string/menu_set_due"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_calendar_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/menu_set_priority"
+                android:background="?android:attr/selectableItemBackground"
+                android:title="@string/menu_set_priority"
+                android:contentDescription="@string/menu_set_priority"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_alert_circle_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/menu_set_tags"
+                android:title="@string/menu_set_tags"
+                android:contentDescription="@string/menu_set_tags"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_local_offer_white_24dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabbutton"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_plus_white_24dp"
+        app:borderWidth="0dp"
+        />
 
     <!--
     Your layouts here. Do not put anything below the FAB layout

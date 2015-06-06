@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:padding="@dimen/abc_dialog_padding_material"
+              android:layout_height="match_parent">
+    <de.azapps.mirakel.new_ui.views.AddTagView
+        android:id="@+id/add_tags_dialog"
+        android:hint="@string/add_tag"
+        android:singleLine="true"
+        android:enabled="false"
+        android:clickable="true"
+        android:dropDownHeight="192dp"
+        android:dropDownVerticalOffset="-244dp"
+        android:inputType="textNoSuggestions"
+        android:imeOptions="actionNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <requestFocus/>
+    </de.azapps.mirakel.new_ui.views.AddTagView>
+
+</FrameLayout>

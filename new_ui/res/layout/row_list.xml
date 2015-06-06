@@ -3,46 +3,83 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
-  ~  Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler.
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
   ~
-  ~      This program is free software: you can redistribute it and/or modify
-  ~      it under the terms of the GNU General Public License as published by
-  ~      the Free Software Foundation, either version 3 of the License, or
-  ~      any later version.
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
   ~
-  ~      This program is distributed in the hope that it will be useful,
-  ~      but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~      GNU General Public License for more details.
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
   ~
-  ~      You should have received a copy of the GNU General Public License
-  ~      along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:minHeight="40dp"
-    android:paddingStart="@dimen/padding_list_item"
-    android:paddingEnd="@dimen/padding_list_item">
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_switcher"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:measureAllChildren="false">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/list_name"
-        android:text="List"
-        android:layout_gravity="center_vertical"
-        android:textColor="@color/mirakel_light_grey"/>
+        android:minHeight="@dimen/clickable_item_size"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/padding_default"
+        android:paddingStart="@dimen/padding_default">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:id="@+id/list_count"
-        android:text="1"
-        android:layout_gravity="center_vertical"
-        android:textColor="@color/mirakel_light_grey"/>
-</LinearLayout>
+        <ImageView
+            android:id="@+id/row_list_icon"
+            android:layout_width="@dimen/small_icon_size"
+            android:layout_height="@dimen/small_icon_size"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/padding_default"
+            android:contentDescription="@null"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/list_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="List"
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?colorTextGrey" />
+
+        <TextView
+            android:id="@+id/list_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0"
+            android:text="1"
+            android:textAppearance="@style/TextAppearance.Light.Small"
+            android:textColor="?colorTextGrey" />
+
+        <ImageView
+            android:id="@+id/row_list_drag"
+            android:layout_width="@dimen/small_icon_size"
+            android:layout_height="@dimen/small_icon_size"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/padding_default"
+            android:layout_weight="0"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_reorder_grey600_24dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp">
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="center_vertical"
+            android:background="?colorLightGrey" />
+    </LinearLayout>
+</ViewSwitcher>
