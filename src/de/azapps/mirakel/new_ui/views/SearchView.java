@@ -130,6 +130,14 @@ public class SearchView extends LinearLayout {
         });
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (adapter != null) {
+            adapter.changeCursor(null);
+        }
+    }
+
     public void setSearchCallback(SearchCallback searchCallback) {
         this.searchCallback = searchCallback;
     }
