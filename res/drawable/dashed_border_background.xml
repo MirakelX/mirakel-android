@@ -23,7 +23,7 @@
         android:dashGap="8dp"
         android:dashWidth="8dp"
         android:width="4dp"
-        android:color="?attr/colorTextGrey"/>
+        android:color="@color/colorTextGrey"/>
     <padding
         android:bottom="5dp"
         android:left="5dp"

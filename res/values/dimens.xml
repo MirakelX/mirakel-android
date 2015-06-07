@@ -42,5 +42,6 @@
     <dimen name="fft_view_hight">5dp</dimen>
 
     <dimen name="subtitle_font_size">18sp</dimen>
+    <dimen name="taskfragment_toolbar_hight">48dp</dimen>
 
 </resources>
