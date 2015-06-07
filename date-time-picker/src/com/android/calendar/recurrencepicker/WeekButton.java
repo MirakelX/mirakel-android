@@ -33,8 +33,7 @@ public class WeekButton extends android.widget.ToggleButton {
     }
 
     private void setTheme() {
-        setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.oval_filled,
-                              getContext().getTheme()));
+        setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.oval_filled));
         setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
     }
 
