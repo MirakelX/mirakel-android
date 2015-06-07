@@ -20,7 +20,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="de.azapps.mirakelandroid"
-          android:versionCode="75"
+          android:versionCode="76"
           android:versionName="3.0-beta1" >
 
     <uses-permission android:name="android.permission.INTERNET" />
