@@ -8,6 +8,8 @@ android:
     - build-tools-22.0.1
     - extra-android-support
     - android-22
+    - extra-google-m2repository
+    - extra-android-m2repository
       #    - sys-img-x86-android-19
 install:
     - sudo pip install git+https://github.com/purcell/airspeed.git
