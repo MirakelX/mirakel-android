@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
@@ -44,12 +45,12 @@
         <item name="colorLightGrey">#EAEAEA</item>
 
         <!-- Black 60% -->
-        <item name="colorTextGrey">#666666</item>
+        <item name="colorTextGrey">@color/colorTextGrey</item>
         <!-- Black 87% -->
         <item name="colorTextBlack">#de000000</item>
         <item name="colorTextWhite">#FFFFFF</item>
-        <item name="colorBackground">#E6E6E6</item>
-        <item name="colorTaskFragmentBackground">#F5F5F5</item>
+        <item name="colorBackground">@color/colorBackground</item>
+        <item name="colorTaskFragmentBackground">@color/colorTaskFragmentBackground</item>
         <item name="colorListsBackground">#FFFFFF</item>
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
@@ -67,14 +68,15 @@
         <item name="colorPrio0">#33B5E5</item>
         <item name="colorPrio1">#FFBB33</item>
         <item name="colorPrio2">#FF4444</item>
-        <item name="colorPriorityBackground">#808080</item>
+        <item name="colorPriorityBackground">@color/colorPriorityBackground</item>
 
         <item name="colorDivider">#e6e6e6</item>
 
         <!-- The CAB should overlay the normal ActionBar -->
-        <item name="android:windowActionModeOverlay">true</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">?colorCAB</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
         <item name="android:actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
         <item name="android:actionModeStyle">@style/ActionModeStyle</item>
     </style>
@@ -109,12 +111,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    -
 
     <style name="FlatButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textSize">@dimen/flatbutton_text_size</item>
-        <item name="android:stateListAnimator">@null</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:gravity">center</item>
         <item name="android:singleLine">true</item>
