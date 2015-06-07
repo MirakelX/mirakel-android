@@ -30,9 +30,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/task_tags"
-            android:textAppearance="@style/TextAppearance.Regular.Small"
-            android:drawablePadding="@dimen/padding_drawable"
             android:drawableStart="@drawable/ic_local_offer_white_18dp"
+            android:layout_marginEnd="2dp"
+            android:drawablePadding="@dimen/padding_drawable"
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?attr/colorTextGrey"
             android:id="@+id/task_tags_title"/>
 
         <de.azapps.mirakel.new_ui.views.AddTagView

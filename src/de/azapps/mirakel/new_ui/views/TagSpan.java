@@ -74,7 +74,7 @@ public class TagSpan extends ReplacementSpan {
     public void draw(final Canvas canvas, final CharSequence text, final int start, final int end,
                      final float x, final int top, final int y, final int bottom, final Paint paint) {
         final RectF rect = new RectF(x,  top, x + textLength + (2 * padding), bottom + scale(2.0F));
-        canvas.drawRoundRect(rect, scale(15.0F), scale(15.0F), paintBackground);
+        canvas.drawRoundRect(rect, scale(2.0F), scale(2.0F), paintBackground);
         canvas.drawText(this.text, x + padding, y, paintText);
     }
 
