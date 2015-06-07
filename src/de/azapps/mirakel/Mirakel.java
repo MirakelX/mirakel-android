@@ -41,6 +41,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.export_import.ExportImport;
+import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.new_ui.helper.AcraLog;
@@ -93,16 +94,18 @@ public class Mirakel extends Application {
         super.onCreate();
 
         init(this);
-        NotificationService.updateServices(this);
-        // And now, after the Database initialization!!! We init ACRA
         ACRA.init(this);
         ACRA.setLog(new AcraLog());
+        NotificationService.updateServices(this);
+
         // Stuff we can do in another thread
         final Mirakel that = this;
         new Thread (new Runnable () {
             @Override
             public void run () {
                 Looper.prepare();
+                DatabaseHelper.getDatabaseHelper(Mirakel.this);
+                ReminderAlarm.init(Mirakel.this);
                 // Notifications
                 if (!MirakelCommonPreferences.useNotifications()
                     && (startService(new Intent(that,
@@ -110,7 +113,7 @@ public class Mirakel extends Application {
                     stopService (new Intent (Mirakel.this,
                                              NotificationService.class));
                 }
-                ReminderAlarm.init(Mirakel.this);
+
                 // Auto Backup?
                 final Calendar nextBackup = MirakelCommonPreferences
                                             .getNextAutoBackup ();
