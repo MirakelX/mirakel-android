@@ -20,11 +20,9 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.common.base.Optional;
 
@@ -53,33 +51,21 @@ public class DatesView extends LinearLayout {
     private OnClickListener dueRecurrenceEditListener;
     @Nullable
     private OnClickListener reminderRecurrenceEditListener;
+
     @InjectView(R.id.dates_due)
-    TextView dueText;
-    @InjectView(R.id.dates_due_title)
-    TextView dueTitleText;
-    @InjectView(R.id.dates_list)
-    TextView listText;
-    @InjectView(R.id.dates_list_title)
-    TextView listTitleText;
-    @InjectView(R.id.dates_reminder)
-    TextView reminderText;
-    @InjectView(R.id.dates_reminder_title)
-    TextView reminderTitleText;
-
-    @InjectView(R.id.dates_due_recurrence_wrapper)
-    LinearLayout dueRecurrenceWrapper;
+    KeyValueView dueView;
     @InjectView(R.id.dates_due_recurrence)
-    TextView dueRecurenceText;
-    @InjectView(R.id.dates_due_recurrence_title)
-    TextView dueRecurrenceTitle;
+    KeyValueView dueRecurrenceView;
 
-    @InjectView(R.id.dates_reminder_recurrence_wrapper)
-    LinearLayout reminderRecurrenceWrapper;
+    @InjectView(R.id.dates_reminder)
+    KeyValueView reminderView;
     @InjectView(R.id.dates_reminder_recurrence)
-    TextView reminderRecurenceText;
-    @InjectView(R.id.dates_reminder_recurrence_title)
-    TextView reminderRecurrenceTitle;
+    KeyValueView reminderRecurrenceView;
 
+
+
+    @InjectView(R.id.dates_list)
+    KeyValueView listView;
 
     private Optional<Calendar> due = absent();
     private String listMirakel;
@@ -102,84 +88,68 @@ public class DatesView extends LinearLayout {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_dates, this);
         ButterKnife.inject(this, this);
-        final Drawable listIcon = ThemeManager.getColoredIcon(R.drawable.ic_list_white_18dp,
-                                  ThemeManager.getColor(R.attr.colorTextGrey));
-        listTitleText.setCompoundDrawablesWithIntrinsicBounds(listIcon, null, null, null);
+        dueView.setup(R.drawable.ic_calendar_white_18dp, context.getString(R.string.task_due_header));
+        dueRecurrenceView.setup(R.drawable.ic_history_white_18dp,
+                                context.getString(R.string.task_due_recurrence_header));
+
+        reminderView.setup(R.drawable.ic_alarm_white_18dp,
+                           context.getString(R.string.task_reminder_header));
+        reminderRecurrenceView.setup(R.drawable.ic_alarm_repeat_white_18dp,
+                                     context.getString(R.string.task_reminder_header));
+
+        listView.setup(R.drawable.ic_list_white_18dp, context.getString(R.string.task_list_header));
+        listView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
     }
 
     private void rebuildLayout() {
-        final int dueColor, reminderColor, dueRecurrenceColor, reminderRecurrencColor;
         // Set data
         if (isInEditMode()) {
-            dueText.setText("today");
-            reminderText.setText("today at 6 pm");
-            listText.setText("At home");
-            dueColor = ThemeManager.getColor(R.attr.colorDisabled);
-            reminderColor = ThemeManager.getColor(R.attr.colorDisabled);
-            dueRecurrenceColor = ThemeManager.getColor(R.attr.colorDisabled);
-            reminderRecurrencColor = ThemeManager.getColor(R.attr.colorDisabled);
+            dueView.setValue("today");
+            dueView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
+            dueRecurrenceView.setValue("today");
+            dueRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
+
+            reminderView.setValue("today at 6 pm");
+            reminderView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
+            reminderRecurrenceView.setValue("today at 6 pm");
+            reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
+            listView.setValue("At home");
         } else {
             if (due.isPresent()) {
-                dueText.setText(DateTimeHelper.formatDate(getContext(), due));
-                dueColor = TaskHelper.getTaskDueColor(due, isDone);
-                dueRecurrenceWrapper.setVisibility(VISIBLE);
+                dueView.setValue(DateTimeHelper.formatDate(getContext(), due));
+                dueView.setColor(TaskHelper.getTaskDueColor(due, isDone));
+                dueRecurrenceView.setVisibility(VISIBLE);
                 if (dueRecurrence.isPresent()) {
-                    dueRecurenceText.setText(dueRecurrence.get().generateDescription());
-                    dueRecurrenceColor = ThemeManager.getColor(R.attr.colorTextBlack);
+                    dueRecurrenceView.setValue(dueRecurrence.get().generateDescription());
+                    dueRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextBlack));
                 } else {
-                    dueRecurenceText.setText(R.string.none_recurring);
-                    dueRecurrenceColor = ThemeManager.getColor(R.attr.colorDisabled);
+                    dueRecurrenceView.setNoValue(getContext().getString(R.string.none_recurring));
+                    dueRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
                 }
             } else {
-                dueText.setText(getContext().getString(R.string.no_date));
-                dueColor = ThemeManager.getColor(R.attr.colorDisabled);
-                dueRecurrenceColor = dueColor;
-                dueRecurrenceWrapper.setVisibility(GONE);
+                dueView.setNoValue(getContext().getString(R.string.no_date));
+                dueView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
+                dueRecurrenceView.setVisibility(GONE);
             }
-            listText.setText(listMirakel);
+            listView.setValue(listMirakel);
             if (reminder.isPresent()) {
-                reminderText.setText(DateTimeHelper.formatReminder(getContext(), reminder.get()));
-                reminderColor = TaskHelper.getTaskDueColor(reminder, false);
-                reminderRecurrenceWrapper.setVisibility(VISIBLE);
+                reminderView.setValue(DateTimeHelper.formatReminder(getContext(), reminder.get()));
+                reminderView.setColor(TaskHelper.getTaskDueColor(reminder, false));
+                reminderRecurrenceView.setVisibility(VISIBLE);
                 if (reminderRecurrence.isPresent()) {
-                    reminderRecurenceText.setText(reminderRecurrence.get().generateDescription());
-                    reminderRecurrencColor = ThemeManager.getColor(R.attr.colorTextBlack);
+                    reminderRecurrenceView.setValue(reminderRecurrence.get().generateDescription());
+                    reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextBlack));
 
                 } else {
-                    reminderRecurenceText.setText(R.string.none_recurring);
-                    reminderRecurrencColor = ThemeManager.getColor(R.attr.colorDisabled);
+                    reminderRecurrenceView.setNoValue(getContext().getString(R.string.none_recurring));
+                    reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
                 }
             } else {
-                reminderText.setText(getContext().getString(R.string.no_reminder));
-                reminderColor = ThemeManager.getColor(R.attr.colorDisabled);
-                reminderRecurrencColor = reminderColor;
-                reminderRecurrenceWrapper.setVisibility(GONE);
+                reminderView.setNoValue(getContext().getString(R.string.no_reminder));
+                reminderView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
+                reminderRecurrenceView.setVisibility(GONE);
             }
         }
-        final Drawable dueIcon = ThemeManager.getColoredIcon(R.drawable.ic_calendar_white_18dp, dueColor);
-        dueTitleText.setCompoundDrawablesWithIntrinsicBounds(dueIcon, null, null, null);
-        dueTitleText.setTextColor(dueColor);
-        dueText.setTextColor(dueColor);
-
-        final Drawable dueRecurrence = ThemeManager.getColoredIcon(R.drawable.ic_history_white_18dp,
-                                       dueRecurrenceColor);
-        dueRecurrenceTitle.setCompoundDrawablesWithIntrinsicBounds(dueRecurrence, null, null, null);
-        dueRecurenceText.setTextColor(dueRecurrenceColor);
-        dueRecurrenceTitle.setTextColor(dueRecurrenceColor);
-
-        final Drawable reminderIcon = ThemeManager.getColoredIcon(R.drawable.ic_alarm_white_18dp,
-                                      reminderColor);
-        reminderTitleText.setCompoundDrawablesWithIntrinsicBounds(reminderIcon, null, null, null);
-        reminderTitleText.setTextColor(reminderColor);
-        reminderText.setTextColor(reminderColor);
-
-        final Drawable reminderRecurrenceIcon = ThemeManager.getColoredIcon(
-                R.drawable.ic_alarm_repeat_white_18dp, reminderRecurrencColor);
-        reminderRecurrenceTitle.setCompoundDrawablesWithIntrinsicBounds(reminderRecurrenceIcon, null, null,
-                null);
-        reminderRecurenceText.setTextColor(reminderRecurrencColor);
-        reminderRecurrenceTitle.setTextColor(reminderRecurrencColor);
-
         invalidate();
         requestLayout();
     }
@@ -207,38 +177,38 @@ public class DatesView extends LinearLayout {
         rebuildLayout();
     }
 
-    @OnClick(R.id.dates_due_wrapper)
+    @OnClick(R.id.dates_due)
     void onDueClick() {
         if (dueEditListener != null) {
-            dueEditListener.onClick(dueText);
+            dueEditListener.onClick(dueView);
         }
     }
 
-    @OnClick(R.id.list_wrapper)
-    void onListClick() {
-        if (listEditListener != null) {
-            listEditListener.onClick(listText);
-        }
-    }
-
-    @OnClick(R.id.reminder_wrapper)
-    void onReminderClick() {
-        if (reminderEditListener != null) {
-            reminderEditListener.onClick(reminderText);
-        }
-    }
-
-    @OnClick(R.id.dates_due_recurrence_wrapper)
+    @OnClick(R.id.dates_due_recurrence)
     void onDueRecurrenceClick() {
         if ((dueRecurrenceEditListener != null) && due.isPresent()) {
-            dueRecurrenceEditListener.onClick(dueRecurenceText);
+            dueRecurrenceEditListener.onClick(dueRecurrenceView);
         }
     }
 
-    @OnClick(R.id.dates_reminder_recurrence_wrapper)
+    @OnClick(R.id.dates_list)
+    void onListClick() {
+        if (listEditListener != null) {
+            listEditListener.onClick(listView);
+        }
+    }
+
+    @OnClick(R.id.dates_reminder)
+    void onReminderClick() {
+        if (reminderEditListener != null) {
+            reminderEditListener.onClick(reminderView);
+        }
+    }
+
+    @OnClick(R.id.dates_reminder_recurrence)
     void onReminderRecurrenceClick() {
         if ((reminderRecurrenceEditListener != null) && reminder.isPresent()) {
-            reminderRecurrenceEditListener.onClick(reminderRecurenceText);
+            reminderRecurrenceEditListener.onClick(reminderRecurrenceView);
         }
     }
 

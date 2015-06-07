@@ -24,13 +24,16 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.Regular.Small"
+        android:textAppearance="@style/TextAppearance.Regular"
+        android:textColor="?colorTextGrey"
         android:id="@+id/task_note_title"
         android:text="@string/notes" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Light"
+        android:textColor="?colorTextGrey"
         android:text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit ame"
         android:id="@+id/task_note_text" />
 

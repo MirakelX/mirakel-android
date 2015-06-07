@@ -105,7 +105,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="@dimen/clickable_item_size"
-            android:textColor="?android:colorAccent"
+            android:textColor="?colorAccent"
             android:text="show done tasks"
             android:background="?android:attr/selectableItemBackground"
             android:layout_gravity="center_horizontal"

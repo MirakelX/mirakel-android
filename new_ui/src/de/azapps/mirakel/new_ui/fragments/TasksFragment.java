@@ -112,6 +112,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
     public static final String TASKS_TO_DELETE = "tasks to delete";
     public static final String SHOULD_SHOW_DONE_TASKS = "should show done tasks";
+    private static final String SELECTED_ITEMS = "SELECTED_ITEMS";
 
     private TaskAdapter mAdapter;
     @InjectView(R.id.task_listview)
@@ -147,6 +148,13 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         return tasksFragment;
     }
 
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntegerArrayList(SELECTED_ITEMS, mAdapter.getSelectedPositions());
+    }
+
+
     public ListMirakelInterface getList() {
         return listMirakel;
     }
@@ -157,6 +165,14 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         mAdapter = new TaskAdapter(getActivity(), null, mListener, this, this);
         mListView.setAdapter(mAdapter);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (savedInstanceState != null) {
+            final List<Integer> oldSelected = savedInstanceState.getIntegerArrayList(SELECTED_ITEMS);
+            if ((oldSelected != null) && !oldSelected.isEmpty()) {
+                mAdapter.setSelectedItems(oldSelected);
+                ((MirakelActivity)getActivity()).moveFABUp((int) getResources().getDimension(
+                            R.dimen.taskfragment_toolbar_hight));
+            }
+        }
     }
 
 
@@ -628,7 +644,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                                           .getMenuInflater();
             inflater.inflate(R.menu.multiselect_tasks, menu);
             AnimationHelper.slideIn(getActivity(), multiselectMenu);
-            ((MirakelActivity) getActivity()).moveFABUp(multiselectMenu.getHeight());
+            ((MirakelActivity) getActivity()).moveFABUp((int) getResources().getDimension(
+                        R.dimen.taskfragment_toolbar_hight));
             ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.EMPTY);
 
 

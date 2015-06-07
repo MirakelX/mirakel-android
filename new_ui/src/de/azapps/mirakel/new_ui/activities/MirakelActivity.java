@@ -153,6 +153,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         initThirdParty();
     }
 
+
     private void initThirdParty() {
         // Show ChangeLog
         final Changelog cl = new Changelog(this);
@@ -449,6 +450,15 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                 actionBarViewHolder.actionbarTitle.setText(getTasksFragment().getList().getName(),
                         TextView.BufferType.SPANNABLE);
             }
+        }
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (actionBarViewHolder.actionbarSpinner != null) {
+            ((SimpleModelListAdapter<AccountMirakel>)
+             actionBarViewHolder.actionbarSpinner.getAdapter()).changeCursor(null);
         }
     }
 

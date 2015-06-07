@@ -38,7 +38,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/taskfragment_toolbar_hight"
             android:layout_alignParentBottom="true"
             android:id="@+id/tasks_multiselect_menu"
             android:orientation="horizontal"

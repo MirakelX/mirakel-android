@@ -235,7 +235,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     private void setupAddMore() {
-        hiddenViews = 3;
+        hiddenViews = 4;
         addMorePopup = new PopupMenu(getActivity(), addMoreButton);
         addMorePopup.inflate(R.menu.add_more_menu);
         final Menu m = addMorePopup.getMenu();

@@ -93,9 +93,12 @@ public class AutoCompleteAdapter extends CursorAdapter {
 
 
     @Override
-    public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+    public Cursor runQueryOnBackgroundThread(final CharSequence constraint) {
+        if (constraint == null) {
+            return super.runQueryOnBackgroundThread(null);
+        }
         final Cursor cursor = getCursor();
-        if (cursor != null && !cursor.isClosed()) {
+        if ((cursor != null) && !cursor.isClosed()) {
             getCursor().close();
         }
         return SearchObject.autocomplete(mContext, constraint.toString());
