@@ -29,6 +29,7 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.azapps.mirakel.model.IGenericElementInterface;
 
@@ -84,6 +85,21 @@ public abstract class
 
     public int getSelectedItemCount() {
         return selectedItems.size();
+    }
+
+    public void setSelectedItems(final @NonNull List<Integer> selected) {
+        selectedItems.clear();
+        for (final Integer i : selected) {
+            selectedItems.put(i, true);
+        }
+        setSelectMode(selectedItems.size() > 0);
+    }
+    public ArrayList<Integer> getSelectedPositions() {
+        final ArrayList<Integer> ret = new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            ret.add(selectedItems.keyAt(i));
+        }
+        return ret;
     }
 
     @NonNull
