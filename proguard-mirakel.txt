@@ -67,7 +67,7 @@
 #keep constructors of models
 
 -keepclasseswithmembers class *{
-    public <init>(android.database.Cursor);
+    public <init>(de.azapps.mirakel.model.query_builder.CursorGetter);
 }
 
 -keep public class de.azapps.mirakel.model.list.meta.** {
