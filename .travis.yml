@@ -7,7 +7,7 @@ android:
   components:
     - build-tools-22.0.1
     - extra-android-support
-      #    - android-19
+    - android-22
       #    - sys-img-x86-android-19
 install:
     - sudo pip install git+https://github.com/purcell/airspeed.git
