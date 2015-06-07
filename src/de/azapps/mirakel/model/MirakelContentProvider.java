@@ -165,10 +165,6 @@ public class MirakelContentProvider extends SQLiteContentProvider {
      */
     protected String getAccountType(Uri uri) {
         String accountType = uri.getQueryParameter(TaskContract.ACCOUNT_TYPE);
-        if (AccountMirakel.ACCOUNT_TYPE_DAVDROID.equals(accountType)) {
-            ErrorReporter.report(ErrorType.OLD_DAVDROID);
-            return null;
-        }
         return accountType;
     }
 
