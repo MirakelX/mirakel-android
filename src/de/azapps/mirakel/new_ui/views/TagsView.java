@@ -54,7 +54,7 @@ public class TagsView extends LinearLayout {
         ButterKnife.inject(this, this);
         final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_local_offer_white_18dp,
                               ThemeManager.getColor(R.attr.colorTextGrey));
-        title.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        ViewHelper.setCompoundDrawable(title, icon, getContext());
     }
 
     public void setTags(final List<Tag> tags) {

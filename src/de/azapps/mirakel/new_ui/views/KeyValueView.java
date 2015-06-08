@@ -59,8 +59,8 @@ public class KeyValueView extends LinearLayout {
         this.keyText = keyText;
     }
     public void setColor(final int color) {
-        final Drawable dueIcon = ThemeManager.getColoredIcon(iconId, color);
-        titleView.setCompoundDrawablesWithIntrinsicBounds(dueIcon, null, null, null);
+        final Drawable icon = ThemeManager.getColoredIcon(iconId, color);
+        ViewHelper.setCompoundDrawable(titleView, icon, getContext());
         titleView.setTextColor(color);
         valueView.setTextColor(color);
     }

@@ -55,7 +55,7 @@ public class ProgressView extends LinearLayout {
         ButterKnife.inject(this, this);
         final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_track_changes_white_18dp,
                               ThemeManager.getColor(R.attr.colorTextGrey));
-        progressText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        ViewHelper.setCompoundDrawable(progressText, icon, getContext());
     }
 
     public void setOnProgressChangeListener(final OptionalUtils.Procedure<Integer>
