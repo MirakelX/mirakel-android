@@ -386,10 +386,8 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         this.mSelectedMonthTextView
         .setText(this.dateformartsymbols.getMonths()[this.mCalendar
                  .get(Calendar.MONTH)].toUpperCase(Locale.getDefault()));
-        this.mSelectedDayTextView.setText(DAY_FORMAT.print(this.mCalendar
-                                          .getTimeInMillis()));
-        this.mYearView.setText(YEAR_FORMAT.print(this.mCalendar
-                               .getTimeInMillis()));
+        this.mSelectedDayTextView.setText(String.format("%d", mCalendar.get(Calendar.DAY_OF_MONTH)));
+        this.mYearView.setText(String.format("%d", mCalendar.get(Calendar.YEAR)));
         final long timeInMillis = this.mCalendar.getTimeInMillis();
         final String desc = DateUtils
                             .formatDateTime(this.ctx, timeInMillis, 24);
