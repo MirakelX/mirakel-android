@@ -50,6 +50,7 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -57,6 +58,7 @@ import de.azapps.changelog.Changelog;
 import de.azapps.ilovefs.ILoveFS;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
@@ -141,6 +143,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        ThemeManager.setTheme(this);
+        Locale.setDefault(Helpers.getLocal(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         ButterKnife.inject(this);
