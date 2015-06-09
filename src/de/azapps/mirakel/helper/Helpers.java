@@ -29,6 +29,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
+import android.view.View;
 
 import com.google.common.base.Optional;
 
@@ -87,9 +89,9 @@ public class Helpers {
         }
     }
 
-    public static Locale getLocal(final Context ctx) {
+    public static Locale getLocale(final Context ctx) {
         final String current = MirakelCommonPreferences.getLanguage();
-        final Locale locale = current.equals("-1") ? Locale.getDefault()
+        final Locale locale = "-1".equals(current) ? Locale.getDefault()
                               : new Locale(current);
         Locale.setDefault(locale);
         final Configuration config = new Configuration();
@@ -102,6 +104,8 @@ public class Helpers {
             .getDisplayMetrics());
         return locale;
     }
+
+
 
     // MISC
 
