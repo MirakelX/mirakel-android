@@ -144,7 +144,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         ThemeManager.setTheme(this);
-        Locale.setDefault(Helpers.getLocal(this));
+        Locale.setDefault(Helpers.getLocale(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         ButterKnife.inject(this);
