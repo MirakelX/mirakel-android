@@ -257,11 +257,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
                    + "(\""
                    + this.context.getString(R.string.today).toLowerCase(
-                       Helpers.getLocal(this.context))
+                       Helpers.getLocale(this.context))
                    + "\",0);"
                    + "INSERT INTO semantic_conditions (condition,due) VALUES (\""
                    + this.context.getString(R.string.tomorrow).toLowerCase(
-                       Helpers.getLocal(this.context)) + "\",1);");
+                       Helpers.getLocale(this.context)) + "\",1);");
         final String[] weekdays = this.context.getResources().getStringArray(
                                       R.array.weekdays);
         for (int i = 1; i < weekdays.length; i++) { // Ignore first element
@@ -505,11 +505,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
                        + "(\""
                        + this.context.getString(R.string.today).toLowerCase(
-                           Helpers.getLocal(this.context))
+                           Helpers.getLocale(this.context))
                        + "\",0);"
                        + "INSERT INTO semantic_conditions (condition,due) VALUES (\""
                        + this.context.getString(R.string.tomorrow).toLowerCase(
-                           Helpers.getLocal(this.context)) + "\",1);");
+                           Helpers.getLocale(this.context)) + "\",1);");
         case 15:// Add Color
             db.execSQL("Alter Table lists add column "
                        + "color INTEGER;");
