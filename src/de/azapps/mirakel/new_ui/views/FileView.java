@@ -120,7 +120,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         fixChilds();
     }
 
-    private void addFile() {
+    public void addFile() {
         new AlertDialog.Builder(getContext())
         .setTitle(R.string.add_files)
         .setItems(R.array.add_file_options, this).show();

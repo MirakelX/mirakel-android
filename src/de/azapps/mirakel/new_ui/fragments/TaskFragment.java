@@ -270,15 +270,19 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                 switch (item.getItemId()) {
                 case R.id.add_note_menu:
                     noteWrapper.setVisibility(View.VISIBLE);
+                    noteView.handleEditNote();
                     break;
                 case R.id.add_subtask_menu:
                     subtaskWrapper.setVisibility(View.VISIBLE);
+                    subtasksView.handleAddSubtask();
                     break;
                 case R.id.add_tags_menu:
                     tagWrapper.setVisibility(View.VISIBLE);
+                    tagView.onClick(tagView);
                     break;
                 case R.id.add_file_menu:
                     fileWrapper.setVisibility(View.VISIBLE);
+                    filesView.addFile();
                     break;
                 }
                 checkDisableAddButton();

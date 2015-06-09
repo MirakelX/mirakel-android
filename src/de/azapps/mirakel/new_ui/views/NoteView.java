@@ -78,7 +78,7 @@ public class NoteView extends LinearLayout {
     }
 
     @OnClick({R.id.task_note_text, R.id.task_note_title})
-    void editNote() {
+    public void handleEditNote() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         final EditText editText = new EditText(getContext());
         editText.setText(note);
