@@ -333,9 +333,9 @@ public class SimpleMonthView extends View {
         this.mCalendar.set(Calendar.YEAR, this.mYear);
         this.mCalendar.set(Calendar.DAY_OF_MONTH, 1);
         this.mCalendar.setFirstDayOfWeek(Calendar.getInstance(
-                                             Helpers.getLocal(getContext())).getFirstDayOfWeek());
+                                             Helpers.getLocale(getContext())).getFirstDayOfWeek());
         this.mDayOfWeekStart = this.mCalendar.get(Calendar.DAY_OF_WEEK);
-        this.mWeekStart = Calendar.getInstance(Helpers.getLocal(getContext()))
+        this.mWeekStart = Calendar.getInstance(Helpers.getLocale(getContext()))
                           .getFirstDayOfWeek();
         this.mNumCells = Utils.getDaysInMonth(this.mMonth, this.mYear);
         for (int day = 0; day < this.mNumCells; day++) {

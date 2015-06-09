@@ -228,7 +228,7 @@ public class TimePicker extends LinearLayout implements
         } finally {
             a.recycle();
         }
-        this.mIs24HourMode = DateTimeHelper.is24HourLocale(Helpers.getLocal(context));
+        this.mIs24HourMode = DateTimeHelper.is24HourLocale(Helpers.getLocale(context));
         this.layout = inflate(context, R.layout.time_picker_view, this);
         initLayout();
     }
@@ -742,7 +742,7 @@ public class TimePicker extends LinearLayout implements
                                 final boolean autoAdvance) {
         if (pickerIndex == HOUR_INDEX) {
             setHour(newValue, false);
-            String announcement = String.format(Helpers.getLocal(getContext()),
+            String announcement = String.format(Helpers.getLocale(getContext()),
                                                 "%d", newValue);
             if (this.mAllowAutoAdvance && autoAdvance) {
                 setCurrentItemShowing(MINUTE_INDEX, true, true, false);
@@ -809,7 +809,7 @@ public class TimePicker extends LinearLayout implements
                         deletedKeyStr = this.mPmText;
                     } else {
                         deletedKeyStr = String.format(
-                                            Helpers.getLocal(getContext()), "%d",
+                                            Helpers.getLocale(getContext()), "%d",
                                             getValFromKeyCode(deleted));
                     }
                     Utils.tryAccessibilityAnnounce(this.mTimePicker, String

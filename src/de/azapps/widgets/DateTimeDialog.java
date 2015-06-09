@@ -125,7 +125,7 @@ public class DateTimeDialog extends DialogFragment {
                             .findViewById(R.id.datetime_picker_animator);
         this.dp = (DatePicker) v.findViewById(R.id.date_picker);
         this.tp = (TimePicker) v.findViewById(R.id.time_picker);
-        this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocal(getActivity())));
+        this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocale(getActivity())));
         this.tp.setTime(this.mInitialHour, this.mInitialMinute);
         this.tp.setOnKeyListener(this.tp.getNewKeyboardListner(getDialog()));
         this.tp.setOnTimeSetListener(new OnTimeSetListener() {

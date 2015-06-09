@@ -226,9 +226,9 @@ public class RecurrencePickerDialog extends DialogFragment implements
             item.setTypeface(item.getTypeface(), Typeface.BOLD);
             item.setSingleLine(true);
             item.setTextOff(dayOfWeekString[TIME_DAY_TO_CALENDAR_DAY[day]]
-                            .toUpperCase(Helpers.getLocal(this.ctx)));
+                            .toUpperCase(Helpers.getLocale(this.ctx)));
             item.setTextOn(dayOfWeekString[TIME_DAY_TO_CALENDAR_DAY[day]]
-                           .toUpperCase(Helpers.getLocal(this.ctx)));
+                           .toUpperCase(Helpers.getLocale(this.ctx)));
             item.setChecked(weekdays.contains(day + 1));
             // Add to view
             final ViewGroup root;
