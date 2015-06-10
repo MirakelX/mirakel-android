@@ -18,28 +18,5 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/priority_2"
-        android:title="@string/priority_2"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/priority_1"
-        android:title="@string/priority_1"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/priority_0"
-        android:title="@string/priority_0"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/priority_m1"
-        android:title="@string/priority_m1"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/priority_m2"
-        android:title="@string/priority_m2"
-        app:showAsAction="always" />
-
-</menu>
+<resources>
+</resources>

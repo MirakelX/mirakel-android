@@ -35,6 +35,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.analytics.AnalyticsWrapper;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -70,7 +71,6 @@ import de.azapps.tools.Log;
 )
 public class Mirakel extends Application {
     // Public Constants
-
     @SuppressLint ("InlinedApi")
     @Override
     public void onCreate () {
@@ -97,6 +97,7 @@ public class Mirakel extends Application {
         ACRA.init(this);
         ACRA.setLog(new AcraLog());
         NotificationService.updateServices(this);
+        AnalyticsWrapper.init(Mirakel.this);
 
         // Stuff we can do in another thread
         final Mirakel that = this;
@@ -128,6 +129,7 @@ public class Mirakel extends Application {
                 if (MirakelCommonPreferences.writeLogsToFile ()) {
                     Log.enableLoggingToFile();
                 }
+
             }
         }).start ();
     }

@@ -114,7 +114,6 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
@@ -128,9 +127,14 @@ android {
         }
         instrumentTest.setRoot('../tests/src')
 
+        fdroid {
+            java.srcDirs = ['src','src-fdroid']
+        }
+
         google {
             manifest.srcFile  "res-google/AndroidManifest.xml"
             res.srcDirs = ['res-google']
+            java.srcDirs = ['src', 'src-google']
         }
     }
 }
@@ -162,6 +166,17 @@ androidUnitTest {
   }
 }*/
 
+
+ext {
+    flavor = ""
+}
+
+gradle.startParameter.getTaskNames().each { task ->
+    if(task.contains("Google") || task.contains("google")){
+        flavor = "google"
+    }
+}
+
 dependencies {
     compile project(':model')
     compile project(':helper')
@@ -179,6 +194,10 @@ dependencies {
     testCompile "junit:junit:4.11"
     testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.0-SNAPSHOT"
+
+    if(flavor == "google") {
+        compile 'com.google.android.gms:play-services-analytics:7.5.0'
+    }
 
 }
 
