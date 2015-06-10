@@ -32,7 +32,6 @@
     <attr name="colorListsBackground" format="color" />
     <attr name="colorProgress" format="color" />
     <attr name="colorProgressBackground" format="color" />
-    <attr name="colorDisabled" format="color" />
     <attr name="colorLightGrey" format="color" />
 
     <!-- Due -->
@@ -40,7 +39,6 @@
     <attr name="colorDueToday" format="color" />
     <attr name="colorDueNext" format="color" />
     <attr name="colorDueFuture" format="color" />
-    <attr name="colorNavDrawerScrim" format="color" />
 
     <!-- prio -->
     <attr name="colorPrio_2" format="color" />
