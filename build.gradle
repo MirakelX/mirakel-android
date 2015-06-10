@@ -72,10 +72,12 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
     }
+
+    def Properties localProps = new Properties()
+    localProps.load(new FileInputStream(file('./local.properties')))
+
     signingConfigs {
         release {
-            def Properties localProps = new Properties()
-            localProps.load(new FileInputStream(file('./local.properties')))
             def Properties keyProps = new Properties()
             assert localProps['keystore.props.file'];
             keyProps.load(new FileInputStream(file(localProps['keystore.props.file'])))
@@ -105,6 +107,8 @@ android {
     productFlavors {
         google {
             flavorDimension "stores"
+            assert localProps['analytics.trackingid'];
+            buildConfigField "String", "TRACKER_ID", localProps['analytics.trackingid']
         }
         fdroid {
             flavorDimension "stores"
@@ -113,9 +117,6 @@ android {
 
     sourceSets {
         main {
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
             res.srcDirs = ['merged-res']
             assets.srcDirs = ['assets']
         }

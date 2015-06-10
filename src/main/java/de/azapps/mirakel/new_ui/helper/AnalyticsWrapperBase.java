@@ -17,17 +17,18 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.analytics;
+package de.azapps.mirakel.new_ui.helper;
 
+import android.app.Application;
+import android.support.annotation.Nullable;
 
-import de.azapps.mirakel.new_ui.helper.AnalyticsWrapperBase;
+public abstract class AnalyticsWrapperBase {
+    @Nullable
+    private static AnalyticsWrapperBase singleton;
+    protected AnalyticsWrapperBase() {
 
-public class AnalyticsWrapper extends AnalyticsWrapperBase {
-    public static AnalyticsWrapperBase getWrapper() {
-        return new AnalyticsWrapper();
     }
+    public void init(final Application application) {
 
-    private AnalyticsWrapper() {
-        super();
     }
 }

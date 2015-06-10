@@ -18,3 +18,4 @@
 ################################################################################
 
 keystore.props.file=./keystore.properties
+analytics.trackingid="UA-XXX-X"

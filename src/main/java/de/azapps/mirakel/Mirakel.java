@@ -96,8 +96,8 @@ public class Mirakel extends Application {
         init(this);
         ACRA.init(this);
         ACRA.setLog(new AcraLog());
-        NotificationService.updateServices(this);
-        AnalyticsWrapper.init(Mirakel.this);
+        // do this as soon as possible
+        final AnalyticsWrapper analyticsWrapper = AnalyticsWrapper.getWrapper();
 
         // Stuff we can do in another thread
         final Mirakel that = this;
@@ -105,6 +105,9 @@ public class Mirakel extends Application {
             @Override
             public void run () {
                 Looper.prepare();
+
+                NotificationService.updateServices(Mirakel.this);
+                analyticsWrapper.init(Mirakel.this);
                 DatabaseHelper.getDatabaseHelper(Mirakel.this);
                 ReminderAlarm.init(Mirakel.this);
                 // Notifications

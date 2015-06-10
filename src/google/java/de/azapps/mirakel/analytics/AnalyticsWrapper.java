@@ -26,19 +26,29 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.HitBuilders;
 
-public class AnalyticsWrapper {
+import de.azapps.mirakel.new_ui.helper.AnalyticsWrapperBase;
+import de.azapps.mirakelandroid.BuildConfig;
 
-    public static GoogleAnalytics analytics;
-    public static Tracker tracker;
+public class AnalyticsWrapper extends AnalyticsWrapperBase {
 
-    public static void init(Application application) {
+    private GoogleAnalytics analytics;
+    private Tracker tracker;
+
+    public static AnalyticsWrapper getWrapper() {
+        return new AnalyticsWrapper();
+    }
+
+    private AnalyticsWrapper() {
+        super();
+    }
+
+    public void init(Application application) {
         analytics = GoogleAnalytics.getInstance(application);
         analytics.setLocalDispatchPeriod(1800);
 
-        tracker = analytics.newTracker("UA-XXX-X"); // Replace with actual tracker/property Id
+        tracker = analytics.newTracker(BuildConfig.TRACKER_ID);
         tracker.enableExceptionReporting(false);
         tracker.enableAdvertisingIdCollection(true);
         tracker.enableAutoActivityTracking(true);
-        Toast.makeText(application.getApplicationContext(), "GOOGLE", Toast.LENGTH_LONG).show();
     }
 }
