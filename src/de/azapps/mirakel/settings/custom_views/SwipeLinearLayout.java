@@ -51,7 +51,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.azapps.mirakel.settings.R;
-import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -199,7 +198,7 @@ public class SwipeLinearLayout extends LinearLayout  {
                   (ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event))))) {
             updateParams(currentTouchView, 0);
             if (undo && !moved) {
-                ((Button)currentTouchView.findViewById(R.id.undo)).callOnClick();
+                ((Button) currentTouchView.findViewById(R.id.undo)).performClick();
             } else {
                 currentTouchView.onTouchEvent(event);
             }
