@@ -58,13 +58,18 @@
                 android:layout_weight="1"
                 android:id="@+id/task_name_view_switcher">
 
-                <TextView
+                <!-- The linearlayout fixes the cut of of the last line in the textview. Keep it and don't remove it! -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Bold.Large"
-                    android:textColor="?colorTextBlack"
-                    android:id="@+id/task_name"
-                    android:text="Example task" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/task_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Example task"
+                        android:textAppearance="@style/TextAppearance.Bold.Large"
+                        android:textColor="?colorTextBlack" />
+                </LinearLayout>
 
                 <EditText
                     android:layout_width="match_parent"
