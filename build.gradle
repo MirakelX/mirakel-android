@@ -34,6 +34,8 @@ android {
     }
     lintOptions {
         disable 'MissingTranslation'
+        disable 'ImpliedQuantity'
+        disable 'MissingQuantity'
     }
     sourceSets {
         main {
