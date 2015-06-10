@@ -20,11 +20,28 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.TextView;
 
 public class ViewHelper {
     public static float dpToPx(final float dp, final Context ctx) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                                          ctx.getResources().getDisplayMetrics());
+    }
+    public static boolean isRTL(final Context ctx) {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
+               (ctx.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+    }
+
+    public static void setCompoundDrawable(final TextView title, final Drawable icon,
+                                           final Context context) {
+        if (ViewHelper.isRTL(context)) {
+            title.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+        } else {
+            title.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        }
     }
 }

@@ -54,6 +54,7 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,6 +63,7 @@ import butterknife.OnEditorAction;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -186,8 +188,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
+        Locale.setDefault(Helpers.getLocal(getActivity()));
+        super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);
         setContentObserver();

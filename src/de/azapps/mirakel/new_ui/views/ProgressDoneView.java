@@ -29,11 +29,9 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 
 import com.google.common.base.Optional;
@@ -61,17 +59,12 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
     private static Optional<Integer> widthCheckbox = absent();
     private static Optional<Integer> heightCheckbox = absent();
 
-    private static final boolean isJellyBeanMR1 = Build.VERSION.SDK_INT >=
-            Build.VERSION_CODES.JELLY_BEAN_MR1;
 
     public ProgressDoneView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
-    }
-
-    private void init(Context context, AttributeSet attrs) {
-        TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ProgressDone,
-                                0, 0);
+        final TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs,
+                                      R.styleable.ProgressDone,
+                                      0, 0);
         try {
             progress = attributes.getInt(R.styleable.ProgressDone_progress_value, 0);
             progressColor = attributes.getInt(R.styleable.ProgressDone_progress_color, 0);
@@ -88,11 +81,6 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
         checkBoxPaint.setColor(Color.WHITE);
     }
 
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
 
 
     @SuppressLint("NewApi")
@@ -100,8 +88,8 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
     public void onDraw(@NonNull final Canvas canvas) {
         final Drawable buttonDrawable = mButtonDrawable;
         if (buttonDrawable != null) {
-            int save = canvas.save();
-            canvas.translate(dpToPx(3), 0);
+            final int save = canvas.save();
+            canvas.translate(ViewHelper.dpToPx(3.0F, getContext()), 0.0F);
             final int verticalGravity = getGravity() & Gravity.VERTICAL_GRAVITY_MASK;
             final int drawableHeight = buttonDrawable.getIntrinsicHeight();
             final int drawableWidth = buttonDrawable.getIntrinsicWidth();
@@ -117,12 +105,13 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
                 top = 0;
                 break;
             }
-            int left = (isJellyBeanMR1 &&
-                        (getLayoutDirection() == LAYOUT_DIRECTION_RTL)) ? (getWidth() - drawableWidth) : 0;
-            left += dpToPx(5);
+            int left = ViewHelper.isRTL(getContext()) ? (getWidth() - drawableWidth - widthCheckbox.or(
+                           heightCheckbox.or(0))) : 0;
+            left += ViewHelper.dpToPx(5, getContext());
             final int x = (checkboxLeft.or(0) + (widthCheckbox.or(heightCheckbox.or(0)) / 2)) + left;
             final int y = (checkboxTop.or(0) + (heightCheckbox.or(widthCheckbox.or(0)) / 2)) + top;
-            final int size = Math.max(widthCheckbox.or(0), heightCheckbox.or(0)) + dpToPx(3);
+            final int size = (int) (Math.max(widthCheckbox.or(0),
+                                             heightCheckbox.or(0)) + ViewHelper.dpToPx(3.0F, getContext()));
             // Background circle
             canvas.drawCircle(x, y, size, backgroundPaint);
             // Foreground arc
@@ -135,7 +124,8 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
                                         heightCheckbox.or(widthCheckbox.or(0)) + top + checkboxTop.or(0));
             canvas.drawRect(box, checkBoxPaint);
             //checkbox
-            canvas.translate(dpToPx(5), dpToPx(8));
+            canvas.translate(ViewHelper.dpToPx(ViewHelper.isRTL(getContext()) ? 6.0F : 5.0F, getContext()),
+                             ViewHelper.dpToPx(8.0F, getContext()));
             buttonDrawable.draw(canvas);
             canvas.restoreToCount(save);
         }
@@ -175,7 +165,7 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
                 boarderTop.add(i);
             } else if (!boarderTop.isEmpty()) {
                 if (!checkboxTop.isPresent()) {
-                    checkboxTop = of(getAVG(boarderTop) + dpToPx(3));
+                    checkboxTop = of(getAVG(boarderTop) + (int)ViewHelper.dpToPx(3.0F, getContext()));
                     if (heightCheckbox.isPresent()) {
                         heightCheckbox = of(heightCheckbox.get() - checkboxTop.get());
                     }
@@ -186,7 +176,7 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
                 boarderLeft.add(i);
             } else if (!boarderLeft.isEmpty()) {
                 if (!checkboxLeft.isPresent()) {
-                    checkboxLeft = of(getAVG(boarderLeft) + dpToPx(3));
+                    checkboxLeft = of(getAVG(boarderLeft) + (int)ViewHelper.dpToPx(3.0F, getContext()));
                     if (widthCheckbox.isPresent()) {
                         widthCheckbox = of(widthCheckbox.get() - checkboxLeft.get());
                     }
@@ -198,7 +188,8 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
             } else if (!boarderBottom.isEmpty()) {
                 if (!heightCheckbox.isPresent()) {
                     if (checkboxTop.isPresent()) {
-                        heightCheckbox = of(getAVG(boarderBottom) - checkboxTop.get() - dpToPx(3));
+                        heightCheckbox = of(getAVG(boarderBottom) - checkboxTop.get() - (int)ViewHelper.dpToPx(3.0F,
+                                            getContext()));
                     } else {
                         heightCheckbox = of(getAVG(boarderBottom));
                     }
@@ -210,7 +201,8 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
             } else if (!boarderRight.isEmpty()) {
                 if (!widthCheckbox.isPresent()) {
                     if (checkboxLeft.isPresent()) {
-                        widthCheckbox = of(getAVG(boarderRight) - checkboxLeft.get() - dpToPx(3));
+                        widthCheckbox = of(getAVG(boarderRight) - checkboxLeft.get() - (int)ViewHelper.dpToPx(3.0F,
+                                           getContext()));
                     } else {
                         widthCheckbox = of(getAVG(boarderRight));
                     }
