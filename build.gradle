@@ -113,7 +113,6 @@ android {
 
     sourceSets {
         main {
-            manifest.srcFile 'AndroidManifest.xml'
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
@@ -127,14 +126,8 @@ android {
         }
         instrumentTest.setRoot('../tests/src')
 
-        fdroid {
-            java.srcDirs = ['src','src-fdroid']
-        }
-
         google {
-            manifest.srcFile  "res-google/AndroidManifest.xml"
             res.srcDirs = ['res-google']
-            java.srcDirs = ['src', 'src-google']
         }
     }
 }

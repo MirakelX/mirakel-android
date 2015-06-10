@@ -39,5 +39,6 @@ public class AnalyticsWrapper {
         tracker.enableExceptionReporting(false);
         tracker.enableAdvertisingIdCollection(true);
         tracker.enableAutoActivityTracking(true);
+        Toast.makeText(application.getApplicationContext(), "GOOGLE", Toast.LENGTH_LONG).show();
     }
 }

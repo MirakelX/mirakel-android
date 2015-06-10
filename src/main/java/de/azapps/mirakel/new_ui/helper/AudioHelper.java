@@ -71,7 +71,7 @@ public class AudioHelper {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final Button button = ((AlertDialog) dialog)
-                        .getButton(DialogInterface.BUTTON_POSITIVE);
+                                      .getButton(DialogInterface.BUTTON_POSITIVE);
                 if (!mPlayer.isPlaying()) {
                     button.setText(R.string.audio_playback_play);
                     mPlayer.start();
@@ -82,24 +82,24 @@ public class AudioHelper {
                 button.invalidate();
             }
         }).setNegativeButton(R.string.audio_playback_stop, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(final DialogInterface dialog) {
+                mPlayer.stop();
+                mPlayer.release();
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (final IOException e) {
+                        Log.wtf(TAG, "cannot close file", e);
                     }
-                }).setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(final DialogInterface dialog) {
-                        mPlayer.stop();
-                        mPlayer.release();
-                        if (stream != null) {
-                            try {
-                                stream.close();
-                            } catch (final IOException e) {
-                                Log.wtf(TAG, "cannot close file", e);
-                            }
-                        }
-                    }
-                }).show();
+                }
+            }
+        }).show();
         mPlayer.start();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override

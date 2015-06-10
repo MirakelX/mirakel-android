@@ -91,40 +91,6 @@
         tools:replace="icon">
 
 
-        <!-- ANALYTICS START -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <!-- Add the following meta-data for devices running Google Play service. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-        <!-- Optionally, register AnalyticsReceiver and AnalyticsService to support background
-             dispatching on non-Google Play devices -->
-        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
-            </intent-filter>
-        </receiver>
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
-            android:enabled="true"
-            android:exported="false"/>
-
-        <!-- Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
-             installation campaign reporting -->
-        <receiver android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
-        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
-
-
-        <!-- ANALYTICS END -->
         <uses-library
             android:name="android.test.runner"
             android:required="true" />
