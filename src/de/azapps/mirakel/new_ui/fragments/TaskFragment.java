@@ -189,7 +189,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
-        Locale.setDefault(Helpers.getLocal(getActivity()));
+        Locale.setDefault(Helpers.getLocale(getActivity()));
         super.onCreate(savedInstanceState);
         final Bundle arguments = getArguments();
         task = arguments.getParcelable(ARGUMENT_TASK);

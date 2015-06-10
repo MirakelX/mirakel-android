@@ -148,7 +148,7 @@ public class Mirakel extends Application {
         CursorGetter.init(ctx);
         ModelBase.init(ctx);
         Settings.init(ctx);
-        final Locale locale = Helpers.getLocal(ctx);
+        final Locale locale = Helpers.getLocale(ctx);
         Locale.setDefault(locale);
         BuildHelper.setPlaystore(ctx.getResources ().getBoolean (
                                      R.bool.is_playstore));
