@@ -51,7 +51,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.azapps.mirakel.settings.R;
-import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -83,6 +82,8 @@ public class SwipeLinearLayout extends LinearLayout  {
     private boolean moved = false;
     private boolean undo = false;
 
+    private final boolean isRTL;
+
     public SwipeLinearLayout(final Context context) {
         this(context, null);
     }
@@ -95,6 +96,8 @@ public class SwipeLinearLayout extends LinearLayout  {
         setWillNotDraw(true);
         leaveBehindParams = new RelativeLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
         leaveBehindParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        isRTL = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
+                (context.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
     }
 
 
@@ -145,7 +148,7 @@ public class SwipeLinearLayout extends LinearLayout  {
                 break;
             }
         }
-        if ((currentTouchView == null) || !(currentTouchView instanceof ViewSwitcher) ) {
+        if (!(currentTouchView instanceof ViewSwitcher)) {
             currentTouchView = null;
             return false;
         }
@@ -383,27 +386,32 @@ public class SwipeLinearLayout extends LinearLayout  {
                                 (((LinearLayout) view).getChildCount() > 2))) {
             return;
         }
-        final int pos = (value < 0) ? 2 : 0;
-        final int otherPos = (value < 0) ? 0 : 2;
+        final int pos;
+        final int otherPos;
+        if (isRTL) {
+            pos = (value > 0) ? 2 : 0;
+            otherPos = (value > 0) ? 0 : 2;
+        } else {
+            pos = (value < 0) ? 2 : 0;
+            otherPos = (value < 0) ? 0 : 2;
+        }
 
         final LinearLayout.LayoutParams cparams = (LinearLayout.LayoutParams) ((
                     LinearLayout) view).getChildAt(1).getLayoutParams();
-        cparams.width = (int) Math.max(screenW - Math.abs(value), childWidth);
 
-        int marginMultiplier = 1;
-        if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) && (value <= 0)) {
-            cparams.leftMargin = value;
-            marginMultiplier = 2;
+        cparams.width = (int) Math.max(screenW - Math.abs(value), childWidth);
+        if (isRTL) {
+            cparams.setMarginStart(-1 * value);
         } else {
-            if ((getLayoutDirection() == LAYOUT_DIRECTION_LTR) && (value <= 0)) {
-                cparams.leftMargin = value;
-                marginMultiplier = 2;
-            } else if ((getLayoutDirection() == LAYOUT_DIRECTION_RTL) && (value >= 0)) {
-                cparams.rightMargin = -1 * value;
-                marginMultiplier = 2;
-            }
+            cparams.leftMargin = value;
         }
         ((LinearLayout) view).getChildAt(1).setLayoutParams(cparams);
+
+        int marginMultiplier = 1;
+        if ((!isRTL && (value <= 0)) || (isRTL && (value >= 0))) {
+            marginMultiplier = 2;
+        }
+
 
         final LinearLayout.LayoutParams lparams = (LinearLayout.LayoutParams) ((
                     LinearLayout) view).getChildAt(pos).getLayoutParams();
