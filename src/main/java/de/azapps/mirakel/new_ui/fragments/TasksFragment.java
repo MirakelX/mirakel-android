@@ -36,14 +36,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -640,9 +638,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private class MultiSelectCallbacks implements ActionMode.Callback {
         @Override
         public boolean onCreateActionMode(final ActionMode actionMode, final Menu menu) {
-            final MenuInflater inflater = actionMode
-                                          .getMenuInflater();
-            inflater.inflate(R.menu.multiselect_tasks, menu);
+            menu.clear();
             AnimationHelper.slideIn(getActivity(), multiselectMenu);
             ((MirakelActivity) getActivity()).moveFABUp((int) getResources().getDimension(
                         R.dimen.taskfragment_toolbar_hight));
