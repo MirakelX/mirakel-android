@@ -252,4 +252,15 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return (settings != null) && settings.getBoolean("writeLogsToFile", false);
     }
 
+    public static boolean useAnalytics() {
+        return (settings == null) || settings.getBoolean("useAnalytics", true);
+    }
+
+    public static void setUseAnalytics(final boolean val) {
+        final Editor ed = settings.edit();
+        ed.putBoolean("useAnalytics", val);
+        ed.apply();
+    }
+
+
 }
