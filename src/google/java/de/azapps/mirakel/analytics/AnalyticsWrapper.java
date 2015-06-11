@@ -20,18 +20,22 @@
 package de.azapps.mirakel.analytics;
 
 import android.app.Application;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.HitBuilders;
 
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.new_ui.helper.AnalyticsWrapperBase;
 import de.azapps.mirakelandroid.BuildConfig;
 
 public class AnalyticsWrapper extends AnalyticsWrapperBase {
 
+    @Nullable
     private GoogleAnalytics analytics;
+    @Nullable
     private Tracker tracker;
 
     public static AnalyticsWrapper getWrapper() {
@@ -43,12 +47,14 @@ public class AnalyticsWrapper extends AnalyticsWrapperBase {
     }
 
     public void init(Application application) {
-        analytics = GoogleAnalytics.getInstance(application);
-        analytics.setLocalDispatchPeriod(1800);
+        if (MirakelCommonPreferences.useAnalytics()) {
+            analytics = GoogleAnalytics.getInstance(application);
+            analytics.setLocalDispatchPeriod(1800);
 
-        tracker = analytics.newTracker(BuildConfig.TRACKER_ID);
-        tracker.enableExceptionReporting(false);
-        tracker.enableAdvertisingIdCollection(true);
-        tracker.enableAutoActivityTracking(true);
+            tracker = analytics.newTracker(BuildConfig.TRACKER_ID);
+            tracker.enableExceptionReporting(false);
+            tracker.enableAdvertisingIdCollection(true);
+            tracker.enableAutoActivityTracking(true);
+        }
     }
 }
