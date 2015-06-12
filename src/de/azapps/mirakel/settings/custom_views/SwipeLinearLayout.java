@@ -202,7 +202,7 @@ public class SwipeLinearLayout extends LinearLayout  {
                   (ViewConfiguration.get(getContext()).getScaledTouchSlop() < getDistanceTo(event))))) {
             updateParams(currentTouchView, 0);
             if (undo && !moved) {
-                ((Button)currentTouchView.findViewById(R.id.undo)).callOnClick();
+                ((Button) currentTouchView.findViewById(R.id.undo)).performClick();
             } else {
                 currentTouchView.onTouchEvent(event);
             }
