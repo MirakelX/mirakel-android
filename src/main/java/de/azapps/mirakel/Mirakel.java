@@ -46,6 +46,7 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.new_ui.helper.AcraLog;
+import de.azapps.mirakel.new_ui.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -97,7 +98,7 @@ public class Mirakel extends Application {
         ACRA.init(this);
         ACRA.setLog(new AcraLog());
         // do this as soon as possible
-        final AnalyticsWrapper analyticsWrapper = AnalyticsWrapper.getWrapper();
+        final AnalyticsWrapperBase analyticsWrapper = AnalyticsWrapper.getWrapper();
 
         // Stuff we can do in another thread
         final Mirakel that = this;
