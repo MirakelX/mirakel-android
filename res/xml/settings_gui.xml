@@ -48,4 +48,10 @@
             android:summary="@string/settings_subtask_add_to_same_list_summary"
             android:title="@string/settings_subtask_add_to_same_list"/>
     </PreferenceCategory>
+
+    <de.azapps.mirakel.settings.custom_views.SwitchCompatPreference
+        android:defaultValue="true"
+        android:key="useAnalytics"
+        android:title="@string/analytics_use"
+        android:summary="@string/analytics_use_summary"/>
 </PreferenceScreen>
