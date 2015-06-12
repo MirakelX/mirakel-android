@@ -63,6 +63,8 @@ android {
     lintOptions {
         disable 'MissingTranslation','AppCompatResource'
         enable 'NewerVersionAvailable'
+        disable 'ImpliedQuantity'
+        disable 'MissingQuantity'
     }
     defaultConfig {
         testApplicationId "de.azapps.mirakelandroid.test"
