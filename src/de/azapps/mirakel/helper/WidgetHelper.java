@@ -24,10 +24,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.View;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.widget.RemoteViews;
 
 import com.google.common.base.Optional;
@@ -59,40 +59,26 @@ public class WidgetHelper {
         final PendingIntent pOpenIntent = PendingIntent.getActivity(context, 0,
                                           openIntent, 0);
         rv.setOnClickPendingIntent(R.id.tasks_row, pOpenIntent);
-        rv.setOnClickPendingIntent(R.id.tasks_row_name, pOpenIntent);
-        if (task.getDue().isPresent()) {
-            rv.setViewVisibility(R.id.tasks_row_due, View.VISIBLE);
-            rv.setTextViewText(R.id.tasks_row_due,
-                               DateTimeHelper.formatDate(context, task.getDue()));
-        } else {
-            rv.setViewVisibility(R.id.tasks_row_due, View.GONE);
-        }
+
+        SpannableStringBuilder textBuilder = new SpannableStringBuilder();
+
         rv.setInt(R.id.tasks_row_priority, "setBackgroundColor",
                   TaskHelper.getPrioColor(task.getPriority()));
-        rv.setTextColor(R.id.tasks_row_name,
-                        WidgetHelper.getFontColor(context, widgetId));
-        if (getBoolean(context, widgetId, "widgetDueColors", true)) {
-            rv.setTextColor(
-                R.id.tasks_row_due,
-                TaskHelper.getTaskDueColor(task.getDue(),
-                                           task.isDone()));
+
+        final int dueTextLength;
+        if (task.getDue().isPresent()) {
+            textBuilder.append(DateTimeHelper.formatDate(context, task.getDue()));
+            textBuilder.setSpan(new ForegroundColorSpan(TaskHelper.getTaskDueColor(task.getDue(),
+                                task.isDone())), 0, textBuilder.length(), 0);
+            textBuilder.append(" ");
+            dueTextLength = textBuilder.length();
         } else {
-            rv.setTextColor(R.id.tasks_row_due,
-                            WidgetHelper.getFontColor(context, widgetId));
+            dueTextLength = 0;
         }
-        rv.setTextViewText(R.id.tasks_row_name, task.getName());
-        if (task.isDone()) {
-            rv.setTextColor(R.id.tasks_row_name, context.getResources()
-                            .getColor(R.color.Grey));
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            rv.setTextColor(
-                R.id.tasks_row_name,
-                context.getResources()
-                .getColor(
-                    WidgetHelper.isDark(context, widgetId) ? R.color.White
-                    : R.color.Black));
-        }
+        textBuilder.append(task.getName());
+        textBuilder.setSpan(new ForegroundColorSpan(WidgetHelper.getFontColor(context, widgetId)),
+                            dueTextLength, textBuilder.length(), 0);
+        rv.setTextViewText(R.id.tasks_row_text, textBuilder);
         return rv;
     }
 
