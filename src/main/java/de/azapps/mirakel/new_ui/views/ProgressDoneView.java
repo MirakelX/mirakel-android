@@ -215,7 +215,12 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
             }
 
         }
-        invalidate();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                invalidate();
+            }
+        });
     }
 
     private static int getAVG(final List<Integer> boarderY) {
