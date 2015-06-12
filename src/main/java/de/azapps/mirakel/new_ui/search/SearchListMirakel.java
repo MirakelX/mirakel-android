@@ -62,8 +62,11 @@ public class SearchListMirakel implements ListMirakelInterface {
                                     '%' + search.getName() + '%');
             break;
         case TAG:
-            mirakelQueryBuilder.and(Tag.TABLE + '.' + Tag.ID, MirakelQueryBuilder.Operation.EQ,
-                                    search.getObjId());
+            final MirakelQueryBuilder selectByTag = new MirakelQueryBuilder(context);
+            selectByTag.and(Tag.TAG_CONNECTION_TABLE + ".tag_id", MirakelQueryBuilder.Operation.EQ,
+                            search.getObjId()).select(Tag.TAG_CONNECTION_TABLE + ".task_id");
+            mirakelQueryBuilder.and(Task.VIEW_TABLE + '.' + Task.ID, MirakelQueryBuilder.Operation.IN,
+                                    selectByTag, MirakelInternalContentProvider.TAG_CONNECTION_URI);
             break;
         }
         Task.addBasicFiler(mirakelQueryBuilder);
@@ -93,8 +96,8 @@ public class SearchListMirakel implements ListMirakelInterface {
 
     @Override
     public boolean shouldShowDoneToggle() {
-        // yes a search list is kind of special ;)
-        return true;
+        return getTasksQueryBuilder().and(Task.DONE, MirakelQueryBuilder.Operation.EQ,
+                                          true).count(Task.URI) > 0L;
     }
 
 
