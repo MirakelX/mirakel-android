@@ -21,6 +21,8 @@ package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,8 +35,7 @@ import de.azapps.mirakelandroid.R;
 public class KeyValueView extends LinearLayout {
     @InjectView(R.id.title)
     TextView titleView;
-    @InjectView(R.id.value)
-    TextView valueView;
+
 
     private int iconId;
     private CharSequence keyText;
@@ -62,17 +63,15 @@ public class KeyValueView extends LinearLayout {
         final Drawable icon = ThemeManager.getColoredIcon(iconId, color);
         ViewHelper.setCompoundDrawable(titleView, icon, getContext());
         titleView.setTextColor(color);
-        valueView.setTextColor(color);
     }
 
     public void setValue(final CharSequence value) {
-        titleView.setText(keyText);
-        valueView.setText(value);
-        valueView.setVisibility(VISIBLE);
+        final SpannableString text = new SpannableString(keyText + " " + value);
+        text.setSpan(new TypefaceSpan("sans-serif-light"), keyText.length(), text.length(), 0);
+        titleView.setText(text);
     }
 
     public void setNoValue(final String text) {
         titleView.setText(text);
-        valueView.setVisibility(GONE);
     }
 }
