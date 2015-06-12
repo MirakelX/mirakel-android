@@ -97,10 +97,6 @@ public class AutoCompleteAdapter extends CursorAdapter {
         if (constraint == null) {
             return super.runQueryOnBackgroundThread(null);
         }
-        final Cursor cursor = getCursor();
-        if ((cursor != null) && !cursor.isClosed()) {
-            getCursor().close();
-        }
         return SearchObject.autocomplete(mContext, constraint.toString());
     }
 
