@@ -68,7 +68,9 @@
                         android:layout_height="wrap_content"
                         android:text="Example task"
                         android:textAppearance="@style/TextAppearance.Bold.Large"
-                        android:textColor="?colorTextBlack" />
+                        android:textColor="?colorTextBlack"
+                        android:gravity="center_vertical"
+                        android:minHeight="@dimen/priorityDoneSize"/>
                 </LinearLayout>
 
                 <EditText
