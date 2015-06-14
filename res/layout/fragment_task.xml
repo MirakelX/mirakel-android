@@ -78,6 +78,7 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
+                    android:imeActionLabel="@string/save"
                     android:textAppearance="@style/TextAppearance.Regular.Large"
                     android:textColor="?colorTextBlack"
                     android:inputType="text"

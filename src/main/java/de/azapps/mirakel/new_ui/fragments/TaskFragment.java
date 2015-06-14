@@ -422,6 +422,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private void updateName() {
         taskNameEdit.clearFocus();
         Semantic.applySemantics(task, taskNameEdit.getText().toString());
+        taskNameEdit.setText(task.getName());
 
         // we create a new task when the user presses done because this is not unexpected for the
         // user and makes our life a lot easier
@@ -571,6 +572,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @OnClick(R.id.task_button_done)
     void doneClick() {
+        Semantic.applySemantics(task, taskNameEdit.getText().toString());
         if (task.isStub()) {
             try {
                 task.create();
