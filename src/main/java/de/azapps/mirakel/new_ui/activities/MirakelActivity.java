@@ -212,6 +212,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     /* Called whenever we call invalidateOptionsMenu() */
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
+        menu.clear();
         if (mDrawerLayout.isPresent()) {
             // For phones
             final boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(GravityCompat.START);
