@@ -91,7 +91,7 @@ import static de.azapps.tools.OptionalUtils.Procedure;
 
 public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKeyboardChanged,
     PriorityChangeView.OnPriorityChangeListener, MirakelContentObserver.ObserverCallBack,
-    SubtasksView.SubtaskListener {
+    SubtasksView.SubtaskListener, AddTagView.TagChangedListener {
 
     private static final String TAG = "TaskFragment";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
@@ -320,6 +320,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     private void updateAll() {
+        if (task == null) {
+            return;
+        }
         ///////////////////
         // Now the actions
         progressDoneView.setProgress(task.getProgress());
@@ -343,21 +346,21 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         priorityChangeView.setPriority(task.getPriority());
         priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTags(task.getTags());
-        taskTags.setTagChangedListener(new AddTagView.TagChangedListener() {
-            @Override
-            public void onTagAdded(Tag tag) {
-                task.addTag(tag);
-            }
-
-            @Override
-            public void onTagRemoved(Tag tag) {
-                task.removeTag(tag);
-            }
-        });
+        taskTags.setTagChangedListener(this);
         subtasksView.setSubtasks(task.getSubtasks());
         subtasksView.initListeners(this);
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
+    }
+
+    @Override
+    public void onTagAdded(final Tag tag) {
+        task.addTag(tag);
+    }
+
+    @Override
+    public void onTagRemoved(final Tag tag) {
+        task.removeTag(tag);
     }
 
 
