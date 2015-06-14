@@ -320,7 +320,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
             } else {
                 postfix = "";
             }
-            if (hasPostfix && (lengthAfter < lengthBefore) && !currentTags.isEmpty()) {
+            if (hasPostfix && (lengthAfter < lengthBefore) && !this.currentTags.isEmpty()) {
                 final String last = this.currentTags.get(this.currentTags.size() - 1).getName();
                 if (postfix.equals(last)) {
                     postfix = "";
