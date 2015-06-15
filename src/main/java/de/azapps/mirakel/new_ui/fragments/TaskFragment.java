@@ -94,6 +94,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     SubtasksView.SubtaskListener, AddTagView.TagChangedListener {
 
     private static final String TAG = "TaskFragment";
+    private static final String TASK = "task";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
     public static final int FILE_SELECT_CODE = 521;
     public static final String ARGUMENT_TASK = "task";
@@ -187,12 +188,24 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(TASK, task);
+    }
+
+    @Override
     public void onCreate(final Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
         Locale.setDefault(Helpers.getLocale(getActivity()));
         super.onCreate(savedInstanceState);
-        final Bundle arguments = getArguments();
-        task = arguments.getParcelable(ARGUMENT_TASK);
+        if (savedInstanceState != null) {
+            task = savedInstanceState.getParcelable(TASK);
+
+        } else {
+            final Bundle arguments = getArguments();
+            task = arguments.getParcelable(ARGUMENT_TASK);
+        }
+        setRetainInstance(true);
         setContentObserver();
     }
 
@@ -315,14 +328,14 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @Override
     public void onDestroyView() {
+        if ((getDialog() != null) && getRetainInstance()) {
+            getDialog().setOnDismissListener(null);
+        }
         super.onDestroyView();
         ButterKnife.reset(this);
     }
 
     private void updateAll() {
-        if (task == null) {
-            return;
-        }
         ///////////////////
         // Now the actions
         progressDoneView.setProgress(task.getProgress());
