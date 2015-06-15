@@ -344,8 +344,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTags(task.getTags());
         taskTags.setTagChangedListener(this);
-        subtasksView.setSubtasks(task.getSubtasks());
         subtasksView.initListeners(this);
+        subtasksView.setSubtasks(task.getSubtasks());
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
     }
