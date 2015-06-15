@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -78,10 +79,14 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
+import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountVanishedException;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -111,6 +116,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final String TASKS_TO_DELETE = "tasks to delete";
     public static final String SHOULD_SHOW_DONE_TASKS = "should show done tasks";
     private static final String SELECTED_ITEMS = "SELECTED_ITEMS";
+    public static final int MAX_ACCOUNT_REPAIR_TRIES = 15;
 
     private TaskAdapter mAdapter;
     @InjectView(R.id.task_listview)
@@ -228,9 +234,34 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         getLoaderManager().restartLoader(0, args, this);
     }
 
+    private int onCreateLoaderTries = 0;
     @Override
     public Loader onCreateLoader(final int i, final Bundle arguments) {
-        MirakelQueryBuilder mirakelQueryBuilder = listMirakel.getTasksQueryBuilder();
+        final MirakelQueryBuilder mirakelQueryBuilder;
+        try {
+            mirakelQueryBuilder = listMirakel.getTasksQueryBuilder();
+        } catch (AccountVanishedException e) {
+            onCreateLoaderTries ++;
+            ErrorReporter.report(ErrorType.ACCOUNT_VANISHED);
+            AccountMirakel localAccount = AccountMirakel.getLocal();
+            if (listMirakel instanceof SpecialList) {
+                ((SpecialList) listMirakel).setAccount(localAccount);
+            } else {
+                // Update the account id to the local one of lists with a broken account
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(ListMirakel.ACCOUNT_ID, localAccount.getId());
+                getActivity().getContentResolver().update(ListMirakel.URI, contentValues, "account_id = ?",
+                        new String[] {String.valueOf(e.getAccountId())});
+            }
+
+            if (onCreateLoaderTries > MAX_ACCOUNT_REPAIR_TRIES) {
+                ErrorReporter.report(ErrorType.ACCOUNTS_NOT_REPAIRABLE);
+                throw new IllegalStateException("To many retries to repair the accounts");
+            } else {
+                return onCreateLoader(i, arguments);
+            }
+        }
+        onCreateLoaderTries = 0;
         listMirakel = arguments.getParcelable(ARGUMENT_LIST);
         shouldShowDoneTasks = arguments.getBoolean(SHOULD_SHOW_DONE_TASKS);
         final ArrayList<TaskOverview> tasksToDelete = arguments.getParcelableArrayList(TASKS_TO_DELETE);
