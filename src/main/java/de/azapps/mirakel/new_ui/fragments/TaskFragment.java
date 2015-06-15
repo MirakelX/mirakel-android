@@ -21,7 +21,6 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,8 +34,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -479,23 +476,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
             datePickerDialog.show(getFragmentManager(), "dueDialog");
         }
     };
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        final Dialog dialog = getDialog();
-        if (dialog != null) {
-            final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            final Window window = dialog.getWindow();
-            lp.copyFrom(window.getAttributes());
-            // This makes the dialog take up the full width
-
-            // TODO do something else on tablets
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setAttributes(lp);
-        }
-    }
 
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
