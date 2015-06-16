@@ -57,13 +57,15 @@ public class TaskService extends Service {
         if (task == null) {
             return;
         }
-        if (TASK_DONE.equals(intent.getAction())) {
+        switch (intent.getAction()) {
+        case TASK_DONE:
             task.setDone(true);
             task.save();
             Toast.makeText(this,
                            getString(R.string.reminder_notification_done_confirm),
                            Toast.LENGTH_LONG).show();
-        } else if (TASK_LATER.equals(intent.getAction()) && !task.hasRecurringReminder()) {
+            break;
+        case TASK_LATER:
             final Calendar reminder = new GregorianCalendar();
             final int addMinutes = MirakelCommonPreferences.getAlarmLater();
             reminder.add(Calendar.MINUTE, addMinutes);
@@ -73,6 +75,7 @@ public class TaskService extends Service {
                 this,
                 getString(R.string.reminder_notification_later_confirm,
                           addMinutes), Toast.LENGTH_LONG).show();
+            break;
         }
         stopSelf();
     }
