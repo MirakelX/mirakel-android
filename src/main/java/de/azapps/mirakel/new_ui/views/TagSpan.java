@@ -73,9 +73,12 @@ public class TagSpan extends ReplacementSpan {
     @Override
     public void draw(final Canvas canvas, final CharSequence text, final int start, final int end,
                      final float x, final int top, final int y, final int bottom, final Paint paint) {
-        final RectF rect = new RectF(x,  top, x + textLength + (2 * padding), bottom + scale(2.0F));
+        // do not add padding to the bottom because it will be cut of on old devices
+        final RectF rect = new RectF(x, top, x + textLength + (2 * padding), bottom);
         canvas.drawRoundRect(rect, scale(2.0F), scale(2.0F), paintBackground);
-        canvas.drawText(this.text, x + padding, y, paintText);
+        // we will move the text 2dp upwards. This looks a tiny bit weird when editing but in 90%
+        // of the time it looks better
+        canvas.drawText(this.text, x + padding, y - scale(2.0F), paintText);
     }
 
 }
