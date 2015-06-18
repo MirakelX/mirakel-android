@@ -19,10 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="ilovefs_title">I ♥ Free Software Day</string>
-  <string name="ilovefs_message"><![CDATA[
-        <p>Der Valentinstag ist traditionell ein Tag, an dem man seine Liebe zeigt und gemeinsam feiert. Also warum das dieses Jahr nicht als Chance wahrnehmen, Deine Liebe für Freie Software auszudrücken?</p>
-        <p><a href="https://fsfe.org/campaigns/ilovefs/">Erfahre mehr</a></p>
-        ]]></string>
+  <string name="ilovefs_message"><![CDATA[<p>Der Valentinstag ist traditionell ein Tag, an dem man seine Liebe zeigt und gemeinsam feiert. Also warum das dieses Jahr nicht als Chance wahrnehmen, Deine Liebe für Freie Software auszudrücken?</p>
+        <p><a href="https://fsfe.org/campaigns/ilovefs/">Erfahre mehr</a></p>]]></string>
   <string name="ilovefs_rate">Bewerte!</string>
   <string name="ilovefs_email">Schreib uns!</string>
   <string name="ilovefs_email_no_client">Konnte keine E-Mail App finden</string>

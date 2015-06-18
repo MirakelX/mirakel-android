@@ -19,10 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="ilovefs_title">Я ♥ День Свободного Программного Обеспечения</string>
-  <string name="ilovefs_message"><![CDATA[
-        <p>День святого Валентина - традиционно это день чтобы выразить и праздновать любовь. Так почему бы не использовать этот шанс, чтобы в этом году выразить вашу любовь к свободному программному обеспечению?</p>
-        <p><a href="https://fsfe.org/campaigns/ilovefs/">Узнайте больше</a></p> 
-        ]]></string>
+  <string name="ilovefs_message"><![CDATA[<p>День святого Валентина - традиционно это день чтобы выразить и праздновать любовь. Так почему бы не использовать этот шанс, чтобы в этом году выразить вашу любовь к свободному программному обеспечению?</p>
+        <p><a href="https://fsfe.org/campaigns/ilovefs/">Узнайте больше</a></p>]]></string>
   <string name="ilovefs_rate">Оценить!</string>
   <string name="ilovefs_email">Напишите нам!</string>
   <string name="ilovefs_email_no_client">Почтовый клиент не установлен</string>

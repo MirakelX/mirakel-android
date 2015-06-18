@@ -19,10 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="ilovefs_title">Software Librea ♥ dut eguna</string>
-  <string name="ilovefs_message"><![CDATA[
-        <p>Balendin eguna tradizioz maitasuna zabaldu eta ospatzeko egun bat da. Aurten aukera hau Software Libreari diozun maitasuna erakusteko erabili dezakezu</p>
-        <p><a href="https://fsfe.org/campaigns/ilovefs/">Ikasi gehiago</a></p> 
-        ]]></string>
+  <string name="ilovefs_message"><![CDATA[<p>Balendin eguna tradizioz maitasuna zabaldu eta ospatzeko egun bat da. Aurten aukera hau Software Libreari diozun maitasuna erakusteko erabili dezakezu</p>
+        <p><a href="https://fsfe.org/campaigns/ilovefs/">Ikasi gehiago</a></p>]]></string>
   <string name="ilovefs_rate">Baloratu!</string>
   <string name="ilovefs_email">Idatzi gaitzazu!</string>
   <string name="ilovefs_email_no_client">Ez da ePosta bezerorik aurkitu</string>

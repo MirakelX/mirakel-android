@@ -19,10 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="ilovefs_title">I ♥ フリーソフトウェアの日</string>
-  <string name="ilovefs_message"><![CDATA[
-        <p>バレンタインデーは伝統的に愛を示し、愛を祝う日です. 今年は、フリーソフトウェアへの愛を示すチャンスとして捉えませんか?</p>
-        <p><a href="https://fsfe.org/campaigns/ilovefs/">詳しくは</a></p> 
-        ]]></string>
+  <string name="ilovefs_message"><![CDATA[<p>バレンタインデーは伝統的に愛を示し、愛を祝う日です. 今年は、フリーソフトウェアへの愛を示すチャンスとして捉えませんか?</p>
+        <p><a href="https://fsfe.org/campaigns/ilovefs/">詳しくは</a></p>]]></string>
   <string name="ilovefs_rate">評価する!</string>
   <string name="ilovefs_email">メールを送る!</string>
   <string name="ilovefs_email_no_client">メール クライアントが見つかりませんでした</string>
