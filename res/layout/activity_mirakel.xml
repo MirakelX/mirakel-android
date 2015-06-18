@@ -26,9 +26,8 @@
     <!-- The toolbar -->
     <de.azapps.mirakel.new_ui.views.MirakelActionBar
         android:id="@+id/actionbar"
-        android:layout_height="wrap_content"
+        android:layout_height="?android:attr/actionBarSize"
         android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
         android:background="?colorPrimary"
         android:elevation="@dimen/actionbar_elevation"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
