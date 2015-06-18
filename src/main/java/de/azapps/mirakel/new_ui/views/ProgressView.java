@@ -30,6 +30,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.OptionalUtils;
 

@@ -225,7 +225,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             getMenuInflater().inflate(R.menu.tablet_menu, menu);
         }
 
-        MenuHelper.showMenuIcons(menu);
+        MenuHelper.showMenuIcons(this, menu);
         return true;
     }
 

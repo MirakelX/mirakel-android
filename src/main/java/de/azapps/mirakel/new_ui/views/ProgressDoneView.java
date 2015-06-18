@@ -39,6 +39,7 @@ import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakelandroid.R;
 
 import static com.google.common.base.Optional.absent;

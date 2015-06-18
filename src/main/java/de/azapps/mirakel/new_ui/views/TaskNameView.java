@@ -29,6 +29,7 @@ import android.text.Layout;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakelandroid.R;
 
 public class TaskNameView extends TextView {

@@ -30,6 +30,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakelandroid.R;
 
