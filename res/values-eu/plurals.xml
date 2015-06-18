@@ -19,70 +19,92 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
   <plurals name="dev_toast">
-    <item quantity="other">%2$s 開発設定から %1$d ステップ離れました。</item>
+    <item quantity="one">urrats %1$d gehiago garatzaile ezarpenak %2$s egiteko.</item>
+    <item quantity="other">%1$d urrats gehiago garatzaile ezarpenak %2$s egiteko.</item>
   </plurals>
   <plurals name="selected_tasks">
-    <item quantity="other">%d タスク</item>
+    <item quantity="one">Zeregin bat</item>
+    <item quantity="other">%d zeregin</item>
   </plurals>
   <plurals name="selected_lists">
-    <item quantity="other">%d リスト</item>
+    <item quantity="one">Zerrenda bat</item>
+    <item quantity="other">%d Zerrenda</item>
   </plurals>
   <plurals name="list_delete">
-    <item quantity="other">リストを削除しますか?</item>
+    <item quantity="one">Zerrenda ezabatu?</item>
+    <item quantity="other">Zerrendak ezabatu?</item>
   </plurals>
   <plurals name="task_delete">
-    <item quantity="other">Delete Tasks</item>
+    <item quantity="one">Zeregina ezabatu?</item>
+    <item quantity="other">Zereginak ezabatu?</item>
   </plurals>
   <plurals name="due_year">
-    <item quantity="other">年</item>
+    <item quantity="one">Urte</item>
+    <item quantity="other">Urte</item>
   </plurals>
   <plurals name="due_day">
-    <item quantity="other">日</item>
+    <item quantity="one">Egun</item>
+    <item quantity="other">Egun</item>
   </plurals>
   <plurals name="due_minute">
-    <item quantity="other">分</item>
+    <item quantity="one">Minutu</item>
+    <item quantity="other">Minutu</item>
   </plurals>
   <plurals name="due_hour">
-    <item quantity="other">時間</item>
+    <item quantity="one">Ordu</item>
+    <item quantity="other">Ordu</item>
   </plurals>
   <plurals name="due_month">
-    <item quantity="other">ヶ月</item>
+    <item quantity="one">Hilabete</item>
+    <item quantity="other">Hilabete</item>
   </plurals>
   <plurals name="months">
-    <item quantity="other">ヶ月</item>
+    <item quantity="one">Hilabete</item>
+    <item quantity="other">Hilabete</item>
   </plurals>
   <plurals name="every_months">
-    <item quantity="other">%d ヶ月ごと</item>
+    <item quantity="one">Hilero</item>
+    <item quantity="other">%d hilero</item>
   </plurals>
   <plurals name="days">
-    <item quantity="other">日</item>
+    <item quantity="one">Egun</item>
+    <item quantity="other">Egun</item>
   </plurals>
   <plurals name="every_days">
-    <item quantity="other">%d 日ごと</item>
+    <item quantity="one">Egunero</item>
+    <item quantity="other">%d egunero</item>
   </plurals>
   <plurals name="years">
-    <item quantity="other">年</item>
+    <item quantity="one">Urte</item>
+    <item quantity="other">Urte</item>
   </plurals>
   <plurals name="every_years">
-    <item quantity="other">%d 年ごと</item>
+    <item quantity="one">Urtero</item>
+    <item quantity="other">%d urtero</item>
   </plurals>
   <plurals name="minutes">
-    <item quantity="other">分</item>
+    <item quantity="one">Minutu</item>
+    <item quantity="other">Minutu</item>
   </plurals>
   <plurals name="every_minutes">
-    <item quantity="other">%d 分ごと</item>
+    <item quantity="one">Minuturo</item>
+    <item quantity="other">%d minuturo</item>
   </plurals>
   <plurals name="hours">
-    <item quantity="other">時間</item>
+    <item quantity="one">Ordu</item>
+    <item quantity="other">Ordu</item>
   </plurals>
   <plurals name="every_hours">
-    <item quantity="other">%d 時間ごと</item>
+    <item quantity="one">Orduro</item>
+    <item quantity="other">%d orduro</item>
   </plurals>
   <plurals name="subtasks">
-    <item quantity="other">%d サブタスク</item>
+    <item quantity="one">Azpi-zeregin bat</item>
+    <item quantity="other">%d azpi-zeregin</item>
   </plurals>
   <plurals name="file">
-    <item quantity="other">%d ファイル</item>
+    <item quantity="one">Fitxategi bat</item>
+    <item quantity="other">%d fitxategi</item>
   </plurals>
 </resources>
 
