@@ -456,8 +456,6 @@ public class SwipeLinearLayout extends LinearLayout  {
         final FrameLayout container = (FrameLayout) wrapper.findViewById(R.id.leave_behind_center);
         setRipple(child, container);
         container.addView(child);
-        ((ImageView)wrapper.findViewById(R.id.left_leave_behind)).setColorFilter(Color.DKGRAY);
-        ((ImageView)wrapper.findViewById(R.id.right_leave_behind)).setColorFilter(Color.DKGRAY);
         if (isSwipeable(child)) {
             wrapper.setTag(SWIPEABLE_VIEW, child.getTag(SWIPEABLE_VIEW));
         }
