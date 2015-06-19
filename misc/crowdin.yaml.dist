@@ -32,8 +32,14 @@ files:
     source: /donationslib/res/values/lib_donations_strings.xml
     translation: /donationslib/res/values-%two_letters_code%/%original_file_name%
   -
-    source: /dashclock/res/values/dashclock_strings.xml
+    source: /dashclock/res/values/plurals.xml
     translation: /dashclock/res/values-%two_letters_code%/%original_file_name%
   -
-    source: /new_ui/res/values/lib_new_ui_strings.xml
+    source: /date-time-picker/res/values/plurals.xml
+    translation: /date-time-picker/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /settings/res/values/plurals.xml
+    translation: /settings/res/values-%two_letters_code%/%original_file_name%
+  -
+    source: /new_ui/res/values/strings.xml
     translation: /new_ui/res/values-%two_letters_code%/%original_file_name%
