@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="UTF-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
@@ -17,7 +16,7 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<resources xmlns:tools="http://schemas.android.com/tools"  tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Sync -->
     <string name="sync_add">Add account</string>
@@ -286,27 +285,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="add">Add</string>
     <string name="action_credits">Credits</string>
     <string name="action_credits_summary">About us</string>
-    <string name="title_activity_credits">Credits and about</string>
-    <string name="credits_github_description">Fork us on GitHub</string>
-    <string name="credits_googleplus_description">Join our G+ community</string>
-    <string name="credits_text_head">
-<![CDATA[
-<h3>Mirakel is open source, please feel free to contribute via GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Icon and design suggestions by <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>This is free Software (licensed under the <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Visit us on</p>
-]]>
-    </string>
-    <string name="credits_license">
-<![CDATA[<p>This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>]]>
-    </string>
-    <string name="credits_translations">Translations</string>
-    <string name="feedback">Send feedback</string>
-    <string name="credits_libraries">Used libraries</string>
-    <string name="credits_license_title">License</string>
     <string name="demo_mode">Demo mode</string>
     <string name="demo_drop_db">Reset demo database</string>
     <string name="write_logs_to_file">Write logs to file</string>
@@ -382,4 +360,21 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
 
     <string name="analytics_use">Report anonymous statistics</string>
     <string name="analytics_use_summary">The reports help us to improve Mirakel for you</string>
+
+    <!-- credits -->
+
+    <string name="credits_title">Mirakel</string>
+    <string name="credits_subtitle">Mirakel is open source, feel free to contribute via GitHub</string>
+    <string name="credits_dev">Development by Anatolij Zelenin and Georg Semmler</string>
+    <string name="credits_design">Icon &amp; Interface design by Alexander Käßner</string>
+    <string name="credits_github">GitHub</string>
+    <string name="credits_gplus">Google+</string>
+    <string name="credits_feedback">Send Feedback</string>
+    <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nThis is Free Software licensed under the GPLv3</string>
+    <string name="credits_translations">Translations</string>
+    <string name="credits_libraries">Libraries</string>
+    <string name="credits_license_title">License</string>
+    <string name="credits_license"><![CDATA[<p>This program is free software: you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>]]></string>
 </resources>
