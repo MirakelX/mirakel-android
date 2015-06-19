@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 source ./.subrepos
 if [ -f ./.localconfig ]; then
     source ./.localconfig
