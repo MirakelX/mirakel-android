@@ -19,7 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
-    <version name="3.0-beta1" date="2015-06-02" code="75">
+    <version name="3.0" date="2015-06-19" code="77">
         <text><![CDATA[Welcome Mirakel 3.0! This is a whole redesign of the App. If you want faster releases, then help us developing Mirakel!]]></text>
         <feature>Better!</feature>
         <feature>Faster!</feature>
