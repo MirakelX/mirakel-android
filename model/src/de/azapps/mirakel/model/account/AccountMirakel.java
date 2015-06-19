@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
+import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;

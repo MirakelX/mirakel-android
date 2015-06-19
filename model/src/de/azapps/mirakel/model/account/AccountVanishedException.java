@@ -22,6 +22,8 @@ package de.azapps.mirakel.model.account;
 import de.azapps.mirakel.model.ModelVanishedException;
 
 public class AccountVanishedException extends ModelVanishedException {
+    private long accountId;
+    private long listId;
 
     public AccountVanishedException() {
         super();
@@ -36,5 +38,15 @@ public class AccountVanishedException extends ModelVanishedException {
     }
     public AccountVanishedException(long accountId, long listId) {
         super("Account: " + accountId + " List: " + listId);
+        this.accountId = accountId;
+        this.listId = listId;
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public long getListId() {
+        return listId;
     }
 }

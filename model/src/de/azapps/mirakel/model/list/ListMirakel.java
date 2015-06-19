@@ -541,7 +541,13 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @Override
     public boolean shouldShowDoneToggle() {
-        return !isSpecial();
+        if (isSpecial()) {
+            return false;
+        }
+        return new MirakelQueryBuilder(context).and(Task.LIST_ID,
+                MirakelQueryBuilder.Operation.EQ,
+                this).and(Task.DONE, MirakelQueryBuilder.Operation.EQ,
+                          true).count(Task.URI) > 0L;
     }
 
 
