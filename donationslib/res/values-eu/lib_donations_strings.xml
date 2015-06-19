@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="donations__button_close">Itxi</string>
+  <string name="donations__flattr">Flattr</string>
+  <string name="donations__description">Aplikazio hau erabilgarria zaizu?\nBabestu bere garapena garatzailea diruz lagunduz!</string>
+  <string name="donations__flattr_description" formatted="false">Flattr %10 hartzen du hilero!</string>
+  <string name="donations__google_android_market">Google Play Denda</string>
+  <string name="donations__google_android_market_not_supported_title">Ezin da aplikaziotik bertatik ordaindu.</string>
+  <string name="donations__google_android_market_not_supported">Ezin da aplikaziotik bertatik ordaindu. Google Play Store ongi instalatuta dago?</string>
+  <string name="donations__google_android_market_description">Googlek diru laguntza bakoitzeko %30-a hartzen du!</string>
+  <string name="donations__google_android_market_donate_button">Diruz lagundu!</string>
+  <string name="donations__google_android_market_text">Zenbat?</string>
+  <string name="donations__paypal">PayPal</string>
+  <string name="donations__paypal_description">Zenbateko diru laguntza eman nahi duzun aukeratu dezakezu botoiari eman eta gero!</string>
+  <string name="donations__thanks_dialog_title">Eskerrik asko!</string>
+  <string name="donations__thanks_dialog">Eskerrik asko diru laguntzagatik!\nAsko eskertzen dut hau!</string>
+  <string name="donations__alert_dialog_title">Errorea gertatu da</string>
+  <string name="donations__alert_dialog_no_browser">Ez da nabigatzailerik aurkitu webgunea irekitzeko!</string>
+  <string-array name="donation_google_catalog_values">
+    <item>0,5 Euro</item>
+    <item>Euro 1</item>
+    <item>2 Euro</item>
+    <item>5 Euro</item>
+    <item>10 Euro</item>
+    <item>15 Euro</item>
+    <item>25 Euro</item>
+    <item>199 Euro</item>
+  </string-array>
+  <string name="donation_paypal_item">Mirakel diruz lagundu</string>
+  <string name="title_donations">Diruz lagundu</string>
+</resources>
+
