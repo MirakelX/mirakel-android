@@ -22,11 +22,6 @@
     android:title="@string/ui_settings_title" >
 
     <PreferenceCategory android:title="@string/general" >
-        <!--
-        <ListPreference
-            android:key="useTabletLayoutNew"
-            android:title="@string/useTabletLayout" />
-            -->
         <ListPreference
             android:defaultValue="-1"
             android:entries="@array/language_values"
