@@ -23,126 +23,162 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
+import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 
 public class CreditsFragment extends Fragment implements IDetailFragment<Settings> {
+
     private static final String[][] LIBRARIES = {
-        { "Gson", "Apache 2.0", "https://code.google.com/p/google-gson/" },
-        { "Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net" },
-        {
-            "Android Change Log", "Apache 2.0",
-            "https://code.google.com/p/android-change-log/"
-        },
-        { "ACRA", "Apache 2.0", "http://acra.ch" },
-        {
-            "HoloColorPicker", "Apache 2.0",
-            "https://github.com/LarsWerkman/HoloColorPicker"
-        },
-        {
-            "Progress Wheel", "",
-            "https://github.com/Todd-Davies/ProgressWheel"
-        },
-        {
-            "DateTimePicker Compatibility Library", "Apache 2.0",
-            "https://github.com/flavienlaurent/datetimepicker"
-        },
-        { "Webicons", "CC-Attrib", "http://fairheadcreative.com/" },
-        {
-            "Android Donations Lib", "Apache 2.0",
-            "https://github.com/dschuermann/android-donations-lib"
-        },
-        { "Changelog", "", "https://code.google.com/p/android-change-log/" }
+        {"Gson", "Apache 2.0", "https://code.google.com/p/google-gson/"},
+        {"Joda-Time", "Apache 2.0", "http://joda-time.sourceforge.net"},
+        {"Android Change Log", "Apache 2.0", "https://code.google.com/p/android-change-log/"},
+        {"ACRA", "Apache 2.0", "http://acra.ch"},
+        {"HoloColorPicker", "Apache 2.0", "https://github.com/LarsWerkman/HoloColorPicker"},
+        {"DateTimePicker Compatibility Library", "Apache 2.0", "https://github.com/flavienlaurent/datetimepicker"},
+        {"Guava", "Apache 2.0", "https://github.com/google/guava"},
+        {"Butter Knife", "Apache 2.0", "https://github.com/JakeWharton/butterknife"}
     };
     private static final String[][] TRANSLATIONS = {
-        { "Spanish", "macebal, sml" },
-        { "French", "Ghost of Kendo, waghanza, npettiaux, benasse" },
-        { "German", "Anatolij Zelenin, Georg Semmler, Patrik Kernstock" },
-        { "Portuguese", "Sérgio Marques" },
-        { "Russian", "Katy, Dmitry Derjavin" },
-        { "Spanisch", "macebal, RaindropR", "Pablo Corbalán (@monofluor)" },
-        { "Norwegian", "Jim-Stefhan Johansen" }, { "Slovenian", "mateju" },
-        { "Arabic", "Rajaa Gutknecht" }, { "Czech", "sarimak" },
-        { "Dutch", "Toon van Gerwen" },
-        { "Italian", "Rajaa Gutknecht, fazen, Claudio Arseni" },
-        { "Bulgarian", "Boriana Tcholakova" }, { "Polish", "mruwek" },
-        { "Catalan", "sml" }
+        {"български", "boriana_tcholakova"},
+        {"čeština", "boriana_tcholakova, Jaroslav Lichtblau, sarimak"},
+        {"Deutsch", "Anatolij Zelenin, Georg Semmler, Philipp Schmutz, Wilhelm Wedernikow, Tiziano Müller, madmaxbz, Julius Härtl, bummkugel, anton-w, overlook, granner, Patrik Kernstock"},
+        {"Español", "Rajaa Gutknecht, Gonzalo “Gonlos” Cortazar Vadillo, polkillas, macebal, Pablo Corbalan, afduggirala, ideas1, sml, Wenceslao Grillo"},
+        {"Euskal", "Osoitz"},
+        {"Français", "Rajaa Gutknecht, Olivier Le Moal, Ghost of Kendo, nbossard, choufleur, waghanza, Thomas Jost, Jordan Bouëllat, benasse, Vince4Git, senufo, Christophe Oger"},
+        {"Italiano", "Rajaa Gutknecht, madmaxbz, Claudio Arseni, fazen, Marco Bonifacio"},
+        {"Nederlands", "jaj.advert, mthmulders, arnoud, mthmulders, Barend, T-v-Gerwen"},
+        {"Polski", "-= Poll =-, Skibbi, mruwek"},
+        {"Português", "Sérgio Marques"},
+        {"Русский", "xoyk, Dmitry Derjavin, Mark Prechesny, Katy, iltrof, direwolf, Хадисов Александр"},
+        {"Slovenščina", "Matej"},
+        {"العربية", "Rajaa Gutknecht, عبد الناصر سعيد الثبيتي, S. Wasim Tayyeb"},
+        {"日本人", "bushrang3r"},
+        //{"Chinese", "SICONG JIANG, xiaobo zhou"},
+        //{"Swedish", "Henrik Mattsson-Mårn, AsavarTzeth"},
+        //{"Slovak", "bertone"},
+        //{"Hebrew", "michael1993"},
+        //{"Norwegian", "Jim-Stefhan Johansen"},
+        //{"Catalan", "sml"},
     };
-
+    private LayoutInflater inflater;
 
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(getItem().getName());
         }
+        this.inflater = inflater;
         final View rootView = inflater.inflate(R.layout.fragment_credits, null);
-        final TextView creditTextHead = (TextView) rootView.findViewById(R.id.credits_text_head);
-        creditTextHead.setText(Html
-                               .fromHtml(getString(R.string.credits_text_head)));
-        creditTextHead.setMovementMethod(LinkMovementMethod.getInstance());
-        // Set Libraries
-        final StringBuilder libs = new StringBuilder(LIBRARIES.length * 20);
-        for (final String[] library : CreditsFragment.LIBRARIES) {
-            libs.append("<a href=\"" + library[2] + "\"><b>" + library[0]
-                        + "</b></a> (" + library[1] + ")<br />");
-        }
-        final TextView creditTextLibs = (TextView) rootView.findViewById(R.id.credits_libraries_text);
-        creditTextLibs.setText(Html.fromHtml(libs.toString()));
-        creditTextLibs.setMovementMethod(LinkMovementMethod.getInstance());
-        // Set TRANSLATIONS
-        final StringBuilder trans = new StringBuilder(TRANSLATIONS.length * 20);
-        for (final String[] translation : CreditsFragment.TRANSLATIONS) {
-            trans.append("<b>" + translation[0] + ": </b>" + translation[1]
-                         + "<br/>");
-        }
-        final TextView creditTextTrans = (TextView) rootView.findViewById(R.id.credits_translations_text);
-        creditTextTrans.setText(Html.fromHtml(trans.toString()));
-        creditTextTrans.setMovementMethod(LinkMovementMethod.getInstance());
+
+        final TextView devCredits = (TextView) rootView.findViewById(R.id.dev_credits);
+        ViewHelper.setCompoundDrawable(devCredits,
+                                       ThemeManager.getColoredIcon(R.drawable.ic_build_white_24dp,
+                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+        final TextView designCredits = (TextView) rootView.findViewById(R.id.design_credits);
+        ViewHelper.setCompoundDrawable(designCredits,
+                                       ThemeManager.getColoredIcon(R.drawable.ic_brush_white_24dp,
+                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+        initTranslations(rootView);
+        initLibaries(rootView);
+        initButtons(rootView);
         final TextView creditTextLicense = (TextView) rootView.findViewById(R.id.credits_license_text);
-        creditTextLicense.setText(Html
-                                  .fromHtml(getString(R.string.credits_license)));
+        creditTextLicense.setText(Html.fromHtml(getString(R.string.credits_license)));
         creditTextLicense.setMovementMethod(LinkMovementMethod.getInstance());
 
+        return rootView;
+    }
+
+    private TextView getListTextView() {
+        return (TextView) inflater.inflate(R.layout.view_credits_list, null);
+    }
+
+    private void initLibaries(final View rootView) {
+        final LinearLayout librariesWrapper = (LinearLayout) rootView.findViewById(R.id.libraries_wrapper);
+
+        for (final String[] library : CreditsFragment.LIBRARIES) {
+            final String name = library[0];
+            final String license = library[1];
+            final String url = library[2];
+
+            final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
+                name + " (" + license + ")");
+            final URLSpan urlSpan = new URLSpan(url);
+            spannableStringBuilder.setSpan(urlSpan, 0, name.length(), 0);
+            spannableStringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, name.length(), 0);
+
+            final TextView textView = getListTextView();
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
+            textView.setText(spannableStringBuilder, TextView.BufferType.SPANNABLE);
+            librariesWrapper.addView(textView);
+        }
+    }
+
+    private void initTranslations(View rootView) {
+        final LinearLayout translationsWrapper = (LinearLayout) rootView.findViewById(
+                    R.id.translations_wrapper);
+
+        for (final String[] translation : CreditsFragment.TRANSLATIONS) {
+            final String language = translation[0];
+            final String translators = translation[1];
+
+            final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(
+                language + ": " + translators);
+            spannableStringBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,
+                                           language.length() + 2, 0);
+
+            final TextView textView = getListTextView();
+            textView.setText(spannableStringBuilder);
+
+            translationsWrapper.addView(textView);
+        }
+    }
+
+    private void initButtons(final View rootView) {
         // links
-        final ImageView imgGithub = (ImageView) rootView.findViewById(R.id.img_github);
-        imgGithub.setOnClickListener(new View.OnClickListener() {
+        final View buttonGitHub = rootView.findViewById(R.id.button_github);
+        buttonGitHub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View fv) {
                 Helpers.openURL(getActivity(), "https://github.com/MirakelX/mirakel-android/");
             }
         });
 
-        final ImageView imgGPlus = (ImageView) rootView.findViewById(R.id.img_gplus);
-        imgGPlus.setOnClickListener(new View.OnClickListener() {
+        final View buttonGPlus = rootView.findViewById(R.id.button_gplus);
+        buttonGPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Helpers.openURL(getActivity(), "https://plus.google.com/u/0/communities/110640831388790835840");
             }
         });
 
-        final Button btnFeedback = (Button) rootView.findViewById(R.id.send_feedback);
-        btnFeedback.setOnClickListener(new View.OnClickListener() {
+        final View buttonFeedback = rootView.findViewById(R.id.button_feedback);
+        buttonFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Helpers.contact(getActivity());
             }
         });
-        return rootView;
     }
 
     @NonNull

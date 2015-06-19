@@ -218,7 +218,7 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
                 e.putBoolean("remindersPersistent",
                              (Boolean) newValue);
                 e.commit();
-                ReminderAlarm.restart(getActivity());
+                ReminderAlarm.restart();
                 return true;
             }
         });

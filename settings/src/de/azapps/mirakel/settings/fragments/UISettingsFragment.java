@@ -55,22 +55,6 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
             i++;
         }
 
-        final ListPreference isTablet = (ListPreference) findPreference("useTabletLayoutNew");
-        final String[] values = {"0", "1", "2", "3"};
-        final String[] e = getResources().getStringArray(
-                               R.array.tablet_options);
-        isTablet.setEntries(e);
-        isTablet.setEntryValues(values);
-        isTablet.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(final Preference preference,
-                                              final Object newValue) {
-                final int value = Integer.parseInt(newValue.toString());
-                isTablet.setSummary(e[value]);
-                return true;
-            }
-        });
-
         final ListPreference language = (ListPreference) findPreference("language");
         setLanguageSummary(language, MirakelCommonPreferences.getLanguage());
         language.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
