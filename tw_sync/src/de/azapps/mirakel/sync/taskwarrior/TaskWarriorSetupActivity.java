@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -167,10 +168,7 @@ public class TaskWarriorSetupActivity extends Activity {
             (intent.getData() != null)) {
             handleFileIntent(intent);
         }
-        if (MirakelCommonPreferences.isDark()) {
-            setTheme(R.style.AppBaseThemeDARK);
-        }
-
+        ThemeManager.setTheme(this);
         setContentView(R.layout.activity_sync_taskwarrior);
         final Button scanQR = (Button) findViewById(R.id.sync_taskwarrior_scan_qr);
         scanQR.setOnClickListener(new OnClickListener() {
