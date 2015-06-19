@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
@@ -18,84 +19,220 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical"
-        android:padding="5dp"
-        tools:context=".CreditsFragment" >
+        tools:context=".CreditsFragment">
 
-        <TextView
-            android:id="@+id/credits_text_head"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/credits_text_head" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="0dp">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dip"
-                android:clickable="true"
-                android:contentDescription="@string/credits_github_description"
-                android:id="@+id/img_github"
-                android:src="@drawable/webicon_github" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/mirakel" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingStart="@dimen/marginLeft">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/credits_title"
+                            android:textAppearance="@style/TextAppearance.Bold.Large"
+                            android:textColor="?colorTextBlack"
+                            android:textSize="32sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/credits_subtitle"
+                            android:textColor="?attr/colorTextBlack"
+                            android:textAppearance="@style/TextAppearance.Bold.Small" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/dev_credits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/marginLeft"
+                    android:layout_marginTop="16dp"
+                    android:drawableStart="@drawable/ic_build_white_24dp"
+                    android:text="@string/credits_dev"
+                    android:textColor="?colorTextBlack"
+                    android:textAppearance="@style/TextAppearance.Regular.Small" />
+
+                <TextView
+                    android:id="@+id/design_credits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/ic_brush_white_24dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/credits_design"
+                    android:textColor="?colorTextBlack"
+                    android:textAppearance="@style/TextAppearance.Regular.Small" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/button_github"
+                        style="@style/ImageButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="@dimen/marginLeft"
+                        android:layout_marginEnd="@dimen/marginLeft"
+                        android:layout_weight="1">
+
+                        <TextView
+                            style="@style/ImageButtonStyleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_github_box_white_24dp"
+                            android:text="@string/credits_github" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/button_gplus"
+                        style="@style/ImageButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="@dimen/marginLeft"
+                        android:layout_weight="1">
+
+                        <TextView
+                            style="@style/ImageButtonStyleText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_google_plus_box_white_24dp"
+                            android:text="@string/credits_gplus" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/button_feedback"
+                    style="@style/ImageButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="@dimen/marginLeft">
+
+                    <TextView
+                        style="@style/ImageButtonStyleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_email_white_24dp"
+                        android:text="@string/credits_feedback" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="?colorTextGrey"
+                    android:text="@string/credits_copyright" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dip"
-                android:clickable="true"
-                android:contentDescription="@string/credits_googleplus_description"
-                android:id="@+id/img_gplus"
-                android:src="@drawable/webicon_googleplus" />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:id="@+id/translations_wrapper">
 
-        <Button
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/credits_translations"
+                    style="@style/CardTitleView" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/send_feedback"
-            android:text="@string/feedback" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="0dp">
 
-        <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:id="@+id/libraries_wrapper">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/credits_libraries"
+                    style="@style/CardTitleView" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/credits_translations"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="0dp">
 
-        <TextView
-            android:id="@+id/credits_translations_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/credits_libraries"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/credits_libraries_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/credits_license_title"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/credits_license_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/credits_license_title"
+                    style="@style/CardTitleView"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/credits_license"
+                    android:textAppearance="@style/TextAppearance.Light"
+                    android:textColor="?colorTextBlack"
+                    android:id="@+id/credits_license_text"/>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
     </LinearLayout>
 
 </ScrollView>
