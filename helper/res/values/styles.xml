@@ -19,16 +19,6 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar"></style>
-
-    <style name="AppBaseThemeDARK" parent="@android:style/Theme.Holo">
-
-    </style>
-
     <!-- new ui-->
     <style name="MirakelBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -54,14 +44,12 @@
         <item name="colorListsBackground">#FFFFFF</item>
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
-        <item name="colorDisabled">#CCCCCC</item>
+        <item name="colorDarkGrey">#FF444444</item>
 
         <item name="colorDueOverdue">#D0021B</item>
         <item name="colorDueToday">#D0021B</item>
         <item name="colorDueNext">#DA6807</item>
         <item name="colorDueFuture">#166BA8</item>
-
-        <item name="colorNavDrawerScrim">#77000000</item>
 
         <item name="colorPrio_2">#669900</item>
         <item name="colorPrio_1">#99CC00</item>
@@ -74,13 +62,18 @@
 
         <!-- The CAB should overlay the normal ActionBar -->
         <item name="windowActionModeOverlay">true</item>
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:actionModeBackground">?colorCAB</item>
         <item name="actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
-        <item name="android:actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
         <item name="android:actionModeStyle">@style/ActionModeStyle</item>
+
+        <!--Action bar style-->
+        <item name="android:actionBarStyle">@style/Mirakel.ActionBar</item>
+        <item name="actionBarStyle">@style/Mirakel.ActionBar</item>
+
     </style>
 
+    <style name="Mirakel.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
 
     <style name="MirakelBaseTheme.PopupMenuStyle" parent="@style/ThemeOverlay.AppCompat.Light">
         <item name="android:colorBackground">?colorTaskCard</item>
@@ -93,9 +86,12 @@
     </style>
 
     <style name="ActionModeStyle" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="background">?colorCAB</item>
         <item name="android:background">?colorCAB</item>
+        <item name="titleTextStyle">@style/ActionModeStyle.Title</item>
         <item name="android:titleTextStyle">@style/ActionModeStyle.Title</item>
-        <item name="android:height">?actionBarSize</item>
+        <item name="height">?android:actionBarSize</item>
+        <item name="android:height">?android:actionBarSize</item>
         <item name="android:minHeight">?actionBarSize</item>
     </style>
 
@@ -122,11 +118,6 @@
         <item name="android:minWidth">@dimen/flatbutton_min_width</item>
     </style>
 
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-    </style>
 
     <style name="LoginFormContainer">
         <item name="android:layout_width">match_parent</item>
