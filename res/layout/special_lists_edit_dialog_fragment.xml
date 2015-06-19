@@ -21,6 +21,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
+              android:paddingStart="@dimen/abc_dialog_padding_material"
+              android:paddingEnd="@dimen/abc_dialog_padding_material"
+              android:paddingTop="@dimen/abc_dialog_padding_top_material"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
@@ -28,15 +31,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/property_spinner"/>
-    <ScrollView
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/property_dialog_container"
         android:layout_weight="1"
-        android:layout_height="0px">
-        <FrameLayout
-            android:id="@+id/property_dialog_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </ScrollView>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
 
     <LinearLayout
         android:orientation="vertical"
