@@ -5,6 +5,8 @@ Mirakel – Easy task management for professionals
 
 [![Build Status](https://travis-ci.org/MirakelX/mirakel-android.png)](https://travis-ci.org/MirakelX/mirakel-android)
 
+[![Crowdin](https://d322cqt584bo4o.cloudfront.net/mirakel/localized.png)](https://crowdin.com/project/mirakel)
+
 *easy task management for professionals*
 
 Mirakel aims to help you to organize your tasks in a simple but powerful manner.
@@ -61,7 +63,7 @@ Don't hesitate to contact us, just write us an e-mail to mirakel@azapps.de.
 
 # License
 
-Copyright (c) 2013-2014 Anatolij Zelenin, Georg Semmler
+Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler
 
 
     This program is free software: you can redistribute it and/or modify
