@@ -44,6 +44,7 @@
         <item name="colorListsBackground">#FFFFFF</item>
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
+        <item name="colorDarkGrey">#FF444444</item>
 
         <item name="colorDueOverdue">#D0021B</item>
         <item name="colorDueToday">#D0021B</item>
