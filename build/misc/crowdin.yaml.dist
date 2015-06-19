@@ -5,9 +5,6 @@ base_path:  #EDIT THIS
 
 files:
   -
-    source: /main/res/values/strings.xml
-    translation: /main/res/values-%two_letters_code%/%original_file_name%
-  -
     source: /helper/res/values/lib_helper_strings.xml
     translation: /helper/res/values-%two_letters_code%/%original_file_name%
   -
@@ -29,9 +26,6 @@ files:
     source: /widget/res/values/lib_widget_strings.xml
     translation: /widget/res/values-%two_letters_code%/%original_file_name%
   -
-    source: /custom_views/res/values/lib_custom_views_strings.xml
-    translation: /custom_views/res/values-%two_letters_code%/%original_file_name%
-  -
     source: /changelog/res/values/lib_changelog_strings.xml
     translation: /changelog/res/values-%two_letters_code%/%original_file_name%
   -
@@ -47,5 +41,5 @@ files:
     source: /settings/res/values/plurals.xml
     translation: /settings/res/values-%two_letters_code%/%original_file_name%
   -
-    source: /new_ui/res/values/lib_new_ui_strings.xml
+    source: /new_ui/res/values/strings.xml
     translation: /new_ui/res/values-%two_letters_code%/%original_file_name%
