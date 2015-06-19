@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="!!!"
-
+        android:textColor="?colorTextWhite"
         android:id="@+id/priority_text"
         android:background="@drawable/priority_background"
         android:gravity="center"

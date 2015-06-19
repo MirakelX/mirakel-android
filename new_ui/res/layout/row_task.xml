@@ -69,6 +69,7 @@
                     android:id="@+id/task_name"
                     android:text="Example task"
                     custom:strokeSize="2dp"
+                    android:textColor="?colorTextBlack"
                     custom:strokeMargin="5dp"/>
 
                 <LinearLayout
