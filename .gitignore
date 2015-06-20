@@ -60,3 +60,4 @@ misc/crowdin.yaml
 \#*
 .\#*
 debug.keystore
+keystore-release.properties
