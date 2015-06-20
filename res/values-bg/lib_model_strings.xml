@@ -103,7 +103,6 @@
   <string name="share_footer">Споделено чрез Mirakel\n свободнитят ToDo-List инструмент за Андроид и мрежата\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Име</string>
   <string name="special_list_active">Покажи</string>
-  <string name="special_list_where">SQL-Where Query</string>
   <string name="special_list_sort_by">Сортиране по</string>
   <string name="special_list_def_list">Списък по подразбиране</string>
   <string name="special_list_def_date">Дата по подразбиране</string>
@@ -226,6 +225,13 @@
     <item quantity="one">година</item>
     <item quantity="other">години</item>
   </plurals>
+  <string name="monday">Понеделник</string>
+  <string name="tuesday">Вторник</string>
+  <string name="wednesday">Сряда</string>
+  <string name="thursday">Четвъртък</string>
+  <string name="friday">Петък</string>
+  <string name="saturday">Събота</string>
+  <string name="sunday">Неделя</string>
   <string name="accounts_all">Всички профили</string>
   <string name="stub_list_name">Нов списък</string>
 </resources>

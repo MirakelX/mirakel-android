@@ -104,7 +104,6 @@
 con Android e sul web\nhttp://mirakel.azapps.de]]></string>
   <string name="special_list_name">Nome</string>
   <string name="special_list_active">Visualizza</string>
-  <string name="special_list_where">Query SQL-Where</string>
   <string name="special_list_sort_by">Ordina per</string>
   <string name="special_list_def_list">Elenco predefinito</string>
   <string name="special_list_def_date">Data predefinita</string>
@@ -227,6 +226,13 @@ con Android e sul web\nhttp://mirakel.azapps.de]]></string>
     <item quantity="one">anno</item>
     <item quantity="other">anni</item>
   </plurals>
+  <string name="monday">Lunedi</string>
+  <string name="tuesday">Martedì</string>
+  <string name="wednesday">Mercoledì</string>
+  <string name="thursday">Venerdì</string>
+  <string name="friday">Venerdì</string>
+  <string name="saturday">Sabato</string>
+  <string name="sunday">Domenica</string>
   <string name="accounts_all">Tutti gli account</string>
   <string name="stub_list_name">Nuovo elenco</string>
 </resources>

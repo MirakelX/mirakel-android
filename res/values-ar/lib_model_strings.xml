@@ -102,7 +102,6 @@
   <string name="share_list_title">%1$s (%2$d)</string>
   <string name="special_list_name">الإسم</string>
   <string name="special_list_active">إظهار</string>
-  <string name="special_list_where">SQL-Where Query</string>
   <string name="special_list_sort_by">فرز حسب</string>
   <string name="special_list_def_list">القائمة الافتراضية</string>
   <string name="special_list_def_date">تاريخ إفتراضي</string>
@@ -201,6 +200,13 @@
     <item>حليب</item>
     <item>جبن</item>
   </string-array>
+  <string name="monday">الاثنين</string>
+  <string name="tuesday">الثلاثاء</string>
+  <string name="wednesday">الأربعاء</string>
+  <string name="thursday">الخميس</string>
+  <string name="friday">الجمعة</string>
+  <string name="saturday">السبت</string>
+  <string name="sunday">الأحد</string>
   <string name="stub_list_name">قائمة جديدة</string>
 </resources>
 

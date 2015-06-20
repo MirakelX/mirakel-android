@@ -102,7 +102,6 @@
   <string name="share_footer">Udostępniono za pomocą Mirakel\nWolnego (od wolności) narzędzia ToDo dla Androida i stron internetowych\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Nazwa</string>
   <string name="special_list_active">Pokaż</string>
-  <string name="special_list_where">Parametr `where` zapytania SQL</string>
   <string name="special_list_sort_by">Sortuj według</string>
   <string name="special_list_def_list">Domyślna lista</string>
   <string name="special_list_def_date">Domyślna Data</string>
@@ -202,6 +201,13 @@
     <item>Mleko</item>
     <item>Ser</item>
   </string-array>
+  <string name="monday">Poniedziałek</string>
+  <string name="tuesday">Wtorek</string>
+  <string name="wednesday">Środa</string>
+  <string name="thursday">Czwartek</string>
+  <string name="friday">Piątek</string>
+  <string name="saturday">Sobota</string>
+  <string name="sunday">Niedziela</string>
   <string name="stub_list_name">Nowa lista</string>
 </resources>
 

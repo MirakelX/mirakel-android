@@ -103,7 +103,6 @@
   <string name="share_footer">Partilhado com Mirakel\nA ferramenta livre (como liberdade) de tarefas para o Android e a Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Nome</string>
   <string name="special_list_active">Mostrar</string>
-  <string name="special_list_where">Consulta SQL-Where</string>
   <string name="special_list_sort_by">Ordenar por</string>
   <string name="special_list_def_list">Lista pré-definida</string>
   <string name="special_list_def_date">Data pré-definida</string>
@@ -226,6 +225,13 @@
     <item quantity="one">ano</item>
     <item quantity="other">anos</item>
   </plurals>
+  <string name="monday">segunda</string>
+  <string name="tuesday">terça</string>
+  <string name="wednesday">quarta</string>
+  <string name="thursday">quinta</string>
+  <string name="friday">sexta</string>
+  <string name="saturday">sábado</string>
+  <string name="sunday">domingo</string>
   <string name="accounts_all">Todas as contas</string>
   <string name="stub_list_name">Nova lista</string>
 </resources>

@@ -102,7 +102,6 @@
   <string name="share_footer">Souporaba s programom Mirakel\nOdprtokodni program za vodenje nalog in opomnikov za okolje Android in splet.\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Ime</string>
   <string name="special_list_active">Pokaži</string>
-  <string name="special_list_where">Možnosti prikaza</string>
   <string name="special_list_sort_by">Razvrsti po</string>
   <string name="special_list_def_list">Privzeti seznam</string>
   <string name="special_list_def_date">Privzeti datum</string>
@@ -202,6 +201,13 @@
     <item>Mleko</item>
     <item>Sir</item>
   </string-array>
+  <string name="monday">Ponedeljek</string>
+  <string name="tuesday">Torek</string>
+  <string name="wednesday">Sreda</string>
+  <string name="thursday">Četrtek</string>
+  <string name="friday">Petek</string>
+  <string name="saturday">Sobota</string>
+  <string name="sunday">Nedelja</string>
   <string name="stub_list_name">Nov seznam</string>
 </resources>
 
