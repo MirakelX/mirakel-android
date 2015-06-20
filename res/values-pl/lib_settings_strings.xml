@@ -72,12 +72,10 @@
   <string name="notifications_list_open">Otwórz listę</string>
   <string name="notifications_list_open_summary">Otwórz \"%s\"</string>
   <string name="default_list">Domyślna lista</string>
-  <string name="notifications_zero_show">Ukryj powiadomienie jeśli puste</string>
   <string name="reminder">Przypomnienie</string>
   <string name="reminders_persistent">Trwałe przypomnienia</string>
   <string name="reminders_persistent_summary">Nie można zamknąć przypomnienia</string>
   <string name="startup_title">Start aplikacji</string>
-  <string name="startup_show_lists">Pokaż wszystkie listy</string>
   <string name="startup_list_summary">Pokaż zadania z „%s”</string>
   <string name="special_lists_click">Zarządzanie meta listami</string>
   <string name="special_lists_new">Nowa meta lista</string>
@@ -99,8 +97,6 @@
   <string name="changelog_click">Dziennik zmian</string>
   <string name="settings_about">O programie</string>
   <string name="settings_help">Pomoc</string>
-  <string name="get_dashclock">Pobierz Mirakel-Dashclock</string>
-  <string name="get_dashclock_summary">Rozszerzenie Mirakel dla Dashclocka</string>
   <string name="import_astrid_click">Importuj z Astrida</string>
   <string name="astrid_success">Pomyślnie importowano wszystkie dane!</string>
   <string name="importing">Importowanie</string>
@@ -114,13 +110,7 @@
   <string name="import_wunderlist_title">Wybierz plik Wunderlisty</string>
   <string name="import_wunderlist_howto">Jak zaimportować z Wunderlist?</string>
   <string name="import_wunderlist_howto_text">Androidowa aplikacja Wunderlist nie posiada funkcjonalności wykonywania kopii zapasowych.\n\n Zatem musisz się zalogować do aplikacji w przeglądarce. Przejdź do Ustawienia → Konto → Utwórz kopię zapasową → (czekaj) → Kliknij aby pobrać. Skopiuj ten plik na swoje urządzenie i wróć tu ponownie.</string>
-  <string name="highlightSelected_summary">Podświetlaj listy/zadania po dotknięciu</string>
-  <string name="settings_date_format_relative">Pokaż daty względne</string>
   <string name="showDone">Pokaż zakończone zadania</string>
-  <string name="dark_theme">Ciemny temat kolorystyczny</string>
-  <string name="kill_button">Przycisk \"zabij\"</string>
-  <string name="kill_app">Zamknij aplikację</string>
-  <string name="kill_sure">Jesteś pewien???</string>
   <string name="ui_settings_title">Interfejs użytkownika</string>
   <string name="undo_number">Liczba zapisanych zmian</string>
   <string name="undo_number_summary">Cofnij zmiany %s</string>
@@ -128,20 +118,12 @@
   <string name="semantic_new_task">Nowy szablon zadania</string>
   <string name="semantic_new_task_config_summary">Konfiguruj warunki tworzenia nowych zadań</string>
   <string name="semantic_new_task_config">Konfiguruj szablony zadań</string>
-  <string name="lock_drawer_in_task_fragment_summary">Więc nie otworzysz jej przez przypadek</string>
-  <string name="lock_drawer_in_task_fragment">Zablokuj widok listy w szczegółach zadania</string>
-  <string name="useTabletLayout">Użyj trybu tabletowego</string>
   <string name="general">Ogólne</string>
-  <string name="tasks_fragment">Przegląd zadań</string>
-  <string name="task_fragment">Szczegóły zadania</string>
-  <string name="do_not_touch">Nie dotykaj</string>
-  <string name="list_fragment">Przegląd listy</string>
-  <string name="show_account_name">Pokaż nazwę konta</string>
   <string-array name="tablet_options">
     <item>nigdy</item>
     <item>w poziomie</item>
     <item>w pionie</item>
-    <item>w poziomie i pionie</item>
+    <item>portrait and landscape</item>
   </string-array>
   <string name="delete_done">Usuń wykonane zadania</string>
   <string name="delete_done_summary">Usuń wszystkie wykonane zadania</string>
@@ -154,8 +136,6 @@
   <string name="register">Zarejestruj</string>
   <string name="auto_backup_interval">Przedział czasu między automatycznymi kopiami zapasowymi</string>
   <string name="auto_backup_interval_summary">Utwórz kopię zapasową bazy danych co %s dni</string>
-  <string name="preferences_colorize">Kolory</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…lub tylko w meta listach?</string>
   <string name="settings_semantics_title">Konfiguruj szablony zadań</string>
   <string name="settings_semantics_condition">Warunek</string>
   <string name="settings_semantics_actions">Akcje</string>
@@ -203,40 +183,20 @@
   <string name="settings_subtask_add_to_same_list">Dodaj podzadania do listy</string>
   <string name="settings_subtask_add_to_same_list_summary">Lub wybierz listę domyślną, gdzie będą dodawane podzadania</string>
   <string name="settings_subtask_add_to_list_summary">Dodaj podzadania do \"%s\"</string>
-  <string name="settings_use_btn_speak">Pokaż przycisk rozpoznawania mowy</string>
-  <string name="settings_use_btn_audio">Pokaż przycisk nagrywania dźwięku</string>
   <string name="preferences_colorize_subtasks">Kolorować podzadania?</string>
   <string name="settings_tasks_title">Zadania</string>
-  <string name="settings_task_fragment">Ustawienia przeglądu zadań</string>
   <string name="settings_dev">Ustawienia deweloperskie</string>
   <string name="settings_dev_sync">Synchronizacja</string>
-  <string name="settings_dev_dump_tw_summary">Zrzuć otrzymane dane do /sdcard/mirakel/</string>
-  <string name="settings_dev_dump_tw">Zrzuć otrzymane TW-Messages</string>
   <string name="enable">Włączanie</string>
   <string name="disable">wyłączenie</string>
   <string name="enabled">włączone</string>
   <string name="disabled">wyłączone</string>
   <string name="change_dev_mode">Masz %s ustawienia deweloperskie!</string>
-  <string name="enableDebugLog">Włączyć Debug-Logcat?</string>
   <string name="action_contact">Kontakt / zgłoś błąd</string>
   <string name="action_contact_summary">Napisz do nas maila!</string>
   <string name="title_donations">Wesprzyj</string>
   <string name="add">Dodaj</string>
   <string name="action_credits">Autorzy</string>
-  <string name="title_activity_credits">Autorzy i informacje</string>
-  <string name="credits_github_description">Forkuj nas na github</string>
-  <string name="credits_googleplus_description">Dołącz do naszej społeczności na G+</string>
-  <string name="credits_text_head"><![CDATA[<h3>Mirakel jest Open Source. Zapraszamy do rozwijania na GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Ikony i sugestie projektu graficznego <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>To jest Wolne Oprogramowanie (licensed under the <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Zapraszamy na</p>]]></string>
-  <string name="credits_license"><![CDATA[<p>Ten program to darmowe oprogramowanie: możesz go rozpowszechniać i/lub modyfikować na zasadach <a href="https://www.gnu.org/licenses/gpl.html">Publiczną Licencji GNU</a> opublikowanej przez Free Software Foundation, w wersji 3, lub (jeżeli wolisz) w każdej następnej.</p>
-<p>Ten program jest rozpowszechniany w nadziei że okaże się przydatny, lecz nie dajemy na to ŻADNEJ GWARANCJI.  Przeczytaj Publiczną Licencje GNU aby dowiedzieć się więcej.</p>]]></string>
-  <string name="credits_translations">Tłumaczenia</string>
-  <string name="feedback">Wyślij sugestie</string>
-  <string name="credits_libraries">Użyte biblioteki</string>
-  <string name="credits_license_title">Licencja</string>
   <string name="demo_mode">Tryb demonstracyjny</string>
   <string name="demo_drop_db">Zresetuj demonstracyjną bazę danych</string>
   <string name="write_logs_to_file">Zapisuj logi do pliku</string>
@@ -258,5 +218,8 @@
   <string name="remove">Usuń</string>
   <string name="backup_title">Kopia zapasowa</string>
   <string name="title_settings">Ustawienia</string>
+  <string name="credits_title">Mirakel</string>
+  <string name="credits_translations">Tłumaczenia</string>
+  <string name="credits_license_title">Licencja</string>
 </resources>
 

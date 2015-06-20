@@ -77,12 +77,10 @@
   <string name="notifications_list_open">Открыть список</string>
   <string name="notifications_list_open_summary">Открыть \"%s\"</string>
   <string name="default_list">Список по умолчанию</string>
-  <string name="notifications_zero_show">Скрыть пустые оповещения</string>
   <string name="reminder">Напоминание</string>
   <string name="reminders_persistent">Постоянные напоминания</string>
   <string name="reminders_persistent_summary">Сделать невозможным закрыть напоминание</string>
   <string name="startup_title">Запуск приложения</string>
-  <string name="startup_show_lists">Показать все списки</string>
   <string name="startup_list">Выберите список автозагрузки</string>
   <string name="startup_list_summary">Показать задачи \"%s\"</string>
   <string name="special_lists_click">Управление метасписками</string>
@@ -105,8 +103,6 @@
   <string name="changelog_click">Список изменений</string>
   <string name="settings_about">О нас</string>
   <string name="settings_help">Помощь</string>
-  <string name="get_dashclock">Установить Mirakel-Dashclock</string>
-  <string name="get_dashclock_summary">Mirakel-расширение для Dashclock</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_success">Все данные успешно импортированы!</string>
   <string name="importing">Импортируется</string>
@@ -121,13 +117,7 @@
   <string name="import_wunderlist_title">Выберите файл Wunderlist</string>
   <string name="import_wunderlist_howto">Как импортировать из Wunderlist</string>
   <string name="import_wunderlist_howto_text">Приложение Wunderlist для Android не поддерживает резервные копии.\n\n Поэтому Вам надо зайти в веб-приложение. Перейдите в Настройки → Аккаунт → Создать резервную копию → (подождите) → Нажмите, чтобы скачать. Скопируйте этот файл на Ваше устройство и вернитесь назад.</string>
-  <string name="highlightSelected_summary">Выделите списки/дела нажатием на них</string>
-  <string name="settings_date_format_relative">Показывать относительные даты</string>
   <string name="showDone">Показывать выполненные дела</string>
-  <string name="dark_theme">Тёмная тема</string>
-  <string name="kill_button">Кнопка \"Закрыть\"</string>
-  <string name="kill_app">Закрыть приложение</string>
-  <string name="kill_sure">Вы действительно уверены???</string>
   <string name="ui_settings_title">Интерфейс</string>
   <string name="undo_number">Количество задач, сохраняемых в протоколе изменений</string>
   <string name="undo_number_summary">Отменить %s изменений</string>
@@ -135,22 +125,12 @@
   <string name="semantic_new_task">Новый шаблон задачи</string>
   <string name="semantic_new_task_config_summary">Настройте условия для создания новых задач</string>
   <string name="semantic_new_task_config">Настройка шаблонов задач</string>
-  <string name="swipeBehavior_title">Переключаться на Задачу при прикосновении</string>
-  <string name="swipeBehavior_summary">Переключаться на Задачу, к которой прикоснулись, или к последней выбранной</string>
-  <string name="lock_drawer_in_task_fragment_summary">Так что бы вы не открыли его случайно</string>
-  <string name="lock_drawer_in_task_fragment">Фиксировать вид списком в информации о Задаче</string>
-  <string name="useTabletLayout">Планшетный интерфейс</string>
   <string name="general">Общие</string>
-  <string name="tasks_fragment">Обзор задач</string>
-  <string name="task_fragment">Сведения о задаче</string>
-  <string name="do_not_touch">Не трогать</string>
-  <string name="list_fragment">Обзор списка</string>
-  <string name="show_account_name">Показать имя аккаунта</string>
   <string-array name="tablet_options">
     <item>никогда</item>
     <item>альбомная</item>
     <item>портретная</item>
-    <item>портретная &amp; альбомная</item>
+    <item>portrait and landscape</item>
   </string-array>
   <string name="delete_done">Удаление выполненных дел</string>
   <string name="delete_done_summary">Удалить все выполненные дела</string>
@@ -164,8 +144,6 @@
   <string name="register">Зарегистрироваться</string>
   <string name="auto_backup_interval">Интервал автоматического резервного копирования</string>
   <string name="auto_backup_interval_summary">Делать резервную копию базы данных каждые %s дня(-ей)</string>
-  <string name="preferences_colorize">Цвета</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…или только в метасписках?</string>
   <string name="settings_semantics_title">Настройка шаблонов задач</string>
   <string name="settings_semantics_condition">Состояние</string>
   <string name="settings_semantics_actions">Действия</string>
@@ -214,41 +192,21 @@
   <string name="settings_subtask_add_to_same_list">Добавить подзадачу в список задачи</string>
   <string name="settings_subtask_add_to_same_list_summary">Или укажите, в какой список по умолчанию должны добавляться подзадачи</string>
   <string name="settings_subtask_add_to_list_summary">Добавить подзадачу к %s</string>
-  <string name="settings_use_btn_speak">Показать кнопку микрофона</string>
-  <string name="settings_use_btn_audio">Показать кнопку записи аудио</string>
   <string name="preferences_colorize_subtasks">Раскрасить подзадачи?</string>
   <string name="settings_tasks_title">Дела</string>
-  <string name="settings_task_fragment">Параметры обзора задач</string>
   <string name="settings_dev">Конфигурируемые значения для разработки приложения</string>
   <string name="settings_dev_sync">Синхронизация</string>
-  <string name="settings_dev_dump_tw_summary">Экспортировать полученный текст в /sdcard/mirakel</string>
-  <string name="settings_dev_dump_tw">Экспортировать полученные сообщения из TaskWarrior</string>
   <string name="enable">Включение</string>
   <string name="disable">Отключение</string>
   <string name="enabled">включено</string>
   <string name="disabled">отключен</string>
   <string name="change_dev_mode">У вас есть %s параметров разработки!</string>
-  <string name="enableDebugLog">Включить отладку Logcat?</string>
   <string name="action_contact">Связаться / сообщить об ошибке</string>
   <string name="action_contact_summary">Напишите нам по электронной почте!</string>
   <string name="title_donations">Пожертвовать</string>
   <string name="add">Добавить</string>
   <string name="action_credits">Авторы</string>
   <string name="action_credits_summary">О нас</string>
-  <string name="title_activity_credits">Об авторах</string>
-  <string name="credits_github_description">Найдите нас на github</string>
-  <string name="credits_googleplus_description">Вступите в наше сообщество G+</string>
-  <string name="credits_text_head"><![CDATA[<h3>Mirakel имеет открытый код, не бойтесь вносить свой вклад через GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Иконки и дизайн от <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>Это бесплатное ПО (лицензировано под <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Посетите нас на</p>]]></string>
-  <string name="credits_license"><![CDATA[<p>Это бесплатное ПО: вы можете передавать/модифицировать его в соответствии со <a href="https://www.gnu.org/licenses/gpl.html">Стандартной общественной лицензией GNU</a>, опубликованной Фондом свободного ПО, (3 версия или выше).</p>
-<p>Эта программа распространяется в надежде на то, что она будет полезна, но без всяких гарантий; даже без подразумеваемых гарантий товарности или пригодности для какой-либо конкретной цели. Прочитайте Стандартную общественную лицензию GNU для дополнительной информации.</p>]]></string>
-  <string name="credits_translations">Локализация</string>
-  <string name="feedback">Обратная связь</string>
-  <string name="credits_libraries">Задействованные сторонние компоненты</string>
-  <string name="credits_license_title">Условия использования</string>
   <string name="demo_mode">Демонстрационный режим</string>
   <string name="demo_drop_db">Очистить демонстрационную базу данных</string>
   <string name="write_logs_to_file">Записать логи в файл</string>
@@ -294,5 +252,8 @@
   <string name="delete_condition">Удалить условие</string>
   <string name="delete_semantic">Удалить шаблон задачи</string>
   <string name="delete_special_lists">Удалить мета-список</string>
+  <string name="credits_title">Mirakel</string>
+  <string name="credits_translations">Локализация</string>
+  <string name="credits_license_title">Условия использования</string>
 </resources>
 

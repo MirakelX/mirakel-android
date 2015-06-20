@@ -77,12 +77,10 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="notifications_list_open">Seznam zobrazený z upozornění</string>
   <string name="notifications_list_open_summary">Zobrazit \"%s\"</string>
   <string name="default_list">Výchozí seznam</string>
-  <string name="notifications_zero_show">Skrýt prázdné upozornění</string>
   <string name="reminder">Upozornění</string>
   <string name="reminders_persistent">Trvalé upozornění</string>
   <string name="reminders_persistent_summary">Umožnit zavření upozornění</string>
   <string name="startup_title">Spuštění aplikace</string>
-  <string name="startup_show_lists">Zobrazit všechny seznamy</string>
   <string name="startup_list">Vybrat výchozí seznam</string>
   <string name="startup_list_summary">Zobrazit úkoly z \"%s\"</string>
   <string name="special_lists_click">Spravovat meta seznamy</string>
@@ -105,8 +103,6 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="changelog_click">Seznam změn</string>
   <string name="settings_about">O aplikaci</string>
   <string name="settings_help">Nápověda</string>
-  <string name="get_dashclock">Stáhnout Mirakel-Dashclock</string>
-  <string name="get_dashclock_summary">Rozšíření Mirakel pro Dashclock</string>
   <string name="import_astrid_click">Importovat z Astrid</string>
   <string name="astrid_success">Všechna data byla úspěšně importována!</string>
   <string name="importing">Probíhá import</string>
@@ -121,13 +117,7 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="import_wunderlist_title">Vybrat Wunderlist soubor</string>
   <string name="import_wunderlist_howto">Jak importovat z Wunderlist</string>
   <string name="import_wunderlist_howto_text">Aplikace Wunderlist nepodporuje zálohování.\n\nJe třeba se přihlásit na webovou stránku, pak jít na Předvolby → Účet → Vytvořit zálohu → (počkat) → Stáhnout. Zkopírujte stažený soubor do zařízení a pak se vraťte sem.</string>
-  <string name="highlightSelected_summary">Zvýraznit seznamy a úkoly po klepnutí</string>
-  <string name="settings_date_format_relative">Zobrazit relativní datum</string>
   <string name="showDone">Zobrazit vyřešené úkoly</string>
-  <string name="dark_theme">Tmavý vzhled</string>
-  <string name="kill_button">Tlačítko pro násilné ukončení</string>
-  <string name="kill_app">Zavřít aplikaci</string>
-  <string name="kill_sure">Jste opravdu jisti???</string>
   <string name="ui_settings_title">Uživatelské rozhraní</string>
   <string name="undo_number">Počet uložených změn</string>
   <string name="undo_number_summary">Vrátit %s změn</string>
@@ -135,22 +125,12 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="semantic_new_task">Nová šablona úlohy</string>
   <string name="semantic_new_task_config_summary">Konfigurovat podmínky pro vytváření nových úkolů</string>
   <string name="semantic_new_task_config">Konfigurovat šablony úloh</string>
-  <string name="swipeBehavior_title">Zobrazit detail úkolu tažením</string>
-  <string name="swipeBehavior_summary">Zobrazit detail taženého nebo naposledy vybraného úkolu</string>
-  <string name="lock_drawer_in_task_fragment_summary">Takže nedojde k jeho nechtěnému otevření z detailu úkolu</string>
-  <string name="lock_drawer_in_task_fragment">Uzamknout seznam úkolů</string>
-  <string name="useTabletLayout">Použít vzhled pro tablet</string>
   <string name="general">Všeobecné</string>
-  <string name="tasks_fragment">Přehled úkolů</string>
-  <string name="task_fragment">Podrobnosti úkolu</string>
-  <string name="do_not_touch">Nesahat</string>
-  <string name="list_fragment">Přehled seznamů</string>
-  <string name="show_account_name">Zobrazit jméno účtu</string>
   <string-array name="tablet_options">
     <item>nikdy</item>
     <item>Na šířku</item>
     <item>Na výšku</item>
-    <item>navýšku &amp; našířku</item>
+    <item>portrait and landscape</item>
   </string-array>
   <string name="delete_done">Odstranit vyřešené úkoly</string>
   <string name="delete_done_summary">Odstranit všechny vyřešené úkoly</string>
@@ -164,8 +144,6 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="register">Registrace</string>
   <string name="auto_backup_interval">Interval automatického zálohování</string>
   <string name="auto_backup_interval_summary">Zálohování databáze po uplynutí %s dnů</string>
-  <string name="preferences_colorize">Barvy</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…nebo jen ve zvláštních seznamech?</string>
   <string name="settings_semantics_title">Konfigurovat šablony úloh</string>
   <string name="settings_semantics_condition">Klíčové slovo</string>
   <string name="settings_semantics_actions">Akce</string>
@@ -214,41 +192,21 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="settings_subtask_add_to_same_list">Přidat podúkol do seznamu úkolů</string>
   <string name="settings_subtask_add_to_same_list_summary">Nebo do seznamu vyhrazeného pro podúkoly?</string>
   <string name="settings_subtask_add_to_list_summary">Přidat podúkol pro %s</string>
-  <string name="settings_use_btn_speak">Zobrazit tlačítko mikrofonu</string>
-  <string name="settings_use_btn_audio">Zobrazit tlačítko nahrávání zvuku</string>
   <string name="preferences_colorize_subtasks">Obarvit podúkoly?</string>
   <string name="settings_tasks_title">Úkoly</string>
-  <string name="settings_task_fragment">Nastavení přehledu úkolů</string>
   <string name="settings_dev">Vývojářská nastavení</string>
   <string name="settings_dev_sync">Synchronizace</string>
-  <string name="settings_dev_dump_tw_summary">Zapsat přijatý text do /sdcard/mirakel</string>
-  <string name="settings_dev_dump_tw">Zapsat přijaté TW-zprávy</string>
   <string name="enable">povoluji</string>
   <string name="disable">zakazuji</string>
   <string name="enabled">povoleno</string>
   <string name="disabled">zakázáno</string>
   <string name="change_dev_mode">Máte %s vývojářské nastavení!</string>
-  <string name="enableDebugLog">Povolit Debug-Logcat?</string>
   <string name="action_contact">Kontakt / nahlásit chybu</string>
   <string name="action_contact_summary">Pošlete nám e-mail!</string>
   <string name="title_donations">Podpořit</string>
   <string name="add">Přidat</string>
   <string name="action_credits">Poděkování</string>
   <string name="action_credits_summary">O nás</string>
-  <string name="title_activity_credits">O autorech</string>
-  <string name="credits_github_description">Zkopírovat na Githubu</string>
-  <string name="credits_googleplus_description">Připoj se k naší G+ komunitě</string>
-  <string name="credits_text_head"><![CDATA[<h3>Mirakel je open source, neváhejte přispívat přes GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Ikony a design navrhl <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>Toto je svobodný software (uvolněn pod <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Navštivte nás na</p>]]></string>
-  <string name="credits_license"><![CDATA[<p>Toto je svobodný software: můžete jej šířit a upravovat podle podmínek <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> vydávané Free Software Foundation, buď verze 3 licence, nebo (dle vlastního uvážení) libovolné pozdější verze.</p>
-<p>Tento program je šířen v naději, že bude užitečný, ale bez JAKÉKOLI ZÁRUKY; bez odvozené záruky PRODEJNOSTI nebo VHODNOSTI PRO URČITÝ ÚČEL. Viz GNU General Public License pro další podrobnosti.</p>]]></string>
-  <string name="credits_translations">Překlady</string>
-  <string name="feedback">Odeslat zpětnou vazbu</string>
-  <string name="credits_libraries">Použité knihovny</string>
-  <string name="credits_license_title">Licence</string>
   <string name="demo_mode">Demo režim</string>
   <string name="demo_drop_db">Resetovat demo databázi</string>
   <string name="write_logs_to_file">Zapisovat logy do souboru</string>
@@ -292,5 +250,8 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="due_dialog_negated">Ne po</string>
   <string name="settings_advanced">Pokročilé</string>
   <string name="delete_condition">Odstranit podmínku</string>
+  <string name="credits_title">Mirakel</string>
+  <string name="credits_translations">Překlady</string>
+  <string name="credits_license_title">Licence</string>
 </resources>
 

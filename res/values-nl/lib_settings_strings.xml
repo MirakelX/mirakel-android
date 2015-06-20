@@ -77,12 +77,10 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="notifications_list_open">Open lijst</string>
   <string name="notifications_list_open_summary">Open \"%s\"</string>
   <string name="default_list">voorkeurslijst</string>
-  <string name="notifications_zero_show">Meldingen verbergen bij een leeg veld</string>
   <string name="reminder">Herinnnering</string>
   <string name="reminders_persistent">Aanhoudende herinnering</string>
   <string name="reminders_persistent_summary">Maak het onmogelijk de herinnering te sluiten</string>
   <string name="startup_title">Start applicatie</string>
-  <string name="startup_show_lists">Alle lijsten tonen</string>
   <string name="startup_list">Opstart lijst selecteren</string>
   <string name="startup_list_summary">Taken tonen van \"%s\"</string>
   <string name="special_lists_click">Meta lijsten beheren</string>
@@ -105,8 +103,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="changelog_click">Logboekwijzigingen</string>
   <string name="settings_about">Over</string>
   <string name="settings_help">Help</string>
-  <string name="get_dashclock">Mirakel-Dashclock verkrijgen</string>
-  <string name="get_dashclock_summary">De Mirakel-extensie voor Dashclock</string>
   <string name="import_astrid_click">Astrid importeren</string>
   <string name="astrid_success">Alle gegevens zijn geïmporteerd!</string>
   <string name="importing">Importeren</string>
@@ -121,13 +117,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="import_wunderlist_title">Wunderlist bestand selecteren</string>
   <string name="import_wunderlist_howto">Howto importeren van Wunderlist</string>
   <string name="import_wunderlist_howto_text">De Android-app van Wunderlist biedt geen ondersteuning voor een reservekopie.\n\n dus je moet inloggen in het web-app. Ga naar Voorkeuren → Account → reservekopie maken → (wachten) → Klik om te downloaden. Kopieer dit bestand naar uw apparaat en kom dan terug.</string>
-  <string name="highlightSelected_summary">Lijsten/taken markeren wanneer u op hen klikt</string>
-  <string name="settings_date_format_relative">Relatieve datums weergeven</string>
   <string name="showDone">Afgeronde taken weergeven</string>
-  <string name="dark_theme">Donker thema</string>
-  <string name="kill_button">Doden knop</string>
-  <string name="kill_app">App afsluiten</string>
-  <string name="kill_sure">Bent u werkelijk zeker???</string>
   <string name="ui_settings_title">Gebruiksinterface</string>
   <string name="undo_number">Aantal opgeslagen wijzigingen</string>
   <string name="undo_number_summary">%s wijzigingen ongedaan maken</string>
@@ -135,22 +125,12 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="semantic_new_task">Nieuwe taak sjabloon</string>
   <string name="semantic_new_task_config_summary">Condities van nieuwe taken instellen</string>
   <string name="semantic_new_task_config">Taak sjablonen instellen</string>
-  <string name="swipeBehavior_title">Bij vegen overschakelen naar de geselecteerde taak</string>
-  <string name="swipeBehavior_summary">Schakel over naar de geselecteerde of laatste geselecteerde taak</string>
-  <string name="lock_drawer_in_task_fragment_summary">Zodat u het niet per ongeluk opent</string>
-  <string name="lock_drawer_in_task_fragment">Vergrendel de Lijst weergave bij de taak details</string>
-  <string name="useTabletLayout">Tablet weergave gebruiken</string>
   <string name="general">Algemeen</string>
-  <string name="tasks_fragment">Taak overzicht</string>
-  <string name="task_fragment">Taak details</string>
-  <string name="do_not_touch">Raak niet aan</string>
-  <string name="list_fragment">Lijst overzicht</string>
-  <string name="show_account_name">Accountnaam weergeven</string>
   <string-array name="tablet_options">
     <item>nooit</item>
     <item>horizontaal</item>
     <item>portret</item>
-    <item>portret &amp; horizontaal</item>
+    <item>portrait and landscape</item>
   </string-array>
   <string name="delete_done">Verwijder afgeronde taken</string>
   <string name="delete_done_summary">Verwijder alle afgeronde taken</string>
@@ -164,8 +144,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="register">Registreren</string>
   <string name="auto_backup_interval">Reservekopie interval</string>
   <string name="auto_backup_interval_summary">Reservekopie maken van de database om %s dagen</string>
-  <string name="preferences_colorize">Kleuren</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">.. .of alleen in de meta-lijsten?</string>
   <string name="settings_semantics_title">Taak sjablonen instellen</string>
   <string name="settings_semantics_condition">Voorwaarde</string>
   <string name="settings_semantics_actions">Acties</string>
@@ -214,41 +192,21 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="settings_subtask_add_to_same_list">Subtaak toevoegen aan de lijst van de taak</string>
   <string name="settings_subtask_add_to_same_list_summary">Of selecteer een standaardlijst, waar de subtaak wordt toegevoegd</string>
   <string name="settings_subtask_add_to_list_summary">Subtaak toevoegen naar %s</string>
-  <string name="settings_use_btn_speak">De microfoon knop weergeven</string>
-  <string name="settings_use_btn_audio">Toon de audio opname knop</string>
   <string name="preferences_colorize_subtasks">Subtaken inkleuren?</string>
   <string name="settings_tasks_title">Taken</string>
-  <string name="settings_task_fragment">Taakinstellingen overzicht</string>
   <string name="settings_dev">Ontwikkel instellingen</string>
   <string name="settings_dev_sync">Synchronisatie</string>
-  <string name="settings_dev_dump_tw_summary">De ontvangen text dumpen in  /sdcard/mirakel/</string>
-  <string name="settings_dev_dump_tw">Dump ontvangen TW-berichten</string>
   <string name="enable">Aan het inschakelen</string>
   <string name="disable">Aan het uitschakelen</string>
   <string name="enabled">Ingeschakeld</string>
   <string name="disabled">Uitgeschakeld</string>
   <string name="change_dev_mode">U heeft de ontwikkelingsinstellingen %s!</string>
-  <string name="enableDebugLog">Debug-Logcat inschakelen?</string>
   <string name="action_contact">Contact opnemen/ fouten melden</string>
   <string name="action_contact_summary">Schrijf ons een e-mail!</string>
   <string name="title_donations">Doneer</string>
   <string name="add">Toevoegen</string>
   <string name="action_credits">Colofon</string>
   <string name="action_credits_summary">Over ons</string>
-  <string name="title_activity_credits">Colofon en Over</string>
-  <string name="credits_github_description">Kopieer (Fork) de broncode op github</string>
-  <string name="credits_googleplus_description">Word lid van G + community</string>
-  <string name="credits_text_head"><![CDATA[<h3>Mirakel is open source, voel je vrij om mee te werken via GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Icoon en ontwerp suggesties door <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>Dit is vrije Software (licentie onder <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Bezoek ons op </p>]]></string>
-  <string name="credits_license"><![CDATA[<p>Dit programma is vrije software:  U kan de software distribueren en/of bewerken onder de voorwaarden van  de <a href="https://www.gnu.org/licenses/gpl.html">GNU Algemene Publieke Licentie</a> zoals gepubliceerd door de Free Software Foundation, ofwel versie 3 van de Licentie, of (naar eigen keuze) een latere versie.</p>
-<p>Dit programma is gedistribueerd in de hoop dat het nuttig is, maar komt ZONDER ENIGE GARANTIE; zonder zelfs de impliciete garantie van VERKOOPBAARHEID of geschiktheid voor EEN SPECIFIEK DOEL. Bekijk de GNU Algemene Publieke Licentie voor meer details.</p>]]></string>
-  <string name="credits_translations">Vertalingen</string>
-  <string name="feedback">Een terugkoppelingen versturen</string>
-  <string name="credits_libraries">Gebruikte bibliotheken</string>
-  <string name="credits_license_title">Licentie</string>
   <string name="demo_mode">Demonstratie modus</string>
   <string name="demo_drop_db">Start met oorpsronkelijke demo database</string>
   <string name="write_logs_to_file">Schrijf logs weg in een bestand</string>
@@ -294,5 +252,8 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="delete_condition">Voorwaarde verwijderen</string>
   <string name="delete_semantic">Taak sjabloon verwijderen</string>
   <string name="delete_special_lists">Meta lijst verwijderen</string>
+  <string name="credits_title">Mirakel</string>
+  <string name="credits_translations">Vertalingen</string>
+  <string name="credits_license_title">Licentie</string>
 </resources>
 
