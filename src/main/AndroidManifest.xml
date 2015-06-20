@@ -20,6 +20,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="de.azapps.mirakelandroid"
+          android:label="Mirakel"
           android:versionCode="77"
           android:versionName="3.0" >
 
@@ -39,6 +40,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <permission-group
         android:name="de.azapps.mirakel.PERMISSION"
@@ -66,7 +68,7 @@
     <!-- Dummy Permission for Sync-Service -->
     <permission
         android:name="de.azapps.mirakel.SYNC"
-        android:label=""
+        android:label="@string/app_name"
         android:permissionGroup="de.azapps.mirakel.PERMISSION"
         android:protectionLevel="signatureOrSystem" />
 
@@ -98,6 +100,7 @@
         <activity android:name="org.acra.CrashReportDialog"
                   android:theme="@style/Theme.Dialog"
                   android:launchMode="singleInstance"
+                  android:label="@string/app_name"
                   android:excludeFromRecents="true"
                   android:finishOnTaskLaunch="true" />
 
