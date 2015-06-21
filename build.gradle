@@ -106,12 +106,12 @@ android {
     }
     productFlavors {
         google {
-            flavorDimension "stores"
+            dimension "stores"
             assert localProps['analytics.trackingid'];
             buildConfigField "String", "TRACKER_ID", localProps['analytics.trackingid']
         }
         fdroid {
-            flavorDimension "stores"
+            dimension "stores"
         }
     }
 
