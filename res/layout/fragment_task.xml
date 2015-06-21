@@ -22,6 +22,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="NewApi"
     android:minWidth="@dimen/dialog_min_width"
     android:layout_marginStart="0dp"
     android:layout_width="wrap_content"
@@ -95,7 +96,6 @@
         android:layout_height="@dimen/divider_height"
         android:layout_marginTop="@dimen/padding_default_half"
         android:background="?colorDivider"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" />
 
 
@@ -203,7 +203,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
         android:background="?colorDivider"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" />
 
     <LinearLayout
@@ -220,6 +219,7 @@
             android:layout_weight="7"
             android:drawableStart="@drawable/ic_plus_grey600_24dp"
             android:paddingStart="@dimen/activity_vertical_margin"
+            android:layout_gravity="start"
             android:textAlignment="textStart"
             android:text="@string/task_add_more"
             android:background="?android:attr/selectableItemBackground"

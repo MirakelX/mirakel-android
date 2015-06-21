@@ -189,9 +189,7 @@ dependencies {
     testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.0-SNAPSHOT"
 
-    if(flavor == "google") {
-        compile 'com.google.android.gms:play-services-analytics:7.5.0'
-    }
+    googleCompile 'com.google.android.gms:play-services-analytics:7.5.0'
 
 }
 
