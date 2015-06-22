@@ -76,7 +76,7 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ListViewHolder holder, final Cursor cursor, int position) {
+    public void onBindViewHolder(final ListViewHolder holder, final Cursor cursor, final int position) {
         if (position == MirakelModelPreferences.getDividerPosition()) {
             holder.viewSwitcher.setDisplayedChild(1);
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
@@ -91,7 +91,7 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
             updateIcon(listMirakel, holder);
 
             final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
-            if (count != -1) {
+            if (count != -1L) {
                 holder.count.setText(String.valueOf(count));
             } else {
                 new UpdateTaskCountTask().execute(holder);
@@ -149,10 +149,10 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
     private void updateIcon(final ListMirakel listMirakel, final ListViewHolder holder) {
         // This is much faster and less annoying than using an async task.
         if (listMirakel.getIconPath().isPresent()) {
-            final Bitmap bitmap;
             final Uri iconUri = listMirakel.getIconPath().get();
             final String path = iconUri.toString();
             try {
+                final Bitmap bitmap;
                 if (path.startsWith("file:///android_asset/")) {
                     bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(path.replace("file:///android_asset/",
                                                         "")));
@@ -178,8 +178,8 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
 
     @Override
     public int getItemCount() {
-        int count = super.getItemCount();
-        if (count == 0 || count < MirakelModelPreferences.getDividerPosition()) {
+        final int count = super.getItemCount();
+        if ((count == 0) || (count < MirakelModelPreferences.getDividerPosition())) {
             return count;
         } else {
             return count + 1;
@@ -192,6 +192,13 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
         onBindViewHolder(viewHolder, getCursor(), position);
     }
 
+    @Override
+    protected boolean toggleSelection(final int pos) {
+        if (pos != MirakelModelPreferences.getDividerPosition()) {
+            return super.toggleSelection(pos);
+        }
+        return false;
+    }
 
     // For Multi-select
 
@@ -207,7 +214,7 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
     @NonNull
     protected ListMirakel getItemAt(int position) {
         final Cursor cursor = getCursor();
-        if (position > 0 && position > MirakelModelPreferences.getDividerPosition()) {
+        if ((position > 0) && (position > MirakelModelPreferences.getDividerPosition())) {
             position--;
         }
         cursor.moveToPosition(position);
@@ -222,7 +229,7 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
         selectedItems.delete(from);
         final int start = Math.min(from, to);
         final int end = Math.max(from, to);
-        final int delta = from > to ? 1 : -1;
+        final int delta = (from > to) ? 1 : -1;
         for (int i = start; i <= end; i++) {
             final boolean tmp = selectedItems.get(i);
             selectedItems.delete(i);
