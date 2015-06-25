@@ -77,12 +77,10 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="notifications_list_open">Lista a abrir</string>
   <string name="notifications_list_open_summary">Abrir \"%s\"</string>
   <string name="default_list">Lista pré-definida</string>
-  <string name="notifications_zero_show">Ocultar notificação se vazia</string>
   <string name="reminder">Lembrete</string>
   <string name="reminders_persistent">Lembrete persistente</string>
   <string name="reminders_persistent_summary">O lembrete nunca poderá ser fechado</string>
   <string name="startup_title">Ao iniciar</string>
-  <string name="startup_show_lists">Mostrar todas as listas</string>
   <string name="startup_list">Selecione a lista de arranque</string>
   <string name="startup_list_summary">Mostrar tarefas de \"%s\"</string>
   <string name="special_lists_click">Gerir meta-listas</string>
@@ -105,8 +103,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="changelog_click">Registo de alterações</string>
   <string name="settings_about">Sobre</string>
   <string name="settings_help">Ajuda</string>
-  <string name="get_dashclock">Obter Mirakel-Dashclock</string>
-  <string name="get_dashclock_summary">A extensão Mirakel para o Dashclock</string>
   <string name="import_astrid_click">Importar do Astrid</string>
   <string name="astrid_success">Todos os dados foram importados!</string>
   <string name="importing">Importação</string>
@@ -121,13 +117,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="import_wunderlist_title">Selecione o ficheiro Wunderlist</string>
   <string name="import_wunderlist_howto">Como importar dados do Wunderlist</string>
   <string name="import_wunderlist_howto_text">A versão Android do Wunderlist não tem a possibilidade de backups.\n\nPara o fazer, tem que iniciar sessão na aplicação web. Aceda a Preferências -&gt; Conta -&gt; (aguarde um pouco) -&gt; Clique para transferir. Copie o ficheiro para o seu dispositivo e regresse à aplicação.</string>
-  <string name="highlightSelected_summary">Realçar listas/tarefas ao clicar</string>
-  <string name="settings_date_format_relative">Mostrar data relativa</string>
   <string name="showDone">Mostrar tarefas terminadas</string>
-  <string name="dark_theme">Tema escuro</string>
-  <string name="kill_button">Botão para terminar</string>
-  <string name="kill_app">Fechar aplicação</string>
-  <string name="kill_sure">Tem a certeza?</string>
   <string name="ui_settings_title">Interface</string>
   <string name="undo_number">Número de alterações gravadas</string>
   <string name="undo_number_summary">Anular %s alterações</string>
@@ -135,22 +125,12 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="semantic_new_task">Novo modelo de tarefa</string>
   <string name="semantic_new_task_config_summary">Configurar condições para criação de novas tarefas</string>
   <string name="semantic_new_task_config">Configurar modelos de tarefa</string>
-  <string name="swipeBehavior_title">Trocar ao deslizar na tarefa clicada</string>
-  <string name="swipeBehavior_summary">Trocar para a tarefa clicada ou para a última tarefa selecionada</string>
-  <string name="lock_drawer_in_task_fragment_summary">Para que não seja aberta acidentalmente</string>
-  <string name="lock_drawer_in_task_fragment">Bloquear vista de lista nos detalhes da tarefa</string>
-  <string name="useTabletLayout">Utilizar esquema tablet</string>
   <string name="general">Geral</string>
-  <string name="tasks_fragment">Resumo de tarefas</string>
-  <string name="task_fragment">Detalhes da tarefa</string>
-  <string name="do_not_touch">Não tocar</string>
-  <string name="list_fragment">Resumo de listas</string>
-  <string name="show_account_name">Mostrar nome da conta</string>
   <string-array name="tablet_options">
     <item>nunca</item>
     <item>horizontal</item>
     <item>vertical</item>
-    <item>horizontal e vertical</item>
+    <item>portrait and landscape</item>
   </string-array>
   <string name="delete_done">Eliminar tarefas terminadas</string>
   <string name="delete_done_summary">Eliminar todas as tarefas terminadas</string>
@@ -164,8 +144,6 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="register">Registar</string>
   <string name="auto_backup_interval">Intervalo entre backups</string>
   <string name="auto_backup_interval_summary">Copiar base de dados a cada %s dias</string>
-  <string name="preferences_colorize">Cores</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">...ou apenas nas meta-listas?</string>
   <string name="settings_semantics_title">Configurar modelos de tarefa</string>
   <string name="settings_semantics_condition">Condição</string>
   <string name="settings_semantics_actions">Ações</string>
@@ -214,41 +192,21 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_subtask_add_to_same_list">Adicionar subtarefa à lista da tarefa</string>
   <string name="settings_subtask_add_to_same_list_summary">Ou selecione a lista para adição da subtarefa</string>
   <string name="settings_subtask_add_to_list_summary">Adicionar subtarefa de %s</string>
-  <string name="settings_use_btn_speak">Mostrar botão microfone</string>
-  <string name="settings_use_btn_audio">Mostrar botão de gravação áudio</string>
   <string name="preferences_colorize_subtasks">Colorir subtarefas?</string>
   <string name="settings_tasks_title">Tarefas</string>
-  <string name="settings_task_fragment">Definições de resumo de tarefas</string>
   <string name="settings_dev">Definições de desenvolvimento</string>
   <string name="settings_dev_sync">Sincronização</string>
-  <string name="settings_dev_dump_tw_summary">Guardar o texto recebido em /sdcard/mirakel/</string>
-  <string name="settings_dev_dump_tw">Guardar mensagens TW recebidas</string>
   <string name="enable">ativar</string>
   <string name="disable">desativar</string>
   <string name="enabled">ativo</string>
   <string name="disabled">inativo</string>
   <string name="change_dev_mode">Você %s as definições de desenvolvimento!</string>
-  <string name="enableDebugLog">Ativar logcat de depuração?</string>
   <string name="action_contact">Contactar/reportar erros</string>
   <string name="action_contact_summary">Escreva-nos uma mensagem eletrónica!</string>
   <string name="title_donations">Donativos</string>
   <string name="add">Adicionar</string>
   <string name="action_credits">Créditos</string>
   <string name="action_credits_summary">Quem somos</string>
-  <string name="title_activity_credits">Créditos e sobre</string>
-  <string name="credits_github_description">Fork no github</string>
-  <string name="credits_googleplus_description">Integre a nossa comunidade no G+</string>
-  <string name="credits_text_head"><![CDATA[<h3>Mirakel é uma aplicação open source. Pode colaborar no desenvolvimento através do GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Ícone e design por <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>Esta é uma aplicação livre (licenciada nos termos da <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Visite-nos em</p>]]></string>
-  <string name="credits_license"><![CDATA[<p>Esta é uma aplicação livre: pode distribuir e/ou modificar a aplicação nos termos da <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> conforme publicada pela Free Software Foundation, tanto na versão 3 da licença como (por opção) qualquer versão posterior.</p>
-<p>Este programa é disponibilizado com o intuito de ser útil mas NÃO POSSUI QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIALIZAÇÃO OU ADEQUAÇÃO A UM OBJETIVO CONCRETO. Consulte a GNU General Public License para mais detalhes.</p>]]></string>
-  <string name="credits_translations">Traduções</string>
-  <string name="feedback">Enviar comentários</string>
-  <string name="credits_libraries">Bibliotecas utilizadas</string>
-  <string name="credits_license_title">Licença</string>
   <string name="demo_mode">Modo de demonstração</string>
   <string name="demo_drop_db">Restaurar base de dados demo</string>
   <string name="write_logs_to_file">Gravar registos no ficheiro</string>
@@ -294,5 +252,8 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="delete_condition">Eliminar condição</string>
   <string name="delete_semantic">Eliminar modelo de tarefa</string>
   <string name="delete_special_lists">Eliminar meta-lista</string>
+  <string name="credits_title">Mirakel</string>
+  <string name="credits_translations">Traduções</string>
+  <string name="credits_license_title">Licença</string>
 </resources>
 

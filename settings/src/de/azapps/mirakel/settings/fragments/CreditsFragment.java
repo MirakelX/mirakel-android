@@ -53,7 +53,10 @@ public class CreditsFragment extends Fragment implements IDetailFragment<Setting
         {"HoloColorPicker", "Apache 2.0", "https://github.com/LarsWerkman/HoloColorPicker"},
         {"DateTimePicker Compatibility Library", "Apache 2.0", "https://github.com/flavienlaurent/datetimepicker"},
         {"Guava", "Apache 2.0", "https://github.com/google/guava"},
-        {"Butter Knife", "Apache 2.0", "https://github.com/JakeWharton/butterknife"}
+        {"Butter Knife", "Apache 2.0", "https://github.com/JakeWharton/butterknife"},
+        {"task-provider", "Apache 2.0", "https://github.com/dmfs/task-provider"},
+        {"DragSortRecycler", "Apache 2.0", "https://github.com/emileb/DragSortRecycler"},
+
     };
     private static final String[][] TRANSLATIONS = {
         {"български", "boriana_tcholakova"},

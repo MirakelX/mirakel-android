@@ -17,16 +17,18 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="NewApi">
 
-    <style name="ImageButtonStyle">
+    <style name="ImageButtonStyleBase">
         <item name="android:background">?colorAccent</item>
-        <item name="android:elevation">2dp</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:clickable">true</item>
     </style>
+    <style name="ImageButtonStyle" parent="ImageButtonStyleBase"/>
 
     <style name="ImageButtonStyleText">
         <item name="android:clickable">false</item>

@@ -77,12 +77,10 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="notifications_list_open">Elenco da aprire</string>
   <string name="notifications_list_open_summary">Apri \"%s\"</string>
   <string name="default_list">Elenco predefinito</string>
-  <string name="notifications_zero_show">Nascondi notifiche se vuote</string>
   <string name="reminder">Promemoria</string>
   <string name="reminders_persistent">Promemoria persistente</string>
   <string name="reminders_persistent_summary">Rende impossibile chiudere il promemoria</string>
   <string name="startup_title">Avvio applicazione</string>
-  <string name="startup_show_lists">Mostra tutti gli elenchi</string>
   <string name="startup_list">Selezionare l\'elenco d\'avvio</string>
   <string name="startup_list_summary">Mostra le attività di \"%s\"</string>
   <string name="special_lists_click">Gestione meta-elenchi</string>
@@ -105,8 +103,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="changelog_click">Changelog</string>
   <string name="settings_about">Informazioni</string>
   <string name="settings_help">Aiuto</string>
-  <string name="get_dashclock">Scarica Mirakel-Dashclock</string>
-  <string name="get_dashclock_summary">L\'estensione di Mirakel per Dashclock</string>
   <string name="import_astrid_click">Importa da Astrid</string>
   <string name="astrid_success">Tutti i dati importati correttamente</string>
   <string name="importing">Importazione</string>
@@ -121,13 +117,7 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="import_wunderlist_title">Seleziona il file Wunderlist</string>
   <string name="import_wunderlist_howto">Come importare da Wunderlist</string>
   <string name="import_wunderlist_howto_text">L\'App Android di Wunderlist non supporta una funzionalità di backup.\n\n Quindi devi effettuare il login nella pagina web. Vai a Preferenze → Account → Crea Backup → (attendi) → Clicca per scaricare. Copia questo file sul dispositivo e poi torna qui.</string>
-  <string name="highlightSelected_summary">Evidenzia elenchi e attività quando vengono selezionati</string>
-  <string name="settings_date_format_relative">Mostra date relative</string>
   <string name="showDone">Mostra attività completate</string>
-  <string name="dark_theme">Tema scuro</string>
-  <string name="kill_button">Termina applicazione</string>
-  <string name="kill_app">Chiudi l\'applicazione</string>
-  <string name="kill_sure">Proseguire veramente?</string>
   <string name="ui_settings_title">Interfaccia utente</string>
   <string name="undo_number">Numero di modifiche salvate</string>
   <string name="undo_number_summary">Annulla %s modifiche</string>
@@ -135,22 +125,12 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="semantic_new_task">Nuovo modello attività</string>
   <string name="semantic_new_task_config_summary">Configura le condizioni per la creazione di nuove attività</string>
   <string name="semantic_new_task_config">Configura modelli attività</string>
-  <string name="swipeBehavior_title">Allo scorrimento apri l\'attività toccata</string>
-  <string name="swipeBehavior_summary">Apri l\'attività che viene toccata o spostati all\'ultima attività selezionata</string>
-  <string name="lock_drawer_in_task_fragment_summary">In questo modo si eviterà l\'apertura accidentale</string>
-  <string name="lock_drawer_in_task_fragment">Blocca vista elenco nei dettagli dell\'attività</string>
-  <string name="useTabletLayout">Usa disposizione tablet</string>
   <string name="general">Generali</string>
-  <string name="tasks_fragment">Panoramica delle attività</string>
-  <string name="task_fragment">Dettagli dell\'attività</string>
-  <string name="do_not_touch">Non toccare</string>
-  <string name="list_fragment">Panoramica degli elenchi</string>
-  <string name="show_account_name">Mostra nome account</string>
   <string-array name="tablet_options">
     <item>Mai</item>
     <item>Orizzontale</item>
     <item>Verticale</item>
-    <item>Orizzontale e verticale</item>
+    <item>portrait and landscape</item>
   </string-array>
   <string name="delete_done">Elimina attività completate</string>
   <string name="delete_done_summary">Elimina tutte le attività completate</string>
@@ -164,8 +144,6 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="register">Registra</string>
   <string name="auto_backup_interval">Intervallo tra i backup automatici</string>
   <string name="auto_backup_interval_summary">Numero di giorni tra i backup automatici: %s</string>
-  <string name="preferences_colorize">Colori</string>
-  <string name="preferences_colorize_tasks_everywhere_summary">…o solo nei meta-elenchi?</string>
   <string name="settings_semantics_title">Configura modelli attività</string>
   <string name="settings_semantics_condition">Condizione</string>
   <string name="settings_semantics_actions">Azioni</string>
@@ -214,41 +192,21 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="settings_subtask_add_to_same_list">Aggiungi attività secondaria a elenco attività</string>
   <string name="settings_subtask_add_to_same_list_summary">O seleziona un elenco predefinito in cui aggiungere le attività secondarie</string>
   <string name="settings_subtask_add_to_list_summary">Aggiungi attività secondarie in %s</string>
-  <string name="settings_use_btn_speak">Mostra il pulsante del riconoscimento vocale</string>
-  <string name="settings_use_btn_audio">Mostra il pulsante per la registrazione audio</string>
   <string name="preferences_colorize_subtasks">Colora attività secondarie</string>
   <string name="settings_tasks_title">Attività</string>
-  <string name="settings_task_fragment">Impostazioni panoramica attività</string>
   <string name="settings_dev">Impostazioni di sviluppo</string>
   <string name="settings_dev_sync">Sincronizzazione</string>
-  <string name="settings_dev_dump_tw_summary">Sposta il testo ricevuto in /sdcard/mirakel/</string>
-  <string name="settings_dev_dump_tw">Dump ha ricevuto messaggi TW</string>
   <string name="enable">Attivazione</string>
   <string name="disable">Disattivazione</string>
   <string name="enabled">Attivate</string>
   <string name="disabled">Disattivate</string>
   <string name="change_dev_mode">%s impostazioni di sviluppo!</string>
-  <string name="enableDebugLog">Abilita debug logcat</string>
   <string name="action_contact">Contatti e segnalazione errori</string>
   <string name="action_contact_summary">Scrivici una email!</string>
   <string name="title_donations">Dona</string>
   <string name="add">Aggiungi</string>
   <string name="action_credits">Riconoscimenti</string>
   <string name="action_credits_summary">Informazioni</string>
-  <string name="title_activity_credits">Riconoscimenti e informazioni</string>
-  <string name="credits_github_description">Esegui il fork da GitHub</string>
-  <string name="credits_googleplus_description">Entra nella comunità su G+</string>
-  <string name="credits_text_head"><![CDATA[<h3>Mirakel è open-source, sentitevi liberi di contribuire attraverso GitHub.</h3>
-<p>&copy; 2013 <a href="mailto:az@azapps.de">Anatolij Zelenin</a>, <a href="mailto:georg_semmler_05@web.de">Georg Semmler</a></p>
-<p>Icone e suggerimenti sul design di <a href="http://alexkaessner.de/>Alexander Käßner</a></p>
-<p>Questo è software libero (rilasciato con licenza <a href="https://www.gnu.org/licenses/gpl.html">GPLv3</a>).</p>
-<p>Venite a trovarci su</p>]]></string>
-  <string name="credits_license"><![CDATA[<p>Questo programma è software libero; è possibile ridistribuirloe/o modifircarlo secondo i temrini della licenza <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> come pubblicata dalla Free Software Foundation; versione 3 della licenza, o (a scelta) una versione più recente.</p>
-<p>Questo programma è distribuito nella speranza che possa risultare utile, ma SENZA ALCUNA GARANZIA, nemmeno la garanzia implicita di COMMERCIABILITÀ O APPLICABILITÀ PER UNO SCOPO PARTICOLARE. Per maggiori dettagli consultare la GNU General Public License.</p>]]></string>
-  <string name="credits_translations">Traduzioni</string>
-  <string name="feedback">Invia feedback</string>
-  <string name="credits_libraries">Librerie usate</string>
-  <string name="credits_license_title">Licenza</string>
   <string name="demo_mode">Modalità demo</string>
   <string name="demo_drop_db">Ripristina database demo</string>
   <string name="write_logs_to_file">Scrivi i log in un file</string>
@@ -294,5 +252,8 @@ Presto anche l\'applicazione ufficiale DAVdroid sarà compatibile con Mirakel e 
   <string name="delete_condition">Elimina condizione</string>
   <string name="delete_semantic">Elimina modello di attività</string>
   <string name="delete_special_lists">Elimina meta-elenco</string>
+  <string name="credits_title">Mirakel</string>
+  <string name="credits_translations">Traduzioni</string>
+  <string name="credits_license_title">Licenza</string>
 </resources>
 

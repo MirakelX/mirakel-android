@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -90,6 +91,10 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
                     return true;
                 }
             });
+        }
+        final Preference analytics = findPreference("useAnalytics");
+        if(analytics != null && DefinitionsHelper.isFdroid()) {
+            getPreferenceScreen().removePreference(analytics);
         }
     }
 

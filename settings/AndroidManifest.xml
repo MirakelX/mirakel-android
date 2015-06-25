@@ -58,7 +58,7 @@
         <activity
             android:name=".model_settings.generic_list.GenericModelDetailActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_credits"
+            android:label="@string/action_credits"
             android:theme="@style/MirakelBaseTheme" >
         </activity>
     </application>
