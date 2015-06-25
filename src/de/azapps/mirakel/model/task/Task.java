@@ -612,8 +612,7 @@ public class Task extends TaskBase {
             return;
         }
         if (isStub()) {
-            Log.d(TAG, "It's a stub, don't save it");
-            return;
+            setIsStub(false);
         }
         if (isEdited(RECURRING) && !calledFromSync) {
             final Optional<Task> oldOptional = Task.get(getId());
@@ -986,6 +985,7 @@ public class Task extends TaskBase {
         dest.writeTypedList(getTags());
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
+        dest.writeByte(isStub ? (byte) 1 : (byte) 0);
     }
 
     private Task(final Parcel in) {
@@ -1013,6 +1013,7 @@ public class Task extends TaskBase {
         in.readTypedList(getTags(), Tag.CREATOR);
         this.setId(in.readLong());
         this.setName(in.readString());
+        this.isStub = in.readByte() != 0;
         final Optional<Task> t = get(getId());
         if (t.isPresent() && !this.equals(t.get())) {
             Task other = t.get();
