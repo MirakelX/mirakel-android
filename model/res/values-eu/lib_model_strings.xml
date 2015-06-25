@@ -103,7 +103,6 @@
   <string name="share_footer">Elkarbanatu Mirakel-ekin\nZeregin zerrendetarako tresna librea, Android eta Web bidez erabilgarria\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Izena</string>
   <string name="special_list_active">Erakutsi</string>
-  <string name="special_list_where">SQL-Where Itaunketa</string>
   <string name="special_list_sort_by">Ordenatzeko irizpidea</string>
   <string name="special_list_def_list">Lehenetsitako zerrenda</string>
   <string name="special_list_def_date">Lehenetsitako data</string>
@@ -226,6 +225,13 @@
     <item quantity="one">urte</item>
     <item quantity="other">urte</item>
   </plurals>
+  <string name="monday">Astelehena</string>
+  <string name="tuesday">Asteartea</string>
+  <string name="wednesday">Asteazkena</string>
+  <string name="thursday">Osteguna</string>
+  <string name="friday">Ostirala</string>
+  <string name="saturday">Larunbata</string>
+  <string name="sunday">Igandea</string>
   <string name="accounts_all">Kontu guztiak</string>
   <string name="stub_list_name">Zerrenda berria</string>
 </resources>

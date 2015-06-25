@@ -103,7 +103,6 @@
   <string name="share_footer">Gedeeld met Mirakel\nDe gratis (zoals in vrijheid) ToDo–List hulpmiddelen voor Android en het Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Naam</string>
   <string name="special_list_active">Weergeven</string>
-  <string name="special_list_where">SQL als zoekopdracht</string>
   <string name="special_list_sort_by">Sorteer op</string>
   <string name="special_list_def_list">Standaardlijst</string>
   <string name="special_list_def_date">Standaarddatum</string>
@@ -226,6 +225,13 @@
     <item quantity="one">jaar</item>
     <item quantity="other">jaar</item>
   </plurals>
+  <string name="monday">Maandag</string>
+  <string name="tuesday">Dinsdag</string>
+  <string name="wednesday">Woensdag</string>
+  <string name="thursday">Donderdag</string>
+  <string name="friday">Vrijdag</string>
+  <string name="saturday">Zaterdag</string>
+  <string name="sunday">Zondag</string>
   <string name="accounts_all">Alle accounts</string>
   <string name="stub_list_name">Nieuwe lijst</string>
 </resources>

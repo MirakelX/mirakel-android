@@ -93,6 +93,7 @@ abstract class TaskBase extends ModelBase {
     protected String uuid = "";
     @NonNull
     protected Optional<List<Tag>> tags = absent();
+    protected boolean isStub;
 
     TaskBase() {
         // nothing
@@ -614,6 +615,15 @@ abstract class TaskBase extends ModelBase {
     }
 
     @Override
+    public boolean isStub() {
+        return isStub || super.isStub();
+    }
+
+    public void setIsStub(boolean stub) {
+        this.isStub = stub;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -642,6 +652,7 @@ abstract class TaskBase extends ModelBase {
                  + (!this.tags.isPresent() ? 0 : this.tags.get().hashCode());
         result = prime * result + (this.updatedAt.hashCode());
         result = prime * result + (this.uuid.hashCode());
+        result = prime * result + (this.isStub ? 1249 : 1259);
         return result;
     }
 

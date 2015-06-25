@@ -156,18 +156,21 @@ public class Semantic extends SemanticBase {
         }
     }
 
-    public static void applySemantics(@NonNull final Task task, @NonNull String taskName) {
+    public static boolean applySemantics(@NonNull final Task task, @NonNull String taskName) {
         final String lowername = taskName.toLowerCase(Locale.getDefault());
         final String[] words = SPLIT_BY_WHITESPACE.split(lowername);
+        boolean change = false;
         for (final String word : words) {
             final Semantic semantic = semantics.get(word);
             if (semantic == null) {
                 break;
             }
+            change = true;
             semantic.apply(task);
             taskName = taskName.substring(word.length()).trim();
         }
         task.setName(taskName);
+        return change;
     }
 
     private static ListMirakel getDefaultList(final @NonNull Optional<AccountMirakel>

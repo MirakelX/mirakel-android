@@ -103,7 +103,6 @@
   <string name="share_footer">Odesláno z Mirakel\nOpenSource ToDo aplikace pro Android a Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Jméno</string>
   <string name="special_list_active">Zobrazit</string>
-  <string name="special_list_where">SQL WHERE dotaz</string>
   <string name="special_list_sort_by">Seřadit podle</string>
   <string name="special_list_def_list">Výchozí seznam</string>
   <string name="special_list_def_date">Výchozí datum</string>
@@ -229,6 +228,13 @@
     <item quantity="few">roky</item>
     <item quantity="other">let</item>
   </plurals>
+  <string name="monday">Pondělí</string>
+  <string name="tuesday">Úterý</string>
+  <string name="wednesday">Středa</string>
+  <string name="thursday">Čtvrtek</string>
+  <string name="friday">Pátek</string>
+  <string name="saturday">Sobota</string>
+  <string name="sunday">Neděle</string>
   <string name="accounts_all">Všechny účty</string>
   <string name="stub_list_name">Nový seznam</string>
 </resources>

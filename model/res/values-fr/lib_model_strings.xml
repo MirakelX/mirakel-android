@@ -103,7 +103,6 @@
   <string name="share_footer">Partagé avec Mirakel\nL\'outil libre de ToDo-List pour Android et le Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Nom</string>
   <string name="special_list_active">Afficher</string>
-  <string name="special_list_where">Requête SQL Where</string>
   <string name="special_list_sort_by">Trier par</string>
   <string name="special_list_def_list">Liste par défaut</string>
   <string name="special_list_def_date">Date par défaut</string>
@@ -204,6 +203,13 @@
     <item>Lait</item>
     <item>Fromage</item>
   </string-array>
+  <string name="monday">Lundi</string>
+  <string name="tuesday">Mardi</string>
+  <string name="wednesday">Mercredi</string>
+  <string name="thursday">Jeudi</string>
+  <string name="friday">Vendredi</string>
+  <string name="saturday">Samedi</string>
+  <string name="sunday">Dimanche</string>
   <string name="stub_list_name">Nouvelle liste</string>
 </resources>
 

@@ -103,7 +103,6 @@
   <string name="share_footer">Mirakel　と共有しました\nフリーの (自由な) Android 用 ToDo リストツールと Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">名前</string>
   <string name="special_list_active">表示</string>
-  <string name="special_list_where">SQL-Where クエリ</string>
   <string name="special_list_sort_by">並べ替え</string>
   <string name="special_list_def_list">デフォルトのリスト</string>
   <string name="special_list_def_date">デフォルトの日付</string>
@@ -223,6 +222,13 @@
   <plurals name="year">
     <item quantity="other"> 年</item>
   </plurals>
+  <string name="monday">月曜日</string>
+  <string name="tuesday">火曜日</string>
+  <string name="wednesday">水曜日</string>
+  <string name="thursday">木曜日</string>
+  <string name="friday">金曜日</string>
+  <string name="saturday">土曜日</string>
+  <string name="sunday">日曜日</string>
   <string name="accounts_all">すべてのアカウント</string>
   <string name="stub_list_name">新しいリスト</string>
 </resources>

@@ -103,7 +103,6 @@
   <string name="share_footer">Распределенно совместно с Mirakel\nСвободный App ToDo-списоков для Android и Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Имя</string>
   <string name="special_list_active">Показать</string>
-  <string name="special_list_where">SQL-Where-Запрос</string>
   <string name="special_list_sort_by">Сортировать по</string>
   <string name="special_list_def_list">Список по умолчанию</string>
   <string name="special_list_def_date">Дата по умолчанию</string>
@@ -229,6 +228,13 @@
     <item quantity="few">года</item>
     <item quantity="other">лет</item>
   </plurals>
+  <string name="monday">Понедельник</string>
+  <string name="tuesday">Вторник</string>
+  <string name="wednesday">Среда</string>
+  <string name="thursday">Четверг</string>
+  <string name="friday">Пятница</string>
+  <string name="saturday">Суббота</string>
+  <string name="sunday">Воскресенье</string>
   <string name="accounts_all">Все Аккаунты</string>
   <string name="stub_list_name">Новый список</string>
 </resources>

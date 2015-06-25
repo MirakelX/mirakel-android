@@ -129,8 +129,8 @@ public abstract class
         @Override
         public void onClick(@NonNull final View v) {
             if (selectMode) {
-                toggleSelection(getPosition());
-            } else if ((itemClickListener != null) && (getLayoutPosition() < getCursor().getCount())) {
+                toggleSelection(getLayoutPosition());
+            } else if ((itemClickListener != null) && (getLayoutPosition() < getItemCount())) {
                 itemClickListener.onItemSelected(getItemAt(getLayoutPosition()));
             }
         }
@@ -139,7 +139,9 @@ public abstract class
         public boolean onLongClick(@NonNull final View v) {
             if (!selectMode) {
                 setSelectMode(true);
-                toggleSelection(getPosition());
+                if (!toggleSelection(getLayoutPosition())) {
+                    setSelectMode(false);
+                }
             }
             return true;
         }
@@ -166,7 +168,10 @@ public abstract class
         notifyDataSetChanged();
     }
 
-    private void toggleSelection(final int pos) {
+    protected boolean toggleSelection(final int pos) {
+        if (pos >= getCursor().getCount()) {
+            return false;
+        }
         final T item = getItemAt(pos);
 
         if (selectedItems.get(pos, false)) {
@@ -177,13 +182,15 @@ public abstract class
             if (!multiSelectCallbacks.canAddItem(item)) {
                 if (getSelectedItemCount() == 0) {
                     setSelectMode(false);
+                    return false;
                 }
-                return;
+                return true;
             }
             selectedItems.put(pos, true);
             multiSelectCallbacks.onAddSelectedItem(item);
         }
         notifyItemChanged(pos);
+        return true;
     }
 
     /**
