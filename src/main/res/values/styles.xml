@@ -105,6 +105,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowMinWidthMajor">@dimen/abc_dialog_min_width_major</item>
+        <item name="windowMinWidthMinor">@dimen/abc_dialog_min_width_minor</item>
     </style>
 
 
