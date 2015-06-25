@@ -27,6 +27,7 @@ import android.os.Build;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import de.azapps.tools.Log;
@@ -85,10 +86,21 @@ public class DefinitionsHelper {
     public static String APK_NAME;
     public static String VERSIONS_NAME;
     public static int widgets[] = {};
+    private static FLAVOR flavor;
+
+    public enum FLAVOR {
+        GOOGLE, FDROID;
+    }
+
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public static void init(final Context ctx) {
+    public static void init(final Context ctx, final String flavor) {
         APK_NAME = ctx.getPackageName();
+        if("google".equals(flavor)) {
+            DefinitionsHelper.flavor = FLAVOR.GOOGLE;
+        } else {
+            DefinitionsHelper.flavor = FLAVOR.FDROID;
+        }
         try {
             VERSIONS_NAME = ctx.getPackageManager().getPackageInfo(
                                 ctx.getPackageName(), 0).versionName;
@@ -96,6 +108,16 @@ public class DefinitionsHelper {
             Log.wtf(TAG, "App not found", e);
             VERSIONS_NAME = "";
         }
+    }
+
+    public static FLAVOR getFlavor() {
+        return flavor;
+    }
+    public static boolean isGoogle() {
+        return flavor == FLAVOR.GOOGLE;
+    }
+    public static boolean isFdroid() {
+        return flavor == FLAVOR.FDROID;
     }
 
     public enum SYNC_STATE {
