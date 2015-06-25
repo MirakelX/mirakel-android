@@ -141,7 +141,7 @@ public class Mirakel extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        ReminderAlarm.destroy(this);
+        ReminderAlarm.destroy();
         Log.destroy();
     }
 
