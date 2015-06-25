@@ -209,8 +209,9 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         } else {
             listToAdd = ListMirakel.getInboxList(MirakelModelPreferences.getDefaultAccount());
         }
-        final Task task = Semantic.createStubTask(getString(R.string.task_new), fromNullable(listToAdd),
-                          false);
+        final Task task = Semantic.createTask(getString(R.string.task_new), fromNullable(listToAdd),
+                false);
+        task.setIsStub(true);
         mListener.onItemSelected(new TaskOverview(task));
     }
 

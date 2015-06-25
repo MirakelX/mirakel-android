@@ -59,11 +59,8 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
-import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.MirakelContentObserver;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -80,7 +77,6 @@ import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.mirakelandroid.R;
-import de.azapps.tools.Log;
 import de.azapps.widgets.SupportDateTimeDialog;
 
 import static com.google.common.base.Optional.of;
@@ -222,6 +218,12 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     public void onDismiss(final DialogInterface dialog) {
         super.onDismiss(dialog);
         unregisterContentObserver();
+        final boolean appliedSemantics = applySemantics();
+        if (!appliedSemantics && task.isStub()) {
+            task.destroy();
+        } else {
+            task.save();
+        }
     }
 
 
@@ -431,24 +433,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private void updateName() {
         taskNameEdit.clearFocus();
-        Semantic.applySemantics(task, taskNameEdit.getText().toString());
+        applySemantics();
         taskNameEdit.setText(task.getName());
-
-        // we create a new task when the user presses done because this is not unexpected for the
-        // user and makes our life a lot easier
-        if (task.isStub()) {
-            try {
-                // set the current task to the created one
-                task = task.create();
-                setContentObserver();
-                updateAll();
-            } catch (final DefinitionsHelper.NoSuchListException e) {
-                ErrorReporter.report(ErrorType.TASKS_NO_LIST);
-                Log.e(TAG, "NoSuchListException", e);
-            }
-        } else {
-            task.save();
-        }
+        task.save();
         taskNameViewSwitcher.showPrevious();
     }
 
@@ -457,7 +444,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         taskNameViewSwitcher.showNext();
         taskNameEdit.setText(task.getName());
         taskNameEdit.requestFocus();
-
     }
 
     private final Procedure<String> noteChangedListener = new
@@ -493,7 +479,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            //TODO
             final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_list_item_1, ListMirakel.all(false));
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -563,17 +548,14 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         }
     };
 
+    private boolean applySemantics() {
+        return Semantic.applySemantics(task, taskNameEdit.getText().toString());
+    }
+
     @OnClick(R.id.task_button_done)
     void doneClick() {
-        Semantic.applySemantics(task, taskNameEdit.getText().toString());
-        if (task.isStub()) {
-            try {
-                task.create();
-            } catch (final DefinitionsHelper.NoSuchListException e) {
-                ErrorReporter.report(ErrorType.TASKS_NO_LIST);
-                Log.e(TAG, "NoSuchListException", e);
-            }
-        }
+        applySemantics();
+        task.save();
         taskNameEdit.clearFocus();
         tagView.clearFocus();
         dismiss();
