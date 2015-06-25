@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Чуйте това!</string>
+  <string name="file_default_title">Вижте този файл</string>
+  <string name="photo_default_title">Вижте тази снимка</string>
+  <string name="today">Днес</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Изпращане на доклад за грешки/ Контакт</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Mirakel-версия: %1$s\n
+SDK-версия: %2$d\n
+Устройство: %3$s\n]]></string>
+  <string name="contact_chooser">Изпрати имейл…</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Опа! Вашето устройство не поддържа правене на снимки</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Няма място, където да запазя снимките. Извинявай!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Опа! Вашето устройство не поддържа Speech to Text</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Подзадачите не могат да образуват връзка</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Не знам как да отворя този файл - съжалявам</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Няма инсталиран имейл клиент</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Моля инсталирайте файлов мениджър</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Настъпи вътрешна грешка при анализа на името на файла</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Настъпи неочаквана грешка</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Файлът не беше намерен</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Настъпи грешка при експортирането на данните</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Настъпи грешка при внасянето на данните</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Неуспешно създаване на изображение. Файлът е прекалено голям</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Тази задача не може да бъде синхронизирана, защото нямате списъци</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Опа, списъка със задачата е изчезнал. Съжалявам…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Това не е файл от базата данни на Mirakel!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Настъпи проблем при внасянето на данни от Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior файла не беше намерен</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Конфирурационния файл не може да се изтегли</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">URL адресът не е правилен. Наистина ли сканирахте правилния код?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Нямам разрешение да чета този файл</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Леле, списъкът изчезна…</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Не знаем как да оправим този бъг. Mirakel рестартира.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Това име за списък вече съществува. Изберете друго.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Моля актуализирайте DAVdroid</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Файловият формат Wunderlist е променен. Моля свържете се с екипа на Mirakel.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с несъответстващ стандарт на приоритета.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">.При синхронизирането беше намерена задача с несъответстващ статус на приоритета.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">При синхронизирането беше намерена задача с несъответстваща дата на приоритета.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Анализирането на състоянието на металиста %s се провали. Моля съобщете за случилото се.</string>
+  <string name="permission_read_lbl">Четене на данни от Mirakel</string>
+  <string name="permission_read_desc">Разрешение за четене на данни от Mirakel</string>
+  <string name="permission_write_lbl">Запис на данни до Mirakel</string>
+  <string name="permission_write_desc">Разрешение за записване на данни до Mirakel</string>
+  <string name="permission_read_write_lbl">Четене/Записване на Mirakel данни</string>
+  <string name="title_settings">Настройки</string>
+  <string name="search_hint">Търсене на задачи</string>
+  <string name="search">Търсене</string>
+  <string name="search_result_title">Търси за %s</string>
+  <string name="tasks_new_str">Нова задача</string>
+  <string name="takePhoto">Направи снимка</string>
+  <string name="speak">Прочети</string>
+  <string name="delete_content">Сигурни ли сте, че искате да изтриете %s?</string>
+  <string name="dialog_move">Преместване на задачата</string>
+  <string name="list_title">Списъци</string>
+  <string name="menu_settings">Настройки</string>
+  <string name="menu_set_priority">Задаване на приоритет</string>
+  <string name="menu_do_task">Задаване на задачата като завършена</string>
+  <string name="action_undo">Отмени последната промяна</string>
+  <string name="action_sync_now">Синхронизирай сега</string>
+  <string name="action_contact">Контакт / съобщаване за грешки</string>
+  <string name="kill_app">Затваряне на приложението</string>
+  <string name="action_settings">Настройки</string>
+  <string name="save">Запази</string>
+  <string name="as_subtask">Добавяне към задача</string>
+  <string name="task_clone">Копиране на задачата</string>
+  <string name="task_menu_sorting">Сортиране на задачи</string>
+  <string name="list_menu_new_list">Нов списък</string>
+  <string name="share_using">Споделяне с</string>
+  <string name="share_task">Споделяне на задача</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Сподели списък</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Споделено чрез Mirakel\n свободнитят ToDo-List инструмент за Андроид и мрежата\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Смяна на цвета</string>
+  <string name="set_color">Задаване на цвят</string>
+  <string name="unset_color">Без цвят</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>Преименуване</item>
+    <item>Изтрий</item>
+    <item>Сподели</item>
+  </string-array>
+  <string name="crash_toast_text">Опа! Блокирах! Моля, стартирайте приложението отново, за да мога да изпратя съобщение на моя разработчик</string>
+  <string name="crash_dialog_title">Mirakel блокира</string>
+  <string name="crash_dialog_text">Възникна неочаквана грешка, която принуди приложението да спре. Моля, помогнете ни да я поправим като ни изпратите данни за грешката, всичко, което трябва да направите е да натиснете OK.</string>
+  <string name="crash_dialog_ok_toast">Благодарим!</string>
+  <string name="speak_lang_code">англ- САЩ</string>
+  <string-array name="audio_playback_options">
+    <item>Отваряне на файл</item>
+    <item>Пусни силно</item>
+    <item>Пусни тихо</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Промени</item>
+    <item>Премести</item>
+    <item>Изтрий</item>
+  </string-array>
+  <string name="edit">Промени</string>
+  <string name="no_reminder">Задаване на напомняне</string>
+  <string name="add_files">Добавяне на файл…</string>
+  <string name="file_select">Избиране на файл</string>
+  <string name="save_label">Свършено</string>
+  <string name="audio_record_file">Аудио запис</string>
+  <string name="image_file">Изображение</string>
+  <string name="task_fragment_header">Горен</string>
+  <string name="task_fragment_file">Файлове</string>
+  <string name="task_fragment_due">Краен срок</string>
+  <string name="task_fragment_reminder">Напомняне</string>
+  <string name="task_fragment_content">Бележки</string>
+  <string name="task_fragment_subtask">Подзадачи</string>
+  <string name="task_fragment_progress">Прогрес</string>
+  <string name="task_fragment_tags">Тагове</string>
+  <string name="audio_record_title">Аудио запис…</string>
+  <string name="audio_record_message">Записване…</string>
+  <string name="audio_playback_title">Аудио възпроизвеждане…</string>
+  <string name="audio_playback_select_title">Какво искате да правите?</string>
+  <string name="audio_playback_pause">Пауза</string>
+  <string name="audio_playback_play">Пускане</string>
+  <string name="audio_playback_stop">Спиране</string>
+  <string name="task_change_prio_title">Смяна на приоритета</string>
+  <string name="remove_subtask">Премахване на подзадача</string>
+  <string name="add_existing">Добавяне на съществуваща задача</string>
+  <string name="subtask_add_options">Филтър &gt;&gt;</string>
+  <string name="subtask_reminder">Задача с напомняне?</string>
+  <string name="new_task">Нова задача</string>
+  <string name="add_subtasks">Добавяне на подзадача…</string>
+  <string name="add">Добавяне</string>
+  <string name="add_subtask">Добавяне на подзадача</string>
+  <string name="file_no_activity">Не знам как да отворя този файл - съжалявам</string>
+  <string name="remove_files">Пемахване на файлове от задачата</string>
+</resources>
+

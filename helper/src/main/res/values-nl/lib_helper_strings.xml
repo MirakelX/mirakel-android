@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Luister naar dat!</string>
+  <string name="file_default_title">Bestand controleren</string>
+  <string name="photo_default_title">Bekijk deze foto</string>
+  <string name="today">Vandaag</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Meld een bug in Mirakel of neem contact met ons op</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Mirakel-version: %1$s\n
+SDK-version: %2$d\n
+Device: %3$s\n]]></string>
+  <string name="contact_chooser">E-mail verzenden…</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Oeps! Uw apparaat ondersteunt het nemen van foto \'s niet</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Er is geen plaats waar de foto kan worden opgeslagen. Sorry!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Oeps! Uw apparaat biedt geen ondersteuning voor spraak naar tekst</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Subtaak kan geen cirkelverwijzing vormen</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Geen E-mail cliënt ingesteld</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Installeer een bestandsbeheerder</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Er is een interne fout opgetreden bij het parsen van de bestandsnaam</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Er is een onverwachte fout opgetreden</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Dit bestand is niet gevonden</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het exporteren van de reservekopie</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden bij het importeren van het reservekopie</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Kan geen miniatuur genereren. Bestand is te groot</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">De taak kan niet worden gesynchroniseerd, omdat er geen lijst is</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">De lijst van de taak is verdwenen. Het spijt me…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Dit is geen Mirakel database bestand!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Er is een fout opgetreden tijdens het importeren van Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior bestand niet gevonden</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Kon het configuratiebestand niet downloaden</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">De URL is niet correct. Heeft u de juiste code gescand?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Geen toestemming om het bestand te lezen</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Oeps, de lijst is verdwenen...</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">We weten niet hoe we deze fout moeten oplossen. Mirakel start opnieuw op.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Lijstnaam bestaat al. Kies een andere.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Update DAVdroid alstublieft</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">De Wunderlist-bestandsindeling is gewijzigd. Gelieve dit te melden aan het Mirakel team.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Er was een taak met  een niet-standaard prioriteit tijdens het synchroniseren.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Er was een taak met niet-standaard voldoen status tijdens het synchroniseren.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Er was een taak met een niet-standaard datum tijdens het synchroniseren.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Het uitlezen van de meta lijst %s is mislukt. AUB rapporteer hoe dit gebeurd is.</string>
+  <string name="permission_read_lbl">Gegevens lezen van Mirakel</string>
+  <string name="permission_read_desc">Toestemming om gegevens te lezen van Mirakel</string>
+  <string name="permission_write_lbl">Schrijf gegevens naar Mirakel</string>
+  <string name="permission_write_desc">Toestemming om gegevens te schrijven bij Mirakel</string>
+  <string name="permission_read_write_lbl">Lezen/schrijven Mirakel gegevens</string>
+  <string name="title_settings">Instellingen</string>
+  <string name="search_hint">Zoek taken</string>
+  <string name="search">Zoeken</string>
+  <string name="search_result_title">Zoeken voor %s</string>
+  <string name="tasks_new_str">Nieuwe taak</string>
+  <string name="takePhoto">Neem een foto</string>
+  <string name="speak">Spreek</string>
+  <string name="delete_content">Bent u zeker dat u %s wil verwijderen?</string>
+  <string name="dialog_move">Verplaats taak</string>
+  <string name="list_title">Lijsten</string>
+  <string name="menu_settings">Instellingen</string>
+  <string name="menu_set_priority">Prioriteit instellen</string>
+  <string name="menu_do_task">Taak instellen als afgerond</string>
+  <string name="action_undo">Laatste ongedaan maken</string>
+  <string name="action_sync_now">Synchroniseer nu</string>
+  <string name="action_contact">Contact opnemen/ fouten melden</string>
+  <string name="kill_app">App afsluiten</string>
+  <string name="action_settings">Instellingen</string>
+  <string name="save">Opslaan</string>
+  <string name="as_subtask">Bij taak toevoegen</string>
+  <string name="task_clone">Kloon taak</string>
+  <string name="task_menu_sorting">Sorteer taken</string>
+  <string name="list_menu_new_list">Nieuwe lijst</string>
+  <string name="share_using">Deel met</string>
+  <string name="share_task">Deel taak</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Deel lijsten</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Gedeeld met Mirakel\nDe gratis (zoals in vrijheid) ToDo–List hulpmiddelen voor Android en het Web\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Kleur wijzigen</string>
+  <string name="set_color">Kleur instellen</string>
+  <string name="unset_color">Geen kleur</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>Hernoemen</item>
+    <item>Verwijderen</item>
+    <item>Delen</item>
+  </string-array>
+  <string name="crash_toast_text">OhJee! Ik ben vast gelopen! Start de applicatie opnieuw zodat een bericht naar mijn ontwikkelaar gestuurd kan worden</string>
+  <string name="crash_dialog_title">Mirakel is vast gelopen</string>
+  <string name="crash_dialog_text">Er is een onverwachte fout opgetreden waardoor de applicatie is gestopt. Help ons a.u.b. door ons de foutgegevens te sturen. Tik hiervoor op \'OK\'.</string>
+  <string name="crash_dialog_ok_toast">Bedankt!</string>
+  <string name="speak_lang_code">en-US</string>
+  <string-array name="audio_playback_options">
+    <item>Bestand openen</item>
+    <item>Luid afspelen</item>
+    <item>Stil afspelen</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Wijzig</item>
+    <item>Verplaats</item>
+    <item>Verwijderen</item>
+  </string-array>
+  <string name="edit">Wijzig</string>
+  <string name="no_reminder">Herinnering instellen</string>
+  <string name="add_files">Bestand toevoegen…</string>
+  <string name="file_select">bestand selecteren</string>
+  <string name="save_label">Afgerond</string>
+  <string name="audio_record_file">Audio opname</string>
+  <string name="image_file">Afbeelding</string>
+  <string name="task_fragment_header">Koptekst</string>
+  <string name="task_fragment_file">Bestanden</string>
+  <string name="task_fragment_due">Vervaldatum</string>
+  <string name="task_fragment_reminder">Herinnnering</string>
+  <string name="task_fragment_content">Notities</string>
+  <string name="task_fragment_subtask">Subtaken</string>
+  <string name="task_fragment_progress">Voortgang</string>
+  <string name="task_fragment_tags">Tags</string>
+  <string name="audio_record_title">Audio opname...</string>
+  <string name="audio_record_message">Opname...</string>
+  <string name="audio_playback_title"><![CDATA[Audio afspelen…]]></string>
+  <string name="audio_playback_select_title">Wat wilt u doen?</string>
+  <string name="audio_playback_pause">Pauze</string>
+  <string name="audio_playback_play">Spelen</string>
+  <string name="audio_playback_stop">Stop</string>
+  <string name="task_change_prio_title">Wijzig prioriteit</string>
+  <string name="remove_subtask">Verwijder subtaak</string>
+  <string name="add_existing">Voeg bestaande taak toe</string>
+  <string name="subtask_add_options">Filter &gt;&gt;</string>
+  <string name="subtask_reminder">Taak met herinnering?</string>
+  <string name="new_task">Nieuwe taak</string>
+  <string name="add_subtasks">Subtaak toevoegen…</string>
+  <string name="add">Toevoegen</string>
+  <string name="add_subtask">Subtaak toevoegen</string>
+  <string name="file_no_activity">Ik weet niet hoe dit bestand kan worden geopend – sorry</string>
+  <string name="remove_files">Verwijder taakbijlage</string>
+</resources>
+

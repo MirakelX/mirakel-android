@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Écouter ça!</string>
+  <string name="file_default_title">Titre par défaut</string>
+  <string name="photo_default_title">Photo par défaut</string>
+  <string name="humanDateTimeFormat">yyyy-MM-dd – kk:mm</string>
+  <string name="today">Aujourd’hui</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Mirakel Rapport d\'erreur/Demande de contact</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Mirakel-version: %1$s\n
+SDK-version: %2$d\n
+Device: %3$s\n]]></string>
+  <string name="contact_chooser">Envoyer un courriel…</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Oops ! Votre appareil ne permet pas de prendre des photos</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Désolé! L\'espace de stockage est insuffisant pour sauvegarder la photo.</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Oups! Votre appareil ne supporte pas la saisie vocale</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Les sous-tâches ne peuvent pas former de boucle</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Désolé, Je ne sais pas ouvrir ce fichier</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Pas d\'application de messagerie électronique installée</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Veuillez installer un gestionnaire de fichiers</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Une erreur interne est survenue lors de la lecture du nom du fichier</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Une erreur inattendue est survenue</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Le fichier n\'a pas pu être trouvé</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Une erreur s\'est produite lors de l\'export de la base de donnée</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Une erreur est survenue lors de l\'importation de la base de données</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">La vignette n\'a pas pu être créée car le fichier image est trop grand</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Cette tâche ne peut pas être synchronisée, car vous n\'avez pas de listes</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Oups, la liste de tâches a disparu. Désolé…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Le fichier n\'est pas une base de donnée Mirakel !</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Une erreur s\'est produite lors de l\'importation depuis Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Fichier Taskwarrior non trouvé</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Pas pu télécharger le fichier de config</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">L\'URL n\'est pas correcte. Avez-vous vraiment scanné le bon code?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Fichier protégé non accessible</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Houlà! la liste a disparu...</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Ce bug ne peut être réparé. Mirakel redémarre.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Il y a déjà une liste avec ce nom. Veuillez en choisir un autre.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Veuillez mettre à jour DAVdroid</string>
+  <string name="permission_read_lbl">Lecture de données depuis Mirakel</string>
+  <string name="permission_read_desc">Autorisation en lecture pour Mirakel</string>
+  <string name="permission_write_lbl">Écriture de données vers Mirakel</string>
+  <string name="permission_write_desc">Autorisation en écriture vers Mirakel</string>
+  <string name="permission_read_write_lbl">Lecture/écriture données de Mirakel</string>
+  <string name="title_settings">Paramètres</string>
+  <string name="search_hint">Chercher des tâches</string>
+  <string name="search">Rechercher</string>
+  <string name="search_result_title">Recherche de %s</string>
+  <string name="tasks_new_str">Nouvelle tâche</string>
+  <string name="takePhoto">Prendre une photo</string>
+  <string name="speak">Parlez</string>
+  <string name="delete_content">Êtes-vous sûr de vouloir supprimer %s ?</string>
+  <string name="dialog_move">Déplacer la tâche</string>
+  <string name="list_title">Listes</string>
+  <string name="menu_settings">Paramètres</string>
+  <string name="menu_set_priority">Régler la priorité</string>
+  <string name="menu_do_task">Définir la tâche comme accomplie</string>
+  <string name="action_undo">Annuler la dernière modification</string>
+  <string name="action_sync_now">Synchroniser maintenant</string>
+  <string name="action_contact">Contact / signaler un Bug</string>
+  <string name="kill_app">Fermer l\'application</string>
+  <string name="action_settings">Paramètres</string>
+  <string name="save">Sauvegarder</string>
+  <string name="as_subtask">Ajouter à une tâche</string>
+  <string name="task_clone">Dupliquer la tâche</string>
+  <string name="task_menu_sorting">Trier les tâches</string>
+  <string name="list_menu_new_list">Nouvelle liste</string>
+  <string name="share_using">Partager avec</string>
+  <string name="share_task">Partager la tâche</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Partager la liste</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Partagé avec Mirakel\nL\'outil libre de ToDo-List pour Android et le Web\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Changer la couleur</string>
+  <string name="set_color">Configurer la Couleur</string>
+  <string name="unset_color">Pas de couleur</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>Renommer</item>
+    <item>Supprimer</item>
+    <item>Partager</item>
+  </string-array>
+  <string name="crash_toast_text">Oups! plantage ! Veuillez me redémarrer pour envoyer un rapport à mon développeur</string>
+  <string name="crash_dialog_title">Mirakel est plantée</string>
+  <string name="crash_dialog_text">L\'application s\'est soudainement interrompue. Confirmez-vous l\'envoi d\'un rapport afin de nous aider à corriger cette erreur ?</string>
+  <string name="crash_dialog_ok_toast">Merci !</string>
+  <string name="speak_lang_code">fr-FR</string>
+  <string-array name="audio_playback_options">
+    <item>Ouvrir le fichier</item>
+    <item>Lecture forte</item>
+    <item>Lecture silencieuse</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Modifier</item>
+    <item>Déplacer</item>
+    <item>Supprimer</item>
+  </string-array>
+  <string name="edit">Modifier</string>
+  <string name="no_reminder">Définir un rappel</string>
+  <string name="add_files">Ajoutez un fichier...</string>
+  <string name="file_select">Sélectionner un fichier</string>
+  <string name="save_label">Fini</string>
+  <string name="audio_record_file">Fichier audio</string>
+  <string name="image_file">Image</string>
+  <string name="task_fragment_header">Entête</string>
+  <string name="task_fragment_file">Fichiers</string>
+  <string name="task_fragment_due">Échéance</string>
+  <string name="task_fragment_reminder">Rappel</string>
+  <string name="task_fragment_content">Remarques</string>
+  <string name="task_fragment_subtask">Tâches subordonnées</string>
+  <string name="task_fragment_progress">Progrès</string>
+  <string name="task_fragment_tags">Étiquettes</string>
+  <string name="audio_record_title">Enregistrement audio...</string>
+  <string name="audio_record_message">Enregistrement…</string>
+  <string name="audio_playback_title">Lecture audio…</string>
+  <string name="audio_playback_select_title">Que voulez-vous faire ?</string>
+  <string name="audio_playback_pause">Pause</string>
+  <string name="audio_playback_play">Lecture</string>
+  <string name="audio_playback_stop">Arrêt</string>
+  <string name="task_change_prio_title">Modifier la priorité</string>
+  <string name="remove_subtask">Enlever la sous-tâche</string>
+  <string name="add_existing">Ajoutez une tâche existante</string>
+  <string name="subtask_add_options">Filtre &gt;&gt;</string>
+  <string name="subtask_reminder">Tâche avec rappel ?</string>
+  <string name="new_task">Nouvelle tâche</string>
+  <string name="add_subtasks">Ajouter une sous-tâche…</string>
+  <string name="add">Ajouter</string>
+  <string name="add_subtask">Ajouter une sous-tâche</string>
+  <string name="file_no_activity">Désolé, Je ne sais pas ouvrir ce fichier</string>
+  <string name="remove_files">Enlever les fichiers de la tâche</string>
+</resources>
+

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Poslechnout!</string>
+  <string name="file_default_title">Přečtěte si tento soubor</string>
+  <string name="photo_default_title">Prohlédněte si tuto fotografii</string>
+  <string name="today">Dnes</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Pošlete hlášení chyby/Kontaktujte autory aplikace</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Verze Mirakel: %1$s\n
+Verze SDK: %2$d\n
+Zařízení: %3$s\n]]></string>
+  <string name="contact_chooser">Odeslat e-mail…</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Ups! Zařízení neumí fotografovat</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Fotografii nelze nikam uložit. Je mi líto!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Ups! Váš přístroj nepodporuje převod textu na řeč</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Podúkoly nelze cyklit</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Bohužel, daný soubor nelze otevřít</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Není nainstalován žádný e-mailový klient</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Nainstalujte si prosím správce souborů</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Došlo k vnitřní chybě při analýze jména souboru</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Došlo k neočekávané chybě</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Soubor nebyl nalezen</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Došlo k chybě při exportování databáze</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Došlo k chybě při importování databáze</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Nelze vygenerovat náhled. Soubor je příliš velký</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Tento úkol nelze synchronizovat, protože nemáte žádné seznamy</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Jejda, seznam zmizel. Omlouvám se…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Toto není soubor databáze Mirakel!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Došlo k chybě při importu z Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior soubor nenalezen</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Nelze stáhnout konfigurační soubor</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">Adresa URL není správná. Opravdu jste načetli správný kód?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Nemáte oprávnění číst soubor</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Jejda, seznam zmizel…</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Nevíme jak opravit tuto chybu. Mirakel se restartuje.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Název seznamu již existuje. Vyberte nějaký jiný.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Prosím aktualizujte DAVdroid</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Formát souboru Wunderlist byl změněn. Nahlašte to týmu Mirakel.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Při synchronizaci byl nalezen úkol s nestandartní prioritou shody.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Při synchronizaci byl nalezen úkol s nestandartním stavem shody.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Při synchronizaci byl nalezen úkol s nestandartním datem shody.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">Rozbor podmínek pro metaseznam %s se nezdařil. Prosím nahlašte, jak k tomu došlo.</string>
+  <string name="permission_read_lbl">Naíst data z Mirakel</string>
+  <string name="permission_read_desc">Oprávnění ke čtení dat z Mirakel</string>
+  <string name="permission_write_lbl">Zapsat data do Mirakel</string>
+  <string name="permission_write_desc">Oprávnění k zápisu dat do Mirakel</string>
+  <string name="permission_read_write_lbl">Čtení/zápis dat aplikace Mirakel</string>
+  <string name="title_settings">Nastavení</string>
+  <string name="search_hint">Hledat úkoly</string>
+  <string name="search">Hledat</string>
+  <string name="search_result_title">Hledat %s</string>
+  <string name="tasks_new_str">Nový úkol</string>
+  <string name="takePhoto">Vyfoťte</string>
+  <string name="speak">Mluvte</string>
+  <string name="delete_content">Jste si jisti že chcete odstranit %s?</string>
+  <string name="dialog_move">Přesunout úkol</string>
+  <string name="list_title">Seznamy</string>
+  <string name="menu_settings">Nastavení</string>
+  <string name="menu_set_priority">Nastavit prioritu</string>
+  <string name="menu_do_task">Označit úkol jako vyrešený</string>
+  <string name="action_undo">Vrátit zpět poslední změnu</string>
+  <string name="action_sync_now">Synchronizovat</string>
+  <string name="action_contact">Kontakt / nahlásit chybu</string>
+  <string name="kill_app">Zavřít aplikaci</string>
+  <string name="action_settings">Nastavení</string>
+  <string name="save">Uložit</string>
+  <string name="as_subtask">Přidat k úkolu</string>
+  <string name="task_clone">Zkopírovat úkol</string>
+  <string name="task_menu_sorting">Seřadit úkoly</string>
+  <string name="list_menu_new_list">Nový seznam</string>
+  <string name="share_using">Sdílet pomocí</string>
+  <string name="share_task">Sdílet úkol</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Sdílet seznam</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Odesláno z Mirakel\nOpenSource ToDo aplikace pro Android a Web\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Změnit barvu</string>
+  <string name="set_color">Nastavit barvu</string>
+  <string name="unset_color">Bez barvy</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>Přejmenovat</item>
+    <item>Smazat</item>
+    <item>Sdílet</item>
+  </string-array>
+  <string name="crash_toast_text">Jejda, aplikace Mirakel havarovala! Spusťte prosím aplikaci znovu, hlášení o pádu bude odesláno vývojářům</string>
+  <string name="crash_dialog_title">Aplikace Mirakel havarovala</string>
+  <string name="crash_dialog_text">Došlo k neočekávané chybě a aplikace se zastavila. Prosím, pomozte nám s nalezením a opravou této chyby. Po stisknutí OK se popis příčiny chyby odešle vývojářům aplikace.</string>
+  <string name="crash_dialog_ok_toast">Děkujeme!</string>
+  <string name="speak_lang_code">cs-CZ</string>
+  <string-array name="audio_playback_options">
+    <item>Otevřít soubor</item>
+    <item>Přehrát hlasitě</item>
+    <item>Přehrát potichu</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Upravit</item>
+    <item>Přesunout</item>
+    <item>Smazat</item>
+  </string-array>
+  <string name="edit">Upravit</string>
+  <string name="no_reminder">Nastavit připomenutí</string>
+  <string name="add_files">Přidat soubor…</string>
+  <string name="file_select">Vyberte soubor</string>
+  <string name="save_label">Hotovo</string>
+  <string name="audio_record_file">Záznam zvuku</string>
+  <string name="image_file">Obrázek</string>
+  <string name="task_fragment_header">Záhlaví</string>
+  <string name="task_fragment_file">Soubory</string>
+  <string name="task_fragment_due">Termín</string>
+  <string name="task_fragment_reminder">Upozornění</string>
+  <string name="task_fragment_content">Poznámky</string>
+  <string name="task_fragment_subtask">Podúkoly</string>
+  <string name="task_fragment_progress">Stav</string>
+  <string name="task_fragment_tags">Štítky</string>
+  <string name="audio_record_title">Záznam zvuku…</string>
+  <string name="audio_record_message">Nahrávám…</string>
+  <string name="audio_playback_title">Přehrávání zvuku…</string>
+  <string name="audio_playback_select_title">Co chcete udělat?</string>
+  <string name="audio_playback_pause">Pozastavit</string>
+  <string name="audio_playback_play">Přehrát</string>
+  <string name="audio_playback_stop">Zastavit</string>
+  <string name="task_change_prio_title">Změnit prioritu</string>
+  <string name="remove_subtask">Odstranit podúkol</string>
+  <string name="add_existing">Přidat existující úkol</string>
+  <string name="subtask_add_options">Filtr &gt;&gt;</string>
+  <string name="subtask_reminder">Úkol s připomenutím?</string>
+  <string name="new_task">Nový úkol</string>
+  <string name="add_subtasks">Přidat podúkol…</string>
+  <string name="add">Přidat</string>
+  <string name="add_subtask">Přidat podúkol</string>
+  <string name="file_no_activity">Bohužel, daný soubor nelze otevřít</string>
+  <string name="remove_files">Odstranit soubory z úkolu</string>
+</resources>
+

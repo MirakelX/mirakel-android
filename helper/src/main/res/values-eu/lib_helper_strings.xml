@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Entzun hau!</string>
+  <string name="file_default_title">Begiratu fitxategi hau</string>
+  <string name="photo_default_title">Begiratu argazki hau</string>
+  <string name="today">Gaur</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Mirakel akats berri ematea / kontaktu eskaria</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Mirakel bertsioa: %1$s\n
+SDK bertsioa: %2$d\n
+Gailua: %3$s\n]]></string>
+  <string name="contact_chooser">Bidali ePosta…</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Putxa! Zure gailuak ezin ditu argazkiak atera</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Ez dago argazkia gordetzeko lekurik. Barkatu!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Putxa! Zure gailuak ez du onartzen hizketa testu bihurtzea</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Ezin dira zereginak bere azpi-zereginen menpe kokatu</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Ez dakit fitxategi hau nola ireki - barkatu</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Ez dago ePosta bezerorik instalatuta</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Instalatu fitxategi kudeatzaile bat, mesedez</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Barne errore bat gertatu da fitxategi izena irakurtzean</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">Ustekabeko errore bat gertatu da</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Ez da fitxategia aurkitu</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Errore bat gertatu da datu-basea esportatzerakoan</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Errore bat gertatu da datu-basea inportatzerakoan</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Ezin izan da aurrebista sortu. Fitxategia handiegia da</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Zeregin hau ezin da sinkronizatu, ez duzulako zerrendarik</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Putxa!, zerrenda edo zeregina desagertu da. Barkatu…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">Hau ez da Mirakel datu-base bat!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Errore bat gertatu da Astrid-etik inportatzerakoan!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Ez da Taskwarrior fitxategia aurkitu</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Ezin izan da konfigurazio fitxategia deskargatu</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">URL helbidea eza da zuzena. Kode egokia eskaneatu duzu?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Fitxategia irakurtzeko baimenik ez</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Putxa, zerrenda desagertu da…</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">Ez dakigu arazo hau konpontzen, Mirakel berrabiaraziko da.</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">Zerrenda izen hori bada aurretik. Aukeratu beste bat.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">Eguneratu DAVdroid, mesedez</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Wunderlist fitxategi formatua aldatu da. Esaiozu Mirakel lantaldeari.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">Arau estandarrekin bat ez datorren lehentasun maila duen zeregin bat aurkitu da sinkronizatzean.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">Arau estandarrekin bat ez datorren egoera duen zeregin bat aurkitu da sinkronizatzean.</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">Arau estandarrekin bat ez datorren data duen zeregin bat aurkitu da sinkronizatzean.</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">%s metazerrenda irakurtzeko baldintzak huts egin du. Mesedez esaguzu hau nola gertatu den.</string>
+  <string name="permission_read_lbl">Mirakel-etik datuak irakurri</string>
+  <string name="permission_read_desc">Mirakel-etik datuak irakurtzeko baimena</string>
+  <string name="permission_write_lbl">Mirakel-era datuak idatzi</string>
+  <string name="permission_write_desc">Mirakel-era datuak idazteko baimena</string>
+  <string name="permission_read_write_lbl">Mirakel datuak irakurri/idatzi</string>
+  <string name="title_settings">Ezarpenak</string>
+  <string name="search_hint">Bilatu zereginak</string>
+  <string name="search">Bilatu</string>
+  <string name="search_result_title">Bilatu hau %s</string>
+  <string name="tasks_new_str">Zeregin berria</string>
+  <string name="takePhoto">Argazki bat atera</string>
+  <string name="speak">Hitz egin</string>
+  <string name="delete_content">Ziur %s ezabatu nahi duzula?</string>
+  <string name="dialog_move">Mugitu zeregina</string>
+  <string name="list_title">Zerrendak</string>
+  <string name="menu_settings">Ezarpenak</string>
+  <string name="menu_set_priority">Ezarri lehentasuna</string>
+  <string name="menu_do_task">Ezarri zeregina eginda bezala</string>
+  <string name="action_undo">Desegin azken aldaketa</string>
+  <string name="action_sync_now">Sinkronizatu orain</string>
+  <string name="action_contact">Kontaktua / Arazoen berri eman</string>
+  <string name="kill_app">Itxi aplikazioa</string>
+  <string name="action_settings">Ezarpenak</string>
+  <string name="save">Gorde</string>
+  <string name="as_subtask">Gehitu zeregin bat</string>
+  <string name="task_clone">Klonatu zeregina</string>
+  <string name="task_menu_sorting">Ordenatu zereginak</string>
+  <string name="list_menu_new_list">Zerrenda berria</string>
+  <string name="share_using">Elkarbanatu honekin</string>
+  <string name="share_task">Elkarbanatu zeregina</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Elkarbanatu zerrenda</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Elkarbanatu Mirakel-ekin\nZeregin zerrendetarako tresna librea, Android eta Web bidez erabilgarria\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Aldatu kolorea</string>
+  <string name="set_color">Ezarri kolorea</string>
+  <string name="unset_color">Kolorerik ez</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>Aldatu izena</item>
+    <item>Ezabatu</item>
+    <item>Elkarbanatu</item>
+  </string-array>
+  <string name="crash_toast_text">Putxa! Kraskatu egin da! Abiarazi aplikazioa berriro mesedez, garatzaileari mezua bidali ahal izateko</string>
+  <string name="crash_dialog_title">Mirakel kraskatu da</string>
+  <string name="crash_dialog_text"><![CDATA[Ustegabeko errore bat gertatu da aplikazioa ixtera
+    behartzean. Lagundu gaitzazu hau konpontzen errorearen datuak guri bidaliz,
+    ADOS sakatzea da egin behar duzun guztia.]]></string>
+  <string name="crash_dialog_ok_toast">Eskerrik asko!</string>
+  <string name="speak_lang_code">eu</string>
+  <string-array name="audio_playback_options">
+    <item>Ireki fitxategia</item>
+    <item>Ozen erreproduzitu</item>
+    <item>Erreprodukzio isila</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Aldatu</item>
+    <item>Mugitu</item>
+    <item>Ezabatu</item>
+  </string-array>
+  <string name="edit">Aldatu</string>
+  <string name="no_reminder">Ezarri oroigarri bat</string>
+  <string name="add_files">Gehitu fitxategia…</string>
+  <string name="file_select">Aukeratu fitxategi bat</string>
+  <string name="save_label">Eginda</string>
+  <string name="audio_record_file">Audio grabaketa</string>
+  <string name="image_file">Irudia</string>
+  <string name="task_fragment_header">Goiburua</string>
+  <string name="task_fragment_file">Fitxategiak</string>
+  <string name="task_fragment_due">Epemuga</string>
+  <string name="task_fragment_reminder">Oroigarria</string>
+  <string name="task_fragment_content">Oharrak</string>
+  <string name="task_fragment_subtask">Azpi-zereginak</string>
+  <string name="task_fragment_progress">Aurrerapena</string>
+  <string name="task_fragment_tags">Etiketak</string>
+  <string name="audio_record_title">Audio grabaketa…</string>
+  <string name="audio_record_message">Grabatzen…</string>
+  <string name="audio_playback_title">Audioa erreproduzitzen…</string>
+  <string name="audio_playback_select_title">Zer egin nahi duzu?</string>
+  <string name="audio_playback_pause">Geldialdia</string>
+  <string name="audio_playback_play">Erreproduzitu</string>
+  <string name="audio_playback_stop">Gelditu</string>
+  <string name="task_change_prio_title">Aldatu lehentasuna</string>
+  <string name="remove_subtask">Kendu azpi-zeregina</string>
+  <string name="add_existing">Gehitu badagoen zeregina</string>
+  <string name="subtask_add_options">Iragazkia &gt;&gt;</string>
+  <string name="subtask_reminder">Oroigarria duen zeregina?</string>
+  <string name="new_task">Zeregin berria</string>
+  <string name="add_subtasks">Gehitu azpi-zeregina…</string>
+  <string name="add">Gehitu</string>
+  <string name="add_subtask">Gehitu azpi-zeregina</string>
+  <string name="file_no_activity">Ez dakit fitxategi hau nola ireki - barkatu</string>
+  <string name="remove_files">Kendu fitxategiak zereginetik</string>
+</resources>
+
