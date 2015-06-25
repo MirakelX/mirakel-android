@@ -75,8 +75,10 @@ public class ReminderAlarm extends BroadcastReceiver {
         handler = new ReminderHandler(ctx);
     }
 
-    public static void destroy(final Context ctx) {
-        handler.destroy();
+    public static void destroy() {
+        if (handler != null) {
+            handler.destroy();
+        }
     }
 
     @Override
@@ -92,21 +94,27 @@ public class ReminderAlarm extends BroadcastReceiver {
             Log.wtf(TAG, "task is null");
             return;
         }
-        handler.sendNotificantion(t);
+        if (handler != null) {
+            handler.sendNotificantion(t);
+        }
     }
 
     private static void updateAlarms() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                handler.updateAllReminders();
+                if (handler != null) {
+                    handler.updateAllReminders();
+                }
             }
         }).start();
     }
 
 
     public static void restart() {
-        handler.clear();
+        if (handler != null) {
+            handler.clear();
+        }
         updateAlarms();
     }
 
