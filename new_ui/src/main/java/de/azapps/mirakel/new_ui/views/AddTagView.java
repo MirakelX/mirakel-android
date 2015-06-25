@@ -99,14 +99,15 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         this(context, attrs, android.R.attr.autoCompleteTextViewStyle);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public AddTagView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         final List<Tag> tags = Tag.all();
         for (final Tag t : tags) {
             adapterData.add(t.getName());
         }
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1,
-                                           new ArrayList<String>());
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+                                     new ArrayList<String>());
         setAdapter(adapter);
         updateAdapter();
 
@@ -204,6 +205,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         final OnFocusChangeListener onFocus = getOnFocusChangeListener();

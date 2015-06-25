@@ -95,15 +95,6 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
 
-    public static ListsFragment newInstance(final Optional<AccountMirakel> accountMirakelOptional) {
-        final ListsFragment listsFragment = new ListsFragment();
-        // Supply num input as an argument.
-        final Bundle args = new Bundle();
-        args.putParcelable(ARGUMENT_ACCOUNT, accountMirakelOptional.orNull());
-        listsFragment.setArguments(args);
-        return listsFragment;
-    }
-
     public Optional<AccountMirakel> getAccount() {
         return accountMirakelOptional;
     }
@@ -153,7 +144,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onAttach(activity);
         try {
             mListener = (OnItemClickedListener<ListMirakel>) activity;
-            if (!(activity instanceof EventListener || activity instanceof LockableDrawer)) {
+            if (!((activity instanceof EventListener) || (activity instanceof LockableDrawer))) {
                 throw new ClassCastException();
             }
         } catch (final ClassCastException ignored) {
@@ -178,10 +169,10 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
             accountMirakelOptional = Optional.fromNullable((AccountMirakel) args.getParcelable(
                                          ARGUMENT_ACCOUNT));
             if (accountMirakelOptional.isPresent() &&
-                accountMirakelOptional.get().getType() == AccountMirakel.ACCOUNT_TYPES.ALL) {
+                (accountMirakelOptional.get().getType() == AccountMirakel.ACCOUNT_TYPES.ALL)) {
                 accountMirakelOptional = Optional.absent(); // Remove the hack as soon as possible
             }
-            ArrayList<ListMirakel> listsToDelete = args.getParcelableArrayList(LISTS_TO_DELETE);
+            final ArrayList<ListMirakel> listsToDelete = args.getParcelableArrayList(LISTS_TO_DELETE);
             if (listsToDelete != null) {
                 final List<Long> ids = new ArrayList<>(Collections2.transform(listsToDelete,
                 new Function<ListMirakel, Long>() {
@@ -223,8 +214,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onSelectModeChanged(final boolean selectMode) {
         if (selectMode) {
             mActionMode = getActivity().startActionMode(this);
-        } else {
-            assert mActionMode != null;
+        } else if (mActionMode != null) {
             mActionMode.finish();
         }
     }
@@ -244,8 +234,10 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onAddSelectedItem(@NonNull final ListMirakel listMirakel) {
-        assert mActionMode != null;
         onSelectedItemCountChanged(mAdapter.getSelectedItemCount());
+        if ((mAdapter.getSelectedItemCount() > 0) && (mActionMode == null)) {
+            onSelectModeChanged(true);
+        }
         if (listMirakel.isEditable()) {
             numberOfSelectedEditables++;
             if (numberOfSelectedEditables == 1) {
@@ -266,11 +258,13 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onRemoveSelectedItem(@NonNull final ListMirakel listMirakel) {
-        assert mActionMode != null;
         final int count = mAdapter.getSelectedItemCount();
+        if ((count > 0) && (mActionMode == null)) {
+            onSelectModeChanged(true);
+        }
         onSelectedItemCountChanged(count);
         if (count > 0) {
-            if (count == 1 && listMirakel.isEditable()) {
+            if ((count == 1) && listMirakel.isEditable()) {
                 mActionMode.getMenu().findItem(R.id.menu_edit).setVisible(true);
             }
             if (listMirakel.isDeletable()) {
@@ -283,7 +277,9 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void onSelectedItemCountChanged(final int itemCount) {
-        assert mActionMode != null;
+        if (mActionMode == null) {
+            onSelectModeChanged(true);
+        }
         if (itemCount == 0) {
             mActionMode.finish();
         } else {
@@ -294,13 +290,13 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
+        final int count = mAdapter.getSelectedItemCount();
         final MenuInflater inflater = mode
                                       .getMenuInflater();
         inflater.inflate(R.menu.multiselect_lists, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(ThemeManager.getColor(R.attr.colorCABStatus));
         }
-        final int count = mAdapter.getSelectedItemCount();
         mode.setTitle(getResources().getQuantityString(R.plurals.list_multiselect_title, count, count));
         return true;
     }
@@ -382,7 +378,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         , getActivity());
     }
 
-    public void editList(ListMirakel listMirakel) {
+    public void editList(final ListMirakel listMirakel) {
         final ListEditView listEditView = new ListEditView(getActivity());
         listEditView.setListMirakel(listMirakel);
         new AlertDialog.Builder(getActivity()).setView(listEditView)
@@ -440,17 +436,17 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         final int from;
         final int to;
         final boolean changedPosition;
-        if (tmpFrom < dividerPosition && tmpTo >= dividerPosition) {
+        if ((tmpFrom < dividerPosition) && (tmpTo >= dividerPosition)) {
             MirakelModelPreferences.setDividerPosition(dividerPosition - 1);
             from = tmpFrom;
             to = tmpTo - 1;
             changedPosition = true;
-        } else if (tmpFrom > dividerPosition && tmpTo <= dividerPosition) {
+        } else if ((tmpFrom > dividerPosition) && (tmpTo <= dividerPosition)) {
             MirakelModelPreferences.setDividerPosition(dividerPosition + 1);
             from = tmpFrom - 1;
             to = tmpTo;
             changedPosition = true;
-        } else if (tmpFrom > dividerPosition && tmpTo > dividerPosition) {
+        } else if ((tmpFrom > dividerPosition) && (tmpTo > dividerPosition)) {
             from = tmpFrom - 1;
             to = tmpTo - 1;
             changedPosition = false;

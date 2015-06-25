@@ -141,13 +141,13 @@ public class Mirakel extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        ReminderAlarm.destroy(this);
+        ReminderAlarm.destroy();
         Log.destroy();
     }
 
     public static void init (final Context ctx) {
         // This we have to initialize as early as possible
-        DefinitionsHelper.init(ctx);
+        DefinitionsHelper.init(ctx, BuildConfig.FLAVOR);
         MirakelPreferences.init(ctx);
         ErrorReporter.init(ctx);
         ThemeManager.init(ctx, R.style.MirakelBaseTheme, R.style.MirakelDialogTheme);

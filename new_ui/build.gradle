@@ -106,12 +106,12 @@ android {
     }
     productFlavors {
         google {
-            flavorDimension "stores"
+            dimension "stores"
             assert localProps['analytics.trackingid'];
             buildConfigField "String", "TRACKER_ID", localProps['analytics.trackingid']
         }
         fdroid {
-            flavorDimension "stores"
+            dimension "stores"
         }
     }
 
@@ -189,9 +189,7 @@ dependencies {
     testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.0-SNAPSHOT"
 
-    if(flavor == "google") {
-        compile 'com.google.android.gms:play-services-analytics:7.5.0'
-    }
+    googleCompile 'com.google.android.gms:play-services-analytics:7.5.0'
 
 }
 
