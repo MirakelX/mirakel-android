@@ -31,6 +31,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.internal.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -379,17 +380,31 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void editList(final ListMirakel listMirakel) {
-        final ListEditView listEditView = new ListEditView(getActivity());
+        final ListEditView listEditView = new ListEditView(new ContextThemeWrapper(getActivity(),
+                ThemeManager.getDialogTheme()));
         listEditView.setListMirakel(listMirakel);
-        new AlertDialog.Builder(getActivity()).setView(listEditView)
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity(),
+                ThemeManager.getDialogTheme()).setView(listEditView)
         .setTitle(R.string.list_edit_title)
-        .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialog, final int which) {
+                listEditView.saveList();
+                listEditView.closeKeyBoard();
+            }
+        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listEditView.saveList();
+                listEditView.closeKeyBoard();
             }
-        })
-        .show();
+        }).create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                listEditView.openKeyBoard();
+            }
+        });
+        dialog.show();
     }
 
     @Override

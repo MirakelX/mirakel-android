@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -29,27 +30,30 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
     @InjectView(R.id.list_edit_account_text)
     TextView listEditAccountText;
 
+    SoftKeyboard keyboard;
+
     /**
      * The onItemSelected is fired when creating the spinner.
      * This is absolutely not what we want to do
      */
     private boolean initSelection = false;
 
-    public ListEditView(Context context) {
+    public ListEditView(final Context context) {
         this(context, null);
     }
 
-    public ListEditView(Context context, AttributeSet attrs) {
+    public ListEditView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ListEditView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ListEditView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_list_edit, this);
         ButterKnife.inject(this, this);
+        keyboard = new SoftKeyboard(this);
     }
 
-    public void setListMirakel(ListMirakel listMirakel) {
+    public void setListMirakel(final ListMirakel listMirakel) {
         this.listMirakel = listMirakel;
         rebuildLayout();
     }
@@ -69,7 +73,7 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
         listEditName.setText(listMirakel.getName());
 
         // You can only move new lists
-        if (listMirakel.isStub() && (AccountMirakel.countMovableTo() > 1)) {
+        if (listMirakel.isStub() && (AccountMirakel.countMovableTo() > 1L)) {
             final SimpleModelListAdapter<AccountMirakel> adapter = new SimpleModelListAdapter<>(getContext(),
                     AccountMirakel.allMovableToCursor().getRawCursor(), 0, AccountMirakel.class);
             listEditAccount.setAdapter(adapter);
@@ -80,9 +84,14 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
             listEditAccount.setVisibility(View.GONE);
             listEditAccountText.setVisibility(View.GONE);
         }
+    }
 
-        invalidate();
-        requestLayout();
+    public void openKeyBoard() {
+        listEditName.requestFocus();
+    }
+
+    public void closeKeyBoard() {
+        listEditName.clearFocus();
     }
 
     @Override

@@ -22,22 +22,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="@dimen/padding_default"
-    android:paddingStart="21dp"
-    android:paddingEnd="@dimen/activity_horizontal_margin">
+      android:paddingStart="@dimen/abc_dialog_padding_material"
+      android:paddingEnd="@dimen/abc_dialog_padding_material"
+      android:paddingTop="@dimen/abc_dialog_padding_top_material">
     <!-- The 21dp is done this way to align the edittext exactly under the header -->
 
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
+        android:id="@+id/list_edit_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/list_edit_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:hint="@string/list_name"/>
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="@string/list_name"/>
 
     <TextView
         android:id="@+id/list_edit_account_text"
