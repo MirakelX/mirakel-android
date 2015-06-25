@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
+import de.azapps.mirakel.helper.R;
 
 /**
  * In this class we collect all functions to get the current settings. The
