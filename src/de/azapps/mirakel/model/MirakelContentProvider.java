@@ -57,9 +57,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.tags.Tag;
