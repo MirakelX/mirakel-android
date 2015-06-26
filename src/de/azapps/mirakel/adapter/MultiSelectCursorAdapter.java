@@ -169,7 +169,7 @@ public abstract class
     }
 
     protected boolean toggleSelection(final int pos) {
-        if (pos >= getCursor().getCount()) {
+        if (pos >= getItemCount()) {
             return false;
         }
         final T item = getItemAt(pos);
