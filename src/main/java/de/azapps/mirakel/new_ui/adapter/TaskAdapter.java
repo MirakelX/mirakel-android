@@ -40,6 +40,7 @@ import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.TaskHelper;
+import de.azapps.mirakel.model.list.ListMirakelInterface;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
@@ -58,7 +59,7 @@ public class TaskAdapter extends
     public interface TaskAdapterCallbacks {
         void toggleShowDoneTasks();
         boolean shouldShowDone();
-        boolean shouldShowDoneToggle();
+        ListMirakelInterface.ShowDoneCases shouldShowDoneToggle();
     }
 
     public TaskAdapter(final Context context, final Cursor cursor,
@@ -88,19 +89,20 @@ public class TaskAdapter extends
                                  final int position) {
         if (position == (getItemCount() - 1)) {
             viewHolder.viewSwitcher.setDisplayedChild(1);
-            if (taskAdapterCallbacks.shouldShowDoneToggle()) {
+            final ListMirakelInterface.ShowDoneCases status = taskAdapterCallbacks.shouldShowDoneToggle();
+            if (status != ListMirakelInterface.ShowDoneCases.BOTH) {
+                viewHolder.showDoneTasks.setVisibility(View.GONE);
+                if ((status == ListMirakelInterface.ShowDoneCases.ONLY_DONE) &&
+                    !taskAdapterCallbacks.shouldShowDone()) {
+                    taskAdapterCallbacks.toggleShowDoneTasks();
+                }
+            } else {
                 viewHolder.showDoneTasks.setVisibility(View.VISIBLE);
                 if (taskAdapterCallbacks.shouldShowDone()) {
                     viewHolder.showDoneTasks.setText(R.string.hide_done_tasks);
                 } else {
-                    // if no tasks are displayed it would be useless to not show the done tasks
-                    if ((getItemCount() == 1) && taskAdapterCallbacks.shouldShowDoneToggle()) {
-                        taskAdapterCallbacks.toggleShowDoneTasks();
-                    }
                     viewHolder.showDoneTasks.setText(R.string.show_done_tasks);
                 }
-            } else {
-                viewHolder.showDoneTasks.setVisibility(View.GONE);
             }
         } else {
             viewHolder.viewSwitcher.setDisplayedChild(0);

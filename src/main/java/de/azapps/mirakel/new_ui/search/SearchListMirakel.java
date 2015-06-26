@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.search;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 
 import java.util.List;
@@ -30,6 +31,8 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.query_builder.CursorGetter;
+import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
@@ -95,9 +98,25 @@ public class SearchListMirakel implements ListMirakelInterface {
     }
 
     @Override
-    public boolean shouldShowDoneToggle() {
-        return getTasksQueryBuilder().and(Task.DONE, MirakelQueryBuilder.Operation.EQ,
-                                          true).count(Task.URI) > 0L;
+    public ShowDoneCases shouldShowDoneToggle() {
+        return getTasksQueryBuilder().select("sum(" + Task.DONE + ')', "count(*)").query(Task.URI)
+        .doWithCursor(new CursorWrapper.CursorConverter<ShowDoneCases>() {
+            @NonNull
+            @Override
+            public ShowDoneCases convert(@NonNull final CursorGetter getter) {
+                if (!getter.moveToFirst()) {
+                    return ShowDoneCases.NOTHING;
+                }
+                final long sum = getter.getLong(0);
+                if (sum == 0L) {
+                    return ShowDoneCases.ONLY_UNDONE;
+                }
+                if (sum == getter.getLong(1)) {
+                    return ShowDoneCases.ONLY_DONE;
+                }
+                return ShowDoneCases.BOTH;
+            }
+        });
     }
 
 
