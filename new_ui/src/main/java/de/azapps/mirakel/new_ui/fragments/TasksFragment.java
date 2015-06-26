@@ -387,8 +387,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
         final int width = v.getWidth();
         final int height = v.getHeight();
-        final int midy = screenPos[1] + height / 2;
-        int referenceX = screenPos[0] + width / 2;
+        final int midy = screenPos[1] + (height / 2);
+        int referenceX = screenPos[0] + (width / 2);
         if (ViewCompat.getLayoutDirection(v) == ViewCompat.LAYOUT_DIRECTION_LTR) {
             final int screenWidth = getActivity().getResources().getDisplayMetrics().widthPixels;
             referenceX = screenWidth - referenceX; // mirror
@@ -658,7 +658,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public boolean shouldShowDoneToggle() {
+    public ListMirakelInterface.ShowDoneCases shouldShowDoneToggle() {
         return listMirakel.shouldShowDoneToggle();
     }
 
