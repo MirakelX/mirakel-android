@@ -216,8 +216,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @Override
     public void onDismiss(final DialogInterface dialog) {
-        super.onDismiss(dialog);
         unregisterContentObserver();
+        super.onDismiss(dialog);
         final boolean appliedSemantics = applySemantics();
         if (!appliedSemantics && task.isStub()) {
             task.destroy();
