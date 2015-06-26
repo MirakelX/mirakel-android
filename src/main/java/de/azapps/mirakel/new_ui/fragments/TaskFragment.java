@@ -219,7 +219,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         unregisterContentObserver();
         super.onDismiss(dialog);
         final boolean appliedSemantics = applySemantics();
-        if (!appliedSemantics && task.isStub()) {
+        if (!appliedSemantics && task.isStub() && task.getName().equals(getString(R.string.task_new))) {
             task.destroy();
         } else {
             task.save();
