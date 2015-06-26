@@ -540,14 +540,30 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     }
 
     @Override
-    public boolean shouldShowDoneToggle() {
+    public ShowDoneCases shouldShowDoneToggle() {
         if (isSpecial()) {
-            return false;
+            return ShowDoneCases.NOTHING;
         }
         return new MirakelQueryBuilder(context).and(Task.LIST_ID,
                 MirakelQueryBuilder.Operation.EQ,
-                this).and(Task.DONE, MirakelQueryBuilder.Operation.EQ,
-                          true).count(Task.URI) > 0L;
+                this).select("sum(" + Task.DONE + ')', "count(*)").query(Task.URI)
+        .doWithCursor(new CursorWrapper.CursorConverter<ShowDoneCases>() {
+            @NonNull
+            @Override
+            public ShowDoneCases convert(@NonNull final CursorGetter getter) {
+                if (!getter.moveToFirst()) {
+                    return ShowDoneCases.NOTHING;
+                }
+                final long sum = getter.getLong(0);
+                if (sum == 0L) {
+                    return ShowDoneCases.ONLY_UNDONE;
+                }
+                if (sum == getter.getLong(1)) {
+                    return ShowDoneCases.ONLY_DONE;
+                }
+                return ShowDoneCases.BOTH;
+            }
+        });
     }
 
 

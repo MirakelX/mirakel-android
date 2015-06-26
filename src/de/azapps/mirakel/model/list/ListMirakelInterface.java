@@ -34,5 +34,12 @@ public interface ListMirakelInterface extends Parcelable {
     List<Task> tasks();
 
     long countTasks();
-    boolean shouldShowDoneToggle();
+    ShowDoneCases shouldShowDoneToggle();
+
+    enum ShowDoneCases {
+        ONLY_DONE,
+        ONLY_UNDONE,
+        BOTH,
+        status, NOTHING
+    }
 }
