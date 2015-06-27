@@ -130,7 +130,7 @@ public abstract class
         public void onClick(@NonNull final View v) {
             if (selectMode) {
                 toggleSelection(getLayoutPosition());
-            } else if ((itemClickListener != null) && (getLayoutPosition() < getItemCount())) {
+            } else if ((itemClickListener != null) && (getLayoutPosition() < getCursor().getCount())) {
                 itemClickListener.onItemSelected(getItemAt(getLayoutPosition()));
             }
         }
