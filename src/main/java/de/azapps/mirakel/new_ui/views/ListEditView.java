@@ -71,7 +71,6 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
 
     private void rebuildLayout() {
         listEditName.setText(listMirakel.getName());
-
         // You can only move new lists
         if (listMirakel.isStub() && (AccountMirakel.countMovableTo() > 1L)) {
             final SimpleModelListAdapter<AccountMirakel> adapter = new SimpleModelListAdapter<>(getContext(),
@@ -80,6 +79,7 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
             listEditAccount.setOnItemSelectedListener(this);
             listEditAccount.setVisibility(View.VISIBLE);
             listEditAccountText.setVisibility(View.VISIBLE);
+
         } else {
             listEditAccount.setVisibility(View.GONE);
             listEditAccountText.setVisibility(View.GONE);
@@ -88,6 +88,9 @@ public class ListEditView extends LinearLayout implements AdapterView.OnItemSele
 
     public void openKeyBoard() {
         listEditName.requestFocus();
+        if (listMirakel.isStub()) {
+            listEditName.selectAll();
+        }
     }
 
     public void closeKeyBoard() {
