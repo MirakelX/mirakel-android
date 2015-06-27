@@ -225,7 +225,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (!listMirakel.isDeletable() && !listMirakel.isEditable()) {
             SnackbarManager.show(Snackbar.with(getActivity())
                                  .text(R.string.can_not_edit_list)
-                                 .eventListener((EventListener) getActivity())
+                                 .eventListener(new SnackBarEventListener())
                                  , getActivity());
             return false;
         } else {
