@@ -27,8 +27,8 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
+import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakelandroid.BuildConfig;
 
 public class AnalyticsWrapper extends AnalyticsWrapperBase {
@@ -66,11 +66,16 @@ public class AnalyticsWrapper extends AnalyticsWrapperBase {
         }
     }
 
-
+    @Override
     public void mSetScreen(Object screen) {
         if (tracker != null) {
             tracker.setScreenName(screen.getClass().getSimpleName());
             tracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
+    }
+
+    @Override
+    public void doNotTrack() {
+        tracker = null;
     }
 }
