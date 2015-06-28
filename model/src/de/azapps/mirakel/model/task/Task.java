@@ -738,27 +738,26 @@ public class Task extends TaskBase {
     }
 
     private void updateRecurringChilds(final Recurring r) {
-
-        final String[] select = addPrefix(allColumns, TABLE, allColumns.length + 1);
-        select[allColumns.length] = Recurring.TW_TABLE + '.' + Recurring.OFFSET_COUNT;
-        new MirakelQueryBuilder(context)
-        .select(select)
-        .and(Recurring.TW_TABLE + '.' + Recurring.PARENT,
-             Operation.IN,
-             new MirakelQueryBuilder(context).select(
-                 Recurring.PARENT).and(Recurring.CHILD,
-                                       Operation.EQ, this),
-             MirakelInternalContentProvider.RECURRING_TW_URI)
-        .sort(Recurring.TW_TABLE + '.' + Recurring.OFFSET_COUNT,
-              Sorting.ASC)
-        .query(MirakelInternalContentProvider.TASK_RECURRING_TW_CHILD_URI)
-        .doWithCursor(new CursorWrapper.WithCursor() {
+        new Thread(new Runnable() {
             @Override
-            public void withOpenCursor(@NonNull final CursorGetter getter) {
-                if (getter.moveToFirst()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+            public void run() {
+                final String[] select = addPrefix(allColumns, TABLE, allColumns.length + 1);
+                select[allColumns.length] = Recurring.TW_TABLE + '.' + Recurring.OFFSET_COUNT;
+                new MirakelQueryBuilder(context)
+                .select(select)
+                .and(Recurring.TW_TABLE + '.' + Recurring.PARENT,
+                     Operation.IN,
+                     new MirakelQueryBuilder(context).select(
+                         Recurring.PARENT).and(Recurring.CHILD,
+                                               Operation.EQ, Task.this),
+                     MirakelInternalContentProvider.RECURRING_TW_URI)
+                .sort(Recurring.TW_TABLE + '.' + Recurring.OFFSET_COUNT,
+                      Sorting.ASC)
+                .query(MirakelInternalContentProvider.TASK_RECURRING_TW_CHILD_URI)
+                .doWithCursor(new CursorWrapper.WithCursor() {
+                    @Override
+                    public void withOpenCursor(@NonNull final CursorGetter getter) {
+                        if (getter.moveToFirst()) {
                             Task old = null;
                             do {
                                 final Task child = new Task(getter);
@@ -775,10 +774,11 @@ public class Task extends TaskBase {
                                 old = child;
                             } while (getter.moveToNext());
                         }
-                    }).start();
-                }
+                    }
+                });
             }
-        });
+        }).start();
+
 
     }
 
