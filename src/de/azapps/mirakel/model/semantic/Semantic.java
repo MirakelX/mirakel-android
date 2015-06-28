@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -170,6 +171,9 @@ public class Semantic extends SemanticBase {
             taskName = taskName.substring(word.length()).trim();
         }
         task.setName(taskName);
+        if (change) {
+            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.USED_SEMANTICS);
+        }
         return change;
     }
 
