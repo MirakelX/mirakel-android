@@ -20,33 +20,24 @@
 package de.azapps.mirakel.analytics;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.new_ui.helper.AnalyticsWrapperBase;
 import de.azapps.mirakelandroid.BuildConfig;
 
 public class AnalyticsWrapper extends AnalyticsWrapperBase {
-
     @Nullable
     private GoogleAnalytics analytics;
     @Nullable
     private Tracker tracker;
 
-    public static AnalyticsWrapper getWrapper() {
-        return new AnalyticsWrapper();
-    }
-
-    private AnalyticsWrapper() {
-        super();
-    }
-
-    public void init(Application application) {
+    public AnalyticsWrapper(Application application) {
         if (MirakelCommonPreferences.useAnalytics()) {
             analytics = GoogleAnalytics.getInstance(application);
             analytics.setLocalDispatchPeriod(1800);
@@ -54,7 +45,37 @@ public class AnalyticsWrapper extends AnalyticsWrapperBase {
             tracker = analytics.newTracker(BuildConfig.TRACKER_ID);
             tracker.enableExceptionReporting(false);
             tracker.enableAdvertisingIdCollection(true);
-            tracker.enableAutoActivityTracking(true);
+            tracker.enableAutoActivityTracking(false);
         }
+    }
+
+    @Override
+    public void track(@NonNull final CATEGORY category, @NonNull final ACTION action,
+                      @Nullable final String label, @Nullable final Long value) {
+        if (tracker != null) {
+            HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder();
+            builder.setCategory(category.toString())
+            .setAction(action.toString());
+            if (label != null) {
+                builder.setLabel(label);
+            }
+            if (value != null) {
+                builder.setValue(value);
+            }
+            tracker.send(builder.build());
+        }
+    }
+
+    @Override
+    public void mSetScreen(Object screen) {
+        if (tracker != null) {
+            tracker.setScreenName(screen.getClass().getSimpleName());
+            tracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
+    }
+
+    @Override
+    public void doNotTrack() {
+        tracker = null;
     }
 }

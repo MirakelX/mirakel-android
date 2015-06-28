@@ -20,14 +20,12 @@
 package de.azapps.mirakel.analytics;
 
 
-import de.azapps.mirakel.new_ui.helper.AnalyticsWrapperBase;
+import android.app.Application;
+
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 
 public class AnalyticsWrapper extends AnalyticsWrapperBase {
-    public static AnalyticsWrapperBase getWrapper() {
-        return new AnalyticsWrapper();
-    }
-
-    private AnalyticsWrapper() {
+    public AnalyticsWrapper(Application application) {
         super();
     }
 }

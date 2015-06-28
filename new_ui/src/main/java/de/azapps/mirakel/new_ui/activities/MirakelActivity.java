@@ -62,6 +62,7 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -563,6 +564,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         @Override
         public void onDrawerClosed(final View drawerView) {
             super.onDrawerClosed(drawerView);
+            AnalyticsWrapperBase.setScreen(getTasksFragment());
             invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             getListsFragment().onCloseNavDrawer();
             updateToolbar(ActionBarState.NORMAL);
@@ -575,6 +577,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         @Override
         public void onDrawerOpened(final View drawerView) {
             super.onDrawerOpened(drawerView);
+            AnalyticsWrapperBase.setScreen(getListsFragment());
             invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             updateToolbar(ActionBarState.SWITCHER);
             invalidateOptionsMenu();

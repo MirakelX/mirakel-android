@@ -60,6 +60,7 @@ import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -154,7 +155,6 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -225,7 +225,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
         if (!listMirakel.isDeletable() && !listMirakel.isEditable()) {
             SnackbarManager.show(Snackbar.with(getActivity())
                                  .text(R.string.can_not_edit_list)
-                                 .eventListener((EventListener) getActivity())
+                                 .eventListener(new SnackBarEventListener())
                                  , getActivity());
             return false;
         } else {

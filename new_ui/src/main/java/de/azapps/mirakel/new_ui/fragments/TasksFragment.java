@@ -78,6 +78,7 @@ import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
@@ -191,7 +192,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
-
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
@@ -199,6 +199,12 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         final View layout = inflater.inflate(R.layout.fragment_tasks, container, false);
         ButterKnife.inject(this, layout);
         return layout;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @OnClick(R.id.fabbutton)
@@ -210,7 +216,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             listToAdd = ListMirakel.getInboxList(MirakelModelPreferences.getDefaultAccount());
         }
         final Task task = Semantic.createTask(getString(R.string.task_new), fromNullable(listToAdd),
-                false);
+                                              false);
         task.setIsStub(true);
         mListener.onItemSelected(new TaskOverview(task));
     }
@@ -756,6 +762,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
             if (privateActionMode == null) {
                 throw new IllegalArgumentException("ActionMode is null this must not happen");
             }
+            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SEARCHED);
             privateActionMode.finish();
             final ListMirakelInterface listMirakelInterface = new SearchListMirakel(getActivity(), searchText);
             setList(listMirakelInterface);

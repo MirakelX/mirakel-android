@@ -82,7 +82,7 @@
                     android:imeActionLabel="@string/save"
                     android:textAppearance="@style/TextAppearance.Regular.Large"
                     android:textColor="?colorTextBlack"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:id="@+id/task_name_edit" />
             </ViewSwitcher>
             <de.azapps.mirakel.new_ui.views.PriorityChangeView
