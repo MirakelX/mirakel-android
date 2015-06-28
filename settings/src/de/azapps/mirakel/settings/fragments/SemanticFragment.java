@@ -48,6 +48,7 @@ import com.nispok.snackbar.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.settings.R;
@@ -386,6 +387,12 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         updateScreen(mScreen);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
+    }
+
 
     @Override
     protected boolean hasMenu() {
@@ -402,6 +409,7 @@ public class SemanticFragment extends MirakelPreferencesFragment<Settings> imple
         if (item.getItemId() == R.id.action_create_semantic) {
             final Semantic semantic = Semantic.newSemantic(getString(R.string.semantic_new), null,
                                       null, Optional.<ListMirakel>absent(), null);
+            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.CREATED_SEMANTIC);
             semantics.add(semantic);
             final ExpandablePreference p = new ExpandablePreference(mContext, mScreen);
             p.setKey(SwipeLinearLayout.SWIPEABLE_VIEW + semantic.getName() + semantic.getId());

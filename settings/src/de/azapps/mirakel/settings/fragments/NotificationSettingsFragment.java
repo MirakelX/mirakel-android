@@ -31,6 +31,7 @@ import com.google.common.base.Optional;
 
 import java.util.List;
 
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -222,6 +223,12 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @NonNull

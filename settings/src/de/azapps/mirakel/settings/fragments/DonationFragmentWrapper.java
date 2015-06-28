@@ -27,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import org.sufficientlysecure.donations.DonationsFragment;
 
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.settings.custom_views.Settings;
 import de.azapps.mirakel.settings.model_settings.generic_list.IDetailFragment;
 
@@ -46,6 +47,12 @@ public class DonationFragmentWrapper extends DonationsFragment implements
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getItem().getName());
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @NonNull

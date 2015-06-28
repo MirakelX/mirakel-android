@@ -37,6 +37,7 @@ import java.util.zip.ZipFile;
 
 import de.azapps.changelog.Changelog;
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -121,6 +122,9 @@ public class AboutSettingsFragment extends MirakelPreferencesFragment<Settings> 
             public boolean onPreferenceClick(final Preference preference) {
                 if (++debugCounter > 6) {
                     MirakelCommonPreferences.toogleDebugMenu();
+                    if (MirakelCommonPreferences.isDebug()) {
+                        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ACTIVATED_DEVELOPMENT_SETTINGS);
+                    }
                     debugCounter = 0;
                     if (this.toast != null) {
                         this.toast.cancel();
@@ -164,6 +168,12 @@ public class AboutSettingsFragment extends MirakelPreferencesFragment<Settings> 
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @NonNull

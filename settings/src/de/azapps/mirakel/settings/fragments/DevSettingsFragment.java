@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -186,6 +187,12 @@ public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
                 TagSettingsActivity.class);
         final Preference tag = findPreference("tags");
         tag.setIntent(startTagIntent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @NonNull
