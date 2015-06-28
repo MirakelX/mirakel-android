@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -93,9 +94,15 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
             });
         }
         final Preference analytics = findPreference("useAnalytics");
-        if(analytics != null && DefinitionsHelper.isFdroid()) {
+        if (analytics != null && DefinitionsHelper.isFdroid()) {
             getPreferenceScreen().removePreference(analytics);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     private void setLanguageSummary(final ListPreference language,

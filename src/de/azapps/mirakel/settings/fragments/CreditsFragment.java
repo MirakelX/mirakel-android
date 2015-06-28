@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.utils.ViewHelper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -110,6 +111,12 @@ public class CreditsFragment extends Fragment implements IDetailFragment<Setting
         creditTextLicense.setMovementMethod(LinkMovementMethod.getInstance());
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     private TextView getListTextView() {

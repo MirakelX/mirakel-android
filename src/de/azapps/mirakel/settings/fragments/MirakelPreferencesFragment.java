@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.support.design.widget.FloatingActionButton;
 
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
@@ -61,6 +62,12 @@ public abstract class MirakelPreferencesFragment<T extends IGenericElementInterf
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getItem().getName());
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     protected void onFABClicked() {

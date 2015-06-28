@@ -47,6 +47,7 @@ import java.util.UUID;
 
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.SnackBarEventListener;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -152,6 +153,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
             // Load the dummy content
             mItem = SpecialList.firstSpecialSafe();
         }
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.CREATED_META_LIST);
         super.onCreate(savedInstanceState);
     }
 

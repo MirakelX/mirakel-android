@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.material_elements.views.MaterialNumberPicker;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -250,6 +251,12 @@ public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings>
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @NonNull
