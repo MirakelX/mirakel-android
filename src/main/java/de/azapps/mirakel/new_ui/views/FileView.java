@@ -54,6 +54,7 @@ import java.util.List;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.views.FFTAudioView;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.file.FileMirakel;
@@ -129,6 +130,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     public void addPhoto() {
         if ((photoUri != null) && (task != null)) {
             //the new file is present because photouri/=null
+            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ADD_PHOTO);
             files.add(FileMirakel.newFile(getContext(), task, photoUri).get());
             photoUri = null;
             fixChilds();
@@ -136,6 +138,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     }
 
     public void addFile(final @NonNull Uri uri) {
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ADD_FILE);
         final Optional<FileMirakel> fileMirakelOptional = FileMirakel.newFile(getContext(), task, uri);
         if (fileMirakelOptional.isPresent()) {
             files.add(fileMirakelOptional.get());
@@ -387,6 +390,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     @Override
     public void finishRecording(final String path) {
         final File f = new File(path);
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ADD_RECORDING);
         files.add(FileMirakel.newFile(task, f.getName(), Uri.fromFile(new File(path))));
         fixChilds();
     }

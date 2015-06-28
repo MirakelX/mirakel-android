@@ -59,6 +59,7 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.MirakelContentObserver;
@@ -241,6 +242,12 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
+    }
+
+    @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if ((requestCode == REQUEST_IMAGE_CAPTURE) && (resultCode == Activity.RESULT_OK)) {
             filesView.addPhoto();
@@ -368,6 +375,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     @Override
     public void onTagAdded(final Tag tag) {
         task.addTag(tag);
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ADD_TAG);
     }
 
     @Override
@@ -380,12 +388,16 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     public void priorityChanged(int priority) {
         task.setPriority(priority);
         task.save();
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PRIORITY);
     }
 
     private final Procedure<Integer> progressChangedListener = new
     Procedure<Integer>() {
         @Override
         public void apply(final Integer input) {
+            if (task.getProgress() == 0 && input > 0) {
+                AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PROGRESS);
+            }
             task.setProgress(input);
             task.save();
         }
@@ -450,6 +462,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     Procedure<String>() {
         @Override
         public void apply(final String input) {
+            if (task.getContent().isEmpty() && !input.isEmpty()) {
+                AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ADD_NOTE);
+            }
             task.setContent(input);
             task.save();
         }
@@ -464,6 +479,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                                       final int day) {
                     task.setDue(of((Calendar) new GregorianCalendar(year, month, day)));
                     task.save();
+                    AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_DUE);
                 }
 
                 @Override
@@ -501,6 +517,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                 @Override
                 public void onDateTimeSet(final int year, final int month, final int dayOfMonth,
                                           final int hourOfDay, final int minute) {
+                    AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_REMINDER);
                     task.setReminder(of((Calendar) new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
                     task.save();
                 }
@@ -540,6 +557,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
                 @Override
                 public void onRecurrenceSet(@NonNull final Optional<Recurring> r) {
+                    if (r.isPresent()) {
+                        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_RECURRING_REMINDER);
+                    }
                     task.setRecurringReminder(r);
                     task.save();
                 }
@@ -571,6 +591,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                              true);
         task.addSubtask(subtask);
         task.save();
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.ADD_SUBTASK);
     }
 
     @Override
