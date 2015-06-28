@@ -156,12 +156,6 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        AnalyticsWrapperBase.setScreen(this);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
