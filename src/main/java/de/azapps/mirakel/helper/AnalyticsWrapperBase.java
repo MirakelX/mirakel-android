@@ -44,6 +44,10 @@ public abstract class AnalyticsWrapperBase {
         return singleton;
     }
 
+    public void doNotTrack() {
+
+    }
+
     public enum CATEGORY {
         DUMB_USER, NORMAL_USER, ADVANCED_USER, POWER_USER
     }
