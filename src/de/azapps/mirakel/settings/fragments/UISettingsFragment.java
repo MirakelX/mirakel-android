@@ -35,6 +35,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.custom_views.Settings;
+import de.azapps.mirakel.settings.custom_views.SwitchCompatPreference;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
 public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
@@ -93,9 +94,22 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
                 }
             });
         }
-        final Preference analytics = findPreference("useAnalytics");
-        if (analytics != null && DefinitionsHelper.isFdroid()) {
-            getPreferenceScreen().removePreference(analytics);
+        final SwitchCompatPreference analytics = (SwitchCompatPreference) findPreference("useAnalytics");
+        if (analytics != null) {
+            if (DefinitionsHelper.isFdroid()) {
+                getPreferenceScreen().removePreference(analytics);
+            } else {
+                analytics.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        boolean doTrack = (boolean) newValue;
+                        if (!doTrack) {
+                            AnalyticsWrapperBase.getWrapper().doNotTrack();
+                        }
+                        return true;
+                    }
+                });
+            }
         }
     }
 
