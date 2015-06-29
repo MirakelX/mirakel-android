@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:drawablePadding="@dimen/padding_drawable"
+    android:drawablePadding="2dp"
     android:drawableStart="@drawable/ic_calendar_white_18dp"
     android:text="@string/task_due_header"
     android:textAppearance="@style/TextAppearance.Regular.Small" />

@@ -19,10 +19,6 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <resources>
-
-    <style name="task_header" >
-        <item name="android:textStyle">bold</item>
-    </style>
     <style name="DialogStyle" parent="@style/Theme.AppCompat.Light"></style>
     <style name="Theme.Dialog" parent="@style/Theme.AppCompat.Light" />
     <style name="Theme.SplashScreenDark" parent="@style/Theme.AppCompat">
