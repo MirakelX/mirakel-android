@@ -138,9 +138,9 @@ public class TaskAdapter extends
             });
 
             if (selectedItems.get(position)) {
-                viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+                viewHolder.card.setBackgroundResource(R.drawable.background_task_selected);
             } else {
-                viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+                viewHolder.card.setBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
             }
         }
     }
