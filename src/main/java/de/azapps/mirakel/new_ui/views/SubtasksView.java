@@ -40,6 +40,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -52,6 +54,8 @@ public class SubtasksView extends LinearLayout {
     ViewSwitcher viewSwitcher;
     @InjectView(R.id.task_name_edit)
     EditText taskNameEdit;
+    @InjectView(R.id.task_subtasks_add)
+    TextView subtaskAdd;
     @Nullable
     private SubtaskListener subtaskListener;
 
@@ -74,6 +78,9 @@ public class SubtasksView extends LinearLayout {
         inflate(context, R.layout.view_subtasks, this);
         layoutInflater = LayoutInflater.from(context);
         ButterKnife.inject(this, this);
+        ViewHelper.setCompoundDrawable(subtaskAdd,
+                                       ThemeManager.getColoredIcon(R.drawable.ic_plus_white_24dp,
+                                               ThemeManager.getColor(R.attr.colorLightGrey)), context);
     }
     public void initListeners(final SubtaskListener subtaskAddListener) {
         this.subtaskListener = subtaskAddListener;

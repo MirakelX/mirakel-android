@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
@@ -19,10 +18,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -31,15 +31,16 @@
             android:id="@+id/progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/task_header"
-            android:text="@string/progress_header"/>
+            android:text="@string/progress_header"
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?colorTextGrey" />
 
         <de.azapps.material_elements.views.Slider
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            app:widget_color="?colorPrimary"
             android:layout_centerInParent="true"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:id="@+id/progress_bar"/>
+            app:widget_color="?colorPrimary" />
     </RelativeLayout>
 </merge>

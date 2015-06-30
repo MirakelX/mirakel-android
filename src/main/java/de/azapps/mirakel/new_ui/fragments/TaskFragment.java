@@ -59,6 +59,7 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -328,7 +329,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private void checkDisableAddButton() {
         if (--hiddenViews < 1) {
-            addMoreButton.setVisibility(View.GONE);
+            addMoreButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -370,6 +371,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         subtasksView.setSubtasks(task.getSubtasks());
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
+        ViewHelper.setCompoundDrawable(addMoreButton,
+                                       ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
+                                               ThemeManager.getColor(R.attr.colorLightGrey)), getActivity());
     }
 
     @Override
