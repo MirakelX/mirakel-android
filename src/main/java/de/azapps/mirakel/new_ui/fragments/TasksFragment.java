@@ -144,15 +144,6 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         // Required empty public constructor
     }
 
-    public static TasksFragment newInstance(final ListMirakelInterface listMirakel) {
-        final TasksFragment tasksFragment = new TasksFragment();
-        // Supply num input as an argument.
-        final Bundle args = new Bundle();
-        args.putParcelable(ARGUMENT_LIST, listMirakel);
-        tasksFragment.setArguments(args);
-        return tasksFragment;
-    }
-
     @Override
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
