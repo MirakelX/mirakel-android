@@ -96,13 +96,13 @@ public class CreditsFragment extends Fragment implements IDetailFragment<Setting
         final View rootView = inflater.inflate(R.layout.fragment_credits, null);
 
         final TextView devCredits = (TextView) rootView.findViewById(R.id.dev_credits);
-        ViewHelper.setCompoundDrawable(devCredits,
+        ViewHelper.setCompoundDrawable(getActivity(), devCredits,
                                        ThemeManager.getColoredIcon(R.drawable.ic_build_white_24dp,
-                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+                                               ThemeManager.getColor(R.attr.colorTextGrey)));
         final TextView designCredits = (TextView) rootView.findViewById(R.id.design_credits);
-        ViewHelper.setCompoundDrawable(designCredits,
+        ViewHelper.setCompoundDrawable(getActivity(), designCredits,
                                        ThemeManager.getColoredIcon(R.drawable.ic_brush_white_24dp,
-                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+                                               ThemeManager.getColor(R.attr.colorTextGrey)));
         initTranslations(rootView);
         initLibaries(rootView);
         initButtons(rootView);
