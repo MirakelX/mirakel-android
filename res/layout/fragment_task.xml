@@ -111,6 +111,11 @@
             android:paddingBottom="16dp"
             android:paddingTop="8dp">
 
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="3dp">
             <de.azapps.mirakel.new_ui.views.DatesView
                 android:id="@+id/task_dates"
                 android:layout_width="match_parent"
@@ -119,18 +124,46 @@
                 android:layout_marginStart="25dp"
                 android:orientation="vertical" />
 
-            <include layout="@layout/task_divider" />
+                <View
+                    android:id="@+id/divider_below_dates_view"
+                    android:layout_below="@id/task_dates"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:layout_marginBottom="@dimen/padding_default"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="@dimen/padding_default_half"
+                    android:background="?colorDivider"
+                    android:orientation="vertical" />
 
-            <!-- Progress -->
-            <de.azapps.mirakel.new_ui.views.ProgressView
-                android:id="@+id/task_progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="25dp"
-                android:layout_marginStart="25dp"
-                android:orientation="vertical"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp" />
+                <!-- Progress -->
+
+
+                <TextView
+                    android:id="@+id/progress_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="25dp"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_track_changes_white_18dp"
+                    android:layout_below="@id/divider_below_dates_view"
+                    android:text="@string/progress_header"
+                    android:textAppearance="@style/TextAppearance.Regular.Small"
+                    android:textColor="?colorTextGrey" />
+
+                <de.azapps.material_elements.views.Slider
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="72dp"
+                    android:layout_marginTop="-48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/divider_below_dates_view"
+                    android:layout_toEndOf="@id/progress_text"
+                    android:layout_marginEnd="25dp"
+                    custom:widget_color="?colorPrimary" />
+            </RelativeLayout>
 
             <!-- Tags -->
             <LinearLayout

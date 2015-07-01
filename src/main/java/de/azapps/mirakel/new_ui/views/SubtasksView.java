@@ -78,9 +78,9 @@ public class SubtasksView extends LinearLayout {
         inflate(context, R.layout.view_subtasks, this);
         layoutInflater = LayoutInflater.from(context);
         ButterKnife.inject(this, this);
-        ViewHelper.setCompoundDrawable(subtaskAdd,
+        ViewHelper.setCompoundDrawable(context, subtaskAdd,
                                        ThemeManager.getColoredIcon(R.drawable.ic_plus_white_24dp,
-                                               ThemeManager.getColor(R.attr.colorLightGrey)), context);
+                                               ThemeManager.getColor(R.attr.colorLightGrey)));
     }
     public void initListeners(final SubtaskListener subtaskAddListener) {
         this.subtaskListener = subtaskAddListener;

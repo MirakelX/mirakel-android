@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -43,6 +44,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -62,6 +64,7 @@ import butterknife.OnEditorAction;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.utils.ViewHelper;
+import de.azapps.material_elements.views.Slider;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -77,7 +80,6 @@ import de.azapps.mirakel.new_ui.views.FileView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.PriorityChangeView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
-import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.mirakelandroid.R;
@@ -109,8 +111,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     ViewSwitcher taskNameViewSwitcher;
     @InjectView(R.id.priority)
     PriorityChangeView priorityChangeView;
-    @InjectView(R.id.task_progress)
-    ProgressView progressView;
+    @InjectView(R.id.progress_bar)
+    Slider progressSlider;
 
     @InjectView(R.id.task_note)
     NoteView noteView;
@@ -137,6 +139,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     LinearLayout subtaskWrapper;
     @InjectView(R.id.file_wrapper)
     LinearLayout fileWrapper;
+    @InjectView(R.id.progress_text)
+    TextView progressText;
 
     private MirakelContentObserver observer;
     private int hiddenViews = 3;
@@ -332,9 +336,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private void checkDisableAddButton() {
         if (--hiddenViews < 1) {
             addMoreButton.setTextColor(ThemeManager.getColor(R.attr.colorLightGrey));
-            ViewHelper.setCompoundDrawable(addMoreButton,
+            ViewHelper.setCompoundDrawable(getActivity(), addMoreButton,
                                            ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
-                                                   ThemeManager.getColor(R.attr.colorLightGrey)), getActivity());
+                                                   ThemeManager.getColor(R.attr.colorLightGrey)));
         }
     }
 
@@ -361,8 +365,36 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         });
         taskName.setText(task.getName());
         initTaskNameEdit();
-        progressView.setProgress(task.getProgress());
-        progressView.setOnProgressChangeListener(progressChangedListener);
+
+        final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_track_changes_white_18dp,
+                              ThemeManager.getColor(R.attr.colorTextGrey));
+        ViewHelper.setCompoundDrawable(getActivity(), progressText, icon);
+        progressSlider.setProgress(task.getProgress());
+        progressSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        if (task.getProgress() == 0 && progress > 0) {
+                            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PROGRESS);
+                        }
+                        task.setProgress(progress);
+                        task.save();
+                    }
+                }).run();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         noteView.setNote(task.getContent());
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
@@ -376,9 +408,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         subtasksView.setSubtasks(task.getSubtasks());
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
-        ViewHelper.setCompoundDrawable(addMoreButton,
+        ViewHelper.setCompoundDrawable(getActivity(), addMoreButton,
                                        ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
-                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+                                               ThemeManager.getColor(R.attr.colorTextGrey)));
     }
 
     @Override
@@ -399,18 +431,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         task.save();
         AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PRIORITY);
     }
-
-    private final Procedure<Integer> progressChangedListener = new
-    Procedure<Integer>() {
-        @Override
-        public void apply(final Integer input) {
-            if (task.getProgress() == 0 && input > 0) {
-                AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PROGRESS);
-            }
-            task.setProgress(input);
-            task.save();
-        }
-    };
 
     @OnEditorAction(R.id.task_name_edit)
     boolean onEditorAction(int actionId) {

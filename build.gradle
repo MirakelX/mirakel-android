@@ -117,7 +117,7 @@ android {
 
     sourceSets {
         main {
-            res.srcDirs = ['merged-res']
+            res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
 
