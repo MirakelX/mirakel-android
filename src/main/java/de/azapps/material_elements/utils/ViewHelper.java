@@ -36,8 +36,8 @@ public class ViewHelper {
                (ctx.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
     }
 
-    public static void setCompoundDrawable(final TextView title, final Drawable icon,
-                                           final Context context) {
+    public static void setCompoundDrawable(final Context context, final TextView title,
+                                           final Drawable icon) {
         if (ViewHelper.isRTL(context)) {
             title.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
         } else {
