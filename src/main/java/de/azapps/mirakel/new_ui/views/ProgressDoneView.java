@@ -32,7 +32,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
-import android.view.Gravity;
 
 import com.google.common.base.Optional;
 
@@ -90,43 +89,22 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
         final Drawable buttonDrawable = mButtonDrawable;
         if (buttonDrawable != null) {
             final int save = canvas.save();
-            canvas.translate(ViewHelper.dpToPx(3.0F, getContext()), 0.0F);
-            final int verticalGravity = getGravity() & Gravity.VERTICAL_GRAVITY_MASK;
-            final int drawableHeight = buttonDrawable.getIntrinsicHeight();
-            final int drawableWidth = buttonDrawable.getIntrinsicWidth();
-            int top;
-            switch (verticalGravity) {
-            case Gravity.BOTTOM:
-                top = getHeight() - drawableHeight;
-                break;
-            case Gravity.CENTER_VERTICAL:
-                top = (getHeight() - drawableHeight) / 2;
-                break;
-            default:
-                top = 0;
-                break;
-            }
-            int left = ViewHelper.isRTL(getContext()) ? (getWidth() - drawableWidth - widthCheckbox.or(
-                           heightCheckbox.or(0))) : 0;
-            left += ViewHelper.dpToPx(5, getContext());
-            final int x = (checkboxLeft.or(0) + (widthCheckbox.or(heightCheckbox.or(0)) / 2)) + left;
-            final int y = (checkboxTop.or(0) + (heightCheckbox.or(widthCheckbox.or(0)) / 2)) + top;
-            final int size = (int) (Math.max(widthCheckbox.or(0),
-                                             heightCheckbox.or(0)) + ViewHelper.dpToPx(3.0F, getContext()));
+            final int x = getWidth() / 2;
+            final int y = getHeight() / 2;
+            final int size = Math.min(x, y);
             // Background circle
-            canvas.drawCircle(x, y, size, backgroundPaint);
+            canvas.drawCircle(y, x, size, backgroundPaint);
             // Foreground arc
             final RectF oval = new RectF(x - size, y - size, x + size, y + size);
             final float sweep = (float) ((360.0 / 100.0) * progress);
             canvas.drawArc(oval, 270.0F, sweep, true, circlePaint);
             //white background for checkbox
-            final RectF box = new RectF(checkboxLeft.or(0) + left, checkboxTop.or(0) + top,
-                                        widthCheckbox.or(heightCheckbox.or(0)) + left + checkboxLeft.or(0),
-                                        heightCheckbox.or(widthCheckbox.or(0)) + top + checkboxTop.or(0));
+            final int h = heightCheckbox.or(widthCheckbox.or(0)) / 2;
+            final int w = widthCheckbox.or(heightCheckbox.or(0)) / 2;
+            final RectF box = new RectF(x - w, y - h, w + x, h + y);
             canvas.drawRect(box, checkBoxPaint);
             //checkbox
-            canvas.translate(ViewHelper.dpToPx(ViewHelper.isRTL(getContext()) ? 6.0F : 5.0F, getContext()),
-                             ViewHelper.dpToPx(8.0F, getContext()));
+            canvas.translate(x - checkboxLeft.or(0) - w, y - checkboxTop.or(0) - h);
             buttonDrawable.draw(canvas);
             canvas.restoreToCount(save);
         }
@@ -151,8 +129,10 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
 
     public void run() {
         final Bitmap b = drawableToBitmap(mButtonDrawable);
-        final int x = b.getWidth() / 2;
-        final int y = b.getHeight() / 2;
+        final int w = b.getWidth();
+        final int h = b.getHeight();
+        final int x = w / 2;
+        final int y = h / 2;
         final int startColorTop = b.getPixel(x, 0);
         final int startColorLeft = b.getPixel(0, y);
         final int startColorBottom = b.getPixel(x, (2 * y) - 1);
@@ -216,6 +196,7 @@ public class ProgressDoneView extends AppCompatCheckBox implements Runnable {
             }
 
         }
+
         post(new Runnable() {
             @Override
             public void run() {

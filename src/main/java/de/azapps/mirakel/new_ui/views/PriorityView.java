@@ -32,17 +32,17 @@ public class PriorityView extends LinearLayout {
     @InjectView(R.id.priority_text)
     TextView priorityText;
     private int priority;
-    private String[] priorities = {"-2", "-1", "∅", "!", "!!"};
+    private static final String[] PRIORITIES = {"-2", "-1", "∅", "!", "!!"};
 
-    public PriorityView(Context context) {
+    public PriorityView(final Context context) {
         this(context, null);
     }
 
-    public PriorityView(Context context, AttributeSet attrs) {
+    public PriorityView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PriorityView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PriorityView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, getLayout(), this);
         ButterKnife.inject(this, this);
@@ -56,7 +56,7 @@ public class PriorityView extends LinearLayout {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(final int priority) {
         this.priority = priority;
         rebuildLayout();
     }
@@ -66,13 +66,10 @@ public class PriorityView extends LinearLayout {
             priorityText.setVisibility(GONE);
         } else {
             priorityText.setVisibility(VISIBLE);
-            priorityText.setText(priorities[priority + 2]);
+            priorityText.setText(PRIORITIES[priority + 2]);
         }
     }
     protected boolean shouldHideText() {
-        if (priority == 0) {
-            return true;
-        }
-        return false;
+        return priority == 0;
     }
 }
