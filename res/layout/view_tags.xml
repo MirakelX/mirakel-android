@@ -31,16 +31,15 @@
             android:layout_height="wrap_content"
             android:text="@string/task_tags"
             android:drawableStart="@drawable/ic_local_offer_white_18dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginEnd="10dp"
             android:drawablePadding="@dimen/padding_drawable"
             android:textAppearance="@style/TextAppearance.Regular.Small"
             android:textColor="?attr/colorTextGrey"
             android:id="@+id/task_tags_title"/>
 
         <de.azapps.mirakel.new_ui.views.AddTagView
-            android:paddingStart="4dp"
             android:id="@+id/task_tag_add_view"
-            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textAppearance="@style/TextAppearance.Light.Small"
             android:textColor="?attr/colorTextGrey"
             android:singleLine="true"
             android:enabled="false"

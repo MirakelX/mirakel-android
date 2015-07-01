@@ -47,8 +47,8 @@ public class TaskNameView extends TextView {
         isRTL = ViewHelper.isRTL(ctx);
         final TypedArray a = ctx.getTheme().obtainStyledAttributes(attrs, R.styleable.TaskName, 0, 0);
         try {
-            strokeSize = (int)a.getDimension(R.styleable.TaskName_strokeSize, ViewHelper.dpToPx(2.0F, ctx));
-            strokeMargin = (int)a.getDimension(R.styleable.TaskName_strokeMargin, ViewHelper.dpToPx(5.0F, ctx));
+            strokeSize = (int)a.getDimension(R.styleable.TaskName_strokeSize, ViewHelper.dpToPx(ctx, 2.0F));
+            strokeMargin = (int)a.getDimension(R.styleable.TaskName_strokeMargin, ViewHelper.dpToPx(ctx, 5.0F));
             isStrikeThrough = a.getBoolean(R.styleable.TaskName_isStroked, false);
         } finally {
             a.recycle();

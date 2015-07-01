@@ -182,8 +182,8 @@
                     android:layout_marginEnd="25dp"
                     android:layout_marginStart="25dp"
                     android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp" />
+                    android:paddingBottom="-1dp"
+                    android:paddingTop="3dp" />
             </LinearLayout>
 
             <!-- Notes -->
@@ -194,7 +194,7 @@
                 android:descendantFocusability="beforeDescendants"
                 android:orientation="vertical">
 
-                <include layout="@layout/task_divider" />
+                <include layout="@layout/task_divider"/>
 
                 <de.azapps.mirakel.new_ui.views.NoteView
                     android:id="@+id/task_note"

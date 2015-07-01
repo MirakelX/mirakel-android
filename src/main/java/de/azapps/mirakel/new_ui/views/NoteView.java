@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,10 +64,6 @@ public class NoteView extends LinearLayout {
         requestLayout();
     }
 
-    public String getNote() {
-        return note;
-    }
-
     public void setNote(final String note) {
         this.note = note;
         rebuildLayout();
@@ -80,10 +77,11 @@ public class NoteView extends LinearLayout {
     @OnClick({R.id.task_note_text, R.id.task_note_title})
     public void handleEditNote() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        final EditText editText = new EditText(getContext());
+        final View view = inflate(getContext(), R.layout.view_note_edit, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note_edit_text);
         editText.setText(note);
         builder.setTitle(getContext().getString(R.string.edit_note))
-        .setView(editText)
+        .setView(view)
         .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

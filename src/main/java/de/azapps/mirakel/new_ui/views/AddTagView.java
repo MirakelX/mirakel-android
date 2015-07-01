@@ -67,6 +67,7 @@ import java.util.Set;
 
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakelandroid.R;
 
@@ -262,6 +263,8 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         setText(text);
         setText = false;
         setSelection(getText().length());
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingTop(), (int) ViewHelper.dpToPx(getContext(),
+                   getContext().getResources().getDimension(R.dimen.padding_default_half)));
     }
 
 
