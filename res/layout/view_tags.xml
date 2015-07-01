@@ -40,6 +40,8 @@
         <de.azapps.mirakel.new_ui.views.AddTagView
             android:paddingStart="4dp"
             android:id="@+id/task_tag_add_view"
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?attr/colorTextGrey"
             android:singleLine="true"
             android:enabled="false"
             android:clickable="true"

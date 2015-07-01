@@ -331,7 +331,10 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private void checkDisableAddButton() {
         if (--hiddenViews < 1) {
-            addMoreButton.setVisibility(View.INVISIBLE);
+            addMoreButton.setTextColor(ThemeManager.getColor(R.attr.colorLightGrey));
+            ViewHelper.setCompoundDrawable(addMoreButton,
+                                           ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
+                                                   ThemeManager.getColor(R.attr.colorLightGrey)), getActivity());
         }
     }
 
@@ -375,7 +378,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         filesView.setActivity(getActivity());
         ViewHelper.setCompoundDrawable(addMoreButton,
                                        ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
-                                               ThemeManager.getColor(R.attr.colorLightGrey)), getActivity());
+                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
     }
 
     @Override

@@ -38,15 +38,14 @@
             android:id="@+id/add_file"
             android:layout_gravity="center"
             android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="center"
             android:src="@drawable/ic_plus_black_48dp"/>
 
         <TextView
-            android:layout_centerHorizontal="true"
             android:id="@+id/add_file_text"
-            android:layout_below="@id/add_file"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/add_file"

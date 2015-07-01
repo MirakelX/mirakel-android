@@ -20,7 +20,7 @@
 
 <resources>
 
-    <string name="title_activity_mirakel">MirakelActivity</string>
+    <string name="title_activity_mirakel">Mirakel</string>
     <string name="action_settings">Settings</string>
     <string name="list_title">Lists</string>
     <string name="progress_header">Progress:</string>
@@ -32,7 +32,7 @@
     <string name="task_button_done">DONE</string>
     <string name="edit_note">Edit Note</string>
     <string name="save">Save</string>
-    <string name="task_move_to">Move task to</string>
+    <string name="task_move_to">Move task</string>
     <string name="task_tags">Tags:</string>
     <string name="subtask_add">Add subtask…</string>
     <string name="task_new">New task</string>
@@ -54,7 +54,6 @@
     </plurals>
     <string name="list_name">List name</string>
     <string name="list_account">List account</string>
-    <string name="list_edit_multiple_names">Different names</string>
     <string name="list_edit_title">Edit list</string>
     <string name="can_not_edit_list">Can not edit CalDAV lists</string>
     <string name="menu_set_tags">Set tags</string>
@@ -90,6 +89,6 @@
     <string name="show_done_tasks">Show done tasks</string>
 
     <string name="task_due_recurrence_header">Recurrence:</string>
-    <string name="none_recurring">Not recurring</string>
+    <string name="none_recurring">Recurrence</string>
 
 </resources>

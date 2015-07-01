@@ -19,27 +19,34 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/file_preview_size"
     android:layout_height="@dimen/file_preview_size">
+
     <ImageView
         android:id="@+id/file_preview_image"
         android:layout_width="@dimen/file_preview_size"
         android:layout_height="@dimen/file_preview_size"
-        android:scaleType="centerInside"/>
+        android:scaleType="fitCenter" />
+
     <FrameLayout
         android:layout_width="@dimen/file_preview_size"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_corner">
+
         <TextView
-            android:padding="5dp"
             android:id="@+id/file_preview_text"
-            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
             android:text="Here is your text"
-            android:textColor="#FFFFFF"/>
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?colorTextWhite" />
     </FrameLayout>
 </RelativeLayout>
