@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -87,6 +88,22 @@ public class TaskAdapter extends
     @Override
     public void onBindViewHolder(final TaskViewHolder viewHolder, final Cursor cursor,
                                  final int position) {
+        if (position == 0) {
+            final int normal = (int) mContext.getResources().getDimension(R.dimen.card_margin);
+            final int bottom = (int) mContext.getResources().getDimension(R.dimen.card_margin_bottom);
+            final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(normal, normal, normal, bottom);
+            viewHolder.card.setLayoutParams(params);
+        } else {
+            final int normal = (int) mContext.getResources().getDimension(R.dimen.card_margin);
+            final int top = (int) mContext.getResources().getDimension(R.dimen.card_margin_top);
+            final int bottom = (int) mContext.getResources().getDimension(R.dimen.card_margin_bottom);
+            final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(normal, top, normal, bottom);
+            viewHolder.card.setLayoutParams(params);
+        }
         if (position == (getItemCount() - 1)) {
             viewHolder.viewSwitcher.setDisplayedChild(1);
             final ListMirakelInterface.ShowDoneCases status = taskAdapterCallbacks.shouldShowDoneToggle();
