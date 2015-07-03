@@ -19,17 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <resources>
-
-    <!-- Regular -->
-    <style name="TextAppearance.Regular" parent="TextAppearance.Base">
-    </style>
-
     <style name="TextAppearance.Medium" parent="TextAppearance.Regular">
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
-
-    <!-- Light -->
-    <style name="TextAppearance.Light" parent="TextAppearance.Base">
-    </style>
-
 </resources>
