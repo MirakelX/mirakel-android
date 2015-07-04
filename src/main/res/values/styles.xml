@@ -62,7 +62,7 @@
 
         <!-- The CAB should overlay the normal ActionBar -->
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_check_white_36dp</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_check_white_24dp</item>
         <item name="actionModeStyle">@style/ActionModeStyle</item>
         <item name="android:actionModeStyle">@style/ActionModeStyle</item>
 
