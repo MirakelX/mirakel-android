@@ -27,6 +27,11 @@
         android:title="@string/search"
         app:showAsAction="always" />
     <item
+        android:id="@+id/menu_close_search"
+        android:icon="@drawable/ic_close_white_24dp"
+        android:title="@string/search"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_share"
         android:icon="@drawable/ic_share_grey600_18dp"
         android:title="@string/share_list"

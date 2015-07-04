@@ -81,6 +81,7 @@ import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
+import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -225,7 +226,12 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         } else {
             getMenuInflater().inflate(R.menu.tablet_menu, menu);
         }
-
+        if ((menu.findItem(R.id.menu_close_search) != null) && (menu.findItem(R.id.menu_search) != null)) {
+            menu.findItem(R.id.menu_search).setVisible(!(getTasksFragment().getList() instanceof
+                    SearchListMirakel));
+            menu.findItem(R.id.menu_close_search).setVisible((getTasksFragment().getList() instanceof
+                    SearchListMirakel));
+        }
         MenuHelper.showMenuIcons(this, menu);
         return true;
     }
@@ -241,19 +247,26 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                 return true;
             }
         }
-        final int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        switch (item.getItemId()) {
+        case R.id.action_settings:
             final Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.action_create_list) {
+        case R.id.action_create_list:
             getListsFragment().editList(ListMirakel.getStub());
             return true;
-        } else if (id == R.id.menu_share) {
+        case R.id.menu_share:
             SharingHelper.share(this, getTasksFragment().getList());
-        } else if (id == R.id.menu_search) {
+            break;
+        case  R.id.menu_search:
             getTasksFragment().handleShowSearch();
-        } else if (id == R.id.menu_sort) {
+            invalidateOptionsMenu();
+            break;
+        case R.id.menu_close_search:
+            getTasksFragment().setList(getTasksFragment().getOldList());
+            invalidateOptionsMenu();
+            break;
+        case  R.id.menu_sort:
             ListMirakelInterface listMirakelInterface = getTasksFragment().getList();
             if (listMirakelInterface instanceof ListMirakel) {
                 ListDialogHelpers.handleSortBy(this, (ListMirakel) listMirakelInterface,
@@ -266,6 +279,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             } else {
                 throw new IllegalArgumentException("It's not a proper List");
             }
+            break;
         }
         return super.onOptionsItemSelected(item);
     }

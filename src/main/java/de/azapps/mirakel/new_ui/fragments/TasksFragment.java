@@ -139,6 +139,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     private Optional<Snackbar> snackbar = absent();
 
     private boolean shouldShowDoneTasks = false;
+    private ListMirakelInterface oldList;
 
     public TasksFragment() {
         // Required empty public constructor
@@ -216,10 +217,17 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         setList(listMirakel, false);
     }
     public void setList(final ListMirakelInterface listMirakel, final boolean shouldShowDoneTasks) {
+        getActivity().invalidateOptionsMenu();
         if (snackbar.isPresent()) {
             snackbar.get().dismiss();
         }
+        if (!(listMirakel instanceof SearchListMirakel)) {
+            this.oldList = this.listMirakel;
+        }
         this.listMirakel = listMirakel;
+        if (oldList == null) {
+            oldList = listMirakel;
+        }
         final Bundle args = new Bundle();
         ((MirakelActivity) getActivity()).updateToolbar(MirakelActivity.ActionBarState.NORMAL);
         if (listMirakel instanceof SearchListMirakel) {
@@ -657,6 +665,10 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public ListMirakelInterface.ShowDoneCases shouldShowDoneToggle() {
         return listMirakel.shouldShowDoneToggle();
+    }
+
+    public ListMirakelInterface getOldList() {
+        return oldList;
     }
 
     private class MultiSelectCallbacks implements ActionMode.Callback {
