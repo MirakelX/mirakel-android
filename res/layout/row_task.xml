@@ -116,6 +116,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:paddingTop="14dp"
         android:text="show done tasks"
+        android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.Regular.Small"
         android:textColor="?colorTextGrey"/>
 </ViewSwitcher>
