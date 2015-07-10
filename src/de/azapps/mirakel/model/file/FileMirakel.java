@@ -23,7 +23,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
@@ -146,7 +150,7 @@ public class FileMirakel extends FileBase {
         final String name = FileUtils.getNameFromUri(ctx, uri);
         final FileMirakel newFile = FileMirakel.newFile(task, name, uri);
         try {
-            final Bitmap bitmap = ImageUtils.getScaleImage(uri, ctx,
+            final Bitmap bitmap = ImageUtils.getSquaredImage(ctx, uri,
                                   ctx.getResources().getDimension(R.dimen.file_preview_size));
 
             if (bitmap != null) {
@@ -206,9 +210,34 @@ public class FileMirakel extends FileBase {
     public Optional<Drawable> getPreview(@NonNull final Context context) {
         final File osFile = new File(fileCacheDir, getId() + ".png");
         if (osFile.exists()) {
-            final Bitmap bpm = BitmapFactory.decodeFile(osFile.getAbsolutePath());
-            return of((Drawable) new RoundedBitmapDrawable(bpm,
-                      context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0));
+            final Bitmap bitmap = BitmapFactory.decodeFile(osFile.getAbsolutePath());
+
+            final float size = context.getResources().getDimension(R.dimen.file_preview_size);
+            final float paddingVertical = (float) ((size - bitmap.getHeight()) / 2.0);
+            final float paddingHorizontal = (float) ((size - bitmap.getWidth()) / 2.0);
+            final RectF targetRect = new RectF(paddingHorizontal, paddingVertical, size - paddingHorizontal,
+                                               size - paddingVertical);
+            final Bitmap dest = Bitmap.createBitmap((int) size, (int) size, bitmap.getConfig());
+            final Canvas canvas = new Canvas(dest);
+
+            // Center bitmap
+            canvas.drawColor(Color.TRANSPARENT);
+            canvas.drawBitmap(bitmap, null, targetRect, null);
+
+            final float border = context.getResources().getDimension(R.dimen.file_preview_corner_radius);
+            final RectF fullRect = new RectF(border / 2, border / 2, size - border / 2, size - border / 2);
+            // Draw border
+            final Paint borderPaint = new Paint();
+            borderPaint.setColor(ThemeManager.getColor(R.attr.colorPreviewBorder));
+            borderPaint.setAntiAlias(true);
+            borderPaint.setStrokeWidth(border);
+            borderPaint.setStyle(Paint.Style.STROKE);
+            canvas.drawRoundRect(fullRect, border, border, borderPaint);
+
+            // Draw corner
+            Drawable roundedBitmapDrawable = new RoundedBitmapDrawable(dest,
+                    context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0);
+            return of(roundedBitmapDrawable);
         } else {
             final int drawableId;
             if (FileUtils.isAudio(fileUri)) {
