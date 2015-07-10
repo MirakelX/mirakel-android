@@ -194,6 +194,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         outState.putParcelable(TASK, task);
     }
 
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         setStyle(DialogFragment.STYLE_NO_TITLE, ThemeManager.getDialogTheme());
@@ -253,6 +254,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         super.onResume();
         AnalyticsWrapperBase.setScreen(this);
     }
+
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -532,7 +534,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                     task.setDue(Optional.<Calendar>absent());
                     task.save();
                 }
-            }, task.getDue(), false);
+            }, task.getDue());
             datePickerDialog.show(getFragmentManager(), "dueDialog");
         }
     };

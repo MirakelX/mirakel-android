@@ -157,8 +157,10 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             setupActionbar();
         }
         initThirdParty();
+        if (savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }
     }
-
 
     private void initThirdParty() {
         // Show ChangeLog

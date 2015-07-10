@@ -556,7 +556,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         }, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
-        dueLocal.get(Calendar.DAY_OF_MONTH), false, true);
+        dueLocal.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show(getActivity().getSupportFragmentManager(), "datepicker");
     }
 
