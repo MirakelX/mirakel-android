@@ -32,8 +32,8 @@
     <FrameLayout
         android:layout_width="@dimen/file_preview_size"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/rounded_corner">
+        android:background="@drawable/rounded_corner"
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/file_preview_text"
@@ -47,6 +47,7 @@
             android:singleLine="true"
             android:text="Here is your text"
             android:textAppearance="@style/TextAppearance.Regular.Small"
-            android:textColor="?colorTextWhite" />
+            android:textColor="?colorTextWhite"
+            />
     </FrameLayout>
 </RelativeLayout>
