@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -105,9 +106,9 @@ public class TimePicker extends LinearLayout implements
         }
     }
 
-    public interface OnTimeSetListener {
+    public static class OnTimeSetListener implements Parcelable {
 
-        void onNoTimeSet();
+        public void onNoTimeSet() {}
 
         /**
          * @param view
@@ -117,8 +118,31 @@ public class TimePicker extends LinearLayout implements
          * @param minute
          *            The minute that was set.
          */
-        void onTimeSet(final RadialPickerLayout view, final int hourOfDay,
-                       final int minute);
+        public void onTimeSet(final RadialPickerLayout view, final int hourOfDay,
+                              final int minute) {}
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
+        }
+
+        public static final Parcelable.Creator<OnTimeSetListener> CREATOR = new
+        Parcelable.Creator<OnTimeSetListener>() {
+            @Override
+            public OnTimeSetListener createFromParcel(final Parcel source) {
+                return new OnTimeSetListener();
+            }
+
+            @Override
+            public OnTimeSetListener[] newArray(final int size) {
+                return new OnTimeSetListener[size];
+            }
+        };
     }
 
     public static final int AM = 0;
@@ -134,6 +158,8 @@ public class TimePicker extends LinearLayout implements
     private static final String KEY_IS_24_HOUR_VIEW = "is_24_hour_view";
     private static final String KEY_MINUTE = "minute";
     private static final String KEY_TYPED_TIMES = "typed_times";
+    private static final String PARENT_KEY = "parent";
+    private static final String CALLBACK_KEY = "callback";
     public static final int MINUTE_INDEX = 1;
 
     public static final int PM = 1;
@@ -709,17 +735,25 @@ public class TimePicker extends LinearLayout implements
 
     @Override
     public void onRestoreInstanceState(final Parcelable state) {
-        if (!(state instanceof Bundle)) {
-            super.onRestoreInstanceState(state);
-            return;
+        final Bundle saved = (Bundle) state;
+        super.onRestoreInstanceState(saved.getParcelable(PARENT_KEY));
+        final int hour = saved.getInt(KEY_HOUR_OF_DAY);
+        final int minute = saved.getInt(KEY_MINUTE);
+        if (mTimePicker != null) {
+            mTimePicker.setTime(hour, minute);
+            mTimePicker.setCurrentItemShowing(saved.getInt(KEY_CURRENT_ITEM_SHOWING), false);
         }
-        // Bundle b=(Bundle) state;
+        setHour(hour, false);
+        setMinute(minute);
+        mCallback = saved.getParcelable(CALLBACK_KEY);
     }
 
     @Override
     public Parcelable onSaveInstanceState() {
-        super.onSaveInstanceState();
+
         final Bundle outState = new Bundle();
+        outState.putParcelable(PARENT_KEY, super.onSaveInstanceState());
+        outState.putParcelable(CALLBACK_KEY, mCallback);
         if (this.mTimePicker != null) {
             outState.putInt(KEY_HOUR_OF_DAY, this.mTimePicker.getHours());
             outState.putInt(KEY_MINUTE, this.mTimePicker.getMinutes());

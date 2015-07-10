@@ -26,9 +26,11 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -49,7 +51,6 @@ import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 
 import de.azapps.material_elements.utils.ThemeManager;
@@ -63,12 +64,6 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     private static final int VIEW_DATE_PICKER_YEAR = 1;
     private static final int VIEW_DATE_PICKER_MONTH_DAY = 0;
     private static final String TAG = "DatePicker";
-    // TODO use local from pref...
-    // private static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd",
-    // Locale.getDefault());
-    // private static SimpleDateFormat YEAR_FORMAT = new
-    // SimpleDateFormat("yyyy",
-    // Locale.getDefault());
     private static DateTimeFormatter DAY_FORMAT = DateTimeFormat
             .forPattern("dd");
     private static DateTimeFormatter YEAR_FORMAT = DateTimeFormat
@@ -394,15 +389,39 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         this.mMonthAndDayView.setContentDescription(desc);
     }
 
-    static abstract interface OnDateChangedListener {
-        public abstract void onDateChanged();
+    interface OnDateChangedListener {
+        void onDateChanged();
     }
 
-    public static abstract interface OnDateSetListener {
-        public abstract void onDateSet(final DatePicker datePickerDialog,
-                                       final int year, final int month, final int day);
 
-        public abstract void onNoDateSet();
+    public static class OnDateSetListener implements Parcelable {
+        public void onDateSet(final DatePicker datePickerDialog,
+                              final int year, final int month, final int day) {}
+
+        public void onNoDateSet() {}
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(final Parcel dest, final int flags) {
+
+        }
+
+        public static final Parcelable.Creator<OnDateSetListener> CREATOR = new
+        Parcelable.Creator<OnDateSetListener>() {
+            @Override
+            public OnDateSetListener createFromParcel(final Parcel source) {
+                return new OnDateSetListener();
+            }
+
+            @Override
+            public OnDateSetListener[] newArray(final int size) {
+                return new OnDateSetListener[size];
+            }
+        };
     }
 
     @Override
@@ -463,9 +482,8 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     }
 
     private void updatePickers() {
-        final Iterator<OnDateChangedListener> it = this.mListeners.iterator();
-        while (it.hasNext()) {
-            it.next().onDateChanged();
+        for (OnDateChangedListener mListener : this.mListeners) {
+            mListener.onDateChanged();
         }
     }
 
@@ -480,20 +498,8 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         if (this.yearSelected) {
             setCurrentView(VIEW_DATE_PICKER_YEAR);
         }
-        this.mYearPickerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                DatePicker.this.mYearPickerView
-                .onRestoreInstanceState(yearState);
-            }
-        }, 100);
-        this.mDayPickerView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                DatePicker.this.mDayPickerView
-                .onRestoreInstanceState(monthState);
-            }
-        }, 100);
+        mYearPickerView.onRestoreInstanceState(yearState);
+        mDayPickerView.onRestoreInstanceState(monthState);
     }
 
     private static final String YEAR_KEY = "year";
@@ -505,12 +511,13 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
     private static final String CURRENT_VIEW_KEY = "currentView";
     private static final String MOST_VISIBLE_POSITION_KEY = "mostVisiblePosition";
     private static final String LIST_OFFSET_KEY = "listOffset";
+    private static final String PARENT_KEY = "Parent";
+    private static final String CALLBACK_KEY = "callback";
 
     @Override
     public Parcelable onSaveInstanceState() {
-        super.onSaveInstanceState();
-        // end
         final Bundle b = new Bundle();
+        b.putParcelable(PARENT_KEY, super.onSaveInstanceState());
         b.putInt(YEAR_KEY, this.mCalendar.get(Calendar.YEAR));
         b.putInt(MONTH_KEY, this.mCalendar.get(Calendar.MONTH));
         b.putInt(DAY_KEY, this.mCalendar.get(Calendar.DAY_OF_MONTH));
@@ -518,32 +525,30 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         b.putInt(YEAR_START_KEY, this.mMinYear);
         b.putInt(YEAR_END_KEY, this.mMaxYear);
         b.putInt(CURRENT_VIEW_KEY, this.mCurrentView);
+        b.putParcelable(CALLBACK_KEY, this.mCallBack);
+
         int mostVisiblePosition = -1;
         if (this.mCurrentView == 0) {
             mostVisiblePosition = this.mDayPickerView.getMostVisiblePosition();
         }
-        // ss.list_position= mostVisiblePosition;
         if (this.mCurrentView == 1) {
             mostVisiblePosition = this.mYearPickerView
                                   .getFirstVisiblePosition();
             b.putInt(LIST_OFFSET_KEY,
                      this.mYearPickerView.getFirstPositionOffset());
-            // ss.list_position_offset=
-            // this.mYearPickerView.getFirstPositionOffset();
         }
         b.putInt(MOST_VISIBLE_POSITION_KEY, mostVisiblePosition);
         return b;
     }
 
     @Override
-    public void onRestoreInstanceState(final Parcelable state) {
-        // begin boilerplate code so parent classes can restore state
-        if (!(state instanceof Bundle)) {
-            super.onRestoreInstanceState(state);
+    public void onRestoreInstanceState(final @Nullable Parcelable state) {
+        if (state == null) {
             return;
         }
-        // end
+        // begin boilerplate code so parent classes can restore state
         final Bundle b = (Bundle) state;
+        super.onRestoreInstanceState(b.getParcelable(PARENT_KEY));
         this.mWeekStart = b.getInt(WEEK_START_KEY);
         setMinYear(b.getInt(YEAR_START_KEY));
         setMaxYear(b.getInt(YEAR_END_KEY));
@@ -557,6 +562,7 @@ public class DatePicker extends LinearLayout implements View.OnClickListener,
         setYear(year);
         setMonth(month);
         setDay(day);
+        mCallBack = (OnDateSetListener) b.getParcelable(CALLBACK_KEY);
     }
 
     public int getYear() {

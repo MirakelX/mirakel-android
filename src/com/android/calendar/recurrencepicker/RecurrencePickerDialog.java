@@ -357,7 +357,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
             @Override
             public void onClick(final View v) {
                 final SupportDatePickerDialog dp = SupportDatePickerDialog.newInstance(
-                new OnDateSetListener() {
+                new DatePicker.OnDateSetListener() {
                     @Override
                     public void onNoDateSet() {
                         mEndDate = absent();
@@ -383,7 +383,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
                     }
                 }, endDate.get(Calendar.YEAR), endDate
                 .get(Calendar.MONTH), endDate
-                .get(Calendar.DAY_OF_MONTH), false);
+                .get(Calendar.DAY_OF_MONTH));
                 dp.show(getFragmentManager(), "endDate");
             }
         });
@@ -452,7 +452,7 @@ public class RecurrencePickerDialog extends DialogFragment implements
                     }
                 }, startDate.get(Calendar.YEAR), startDate
                 .get(Calendar.MONTH), startDate
-                .get(Calendar.DAY_OF_MONTH), false);
+                .get(Calendar.DAY_OF_MONTH));
                 dp.show(getFragmentManager(), "startDate");
             }
         });
