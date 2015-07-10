@@ -33,6 +33,7 @@
         <item name="colorCAB">#2196F3</item>
         <item name="colorCABStatus">#1A78C2</item>
         <item name="colorLightGrey">#BFBFBF</item>
+        <item name="colorPreviewBorder">#48000000</item>
 
         <!-- Black 60% -->
         <item name="colorTextGrey">@color/colorTextGrey</item>
