@@ -218,6 +218,14 @@ public class TaskAdapter extends
     }
 
     @Override
+    protected boolean isSelectable(int pos) {
+        if (pos < getCursor().getCount()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onBindViewHolder(final TaskViewHolder viewHolder, final int position) {
         if (position == getItemCount() - 1) {
             onBindViewHolder(viewHolder, null, position);
