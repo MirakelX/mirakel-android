@@ -32,8 +32,8 @@
     <dimen name="small_icon_size">24dp</dimen>
 
     <dimen name="card_margin">8dp</dimen>
-    <dimen name="card_margin_top">2dp</dimen>
-    <dimen name="card_margin_bottom">6dp</dimen>
+    <dimen name="card_margin_top">4dp</dimen>
+    <dimen name="card_margin_bottom">4dp</dimen>
 
     <dimen name="navdrawer_width">260dp</dimen>
 

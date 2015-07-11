@@ -111,10 +111,9 @@
     <Button
         android:id="@+id/show_done_tasks"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/clickable_item_size"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingTop="14dp"
         android:text="show done tasks"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.Regular.Small"
