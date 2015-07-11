@@ -26,8 +26,9 @@
                 android:layout_marginEnd="10dp">
 
     <LinearLayout
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="18dp"
+
         android:layout_marginEnd="18dp"
         android:orientation="vertical"
         android:gravity="center_horizontal"
@@ -49,9 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/add_file"
-            android:textSize="16sp"
             android:gravity="center_horizontal"
-            android:textColor="?attr/colorTextGrey"/>
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?colorPreviewBorder"/>
 
     </LinearLayout>
 
