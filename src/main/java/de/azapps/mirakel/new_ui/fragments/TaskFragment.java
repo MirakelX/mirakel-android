@@ -94,6 +94,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private static final String TAG = "TaskFragment";
     private static final String TASK = "task";
+    private static final String EDIT_TEXT_STATE = "edit_name_state";
+    private static final String TASK_NAME_STATE = "task_name_state";
+    private static final String EDIT_CURSOR_POS = "edit_cursor_pos";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
     public static final int FILE_SELECT_CODE = 521;
     public static final String ARGUMENT_TASK = "task";
@@ -192,8 +195,37 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(TASK, task);
+        outState.putParcelable(EDIT_TEXT_STATE, taskNameEdit.onSaveInstanceState());
+        outState.putInt(EDIT_CURSOR_POS, taskNameEdit.getSelectionEnd());
+        outState.putInt(TASK_NAME_STATE, taskNameViewSwitcher.getCurrentView().getId());
     }
 
+    @Override
+    public void onViewStateRestored(final Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (taskNameEdit != null) {
+                taskNameEdit.onRestoreInstanceState(savedInstanceState.getParcelable(EDIT_TEXT_STATE));
+            }
+            if (taskNameViewSwitcher != null) {
+                while (taskNameViewSwitcher.getCurrentView().getId() != savedInstanceState.getInt(
+                           TASK_NAME_STATE)) {
+                    taskNameViewSwitcher.showNext();
+                }
+                if (savedInstanceState.getInt(TASK_NAME_STATE) == taskNameEdit.getId()) {
+                    //we need to delay this a bit, because otherwise the keyboard is not shown
+                    taskNameEdit.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskNameEdit.requestFocus();
+                            taskNameEdit.setSelection(savedInstanceState.getInt(EDIT_CURSOR_POS));
+                        }
+                    }, 10L);
+
+                }
+            }
+        }
+    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -202,7 +234,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             task = savedInstanceState.getParcelable(TASK);
-
         } else {
             final Bundle arguments = getArguments();
             task = arguments.getParcelable(ARGUMENT_TASK);
