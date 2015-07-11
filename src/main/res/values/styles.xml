@@ -71,6 +71,7 @@
         <item name="android:actionBarStyle">@style/Mirakel.ActionBar</item>
         <item name="actionBarStyle">@style/Mirakel.ActionBar</item>
 
+        <item name="bottomSheetStyle">@style/BottomSheet.StyleDialog</item>
     </style>
 
     <style name="Mirakel.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -164,6 +165,12 @@
         <item name="android:textColorPrimary">#fff</item>
         <item name="colorControlNormal">?colorTextActionBar</item>
         <item name="colorControlHighlight">?colorTextActionBarHighlight</item>
+    </style>
+
+    <style name="BottomSheet.StyleDialog" parent="BottomSheet.Dialog">
+        <item name="android:textColorPrimary">?colorTextGrey</item>
+        <item name="android:textColorSecondary">?colorTextGrey</item>
+        <item name="android:textColorHint">?colorTextGrey</item>
     </style>
 
 </resources>
