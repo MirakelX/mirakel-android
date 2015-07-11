@@ -20,10 +20,10 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke
-        android:dashGap="8dp"
-        android:dashWidth="8dp"
-        android:width="4dp"
-        android:color="@color/colorTextGrey"/>
+        android:dashGap="16dp"
+        android:dashWidth="16dp"
+        android:width="2dp"
+        android:color="@color/colorPreviewBorder"/>
     <padding
         android:bottom="5dp"
         android:left="5dp"

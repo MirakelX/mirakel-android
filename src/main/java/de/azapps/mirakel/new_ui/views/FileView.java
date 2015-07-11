@@ -24,8 +24,16 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -52,7 +60,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.azapps.material_elements.drawable.RoundedBitmapDrawable;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.material_elements.views.FFTAudioView;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -65,6 +75,8 @@ import de.azapps.mirakel.new_ui.helper.ImageLoader;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.of;
 
 public class FileView extends LinearLayout implements View.OnClickListener,
     View.OnLongClickListener, DialogInterface.OnClickListener, FFTAudioView.OnRecordFinished {
@@ -213,17 +225,14 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         for (int i = 0; i < COUNT_PER_LINE; i++) {
             if (counter < files.size()) {
                 final FileMirakel file = files.get(counter);
-                final Optional<Drawable> previewDrawable = file.getPreview(getContext());
-                if (previewDrawable.isPresent()) {
-                    final View preview = inflater.inflate(R.layout.file_item, null);
-                    preview.setLayoutParams(PREVIEW_SIZE);
-                    imageViews.add((ImageView) preview.findViewById(R.id.file_preview_image));
-                    ((TextView) preview.findViewById(R.id.file_preview_text)).setText(file.getName());
-                    preview.setTag(file);
-                    preview.setOnClickListener(this);
-                    preview.setOnLongClickListener(this);
-                    wrapper.addView(preview);
-                }
+                final View preview = inflater.inflate(R.layout.file_item, null);
+                preview.setLayoutParams(PREVIEW_SIZE);
+                imageViews.add((ImageView) preview.findViewById(R.id.file_preview_image));
+                ((TextView) preview.findViewById(R.id.file_preview_text)).setText(file.getName());
+                preview.setTag(file);
+                preview.setOnClickListener(this);
+                preview.setOnLongClickListener(this);
+                wrapper.addView(preview);
             } else if (counter == files.size()) {
                 fileAction = inflater.inflate(R.layout.add_file_view, null);
                 fileAction.setLayoutParams(PREVIEW_SIZE);
@@ -259,9 +268,8 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     }
 
     private void setAddFile() {
-        final int color = ThemeManager.getColor(R.attr.colorTextGrey);
-        fileActionIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-        fileActionIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_plus_black_48dp));
+        final int color = ThemeManager.getColor(R.attr.colorPreviewBorder);
+        fileActionIcon.setImageDrawable(ThemeManager.getColoredIcon(R.drawable.ic_plus_white_48dp, color));
         setFileActionBackground(getResources().getColor(android.R.color.transparent));
         fileActionText.setText(R.string.add_file);
         fileActionText.setTextColor(color);
@@ -270,10 +278,9 @@ public class FileView extends LinearLayout implements View.OnClickListener,
 
 
     private void setDeleteFiles() {
-        final int color = ThemeManager.getColor(R.attr.colorTextWhite);
-        setFileActionBackground(ThemeManager.getAccentThemeColor());
-        fileActionIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_delete_grey600_48dp));
-        fileActionIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        final int color = ThemeManager.getColor(R.attr.colorPreviewBorder);
+        fileActionIcon.setImageDrawable(ThemeManager.getColoredIcon(R.drawable.ic_delete_white_48dp,
+                                        color));
         fileActionText.setText(R.string.delete_files);
         fileActionText.setTextColor(color);
         isDelete = true;
