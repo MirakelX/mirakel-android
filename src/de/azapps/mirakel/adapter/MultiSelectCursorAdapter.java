@@ -130,7 +130,7 @@ public abstract class
         public void onClick(@NonNull final View v) {
             if (selectMode) {
                 toggleSelection(getLayoutPosition());
-            } else if ((itemClickListener != null) && (getLayoutPosition() < getItemCount())) {
+            } else if ((itemClickListener != null) && isSelectable(getLayoutPosition())) {
                 itemClickListener.onItemSelected(getItemAt(getLayoutPosition()));
             }
         }
@@ -168,8 +168,15 @@ public abstract class
         notifyDataSetChanged();
     }
 
-    protected boolean toggleSelection(final int pos) {
+    protected boolean isSelectable(final int pos) {
         if (pos >= getItemCount()) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean toggleSelection(final int pos) {
+        if (!isSelectable(pos)) {
             return false;
         }
         final T item = getItemAt(pos);
