@@ -38,7 +38,6 @@ import com.google.common.base.Optional;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
@@ -173,7 +172,7 @@ public class TaskAdapter extends
             if (selectedItems.get(position)) {
                 viewHolder.card.setBackgroundResource(R.drawable.background_task_selected);
             } else {
-                viewHolder.card.setBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+                viewHolder.card.setBackgroundResource(R.drawable.background_task);
             }
         }
     }
