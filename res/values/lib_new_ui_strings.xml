@@ -64,12 +64,9 @@
     <string name="add_files_view_string">File</string>
     <string name="add_tag">Add a tag</string>
     <string name="delete_files">Delete files</string>
-
-    <string-array name="add_file_options">
-        <item>Photo</item>
-        <item>Audio</item>
-        <item>File</item>
-    </string-array>
+    <string name="photo">Photo</string>
+    <string name="audio">Audio</string>
+    <string name="file">File</string>
 
     <string name="add_file">Add File</string>
 

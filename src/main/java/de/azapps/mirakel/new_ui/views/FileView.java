@@ -45,6 +45,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -53,6 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cocosw.bottomsheet.BottomSheet;
 import com.google.common.base.Optional;
 
 import java.io.File;
@@ -134,9 +137,18 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     }
 
     public void addFile() {
-        new AlertDialog.Builder(getContext())
-        .setTitle(R.string.add_files)
-        .setItems(R.array.add_file_options, this).show();
+        BottomSheet builder = new BottomSheet.Builder(activity)
+        .title(R.string.add_files)
+        .sheet(R.menu.add_file_menu)
+        .grid()
+        .listener(this).build();
+        Menu menu = builder.getMenu();
+        for (int id : new Integer[] {0, 1, 2}) {
+            MenuItem menuItem = menu.getItem(id);
+            menuItem.getIcon().setColorFilter(new PorterDuffColorFilter(ThemeManager.getColor(
+                                                  R.attr.colorTextGrey), PorterDuff.Mode.MULTIPLY));
+        }
+        builder.show();
     }
 
     public void addPhoto() {
@@ -406,7 +418,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         switch (which) {
-        case 0://Photo
+        case R.id.file_photo:
             try {
                 final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 photoUri = FileUtils.getOutputMediaFileUri(FileUtils.MEDIA_TYPE_IMAGE);
@@ -425,10 +437,10 @@ public class FileView extends LinearLayout implements View.OnClickListener,
                 }
             }
             break;
-        case 1://Audio
+        case R.id.file_audio:
             recordAudio();
             break;
-        case 2://File
+        case R.id.file_file:
             final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
