@@ -28,5 +28,5 @@
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
         android:textColor="?colorTextActionBar" />
 
-    <include layout="@android:layout/simple_list_item_1" />
+    <include layout="@layout/simple_list_item_1" />
 </LinearLayout>

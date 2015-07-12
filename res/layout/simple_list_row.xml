@@ -32,5 +32,5 @@
         android:minHeight="?android:attr/listPreferredItemHeightSmall" />
 
 
-    <include layout="@android:layout/simple_list_item_1" />
+    <include layout="@layout/simple_list_item_1" />
 </LinearLayout>

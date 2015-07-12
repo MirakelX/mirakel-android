@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
@@ -60,7 +61,7 @@ public class SimpleModelAdapter<T extends IGenericElementInterface> extends
     @Override
     public ModelViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         final View view = LayoutInflater.from(viewGroup.getContext()).inflate(
-                              android.R.layout.simple_list_item_1, null);
+                              R.layout.simple_list_item_1, null);
         view.setMinimumWidth(viewGroup.getWidth());
         return new ModelViewHolder(view);
     }
