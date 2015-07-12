@@ -107,7 +107,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         for (final Tag t : tags) {
             adapterData.add(t.getName());
         }
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+        adapter = new ArrayAdapter<>(getContext(), R.layout.simple_list_item_1,
                                      new ArrayList<String>());
         setAdapter(adapter);
         updateAdapter();

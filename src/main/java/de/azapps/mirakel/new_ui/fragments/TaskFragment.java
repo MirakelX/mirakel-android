@@ -574,7 +574,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         @Override
         public void onClick(final View v) {
             final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_list_item_1, ListMirakel.all(false));
+                    R.layout.simple_list_item_1, ListMirakel.all(false));
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.task_move_to);
             builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
