@@ -61,6 +61,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.azapps.material_elements.utils.IconizedMenu;
+import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.utils.ViewHelper;
@@ -129,7 +131,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @InjectView(R.id.task_button_add_more)
     Button addMoreButton;
-    PopupMenu addMorePopup;
+    IconizedMenu addMorePopup;
 
     @InjectView(R.id.tag_wrapper)
     LinearLayout tagWrapper;
@@ -267,34 +269,36 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private void setupAddMore() {
         hiddenViews = 4;
-        addMorePopup = new PopupMenu(getActivity(), addMoreButton);
+        addMorePopup = new IconizedMenu(getActivity(), addMoreButton);
         addMorePopup.inflate(R.menu.add_more_menu);
-        final Menu m = addMorePopup.getMenu();
+        final Menu popupMenu = addMorePopup.getMenu();
         if (task.getContent().isEmpty()) {
             noteWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_note_menu);
+            disableItem(popupMenu, R.id.add_note_menu);
         }
         if (task.getFiles().isEmpty()) {
             fileWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_file_menu);
+            disableItem(popupMenu, R.id.add_file_menu);
         }
         if (task.getSubtasks().isEmpty()) {
             subtaskWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_subtask_menu);
+            disableItem(popupMenu, R.id.add_subtask_menu);
         }
         if (task.getTags().isEmpty()) {
             tagWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_tags_menu);
+            disableItem(popupMenu, R.id.add_tags_menu);
         }
-        addMorePopup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        MenuHelper.showMenuIcons(getActivity(), popupMenu);
+        MenuHelper.colorizeMenuItems(popupMenu, ThemeManager.getColor(R.attr.colorTextGrey));
+        addMorePopup.setOnMenuItemClickListener(new IconizedMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final MenuItem item) {
                 item.setVisible(false);
