@@ -358,6 +358,9 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             && (newTaskSubject == null)) {
             newTaskSubject = MirakelCommonPreferences.getImportFileTitle();
         }
+        if (newTaskSubject == null) {
+            newTaskSubject = "";
+        }
         final Optional<ListMirakel> listFromSharing = MirakelModelPreferences.getImportDefaultList();
         if (listFromSharing.isPresent()) {
             final Task task = Semantic.createTask(newTaskSubject, listFromSharing, true);
