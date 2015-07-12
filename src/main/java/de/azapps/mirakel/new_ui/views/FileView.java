@@ -377,13 +377,10 @@ public class FileView extends LinearLayout implements View.OnClickListener,
 
 
     private void recordAudio() {
-        final FrameLayout wrapper = new FrameLayout(getContext());
-        wrapper.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                (int) getResources().getDimension(R.dimen.fft_view_hight)));
-        final FFTAudioView audioView;
+        final View layout = inflate(getContext(), R.layout.view_record_audio, null);
+        final FFTAudioView audioView = (FFTAudioView) layout.findViewById(R.id.audio_view);
         try {
-            audioView = new FFTAudioView(getContext(),
-                                         FileUtils.getOutputMediaFile(FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath(), this);
+            audioView.init(FileUtils.getOutputMediaFile(FileUtils.MEDIA_TYPE_AUDIO).getAbsolutePath(), this);
         } catch (final IOException e) {
             ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
             Log.wtf(TAG, "failed to create outputfile", e);
@@ -393,9 +390,8 @@ public class FileView extends LinearLayout implements View.OnClickListener,
             ErrorReporter.report(ErrorType.NO_SPEACH_RECOGNITION);
             return;
         }
-        wrapper.addView(audioView);
         new AlertDialog.Builder(getContext()).setTitle(R.string.audio_record_title)
-        .setView(wrapper)
+        .setView(layout)
         .setPositiveButton(android.R.string.ok, null)
         .setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
