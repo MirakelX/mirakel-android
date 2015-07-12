@@ -21,13 +21,16 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -97,6 +100,13 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private static final String EDIT_TEXT_STATE = "edit_name_state";
     private static final String TASK_NAME_STATE = "task_name_state";
     private static final String EDIT_CURSOR_POS = "edit_cursor_pos";
+    private static final String HAS_DIRTY_SUBTASK = "has_subtask";
+    private static final String HAS_DIRTY_NOTE = "has_note";
+    private static final String HAS_DIRTY_FILE = "has_file";
+    private static final String HAS_DIRTY_TAG = "has_tag";
+    private static final String FOCUS_TASK_NAME = "focus_task_name";
+    private static final String LIST_DIALOG_STATE = "dialog";
+    private static final String LIST_DIALOG_SHOWING = "is_showing";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
     public static final int FILE_SELECT_CODE = 521;
     public static final String ARGUMENT_TASK = "task";
@@ -198,6 +208,15 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         outState.putParcelable(EDIT_TEXT_STATE, taskNameEdit.onSaveInstanceState());
         outState.putInt(EDIT_CURSOR_POS, taskNameEdit.getSelectionEnd());
         outState.putInt(TASK_NAME_STATE, taskNameViewSwitcher.getCurrentView().getId());
+        outState.putBoolean(HAS_DIRTY_SUBTASK, subtaskWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(HAS_DIRTY_TAG, tagWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(HAS_DIRTY_FILE, fileWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(HAS_DIRTY_NOTE, noteWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(FOCUS_TASK_NAME, taskNameEdit.hasFocus());
+        if (listDialog != null) {
+            outState.putParcelable(LIST_DIALOG_STATE, listDialog.onSaveInstanceState());
+            outState.putBoolean(LIST_DIALOG_SHOWING, listDialog.isShowing());
+        }
     }
 
     @Override
@@ -212,7 +231,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                            TASK_NAME_STATE)) {
                     taskNameViewSwitcher.showNext();
                 }
-                if (savedInstanceState.getInt(TASK_NAME_STATE) == taskNameEdit.getId()) {
+                if (savedInstanceState.getInt(TASK_NAME_STATE) == taskNameEdit.getId() &&
+                    savedInstanceState.getBoolean(FOCUS_TASK_NAME)) {
                     //we need to delay this a bit, because otherwise the keyboard is not shown
                     taskNameEdit.postDelayed(new Runnable() {
                         @Override
@@ -224,6 +244,28 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
                 }
             }
+            restoreAddMoreItem(noteView, HAS_DIRTY_NOTE, savedInstanceState, R.id.add_note_menu);
+            restoreAddMoreItem(filesView, HAS_DIRTY_FILE, savedInstanceState, R.id.add_file_menu);
+            restoreAddMoreItem(tagView, HAS_DIRTY_TAG, savedInstanceState, R.id.add_tags_menu);
+            restoreAddMoreItem(subtasksView, HAS_DIRTY_SUBTASK, savedInstanceState, R.id.add_subtask_menu);
+
+            if (savedInstanceState.getParcelable(LIST_DIALOG_STATE) != null) {
+                listDialog = createListDialog();
+                listDialog.onRestoreInstanceState((Bundle) savedInstanceState.getParcelable(LIST_DIALOG_STATE));
+                if (savedInstanceState.getBoolean(LIST_DIALOG_SHOWING, false) && !listDialog.isShowing()) {
+                    listDialog.show();
+                }
+            }
+        }
+    }
+
+    void restoreAddMoreItem(final @Nullable View which, final @NonNull String key,
+                            final @NonNull Bundle saved, final @IdRes int menuItem) {
+        if (which != null && saved.getBoolean(key) &&
+            which.getVisibility() != View.VISIBLE) {
+            which.setVisibility(View.VISIBLE);
+            checkDisableAddButton();
+            disableItem(addMorePopup.getMenu(), menuItem);
         }
     }
 
@@ -570,23 +612,28 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         }
     };
 
+    private Dialog listDialog;
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
-                    R.layout.simple_list_item_1, ListMirakel.all(false));
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.task_move_to);
-            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(final DialogInterface dialogInterface, final int i) {
-                    task.setList(adapter.getItem(i));
-                    task.save();
-                }
-            });
-            builder.show();
+            listDialog = createListDialog();
+            listDialog.show();
         }
     };
+
+    private Dialog createListDialog() {
+        final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_list_item_1, ListMirakel.all(false));
+        return new AlertDialog.Builder(getActivity()).setTitle(R.string.task_move_to).setAdapter(
+        adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int i) {
+                task.setList(adapter.getItem(i));
+                task.save();
+            }
+        }).create();
+    }
+
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {

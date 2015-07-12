@@ -21,6 +21,8 @@ package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -72,4 +74,37 @@ public class TagsView extends LinearLayout {
         addTagView.setTagChangedListener(tagChangedListener);
     }
 
+    private static final String PARENT_STATE = "parent";
+    private static final String EDIT_STATE = "edit_state";
+    private static final String EDIT_POS = "edit_pos";
+    private static final String HAS_FOCUS = "has_focus";
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle out = new Bundle();
+        out.putParcelable(PARENT_STATE, super.onSaveInstanceState());
+        out.putParcelable(EDIT_STATE, addTagView.onSaveInstanceState());
+        out.putInt(EDIT_POS, addTagView.getSelectionEnd());
+        out.putBoolean(HAS_FOCUS, addTagView.hasFocus());
+        return out;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state == null || !(state instanceof Bundle)) {
+            return;
+        }
+        final Bundle saved = (Bundle) state;
+        super.onRestoreInstanceState(saved.getParcelable(PARENT_STATE));
+        addTagView.onRestoreInstanceState(saved.getParcelable(EDIT_STATE));
+        addTagView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (saved.getBoolean(HAS_FOCUS)) {
+                    addTagView.clearFocus();
+                    addTagView.onClick(addTagView);
+                }
+            }
+        }, 10L);
+    }
 }
