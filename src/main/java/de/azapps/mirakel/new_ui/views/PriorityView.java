@@ -21,18 +21,17 @@ package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.mirakelandroid.R;
 
 public class PriorityView extends LinearLayout {
-    @InjectView(R.id.priority_text)
-    TextView priorityText;
+    @InjectView(R.id.priority_icon)
+    ImageView priorityIcon;
     private int priority;
-    private static final String[] PRIORITIES = {"-2", "-1", "∅", "!", "!!"};
 
     public PriorityView(final Context context) {
         this(context, null);
@@ -63,10 +62,28 @@ public class PriorityView extends LinearLayout {
 
     protected void rebuildLayout() {
         if (shouldHideText()) {
-            priorityText.setVisibility(GONE);
+            priorityIcon.setVisibility(GONE);
         } else {
-            priorityText.setVisibility(VISIBLE);
-            priorityText.setText(PRIORITIES[priority + 2]);
+            priorityIcon.setVisibility(VISIBLE);
+            switch (priority) {
+            case -1:
+            case -2:
+                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
+                                                  R.drawable.ic_priority_low_24dp));
+                break;
+            case 0:
+                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
+                                                  R.drawable.ic_priority_none_24dp));
+                break;
+            case 1:
+                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
+                                                  R.drawable.ic_priority_high_24dp));
+                break;
+            case 2:
+                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
+                                                  R.drawable.ic_priority_veryhigh_24dp));
+                break;
+            }
         }
     }
     protected boolean shouldHideText() {

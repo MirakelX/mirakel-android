@@ -31,12 +31,11 @@
         android:paddingStart="4dp"
         android:id="@+id/priority_button">
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="!!!"
             android:textColor="?colorTextWhite"
-            android:id="@+id/priority_text" />
+            android:id="@+id/priority_icon" />
 
         <ImageView
             android:layout_width="18dp"

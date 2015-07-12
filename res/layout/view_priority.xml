@@ -23,12 +23,11 @@
     android:layout_height="@dimen/clickable_item_size"
     android:gravity="center_vertical">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="!!!"
         android:textColor="?colorTextWhite"
-        android:id="@+id/priority_text"
+        android:id="@+id/priority_icon"
         android:background="@drawable/priority_background"
         android:gravity="center"
         android:layout_gravity="center_horizontal|center_vertical" />
