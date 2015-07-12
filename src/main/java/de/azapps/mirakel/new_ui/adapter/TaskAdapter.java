@@ -21,6 +21,7 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -38,6 +39,7 @@ import com.google.common.base.Optional;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
@@ -169,10 +171,18 @@ public class TaskAdapter extends
                 }
             });
 
-            if (selectedItems.get(position)) {
-                viewHolder.card.setBackgroundResource(R.drawable.background_task_selected);
+            if (Build.VERSION_CODES.LOLLIPOP <= Build.VERSION.SDK_INT) {
+                if (selectedItems.get(position)) {
+                    viewHolder.card.setBackgroundResource(R.drawable.background_task_selected);
+                } else {
+                    viewHolder.card.setBackgroundResource(R.drawable.background_task);
+                }
             } else {
-                viewHolder.card.setBackgroundResource(R.drawable.background_task);
+                if (selectedItems.get(position)) {
+                    viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+                } else {
+                    viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+                }
             }
         }
     }
