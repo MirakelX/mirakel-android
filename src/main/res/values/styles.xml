@@ -90,12 +90,14 @@
     <style name="Mirakel.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
     </style>
 
-    <style name="MirakelBaseTheme.PopupMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu">
-        <item name="android:popupBackground">?colorPopupBackground</item>
+    <style name="MirakelBaseTheme.PopupMenuStyle.Base" parent="@style/Widget.AppCompat.Light.PopupMenu">
         <item name="android:colorBackground">?colorPopupBackground</item>
         <item name="android:textAppearanceLargePopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
         <item name="android:textAppearanceSmallPopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
     </style>
+
+    <style name="MirakelBaseTheme.PopupMenuStyle" parent="MirakelBaseTheme.PopupMenuStyle.Base"/>
+
 
     <style name="MirakelBaseTheme.PopupMenuText" parent="TextAppearance.Light.Large">
         <item name="android:textColor">?colorTextGrey</item>
