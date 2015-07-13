@@ -31,6 +31,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -42,6 +43,9 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.ContextThemeWrapper;
 import android.webkit.WebView;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+
 import de.azapps.mirakel.changelog.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.tools.Log;
@@ -95,11 +99,11 @@ public class Changelog {
         editor.putInt(VERSION_CODE, this.current_version);
         editor.commit();
         final String changelog = parseVersions(versions);
-        final AlertDialog dialog = getDialog(changelog, sinceVersion);
+        final Dialog dialog = getDialog(changelog, sinceVersion);
         dialog.show();
     }
 
-    private AlertDialog getDialog(String changelog, final int sinceVersion) {
+    private Dialog getDialog(String changelog, final int sinceVersion) {
         final WebView wv = new WebView(new ContextThemeWrapper(this.context,
                                        R.style.Dialog));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -118,7 +122,7 @@ public class Changelog {
                         + "'>" + changelog + "</font>";
         }
         wv.loadDataWithBaseURL(null, changelog, "text/html", "UTF-8", null);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
+        final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(
             this.context).setView(wv).setTitle("Changelog")
         .setPositiveButton(android.R.string.ok, new OnClickListener() {
             @Override
