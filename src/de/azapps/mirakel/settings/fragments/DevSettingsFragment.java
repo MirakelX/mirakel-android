@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.settings.fragments;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +29,8 @@ import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.File;
 
@@ -61,7 +62,7 @@ public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
             @Override
             public boolean onPreferenceClick(
                 final Preference preference) {
-                new AlertDialog.Builder(
+                new AlertDialogWrapper.Builder(
                     getActivity())
                 .setTitle(R.string.delete_done_warning)
                 .setMessage(
@@ -115,7 +116,7 @@ public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
                 numberPicker.setWrapSelectorWheel(false);
                 numberPicker.setValue(old_val);
                 numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                new AlertDialog.Builder(
+                new AlertDialogWrapper.Builder(
                     getActivity())
                 .setTitle(R.string.undo_number)
                 .setMessage(
