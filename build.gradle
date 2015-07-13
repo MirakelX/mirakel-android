@@ -75,6 +75,7 @@ configure(allprojects) {
     ext.snackbarVersion = "2.10.6"
     ext.materialdesignVersion = "1.0"
     ext.acraVersion = "4.6.2"
+    ext.materialDialogsVersion = "0.7.6.0"
 }
 
 allprojects {
