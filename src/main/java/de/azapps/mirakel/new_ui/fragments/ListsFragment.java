@@ -20,6 +20,7 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
@@ -42,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.emtronics.dragsortrecycler.DragSortRecycler;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -380,11 +382,9 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void editList(final ListMirakel listMirakel) {
-        final ListEditView listEditView = new ListEditView(new ContextThemeWrapper(getActivity(),
-                ThemeManager.getDialogTheme()));
+        final ListEditView listEditView = new ListEditView(getActivity());
         listEditView.setListMirakel(listMirakel);
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity(),
-                ThemeManager.getDialogTheme()).setView(listEditView)
+        final Dialog dialog = new AlertDialogWrapper.Builder(getActivity()).setView(listEditView)
         .setTitle(R.string.list_edit_title)
         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override

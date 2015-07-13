@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,10 +49,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Function;
@@ -474,13 +477,16 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
     @OnClick(R.id.menu_move_task)
     void onMoveTask() {
         final List<TaskOverview> tasks = mAdapter.getSelectedItems();
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
         builder.setTitle(R.string.dialog_move);
 
         final Optional<AccountMirakel> accountMirakelOptional = tasks.get(0).getAccountMirakel();
         if (accountMirakelOptional.isPresent()) {
             final Cursor cursor = ListMirakel.allCursor(of(accountMirakelOptional.get()), false).getRawCursor();
-            builder.setCursor(cursor,
+
+            final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
+                    R.layout.simple_list_item_1, ListMirakel.all(accountMirakelOptional, false));
+            builder.setAdapter(adapter,
             new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(final DialogInterface dialog,
@@ -505,7 +511,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                         mActionMode.finish();
                     }
                 }
-            }, ModelBase.NAME).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            }).setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
                     cursor.close();
@@ -562,7 +568,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_set_priority)
     void onSetPriority() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
         String[] items = {getString(R.string.priority_2), getString(R.string.priority_1), getString(R.string.priority_0), getString(R.string.priority_m1), getString(R.string.priority_m2)};
         builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
             @Override
@@ -594,7 +600,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         final View wrapper = li.inflate(R.layout.add_tags_dialog, null);
         final AddTagView addTagView = (AddTagView) wrapper.findViewById(R.id.add_tags_dialog);
         addTagView.setTags(new ArrayList<Tag>(0));
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -615,7 +621,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         final SoftKeyboard keyboard = new SoftKeyboard((ViewGroup) wrapper);
         builder.setView(wrapper);
 
-        final AlertDialog dialog = builder.create();
+        final Dialog dialog = builder.create();
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(final DialogInterface dialog) {

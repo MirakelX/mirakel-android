@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.InputType;
 import android.text.Spannable;
@@ -53,6 +52,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
@@ -168,7 +168,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         picker.addSVBar(op);
         picker.setColor(tag.getBackgroundColor());
         picker.setOldCenterColor(tag.getBackgroundColor());
-        new AlertDialog.Builder(getContext())
+        new AlertDialogWrapper.Builder(getContext())
         .setView(layout)
         .setNegativeButton(android.R.string.cancel, null)
         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

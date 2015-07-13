@@ -21,10 +21,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="20dp"
-    android:paddingEnd="@dimen/abc_dialog_padding_material"
-    android:paddingBottom="@dimen/abc_dialog_padding_material"
-    android:paddingTop="@dimen/abc_dialog_padding_top_material">
+    android:paddingStart="@dimen/abc_dialog_padding_material"
+    android:paddingEnd="@dimen/abc_dialog_padding_material">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

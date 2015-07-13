@@ -24,37 +24,25 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.google.common.base.Optional;
 
@@ -63,10 +51,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.material_elements.drawable.RoundedBitmapDrawable;
 import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.ThemeManager;
-import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.material_elements.views.FFTAudioView;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -79,8 +65,6 @@ import de.azapps.mirakel.new_ui.helper.ImageLoader;
 import de.azapps.mirakelandroid.R;
 import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
-
-import static com.google.common.base.Optional.of;
 
 public class FileView extends LinearLayout implements View.OnClickListener,
     View.OnLongClickListener, DialogInterface.OnClickListener, FFTAudioView.OnRecordFinished {
@@ -301,7 +285,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         final FileMirakel fileMirakel = (FileMirakel) v.getTag();
         if (markedFiles.isEmpty()) {
             if (FileUtils.isAudio(fileMirakel.getFileUri())) {
-                new AlertDialog.Builder(getContext())
+                new AlertDialogWrapper.Builder(getContext())
                 .setItems(R.array.file_options_play, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
@@ -387,7 +371,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
             ErrorReporter.report(ErrorType.NO_SPEACH_RECOGNITION);
             return;
         }
-        new AlertDialog.Builder(getContext()).setTitle(R.string.audio_record_title)
+        new AlertDialogWrapper.Builder(getContext()).setTitle(R.string.audio_record_title)
         .setView(layout)
         .setPositiveButton(android.R.string.ok, null)
         .setOnDismissListener(new DialogInterface.OnDismissListener() {

@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import java.util.Set;
@@ -105,7 +106,7 @@ public class AddSubtaskFragment extends DialogFragment implements LoaderManager.
         taskListView.setAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
 
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialogWrapper.Builder(getActivity())
                .setTitle(R.string.add_subtask)
                .setView(layout)
                .setPositiveButton(R.string.add, onPositiveButtonClickListener)

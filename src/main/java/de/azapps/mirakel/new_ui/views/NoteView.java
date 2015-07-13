@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.new_ui.views;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -32,6 +31,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -84,7 +85,7 @@ public class NoteView extends LinearLayout {
         final EditText editText = (EditText) view.findViewById(R.id.note_edit_text);
         editText.setText(note);
         editText.setSelection(note.length());
-        final Dialog d = new AlertDialog.Builder(getContext()).setTitle(getContext().getString(
+        final Dialog d = new AlertDialogWrapper.Builder(getContext()).setTitle(getContext().getString(
                     R.string.edit_note))
         .setView(view)
         .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {

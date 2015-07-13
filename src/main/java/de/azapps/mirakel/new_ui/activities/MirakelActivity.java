@@ -34,7 +34,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -46,6 +45,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.ListDialogHelpers;
+import de.azapps.mirakel.new_ui.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
@@ -367,9 +367,9 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             addFiles(task, intent);
         } else {
             final Task stubTask = Semantic.createStubTask(newTaskSubject, listFromSharing, true);
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setTitle(R.string.import_to);
-            final List<CharSequence> items = new ArrayList<>();
+            final List<String> items = new ArrayList<>();
             final List<Long> listIds = new ArrayList<>();
             final int currentItem = 0;
             for (final ListMirakel list : ListMirakel.all()) {
@@ -379,7 +379,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                 }
             }
             builder.setSingleChoiceItems(
-                items.toArray(new CharSequence[items.size()]),
+                items.toArray(new String[items.size()]),
             currentItem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(final DialogInterface dialog,

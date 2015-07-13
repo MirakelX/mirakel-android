@@ -20,7 +20,6 @@
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,11 +45,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
@@ -628,7 +627,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     private Dialog createListDialog() {
         final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_1, ListMirakel.all(false));
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.task_move_to).setAdapter(
+        return new AlertDialogWrapper.Builder(getActivity()).setTitle(R.string.task_move_to).setAdapter(
         adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, final int i) {
