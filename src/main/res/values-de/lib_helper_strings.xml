@@ -121,7 +121,7 @@ Device: %3$s\n]]></string>
     <item>Löschen</item>
   </string-array>
   <string name="edit">Bearbeiten</string>
-  <string name="no_reminder">Erinnerung festlegen</string>
+  <string name="no_reminder">Erinnern</string>
   <string name="add_files">Datei hinzufügen…</string>
   <string name="file_select">Wähle eine Datei</string>
   <string name="save_label">Erledigt</string>

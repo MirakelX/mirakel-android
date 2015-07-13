@@ -46,6 +46,7 @@
         <item name="colorProgress">#AC7D92</item>
         <item name="colorProgressBackground">#CCCCCC</item>
         <item name="colorDarkGrey">#FF444444</item>
+        <item name="colorPopupBackground">#FAFAFA</item>
 
         <item name="colorDueOverdue">#D0021B</item>
         <item name="colorDueToday">#D0021B</item>
@@ -76,14 +77,19 @@
         <item name="android:popupMenuStyle">@style/MirakelBaseTheme.PopupMenuStyle</item>
         <item name="android:textAppearanceLargePopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
         <item name="android:textAppearanceSmallPopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
+
+        <!-- AlertDialog styles  -->
+        <item name="md_background_color">?colorPopupBackground</item>
+        <!--list item text color -->
+        <item name="md_item_color">?colorTextGrey</item>
     </style>
 
     <style name="Mirakel.ActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
     </style>
 
     <style name="MirakelBaseTheme.PopupMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu">
-        <item name="android:popupBackground">?colorTaskCard</item>
-        <item name="android:colorBackground">?colorTaskCard</item>
+        <item name="android:popupBackground">?colorPopupBackground</item>
+        <item name="android:colorBackground">?colorPopupBackground</item>
         <item name="android:textAppearanceLargePopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
         <item name="android:textAppearanceSmallPopupMenu">@style/MirakelBaseTheme.PopupMenuText</item>
     </style>
