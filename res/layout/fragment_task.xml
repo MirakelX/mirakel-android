@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:descendantFocusability="beforeDescendants"
         android:orientation="horizontal"
-        android:paddingEnd="9dp"
+        android:paddingEnd="13dp"
         android:paddingStart="11dp"
         android:paddingTop="16dp">
 
@@ -83,8 +83,8 @@
 
         <de.azapps.mirakel.new_ui.views.PriorityChangeView
             android:id="@+id/priority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="@dimen/clickable_item_size"
+            android:layout_height="40dp" />
     </LinearLayout>
 
     <View
