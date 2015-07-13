@@ -45,6 +45,6 @@ dependencies {
     compile "com.google.guava:guava:$guavaVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
     compile 'com.cocosw:bottomsheet:1.+@aar'
-    compile 'com.afollestad:material-dialogs:$materialDialogsVersion'
+    compile "com.afollestad:material-dialogs:$materialDialogsVersion"
     compile project(':material-elements')
 }
