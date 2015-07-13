@@ -36,6 +36,10 @@
     <attr name="colorDarkGrey" format="color" />
     <attr name="colorPreviewBorder" format="color" />
     <attr name="colorPopupBackground" format="color" />
+    <attr name="colorProgressCheckmark" format="color" />
+    <attr name="colorTextSettings" format="color" />
+    <attr name="colorTextSettingsGrey" format="color" />
+    <attr name="colorDropdownArrow" format="color" />
 
     <!-- Due -->
     <attr name="colorDueOverdue" format="color" />

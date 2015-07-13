@@ -21,46 +21,49 @@
 
     <!-- new ui-->
     <style name="MirakelBaseTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <!-- Colors -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <!--   darker variant of colorPrimary (for status bar, contextual app bars) -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!--   theme UI controls like checkboxes and text fields -->
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="colorTextActionBar">#FFFFFF</item>
         <item name="colorTextActionBarHighlight">#FFFFFF</item>
-        <item name="colorTaskCard">#F5F5F5</item>
-        <item name="colorSelectedRow">#D3EAFD</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorTaskCard">#FAFAFA</item>
+        <item name="colorTextGrey">@color/colorTextGrey</item>
+        <item name="colorTextBlack">#000000</item>
+        <item name="colorSelectedRow">#E4F0F9</item>
         <item name="colorCAB">#2196F3</item>
         <item name="colorCABStatus">#1A78C2</item>
-        <item name="colorLightGrey">#BFBFBF</item>
-        <item name="colorPreviewBorder">@color/colorPreviewBorder</item>
-
-        <!-- Black 60% -->
-        <item name="colorTextGrey">@color/colorTextGrey</item>
-        <!-- Black 87% -->
-        <item name="colorTextBlack">#de000000</item>
-        <item name="colorTextWhite">#FFFFFF</item>
-        <item name="colorBackground">@color/colorBackground</item>
-        <item name="colorTaskFragmentBackground">@color/colorTaskFragmentBackground</item>
+        <item name="colorLightGrey">#808080</item>
         <item name="colorListsBackground">#FFFFFF</item>
-        <item name="colorProgress">#AC7D92</item>
+        <item name="colorTextWhite">#FFFFFF</item>
+        <item name="colorPriorityBackground">@color/colorPriorityBackground</item>
+        <item name="colorBackground">@color/colorBackground</item>
+        <item name="colorProgress">#C596AB</item>
         <item name="colorProgressBackground">#CCCCCC</item>
-        <item name="colorDarkGrey">#FF444444</item>
-        <item name="colorPopupBackground">#FAFAFA</item>
-
+        <item name="colorProgressCheckmark">#404040</item> <!-- TODO  -->
         <item name="colorDueOverdue">#D0021B</item>
         <item name="colorDueToday">#D0021B</item>
         <item name="colorDueNext">#DA6807</item>
         <item name="colorDueFuture">#166BA8</item>
+        <item name="colorDivider">#e6e6e6</item>
+        <item name="colorTaskFragmentBackground">@color/colorTaskFragmentBackground</item>
+        <item name="colorDarkGrey">#FF444444</item>
+        <item name="colorTextSettings">#4D4D4D</item> <!-- TODO -->
+        <item name="colorTextSettingsGrey">#A6A6A6</item> <!-- TODO -->
+        <item name="colorDropdownArrow">#BFBFBF</item> <!-- TODO -->
+        <item name="colorPopupBackground">#FAFAFA</item>
+
+
+        <item name="colorPreviewBorder">@color/colorPreviewBorder</item>
+
+
 
         <item name="colorPrio_2">#669900</item>
         <item name="colorPrio_1">#99CC00</item>
         <item name="colorPrio0">#33B5E5</item>
         <item name="colorPrio1">#FFBB33</item>
         <item name="colorPrio2">#FF4444</item>
-        <item name="colorPriorityBackground">@color/colorPriorityBackground</item>
 
-        <item name="colorDivider">#e6e6e6</item>
 
         <!-- The CAB should overlay the normal ActionBar -->
         <item name="windowActionModeOverlay">true</item>
