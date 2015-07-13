@@ -64,7 +64,6 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.new_ui.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
@@ -81,6 +80,7 @@ import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
+import de.azapps.mirakel.new_ui.helper.ListDialogHelpers;
 import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakel.settings.SettingsActivity;
@@ -99,9 +99,10 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
+    public static final String TASK_FRAGMENT_TAG = "dialog";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
-    private TaskFragment newFragment;
+    private TaskFragment taskFragment;
 
 
 
@@ -161,6 +162,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             onRestoreInstanceState(savedInstanceState);
         }
     }
+
 
     private void initThirdParty() {
         // Show ChangeLog
@@ -542,7 +544,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if ((requestCode == TaskFragment.REQUEST_IMAGE_CAPTURE ||
              requestCode == TaskFragment.FILE_SELECT_CODE) && (resultCode == Activity.RESULT_OK)) {
-            newFragment.onActivityResult(requestCode, resultCode, data);
+            taskFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -557,8 +559,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     }
 
     private void selectTask(final Task item) {
-        newFragment = TaskFragment.newInstance(item);
-        newFragment.show(getSupportFragmentManager(), "dialog");
+        taskFragment = TaskFragment.newInstance(item);
+        taskFragment.show(getSupportFragmentManager(), TASK_FRAGMENT_TAG);
     }
 
     public void moveFABUp(final int height) {
@@ -569,6 +571,16 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void moveFabDown(final int height) {
         final FloatingActionButton fab = getTasksFragment().floatingActionButton;
         AnimationHelper.moveViewDown(this, fab, height);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        taskFragment = (TaskFragment)getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG);
+        if (taskFragment != null) {
+            taskFragment.onAttach(this);
+        }
     }
 
     private class DrawerToggle extends ActionBarDrawerToggle {

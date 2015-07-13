@@ -20,6 +20,7 @@
 package de.azapps.mirakel.new_ui.views;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,6 +30,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -67,15 +70,17 @@ import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 public class FileView extends LinearLayout implements View.OnClickListener,
-    View.OnLongClickListener, DialogInterface.OnClickListener, FFTAudioView.OnRecordFinished {
+    View.OnLongClickListener, DialogInterface.OnClickListener, FFTAudioView.OnRecordFinished,
+    DialogInterface.OnDismissListener {
     private static final String TAG = "FileView";
     private final LayoutInflater inflater;
     private List<FileMirakel> files = new ArrayList<>(0);
-    private List<FileMirakel> markedFiles = new ArrayList<>(0);
+    private ArrayList<FileMirakel> markedFiles = new ArrayList<>();
     private int COUNT_PER_LINE;
     private final LinearLayout.LayoutParams PREVIEW_SIZE;
     private final int MIN_PREVIEW_PADDING;
     private Task task;
+    @Nullable
     private Activity activity;
     @Nullable
     private Uri photoUri;
@@ -85,6 +90,8 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     private TextView fileActionText;
     private int height;
     private int width;
+    private boolean is_show_bottom_sheet = false;
+    private Dialog recordAudioDialog;
 
     public FileView(final Context context) {
         this(context, null);
@@ -118,7 +125,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         final int padding = (int) ((w - (count * PREVIEW_SIZE.width)) / ((count + 1.0F) * 2.0F));
         PREVIEW_SIZE.leftMargin = padding;
         PREVIEW_SIZE.rightMargin = padding;
-        fixChilds();
+        fixChilds(false);
     }
 
     public void addFile() {
@@ -126,9 +133,11 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         .title(R.string.add_files)
         .sheet(R.menu.add_file_menu)
         .grid()
+        .setOnDismissListener(this)
         .listener(this).build();
         Menu menu = builder.getMenu();
         MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey));
+        is_show_bottom_sheet = true;
         builder.show();
     }
 
@@ -167,8 +176,14 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     }
 
     private void fixChilds() {
+        fixChilds(true);
+    }
+
+    private void fixChilds(final boolean clearMarkedFiles) {
         removeAllViews();
-        markedFiles.clear();
+        if (clearMarkedFiles) {
+            markedFiles.clear();
+        }
         int counter = 0;
         final List<ImageView> imageViews = new ArrayList<>(files.size());
         while (counter < (files.size() + 1)) {
@@ -220,6 +235,8 @@ public class FileView extends LinearLayout implements View.OnClickListener,
                 final FileMirakel file = files.get(counter);
                 final View preview = inflater.inflate(R.layout.file_item, null);
                 preview.setLayoutParams(PREVIEW_SIZE);
+                colorImage(preview, markedFiles.contains(file) ? ThemeManager.getColor(
+                               R.attr.colorCAB) : Color.TRANSPARENT);
                 imageViews.add((ImageView) preview.findViewById(R.id.file_preview_image));
                 ((TextView) preview.findViewById(R.id.file_preview_text)).setText(file.getName());
                 preview.setTag(file);
@@ -357,7 +374,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
     }
 
 
-    private void recordAudio() {
+    private Dialog createAudioDialog() {
         final View layout = inflate(getContext(), R.layout.view_record_audio, null);
         final FFTAudioView audioView = (FFTAudioView) layout.findViewById(R.id.audio_view);
         try {
@@ -365,22 +382,36 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         } catch (final IOException e) {
             ErrorReporter.report(ErrorType.FILE_NOT_FOUND);
             Log.wtf(TAG, "failed to create outputfile", e);
-            return;
+            return null;
         } catch (final FFTAudioView.RecordingFailedException e) {
             Log.wtf(TAG, "failed to record audio");
             ErrorReporter.report(ErrorType.NO_SPEACH_RECOGNITION);
-            return;
+            return null;
         }
-        new AlertDialogWrapper.Builder(getContext()).setTitle(R.string.audio_record_title)
+        Dialog dialog = new AlertDialogWrapper.Builder(getContext()).setTitle(R.string.audio_record_title)
         .setView(layout)
         .setPositiveButton(android.R.string.ok, null)
         .setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(final DialogInterface dialog) {
                 audioView.stopRecording();
+                recordAudioDialog = null;
             }
-        }).show();
-        audioView.startRecording();
+        }).create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                audioView.startRecording();
+            }
+        });
+        return dialog;
+    }
+
+    void recordAudio() {
+        recordAudioDialog = createAudioDialog();
+        if (recordAudioDialog != null) {
+            recordAudioDialog.show();
+        }
     }
 
     @Override
@@ -394,6 +425,10 @@ public class FileView extends LinearLayout implements View.OnClickListener,
 
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
+        if (activity == null) {
+            ErrorReporter.report(ErrorType.FILE_NO_ACTIVITY);
+            return;
+        }
         switch (which) {
         case R.id.file_photo:
             try {
@@ -435,5 +470,49 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         default:
             throw new IllegalArgumentException("Unknown filetype");
         }
+    }
+
+    private static final String PARENT_STATE = "parent";
+    private static final String MARKED_FILES = "marked_files";
+    private static final String BOTTOM_SHEET_SHOWN = "bottom_sheet";
+    private static final String PHOTO_URI = "photo_uri";
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        final Bundle out = new Bundle();
+        out.putParcelable(PARENT_STATE, super.onSaveInstanceState());
+        out.putParcelableArrayList(MARKED_FILES, markedFiles);
+        out.putBoolean(BOTTOM_SHEET_SHOWN, is_show_bottom_sheet);
+        out.putParcelable(PHOTO_URI, photoUri);
+        return out;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state == null || !(state instanceof Bundle)) {
+            return;
+        }
+        final Bundle saved = (Bundle) state;
+        super.onRestoreInstanceState(saved.getParcelable(PARENT_STATE));
+        photoUri = saved.getParcelable(PHOTO_URI);
+        markedFiles = saved.getParcelableArrayList(MARKED_FILES);
+        fixChilds(false);
+        if (!markedFiles.isEmpty()) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setDeleteFiles();
+                }
+            }, 10L);
+
+        }
+        if (saved.getBoolean(BOTTOM_SHEET_SHOWN)) {
+            addFile();
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        is_show_bottom_sheet = false;
     }
 }

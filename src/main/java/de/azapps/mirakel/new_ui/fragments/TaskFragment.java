@@ -245,10 +245,11 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
                 }
             }
-            restoreAddMoreItem(noteView, HAS_DIRTY_NOTE, savedInstanceState, R.id.add_note_menu);
-            restoreAddMoreItem(filesView, HAS_DIRTY_FILE, savedInstanceState, R.id.add_file_menu);
-            restoreAddMoreItem(tagView, HAS_DIRTY_TAG, savedInstanceState, R.id.add_tags_menu);
-            restoreAddMoreItem(subtasksView, HAS_DIRTY_SUBTASK, savedInstanceState, R.id.add_subtask_menu);
+            restoreAddMoreItem(noteWrapper, HAS_DIRTY_NOTE, savedInstanceState, R.id.add_note_menu);
+            restoreAddMoreItem(fileWrapper, HAS_DIRTY_FILE, savedInstanceState, R.id.add_file_menu);
+            restoreAddMoreItem(tagWrapper, HAS_DIRTY_TAG, savedInstanceState, R.id.add_tags_menu);
+            restoreAddMoreItem(subtaskWrapper, HAS_DIRTY_SUBTASK, savedInstanceState, R.id.add_subtask_menu);
+            filesView.setActivity(getActivity());
 
             if (savedInstanceState.getParcelable(LIST_DIALOG_STATE) != null) {
                 listDialog = createListDialog();
@@ -257,6 +258,22 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                     listDialog.show();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (filesView != null) {
+            filesView.setActivity(activity);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (filesView != null) {
+            filesView.setActivity(null);
         }
     }
 
