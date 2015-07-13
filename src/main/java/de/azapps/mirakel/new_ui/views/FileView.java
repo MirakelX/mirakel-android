@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.material_elements.drawable.RoundedBitmapDrawable;
+import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.material_elements.views.FFTAudioView;
@@ -143,11 +144,7 @@ public class FileView extends LinearLayout implements View.OnClickListener,
         .grid()
         .listener(this).build();
         Menu menu = builder.getMenu();
-        for (int id : new Integer[] {0, 1, 2}) {
-            MenuItem menuItem = menu.getItem(id);
-            menuItem.getIcon().setColorFilter(new PorterDuffColorFilter(ThemeManager.getColor(
-                                                  R.attr.colorTextGrey), PorterDuff.Mode.MULTIPLY));
-        }
+        MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey));
         builder.show();
     }
 

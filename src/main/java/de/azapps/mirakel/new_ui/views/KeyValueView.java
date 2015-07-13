@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,6 +37,8 @@ import de.azapps.mirakelandroid.R;
 public class KeyValueView extends LinearLayout {
     @InjectView(R.id.title)
     TextView titleView;
+    @InjectView(R.id.image_view)
+    ImageView imageView;
 
 
     private int iconId;
@@ -62,7 +65,7 @@ public class KeyValueView extends LinearLayout {
     }
     public void setColor(final int color) {
         final Drawable icon = ThemeManager.getColoredIcon(iconId, color);
-        ViewHelper.setCompoundDrawable(getContext(), titleView, icon);
+        imageView.setImageDrawable(icon);
         titleView.setTextColor(color);
     }
 
