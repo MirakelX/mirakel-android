@@ -21,10 +21,8 @@ package de.azapps.mirakel.helper;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.widget.TextView;
 
 import com.google.common.base.Optional;
 
@@ -115,12 +113,6 @@ public final class TaskHelper {
     public static int getPrioColor(final int priority) {
         final int[] PRIO_COLOR = {R.attr.colorPrio_2, R.attr.colorPrio_1, R.attr.colorPrio0, R.attr.colorPrio1, R.attr.colorPrio2};
         return ThemeManager.getColor(PRIO_COLOR[priority + 2]);
-    }
-
-    public static void setPrio(final TextView taskPrio, final Task task) {
-        taskPrio.setText(String.valueOf(task.getPriority()));
-        final GradientDrawable bg = (GradientDrawable) taskPrio.getBackground();
-        bg.setColor(TaskHelper.getPrioColor(task.getPriority()));
     }
 
 }
