@@ -184,6 +184,11 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     public static List<ListMirakel> all(final boolean withSpecial) {
         return allCursor(withSpecial).doWithCursor(LIST_FROM_CURSOR);
     }
+    @NonNull
+    public static List<ListMirakel> all(final Optional<AccountMirakel> accountMirakelOptional,
+                                        final boolean withSpecial) {
+        return allCursor(accountMirakelOptional, withSpecial).doWithCursor(LIST_FROM_CURSOR);
+    }
 
     public static List<ListMirakel> cursorToList(final @NonNull CursorWrapper c) {
         return  c.doWithCursor(LIST_FROM_CURSOR);
