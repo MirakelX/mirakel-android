@@ -24,22 +24,22 @@
     <item
         android:id="@+id/priority_2"
         android:title="@string/priority_2"
+        android:icon="@drawable/ic_priority_veryhigh_24dp"
         app:showAsAction="always" />
     <item
         android:id="@+id/priority_1"
         android:title="@string/priority_1"
+        android:icon="@drawable/ic_priority_high_24dp"
         app:showAsAction="always" />
     <item
         android:id="@+id/priority_0"
         android:title="@string/priority_0"
+        android:icon="@drawable/ic_priority_none_24dp"
         app:showAsAction="always" />
     <item
         android:id="@+id/priority_m1"
+        android:icon="@drawable/ic_priority_low_24dp"
         android:title="@string/priority_m1"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/priority_m2"
-        android:title="@string/priority_m2"
         app:showAsAction="always" />
 
 </menu>

@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakelandroid.R;
 
 public class PriorityView extends LinearLayout {
@@ -65,25 +66,27 @@ public class PriorityView extends LinearLayout {
             priorityIcon.setVisibility(GONE);
         } else {
             priorityIcon.setVisibility(VISIBLE);
+            int drawableID;
             switch (priority) {
             case -1:
             case -2:
-                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
-                                                  R.drawable.ic_priority_low_24dp));
-                break;
-            case 0:
-                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
-                                                  R.drawable.ic_priority_none_24dp));
+                drawableID = R.drawable.ic_priority_low_24dp;
                 break;
             case 1:
-                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
-                                                  R.drawable.ic_priority_high_24dp));
+                drawableID = R.drawable.ic_priority_high_24dp;
                 break;
             case 2:
-                priorityIcon.setImageDrawable(getContext().getResources().getDrawable(
-                                                  R.drawable.ic_priority_veryhigh_24dp));
+                drawableID = R.drawable.ic_priority_veryhigh_24dp;
                 break;
+            case 0:
+            default:
+                drawableID = R.drawable.ic_priority_none_24dp;
+                break;
+
             }
+            priorityIcon.setImageDrawable(ThemeManager.getColoredIcon(drawableID
+                                          , ThemeManager.getColor(R.attr.colorTextWhite)));
+
         }
     }
     protected boolean shouldHideText() {

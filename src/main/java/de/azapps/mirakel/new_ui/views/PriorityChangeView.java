@@ -22,13 +22,16 @@ package de.azapps.mirakel.new_ui.views;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.PopupMenu;
+import android.support.v7.internal.view.ContextThemeWrapper;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.IconizedMenu;
+import de.azapps.material_elements.utils.MenuHelper;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakelandroid.R;
 
 /**
@@ -70,9 +73,10 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        PopupMenu priorityPopup = new PopupMenu(getContext(), priorityButton);
+        IconizedMenu priorityPopup = new IconizedMenu(new ContextThemeWrapper(getContext(),
+                R.style.MirakelBaseTheme), priorityButton);
         priorityPopup.inflate(R.menu.priority_menu);
-        priorityPopup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        priorityPopup.setOnMenuItemClickListener(new IconizedMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 final int priority;
@@ -89,9 +93,6 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
                 case R.id.priority_m1:
                     priority = -1;
                     break;
-                case R.id.priority_m2:
-                    priority = -2;
-                    break;
                 default:
                     throw new IllegalArgumentException("Can not handle this priority");
                 }
@@ -102,6 +103,7 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
                 return true;
             }
         });
+        MenuHelper.colorizeMenuItems(priorityPopup.getMenu(), ThemeManager.getColor(R.attr.colorTextGrey));
         priorityPopup.show();
     }
 
