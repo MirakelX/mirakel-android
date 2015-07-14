@@ -42,38 +42,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="32dp"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/mirakel" />
+                        android:src="@drawable/mirakel_72dp"
+                        android:layout_marginEnd="16dp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingStart="@dimen/marginLeft">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/credits_title"
-                            android:textAppearance="@style/TextAppearance.Bold.Large"
-                            android:textColor="?colorTextBlack"
-                            android:textSize="32sp" />
+                            android:textAppearance="@style/TextAppearance.Bold"
+                            android:textColor="?colorTextSettings"
+                            android:textSize="26sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/credits_subtitle"
-                            android:textColor="?attr/colorTextBlack"
-                            android:textAppearance="@style/TextAppearance.Bold.Small" />
+                            android:textColor="?colorTextSettings"
+                            android:textAppearance="@style/TextAppearance.Medium.Small" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -82,24 +86,27 @@
                     android:id="@+id/dev_credits"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/marginLeft"
-                    android:layout_marginTop="16dp"
+                    android:drawablePadding="16dp"
                     android:drawableStart="@drawable/ic_build_white_24dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:text="@string/credits_dev"
-                    android:textColor="?colorTextBlack"
+                    android:textColor="?colorTextSettings"
                     android:textAppearance="@style/TextAppearance.Regular.Small" />
 
                 <TextView
                     android:id="@+id/design_credits"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:drawablePadding="16dp"
                     android:drawableStart="@drawable/ic_brush_white_24dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:gravity="center_vertical"
                     android:text="@string/credits_design"
-                    android:textColor="?colorTextBlack"
+                    android:textColor="?colorTextSettings"
                     android:textAppearance="@style/TextAppearance.Regular.Small" />
 
 
@@ -112,9 +119,11 @@
                         android:id="@+id/button_github"
                         style="@style/ImageButtonStyle"
                         android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_marginBottom="@dimen/marginLeft"
-                        android:layout_marginEnd="@dimen/marginLeft"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1">
 
                         <TextView
@@ -129,8 +138,11 @@
                         android:id="@+id/button_gplus"
                         style="@style/ImageButtonStyle"
                         android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_marginBottom="@dimen/marginLeft"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1">
 
                         <TextView
@@ -146,8 +158,11 @@
                     android:id="@+id/button_feedback"
                     style="@style/ImageButtonStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginBottom="@dimen/marginLeft">
+                    android:layout_height="36dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="16dp">
 
                     <TextView
                         style="@style/ImageButtonStyleText"
@@ -160,8 +175,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:gravity="center"
-                    android:textColor="?colorTextGrey"
+                    android:textAppearance="@style/TextAppearance.Italic.Small"
+                    android:textColor="?colorTextSettings"
                     android:text="@string/credits_copyright" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -228,8 +246,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/credits_license"
-                    android:textAppearance="@style/TextAppearance.Light"
-                    android:textColor="?colorTextBlack"
+                    android:textAppearance="@style/TextAppearance.Regular.Small"
+                    android:textColor="?colorTextSettings"
                     android:id="@+id/credits_license_text"/>
             </LinearLayout>
         </android.support.v7.widget.CardView>
