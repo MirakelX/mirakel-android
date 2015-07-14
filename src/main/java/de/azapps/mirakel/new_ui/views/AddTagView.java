@@ -78,6 +78,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
     private ArrayAdapter adapter;
     private Set<String> adapterData = new HashSet<>();
     private List<Tag> currentTags = new ArrayList<>();
+    private boolean allowToogleBackground = true;
 
     private boolean setText = false;
     private String postfix = "";
@@ -144,6 +145,13 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         setEnabled(true);
         setInputType(InputType.TYPE_NULL);
         clearFocus();
+    }
+
+    public void setAllowToggleBackground(boolean allowToogle) {
+        allowToogleBackground = allowToogle;
+        if (!allowToogleBackground) {
+            setBackground(background);
+        }
     }
 
 
@@ -216,11 +224,15 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
                 public void onFocusChange(final View v, final boolean hasFocus) {
                     onFocus.onFocusChange(v, hasFocus);
                     if (hasFocus) {
-                        setBackground(background);
+                        if (allowToogleBackground) {
+                            setBackground(background);
+                        }
                         setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
                     } else {
                         setInputType(InputType.TYPE_NULL);
-                        setBackground(new ColorDrawable(Color.TRANSPARENT));
+                        if (allowToogleBackground) {
+                            setBackground(new ColorDrawable(Color.TRANSPARENT));
+                        }
                         addTag(postfix);
                         postfix = "";
                         rebuildText();

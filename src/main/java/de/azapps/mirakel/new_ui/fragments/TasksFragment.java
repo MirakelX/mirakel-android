@@ -21,7 +21,6 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,6 +29,7 @@ import android.database.Cursor;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +38,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.internal.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ActionMode;
@@ -85,7 +86,6 @@ import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountVanishedException;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -100,6 +100,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.activities.MirakelActivity;
 import de.azapps.mirakel.new_ui.adapter.TaskAdapter;
+import de.azapps.mirakel.new_ui.dialogs.PriorityDialog;
 import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.new_ui.search.SearchObject;
 import de.azapps.mirakel.new_ui.views.AddTagView;
@@ -113,7 +114,7 @@ import static com.google.common.base.Optional.of;
 
 public class TasksFragment extends Fragment implements LoaderManager.LoaderCallbacks,
     MultiSelectCursorAdapter.MultiSelectCallbacks<TaskOverview>,
-    TaskAdapter.TaskAdapterCallbacks {
+    TaskAdapter.TaskAdapterCallbacks, PriorityDialog.OnPrioritySetListener {
 
     public static final String ARGUMENT_LIST = "list";
     private static final String TAG = "de.azapps.mirakel.new_ui.fragments.TasksFragment";
@@ -440,7 +441,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 snackbar.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ((MirakelActivity)getActivity()).moveFabDown(snackbar.getHeight());
+                        ((MirakelActivity) getActivity()).moveFabDown(snackbar.getHeight());
                     }
                 }, 100L);
                 new Thread(new Runnable() {
@@ -568,39 +569,35 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @OnClick(R.id.menu_set_priority)
     void onSetPriority() {
-        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
-        String[] items = {getString(R.string.priority_2), getString(R.string.priority_1), getString(R.string.priority_0), getString(R.string.priority_m1), getString(R.string.priority_m2)};
-        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(final DialogInterface dialogInterface, final int i) {
-                final List<TaskOverview> tasks = mAdapter.getSelectedItems();
-                for (TaskOverview taskOverview : tasks) {
-                    Optional<Task> taskOptional = taskOverview.getTask();
-                    OptionalUtils.withOptional(taskOptional, new OptionalUtils.Procedure<Task>() {
-                        @Override
-                        public void apply(Task task) {
-                            task.setPriority(2 - i);
-                            task.save();
-                        }
-                    });
-                }
-                dialogInterface.dismiss();
-                if (mActionMode != null) {
-                    mActionMode.finish();
-                }
-            }
-        });
-        builder.setTitle(R.string.menu_set_priority);
-        builder.show();
+        final PriorityDialog dialog;
+        if (mAdapter.getSelectedItemCount() == 1) {
+            dialog = PriorityDialog.newInstance(mAdapter.getSelectedItems().get(0).getPriority(), this);
+        } else {
+            dialog = PriorityDialog.newInstance(this);
+        }
+        dialog.show(getActivity().getSupportFragmentManager(), "priority dialog");
+
+
     }
 
     @OnClick(R.id.menu_set_tags)
     void onSetTag() {
-        final LayoutInflater li = LayoutInflater.from(getActivity());
+        Context ctx = new ContextThemeWrapper(getActivity(), R.style.MirakelBaseTheme);
+        final LayoutInflater li = LayoutInflater.from(ctx);
         final View wrapper = li.inflate(R.layout.add_tags_dialog, null);
         final AddTagView addTagView = (AddTagView) wrapper.findViewById(R.id.add_tags_dialog);
-        addTagView.setTags(new ArrayList<Tag>(0));
-        final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
+        if (mAdapter.getSelectedItemCount() == 1) {
+            Optional<Task> task = mAdapter.getSelectedItems().get(0).getTask();
+            if (task.isPresent()) {
+                addTagView.setTags(task.get().getTags());
+            } else {
+                addTagView.setTags(new ArrayList<Tag>(0));
+            }
+        } else {
+            addTagView.setTags(new ArrayList<Tag>(0));
+        }
+        addTagView.setAllowToggleBackground(false);
+        final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(ctx);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -639,6 +636,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                                                    Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                addTagView.clearFocus();
             }
         });
         dialog.show();
@@ -675,6 +673,24 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public ListMirakelInterface getOldList() {
         return oldList;
+    }
+
+    @Override
+    public void setPriority(final @IntRange(from = -1, to = 2) int newPriority) {
+        final List<TaskOverview> tasks = mAdapter.getSelectedItems();
+        for (TaskOverview taskOverview : tasks) {
+            Optional<Task> taskOptional = taskOverview.getTask();
+            OptionalUtils.withOptional(taskOptional, new OptionalUtils.Procedure<Task>() {
+                @Override
+                public void apply(Task task) {
+                    task.setPriority(newPriority);
+                    task.save();
+                }
+            });
+        }
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
     }
 
     private class MultiSelectCallbacks implements ActionMode.Callback {
