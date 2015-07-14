@@ -45,6 +45,6 @@
     <item>199 Euro</item>
   </string-array>
   <string name="donation_paypal_item">Mirakel Spende</string>
-  <string name="title_donations">Spende</string>
+  <string name="title_donations">Spenden</string>
 </resources>
 
