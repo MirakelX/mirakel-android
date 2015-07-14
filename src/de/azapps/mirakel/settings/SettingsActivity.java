@@ -44,8 +44,6 @@ import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListAc
 
 public class SettingsActivity extends GenericModelListActivity<Settings> {
 
-    private static final int DEV_SETTINGS_POSITION = 6;
-
     public static final int DONATE = 5;
     public static final int FILE_ASTRID = 0, FILE_IMPORT_DB = 1,
                             NEW_ACCOUNT = 2, FILE_ANY_DO = 3, FILE_WUNDERLIST = 4;
