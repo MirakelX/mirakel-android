@@ -99,7 +99,7 @@
     <style name="MirakelBaseTheme.PopupMenuStyle" parent="MirakelBaseTheme.PopupMenuStyle.Base"/>
 
 
-    <style name="MirakelBaseTheme.PopupMenuText" parent="TextAppearance.Light.Large">
+    <style name="MirakelBaseTheme.PopupMenuText" parent="TextAppearance.Light">
         <item name="android:textColor">?colorTextGrey</item>
     </style>
 
