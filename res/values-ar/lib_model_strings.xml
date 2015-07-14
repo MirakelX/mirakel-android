@@ -49,8 +49,7 @@
   <string name="recurrence_from_now">من الآن</string>
   <string name="recurrence_from">من</string>
   <string name="list_all">جميع القوائم</string>
-  <string name="list_today">مهام اليوم</string>
-  <string name="list_week">هذا الأسبوع</string>
+  <string name="list_today">اليوم</string>
   <string name="list_overdue">الـمتأخر</string>
   <string name="inbox">البريد الوارد</string>
   <string name="first_task">المهمة الأولى</string>
@@ -92,7 +91,6 @@
   <string name="reminder_notification_done_confirm">لقد حددت المهمة أنها \"منجزة\"</string>
   <string name="reminder_notification_later_confirm">سوف أذكرك في %d دقيقة</string>
   <string name="list_vanished">اوو، لقد اختفت المهمة. آسف…</string>
-  <string name="no_date">لم تحدد موعدا نهائياً</string>
   <string name="task_sorting_title">فرز المهام حسب</string>
   <string name="share_using">مشاركة مع</string>
   <string name="share_task">مشاركة المهمة</string>

@@ -49,8 +49,7 @@
   <string name="recurrence_from_now">Oraindik aurrera</string>
   <string name="recurrence_from">Noiztik</string>
   <string name="list_all">Zerrenda guztiak</string>
-  <string name="list_today">Gaurko zereginak</string>
-  <string name="list_week">Aste honetan</string>
+  <string name="list_today">Gaur</string>
   <string name="list_overdue">Berandu</string>
   <string name="inbox">Sarrera ontzia</string>
   <string name="first_task">Lehen zeregina</string>
@@ -92,7 +91,6 @@
   <string name="reminder_notification_done_confirm">Zeregina \"eginda\" bezala ezarri dut</string>
   <string name="reminder_notification_later_confirm">%d minututan oroituko dizut</string>
   <string name="list_vanished">Putxa! Zeregina desagertu da. Barkatu…</string>
-  <string name="no_date">Epemugarik ez</string>
   <string name="task_sorting_title">Zereginak ordenatzeko irizpidea</string>
   <string name="share_using">Elkarbanatu honekin</string>
   <string name="share_task">Elkarbanatu zeregina</string>
@@ -103,6 +101,7 @@
   <string name="share_footer">Elkarbanatu Mirakel-ekin\nZeregin zerrendetarako tresna librea, Android eta Web bidez erabilgarria\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Izena</string>
   <string name="special_list_active">Erakutsi</string>
+  <string name="special_list_where">SQL where itaunketa</string>
   <string name="special_list_sort_by">Ordenatzeko irizpidea</string>
   <string name="special_list_def_list">Lehenetsitako zerrenda</string>
   <string name="special_list_def_date">Lehenetsitako data</string>
@@ -225,6 +224,30 @@
     <item quantity="one">urte</item>
     <item quantity="other">urte</item>
   </plurals>
+  <plurals name="repeat_day">
+    <item quantity="one">egunero</item>
+    <item quantity="other">%d egunetik behin</item>
+  </plurals>
+  <plurals name="repeat_week">
+    <item quantity="one">astero</item>
+    <item quantity="other">%d astetik behin</item>
+  </plurals>
+  <plurals name="repeat_month">
+    <item quantity="one">hilabetero</item>
+    <item quantity="other">%d hiletik behin</item>
+  </plurals>
+  <plurals name="repeat_year">
+    <item quantity="one">urtero</item>
+    <item quantity="other">%d urtetik behin</item>
+  </plurals>
+  <plurals name="repeat_hour">
+    <item quantity="one">orduro</item>
+    <item quantity="other">%d ordutik behin</item>
+  </plurals>
+  <plurals name="repeat_minute">
+    <item quantity="one">minuturo</item>
+    <item quantity="other">%d minututik behin</item>
+  </plurals>
   <string name="monday">Astelehena</string>
   <string name="tuesday">Asteartea</string>
   <string name="wednesday">Asteazkena</string>
@@ -232,7 +255,12 @@
   <string name="friday">Ostirala</string>
   <string name="saturday">Larunbata</string>
   <string name="sunday">Igandea</string>
+  <string name="begin_repeat">Hasi %s</string>
+  <string name="end_repeat">%s arte</string>
+  <string name="every_repeat">%stik behin</string>
+  <string name="weekday">Asteguna</string>
   <string name="accounts_all">Kontu guztiak</string>
   <string name="stub_list_name">Zerrenda berria</string>
+  <string name="search_title">Bilatu: </string>
 </resources>
 

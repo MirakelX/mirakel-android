@@ -48,8 +48,7 @@
   <string name="recurrence_from_now">Od zdaj</string>
   <string name="recurrence_from">Od</string>
   <string name="list_all">Združen prikaz seznamov</string>
-  <string name="list_today">Današnje naloge</string>
-  <string name="list_week">Ta teden</string>
+  <string name="list_today">Danes</string>
   <string name="list_overdue">Zapadle naloge</string>
   <string name="inbox">Vpisane naloge</string>
   <string name="first_task">Prva naloga</string>
@@ -91,7 +90,6 @@
   <string name="reminder_notification_done_confirm">Naloga je označena kot \"končana\".</string>
   <string name="reminder_notification_later_confirm">Opomnik bo prikazan čez %d minut</string>
   <string name="list_vanished">Ops! Nalog je izginila! To je lahko napaka programa ...</string>
-  <string name="no_date">Ni roka</string>
   <string name="task_sorting_title">Razvrsti naloge po:</string>
   <string name="share_using">Souporaba z</string>
   <string name="share_task">Souporabi</string>

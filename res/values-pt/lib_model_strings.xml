@@ -49,8 +49,7 @@
   <string name="recurrence_from_now">Desde já</string>
   <string name="recurrence_from">Desde</string>
   <string name="list_all">Todas as listas</string>
-  <string name="list_today">Tarefas para hoje</string>
-  <string name="list_week">Esta semana</string>
+  <string name="list_today">Hoje</string>
   <string name="list_overdue">Data limite ultrapassada</string>
   <string name="inbox">Caixa de entrada</string>
   <string name="first_task">Primeira tarefa</string>
@@ -92,7 +91,6 @@
   <string name="reminder_notification_done_confirm">Eu defini a tarefa como terminada</string>
   <string name="reminder_notification_later_confirm">Lembrete dentro de %d minutos</string>
   <string name="list_vanished">A tarefa desapareceu. Desculpe...</string>
-  <string name="no_date">Sem prazo</string>
   <string name="task_sorting_title">Ordenar tarefas por</string>
   <string name="share_using">Partilhar com</string>
   <string name="share_task">Partilhar tarefa</string>
@@ -103,6 +101,7 @@
   <string name="share_footer">Partilhado com Mirakel\nA ferramenta livre (como liberdade) de tarefas para o Android e a Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">Nome</string>
   <string name="special_list_active">Mostrar</string>
+  <string name="special_list_where">Consulta DQL Where</string>
   <string name="special_list_sort_by">Ordenar por</string>
   <string name="special_list_def_list">Lista pré-definida</string>
   <string name="special_list_def_date">Data pré-definida</string>
@@ -225,6 +224,30 @@
     <item quantity="one">ano</item>
     <item quantity="other">anos</item>
   </plurals>
+  <plurals name="repeat_day">
+    <item quantity="one">dia</item>
+    <item quantity="other">%d dias</item>
+  </plurals>
+  <plurals name="repeat_week">
+    <item quantity="one">semana</item>
+    <item quantity="other">%d semanas</item>
+  </plurals>
+  <plurals name="repeat_month">
+    <item quantity="one">mês</item>
+    <item quantity="other">%d meses</item>
+  </plurals>
+  <plurals name="repeat_year">
+    <item quantity="one">ano</item>
+    <item quantity="other">%d anos</item>
+  </plurals>
+  <plurals name="repeat_hour">
+    <item quantity="one">hora</item>
+    <item quantity="other">%d horas</item>
+  </plurals>
+  <plurals name="repeat_minute">
+    <item quantity="one">minuto</item>
+    <item quantity="other">%d minutos</item>
+  </plurals>
   <string name="monday">segunda</string>
   <string name="tuesday">terça</string>
   <string name="wednesday">quarta</string>
@@ -232,7 +255,12 @@
   <string name="friday">sexta</string>
   <string name="saturday">sábado</string>
   <string name="sunday">domingo</string>
+  <string name="begin_repeat">Inicia %s</string>
+  <string name="end_repeat">até %s</string>
+  <string name="every_repeat">a cada %s</string>
+  <string name="weekday">Dia da semana</string>
   <string name="accounts_all">Todas as contas</string>
   <string name="stub_list_name">Nova lista</string>
+  <string name="search_title">Pesquisa: </string>
 </resources>
 
