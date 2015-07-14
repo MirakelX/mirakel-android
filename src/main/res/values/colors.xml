@@ -26,7 +26,7 @@
     <color name="colorPrimaryDark">#702446</color>
     <color name="colorAccent">#144F59</color>
     <color name="colorTextGrey">#666666</color>
-    <color name="colorPreviewBorder">#48000000</color>
+    <color name="colorPreviewBorder">#40000000</color>
     <color name="colorPriorityBackground">#808080</color>
     <color name="colorTaskFragmentBackground">#FAFAFA</color>
     <color name="colorBackground">#FFFFFF</color>
