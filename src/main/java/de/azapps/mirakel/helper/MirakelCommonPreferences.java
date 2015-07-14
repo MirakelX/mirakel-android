@@ -21,11 +21,10 @@ package de.azapps.mirakel.helper;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import de.azapps.mirakel.helper.R;
 
 /**
@@ -46,27 +45,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getInt("alarm_later", 15);
     }
 
-    public static String getAudioDefaultTitle() {
-        return settings.getString("audioDefaultTitle",
-                                  context.getString(R.string.audio_default_title));
-    }
-
-    public static int getAutoBackupInterval() {
-        return settings.getInt("autoBackupInterval", 7);
-    }
-
-    private static Calendar getCalendar(final String name,
-                                        final String defaultString) {
-        final Calendar ret;
-        try {
-            ret = DateTimeHelper.parseDate(settings.getString(name,
-                                           defaultString));
-        } catch (final ParseException ignored) {
-            return null;
-        }
-        return ret;
-    }
-
     public static String getFromLog(final int id) {
         return settings.getString("OLD" + id, "");
     }
@@ -80,9 +58,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getString("language", "-1");
     }
 
-    public static Calendar getNextAutoBackup() {
-        return getCalendar("autoBackupNext", "");
-    }
 
     public static int getNotificationsListId() {
         try {
@@ -116,18 +91,8 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     }
 
 
-    public static boolean highlightSelected() {
-        return settings.getBoolean("highlightSelected", isTablet());
-    }
-
     public static boolean isDark() {
         return false;
-    }
-
-    public static void setIsDark(final boolean isDark) {
-        final Editor editor = getEditor();
-        editor.putBoolean("DarkTheme", isDark);
-        editor.commit(); // Use commit here because we are restarting the app afterwards
     }
 
     public static boolean isDebug() {
@@ -197,27 +162,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         }
         editor.putString(preferenceName, pref.toString());
         editor.apply();
-    }
-
-    public static void setAutoBackupInterval(final int val) {
-        final Editor ed = settings.edit();
-        ed.putInt("autoBackupInterval", val);
-        ed.apply();
-    }
-
-    public static void setNextBackup(final Calendar val) {
-        final Editor ed = settings.edit();
-        ed.putString("autoBackupNext", DateTimeHelper.formatDate(val));
-        ed.apply();
-    }
-
-    public static void setShowAccountName(final boolean showAccountName) {
-        settings.edit().putBoolean("show_account_name", showAccountName).apply();
-    }
-
-    public static void setTaskFragmentLayout(final List<Integer> newV) {
-        MirakelCommonPreferences.saveIntArray("task_fragment_adapter_settings",
-                                              newV);
     }
 
     public static void toogleDebugMenu() {
