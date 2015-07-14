@@ -44,10 +44,6 @@
             android:key="import"
             android:summary="@string/import_click_summary"
             android:title="@string/import_click"/>
-        <Preference
-            android:key="autoBackupInterval"
-            android:summary="@string/auto_backup_interval_summary"
-            android:title="@string/auto_backup_interval"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/third_party_title">
