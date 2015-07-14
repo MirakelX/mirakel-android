@@ -49,10 +49,10 @@
   <string name="sync_taskwarrior_how_to">Как настроить свой собственный сервер</string>
   <string name="sync_taskwarrior_own_server">или просто использовать свой собственный сервер</string>
   <string name="sync_taskwarrior_configuring">Настройка синхронизации…</string>
-  <string name="sync_taskwarrior_about">Если у вас уже есть учетная запись taskwarrior:</string>
+  <string name="sync_taskwarrior_about">Если у вас уже есть аккаунт taskwarrior:</string>
   <string name="sync_taskwarrior_register">Если нет, то вы можете зарегистрировать новый аккаунт на нашем сервере:</string>
   <string name="sync_taskwarrior_register_button">Зарегистрироваться</string>
-  <string name="sync_taskwarrior_setup_success">Настройка аккауна прошла успешно</string>
+  <string name="sync_taskwarrior_setup_success">Настройка аккаунта прошла успешно</string>
   <string name="sync_defaultAccount">Использовать в качестве аккаунта по умолчанию?</string>
   <string name="tw_account">Taskwarrior</string>
   <string name="calDavName">CalDav</string>
