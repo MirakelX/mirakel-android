@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="UTF-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Mirakel is an Android App for managing your ToDo-Lists
   ~
   ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
@@ -42,22 +41,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp">
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
                     android:layout_marginBottom="32dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/mirakel_72dp"
-                        android:layout_marginEnd="16dp"/>
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/mirakel_72dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -76,38 +75,71 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/credits_subtitle"
+                            android:textAppearance="@style/TextAppearance.Medium.Small"
                             android:textColor="?colorTextSettings"
-                            android:textAppearance="@style/TextAppearance.Medium.Small" />
+                            android:textSize="13sp" />
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/dev_credits"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="16dp"
-                    android:drawableStart="@drawable/ic_build_white_24dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/credits_dev"
-                    android:textColor="?colorTextSettings"
-                    android:textAppearance="@style/TextAppearance.Regular.Small" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/design_credits"
+                    <ImageView
+                        android:id="@+id/dev_credits_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_calendar_white_18dp" />
+
+                    <TextView
+                        android:id="@+id/dev_credits"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toEndOf="@+id/dev_credits_icon"
+                        android:drawablePadding="16dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/credits_dev"
+                        android:textAppearance="@style/TextAppearance.Regular.Small"
+                        android:textColor="?colorTextSettings"
+                        android:textColorLink="?colorAccent"
+                        android:textSize="13sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:drawablePadding="16dp"
-                    android:drawableStart="@drawable/ic_brush_white_24dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/credits_design"
-                    android:textColor="?colorTextSettings"
-                    android:textAppearance="@style/TextAppearance.Regular.Small" />
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/design_credits_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_brush_white_24dp" />
+
+                    <TextView
+                        android:id="@+id/design_credits"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toEndOf="@+id/design_credits_icon"
+                        android:gravity="center_vertical"
+                        android:text="@string/credits_design"
+                        android:textAppearance="@style/TextAppearance.Regular.Small"
+                        android:textColor="?colorTextSettings"
+                        android:textColorLink="?colorAccent"
+                        android:textSize="13sp" />
+                </RelativeLayout>
 
 
                 <LinearLayout
@@ -120,10 +152,10 @@
                         style="@style/ImageButtonStyle"
                         android:layout_width="0dp"
                         android:layout_height="36dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="16dp"
                         android:layout_marginBottom="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:layout_weight="1">
 
                         <TextView
@@ -139,10 +171,10 @@
                         style="@style/ImageButtonStyle"
                         android:layout_width="0dp"
                         android:layout_height="36dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginTop="16dp"
                         android:layout_marginBottom="5dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="16dp"
                         android:layout_weight="1">
 
                         <TextView
@@ -159,10 +191,10 @@
                     style="@style/ImageButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         style="@style/ImageButtonStyleText"
@@ -175,12 +207,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
                     android:gravity="center"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:text="@string/credits_copyright"
                     android:textAppearance="@style/TextAppearance.Italic.Small"
                     android:textColor="?colorTextSettings"
-                    android:text="@string/credits_copyright" />
+                    android:textSize="11sp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -191,17 +224,17 @@
             app:cardCornerRadius="0dp">
 
             <LinearLayout
+                android:id="@+id/translations_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:id="@+id/translations_wrapper">
+                android:padding="16dp">
 
                 <TextView
+                    style="@style/CardTitleView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/credits_translations"
-                    style="@style/CardTitleView" />
+                    android:text="@string/credits_translations" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -212,19 +245,20 @@
             app:cardCornerRadius="0dp">
 
             <LinearLayout
+                android:id="@+id/libraries_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:id="@+id/libraries_wrapper">
+                android:padding="16dp">
 
                 <TextView
+                    style="@style/CardTitleView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/credits_libraries"
-                    style="@style/CardTitleView" />
+                    android:text="@string/credits_libraries" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -238,17 +272,19 @@
                 android:padding="16dp">
 
                 <TextView
+                    style="@style/CardTitleView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/credits_license_title"
-                    style="@style/CardTitleView"/>
+                    android:text="@string/credits_license_title" />
+
                 <TextView
+                    android:id="@+id/credits_license_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/credits_license"
                     android:textAppearance="@style/TextAppearance.Regular.Small"
                     android:textColor="?colorTextSettings"
-                    android:id="@+id/credits_license_text"/>
+                    android:textSize="13sp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
     </LinearLayout>

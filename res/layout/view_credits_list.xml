@@ -23,5 +23,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:textAppearance="@style/TextAppearance.Regular.Small"
+    android:textSize="13sp"
     android:textColor="?colorTextSettings"
     android:paddingBottom="8dp"/>
