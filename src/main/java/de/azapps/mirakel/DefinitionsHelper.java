@@ -58,7 +58,6 @@ public class DefinitionsHelper {
     public static final String BUNDLE_SERVER_TYPE = "type";
     public static final String AUTHORITY_TYP = "de.azapps.mirakel.provider";
     public static final int NOTIF_DEFAULT = 123, NOTIF_REMINDER = 124;
-    public static final String MAINACTIVITY_CLASS = "de.azapps.mirakel.main_activity.MainActivity";
     public static final String MIRAKEL_ACTIVITY_CLASS =
         "de.azapps.mirakel.new_ui.activities.MirakelActivity";
     public static final String MAINWIDGET_CLASS = "de.azapps.mirakel.widget.MainWidgetProvider";
@@ -96,7 +95,7 @@ public class DefinitionsHelper {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void init(final Context ctx, final String flavor) {
         APK_NAME = ctx.getPackageName();
-        if("google".equals(flavor)) {
+        if ("google".equals(flavor)) {
             DefinitionsHelper.flavor = FLAVOR.GOOGLE;
         } else {
             DefinitionsHelper.flavor = FLAVOR.FDROID;
