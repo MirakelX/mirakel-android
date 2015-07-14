@@ -30,5 +30,6 @@
   <string name="empty_list">Keine Aufgaben</string>
   <string name="preferences">Einstellungen</string>
   <string name="widget_use_gradient">Verwende Farbverlauf</string>
+  <string name="widget_style">Widget-Stil</string>
 </resources>
 
