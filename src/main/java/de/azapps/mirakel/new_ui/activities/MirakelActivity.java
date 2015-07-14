@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.activities;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -74,6 +75,7 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
@@ -240,6 +242,9 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             menu.findItem(R.id.menu_close_search).setVisible((getTasksFragment().getList() instanceof
                     SearchListMirakel));
         }
+        if (menu.findItem(R.id.menu_sync_now) != null && !AccountMirakel.hasTaskWarriorAccount()) {
+            menu.findItem(R.id.menu_sync_now).setVisible(false);
+        }
         MenuHelper.showMenuIcons(this, menu);
         MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey), startIndex);
         return true;
@@ -289,6 +294,21 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                 throw new IllegalArgumentException("It's not a proper List");
             }
             break;
+        case R.id.menu_sync_now:
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            final List<AccountMirakel> accounts = new MirakelQueryBuilder(this)
+            .and(AccountMirakel.ENABLED, MirakelQueryBuilder.Operation.EQ, true)
+            .and(AccountMirakel.TYPE, MirakelQueryBuilder.Operation.EQ,
+                 AccountMirakel.ACCOUNT_TYPES.TASKWARRIOR.toInt())
+            .getList(AccountMirakel.class);
+            for (final AccountMirakel a : accounts) {
+                getContentResolver().requestSync(a.getAndroidAccount(), DefinitionsHelper.AUTHORITY_INTERNAL,
+                                                 bundle);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }

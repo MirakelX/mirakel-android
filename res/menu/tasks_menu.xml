@@ -46,4 +46,9 @@
         android:title="@string/action_settings"
         android:icon="@drawable/ic_settings_white_18dp"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_sync_now"
+        android:title="@string/action_sync_now"
+        android:icon="@drawable/ic_sync_white_18dp"
+        app:showAsAction="never"/>
 </menu>
