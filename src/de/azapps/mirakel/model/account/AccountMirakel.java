@@ -269,47 +269,27 @@ public class AccountMirakel extends AccountBase {
     }
 
     public static void update(final Account[] accounts) {
-        final List<AccountMirakel> accountList = AccountMirakel.all();
-        final long countRemotes = AccountMirakel.countRemoteAccounts();
-        final Map<String, AccountMirakel> map = new HashMap<>(accountList.size());
-        for (final AccountMirakel a : accountList) {
-            map.put(a.getName(), a);
-        }
+        final List<AccountMirakel> existingAccounts = new ArrayList<>(accounts.length);
         for (final Account a : accounts) {
             if (allowedAccounts.contains(a.type)) {
                 Log.d(TAG, "is supported Account");
-                if (!map.containsKey(a.name)) {
-                    // Add new account here....
-                    AccountMirakel.newAccount(a.name,
-                                              ACCOUNT_TYPES.parseAccountType(a.type), true);
+                Optional<AccountMirakel> existing = AccountMirakel.getByName(a.name);
+                if (existing.isPresent()) {
+                    existingAccounts.add(existing.get());
                 } else {
-                    // Account exists..
-                    map.remove(a.name);
+                    existingAccounts.add(AccountMirakel.newAccount(a.name,
+                                         ACCOUNT_TYPES.parseAccountType(a.type), true));
                 }
             }
         }
-        for (final Entry<String, AccountMirakel> el : map.entrySet()) {
-            // Remove deleted accounts
-            if (el.getValue().getType() != ACCOUNT_TYPES.LOCAL) {
-                el.getValue().destroy();
-            }
-        }
-        final long countRemotesNow = AccountMirakel.countRemoteAccounts();
-        if ((countRemotes == 0L) && (countRemotesNow == 1L)) {
-            // If we just added our first remote account we want to set it as
-            // the default one.
-            final List<AccountMirakel> remotes = AccountMirakel.getRemote();
-            // This could happen, the operations are not atomar
-            if ((!remotes.isEmpty()) && (remotes.get(0).getType() != ACCOUNT_TYPES.CALDAV)) {
-                final AccountMirakel account = remotes.get(0);
-                MirakelModelPreferences.setDefaultAccount(account);
-                ListMirakel.setDefaultAccount(account);
-            }
-        } else if ((countRemotes == 1L) && (countRemotesNow > 1L)) {
-            // If we have now more than one remote account we want to show the
-            // account name in the listfragment
-            MirakelCommonPreferences.setShowAccountName(true);
-        }
+        final MirakelQueryBuilder del = new MirakelQueryBuilder(context).and(ID, Operation.NOT_IN,
+                existingAccounts);
+        delete(URI, del.getSelection(), del.getSelectionArguments().toArray(new String[0]));
+    }
+
+    @NonNull
+    private static Optional<AccountMirakel> getByName(final @NonNull String name) {
+        return new MirakelQueryBuilder(context).and(NAME, Operation.EQ, name).get(AccountMirakel.class);
     }
 
     public AccountMirakel(final int id, final String name,
@@ -355,6 +335,15 @@ public class AccountMirakel extends AccountBase {
             }
         }
         return null;
+    }
+
+    public static boolean hasTaskWarriorAccount() {
+        return new MirakelQueryBuilder(context).and(ENABLED, Operation.EQ, true).and(TYPE, Operation.EQ,
+                ACCOUNT_TYPES.TASKWARRIOR.toInt()).count(URI) > 0;
+    }
+
+    public static boolean hasSyncAccount() {
+        return countRemoteAccounts() > 0;
     }
 
     // Parcelable stuff
