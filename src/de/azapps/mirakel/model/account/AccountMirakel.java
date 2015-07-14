@@ -264,9 +264,9 @@ public class AccountMirakel extends AccountBase {
 
     public static void update(final Account[] accounts) {
         final List<AccountMirakel> existingAccounts = new ArrayList<>(accounts.length);
+        existingAccounts.add(AccountMirakel.getLocal());
         for (final Account a : accounts) {
             if (allowedAccounts.contains(a.type)) {
-                Log.d(TAG, "is supported Account");
                 Optional<AccountMirakel> existing = AccountMirakel.getByName(a.name);
                 if (existing.isPresent()) {
                     existingAccounts.add(existing.get());
@@ -276,6 +276,7 @@ public class AccountMirakel extends AccountBase {
                 }
             }
         }
+
         final MirakelQueryBuilder del = new MirakelQueryBuilder(context).and(ID, Operation.NOT_IN,
                 existingAccounts);
         delete(URI, del.getSelection(), del.getSelectionArguments().toArray(new String[0]));
