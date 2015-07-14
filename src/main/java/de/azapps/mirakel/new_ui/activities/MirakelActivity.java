@@ -219,16 +219,20 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         menu.clear();
+        final int startIndex;
         if (mDrawerLayout.isPresent()) {
             // For phones
             final boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(GravityCompat.START);
             if (drawerOpen) {
                 getMenuInflater().inflate(R.menu.lists_menu, menu);
+                startIndex = 1;
             } else {
                 getMenuInflater().inflate(R.menu.tasks_menu, menu);
+                startIndex = 2;
             }
         } else {
             getMenuInflater().inflate(R.menu.tablet_menu, menu);
+            startIndex = 2;
         }
         if ((menu.findItem(R.id.menu_close_search) != null) && (menu.findItem(R.id.menu_search) != null)) {
             menu.findItem(R.id.menu_search).setVisible(!(getTasksFragment().getList() instanceof
@@ -237,6 +241,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                     SearchListMirakel));
         }
         MenuHelper.showMenuIcons(this, menu);
+        MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey), startIndex);
         return true;
     }
 
