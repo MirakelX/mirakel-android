@@ -22,25 +22,39 @@
     package="de.azapps.mirakel.sync"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission
+        android:name="android.permission.INTERNET"/>
+    <uses-permission
+        android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission
+        android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+
+    <!-- Dummy Permission for Sync-Service -->
+    <permission
+        android:name="de.azapps.mirakel.SYNC"
+        android:label="@string/app_name"
+        android:permissionGroup="de.azapps.mirakel.PERMISSION"
+        android:protectionLevel="signatureOrSystem" />
+
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="21"/>
-    <!-- need to build with gradle-->
     <application>
         <service
             android:name="de.azapps.mirakel.sync.taskwarrior.services.SyncService"
             android:exported="true"
-            android:permission="de.azapps.mirakel.SYNC">
+            android:permission="de.azapps.mirakel.SYNC"
+            android:process=":sync">
             <intent-filter>
-                <action android:name="android.content.SyncAdapter">
-                </action>
+                <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
-
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/adapter_sync">
-            </meta-data>
+            <meta-data android:name="android.content.SyncAdapter"
+                       android:resource="@xml/adapter_sync" />
         </service>
+
+
         <activity
             android:name="de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity"
             android:configChanges="orientation|screenSize"
