@@ -30,23 +30,20 @@ import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.analytics.AnalyticsWrapper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.BuildHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.new_ui.helper.AcraLog;
-import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.reminders.ReminderAlarm;
 import de.azapps.mirakel.services.NotificationService;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -116,18 +113,6 @@ public class Mirakel extends Application {
                                                 NotificationService.class)) != null)) {
                     stopService (new Intent (Mirakel.this,
                                              NotificationService.class));
-                }
-
-                // Auto Backup?
-                final Calendar nextBackup = MirakelCommonPreferences
-                                            .getNextAutoBackup ();
-                if ((nextBackup != null)
-                    && (nextBackup.compareTo(new GregorianCalendar()) < 0)) {
-                    ExportImport.exportDB(that);
-                    final Calendar nextB = new GregorianCalendar ();
-                    nextB.add (Calendar.DATE,
-                               MirakelCommonPreferences.getAutoBackupInterval ());
-                    MirakelCommonPreferences.setNextBackup (nextB);
                 }
                 if (MirakelCommonPreferences.writeLogsToFile ()) {
                     Log.enableLoggingToFile();
