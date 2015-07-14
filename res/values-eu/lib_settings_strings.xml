@@ -103,6 +103,8 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="changelog_click">Aldaketa erregistroa</string>
   <string name="settings_about">Honi buruz</string>
   <string name="settings_help">Laguntza</string>
+  <string name="get_dashclock">Eskuratu Mirakel Dashclock</string>
+  <string name="get_dashclock_summary">Eskuratu Mirakel luzapena Dashclockerako</string>
   <string name="import_astrid_click">Astrid-etik inportatu</string>
   <string name="astrid_success">Ongi inportatu dira datu guztiak!</string>
   <string name="importing">Inportatzen</string>
@@ -125,12 +127,13 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="semantic_new_task">Zeregin berriaren txantiloia</string>
   <string name="semantic_new_task_config_summary">Konfiguratu zeregin berriak sortzeko baldintzak</string>
   <string name="semantic_new_task_config">Konfiguratu zeregin txantiloiak</string>
+  <string name="useTabletLayout">Erabili Tablet diseinua</string>
   <string name="general">Orokorra</string>
   <string-array name="tablet_options">
     <item>inoiz ez</item>
     <item>horizontala</item>
     <item>bertikala</item>
-    <item>portrait and landscape</item>
+    <item>horizontala eta bertikala</item>
   </string-array>
   <string name="delete_done">Ezabatu egindako zereginak</string>
   <string name="delete_done_summary">Ezabatu egindako zeregin guztiak</string>
@@ -196,11 +199,14 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="settings_tasks_title">Zereginak</string>
   <string name="settings_dev">Garapen aukerak</string>
   <string name="settings_dev_sync">Sinkronizatu</string>
+  <string name="settings_dev_dump_tw_summary">Gorde jasotako testua hemen /sdcard/mirakel/</string>
+  <string name="settings_dev_dump_tw">Gorde jasotako sinkronizazio mezuak</string>
   <string name="enable">gaitzen</string>
   <string name="disable">desgaitzen</string>
   <string name="enabled">gaituta</string>
   <string name="disabled">desgaituta</string>
   <string name="change_dev_mode">Garapen aukerak %s dituzu!</string>
+  <string name="enableDebugLog">Gaitu arazte-egunkaria?</string>
   <string name="action_contact">Kontaktua / Arazoen berri eman</string>
   <string name="action_contact_summary">Idatzi gaitzazu mezu bat!</string>
   <string name="title_donations">Diruz lagundu</string>
@@ -210,7 +216,9 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="demo_mode">Adibide modua</string>
   <string name="demo_drop_db">Ezabatu adibide datu-basea</string>
   <string name="write_logs_to_file">Idatzi egunkariak fitxategira</string>
+  <string name="alert_caldav">CalDAV sinkronizazioak arazoak ditu eta ez dugu CalDAV euskarria mantentzeko denborarik. Egin zure datuen babeskopia jarraitu aurretik.</string>
   <string name="alert_caldav_title">CalDAV informazioa</string>
+  <string name="alert_taskwarrior">Taskwarrior sinkronizazioak arazoak ditu eta ez dugu Taskwarrior euskarria mantentzeko denborarik. Egin zure datuen babeskopia jarraitu aurretik.</string>
   <string name="alert_taskwarrior_title">Taskwarrior Informazioa</string>
   <string name="special_list_where_subtask_title_text">Azpi-zereginak</string>
   <string name="special_list_where_tag_title_text">Etiketak</string>
@@ -252,8 +260,23 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="delete_condition">Ezabatu baldintza</string>
   <string name="delete_semantic">Ezabatu zeregin txantiloia</string>
   <string name="delete_special_lists">Ezabatu meta zerrenda</string>
+  <string name="settings_widget_title">Trepetaren hobespenak</string>
+  <string name="version_string">Bertsoa: %1$s %2$s konpilatua</string>
+  <string name="analytics_use">Bidali estatistika anonimoen txostena</string>
+  <string name="analytics_use_summary">Txotenek Mirakel zuretzat hobetzen laguntzen digute</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">Mirakel Software Libra da, parte hartu nahiez gero GitHub bidez</string>
+  <string name="credits_dev">Garapena: Anatolij Zelenin eta Georg Semmler</string>
+  <string name="credits_design">Ikono eta interfazearen diseinua: Alexander Käßner</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">Bidali iritzia</string>
+  <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nHau Software Librea da GPLv3 lizentziapean</string>
   <string name="credits_translations">Itzulpenak</string>
+  <string name="credits_libraries">Liburutegiak</string>
   <string name="credits_license_title">Lizentzia</string>
+  <string name="credits_license"><![CDATA[<p>Programa hau software librea da; birbana eta/edo alda dezakezu Free Software Foundation-ek argitaratutako <a href="https://www.gnu.org/licenses/gpl.html">GNU Lizentzia Publiko Orokorra</a>ren
+3. bertsioan, edo (nahiago baduzu) bertsio berriago batean, jasotako baldintzak betez gero.</p>
+<p>Programa hau erabilgarria izango delakoan banatzen da, baina INOLAKO BERMERIK GABE; era berean, ez da bermatzen beraren EGOKITASUNA MERKATURATZEKO edo HELBURU PARTIKULARRETARAKO ERABILTZEKO.  Argibide gehiago nahi izanez gero, ikus GNU Lizentzia Publiko Orokorra.</p>]]></string>
 </resources>
 

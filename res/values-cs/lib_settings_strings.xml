@@ -103,6 +103,8 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="changelog_click">Seznam změn</string>
   <string name="settings_about">O aplikaci</string>
   <string name="settings_help">Nápověda</string>
+  <string name="get_dashclock">Stáhnout Mirakel Dashclock</string>
+  <string name="get_dashclock_summary">Získat rozšíření Mirakel pro Dashclock</string>
   <string name="import_astrid_click">Importovat z Astrid</string>
   <string name="astrid_success">Všechna data byla úspěšně importována!</string>
   <string name="importing">Probíhá import</string>
@@ -125,12 +127,13 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="semantic_new_task">Nová šablona úlohy</string>
   <string name="semantic_new_task_config_summary">Konfigurovat podmínky pro vytváření nových úkolů</string>
   <string name="semantic_new_task_config">Konfigurovat šablony úloh</string>
+  <string name="useTabletLayout">Použít vzhled pro tablet</string>
   <string name="general">Všeobecné</string>
   <string-array name="tablet_options">
     <item>nikdy</item>
     <item>Na šířku</item>
     <item>Na výšku</item>
-    <item>portrait and landscape</item>
+    <item>navýšku a našířku</item>
   </string-array>
   <string name="delete_done">Odstranit vyřešené úkoly</string>
   <string name="delete_done_summary">Odstranit všechny vyřešené úkoly</string>
@@ -196,11 +199,14 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="settings_tasks_title">Úkoly</string>
   <string name="settings_dev">Vývojářská nastavení</string>
   <string name="settings_dev_sync">Synchronizace</string>
+  <string name="settings_dev_dump_tw_summary">Zapsat přijatý text do /sdcard/mirakel</string>
+  <string name="settings_dev_dump_tw">Ukládat přijaté synchronizované zprávy</string>
   <string name="enable">povoluji</string>
   <string name="disable">zakazuji</string>
   <string name="enabled">povoleno</string>
   <string name="disabled">zakázáno</string>
   <string name="change_dev_mode">Máte %s vývojářské nastavení!</string>
+  <string name="enableDebugLog">Povolit debug Logcat?</string>
   <string name="action_contact">Kontakt / nahlásit chybu</string>
   <string name="action_contact_summary">Pošlete nám e-mail!</string>
   <string name="title_donations">Podpořit</string>
@@ -210,7 +216,9 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="demo_mode">Demo režim</string>
   <string name="demo_drop_db">Resetovat demo databázi</string>
   <string name="write_logs_to_file">Zapisovat logy do souboru</string>
+  <string name="alert_caldav">CalDAV synchronizace je problémová a nemáme na její podporu již čas. Před pokračování vytvořte záložní kopii dat.</string>
   <string name="alert_caldav_title">Informace pro CalDAV</string>
+  <string name="alert_taskwarrior">Taskwarrior synchronizace je problémová a nemáme na její podporu již čas. Před pokračování vytvořte záložní kopii dat.</string>
   <string name="alert_taskwarrior_title">Informace pro Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Podúkoly</string>
   <string name="special_list_where_tag_title_text">Štítky</string>
@@ -250,8 +258,24 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="due_dialog_negated">Ne po</string>
   <string name="settings_advanced">Pokročilé</string>
   <string name="delete_condition">Odstranit podmínku</string>
+  <string name="delete_semantic">Smazat šablonu úlohy</string>
+  <string name="delete_special_lists">Smazat meta seznam</string>
+  <string name="settings_widget_title">Nastavení widgetu</string>
+  <string name="version_string">Verze: %1$s sestavena na %2$s</string>
+  <string name="analytics_use">Hlásit anonymní statistiku</string>
+  <string name="analytics_use_summary">Zprávy o použití aplikace nám pomáhají při jejím dalším vylepšování</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">Mirakel je open source, neváhejte přispět prostřednictvím GitHub</string>
+  <string name="credits_dev">Vývoj Anatolij Zelenin a Georg Semmler</string>
+  <string name="credits_design">Ikona a design rozhraní od Alexander Käßner</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">Odeslat názor</string>
+  <string name="credits_copyright">© 2013-2015 Anatolije Zelenin, Georg Semmler\nToto je svobodný software šířený pod GPLv3</string>
   <string name="credits_translations">Překlady</string>
+  <string name="credits_libraries">Knihovny</string>
   <string name="credits_license_title">Licence</string>
+  <string name="credits_license"><![CDATA[<p>Toto je svobodný software: můžete jej šířit a upravovat podle podmínek <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a> vydávané Free Software Foundation, buď verze 3 licence, nebo (dle vlastního uvážení) libovolné pozdější verze.</p>
+<p>Tento program je šířen v naději, že bude užitečný, ale bez JAKÉKOLI ZÁRUKY; bez odvozené záruky PRODEJNOSTI nebo VHODNOSTI PRO URČITÝ ÚČEL. Viz GNU General Public License pro další podrobnosti.</p>]]></string>
 </resources>
 
