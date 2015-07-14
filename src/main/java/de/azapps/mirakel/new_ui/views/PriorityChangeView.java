@@ -26,7 +26,6 @@ import android.support.v7.internal.view.ContextThemeWrapper;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import butterknife.InjectView;
 import de.azapps.material_elements.utils.IconizedMenu;
@@ -34,12 +33,9 @@ import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakelandroid.R;
 
-/**
- * Created by az on 07.05.15.
- */
 public class PriorityChangeView extends PriorityView implements View.OnClickListener {
     @InjectView(R.id.priority_button)
-    LinearLayout priorityButton;
+    View priorityButton;
     @Nullable
     private OnPriorityChangeListener onPriorityChangeListener;
 
@@ -59,6 +55,28 @@ public class PriorityChangeView extends PriorityView implements View.OnClickList
     public PriorityChangeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOnClickListener(this);
+    }
+
+    protected int getDrawableId(int priority) {
+        int drawableID;
+        switch (priority) {
+        case -1:
+        case -2:
+            drawableID = R.drawable.ic_priority_low_20dp;
+            break;
+        case 1:
+            drawableID = R.drawable.ic_priority_high_20dp;
+            break;
+        case 2:
+            drawableID = R.drawable.ic_priority_veryhigh_20dp;
+            break;
+        case 0:
+        default:
+            drawableID = R.drawable.ic_priority_none_20dp;
+            break;
+
+        }
+        return drawableID;
     }
 
     protected int getLayout() {
