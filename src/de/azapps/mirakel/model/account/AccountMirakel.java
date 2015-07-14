@@ -34,14 +34,8 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.helper.MirakelModelPreferences;
-import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
