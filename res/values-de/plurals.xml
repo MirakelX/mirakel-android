@@ -64,7 +64,7 @@
   </plurals>
   <plurals name="days">
     <item quantity="one">Tag</item>
-    <item quantity="other">Tag</item>
+    <item quantity="other">Tage</item>
   </plurals>
   <plurals name="every_days">
     <item quantity="one">Jeden Tag</item>
