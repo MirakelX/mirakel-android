@@ -80,7 +80,7 @@ import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 53;
+    public static final int DATABASE_VERSION = 54;
 
     private static final String TAG = "DatabaseHelper";
     public static final String CREATED_AT = "created_at";
@@ -972,6 +972,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE special_lists SET icon_path" +
                        "='file:///android_asset/list_icons/all_tasks.png' WHERE name= '" +
                        context.getString(R.string.list_all) + "';");
+        case 53:
+            MirakelPreferences.init(context);
+            SharedPreferences.Editor e = MirakelPreferences.getEditor();
+            for (int i = 0; i < 100; i++) {
+                e = e.remove("OLD" + i);
+            }
+            e.commit();
+
         default:
             break;
         }
