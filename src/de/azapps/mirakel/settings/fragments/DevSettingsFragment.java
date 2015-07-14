@@ -21,13 +21,10 @@ package de.azapps.mirakel.settings.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
-import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -38,8 +35,6 @@ import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
-import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -96,66 +91,6 @@ public class DevSettingsFragment extends MirakelPreferencesFragment<Settings> {
             }
         });
 
-        final Preference undoNumber = findPreference("UndoNumber");
-        undoNumber.setSummary(getString(
-                                  R.string.undo_number_summary,
-                                  MirakelCommonPreferences.getUndoNumber()));
-        undoNumber
-        .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(
-                final Preference preference) {
-                final int old_val = MirakelCommonPreferences
-                                    .getUndoNumber();
-                final int max = 25;
-                final int min = 1;
-                final NumberPicker numberPicker;
-                numberPicker = new NumberPicker(getActivity());
-                numberPicker.setMaxValue(max);
-                numberPicker.setMinValue(min);
-                numberPicker.setWrapSelectorWheel(false);
-                numberPicker.setValue(old_val);
-                numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                new AlertDialogWrapper.Builder(
-                    getActivity())
-                .setTitle(R.string.undo_number)
-                .setMessage(
-                    getActivity()
-                    .getString(
-                        R.string.undo_number_summary,
-                        MirakelCommonPreferences
-                        .getUndoNumber()))
-                .setView(numberPicker)
-                .setPositiveButton(
-                    android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(
-                        final DialogInterface dialog,
-                        final int whichButton) {
-                        final SharedPreferences.Editor editor = MirakelPreferences
-                                                                .getEditor();
-                        int val = numberPicker.getValue();
-                        editor.putInt("UndoNumber", val);
-                        undoNumber
-                        .setSummary(getActivity()
-                                    .getString(
-                                        R.string.undo_number_summary,
-                                        val));
-                        if (old_val > val) {
-                            for (int i = val; i < max; i++) {
-                                editor.putString(
-                                    UndoHistory.UNDO
-                                    + i,
-                                    "");
-                            }
-                        }
-                        editor.commit();
-                    }
-                }).setNegativeButton(android.R.string.cancel, null).show();
-                return true;
-            }
-        });
 
         final SwitchPreference demoMode = (SwitchPreference) findPreference("demoMode");
         demoMode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
