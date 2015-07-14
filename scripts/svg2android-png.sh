@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [ -z "$1" ]
   then
@@ -33,7 +34,7 @@ mkdir -p "${OUTPUT}"/drawable-xxxhdpi
 for f in "${INPUT}"/*.svg; do
 	echo "${f}"
 	filename=$(basename "$f")
-	#echo "inkscape -z -e \"${OUTPUT}\"/drawable-ldpi/\"${filename%.*}\".png -w "$(echo "$DPI * 0.75"|bc)" -h "$(echo "$DPI * 0.75"|bc)" \"${f}\""
+    filename=${filename%.*}"_"$DPI"dp"
 	inkscape -z -e "${OUTPUT}"/drawable-ldpi/${filename%.*}.png -w $(echo "$DPI * 0.75"|bc) -h $(echo "$DPI * 0.75"|bc) "${f}"
 	inkscape -z -e "${OUTPUT}"/drawable-mdpi/${filename%.*}.png -w $DPI -h $DPI "${f}"
 	inkscape -z -e "${OUTPUT}"/drawable-hdpi/${filename%.*}.png -w $(echo "$DPI * 1.5"|bc) -h $(echo "$DPI * 1.5"|bc) "${f}"
