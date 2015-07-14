@@ -144,8 +144,13 @@ public class SubtasksView extends LinearLayout {
 
     @OnClick(R.id.task_subtasks_add)
     public void handleAddSubtask() {
-        viewSwitcher.setDisplayedChild(1);
-        taskNameEdit.requestFocus();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewSwitcher.setDisplayedChild(1);
+                taskNameEdit.requestFocusFromTouch();
+            }
+        }, 100L);
     }
 
     void onCreateSubTask() {

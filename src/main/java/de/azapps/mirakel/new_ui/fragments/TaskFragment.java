@@ -402,7 +402,13 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                     break;
                 case R.id.add_tags_menu:
                     tagWrapper.setVisibility(View.VISIBLE);
-                    tagView.onClick(tagView);
+                    tagWrapper.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            tagView.clearFocus();
+                            tagView.onClick(tagView);
+                        }
+                    }, 100L);
                     break;
                 case R.id.add_file_menu:
                     fileWrapper.setVisibility(View.VISIBLE);
