@@ -228,6 +228,11 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
                             setBackground(background);
                         }
                         setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+                        if (getText().length() == 0) {
+                            setText = true;
+                            setText(" ");
+                            setText = false;
+                        }
                     } else {
                         setInputType(InputType.TYPE_NULL);
                         if (allowToogleBackground) {
@@ -271,6 +276,9 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
             }
         }
         text.append(new SpannableString(postfix));
+        if (text.length() == 0 && hasFocus()) {
+            text.append(' ');
+        }
         setText = true;
         setText(text);
         setText = false;
@@ -347,6 +355,12 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
                 rebuildText();
             }
             updateAdapter();
+        }
+        if (hasFocus() && (lengthAfter == 0 && lengthBefore == 1 || getText().length() == 0)) {
+            setText = true;
+            setText(" ");
+            setSelection(getText().length());
+            setText = false;
         }
     }
 
