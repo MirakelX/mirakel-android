@@ -28,6 +28,7 @@
     <style name="TextAppearance.Regular.Small" parent="TextAppearance.Regular">
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
+
     <style name="TextAppearance.Regular.Large" parent="TextAppearance.Regular">
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
@@ -36,16 +37,19 @@
     <style name="TextAppearance.Bold" parent="TextAppearance.Regular">
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="TextAppearance.Bold.Small" parent="TextAppearance.Bold">
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
+
     <style name="TextAppearance.Bold.Large" parent="TextAppearance.Bold">
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
-
+    <!-- Medium -->
     <style name="TextAppearance.Medium.Small" parent="TextAppearance.Medium">
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
+
     <style name="TextAppearance.Medium.Large" parent="TextAppearance.Medium">
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
@@ -53,7 +57,20 @@
     <style name="TextAppearance.Light.Small" parent="TextAppearance.Light">
         <item name="android:textSize">@dimen/text_size_small</item>
     </style>
+
     <style name="TextAppearance.Light.Large" parent="TextAppearance.Light">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+    <!-- Italic -->
+    <style name="TextAppearance.Italic" parent="TextAppearance.Regular">
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="TextAppearance.Italic.Small" parent="TextAppearance.Italic">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Italic.Large" parent="TextAppearance.Italic">
         <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 </resources>
