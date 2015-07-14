@@ -61,29 +61,34 @@ public class PriorityView extends LinearLayout {
         rebuildLayout();
     }
 
+    protected int getDrawableId(int priority) {
+        int drawableID;
+        switch (priority) {
+        case -1:
+        case -2:
+            drawableID = R.drawable.ic_priority_low_24dp;
+            break;
+        case 1:
+            drawableID = R.drawable.ic_priority_high_24dp;
+            break;
+        case 2:
+            drawableID = R.drawable.ic_priority_veryhigh_24dp;
+            break;
+        case 0:
+        default:
+            drawableID = R.drawable.ic_priority_none_24dp;
+            break;
+
+        }
+        return drawableID;
+    }
+
     protected void rebuildLayout() {
         if (shouldHideText()) {
             priorityIcon.setVisibility(GONE);
         } else {
             priorityIcon.setVisibility(VISIBLE);
-            int drawableID;
-            switch (priority) {
-            case -1:
-            case -2:
-                drawableID = R.drawable.ic_priority_low_24dp;
-                break;
-            case 1:
-                drawableID = R.drawable.ic_priority_high_24dp;
-                break;
-            case 2:
-                drawableID = R.drawable.ic_priority_veryhigh_24dp;
-                break;
-            case 0:
-            default:
-                drawableID = R.drawable.ic_priority_none_24dp;
-                break;
-
-            }
+            int drawableID = getDrawableId(priority);
             priorityIcon.setImageDrawable(ThemeManager.getColoredIcon(drawableID
                                           , ThemeManager.getColor(R.attr.colorTextWhite)));
 

@@ -48,6 +48,7 @@
             android:dropDownVerticalOffset="-244dp"
             android:inputType="textNoSuggestions"
             android:imeOptions="actionNext"
+            android:imeActionLabel="@string/add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_tag"/>
