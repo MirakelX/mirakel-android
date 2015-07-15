@@ -32,8 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:clickable="true"
-        android:orientation="vertical"
-        android:textColor="@color/date_picker_selector" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@id/date_picker_month"
@@ -42,7 +41,6 @@
             android:duplicateParentState="true"
             android:gravity="bottom|center"
             android:includeFontPadding="false"
-            android:textColor="@color/date_picker_selector"
             android:textSize="@dimen/selected_date_month_size" />
 
         <TextView
@@ -55,7 +53,6 @@
             android:duplicateParentState="true"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:textColor="@color/date_picker_selector"
             android:textSize="@dimen/selected_date_day_size" />
     </LinearLayout>
 
@@ -66,7 +63,6 @@
         android:layout_gravity="center"
         android:gravity="top|center"
         android:includeFontPadding="false"
-        android:textColor="@color/date_picker_selector"
         android:textSize="@dimen/selected_date_year_size" />
 
 </LinearLayout>
