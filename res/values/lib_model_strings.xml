@@ -301,4 +301,5 @@
     <string name="accounts_all">All Accounts</string>
     <string name="stub_list_name">New List</string>
     <string name="search_title">Search: </string>
+    <string name="repeat_every">Repeat every:</string>
 </resources>
