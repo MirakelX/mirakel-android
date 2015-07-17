@@ -28,4 +28,5 @@
     <dimen name="text_size_regular">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="file_preview_size">120dp</dimen>
+    <dimen name="clickable_item_size">48dp</dimen>
 </resources>
