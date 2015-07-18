@@ -52,6 +52,7 @@
         <item name="colorTextSettingsGrey">#A6A6A6</item> <!-- TODO -->
         <item name="colorDropdownArrow">#BFBFBF</item> <!-- TODO -->
         <item name="colorPopupBackground">#FAFAFA</item>
+        <item name="colorTextSettingsCopyright">#808080</item>
 
 
         <item name="colorPreviewBorder">@color/colorPreviewBorder</item>
