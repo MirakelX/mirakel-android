@@ -212,7 +212,7 @@
                     android:paddingStart="16dp"
                     android:text="@string/credits_copyright"
                     android:textAppearance="@style/TextAppearance.Italic.Small"
-                    android:textColor="?colorTextSettings"
+                    android:textColor="?colorTextSettingsCopyright"
                     android:textSize="11sp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
