@@ -40,6 +40,7 @@
     <attr name="colorTextSettings" format="color" />
     <attr name="colorTextSettingsGrey" format="color" />
     <attr name="colorDropdownArrow" format="color" />
+    <attr name="colorTextSettingsCopyright" format="color" />
 
     <!-- Due -->
     <attr name="colorDueOverdue" format="color" />
