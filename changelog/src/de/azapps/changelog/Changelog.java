@@ -19,7 +19,19 @@
 
 package de.azapps.changelog;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -32,16 +44,7 @@ import android.preference.PreferenceManager;
 import android.view.ContextThemeWrapper;
 import android.webkit.WebView;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.azapps.mirakel.changelog.R;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -55,11 +58,6 @@ public class Changelog {
     private static final String TAG = "de.azapps.changelog";
     private final Context context;
     private final SharedPreferences settings;
-    private OnChangelogShown listener;
-
-    public interface OnChangelogShown{
-        public void changelogShown();
-    }
 
     public Changelog(final Context context) {
         this.settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -76,10 +74,6 @@ public class Changelog {
 
     public boolean isUpdated() {
         return this.current_version > this.last_version;
-    }
-
-    public void setOnShowChangelog(final OnChangelogShown listener){
-        this.listener=listener;
     }
 
     public void showChangelog() {
@@ -105,11 +99,11 @@ public class Changelog {
         editor.putInt(VERSION_CODE, this.current_version);
         editor.commit();
         final String changelog = parseVersions(versions);
-        final AlertDialog dialog = getDialog(changelog, sinceVersion);
+        final Dialog dialog = getDialog(changelog, sinceVersion);
         dialog.show();
     }
 
-    private AlertDialog getDialog(String changelog, final int sinceVersion) {
+    private Dialog getDialog(String changelog, final int sinceVersion) {
         final WebView wv = new WebView(new ContextThemeWrapper(this.context,
                                        R.style.Dialog));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -128,16 +122,13 @@ public class Changelog {
                         + "'>" + changelog + "</font>";
         }
         wv.loadDataWithBaseURL(null, changelog, "text/html", "UTF-8", null);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
+        final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(
             this.context).setView(wv).setTitle("Changelog")
         .setPositiveButton(android.R.string.ok, new OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog,
                                 final int which) {
                 dialog.cancel();
-                if(listener!=null){
-                    listener.changelogShown();
-                }
             }
         });
         // "more …" button
