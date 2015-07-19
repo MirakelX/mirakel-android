@@ -42,4 +42,5 @@ if [ -n "$(git status --porcelain)" ]; then
   git commit -m "Update Readme"
 fi
 
-git push --force
+echo "Do not forget to push to github"
+echo "git push --force"
