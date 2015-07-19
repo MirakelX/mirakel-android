@@ -214,10 +214,8 @@ public class ReminderAlarm extends BroadcastReceiver {
                                        .usePersistentReminders();
             // Build Notification
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                ctx);
-            builder.setContentTitle(
-                ctx.getString(R.string.reminder_notification_title,
-                              task.getName()))
+                ctx)
+            .setContentTitle(ctx.getString(R.string.reminder_notification_title, task.getName()))
             .setContentText(task.getContent())
             .setSmallIcon(R.drawable.ic_mirakel)
             .setLargeIcon(Helpers.getBitmap(R.drawable.mirakel, ctx))
@@ -226,14 +224,12 @@ public class ReminderAlarm extends BroadcastReceiver {
             .setLights(Color.BLUE, 1500, 300)
             .setOngoing(persistent)
             .setDefaults(Notification.DEFAULT_VIBRATE)
-            .setSound(
-                RingtoneManager
-                .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .addAction(R.drawable.ic_checkmark_holo_light,
+            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+            .addAction(R.drawable.ic_check_grey600_24dp,
                        ctx.getString(R.string.reminder_notification_done),
                        pDoneIntent)
             .addAction(
-                android.R.drawable.ic_menu_close_clear_cancel,
+                R.drawable.ic_alarm_grey600_24dp,
                 ctx.getString(R.string.reminder_notification_later),
                 pLaterIntent);
 

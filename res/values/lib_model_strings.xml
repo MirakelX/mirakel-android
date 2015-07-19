@@ -107,7 +107,7 @@
     <string name="reminder_notification_list">List: %s</string>
     <string name="reminder_notification_due">Due: %s</string>
     <string name="reminder_notification_done">Done</string>
-    <string name="reminder_notification_later">Later</string>
+    <string name="reminder_notification_later">Snooze</string>
     <string name="reminder_notification_done_confirm">I have set the task as "done"</string>
     <string name="reminder_notification_later_confirm">I\'ll remind you in %d minutes</string>
     <string name="list_vanished">Yikes, the task has vanished. I\'m sorry…</string>

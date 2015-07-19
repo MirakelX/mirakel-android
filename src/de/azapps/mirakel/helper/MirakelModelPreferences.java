@@ -73,7 +73,7 @@ public class MirakelModelPreferences extends MirakelPreferences {
     }
 
     public static ListMirakel getListForSubtask(final Task parent) {
-        Optional<ListMirakel> list = absent();
+        Optional<ListMirakel> list;
         if (MirakelCommonPreferences.addSubtaskToSameList()) {
             list = fromNullable(parent.getList());
         } else {
@@ -109,11 +109,6 @@ public class MirakelModelPreferences extends MirakelPreferences {
     public static ListMirakel getNotificationsList() {
         return getListFromIdString(MirakelCommonPreferences
                                    .getNotificationsListId());
-    }
-
-    public static Optional<ListMirakel> getNotificationsListOpen() {
-        return ListMirakel.get(MirakelCommonPreferences
-                               .getNotificationsListOpenId());
     }
 
     public static ListMirakel getStartupList() {
@@ -164,16 +159,6 @@ public class MirakelModelPreferences extends MirakelPreferences {
         final Editor editor = getEditor();
         editor.putLong("subtaskAddToList", list.getId());
         editor.commit();
-    }
-
-    public static boolean useSync() {
-        final List<AccountMirakel> all = AccountMirakel.all();
-        for (final AccountMirakel a : all) {
-            if (a.getType() != ACCOUNT_TYPES.LOCAL && a.isEnabled()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static String getDBName() {
