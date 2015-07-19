@@ -49,8 +49,7 @@
   <string name="recurrence_from_now">Da ora</string>
   <string name="recurrence_from">Da</string>
   <string name="list_all">Tutti gli elenchi</string>
-  <string name="list_today">Attività di oggi</string>
-  <string name="list_week">Questa settimana</string>
+  <string name="list_today">Oggi</string>
   <string name="list_overdue">Scadute</string>
   <string name="inbox">Prossime attività</string>
   <string name="first_task">Prima attività</string>
@@ -92,7 +91,6 @@
   <string name="reminder_notification_done_confirm">Attività impostata come \"completata\"</string>
   <string name="reminder_notification_later_confirm">Promemoria tra %d minuti</string>
   <string name="list_vanished">Spiacente, l\'attività è scomparsa…</string>
-  <string name="no_date">Nessuna scadenza</string>
   <string name="task_sorting_title">Ordina le attività per</string>
   <string name="share_using">Condividi con</string>
   <string name="share_task">Condividi attività</string>

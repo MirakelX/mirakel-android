@@ -49,8 +49,7 @@
   <string name="recurrence_from_now">Vanaf nu</string>
   <string name="recurrence_from">Van</string>
   <string name="list_all">Alle lijsten</string>
-  <string name="list_today">Taken van vandaag</string>
-  <string name="list_week">Deze week</string>
+  <string name="list_today">Vandaag</string>
   <string name="list_overdue">Vervaldatum is verlopen</string>
   <string name="inbox">Inbox</string>
   <string name="first_task">Eerste taak</string>
@@ -92,7 +91,6 @@
   <string name="reminder_notification_done_confirm">De taak is \"afgerond\"</string>
   <string name="reminder_notification_later_confirm">Ik tip je in %d minuten</string>
   <string name="list_vanished">De taak is verdwenen. Het spijt me…</string>
-  <string name="no_date">Geen deadline</string>
   <string name="task_sorting_title">Sorteer taken op</string>
   <string name="share_using">Deel met</string>
   <string name="share_task">Deel taak</string>

@@ -38,8 +38,6 @@ import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -59,7 +57,6 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
-import de.azapps.tools.OptionalUtils;
 
 import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
@@ -408,9 +405,6 @@ public class Task extends TaskBase {
         values.remove(Task.ID);
         setId(insert(URI, values));
         final Task newTask = get(getId()).get();
-        if (!calledFromSync) {
-            UndoHistory.logCreate(newTask, Task.context);
-        }
         return newTask;
     }
 
@@ -502,9 +496,6 @@ public class Task extends TaskBase {
     }
 
     public void destroy(final boolean force) {
-        if (!force) {
-            UndoHistory.updateLog(this, Task.context);
-        }
         final long id = getId();
         updateRecurringMaster();
         final String subWhereQuery = " IN (SELECT child FROM "
@@ -660,15 +651,6 @@ public class Task extends TaskBase {
             setUpdatedAt(new GregorianCalendar());
         }
         final ContentValues values = getContentValues();
-        if (log && !calledFromSync) {
-            final Optional<Task> old = Task.get(getId());
-            OptionalUtils.withOptional(old, new OptionalUtils.Procedure<Task>() {
-                @Override
-                public void apply(Task input) {
-                    UndoHistory.updateLog(input, Task.context);
-                }
-            });
-        }
         final List<Tag> tags = getTags();
         MirakelInternalContentProvider
         .withTransaction(new MirakelInternalContentProvider.DBTransaction() {
@@ -852,34 +834,6 @@ public class Task extends TaskBase {
                 t.save(false);
             }
         }
-    }
-
-    public String toJson() {
-        String json = "{";
-        json += "\"id\":" + getId() + ',';
-        json += "\"name\":\"" + getName() + "\",";
-        json += "\"content\":\"" + getContent() + "\",";
-        json += "\"done\":" + (isDone() ? "true" : "false") + ',';
-        json += "\"priority\":" + getPriority() + ',';
-        json += "\"progress\":" + getProgress() + ',';
-        json += "\"list_id\":" + getList().getId() + ',';
-        json += "\"sync_state\":" + getSyncState().toInt() + ',';
-        String s = "";
-        if (getDue().isPresent()) {
-            s = String.valueOf(DateTimeHelper.getUTCTime(getDue()));
-        }
-        json += "\"due\":\"" + s + "\",";
-        if (getReminder().isPresent()) {
-            s = String.valueOf(DateTimeHelper.getUTCTime(getReminder()));
-            json += "\"reminder\":\"" + s + "\",";
-        }
-        json += "\"sync_state\":" + getSyncState() + ',';
-        json += Tag.serialize(getId()) + ',';
-        json += "\"created_at\":\""
-                + DateTimeHelper.formatDateTime(getCreatedAt()) + "\",";
-        json += "\"show_recurring\":" + (isRecurringShown ? "true" : "false") + ',';
-        return json + "\"updated_at\":\""
-               + DateTimeHelper.formatDateTime(getUpdatedAt()) + "\"}";
     }
 
     @Override

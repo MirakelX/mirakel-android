@@ -39,7 +39,6 @@ import java.util.Locale;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
-import de.azapps.mirakel.helper.UndoHistory;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -183,6 +182,11 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     @NonNull
     public static List<ListMirakel> all(final boolean withSpecial) {
         return allCursor(withSpecial).doWithCursor(LIST_FROM_CURSOR);
+    }
+    @NonNull
+    public static List<ListMirakel> all(final Optional<AccountMirakel> accountMirakelOptional,
+                                        final boolean withSpecial) {
+        return allCursor(accountMirakelOptional, withSpecial).doWithCursor(LIST_FROM_CURSOR);
     }
 
     public static List<ListMirakel> cursorToList(final @NonNull CursorWrapper c) {
@@ -363,7 +367,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         final ListMirakel l = new ListMirakel(0, name, sort_by, now, now, SYNC_STATE.ADD, 0, 0, 0, account,
                                               Optional.<Uri>absent());
         final ListMirakel newList = l.create();
-        UndoHistory.logCreate(newList, context);
         return newList;
     }
 
@@ -419,7 +422,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
             }
         });
         final ListMirakel newList = get(getId()).get();
-        UndoHistory.logCreate(newList, context);
         return newList;
     }
 
@@ -577,9 +579,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
      * @param force, do not respect sync_state
      */
     public void destroy(final boolean force) {
-        if (!force) {
-            UndoHistory.updateLog(this, context);
-        }
         if (isSpecial()) {
             final SpecialList slist = (SpecialList) this;
             slist.destroy();
@@ -641,9 +640,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
                                      context.getString(R.string.dateTimeFormat),
                                      Locale.getDefault()).format(new Date()));
                     final ContentValues values = getContentValues();
-                    if (log) {
-                        UndoHistory.updateLog(ListMirakel.get(getId()).get(), context);
-                    }
                     update(URI, values, ModelBase.ID
                            + " = " + getId(), null);
                     final ContentValues taskContentValues = new ContentValues();
@@ -719,21 +715,6 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
                                           Task.LIST_ID, "list_name", ACCOUNT_ID, Task.PRIORITY);
     }
 
-    @NonNull
-    public String toJson() {
-        String json = "{";
-        json += "\"name\":\"" + getName() + "\",";
-        json += "\"id\":" + getId() + ',';
-        json += "\"created_at\":\"" + getCreatedAt() + "\",";
-        json += "\"updated_at\":\"" + getName() + "\",";
-        json += "\"lft\":" + getLft() + ',';
-        json += "\"rgt\":" + getRgt() + ',';
-        json += "\"sort_by\":" + getSortBy().getShort() + ',';
-        json += "\"sync_state\":" + getSyncState().toInt() + ',';
-        json += "\"color\":" + getColor();
-        json += "}";
-        return json;
-    }
 
     @NonNull
     public MirakelQueryBuilder getWhereQueryForTasks() {

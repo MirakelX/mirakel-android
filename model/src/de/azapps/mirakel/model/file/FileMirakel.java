@@ -23,7 +23,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Parcel;
@@ -39,6 +47,7 @@ import java.util.List;
 
 import de.azapps.material_elements.drawable.RoundedBitmapDrawable;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.Cursor2List;
@@ -146,7 +155,7 @@ public class FileMirakel extends FileBase {
         final String name = FileUtils.getNameFromUri(ctx, uri);
         final FileMirakel newFile = FileMirakel.newFile(task, name, uri);
         try {
-            final Bitmap bitmap = ImageUtils.getScaleImage(uri, ctx,
+            final Bitmap bitmap = ImageUtils.getSquaredImage(ctx, uri,
                                   ctx.getResources().getDimension(R.dimen.file_preview_size));
 
             if (bitmap != null) {
@@ -203,24 +212,12 @@ public class FileMirakel extends FileBase {
     }
 
     @NonNull
-    public Optional<Drawable> getPreview(@NonNull final Context context) {
+    public Optional<Bitmap> getPreview(@NonNull final Context context) {
         final File osFile = new File(fileCacheDir, getId() + ".png");
         if (osFile.exists()) {
-            final Bitmap bpm = BitmapFactory.decodeFile(osFile.getAbsolutePath());
-            return of((Drawable) new RoundedBitmapDrawable(bpm,
-                      context.getResources().getDimension(R.dimen.file_preview_corner_radius), 0));
+            return fromNullable(BitmapFactory.decodeFile(osFile.getAbsolutePath()));
         } else {
-            final int drawableId;
-            if (FileUtils.isAudio(fileUri)) {
-                drawableId = R.drawable.ic_play_circle_fill_big;
-            } else {
-                drawableId = R.drawable.ic_description_big;
-            }
-            final Drawable drawable = context.getResources().getDrawable(drawableId);
-            if (drawable != null) {
-                drawable.setColorFilter(ThemeManager.getColor(R.attr.colorTextGrey), PorterDuff.Mode.SRC_IN);
-            }
-            return fromNullable(drawable);
+            return absent();
         }
     }
 

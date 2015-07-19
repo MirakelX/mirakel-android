@@ -49,8 +49,7 @@
   <string name="recurrence_from_now">今から</string>
   <string name="recurrence_from">開始</string>
   <string name="list_all">すべてのリスト</string>
-  <string name="list_today">今日のタスク</string>
-  <string name="list_week">今週</string>
+  <string name="list_today">今日</string>
   <string name="list_overdue">期限を超過</string>
   <string name="inbox">受信トレイ</string>
   <string name="first_task">最初のタスク</string>
@@ -89,10 +88,9 @@
   <string name="reminder_notification_due">期限: %s</string>
   <string name="reminder_notification_done">完了</string>
   <string name="reminder_notification_later">後で</string>
-  <string name="reminder_notification_done_confirm">\"完了\" としてタスクを設定しました</string>
+  <string name="reminder_notification_done_confirm">「完了」としてタスクを設定しました</string>
   <string name="reminder_notification_later_confirm">%d 分後にアラームします</string>
   <string name="list_vanished">申し訳ありません、タスクは消滅しました…</string>
-  <string name="no_date">期限なし</string>
   <string name="task_sorting_title">タスクの並べ替え順</string>
   <string name="share_using">と共有</string>
   <string name="share_task">タスクを共有</string>
@@ -103,6 +101,7 @@
   <string name="share_footer">Mirakel　と共有しました\nフリーの (自由な) Android 用 ToDo リストツールと Web\nhttp://mirakel.azapps.de</string>
   <string name="special_list_name">名前</string>
   <string name="special_list_active">表示</string>
+  <string name="special_list_where">SQL where クエリ</string>
   <string name="special_list_sort_by">並べ替え</string>
   <string name="special_list_def_list">デフォルトのリスト</string>
   <string name="special_list_def_date">デフォルトの日付</string>
@@ -166,7 +165,7 @@
   <string name="special_list_subtask_parent">サブタスクがある</string>
   <string name="special_list_subtask_parent_not">サブタスクがない</string>
   <string name="special_list_subtask_child">サブタスク</string>
-  <string name="special_list_subtask_child_not">サブタスクでない</string>
+  <string name="special_list_subtask_child_not">サブタスクではない</string>
   <string name="no_file">ファイルがない</string>
   <string name="has_file">ファイルがある</string>
   <string-array name="due_day_year_values">
@@ -222,6 +221,24 @@
   <plurals name="year">
     <item quantity="other"> 年</item>
   </plurals>
+  <plurals name="repeat_day">
+    <item quantity="other">%d 日</item>
+  </plurals>
+  <plurals name="repeat_week">
+    <item quantity="other">%d 週間</item>
+  </plurals>
+  <plurals name="repeat_month">
+    <item quantity="other">%d ヶ月</item>
+  </plurals>
+  <plurals name="repeat_year">
+    <item quantity="other">%d 年</item>
+  </plurals>
+  <plurals name="repeat_hour">
+    <item quantity="other">%d 時間</item>
+  </plurals>
+  <plurals name="repeat_minute">
+    <item quantity="other">%d 分</item>
+  </plurals>
   <string name="monday">月曜日</string>
   <string name="tuesday">火曜日</string>
   <string name="wednesday">水曜日</string>
@@ -229,7 +246,12 @@
   <string name="friday">金曜日</string>
   <string name="saturday">土曜日</string>
   <string name="sunday">日曜日</string>
+  <string name="begin_repeat">開始 %s</string>
+  <string name="end_repeat">%s まで</string>
+  <string name="every_repeat">%s ごと</string>
+  <string name="weekday">平日</string>
   <string name="accounts_all">すべてのアカウント</string>
   <string name="stub_list_name">新しいリスト</string>
+  <string name="search_title">検索： </string>
 </resources>
 

@@ -29,6 +29,7 @@ import android.util.Pair;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -129,7 +130,7 @@ public class AnyDoImport {
             if (backupFile == null) {
                 return;
             }
-            new AlertDialog.Builder(activity)
+            new AlertDialogWrapper.Builder(activity)
             .setTitle(activity.getString(R.string.import_any_do_click))
             .setMessage(
                 activity.getString(R.string.any_do_this_file,
@@ -173,7 +174,7 @@ public class AnyDoImport {
                 }
             }).show();
         } else {
-            new AlertDialog.Builder(activity)
+            new AlertDialogWrapper.Builder(activity)
             .setTitle(activity.getString(R.string.import_any_do_click))
             .setMessage(activity.getString(R.string.any_do_how_to))
             .setPositiveButton(activity.getString(android.R.string.ok),
