@@ -19,14 +19,20 @@
 
 package de.azapps.mirakel.new_ui.views;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,6 +46,7 @@ public class NoteView extends LinearLayout {
     @InjectView(R.id.task_note_text)
     TextView noteText;
     private OptionalUtils.Procedure<String> noteChangedListener;
+    private Dialog dialog;
 
 
     public NoteView(final Context context) {
@@ -63,10 +70,6 @@ public class NoteView extends LinearLayout {
         requestLayout();
     }
 
-    public String getNote() {
-        return note;
-    }
-
     public void setNote(final String note) {
         this.note = note;
         rebuildLayout();
@@ -77,22 +80,85 @@ public class NoteView extends LinearLayout {
         rebuildLayout();
     }
 
-    @OnClick({R.id.task_note_text, R.id.task_note_title})
-    public void handleEditNote() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        final EditText editText = new EditText(getContext());
+    private Dialog createDialog() {
+        final View view = inflate(getContext(), R.layout.view_note_edit, null);
+        final EditText editText = (EditText) view.findViewById(R.id.note_edit_text);
         editText.setText(note);
-        builder.setTitle(getContext().getString(R.string.edit_note))
-        .setView(editText)
+        editText.setSelection(note.length());
+        final Dialog d = new AlertDialogWrapper.Builder(getContext()).setTitle(getContext().getString(
+                    R.string.edit_note))
+        .setView(view)
         .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final String newNote = editText.getText().toString();
                 noteText.setText(newNote);
                 noteChangedListener.apply(newNote);
+                NoteView.this.dialog = null;
             }
         })
-        .setNegativeButton(android.R.string.cancel, null);
-        builder.show();
+        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NoteView.this.dialog = null;
+            }
+        }).create();
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                editText.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        editText.requestFocus();
+                    }
+                }, 10L);
+
+            }
+        });
+        return d;
+    }
+
+    @OnClick({R.id.task_note_text, R.id.task_note_title})
+    public void handleEditNote() {
+        dialog = createDialog();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+    }
+
+    private static final String PARENT_STATE = "parent";
+    private static final String DIALOG_STATE = "dialog";
+    private static final String DIALOG_SHOWING = "is_showing";
+    private static final String NOTE = "note";
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle out = new Bundle();
+        out.putParcelable(PARENT_STATE, super.onSaveInstanceState());
+        if (dialog != null) {
+            out.putParcelable(DIALOG_STATE, dialog.onSaveInstanceState());
+            out.putBoolean(DIALOG_SHOWING, dialog.isShowing());
+        }
+        out.putString(NOTE, note);
+        return out;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state == null || !(state instanceof Bundle)) {
+            return;
+        }
+        Bundle saved = (Bundle) state;
+        super.onRestoreInstanceState(saved.getParcelable(PARENT_STATE));
+        note = ((Bundle) state).getString(NOTE);
+        dialog = createDialog();
+        if (saved.getParcelable(DIALOG_STATE) != null) {
+            dialog.onRestoreInstanceState((Bundle) saved.getParcelable(DIALOG_STATE));
+        }
+        if (saved.getBoolean(DIALOG_SHOWING, false) && !dialog.isShowing()) {
+            NoteView.this.dialog.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED);
+            dialog.show();
+        }
     }
 }

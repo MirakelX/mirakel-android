@@ -21,6 +21,8 @@ package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -40,6 +42,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.R;
 
@@ -52,6 +56,8 @@ public class SubtasksView extends LinearLayout {
     ViewSwitcher viewSwitcher;
     @InjectView(R.id.task_name_edit)
     EditText taskNameEdit;
+    @InjectView(R.id.task_subtasks_add)
+    TextView subtaskAdd;
     @Nullable
     private SubtaskListener subtaskListener;
 
@@ -74,6 +80,9 @@ public class SubtasksView extends LinearLayout {
         inflate(context, R.layout.view_subtasks, this);
         layoutInflater = LayoutInflater.from(context);
         ButterKnife.inject(this, this);
+        ViewHelper.setCompoundDrawable(context, subtaskAdd,
+                                       ThemeManager.getColoredIcon(R.drawable.ic_plus_white_24dp,
+                                               ThemeManager.getColor(R.attr.colorLightGrey)));
     }
     public void initListeners(final SubtaskListener subtaskAddListener) {
         this.subtaskListener = subtaskAddListener;
@@ -135,8 +144,13 @@ public class SubtasksView extends LinearLayout {
 
     @OnClick(R.id.task_subtasks_add)
     public void handleAddSubtask() {
-        viewSwitcher.setDisplayedChild(1);
-        taskNameEdit.requestFocus();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewSwitcher.setDisplayedChild(1);
+                taskNameEdit.requestFocusFromTouch();
+            }
+        }, 100L);
     }
 
     void onCreateSubTask() {
@@ -160,4 +174,42 @@ public class SubtasksView extends LinearLayout {
         return false;
     }
 
+    private static final String PARENT_STATE = "parent";
+    private static final String EDIT_STATE = "edit_state";
+    private static final String EDIT_POS = "edit_pos";
+    private static final String IS_EDIT = "is_edit";
+    private static final String HAS_FOCUS = "has_focus";
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle out = new Bundle();
+        out.putParcelable(PARENT_STATE, super.onSaveInstanceState());
+        out.putParcelable(EDIT_STATE, taskNameEdit.onSaveInstanceState());
+        out.putInt(EDIT_POS, taskNameEdit.getSelectionEnd());
+        out.putInt(IS_EDIT, viewSwitcher.getCurrentView().getId());
+        out.putBoolean(HAS_FOCUS, taskNameEdit.hasFocus());
+        return out;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state == null || !(state instanceof Bundle)) {
+            return;
+        }
+        final Bundle saved = (Bundle) state;
+        super.onRestoreInstanceState(saved.getParcelable(PARENT_STATE));
+        taskNameEdit.onRestoreInstanceState(saved.getParcelable(EDIT_STATE));
+        if (viewSwitcher.getCurrentView().getId() != saved.getInt(IS_EDIT)) {
+            viewSwitcher.showNext();
+        }
+        taskNameEdit.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (saved.getInt(IS_EDIT) == taskNameEdit.getId() && saved.getBoolean(HAS_FOCUS)) {
+                    taskNameEdit.requestFocus();
+                }
+                taskNameEdit.setSelection(saved.getInt(EDIT_POS));
+            }
+        }, 10L);
+    }
 }

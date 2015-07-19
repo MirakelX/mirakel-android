@@ -22,8 +22,7 @@
     <dimen name="activity_horizontal_margin">24dp</dimen>
     <dimen name="activity_vertical_margin">24dp</dimen>
 
-    <dimen name="priorityDoneSize">@dimen/clickable_item_size</dimen>
-    <dimen name="clickable_item_size">48dp</dimen>
+    <dimen name="priorityDoneSize">40dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
     <dimen name="dialog_min_width">600dp</dimen>
     <dimen name="padding_default">16dp</dimen>
@@ -32,16 +31,17 @@
     <dimen name="small_icon_size">24dp</dimen>
 
     <dimen name="card_margin">8dp</dimen>
-    <dimen name="card_margin_top">2dp</dimen>
-    <dimen name="card_margin_bottom">6dp</dimen>
+    <dimen name="card_margin_top">4dp</dimen>
+    <dimen name="card_margin_bottom">4dp</dimen>
 
     <dimen name="navdrawer_width">260dp</dimen>
 
     <integer name="file_count_per_line">2</integer>
     <dimen name="file_preview_padding">20dp</dimen>
-    <dimen name="fft_view_hight">5dp</dimen>
 
     <dimen name="subtitle_font_size">18sp</dimen>
     <dimen name="taskfragment_toolbar_hight">48dp</dimen>
+    <dimen name="margin_progress_done">16dp</dimen>
+    <dimen name="task_due_margin">10dp</dimen>
 
 </resources>

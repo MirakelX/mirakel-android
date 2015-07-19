@@ -27,29 +27,13 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
-import de.azapps.mirakel.reminders.ReminderAlarm;
-import de.azapps.mirakel.services.NotificationService;
 
 public class SplashScreenActivity extends Activity {
-    public static final String EXIT = "de.azapps.mirakel.EXIT";
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Setup splashscreen
-        if ((getIntent() != null) && (EXIT.equals(getIntent().getAction()))) {
-            NotificationService.stop(this);
-            ReminderAlarm.restart();
-            if (startService(new Intent(SplashScreenActivity.this,
-                                        NotificationService.class)) != null) {
-                stopService(new Intent(SplashScreenActivity.this,
-                                       NotificationService.class));
-            }
-            finish();
-            return;
-        }
-        // Intents
         // Create a meta list if not existent
         SpecialList.firstSpecialSafe();
         final ListMirakel listId = MirakelModelPreferences.getStartupList();

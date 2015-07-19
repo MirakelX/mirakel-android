@@ -1,29 +1,38 @@
-Mirakel – Easy task management for professionals
-===============
-
-# ATTENTION: [We are now using JIRA for Issue management. Click here to open a new ticket](https://mirakel.atlassian.net/)
+# Mirakel – Efficient Simple Task Management for the best Devs of the universe
 
 [![Build Status](https://travis-ci.org/MirakelX/mirakel-android.png)](https://travis-ci.org/MirakelX/mirakel-android)
-
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/mirakel/localized.png)](https://crowdin.com/project/mirakel)
 
-*easy task management for professionals*
+[We are now using JIRA for Issue management. Click here to open a new ticket](https://mirakel.atlassian.net/)
 
-Mirakel aims to help you to organize your tasks in a simple but powerful manner.
+Become the most efficient & effective Dev with this task list for the greatest developers in the universe. Get your things done with a strictly organised workflow.
+If you want to enhance or upgrade our app with another feature or better service you can become part of the Mirakel Klub and meet some of the best Devs in the Universe.
 
+* Create tasks super fast with keywords like “today battlefield epic win”
+* “Today Home cleaning” ~ “Date List activity”
+* Clear Whats-Next Overview
+* Smart Prioritisation by Today, This Week, Overdue and All
 
-1. [About](#about)
-2. [Beta](#beta)
-2. [Contribute](#contribute)
-  1. [Bug reports / Feature requests](#bug-reports--feature-requests)
-  2. [Development](#development)
-  3. [Translations](#translations)
-3. [Contact](#contact)
-3. [License](#license)
+Geek Informations
 
-# About
+* Create Sub Tasks
+* Add files, audio notes, documents, photos
+* Material UI
+* Open Source
+* Free Software
+* Hashtags/ Keywords for tasks
+* Fine granulated Prioritisation
+* 19+ Languages
+* No Gamification nonsense
 
-More Informations (like screenshots and features) and Downloads you can get [here](http://mirakel.azapps.de/)
+Upcoming
+
+* Super secure cloud sync and web interface
+* Location Based Reminders
+* Your contributions (e.g. languages)
+* Become Google independent with task warrior sync
+* Sync with CalDAV
+
 
 # Beta
 
@@ -33,25 +42,15 @@ Please help us testing our app by joining our [Google+-Community](https://plus.g
 
 ## Bug reports / Feature requests
 
-Please use our github-issue tracker to submit Bug reports or feature requests. You should first look, if someone else has already posted your problem. But don't hesitate to post it one time more if you're not sure.
+Please use our [JIRA-issue tracker](https://mirakel.atlassian.net/) to submit Bug reports or feature requests. You should first look, if someone else has already posted your problem.
 
 Please open for **every** bug report or feature request a new issue so we can handle them more easy.
 
 ## Development
 
-We are happy about every one who wants to help us! So we are happy about every pull request on github. But the preferred method is the following:
+By helping us to improve Mirakel you will become a Member of Mirakel Klub and meet some of the best devs in the universe.
 
-### Preferred method
-
-We use [gerrit](https://code.google.com/p/gerrit/) to review our code. [Here](https://gerrit.azapps.de/r/#/q/status:open,n,z) you can find our gerrit. Please write us an e-mail if you want to contribute we will tell you what to do.
-
-### Simple method
-
-Clone the git-repo and use your favorite IDE or editor.
-
-Please contact us if you want to implement some features, don't hesitate, we are friendly people ;) Just write an email to mirakel@azapps.de
-
-If your Feature works, cleanup your Branch and make a [pull-request](https://help.github.com/articles/using-pull-requests).
+Getting started with development is very easy. We wrote a small tutorial here: [Development Tutorial](https://github.com/MirakelX/mirakel-android/wiki/Development-Tutorial)
 
 ## Translations
 

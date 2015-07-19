@@ -20,14 +20,19 @@
 package de.azapps.mirakel.new_ui.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,10 +45,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.android.calendar.recurrencepicker.RecurrencePickerDialog;
 import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
@@ -57,8 +63,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import de.azapps.material_elements.utils.IconizedMenu;
+import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
+import de.azapps.material_elements.views.Slider;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -74,7 +84,6 @@ import de.azapps.mirakel.new_ui.views.FileView;
 import de.azapps.mirakel.new_ui.views.NoteView;
 import de.azapps.mirakel.new_ui.views.PriorityChangeView;
 import de.azapps.mirakel.new_ui.views.ProgressDoneView;
-import de.azapps.mirakel.new_ui.views.ProgressView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.mirakelandroid.R;
@@ -89,6 +98,16 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private static final String TAG = "TaskFragment";
     private static final String TASK = "task";
+    private static final String EDIT_TEXT_STATE = "edit_name_state";
+    private static final String TASK_NAME_STATE = "task_name_state";
+    private static final String EDIT_CURSOR_POS = "edit_cursor_pos";
+    private static final String HAS_DIRTY_SUBTASK = "has_subtask";
+    private static final String HAS_DIRTY_NOTE = "has_note";
+    private static final String HAS_DIRTY_FILE = "has_file";
+    private static final String HAS_DIRTY_TAG = "has_tag";
+    private static final String FOCUS_TASK_NAME = "focus_task_name";
+    private static final String LIST_DIALOG_STATE = "dialog";
+    private static final String LIST_DIALOG_SHOWING = "is_showing";
     public  static final int REQUEST_IMAGE_CAPTURE = 324;
     public static final int FILE_SELECT_CODE = 521;
     public static final String ARGUMENT_TASK = "task";
@@ -106,8 +125,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     ViewSwitcher taskNameViewSwitcher;
     @InjectView(R.id.priority)
     PriorityChangeView priorityChangeView;
-    @InjectView(R.id.task_progress)
-    ProgressView progressView;
+    @InjectView(R.id.progress_bar)
+    Slider progressSlider;
 
     @InjectView(R.id.task_note)
     NoteView noteView;
@@ -124,7 +143,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     @InjectView(R.id.task_button_add_more)
     Button addMoreButton;
-    PopupMenu addMorePopup;
+    IconizedMenu addMorePopup;
 
     @InjectView(R.id.tag_wrapper)
     LinearLayout tagWrapper;
@@ -134,6 +153,8 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     LinearLayout subtaskWrapper;
     @InjectView(R.id.file_wrapper)
     LinearLayout fileWrapper;
+    @InjectView(R.id.progress_text)
+    TextView progressText;
 
     private MirakelContentObserver observer;
     private int hiddenViews = 3;
@@ -185,6 +206,85 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     public void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(TASK, task);
+        outState.putParcelable(EDIT_TEXT_STATE, taskNameEdit.onSaveInstanceState());
+        outState.putInt(EDIT_CURSOR_POS, taskNameEdit.getSelectionEnd());
+        outState.putInt(TASK_NAME_STATE, taskNameViewSwitcher.getCurrentView().getId());
+        outState.putBoolean(HAS_DIRTY_SUBTASK, subtaskWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(HAS_DIRTY_TAG, tagWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(HAS_DIRTY_FILE, fileWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(HAS_DIRTY_NOTE, noteWrapper.getVisibility() == View.VISIBLE);
+        outState.putBoolean(FOCUS_TASK_NAME, taskNameEdit.hasFocus());
+        if (listDialog != null) {
+            outState.putParcelable(LIST_DIALOG_STATE, listDialog.onSaveInstanceState());
+            outState.putBoolean(LIST_DIALOG_SHOWING, listDialog.isShowing());
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(final Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            if (taskNameEdit != null) {
+                taskNameEdit.onRestoreInstanceState(savedInstanceState.getParcelable(EDIT_TEXT_STATE));
+            }
+            if (taskNameViewSwitcher != null) {
+                while (taskNameViewSwitcher.getCurrentView().getId() != savedInstanceState.getInt(
+                           TASK_NAME_STATE)) {
+                    taskNameViewSwitcher.showNext();
+                }
+                if (savedInstanceState.getInt(TASK_NAME_STATE) == taskNameEdit.getId() &&
+                    savedInstanceState.getBoolean(FOCUS_TASK_NAME)) {
+                    //we need to delay this a bit, because otherwise the keyboard is not shown
+                    taskNameEdit.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            taskNameEdit.requestFocus();
+                            taskNameEdit.setSelection(savedInstanceState.getInt(EDIT_CURSOR_POS));
+                        }
+                    }, 10L);
+
+                }
+            }
+            restoreAddMoreItem(noteWrapper, HAS_DIRTY_NOTE, savedInstanceState, R.id.add_note_menu);
+            restoreAddMoreItem(fileWrapper, HAS_DIRTY_FILE, savedInstanceState, R.id.add_file_menu);
+            restoreAddMoreItem(tagWrapper, HAS_DIRTY_TAG, savedInstanceState, R.id.add_tags_menu);
+            restoreAddMoreItem(subtaskWrapper, HAS_DIRTY_SUBTASK, savedInstanceState, R.id.add_subtask_menu);
+            filesView.setActivity(getActivity());
+
+            if (savedInstanceState.getParcelable(LIST_DIALOG_STATE) != null) {
+                listDialog = createListDialog();
+                listDialog.onRestoreInstanceState((Bundle) savedInstanceState.getParcelable(LIST_DIALOG_STATE));
+                if (savedInstanceState.getBoolean(LIST_DIALOG_SHOWING, false) && !listDialog.isShowing()) {
+                    listDialog.show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (filesView != null) {
+            filesView.setActivity(activity);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (filesView != null) {
+            filesView.setActivity(null);
+        }
+    }
+
+    void restoreAddMoreItem(final @Nullable View which, final @NonNull String key,
+                            final @NonNull Bundle saved, final @IdRes int menuItem) {
+        if (which != null && saved.getBoolean(key) &&
+            which.getVisibility() != View.VISIBLE) {
+            which.setVisibility(View.VISIBLE);
+            checkDisableAddButton();
+            disableItem(addMorePopup.getMenu(), menuItem);
+        }
     }
 
     @Override
@@ -194,7 +294,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             task = savedInstanceState.getParcelable(TASK);
-
         } else {
             final Bundle arguments = getArguments();
             task = arguments.getParcelable(ARGUMENT_TASK);
@@ -247,6 +346,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         AnalyticsWrapperBase.setScreen(this);
     }
 
+
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if ((requestCode == REQUEST_IMAGE_CAPTURE) && (resultCode == Activity.RESULT_OK)) {
@@ -258,34 +358,36 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
 
     private void setupAddMore() {
         hiddenViews = 4;
-        addMorePopup = new PopupMenu(getActivity(), addMoreButton);
+        addMorePopup = new IconizedMenu(getActivity(), addMoreButton);
         addMorePopup.inflate(R.menu.add_more_menu);
-        final Menu m = addMorePopup.getMenu();
+        final Menu popupMenu = addMorePopup.getMenu();
         if (task.getContent().isEmpty()) {
             noteWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_note_menu);
+            disableItem(popupMenu, R.id.add_note_menu);
         }
         if (task.getFiles().isEmpty()) {
             fileWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_file_menu);
+            disableItem(popupMenu, R.id.add_file_menu);
         }
         if (task.getSubtasks().isEmpty()) {
             subtaskWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_subtask_menu);
+            disableItem(popupMenu, R.id.add_subtask_menu);
         }
         if (task.getTags().isEmpty()) {
             tagWrapper.setVisibility(View.GONE);
         } else {
             checkDisableAddButton();
-            disableItem(m, R.id.add_tags_menu);
+            disableItem(popupMenu, R.id.add_tags_menu);
         }
-        addMorePopup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        MenuHelper.showMenuIcons(getActivity(), popupMenu);
+        MenuHelper.colorizeMenuItems(popupMenu, ThemeManager.getColor(R.attr.colorTextGrey));
+        addMorePopup.setOnMenuItemClickListener(new IconizedMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final MenuItem item) {
                 item.setVisible(false);
@@ -300,7 +402,13 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                     break;
                 case R.id.add_tags_menu:
                     tagWrapper.setVisibility(View.VISIBLE);
-                    tagView.onClick(tagView);
+                    tagWrapper.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            tagView.clearFocus();
+                            tagView.onClick(tagView);
+                        }
+                    }, 100L);
                     break;
                 case R.id.add_file_menu:
                     fileWrapper.setVisibility(View.VISIBLE);
@@ -327,8 +435,13 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
     }
 
     private void checkDisableAddButton() {
-        if (--hiddenViews < 1) {
-            addMoreButton.setVisibility(View.GONE);
+        hiddenViews = hiddenViews - 1; // It's easier to see what's happening
+        if (hiddenViews < 1) {
+            addMoreButton.setTextColor(ThemeManager.getColor(R.attr.colorLightGrey));
+            addMoreButton.setEnabled(false);
+            ViewHelper.setCompoundDrawable(getActivity(), addMoreButton,
+                                           ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
+                                                   ThemeManager.getColor(R.attr.colorLightGrey)));
         }
     }
 
@@ -355,8 +468,36 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         });
         taskName.setText(task.getName());
         initTaskNameEdit();
-        progressView.setProgress(task.getProgress());
-        progressView.setOnProgressChangeListener(progressChangedListener);
+
+        final Drawable icon = ThemeManager.getColoredIcon(R.drawable.ic_track_changes_white_18dp,
+                              ThemeManager.getColor(R.attr.colorTextGrey));
+        ViewHelper.setCompoundDrawable(getActivity(), progressText, icon);
+        progressSlider.setProgress(task.getProgress());
+        progressSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, final int progress, boolean fromUser) {
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        if (task.getProgress() == 0 && progress > 0) {
+                            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PROGRESS);
+                        }
+                        task.setProgress(progress);
+                        task.save();
+                    }
+                }).run();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         noteView.setNote(task.getContent());
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
@@ -370,6 +511,9 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         subtasksView.setSubtasks(task.getSubtasks());
         filesView.setFiles(task);
         filesView.setActivity(getActivity());
+        ViewHelper.setCompoundDrawable(getActivity(), addMoreButton,
+                                       ThemeManager.getColoredIcon(R.drawable.ic_plus_white_18dp,
+                                               ThemeManager.getColor(R.attr.colorTextGrey)));
     }
 
     @Override
@@ -390,18 +534,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         task.save();
         AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PRIORITY);
     }
-
-    private final Procedure<Integer> progressChangedListener = new
-    Procedure<Integer>() {
-        @Override
-        public void apply(final Integer input) {
-            if (task.getProgress() == 0 && input > 0) {
-                AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_PROGRESS);
-            }
-            task.setProgress(input);
-            task.save();
-        }
-    };
 
     @OnEditorAction(R.id.task_name_edit)
     boolean onEditorAction(int actionId) {
@@ -439,6 +571,22 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                     return true;
                 }
                 return false;
+            }
+        });
+        taskNameEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                task.setName(s.toString());
             }
         });
     }
@@ -487,28 +635,34 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                     task.setDue(Optional.<Calendar>absent());
                     task.save();
                 }
-            }, task.getDue(), false);
+            }, task.getDue());
             datePickerDialog.show(getFragmentManager(), "dueDialog");
         }
     };
 
+    private Dialog listDialog;
     private final View.OnClickListener listEditListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
-                    android.R.layout.simple_list_item_1, ListMirakel.all(false));
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.task_move_to);
-            builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(final DialogInterface dialogInterface, final int i) {
-                    task.setList(adapter.getItem(i));
-                    task.save();
-                }
-            });
-            builder.show();
+            listDialog = createListDialog();
+            listDialog.show();
         }
     };
+
+    private Dialog createListDialog() {
+        final ArrayAdapter<ListMirakel> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_list_item_1, ListMirakel.all(false));
+        return new AlertDialogWrapper.Builder(getActivity()).setTitle(R.string.task_move_to).setAdapter(
+        adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(final DialogInterface dialogInterface, final int i) {
+                task.setList(adapter.getItem(i));
+                task.save();
+                dialogInterface.dismiss();
+            }
+        }).create();
+    }
+
     private final View.OnClickListener reminderEditListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {

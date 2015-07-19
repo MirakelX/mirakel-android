@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.InputType;
 import android.text.Spannable;
@@ -53,6 +52,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
@@ -67,6 +67,7 @@ import java.util.Set;
 
 import de.azapps.material_elements.utils.SoftKeyboard;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakelandroid.R;
 
@@ -77,6 +78,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
     private ArrayAdapter adapter;
     private Set<String> adapterData = new HashSet<>();
     private List<Tag> currentTags = new ArrayList<>();
+    private boolean allowToogleBackground = true;
 
     private boolean setText = false;
     private String postfix = "";
@@ -106,7 +108,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         for (final Tag t : tags) {
             adapterData.add(t.getName());
         }
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1,
+        adapter = new ArrayAdapter<>(getContext(), R.layout.simple_list_item_1,
                                      new ArrayList<String>());
         setAdapter(adapter);
         updateAdapter();
@@ -145,6 +147,13 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         clearFocus();
     }
 
+    public void setAllowToggleBackground(boolean allowToogle) {
+        allowToogleBackground = allowToogle;
+        if (!allowToogleBackground) {
+            setBackground(background);
+        }
+    }
+
 
     public void setTagChangedListener(@Nullable TagChangedListener tagChangedListener) {
         this.tagChangedListener = tagChangedListener;
@@ -167,7 +176,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         picker.addSVBar(op);
         picker.setColor(tag.getBackgroundColor());
         picker.setOldCenterColor(tag.getBackgroundColor());
-        new AlertDialog.Builder(getContext())
+        new AlertDialogWrapper.Builder(getContext())
         .setView(layout)
         .setNegativeButton(android.R.string.cancel, null)
         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -215,11 +224,20 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
                 public void onFocusChange(final View v, final boolean hasFocus) {
                     onFocus.onFocusChange(v, hasFocus);
                     if (hasFocus) {
-                        setBackground(background);
+                        if (allowToogleBackground) {
+                            setBackground(background);
+                        }
                         setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+                        if (getText().length() == 0) {
+                            setText = true;
+                            setText(" ");
+                            setText = false;
+                        }
                     } else {
                         setInputType(InputType.TYPE_NULL);
-                        setBackground(new ColorDrawable(Color.TRANSPARENT));
+                        if (allowToogleBackground) {
+                            setBackground(new ColorDrawable(Color.TRANSPARENT));
+                        }
                         addTag(postfix);
                         postfix = "";
                         rebuildText();
@@ -258,10 +276,15 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
             }
         }
         text.append(new SpannableString(postfix));
+        if (text.length() == 0 && hasFocus()) {
+            text.append(' ');
+        }
         setText = true;
         setText(text);
         setText = false;
         setSelection(getText().length());
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingTop(), (int) ViewHelper.dpToPx(getContext(),
+                   getContext().getResources().getDimension(R.dimen.padding_default_half)));
     }
 
 
@@ -332,6 +355,12 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
                 rebuildText();
             }
             updateAdapter();
+        }
+        if (hasFocus() && (lengthAfter == 0 && lengthBefore == 1 || getText().length() == 0)) {
+            setText = true;
+            setText(" ");
+            setSelection(getText().length());
+            setText = false;
         }
     }
 

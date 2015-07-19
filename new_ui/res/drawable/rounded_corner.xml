@@ -19,7 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#77000000"/>
-    <corners android:bottomLeftRadius="@dimen/file_preview_corner_radius"
-             android:bottomRightRadius="@dimen/file_preview_corner_radius"/>
+    <solid android:color="?colorPreviewBorder" />
+    <corners
+        android:bottomLeftRadius="@dimen/file_preview_corner_radius"
+        android:bottomRightRadius="@dimen/file_preview_corner_radius" />
 </shape>

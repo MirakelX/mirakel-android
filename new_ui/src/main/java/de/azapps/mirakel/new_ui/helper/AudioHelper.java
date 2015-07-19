@@ -21,12 +21,15 @@ package de.azapps.mirakel.new_ui.helper;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.widget.Button;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -65,7 +68,7 @@ public class AudioHelper {
             stream1 = null;
         }
         final FileInputStream stream = stream1;
-        final AlertDialog dialog = new AlertDialog.Builder(activity)
+        final Dialog dialog = new AlertDialogWrapper.Builder(activity)
         .setTitle(R.string.audio_playback_title)
         .setPositiveButton(R.string.audio_playback_pause, new DialogInterface.OnClickListener() {
             @Override

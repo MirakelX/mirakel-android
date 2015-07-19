@@ -22,38 +22,46 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
+        android:id="@+id/task_subtasks_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/task_subtasks_wrapper"
         android:orientation="vertical">
         <!-- Just for the preview -->
-        <include layout="@layout/row_subtask"/>
+        <include layout="@layout/row_subtask" />
     </LinearLayout>
 
 
     <ViewSwitcher
         android:id="@+id/view_switcher"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
+        android:layout_height="wrap_content"
+        android:measureAllChildren="false"
+        android:paddingStart="13dp">
+
+        <TextView
             android:id="@+id/task_subtasks_add"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/padding_drawable"
-            android:drawableStart="@drawable/ic_plus_grey600_18dp"
+            android:drawablePadding="20dp"
+            android:drawableStart="@drawable/ic_plus_grey600_24dp"
             android:gravity="start|center_vertical"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
             android:text="@string/subtask_add"
-            android:textAppearance="@style/TextAppearance.Regular"
-            android:textColor="?colorTextGrey" />
+            android:textAppearance="@style/TextAppearance.Regular.Small"
+            android:textColor="?colorLightGrey" />
 
         <EditText
             android:id="@+id/task_name_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:inputType="text"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:hint="@string/subtask_add"
-            android:singleLine="true" />
+            android:imeOptions="actionDone"
+            android:inputType="textCapSentences"
+            android:paddingStart="5dp"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Regular.Small" />
     </ViewSwitcher>
 </merge>

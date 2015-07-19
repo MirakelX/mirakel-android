@@ -36,18 +36,19 @@ public class TaskNameView extends TextView {
 
     private boolean isStrikeThrough;
     private final Paint stroke = new Paint();
-    private final Rect textSize = new Rect();
     private final Rect bounds = new Rect();
     private final int strokeSize;
     private final int strokeMargin;
+    private final boolean isRTL;
 
     public TaskNameView(final Context ctx, final AttributeSet attrs) {
         super(ctx, attrs);
         stroke.setColor(getTextColors().getDefaultColor());
+        isRTL = ViewHelper.isRTL(ctx);
         final TypedArray a = ctx.getTheme().obtainStyledAttributes(attrs, R.styleable.TaskName, 0, 0);
         try {
-            strokeSize = (int)a.getDimension(R.styleable.TaskName_strokeSize, ViewHelper.dpToPx(2, ctx));
-            strokeMargin = (int)a.getDimension(R.styleable.TaskName_strokeMargin, ViewHelper.dpToPx(5, ctx));
+            strokeSize = (int)a.getDimension(R.styleable.TaskName_strokeSize, ViewHelper.dpToPx(ctx, 2.0F));
+            strokeMargin = (int)a.getDimension(R.styleable.TaskName_strokeMargin, ViewHelper.dpToPx(ctx, 5.0F));
             isStrikeThrough = a.getBoolean(R.styleable.TaskName_isStroked, false);
         } finally {
             a.recycle();
@@ -73,8 +74,13 @@ public class TaskNameView extends TextView {
                     layout.getLineBounds(i, bounds);
                     final float middle = (bounds.top + bounds.bottom) / 2.0F + (i == 0 ? strokeSize : 0);
                     bounds.top = (int) (middle);
-                    bounds.left = -1 * strokeMargin;
-                    bounds.right = (int) (strokeMargin + layout.getLineWidth(i));
+                    if (isRTL) {
+                        bounds.left = (int) (getWidth() - strokeMargin - layout.getLineWidth(i));
+                        bounds.right = getWidth();
+                    } else {
+                        bounds.left = -1 * strokeMargin;
+                        bounds.right = (int) (strokeMargin + layout.getLineWidth(i));
+                    }
                     bounds.bottom = (int) (middle + strokeSize);
                     canvas.drawRect(bounds, stroke);
 

@@ -21,28 +21,28 @@ package de.azapps.mirakel.new_ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakelandroid.R;
 
 public class PriorityView extends LinearLayout {
-    @InjectView(R.id.priority_text)
-    TextView priorityText;
+    @InjectView(R.id.priority_icon)
+    ImageView priorityIcon;
     private int priority;
-    private String[] priorities = {"-2", "-1", "∅", "!", "!!"};
 
-    public PriorityView(Context context) {
+    public PriorityView(final Context context) {
         this(context, null);
     }
 
-    public PriorityView(Context context, AttributeSet attrs) {
+    public PriorityView(final Context context, final AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PriorityView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PriorityView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, getLayout(), this);
         ButterKnife.inject(this, this);
@@ -56,23 +56,45 @@ public class PriorityView extends LinearLayout {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(final int priority) {
         this.priority = priority;
         rebuildLayout();
     }
 
+    protected int getDrawableId(int priority) {
+        int drawableID;
+        switch (priority) {
+        case -1:
+        case -2:
+            drawableID = R.drawable.ic_priority_low_24dp;
+            break;
+        case 1:
+            drawableID = R.drawable.ic_priority_high_24dp;
+            break;
+        case 2:
+            drawableID = R.drawable.ic_priority_veryhigh_24dp;
+            break;
+        case 0:
+        default:
+            drawableID = R.drawable.ic_priority_none_24dp;
+            break;
+
+        }
+        return drawableID;
+    }
+
     protected void rebuildLayout() {
         if (shouldHideText()) {
-            priorityText.setVisibility(GONE);
+            priorityIcon.setVisibility(GONE);
         } else {
-            priorityText.setVisibility(VISIBLE);
-            priorityText.setText(priorities[priority + 2]);
+            priorityIcon.setVisibility(VISIBLE);
+            int drawableID = getDrawableId(priority);
+            priorityIcon.setImageDrawable(ThemeManager.getColoredIcon(drawableID
+                                          , ThemeManager.getColor(R.attr.colorTextWhite)));
+
         }
     }
     protected boolean shouldHideText() {
-        if (priority == 0) {
-            return true;
-        }
-        return false;
+        return priority == 0;
     }
 }

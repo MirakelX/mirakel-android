@@ -91,7 +91,6 @@ public class DatesView extends LinearLayout {
         dueView.setup(R.drawable.ic_calendar_white_18dp, context.getString(R.string.task_due_header));
         dueRecurrenceView.setup(R.drawable.ic_history_white_18dp,
                                 context.getString(R.string.task_due_recurrence_header));
-
         reminderView.setup(R.drawable.ic_alarm_white_18dp,
                            context.getString(R.string.task_reminder_header));
         reminderRecurrenceView.setup(R.drawable.ic_alarm_repeat_white_18dp,
@@ -127,7 +126,7 @@ public class DatesView extends LinearLayout {
                     dueRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
                 }
             } else {
-                dueView.setNoValue(getContext().getString(R.string.no_date));
+                dueView.setNoValue(getContext().getString(R.string.due_date));
                 dueView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
                 dueRecurrenceView.setVisibility(GONE);
             }
@@ -145,7 +144,7 @@ public class DatesView extends LinearLayout {
                     reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
                 }
             } else {
-                reminderView.setNoValue(getContext().getString(R.string.no_reminder));
+                reminderView.setNoValue(getContext().getString(R.string.reminder));
                 reminderView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
                 reminderRecurrenceView.setVisibility(GONE);
             }

@@ -50,7 +50,7 @@ public class TagSpan extends ReplacementSpan {
         this.text = tag.getName();
         this.paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
         this.paintText.setTextSize(context.getResources().getDimension(
-                                       R.dimen.subtitle_font_size));
+                                       R.dimen.text_size_small));
         this.paintText.setColor((tag.isDarkText()) ? ThemeManager.getColor(R.attr.colorTextBlack) :
                                 ThemeManager.getColor(R.attr.colorTextWhite));
         padding = Math.round(scale(10.0F));

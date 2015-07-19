@@ -20,7 +20,9 @@ package de.azapps.mirakel.new_ui.fragments;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Build;
@@ -30,7 +32,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.internal.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.emtronics.dragsortrecycler.DragSortRecycler;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -60,7 +62,6 @@ import de.azapps.material_elements.utils.SnackBarEventListener;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
-import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.model.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -380,11 +381,10 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     public void editList(final ListMirakel listMirakel) {
-        final ListEditView listEditView = new ListEditView(new ContextThemeWrapper(getActivity(),
-                ThemeManager.getDialogTheme()));
+        Context ctx = new ContextThemeWrapper(getActivity(), R.style.MirakelBaseTheme);
+        final ListEditView listEditView = new ListEditView(ctx);
         listEditView.setListMirakel(listMirakel);
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity(),
-                ThemeManager.getDialogTheme()).setView(listEditView)
+        final Dialog dialog = new AlertDialogWrapper.Builder(ctx).setView(listEditView)
         .setTitle(R.string.list_edit_title)
         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override

@@ -22,6 +22,7 @@ package de.azapps.mirakel.new_ui.activities;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -34,7 +35,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -46,6 +46,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -64,7 +65,6 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.ListDialogHelpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.SharingHelper;
@@ -75,12 +75,15 @@ import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakelInterface;
+import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskOverview;
 import de.azapps.mirakel.new_ui.fragments.ListsFragment;
 import de.azapps.mirakel.new_ui.fragments.TaskFragment;
 import de.azapps.mirakel.new_ui.fragments.TasksFragment;
+import de.azapps.mirakel.new_ui.helper.ListDialogHelpers;
+import de.azapps.mirakel.new_ui.search.SearchListMirakel;
 import de.azapps.mirakel.new_ui.views.SearchView;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.custom_views.Settings;
@@ -98,9 +101,10 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
+    public static final String TASK_FRAGMENT_TAG = "dialog";
     private Optional<DrawerLayout> mDrawerLayout = absent();
     private Optional<ActionBarDrawerToggle> mDrawerToggle = absent();
-    private TaskFragment newFragment;
+    private TaskFragment taskFragment;
 
 
 
@@ -156,6 +160,9 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             setupActionbar();
         }
         initThirdParty();
+        if (savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }
     }
 
 
@@ -214,19 +221,32 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         menu.clear();
+        final int startIndex;
         if (mDrawerLayout.isPresent()) {
             // For phones
             final boolean drawerOpen = mDrawerLayout.get().isDrawerOpen(GravityCompat.START);
             if (drawerOpen) {
                 getMenuInflater().inflate(R.menu.lists_menu, menu);
+                startIndex = 1;
             } else {
                 getMenuInflater().inflate(R.menu.tasks_menu, menu);
+                startIndex = 2;
             }
         } else {
             getMenuInflater().inflate(R.menu.tablet_menu, menu);
+            startIndex = 2;
         }
-
+        if ((menu.findItem(R.id.menu_close_search) != null) && (menu.findItem(R.id.menu_search) != null)) {
+            menu.findItem(R.id.menu_search).setVisible(!(getTasksFragment().getList() instanceof
+                    SearchListMirakel));
+            menu.findItem(R.id.menu_close_search).setVisible((getTasksFragment().getList() instanceof
+                    SearchListMirakel));
+        }
+        if (menu.findItem(R.id.menu_sync_now) != null && !AccountMirakel.hasTaskWarriorAccount()) {
+            menu.findItem(R.id.menu_sync_now).setVisible(false);
+        }
         MenuHelper.showMenuIcons(this, menu);
+        MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey), startIndex);
         return true;
     }
 
@@ -241,19 +261,26 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                 return true;
             }
         }
-        final int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        switch (item.getItemId()) {
+        case R.id.action_settings:
             final Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.action_create_list) {
+        case R.id.action_create_list:
             getListsFragment().editList(ListMirakel.getStub());
             return true;
-        } else if (id == R.id.menu_share) {
+        case R.id.menu_share:
             SharingHelper.share(this, getTasksFragment().getList());
-        } else if (id == R.id.menu_search) {
+            break;
+        case  R.id.menu_search:
             getTasksFragment().handleShowSearch();
-        } else if (id == R.id.menu_sort) {
+            invalidateOptionsMenu();
+            break;
+        case R.id.menu_close_search:
+            getTasksFragment().setList(getTasksFragment().getOldList());
+            invalidateOptionsMenu();
+            break;
+        case  R.id.menu_sort:
             ListMirakelInterface listMirakelInterface = getTasksFragment().getList();
             if (listMirakelInterface instanceof ListMirakel) {
                 ListDialogHelpers.handleSortBy(this, (ListMirakel) listMirakelInterface,
@@ -266,6 +293,22 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             } else {
                 throw new IllegalArgumentException("It's not a proper List");
             }
+            break;
+        case R.id.menu_sync_now:
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+            bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            final List<AccountMirakel> accounts = new MirakelQueryBuilder(this)
+            .and(AccountMirakel.ENABLED, MirakelQueryBuilder.Operation.EQ, true)
+            .and(AccountMirakel.TYPE, MirakelQueryBuilder.Operation.EQ,
+                 AccountMirakel.ACCOUNT_TYPES.TASKWARRIOR.toInt())
+            .getList(AccountMirakel.class);
+            for (final AccountMirakel a : accounts) {
+                getContentResolver().requestSync(a.getAndroidAccount(), DefinitionsHelper.AUTHORITY_INTERNAL,
+                                                 bundle);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -342,15 +385,18 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             && (newTaskSubject == null)) {
             newTaskSubject = MirakelCommonPreferences.getImportFileTitle();
         }
+        if (newTaskSubject == null) {
+            newTaskSubject = "";
+        }
         final Optional<ListMirakel> listFromSharing = MirakelModelPreferences.getImportDefaultList();
         if (listFromSharing.isPresent()) {
             final Task task = Semantic.createTask(newTaskSubject, listFromSharing, true);
             addFiles(task, intent);
         } else {
             final Task stubTask = Semantic.createStubTask(newTaskSubject, listFromSharing, true);
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
             builder.setTitle(R.string.import_to);
-            final List<CharSequence> items = new ArrayList<>();
+            final List<String> items = new ArrayList<>();
             final List<Long> listIds = new ArrayList<>();
             final int currentItem = 0;
             for (final ListMirakel list : ListMirakel.all()) {
@@ -360,7 +406,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
                 }
             }
             builder.setSingleChoiceItems(
-                items.toArray(new CharSequence[items.size()]),
+                items.toArray(new String[items.size()]),
             currentItem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(final DialogInterface dialog,
@@ -523,7 +569,7 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if ((requestCode == TaskFragment.REQUEST_IMAGE_CAPTURE ||
              requestCode == TaskFragment.FILE_SELECT_CODE) && (resultCode == Activity.RESULT_OK)) {
-            newFragment.onActivityResult(requestCode, resultCode, data);
+            taskFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -538,8 +584,8 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     }
 
     private void selectTask(final Task item) {
-        newFragment = TaskFragment.newInstance(item);
-        newFragment.show(getSupportFragmentManager(), "dialog");
+        taskFragment = TaskFragment.newInstance(item);
+        taskFragment.show(getSupportFragmentManager(), TASK_FRAGMENT_TAG);
     }
 
     public void moveFABUp(final int height) {
@@ -550,6 +596,16 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     public void moveFabDown(final int height) {
         final FloatingActionButton fab = getTasksFragment().floatingActionButton;
         AnimationHelper.moveViewDown(this, fab, height);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        taskFragment = (TaskFragment)getSupportFragmentManager().findFragmentByTag(TASK_FRAGMENT_TAG);
+        if (taskFragment != null) {
+            taskFragment.onAttach(this);
+        }
     }
 
     private class DrawerToggle extends ActionBarDrawerToggle {

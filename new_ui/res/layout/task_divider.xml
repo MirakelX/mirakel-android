@@ -2,6 +2,8 @@
 <View
     android:layout_width="fill_parent"
     android:layout_height="@dimen/divider_height"
+    android:layout_marginEnd="20dp"
+    android:layout_marginStart="20dp"
     android:background="?colorDivider"
     android:layout_marginTop="@dimen/padding_default_half"
     android:layout_marginBottom="@dimen/padding_default_half"

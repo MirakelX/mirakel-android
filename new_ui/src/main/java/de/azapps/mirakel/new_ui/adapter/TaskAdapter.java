@@ -21,12 +21,16 @@ package de.azapps.mirakel.new_ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -36,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.material_elements.utils.ViewHelper;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.DateTimeHelper;
@@ -87,6 +92,35 @@ public class TaskAdapter extends
     @Override
     public void onBindViewHolder(final TaskViewHolder viewHolder, final Cursor cursor,
                                  final int position) {
+        if (position == 0) {
+            final int normal = (int) mContext.getResources().getDimension(R.dimen.card_margin);
+            final int bottom = (int) mContext.getResources().getDimension(R.dimen.card_margin_bottom);
+            final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(normal, normal, normal, bottom);
+            viewHolder.card.setLayoutParams(params);
+        } else {
+            final int normal = (int) mContext.getResources().getDimension(R.dimen.card_margin);
+            final int top = (int) mContext.getResources().getDimension(R.dimen.card_margin_top);
+            final int bottom = (int) mContext.getResources().getDimension(R.dimen.card_margin_bottom);
+            final FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(normal, top, normal, bottom);
+            viewHolder.card.setLayoutParams(params);
+        }
+        if (ViewHelper.isRTL(mContext)) {
+            final int size = (int) mContext.getResources().getDimension(R.dimen.priorityDoneSize);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
+            params.setMargins((int) mContext.getResources().getDimension(R.dimen.margin_progress_done), 0, 0,
+                              0);
+            params.gravity = Gravity.CENTER_VERTICAL;
+            viewHolder.progressDone.setLayoutParams(params);
+
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                   ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins((int) mContext.getResources().getDimension(R.dimen.task_due_margin), 0, 0, 0);
+            viewHolder.due.setLayoutParams(params);
+        }
         if (position == (getItemCount() - 1)) {
             viewHolder.viewSwitcher.setDisplayedChild(1);
             final ListMirakelInterface.ShowDoneCases status = taskAdapterCallbacks.shouldShowDoneToggle();
@@ -137,10 +171,18 @@ public class TaskAdapter extends
                 }
             });
 
-            if (selectedItems.get(position)) {
-                viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+            if (Build.VERSION_CODES.LOLLIPOP <= Build.VERSION.SDK_INT) {
+                if (selectedItems.get(position)) {
+                    viewHolder.card.setBackgroundResource(R.drawable.background_task_selected);
+                } else {
+                    viewHolder.card.setBackgroundResource(R.drawable.background_task);
+                }
             } else {
-                viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+                if (selectedItems.get(position)) {
+                    viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorSelectedRow));
+                } else {
+                    viewHolder.card.setCardBackgroundColor(ThemeManager.getColor(R.attr.colorTaskCard));
+                }
             }
         }
     }
@@ -183,6 +225,14 @@ public class TaskAdapter extends
     @Override
     public int getItemCount() {
         return super.getItemCount() + 1;
+    }
+
+    @Override
+    protected boolean isSelectable(int pos) {
+        if (pos < getCursor().getCount()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
