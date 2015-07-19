@@ -19,8 +19,8 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources>
   <plurals name="status">
-    <item quantity="one">Eine Aufgabe übrig</item>
-    <item quantity="other">%d Aufgaben übrig</item>
+    <item quantity="one">Eine Aufgabe offen</item>
+    <item quantity="other">%d Aufgaben offen</item>
   </plurals>
   <plurals name="how_many">
     <item quantity="one">1 Aufgabe</item>

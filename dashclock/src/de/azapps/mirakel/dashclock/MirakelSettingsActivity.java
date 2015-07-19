@@ -18,7 +18,6 @@
  ******************************************************************************/
 package de.azapps.mirakel.dashclock;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
@@ -29,6 +28,7 @@ import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import android.widget.NumberPicker;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
@@ -72,7 +72,8 @@ public class MirakelSettingsActivity extends PreferenceActivity {
                     MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
                 final SimpleModelListAdapter<ListMirakel> adapter = new SimpleModelListAdapter<>
                 (MirakelSettingsActivity.this, cursor.getRawCursor(), 0, ListMirakel.class);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(MirakelSettingsActivity.this);
+                final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(
+                    MirakelSettingsActivity.this);
                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -101,7 +102,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
                 numberPicker.setValue(SettingsHelper.getMaxTasks());
                 numberPicker
                 .setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-                new AlertDialog.Builder(ctx)
+                new AlertDialogWrapper.Builder(ctx)
                 .setTitle(getString(R.string.number_of))
                 .setMessage(getString(R.string.how_many))
                 .setView(numberPicker)
