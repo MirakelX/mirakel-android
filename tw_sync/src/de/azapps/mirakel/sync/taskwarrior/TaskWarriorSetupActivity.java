@@ -21,7 +21,6 @@ package de.azapps.mirakel.sync.taskwarrior;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +32,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -50,7 +51,6 @@ import java.util.regex.Pattern;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
-import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.account.AccountMirakel;
@@ -181,7 +181,7 @@ public class TaskWarriorSetupActivity extends Activity {
                     startActivityForResult(intent,
                                            TaskWarriorSetupActivity.CONFIG_QR);
                 } catch (final RuntimeException ignored) {
-                    new AlertDialog.Builder(TaskWarriorSetupActivity.this)
+                    new AlertDialogWrapper.Builder(TaskWarriorSetupActivity.this)
                     .setTitle(R.string.no_barcode_app)
                     .setMessage(R.string.no_barcode_app_message)
                     .setPositiveButton(R.string.no_barcode_app_install,
