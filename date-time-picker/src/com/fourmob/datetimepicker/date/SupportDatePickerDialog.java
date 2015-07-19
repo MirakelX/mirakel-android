@@ -20,8 +20,10 @@
 package com.fourmob.datetimepicker.date;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,52 +47,45 @@ public class SupportDatePickerDialog extends DialogFragment {
     protected int mInitYear;
     protected int mInitMonth;
     protected int mInitDay;
-    private boolean mHasNoDate;
 
-    public SupportDatePickerDialog() {
-        super();
+    //dirty hack to get a reference to the
+    // originally created dialog if the screen was rotated
+    private static Dialog dialog;
+
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        dialog = super.onCreateDialog(savedInstanceState);
+        return dialog;
     }
 
     public static SupportDatePickerDialog newInstance(final OnDateSetListener onDateSetListener,
-            Optional<Calendar> date, final boolean dark) {
+            final Optional<Calendar> date) {
         final Calendar notNullDate = date.or(new GregorianCalendar());
-        final boolean hasNoDate = !date.isPresent();
         final int year = notNullDate.get(Calendar.YEAR);
         final int month = notNullDate.get(Calendar.MONTH);
         final int day = notNullDate.get(Calendar.DAY_OF_MONTH);
-        return newInstance(onDateSetListener, year, month, day, hasNoDate);
+        return newInstance(onDateSetListener, year, month, day);
     }
     public static SupportDatePickerDialog newInstance(
         final OnDateSetListener onDateSetListener, final int year,
-        final int month, final int day,
-        final boolean hasNoDate) {
-        return newInstance(onDateSetListener, year, month, day, true,
-                           hasNoDate);
-    }
-
-    public static SupportDatePickerDialog newInstance(
-        final OnDateSetListener onDateSetListener, final int year,
-        final int month, final int day, final boolean vibrate, final boolean hasNoDate) {
+        final int month, final int day) {
         final SupportDatePickerDialog datePickerDialog = new SupportDatePickerDialog();
-        datePickerDialog.initialize(onDateSetListener, year, month, day,
-                                    vibrate, hasNoDate);
+        datePickerDialog.initialize(onDateSetListener, year, month, day);
         return datePickerDialog;
     }
 
-    public void setVibrate(final boolean vibrate) {
-        // nothing
-    }
 
     public void initialize(final OnDateSetListener onDateSetListener,
-                           final int year, final int month, final int day,
-                           final boolean vibrate, final boolean hasNoDate) {
+                           final int year, final int month, final int day) {
         this.mCallback = new OnDateSetListener() {
             @Override
             public void onNoDateSet() {
                 if (onDateSetListener != null) {
                     onDateSetListener.onNoDateSet();
                 }
-                dismiss();
+                safeDismiss();
             }
             @Override
             public void onDateSet(final DatePicker datePickerDialog,
@@ -99,22 +94,22 @@ public class SupportDatePickerDialog extends DialogFragment {
                     onDateSetListener.onDateSet(datePickerDialog, year, month,
                                                 day);
                 }
-                dismiss();
+                safeDismiss();
             }
         };
         this.mInitYear = year;
         this.mInitMonth = month;
         this.mInitDay = day;
-        this.mHasNoDate = hasNoDate;
     }
 
     @Override
-    public void onCreate(final Bundle bundle) {
-        super.onCreate(bundle);
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         final Activity activity = getActivity();
         activity.getWindow().setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
+
 
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {
@@ -123,12 +118,7 @@ public class SupportDatePickerDialog extends DialogFragment {
         getDialog().setContentView(
             onCreateView(LayoutInflater.from(getDialog().getContext()),
                          null, b));
-        this.mDatePicker.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SupportDatePickerDialog.this.mDatePicker.onRestoreInstanceState(b);
-            }
-        }, 50);
+        mDatePicker.onRestoreInstanceState(b);
     }
 
     @Override
@@ -137,31 +127,42 @@ public class SupportDatePickerDialog extends DialogFragment {
         Log.d("DatePickerDialog", "onCreateView: ");
         try {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        } catch (final Exception e) {
+        } catch (final RuntimeException e) {
             e.printStackTrace();
         }
         final View view = layoutInflater.inflate(R.layout.date_picker_dialog,
                           null);
         this.mDatePicker = (DatePicker) view.findViewById(R.id.date_picker);
         this.mDatePicker.setOnDateSetListener(this.mCallback);
-        this.mDatePicker.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SupportDatePickerDialog.this.mDatePicker
-                .setYear(SupportDatePickerDialog.this.mInitYear);
-                SupportDatePickerDialog.this.mDatePicker
-                .setMonth(SupportDatePickerDialog.this.mInitMonth);
-                SupportDatePickerDialog.this.mDatePicker
-                .setDay(SupportDatePickerDialog.this.mInitDay);
-            }
-        }, 0);
+        SupportDatePickerDialog.this.mDatePicker
+        .setYear(SupportDatePickerDialog.this.mInitYear);
+        SupportDatePickerDialog.this.mDatePicker
+        .setMonth(SupportDatePickerDialog.this.mInitMonth);
+        SupportDatePickerDialog.this.mDatePicker
+        .setDay(SupportDatePickerDialog.this.mInitDay);
         return view;
     }
 
     @Override
     public void onSaveInstanceState(final Bundle bundle) {
         super.onSaveInstanceState(bundle);
-        bundle.putAll((Bundle) this.mDatePicker.onSaveInstanceState());
+        bundle.putAll((Bundle) mDatePicker.onSaveInstanceState());
     }
 
+    @Override
+    public void onViewStateRestored(final Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        mDatePicker.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private void safeDismiss() {
+        try {
+            dismiss();
+        } catch (final NullPointerException ignored) {
+            // if the user rotates the screen the current dialog is gone
+            // so use this dirty hack to get it back
+            dialog.dismiss();
+
+        }
+    }
 }

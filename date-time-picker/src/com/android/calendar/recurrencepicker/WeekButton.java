@@ -18,8 +18,10 @@ package com.android.calendar.recurrencepicker;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 
 import de.azapps.material_elements.utils.ThemeManager;
@@ -34,18 +36,12 @@ public class WeekButton extends android.widget.ToggleButton {
 
     private void setTheme() {
         setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.oval_filled));
-        setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
+        setTextAppearance(getContext(), R.style.TextAppearance_Bold);
+        setGravity(Gravity.CENTER);
+        setSingleLine(true);
     }
 
-    @Override
-    protected void drawableStateChanged() {
-        super.drawableStateChanged();
-        if (isChecked()) {
-            setTextColor(ThemeManager.getColor(R.attr.colorTextWhite));
-        } else {
-            setTextColor(ThemeManager.getColor(R.attr.colorTextBlack));
-        }
-    }
+
 
     public WeekButton(final Context context, final AttributeSet attrs) {
         super(context, attrs);
@@ -58,8 +54,17 @@ public class WeekButton extends android.widget.ToggleButton {
         setTheme();
     }
 
-    public static void setSuggestedWidth(final int w) {
-        // mWidth = w; not used
+
+    @Override
+    protected void drawableStateChanged() {
+        super.drawableStateChanged();
+        if (isChecked()) {
+            setTextAppearance(getContext(), R.style.TextAppearance_Bold);
+        } else {
+            setTextAppearance(getContext(), R.style.TextAppearance_Regular);
+        }
+        setTextColor(new ColorStateList(new int[][] {new int[]{android.R.attr.state_checked}, new int[]{}},
+        new int[] {ThemeManager.getPrimaryThemeColor(), ThemeManager.getColor(R.attr.colorTextGrey)}));
     }
 
     @SuppressLint("NewAPI")

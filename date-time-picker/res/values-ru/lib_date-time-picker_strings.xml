@@ -31,5 +31,6 @@
   <string name="save_label">Выполнено</string>
   <string name="set_date">Установить дату</string>
   <string name="set_time">Установить время</string>
+  <string name="no_recurrence">Без повтора</string>
 </resources>
 

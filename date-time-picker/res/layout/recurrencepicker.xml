@@ -14,270 +14,194 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout android:id="@+id/recurrence_picker_dialog"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:paddingEnd="@dimen/abc_dialog_padding_material"
-              android:paddingStart="@dimen/abc_dialog_padding_material"
-              android:paddingTop="@dimen/abc_dialog_padding_top_material"
-              android:paddingBottom="@dimen/abc_dialog_padding_top_material"
-              tools:ignore="newApi">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recurrence_picker_dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/abc_dialog_padding_material"
+    android:paddingStart="@dimen/abc_dialog_padding_material"
+    android:paddingEnd="@dimen/abc_dialog_padding_material">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/options"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:measureAllChildren="true"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/intervalGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/intervalPreText"
+                style="@style/TextAppearance.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_every"
+                android:textColor="?colorTextGrey"/>
+
+            <EditText
+                android:id="@+id/interval_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="2"
+                android:gravity="center_horizontal"
+                android:inputType="number"
+                android:maxLength="2"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textSize="15sp">
+            </EditText>
+
+            <Spinner
+                android:id="@+id/interval_type"
+                style="@style/TextAppearance.Regular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/weekGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/weekGroup2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone"/>
+
+        <RadioGroup
+            android:id="@+id/monthGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/options"
-                android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/repeatMonthlyByNthDayOfMonth"
+                style="@style/TextAppearance.RecurrencePickerStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:measureAllChildren="true"
-                android:orientation="vertical"
-                android:paddingBottom="4dp"
-                android:paddingEnd="12dp"
-                android:paddingStart="12dp"
-                android:paddingTop="4dp">
+                android:text="@string/recurrence_month_pattern_by_day"/>
 
-                <LinearLayout
-                    android:id="@+id/intervalGroup"
-                    android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/repeatMonthlyByNthDayOfTheWeek"
+                style="@style/TextAppearance.RecurrencePickerStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RadioGroup>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/label_start"
+                    style="@style/TextAppearance.Light"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:paddingStart="4dp">
-
-                    <TextView
-                        android:id="@+id/intervalPreText"
-                        style="@style/TextAppearance.RecurrencePickerStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/every"/>
-
-                    <EditText
-                        android:id="@+id/interval_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="2"
-                        android:gravity="center_horizontal"
-                        android:inputType="number"
-                        android:maxLength="2"
-                        android:paddingEnd="4dp"
-                        android:paddingStart="4dp"
-                        android:selectAllOnFocus="true"
-                        android:singleLine="true"
-                        android:textSize="15sp">
-                    </EditText>
-
-                    <Spinner
-                        android:id="@+id/interval_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
-                    android:id="@+id/weekGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal"/>
-
-                <com.android.calendar.recurrencepicker.LinearLayoutWithMaxWidth
-                    android:id="@+id/weekGroup2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginStart="4dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal"
-                    android:visibility="gone"/>
-
-                <RadioGroup
-                    android:id="@+id/monthGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <RadioButton
-                        android:id="@+id/repeatMonthlyByNthDayOfMonth"
-                        style="@style/TextAppearance.RecurrencePickerStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/recurrence_month_pattern_by_day"/>
-
-                    <RadioButton
-                        android:id="@+id/repeatMonthlyByNthDayOfTheWeek"
-                        style="@style/TextAppearance.RecurrencePickerStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                </RadioGroup>
+                    android:text="@string/recurrence_start_label"
+                    android:textColor="?colorTextGrey"/>
 
                 <LinearLayout
                     android:id="@+id/startGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:paddingStart="0dp">
-
-                    <Spinner
-                        android:id="@+id/startSpinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="-4dp"
-                        android:gravity="start|center_vertical"
-                        android:padding="0dp"/>
+                    android:layout_height="@dimen/clickable_item_size"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/startDate"
-                        style="@style/TextAppearance.EditEvent_SpinnerButton"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/startButton"
+                        style="@style/TextAppearance.Regular"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="3dp"
-                        android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
-                        android:gravity="center_horizontal|bottom"
-                        android:minWidth="80dp"
-                        android:paddingBottom="8dp"
-                        android:paddingEnd="12dp"
-                        android:paddingStart="12dp"
-                        android:singleLine="true"
-                        android:textColor="?colorTextBlack"
-                        android:textSize="15sp"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:gravity="start|center_vertical"
+                        android:padding="0dp"
+                        android:text="now"
+                        android:textColor="?colorTextGrey"/>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="1dp"
+                        android:src="@drawable/ic_arrow_drop_down_white_24dp"
+                        android:tint="?colorTextGrey"/>
                 </LinearLayout>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/label_end"
+                    style="@style/TextAppearance.Light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/recurrence_end_label"
+                    android:textColor="?colorTextGrey"/>
 
                 <LinearLayout
                     android:id="@+id/endGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:paddingStart="0dp">
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/clickable_item_size"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
-                    <Spinner
-                        android:id="@+id/endSpinner"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/endButton"
+                        style="@style/TextAppearance.Regular"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="-4dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
                         android:gravity="start|center_vertical"
-                        android:padding="0dp"/>
+                        android:padding="0dp"
+                        android:text="now"
+                        android:textColor="?colorTextGrey"/>
 
-                    <EditText
-                        android:id="@+id/endCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="-3dp"
-                        android:ems="3"
-                        android:gravity="center_horizontal"
-                        android:inputType="number"
-                        android:maxLength="3"
-                        android:selectAllOnFocus="true"
-                        android:singleLine="true"
-                        android:textSize="15sp"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:id="@+id/postEndCount"
-                        style="@style/TextAppearance.RecurrencePickerStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="-3dp"
-                        android:gravity="bottom"
-                        android:singleLine="true"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:id="@+id/endDate"
-                        style="@style/TextAppearance.EditEvent_SpinnerButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="0dp"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="3dp"
-                        android:contentDescription="@string/acessibility_recurrence_choose_end_date_description"
-                        android:gravity="center_horizontal|bottom"
-                        android:minWidth="80dp"
-                        android:paddingBottom="8dp"
-                        android:paddingEnd="16dp"
-                        android:paddingStart="12dp"
-                        android:singleLine="true"
-                        android:textColor="?colorTextBlack"
-                        android:textSize="15sp"/>
-
+                        android:layout_marginTop="1dp"
+                        android:src="@drawable/ic_arrow_drop_down_white_24dp"
+                        android:tint="?colorTextGrey"/>
                 </LinearLayout>
-            </LinearLayout>
+            </TableRow>
 
-            <CheckBox
-                android:id="@+id/recurrence_is_exact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/use_exact_recurrence"/>
-        </LinearLayout>
-    </ScrollView>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
-        tools:ignore="PxUsage"/>
-
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@android:string/cancel"
-            android:textColor="?colorAccent"/>
-
-        <Button
-            android:id="@+id/not_recurring"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/no_recurrence"
-            android:textColor="?colorAccent"/>
-
-        <Button
-            android:id="@+id/done"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@android:string/ok"
-            android:textColor="?colorAccent"/>
+        </TableLayout>
+        <CheckBox
+            android:id="@+id/recurrence_is_exact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/use_exact_recurrence"/>
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
