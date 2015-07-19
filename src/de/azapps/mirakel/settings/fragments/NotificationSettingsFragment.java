@@ -49,26 +49,18 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.settings_notifications);
 
-
         // Initialize needed Arrays
         final List<ListMirakel> lists = ListMirakel.all();
         final CharSequence entryValues[] = new String[lists.size()];
         final CharSequence entries[] = new String[lists.size()];
-        final CharSequence entryValuesWithDefault[] = new String[lists.size() + 1];
-        final CharSequence entriesWithDefault[] = new String[lists.size() + 1];
         int i = 0;
         for (final ListMirakel list : lists) {
             final String id = String.valueOf(list.getId());
             final String name = list.getName();
             entryValues[i] = id;
             entries[i] = name;
-            entryValuesWithDefault[i + 1] = id;
-            entriesWithDefault[i + 1] = name;
             i++;
         }
-        entriesWithDefault[0] = getString(R.string.default_list);
-        entryValuesWithDefault[0] = "default";
-
 
         final SwitchPreference notificationsUse = (SwitchPreference) findPreference("notificationsUse");
         notificationsUse
@@ -120,8 +112,6 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
         // Notifications List
         final ListPreference notificationsListPreference = (ListPreference)
                 findPreference("notificationsList");
-        final ListPreference notificationsListOpenPreference = (ListPreference)
-                findPreference("notificationsListOpen");
         notificationsListPreference.setEntries(entries);
         notificationsListPreference.setEntryValues(entryValues);
         notificationsListPreference.setValue(MirakelCommonPreferences
@@ -146,60 +136,9 @@ public class NotificationSettingsFragment extends MirakelPreferencesFragment<Set
                             .getString(
                                 R.string.notifications_list_summary,
                                 list));
-                if (MirakelCommonPreferences
-                    .isNotificationListOpenDefault()) {
-                    notificationsListOpenPreference
-                    .setSummary(getActivity()
-                                .getString(
-                                    R.string.notifications_list_summary,
-                                    list));
-                }
                 MirakelCommonPreferences
                 .setNotificationsListId((String) newValue);
                 notificationsListPreference
-                .setValue((String) newValue);
-                NotificationService.updateServices(getActivity());
-                return false;
-            }
-        });
-        notificationsListOpenPreference.setEntries(entriesWithDefault);
-        notificationsListOpenPreference
-        .setEntryValues(entryValuesWithDefault);
-        notificationsListOpenPreference.setValue(MirakelCommonPreferences
-                .getNotificationsListOpenId() + "");
-        final Optional<ListMirakel> notificationsListOpen = MirakelModelPreferences
-                .getNotificationsListOpen();
-        OptionalUtils.withOptional(notificationsListOpen, new OptionalUtils.Procedure<ListMirakel>() {
-            @Override
-            public void apply(ListMirakel input) {
-                notificationsListOpenPreference.setSummary(getString(
-                            R.string.notifications_list_open_summary,
-                            input.getName()));
-            }
-        });
-        notificationsListOpenPreference
-        .setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(
-                final Preference preference,
-                final Object newValue) {
-                String list;
-                if (!"default".equals(newValue.toString())) {
-                    list = ListMirakel.get(
-                               Integer.parseInt((String) newValue)).get()
-                           .getName();
-                } else {
-                    list = MirakelModelPreferences
-                           .getNotificationsList().getName();
-                }
-                notificationsListOpenPreference
-                .setSummary(getActivity()
-                            .getString(
-                                R.string.notifications_list_summary,
-                                list));
-                MirakelCommonPreferences
-                .setNotificationsListOpenId((String) newValue);
-                notificationsListOpenPreference
                 .setValue((String) newValue);
                 NotificationService.updateServices(getActivity());
                 return false;
