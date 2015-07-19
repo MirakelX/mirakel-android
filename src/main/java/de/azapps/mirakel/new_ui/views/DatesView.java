@@ -91,7 +91,6 @@ public class DatesView extends LinearLayout {
         dueView.setup(R.drawable.ic_calendar_white_18dp, context.getString(R.string.task_due_header));
         dueRecurrenceView.setup(R.drawable.ic_history_white_18dp,
                                 context.getString(R.string.task_due_recurrence_header));
-
         reminderView.setup(R.drawable.ic_alarm_white_18dp,
                            context.getString(R.string.task_reminder_header));
         reminderRecurrenceView.setup(R.drawable.ic_alarm_repeat_white_18dp,
