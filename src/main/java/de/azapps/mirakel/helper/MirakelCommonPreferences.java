@@ -45,10 +45,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         return settings.getInt("alarm_later", 15);
     }
 
-    public static String getFromLog(final int id) {
-        return settings.getString("OLD" + id, "");
-    }
-
     public static String getImportFileTitle() {
         return settings.getString("import_file_title",
                                   context.getString(R.string.file_default_title));
@@ -57,7 +53,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     public static String getLanguage() {
         return settings.getString("language", "-1");
     }
-
 
     public static int getNotificationsListId() {
         try {
@@ -70,24 +65,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
 
     public static void setNotificationsListId(final String listId) {
         getEditor().putString("notificationsList", listId).apply();
-    }
-
-    public static void setNotificationsListOpenId(final String listId) {
-        getEditor().putString("notificationsListOpen", listId).apply();
-    }
-
-    public static int getNotificationsListOpenId() {
-        int listId = getNotificationsListId();
-        final String listOpen = settings.getString("notificationsListOpen",
-                                "default");
-        if (!"default".equals(listOpen)) {
-            listId = Integer.parseInt(listOpen);
-        }
-        return listId;
-    }
-
-    public static int getUndoNumber() {
-        return settings.getInt("UndoNumber", 10);
     }
 
 
@@ -109,13 +86,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
     public static boolean isEnabledDebugMenu() {
         return settings.getBoolean("enableDebugMenu", false);
     }
-
-    public static boolean isNotificationListOpenDefault() {
-        final String listOpen = settings.getString("notificationsListOpen",
-                                "default");
-        return "default".equals(listOpen);
-    }
-
 
     public static boolean isTablet() {
         final String value = settings.getString("useTabletLayoutNew", null);
@@ -151,7 +121,6 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         }
         return new ArrayList<>(0);
     }
-
 
     public static void saveIntArray(final String preferenceName,
                                     final List<Integer> items) {
@@ -206,6 +175,4 @@ public class MirakelCommonPreferences extends MirakelPreferences {
         ed.putBoolean("useAnalytics", val);
         ed.apply();
     }
-
-
 }
