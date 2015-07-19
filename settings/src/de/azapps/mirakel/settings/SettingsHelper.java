@@ -20,7 +20,6 @@
 package de.azapps.mirakel.settings;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,6 +28,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -67,7 +68,7 @@ public class SettingsHelper {
                 ErrorReporter.report(ErrorType.FILE_NOT_MIRAKEL_DB);
                 break;
             }
-            new AlertDialog.Builder(ctx)
+            new AlertDialogWrapper.Builder(ctx)
             .setTitle(R.string.import_sure)
             .setMessage(
                 ctx.getString(R.string.import_sure_summary,

@@ -103,6 +103,8 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="changelog_click">Registo de alterações</string>
   <string name="settings_about">Sobre</string>
   <string name="settings_help">Ajuda</string>
+  <string name="get_dashclock">Obter Mirakel Dashclock</string>
+  <string name="get_dashclock_summary">Obter a extensão Mirakel para o Dashclock</string>
   <string name="import_astrid_click">Importar do Astrid</string>
   <string name="astrid_success">Todos os dados foram importados!</string>
   <string name="importing">Importação</string>
@@ -125,12 +127,13 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="semantic_new_task">Novo modelo de tarefa</string>
   <string name="semantic_new_task_config_summary">Configurar condições para criação de novas tarefas</string>
   <string name="semantic_new_task_config">Configurar modelos de tarefa</string>
+  <string name="useTabletLayout">Utilizar esquema tablet</string>
   <string name="general">Geral</string>
   <string-array name="tablet_options">
     <item>nunca</item>
     <item>horizontal</item>
     <item>vertical</item>
-    <item>portrait and landscape</item>
+    <item>vertical e horizontal</item>
   </string-array>
   <string name="delete_done">Eliminar tarefas terminadas</string>
   <string name="delete_done_summary">Eliminar todas as tarefas terminadas</string>
@@ -196,11 +199,14 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="settings_tasks_title">Tarefas</string>
   <string name="settings_dev">Definições de desenvolvimento</string>
   <string name="settings_dev_sync">Sincronização</string>
+  <string name="settings_dev_dump_tw_summary">Guarde o texto recebido para /sdcard/mirakel/</string>
+  <string name="settings_dev_dump_tw">Guardar mensagens recebidas</string>
   <string name="enable">ativar</string>
   <string name="disable">desativar</string>
   <string name="enabled">ativo</string>
   <string name="disabled">inativo</string>
   <string name="change_dev_mode">Você %s as definições de desenvolvimento!</string>
+  <string name="enableDebugLog">Ativar depuração logcat?</string>
   <string name="action_contact">Contactar/reportar erros</string>
   <string name="action_contact_summary">Escreva-nos uma mensagem eletrónica!</string>
   <string name="title_donations">Donativos</string>
@@ -210,7 +216,9 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="demo_mode">Modo de demonstração</string>
   <string name="demo_drop_db">Restaurar base de dados demo</string>
   <string name="write_logs_to_file">Gravar registos no ficheiro</string>
+  <string name="alert_caldav">A sincronização CalDav apresenta erros e nós não temos disponibilidade para os corrigir. Por favor, crie uma cópia de segurança antes de continuar.</string>
   <string name="alert_caldav_title">Informações de CalDav</string>
+  <string name="alert_taskwarrior">A sincronização Taskwarrior apresenta erros e nós não temos disponibilidade para os corrigir. Por favor, crie uma cópia de segurança antes de continuar.</string>
   <string name="alert_taskwarrior_title">Informações de Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Subtarefas</string>
   <string name="special_list_where_tag_title_text">Etiquetas</string>
@@ -252,8 +260,22 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="delete_condition">Eliminar condição</string>
   <string name="delete_semantic">Eliminar modelo de tarefa</string>
   <string name="delete_special_lists">Eliminar meta-lista</string>
+  <string name="settings_widget_title">Preferências do widget</string>
+  <string name="version_string">Versão: %1$s criada em %2$s</string>
+  <string name="analytics_use">Relatório de estatísticas anónimas</string>
+  <string name="analytics_use_summary">Estes relatórios ajudam-nos a melhorar o Mirakel</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">O Mirakel é um programa de código aberto, junte-se a nós no GitHub</string>
+  <string name="credits_dev">Desenvolvido por Anatolij Zelenin e Georg Semmler</string>
+  <string name="credits_design">Design do ícone e da interface por Alexander Käßner</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">Enviar opinião</string>
+  <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nO Mirakel é um programa livre sob os termos da GPLv3</string>
   <string name="credits_translations">Traduções</string>
+  <string name="credits_libraries">Bibliotecas</string>
   <string name="credits_license_title">Licença</string>
+  <string name="credits_license"><![CDATA[<p>Esta é uma aplicação livre: pode distribuir e/ou modificar a aplicação nos termos da <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License</a>, conforme publicada pela Free Software Foundation, tanto na versão 3 da licença como (por opção) qualquer versão posterior.</p>
+<p>Este programa é disponibilizado com o intuito de ser útil mas NÃO POSSUI QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIALIZAÇÃO OU ADEQUAÇÃO A UM OBJETIVO CONCRETO. Consulte a GNU General Public License para mais detalhes.</p>]]></string>
 </resources>
 

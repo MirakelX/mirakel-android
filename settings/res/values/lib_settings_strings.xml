@@ -84,8 +84,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="notifications_persistent">Persistent notifications</string>
     <string name="notifications_list">Show List</string>
     <string name="notifications_list_summary">Show \"%s\"</string>
-    <string name="notifications_list_open">Open List</string>
-    <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
@@ -365,12 +363,12 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
 
     <string name="credits_title">Mirakel</string>
     <string name="credits_subtitle">Mirakel is open source, feel free to contribute via GitHub</string>
-    <string name="credits_dev">Development by Anatolij Zelenin and Georg Semmler</string>
-    <string name="credits_design">Icon &amp; Interface design by Alexander Käßner</string>
+    <string name="credits_dev"><![CDATA[Development by <a href="mailto:anatolij@zelenin.de">Anatolij Zelenin</a> and <a href="https://github.com/weiznich">Georg Semmler</a>]]></string>
+    <string name="credits_design"><![CDATA[Icon & Interface design by <a href="http://alexkaessner.de/">Alexander Käßner</a>]]></string>
     <string name="credits_github">GitHub</string>
     <string name="credits_gplus">Google+</string>
     <string name="credits_feedback">Send Feedback</string>
-    <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nThis is Free Software licensed under the GPLv3</string>
+    <string name="credits_copyright">© 2013–2015 Anatolij Zelenin, Georg Semmler\nThis is Free Software licensed under the GPLv3</string>
     <string name="credits_translations">Translations</string>
     <string name="credits_libraries">Libraries</string>
     <string name="credits_license_title">License</string>

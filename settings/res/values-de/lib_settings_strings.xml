@@ -19,14 +19,14 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Konto hinzufügen</string>
-  <string name="account_title">Konten</string>
+  <string name="account_title">Accounts</string>
   <string name="sync_new">Neues Konto</string>
   <string name="sync_use">Verwende Synchronisation</string>
   <string name="sync_warning">Der Sync ist noch sehr experimentell</string>
   <string name="sync_warning_message">Die Synchronisierung läuft noch sehr instabil. Du kannst sie aber gerne Ausprobieren (Mach vorher aber ein Backup!) – Bist du sicher?</string>
   <string name="sync_use_summary_taskwarrior">Sync mit Taskwarrior als %s</string>
   <string name="sync_use_summary_mirakel">Sync mit Mirakel als %s</string>
-  <string name="sync_use_summary_nothing">Benutze die Synchronisierung nicht</string>
+  <string name="sync_use_summary_nothing">Sync nicht benutzen</string>
   <string name="sync_user">Nutzername</string>
   <string name="sync_user_summary">Benutzername auf dem Server</string>
   <string name="sync_server">Server</string>
@@ -48,7 +48,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="sync_taskwarrior_scan_qr">QR-Code scannen</string>
   <string name="sync_taskwarrior_select_file">Konfiguration auswählen</string>
   <string name="sync_taskwarrior_how_to">Wie installiert man seinen eigenen Server</string>
-  <string name="sync_taskwarrior_own_server">oder nutze deinen eigenen Server</string>
+  <string name="sync_taskwarrior_own_server">oder nutze Deinen eigenen Server</string>
   <string name="sync_taskwarrior_url_error">Die URL ist nicht korrekt. Wurde der Code richtig eingescannt?</string>
   <string name="sync_taskwarrior_configuring">Richte Synchronisierung ein…</string>
   <string name="sync_taskwarrior_about">Wenn Du bereits ein Taskwarrior-Konto besitzt:</string>
@@ -103,6 +103,8 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="changelog_click">Changelog</string>
   <string name="settings_about">Über uns</string>
   <string name="settings_help">Hilfe</string>
+  <string name="get_dashclock">Mirakel-Dashclock installieren</string>
+  <string name="get_dashclock_summary">Mirakel-Erweiterung für Dashclock installieren</string>
   <string name="import_astrid_click">Astrid Import</string>
   <string name="astrid_success">Alle Daten erfolgreich importiert!</string>
   <string name="importing">Importiere</string>
@@ -125,12 +127,13 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="semantic_new_task">Neue Aufgabenvorlage</string>
   <string name="semantic_new_task_config_summary">Konfiguriere die Bedingungen für das Erstellen neuer Aufgaben</string>
   <string name="semantic_new_task_config">Aufgabenvorlagen konfigurieren</string>
+  <string name="useTabletLayout">Tablet-Layout verwenden</string>
   <string name="general">Allgemein</string>
   <string-array name="tablet_options">
     <item>nie</item>
     <item>Querformat</item>
     <item>Hochformat</item>
-    <item>portrait and landscape</item>
+    <item>Hoch- und Querformat</item>
   </string-array>
   <string name="delete_done">Erledigte Aufgaben löschen</string>
   <string name="delete_done_summary">Löscht alle erledigten Aufgaben</string>
@@ -139,7 +142,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="delete_done_success">Die erledigten Aufgaben wurden erfolgreich gelöscht.</string>
   <string name="menu_color">Farbe ändern</string>
   <string name="howto_setup_server">Wie man einen Server einrichtet</string>
-  <string name="register_server">Wenn du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst du auch selbst einen Account anlegen können.</string>
+  <string name="register_server">Wenn Du einen Account auf unserem Server benötigst, sende uns bitte eine E-Mail. Mit der nächsten Version wirst Du auch selbst einen Account anlegen können.</string>
   <string name="special_lists_title">Meta-Listen</string>
   <string name="register">Registrieren</string>
   <string name="auto_backup_interval">Sicherungsintervall</string>
@@ -181,8 +184,8 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="semantics_no_due">Kein Fälligkeitsdatum setzen</string>
   <string name="settings_file_default_title">Aufgabenname für importierte Dateien</string>
   <string name="semantic_new">Vorlage</string>
-  <string name="tag_new">Neues Tag</string>
-  <string name="tag_settings">Tageinstellungen</string>
+  <string name="tag_new">Neuer Tag</string>
+  <string name="tag_settings">Tag-Einstellungen</string>
   <string name="color">Farbe</string>
   <string name="tag_name">Name</string>
   <string name="tag_dark_text">Soll der Text schwarz sein?</string>
@@ -196,21 +199,26 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="settings_tasks_title">Aufgaben</string>
   <string name="settings_dev">Entwicklungseinstellungen</string>
   <string name="settings_dev_sync">Sync</string>
+  <string name="settings_dev_dump_tw_summary">Speicher den erhaltenen Text unter /sdcard/Mirakel/</string>
+  <string name="settings_dev_dump_tw">Speicher empfängt Synchronisierungsnachrichten</string>
   <string name="enable">Aktiviere</string>
   <string name="disable">Deaktiviere</string>
   <string name="enabled">aktiviert</string>
   <string name="disabled">deaktiviert</string>
   <string name="change_dev_mode">Du hast die Entwicklungseinstellungen %s!</string>
+  <string name="enableDebugLog">Aktiviere Debug Logcat?</string>
   <string name="action_contact">Kontakt / Fehler melden</string>
   <string name="action_contact_summary">Schreib uns eine E-Mail!</string>
-  <string name="title_donations">Spende</string>
+  <string name="title_donations">Spenden</string>
   <string name="add">Hinzufügen</string>
   <string name="action_credits">Credits</string>
   <string name="action_credits_summary">Über uns</string>
   <string name="demo_mode">Demo-Modus</string>
   <string name="demo_drop_db">Demo-Datenbank zurücksetzen</string>
   <string name="write_logs_to_file">Log in Datei speichern</string>
+  <string name="alert_caldav">Der CalDAV-Sync ist fehlerhaft. Wir haben keine Zeit, CalDAV weiter zu unterstützen. Bitte sichern Sie Ihre Daten bevor Sie fortfahren.</string>
   <string name="alert_caldav_title">CalDAV-Informationen</string>
+  <string name="alert_taskwarrior">Der Taskwarrior Sync ist fehlerhaft. Wir haben keine Zeit, Taskwarrior weiter zu unterstützen. Bitte sichern Sie Ihre Daten bevor Sie fortfahren.</string>
   <string name="alert_taskwarrior_title">Taskwarrior-Informationen</string>
   <string name="special_list_where_subtask_title_text">Unteraufgaben</string>
   <string name="special_list_where_tag_title_text">Tags</string>
@@ -222,8 +230,8 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   </string-array>
   <string-array name="file_choice">
     <item>Nicht festgelegt</item>
-    <item>Hat Datei</item>
-    <item>Has no file</item>
+    <item>Datei vorhanden</item>
+    <item>Enthält keine Datei</item>
   </string-array>
   <string name="remove">Entfernen</string>
   <string name="no_account_selected">Kein Konto ausgewählt</string>
@@ -233,6 +241,7 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="no_tag_selected">Kein Tag ausgewählt</string>
   <string name="sharing_title">Teilen</string>
   <string name="backup_title">Backup</string>
+  <string name="third_party_title">Apps von Drittanbietern</string>
   <string name="title_settings">Einstellungen</string>
   <string name="subcondition">Unterbedingung</string>
   <string name="done_text">Nur erledigte Aufgaben</string>
@@ -251,8 +260,21 @@ In Kürze wird die officizielle DAVdroid App ebenfalls Mirakel unterstützen. Wi
   <string name="delete_condition">Bedingung löschen</string>
   <string name="delete_semantic">Aufgabenvorlage löschen</string>
   <string name="delete_special_lists">Meta-Liste löschen</string>
+  <string name="settings_widget_title">Widget-Einstellungen</string>
+  <string name="version_string">Version: %1$s Basierend auf %2$s</string>
+  <string name="analytics_use">Anonyme Statistiken reporten</string>
+  <string name="analytics_use_summary">Die Statistiken helfen uns, Mirakel Zu verbessern</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">Mirakel ist open Source, helfen Sie auf GitHub</string>
+  <string name="credits_dev">Entwickelt von Anatolij Zelenin und Georg Semmler</string>
+  <string name="credits_design">Icon &amp; Interface Design von Alexander Käßner</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">Feedback geben</string>
+  <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\n Freie Software unter der GPLv3 Lizenz</string>
   <string name="credits_translations">Übersetzungen</string>
+  <string name="credits_libraries">Bibliotheken</string>
   <string name="credits_license_title">Lizenz</string>
+  <string name="credits_license">&lt;p&gt;Dieses Programm ist freie Software: Sie können dies weitergeben und verändern jeweils unter den Bedingungen der &lt;a href="https://www.gnu.org/licenses/gpl.html"&gt; GNU General Public License&lt;/a&gt;, wie von der Free Software Foundation, entweder gemäß Version 3 der Lizenz oder jeder späteren Version veröffentlicht.&lt;/p&gt; &lt;p&gt;Dieses Programm wird in der Hoffnung, dass es nützlich ist, aber ohne jede Garantie; und ohne stillschweigende Garantien der Marktgängigkeit oder Eignung für einen bestimmten Zweck zur Verfügung gestellt.  Unter der GNU General Public License finden Sie weitere Details.&lt;/p&gt;</string>
 </resources>
 

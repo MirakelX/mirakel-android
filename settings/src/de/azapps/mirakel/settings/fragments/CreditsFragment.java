@@ -33,6 +33,7 @@ import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -96,13 +97,19 @@ public class CreditsFragment extends Fragment implements IDetailFragment<Setting
         final View rootView = inflater.inflate(R.layout.fragment_credits, null);
 
         final TextView devCredits = (TextView) rootView.findViewById(R.id.dev_credits);
-        ViewHelper.setCompoundDrawable(devCredits,
-                                       ThemeManager.getColoredIcon(R.drawable.ic_build_white_24dp,
-                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+        devCredits.setText(Html.fromHtml(getString(R.string.credits_dev)));
+        devCredits.setMovementMethod(LinkMovementMethod.getInstance());
+        final ImageView devCreditsIcon = (ImageView) rootView.findViewById(R.id.dev_credits_icon);
+        devCreditsIcon.setImageDrawable(ThemeManager.getColoredIcon(R.drawable.ic_build_white_24dp,
+                                        ThemeManager.getColor(R.attr.colorTextSettings)));
+
         final TextView designCredits = (TextView) rootView.findViewById(R.id.design_credits);
-        ViewHelper.setCompoundDrawable(designCredits,
-                                       ThemeManager.getColoredIcon(R.drawable.ic_brush_white_24dp,
-                                               ThemeManager.getColor(R.attr.colorTextGrey)), getActivity());
+        designCredits.setText(Html.fromHtml(getString(R.string.credits_design)));
+        designCredits.setMovementMethod(LinkMovementMethod.getInstance());
+        final ImageView designCreditsIcon = (ImageView) rootView.findViewById(R.id.design_credits_icon);
+        designCreditsIcon.setImageDrawable(ThemeManager.getColoredIcon(R.drawable.ic_brush_white_24dp,
+                                           ThemeManager.getColor(R.attr.colorTextSettings)));
+
         initTranslations(rootView);
         initLibaries(rootView);
         initButtons(rootView);

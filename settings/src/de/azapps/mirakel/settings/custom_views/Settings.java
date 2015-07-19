@@ -45,6 +45,7 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.fragments.AboutSettingsFragment;
@@ -276,7 +277,11 @@ public enum  Settings implements IGenericElementInterface {
             screen.addPreference(cat);
             cat.setTitle(id.getKey());
             for (final Settings setting : id.getValue()) {
-                if ((setting == DEV || setting == SYNC) && !MirakelCommonPreferences.isEnabledDebugMenu()) {
+                if (setting == DEV && !MirakelCommonPreferences.isEnabledDebugMenu()) {
+                    continue;
+                }
+                if (setting == SYNC && !(MirakelCommonPreferences.isEnabledDebugMenu() ||
+                                         AccountMirakel.hasTaskWarriorAccount())) {
                     continue;
                 }
                 cat.addItemFromInflater(setting.getPreference(onClick));

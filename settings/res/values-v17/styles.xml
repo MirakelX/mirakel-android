@@ -22,7 +22,7 @@
     tools:ignore="NewApi">
 
     <style name="ImageButtonStyleBase">
-        <item name="android:background">?colorAccent</item>
+        <item name="android:background">@drawable/image_button_background</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
@@ -35,13 +35,13 @@
         <item name="android:drawablePadding">@dimen/marginLeft</item>
         <item name="android:gravity">center</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textAppearance">@style/TextAppearance.Bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.Regular.Small</item>
         <item name="android:textColor">?colorTextWhite</item>
     </style>
 
     <style name="CardTitleView">
         <item name="android:textAppearance">@style/TextAppearance.Bold</item>
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">?colorTextSettings</item>
         <item name="android:layout_marginBottom">24dp</item>
     </style>
 </resources>

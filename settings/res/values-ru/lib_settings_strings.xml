@@ -19,7 +19,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <string name="sync_add">Добавить аккаунт</string>
-  <string name="account_title">Учетные записи</string>
+  <string name="account_title">Аккаунты</string>
   <string name="sync_new">Новый аккаунт</string>
   <string name="sync_use">Применить синхронизацию</string>
   <string name="sync_warning">Синхронизация ещё нестабильная</string>
@@ -51,10 +51,10 @@
   <string name="sync_taskwarrior_own_server">или просто использовать свой собственный сервер</string>
   <string name="sync_taskwarrior_url_error">URL-адрес не является правильным. Действительно ли вы сканировали правильный код?</string>
   <string name="sync_taskwarrior_configuring">Настройка синхронизации…</string>
-  <string name="sync_taskwarrior_about">Если у вас уже есть учетная запись taskwarrior:</string>
+  <string name="sync_taskwarrior_about">Если у вас уже есть аккаунт taskwarrior:</string>
   <string name="sync_taskwarrior_register">Если нет, то вы можете зарегистрировать новый аккаунт на нашем сервере:</string>
   <string name="sync_taskwarrior_register_button">Зарегистрироваться</string>
-  <string name="sync_taskwarrior_setup_success">Настройка аккауна прошла успешно</string>
+  <string name="sync_taskwarrior_setup_success">Настройка аккаунта прошла успешно</string>
   <string name="sync_taskwarrior_error_download">Не удалось загрузить файл конфигурации</string>
   <string name="sync_taskwarrior_select_file_not_exists">Файл не существует</string>
   <string name="sync_defaultAccount">Использовать в качестве аккаунта по умолчанию?</string>
@@ -103,6 +103,8 @@
   <string name="changelog_click">Список изменений</string>
   <string name="settings_about">О нас</string>
   <string name="settings_help">Помощь</string>
+  <string name="get_dashclock">Установить Mirakel Dashclock</string>
+  <string name="get_dashclock_summary">Установить расширение Mirakel для Dashclock</string>
   <string name="import_astrid_click">Импорт из Astrid</string>
   <string name="astrid_success">Все данные успешно импортированы!</string>
   <string name="importing">Импортируется</string>
@@ -125,12 +127,13 @@
   <string name="semantic_new_task">Новый шаблон задачи</string>
   <string name="semantic_new_task_config_summary">Настройте условия для создания новых задач</string>
   <string name="semantic_new_task_config">Настройка шаблонов задач</string>
+  <string name="useTabletLayout">Интерфейс для планшета</string>
   <string name="general">Общие</string>
   <string-array name="tablet_options">
     <item>никогда</item>
     <item>альбомная</item>
     <item>портретная</item>
-    <item>portrait and landscape</item>
+    <item>альбомный и ландшафтный</item>
   </string-array>
   <string name="delete_done">Удаление выполненных дел</string>
   <string name="delete_done_summary">Удалить все выполненные дела</string>
@@ -196,11 +199,14 @@
   <string name="settings_tasks_title">Дела</string>
   <string name="settings_dev">Конфигурируемые значения для разработки приложения</string>
   <string name="settings_dev_sync">Синхронизация</string>
+  <string name="settings_dev_dump_tw_summary">Сохранить полученный текст в каталоге /sdcard/mirakel/</string>
+  <string name="settings_dev_dump_tw">Сохранить полученные сообщения синхронизации</string>
   <string name="enable">Включение</string>
   <string name="disable">Отключение</string>
   <string name="enabled">включено</string>
   <string name="disabled">отключен</string>
   <string name="change_dev_mode">У вас есть %s параметров разработки!</string>
+  <string name="enableDebugLog">Включение отладку Logcat?</string>
   <string name="action_contact">Связаться / сообщить об ошибке</string>
   <string name="action_contact_summary">Напишите нам по электронной почте!</string>
   <string name="title_donations">Пожертвовать</string>
@@ -210,7 +216,9 @@
   <string name="demo_mode">Демонстрационный режим</string>
   <string name="demo_drop_db">Очистить демонстрационную базу данных</string>
   <string name="write_logs_to_file">Записать логи в файл</string>
+  <string name="alert_caldav">В синхронизации CalDAV много ошибок и у нас нету времени больше поддерживать CalDAV. Пожалуйста, сделайте резервную копию ваших данных перед продолжением.</string>
   <string name="alert_caldav_title">Информация для CalDAV</string>
+  <string name="alert_taskwarrior">В синхронизации Taskwarrior много ошибок и у нас нету времени больше поддерживать Taskwarrior. Пожалуйста, сделайте резервную копию ваших данных перед продолжением.</string>
   <string name="alert_taskwarrior_title">Информация для Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Подзадачи</string>
   <string name="special_list_where_tag_title_text">Теги</string>
@@ -226,7 +234,7 @@
     <item>Не имеет файла</item>
   </string-array>
   <string name="remove">Удалить</string>
-  <string name="no_account_selected">Учетная запись не выбрана</string>
+  <string name="no_account_selected">Аккаунт не выбран</string>
   <string name="no_recurrence_selected">Повторение не выбрано</string>
   <string name="no_semantic_selected">Шаблон задачи не выбран</string>
   <string name="no_special_list_selected">Мета список не выбран</string>
@@ -252,8 +260,22 @@
   <string name="delete_condition">Удалить условие</string>
   <string name="delete_semantic">Удалить шаблон задачи</string>
   <string name="delete_special_lists">Удалить мета-список</string>
+  <string name="settings_widget_title">Настройки виджета</string>
+  <string name="version_string">Версия: %1$s собранная на %2$s</string>
+  <string name="analytics_use">Отсылать анонимную статистику</string>
+  <string name="analytics_use_summary">Отчеты помогают нам улучшить Mirakel для вас</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">Mirakel имеет открытый исходный код, не стесняйтесь делать вклад через GitHub</string>
+  <string name="credits_dev">Разработано Анатолием Зелениным и Георгом Семмлером</string>
+  <string name="credits_design">Разработчик значка &amp; дизайна - Александр Касснер</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">Отправить Отзыв</string>
+  <string name="credits_copyright">© 2013 - 2015 год. Анатолий Зеленин, Георг Семмлер\nЭто — свободное программное обеспечение, лицензированное под GPLv3</string>
   <string name="credits_translations">Локализация</string>
+  <string name="credits_libraries">Библиотеки</string>
   <string name="credits_license_title">Условия использования</string>
+  <string name="credits_license"><![CDATA[<p>Это бесплатное ПО: вы можете передавать/модифицировать его в соответствии с <a href="https://www.gnu.org/licenses/gpl.html">Стандартной общественной лицензией GNU</a>, опубликованной Фондом свободного ПО, (3 версия или выше).</p>
+<p>Эта программа распространяется в надежде на то, что она будет полезна, но без всяких гарантий; даже без подразумеваемых гарантий товарности или пригодности для какой-либо конкретной цели. Прочитайте Стандартную общественную лицензию GNU для дополнительной информации.</p>]]></string>
 </resources>
 

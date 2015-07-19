@@ -103,6 +103,8 @@
   <string name="changelog_click">変更履歴</string>
   <string name="settings_about">アプリについて</string>
   <string name="settings_help">ヘルプ</string>
+  <string name="get_dashclock">Mirakel Dashclock を入手</string>
+  <string name="get_dashclock_summary">Dashclock の Mirakel 拡張を入手します</string>
   <string name="import_astrid_click">Astrid からインポート</string>
   <string name="astrid_success">すべてのデータを正常にインポートしました!</string>
   <string name="importing">インポート中</string>
@@ -125,12 +127,13 @@
   <string name="semantic_new_task">新しいタスク テンプレート</string>
   <string name="semantic_new_task_config_summary">新しいタスクを作成する条件を設定します</string>
   <string name="semantic_new_task_config">タスク テンプレートを設定</string>
+  <string name="useTabletLayout">タブレット レイアウトを使用</string>
   <string name="general">全般</string>
   <string-array name="tablet_options">
     <item>なし</item>
     <item>横置き</item>
     <item>縦置き</item>
-    <item>portrait and landscape</item>
+    <item>縦向きと横向き</item>
   </string-array>
   <string name="delete_done">完了タスクを削除</string>
   <string name="delete_done_summary">完了タスクをすべて削除</string>
@@ -196,11 +199,14 @@
   <string name="settings_tasks_title">タスク</string>
   <string name="settings_dev">開発設定</string>
   <string name="settings_dev_sync">同期</string>
+  <string name="settings_dev_dump_tw_summary">受信したテキストを /sdcard/mirakel/ に保存します</string>
+  <string name="settings_dev_dump_tw">受信した同期メッセージを格納</string>
   <string name="enable">有効にします</string>
   <string name="disable">無効にします</string>
   <string name="enabled">有効</string>
   <string name="disabled">無効</string>
   <string name="change_dev_mode">%s の開発設定があります!</string>
+  <string name="enableDebugLog">デバッグ Logcat を有効にする?</string>
   <string name="action_contact">お問い合わせ/バグを報告</string>
   <string name="action_contact_summary">私たちにメールを送ってください!</string>
   <string name="title_donations">寄付</string>
@@ -210,7 +216,9 @@
   <string name="demo_mode">デモモード</string>
   <string name="demo_drop_db">デモ データベースをリセット</string>
   <string name="write_logs_to_file">ログをファイルに書き込む</string>
+  <string name="alert_caldav">CalDAV 同期はバグがあり、私たちはもう CalDAV をサポートする時間がありません。続行する前にデータをバックアップしてください。</string>
   <string name="alert_caldav_title">CalDAV の情報</string>
+  <string name="alert_taskwarrior">Taskwarrior 同期はバグがあり、私たちはもう Taskwarrior をサポートする時間がありません。続行する前にデータをバックアップしてください。</string>
   <string name="alert_taskwarrior_title">Taskwarrior の情報</string>
   <string name="special_list_where_subtask_title_text">サブタスク</string>
   <string name="special_list_where_tag_title_text">タグ</string>
@@ -252,8 +260,22 @@
   <string name="delete_condition">条件を削除</string>
   <string name="delete_semantic">タスク テンプレートを削除</string>
   <string name="delete_special_lists">メタリストを削除</string>
+  <string name="settings_widget_title">ウィジェットの設定</string>
+  <string name="version_string">バージョン: %1$s ビルド日 %2$s</string>
+  <string name="analytics_use">匿名の統計情報を報告</string>
+  <string name="analytics_use_summary">あなたの報告が Mirakel を向上させる手助けになります</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">Mirakel はオープン ソースです。GitHub で自由に貢献してください</string>
+  <string name="credits_dev">Anatolij Zelenin と Georg Semmler によって開発</string>
+  <string name="credits_design">アイコン &amp; インターフェイスは Alexander Käßner がデザインしました</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">フィードバックを送る</string>
+  <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nこれは GPLv3 でライセンスされるフリーソフトウェアです</string>
   <string name="credits_translations">翻訳</string>
+  <string name="credits_libraries">ライブラリー</string>
   <string name="credits_license_title">ライセンス</string>
+  <string name="credits_license"><![CDATA[<p>このプログラムはフリーソフトウェアです: あなたはこれを、フリーソフトウェア財団によって発行された <a href="https://www.gnu.org/licenses/gpl.html">GNU 一般公衆利用許諾契約書</a> バージョン3か、(希望によっては)それ以降のバージョンのうちどれかの定める条件の下で再頒布または改変することができます。</p>
+<p>このプログラムは有用であることを願って頒布されますが、*全くの無保証* です。商業可能性の保証や特定の目的への適合性は、言外に示されたものも含め全く存在しません。詳しくはGNU 一般公衆利用許諾契約書をご覧ください。</p>]]></string>
 </resources>
 
