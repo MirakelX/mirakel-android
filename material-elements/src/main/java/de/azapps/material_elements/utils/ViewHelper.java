@@ -19,6 +19,7 @@
 
 package de.azapps.material_elements.utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -27,17 +28,24 @@ import android.view.View;
 import android.widget.TextView;
 
 public class ViewHelper {
-    public static float dpToPx(final float dp, final Context ctx) {
+
+    public static int dpToPx(final Context ctx, final int dp) {
+        return (int) dpToPx(ctx, (float) dp);
+    }
+
+    public static float dpToPx(final Context ctx, final float dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                                          ctx.getResources().getDisplayMetrics());
     }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRTL(final Context ctx) {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
                (ctx.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
     }
 
-    public static void setCompoundDrawable(final TextView title, final Drawable icon,
-                                           final Context context) {
+    public static void setCompoundDrawable(final Context context, final TextView title,
+                                           final Drawable icon) {
         if (ViewHelper.isRTL(context)) {
             title.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
         } else {

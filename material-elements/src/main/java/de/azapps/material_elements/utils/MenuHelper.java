@@ -20,9 +20,13 @@
 package de.azapps.material_elements.utils;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v7.internal.view.menu.MenuBuilder;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import java.lang.reflect.Method;
 
@@ -45,6 +49,20 @@ public class MenuHelper {
                 Log.e(TAG, "onMenuOpened", e);
             } catch (final Exception e) {
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void colorizeMenuItems(final Menu menu, final int color) {
+        colorizeMenuItems(menu, color, 0);
+    }
+
+    public static void colorizeMenuItems(final Menu menu, final int color, final int startIndex) {
+        for (int i = startIndex; i < menu.size(); i++) {
+            final MenuItem menuItem = menu.getItem(i);
+            final Drawable icon = menuItem.getIcon();
+            if (icon != null) {
+                icon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
             }
         }
     }

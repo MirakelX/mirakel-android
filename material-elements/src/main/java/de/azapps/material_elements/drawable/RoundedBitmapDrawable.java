@@ -38,22 +38,21 @@ import android.graphics.drawable.Drawable;
  * see http://www.curious-creature.com/2012/12/11/android-recipe-1-image-with-rounded-corners/
  */
 public class RoundedBitmapDrawable extends Drawable {
-    private static final boolean USE_VIGNETTE = true;
 
     private final float mCornerRadius;
     private final RectF mRect = new RectF();
-    private final BitmapShader mBitmapShader;
     private final Paint mPaint;
     private final int mMargin;
+    private final Bitmap bitmap;
 
     public RoundedBitmapDrawable(final Bitmap bitmap, final float cornerRadius, final int margin) {
+        this.bitmap = bitmap;
         mCornerRadius = cornerRadius;
-
-        mBitmapShader = new BitmapShader(bitmap,
-                                         Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
+        final BitmapShader mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP,
+                Shader.TileMode.CLAMP);
         mPaint.setShader(mBitmapShader);
 
         mMargin = margin;
@@ -63,20 +62,6 @@ public class RoundedBitmapDrawable extends Drawable {
     protected void onBoundsChange(final Rect bounds) {
         super.onBoundsChange(bounds);
         mRect.set(mMargin, mMargin, bounds.width() - mMargin, bounds.height() - mMargin);
-
-        if (USE_VIGNETTE) {
-            final RadialGradient vignette = new RadialGradient(
-                mRect.centerX(), (mRect.centerY() * 1.0f) / 0.7f, mRect.centerX() * 1.3f,
-                new int[] { 0, 0, 0x7f000000 }, new float[] { 0.0f, 0.7f, 1.0f },
-                Shader.TileMode.CLAMP);
-
-            Matrix oval = new Matrix();
-            oval.setScale(1.0f, 0.7f);
-            vignette.setLocalMatrix(oval);
-
-            mPaint.setShader(
-                new ComposeShader(mBitmapShader, vignette, PorterDuff.Mode.SRC_OVER));
-        }
     }
 
     @Override
