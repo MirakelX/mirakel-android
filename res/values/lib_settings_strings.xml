@@ -84,8 +84,6 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="notifications_persistent">Persistent notifications</string>
     <string name="notifications_list">Show List</string>
     <string name="notifications_list_summary">Show \"%s\"</string>
-    <string name="notifications_list_open">Open List</string>
-    <string name="notifications_list_open_summary">Open \"%s\"</string>
     <string name="default_list">Default List</string>
     <string name="reminder">Reminder</string>
     <string name="reminders_persistent">Persistent reminder</string>
