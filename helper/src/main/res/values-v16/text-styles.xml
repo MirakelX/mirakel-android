@@ -20,40 +20,18 @@
 
 <resources>
 
-    <style name="TextAppearance.Base" parent="android:TextAppearance">
-        <item name="android:textSize">@dimen/text_size_regular</item>
-    </style>
-
     <!-- Regular -->
     <style name="TextAppearance.Regular" parent="TextAppearance.Base">
         <item name="android:fontFamily">sans-serif</item>
     </style>
-    <style name="TextAppearance.Regular.Small" parent="TextAppearance.Regular">
-        <item name="android:textSize">@dimen/text_size_small</item>
-    </style>
-    <style name="TextAppearance.Regular.Large" parent="TextAppearance.Regular">
-        <item name="android:textSize">@dimen/text_size_large</item>
-    </style>
 
-    <!-- Bold -->
-    <style name="TextAppearance.Bold" parent="TextAppearance.Regular">
+    <style name="TextAppearance.Medium" parent="TextAppearance.Regular">
         <item name="android:textStyle">bold</item>
-    </style>
-    <style name="TextAppearance.Bold.Small" parent="TextAppearance.Bold">
-        <item name="android:textSize">@dimen/text_size_small</item>
-    </style>
-    <style name="TextAppearance.Bold.Large" parent="TextAppearance.Bold">
-        <item name="android:textSize">@dimen/text_size_large</item>
     </style>
 
     <!-- Light -->
     <style name="TextAppearance.Light" parent="TextAppearance.Base">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
-    <style name="TextAppearance.Light.Small" parent="TextAppearance.Light">
-        <item name="android:textSize">@dimen/text_size_small</item>
-    </style>
-    <style name="TextAppearance.Light.Large" parent="TextAppearance.Light">
-        <item name="android:textSize">@dimen/text_size_large</item>
-    </style>
+
 </resources>

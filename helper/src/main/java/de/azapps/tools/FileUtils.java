@@ -339,6 +339,9 @@ public class FileUtils {
     public static boolean isAudio(final Uri uri) {
         return checkMimeBaseType(uri, "audio");
     }
+    public static boolean isVideo(final Uri uri) {
+        return checkMimeBaseType(uri, "video");
+    }
 
     public static boolean isImage(final Uri uri) {
         return checkMimeBaseType(uri, "image");

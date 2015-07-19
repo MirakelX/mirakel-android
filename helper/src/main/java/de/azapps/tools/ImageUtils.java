@@ -24,7 +24,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -41,8 +43,8 @@ public class ImageUtils {
     * "Source: http://www.androiddevelopersolution.com/2012/09/bitmap-how-to-scale-down-image-for.html"
     */
     @Nullable
-    public static Bitmap getScaleImage(final @NonNull Uri path, final @NonNull Context ctx,
-                                       final float boundBoxInDp) throws IOException, FileNotFoundException {
+    public static Bitmap getScaleImage(final @NonNull Context ctx, final @NonNull Uri path,
+                                       final float boundBoxInDp, boolean useLongerSide) throws IOException {
         final Bitmap bitmap = BitmapFactory.decodeStream(FileUtils.getStreamFromUri(ctx, path));
         if (bitmap == null) {
             return null;
@@ -57,7 +59,12 @@ public class ImageUtils {
         // bounding box AND either x/y axis touches it.
         final float xScale = boundBoxInDp / width;
         final float yScale = boundBoxInDp / height;
-        final float scale = (xScale <= yScale) ? xScale : yScale;
+        final float scale;
+        if (useLongerSide) {
+            scale = (xScale >= yScale) ? xScale : yScale;
+        } else {
+            scale = (xScale <= yScale) ? xScale : yScale;
+        }
         // Create a matrix for the scaling and add the scaling data
         final Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
@@ -68,6 +75,30 @@ public class ImageUtils {
         // Apply the scaled bitmap
         return Bitmap.createBitmap(bitmap, 0, 0, width,
                                    height, matrix, false);
+    }
+
+    public static Bitmap getSquaredImage(final @NonNull Context ctx, final @NonNull Uri path,
+                                         final float boundBoxInDp) throws IOException {
+        Bitmap scaledBitmap = getScaleImage(ctx, path, boundBoxInDp, true);
+        if (scaledBitmap == null) {
+            return null;
+        }
+        Bitmap newBitmap = Bitmap.createBitmap((int) boundBoxInDp, (int) boundBoxInDp,
+                                               scaledBitmap.getConfig());
+        Canvas canvas = new Canvas(newBitmap);
+        final int top, left;
+        if (scaledBitmap.getWidth() > scaledBitmap.getHeight()) {
+            top = 0;
+            left = (int) (scaledBitmap.getWidth() - boundBoxInDp) / 2;
+        } else {
+            left = 0;
+            top = (int) (scaledBitmap.getHeight() - boundBoxInDp) / 2;
+
+        }
+        Rect srcRect = new Rect(left, top, (int) (left + boundBoxInDp), (int) (top + boundBoxInDp));
+        canvas.drawBitmap(scaledBitmap, srcRect, new Rect(0, 0, (int) boundBoxInDp, (int) boundBoxInDp),
+                          null);
+        return newBitmap;
     }
 
     private static int getOrientation( final Uri photoUri, final Context ctx) throws IOException {
