@@ -502,7 +502,7 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         noteView.setOnNoteChangedListener(noteChangedListener);
         datesView.setData(task);
         datesView.setListeners(dueEditListener, listEditListener, reminderEditListener,
-                               dueRecurrenceEditListener, reminderRecurrenceEditListener);
+                               dueRecurrenceEditListener);
         priorityChangeView.setPriority(task.getPriority());
         priorityChangeView.setOnPriorityChangeListener(this);
         taskTags.setTags(task.getTags());
@@ -700,25 +700,6 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
                 }
             }, task.getRecurrence(), true, false);
             rp.show(getFragmentManager(), "recurrencePickerDue");
-        }
-    };
-
-    private final View.OnClickListener reminderRecurrenceEditListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View v) {
-            RecurrencePickerDialog rp = RecurrencePickerDialog.newInstance(new
-            RecurrencePickerDialog.OnRecurrenceSetListener() {
-
-                @Override
-                public void onRecurrenceSet(@NonNull final Optional<Recurring> r) {
-                    if (r.isPresent()) {
-                        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_RECURRING_REMINDER);
-                    }
-                    task.setRecurringReminder(r);
-                    task.save();
-                }
-            }, task.getRecurringReminder(), false, true);
-            rp.show(getFragmentManager(), "recurrencePickerReminder");
         }
     };
 
