@@ -63,6 +63,7 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
+import de.azapps.mirakel.analytics.AnalyticsWrapper;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
@@ -328,6 +329,9 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
     private synchronized void handleIntent(@Nullable final Intent intent) {
         if ((intent == null) || (intent.getExtras() == null)) {
             return;
+        }
+        if (!intent.getAction().equals(DefinitionsHelper.SHOW_LIST)) {
+            AnalyticsWrapper.track(AnalyticsWrapperBase.CATEGORY.HANDLE_INTENT, intent.getAction());
         }
         switch (intent.getAction()) {
         case DefinitionsHelper.SHOW_TASK:
