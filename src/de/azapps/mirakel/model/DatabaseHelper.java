@@ -921,8 +921,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 43:
             db.execSQL("DROP VIEW caldav_lists;");
             db.execSQL("DROP VIEW caldav_tasks;");
-            createCaldavListsTrigger(db);
-            createCaldavTasksTrigger(db);
+            createCaldavListsView(db);
+            createCaldavTasksView(db);
         case 44:
             createCaldavPropertyView(db);
         case 45:
@@ -982,8 +982,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 54:
             db.execSQL("DROP VIEW caldav_lists;");
             db.execSQL("DROP VIEW caldav_tasks;");
-            createCaldavListsTrigger(db);
-            createCaldavTasksTrigger(db);
+            createCaldavListsView(db);
+            createCaldavTasksView(db);
 
         default:
             break;
@@ -1093,7 +1093,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    private static void createCaldavListsTrigger(final SQLiteDatabase db) {
+    private static void createCaldavListsView(final SQLiteDatabase db) {
         db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level as list_access_level, visible, "
                    +
                    "a.enabled AS sync_enabled, owner AS list_owner\n"
@@ -1185,7 +1185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "visible INTEGER,\n" +
                    "sync_enabled INTEGER,\n" +
                    "owner TEXT);");
-        createCaldavListsTrigger(db);
+        createCaldavListsView(db);
     }
 
 
@@ -1226,10 +1226,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "parent_id INTEGER,\n" +
                    "sorting TEXT,\n" +
                    "has_alarms INTEGER);");
-        createCaldavTasksTrigger(db);
+        createCaldavTasksView(db);
     }
 
-    private static void createCaldavTasksTrigger(final SQLiteDatabase db) {
+    private static void createCaldavTasksView(final SQLiteDatabase db) {
         // View
         db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
                    "e._sync_id,\n" +
