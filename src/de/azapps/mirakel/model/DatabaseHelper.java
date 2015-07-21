@@ -80,7 +80,7 @@ import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 55;
+    public static final int DATABASE_VERSION = 56;
 
     private static final String TAG = "DatabaseHelper";
     public static final String CREATED_AT = "created_at";
@@ -984,6 +984,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP VIEW caldav_tasks;");
             createCaldavListsView(db);
             createCaldavTasksView(db);
+        case 55:
+            db.execSQL("DROP VIEW caldav_tasks;");
+            createCaldavTasksView(db);
 
         default:
             break;
@@ -1331,8 +1334,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "         WHEN new.priority <= 9 THEN -1 \n" +
                    "    ELSE 0\n" +
                    "    END,\n" +
-                   "    new.created / 1000,\n" +
-                   "    new.last_modified / 1000);\n" +
+                   "    CASE WHEN new.created IS NULL THEN strftime('%s','now') ELSE new.created / 1000 END,\n" +
+                   "    CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END);\n" +
                    "    INSERT INTO caldav_tasks_extra (task_id,_sync_id,location,geo,url,organizer,priority,classification, completed_is_allday,"
                    +
                    "    status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, "
@@ -1370,7 +1373,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "                WHEN new.priority <= 9 THEN -1 \n" +
                    "                ELSE 0\n" +
                    "END,\n" +
-                   "updated_at = new.last_modified / 1000\n" +
+                   "updated_at = CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END\n" +
                    "WHERE _id = old._id;\n" +
                    "INSERT OR REPLACE INTO caldav_tasks_extra VALUES (\n" +
                    "new._sync_id,\n" +
