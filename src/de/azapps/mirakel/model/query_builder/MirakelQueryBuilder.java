@@ -271,12 +271,16 @@ public class MirakelQueryBuilder {
         return query.toString();
     }
 
-    public String toString() {
-        String query = getQuery(MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
-        for (String proj : selectionArgs) {
+    public String toString(final Uri u) {
+        String query = getQuery(u);
+        for (final String proj : selectionArgs) {
             query = query.replaceFirst("\\?", proj);
         }
         return query;
+    }
+
+    public String toString() {
+        return toString(MirakelInternalContentProvider.TASK_VIEW_TAG_JOIN_URI);
     }
 
     public String getSelection() {
