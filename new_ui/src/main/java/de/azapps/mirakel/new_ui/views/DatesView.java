@@ -49,8 +49,6 @@ public class DatesView extends LinearLayout {
     private OnClickListener reminderEditListener;
     @Nullable
     private OnClickListener dueRecurrenceEditListener;
-    @Nullable
-    private OnClickListener reminderRecurrenceEditListener;
 
     @InjectView(R.id.dates_due)
     KeyValueView dueView;
@@ -59,8 +57,6 @@ public class DatesView extends LinearLayout {
 
     @InjectView(R.id.dates_reminder)
     KeyValueView reminderView;
-    @InjectView(R.id.dates_reminder_recurrence)
-    KeyValueView reminderRecurrenceView;
 
 
 
@@ -72,7 +68,6 @@ public class DatesView extends LinearLayout {
     private Optional<Calendar> reminder = absent();
     private boolean isDone;
     private Optional<Recurring> dueRecurrence;
-    private Optional<Recurring> reminderRecurrence;
 
 
 
@@ -93,8 +88,6 @@ public class DatesView extends LinearLayout {
                                 context.getString(R.string.task_due_recurrence_header));
         reminderView.setup(R.drawable.ic_alarm_white_18dp,
                            context.getString(R.string.task_reminder_header));
-        reminderRecurrenceView.setup(R.drawable.ic_alarm_repeat_white_18dp,
-                                     context.getString(R.string.task_reminder_header));
 
         listView.setup(R.drawable.ic_list_white_18dp, context.getString(R.string.task_list_header));
         listView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
@@ -110,8 +103,6 @@ public class DatesView extends LinearLayout {
 
             reminderView.setValue("today at 6 pm");
             reminderView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
-            reminderRecurrenceView.setValue("today at 6 pm");
-            reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
             listView.setValue("At home");
         } else {
             if (due.isPresent()) {
@@ -134,19 +125,9 @@ public class DatesView extends LinearLayout {
             if (reminder.isPresent()) {
                 reminderView.setValue(DateTimeHelper.formatReminder(getContext(), reminder.get()));
                 reminderView.setColor(TaskHelper.getTaskDueColor(reminder, false));
-                reminderRecurrenceView.setVisibility(VISIBLE);
-                if (reminderRecurrence.isPresent()) {
-                    reminderRecurrenceView.setValue(reminderRecurrence.get().generateDescription());
-                    reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextBlack));
-
-                } else {
-                    reminderRecurrenceView.setNoValue(getContext().getString(R.string.none_recurring));
-                    reminderRecurrenceView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
-                }
             } else {
                 reminderView.setNoValue(getContext().getString(R.string.reminder));
                 reminderView.setColor(ThemeManager.getColor(R.attr.colorTextGrey));
-                reminderRecurrenceView.setVisibility(GONE);
             }
         }
         invalidate();
@@ -159,20 +140,17 @@ public class DatesView extends LinearLayout {
         this.reminder = task.getReminder();
         this.isDone = task.isDone();
         this.dueRecurrence = task.getRecurrence();
-        this.reminderRecurrence = task.getRecurringReminder();
         rebuildLayout();
     }
 
     public void setListeners(final OnClickListener dueEditListener,
                              final OnClickListener listEditListener,
                              final OnClickListener reminderEditListener,
-                             final OnClickListener dueRecurrenceEditListener,
-                             final OnClickListener reminderRecurrenceEditListener) {
+                             final OnClickListener dueRecurrenceEditListener) {
         this.dueEditListener = dueEditListener;
         this.listEditListener = listEditListener;
         this.reminderEditListener = reminderEditListener;
         this.dueRecurrenceEditListener = dueRecurrenceEditListener;
-        this.reminderRecurrenceEditListener = reminderRecurrenceEditListener;
         rebuildLayout();
     }
 
@@ -203,12 +181,4 @@ public class DatesView extends LinearLayout {
             reminderEditListener.onClick(reminderView);
         }
     }
-
-    @OnClick(R.id.dates_reminder_recurrence)
-    void onReminderRecurrenceClick() {
-        if ((reminderRecurrenceEditListener != null) && reminder.isPresent()) {
-            reminderRecurrenceEditListener.onClick(reminderRecurrenceView);
-        }
-    }
-
 }

@@ -50,12 +50,12 @@ public class AnalyticsWrapper extends AnalyticsWrapperBase {
     }
 
     @Override
-    public void track(@NonNull final CATEGORY category, @NonNull final ACTION action,
+    public void track(@NonNull final CATEGORY category, @NonNull final String action,
                       @Nullable final String label, @Nullable final Long value) {
         if (tracker != null) {
             HitBuilders.EventBuilder builder = new HitBuilders.EventBuilder();
             builder.setCategory(category.toString())
-            .setAction(action.toString());
+            .setAction(action);
             if (label != null) {
                 builder.setLabel(label);
             }
