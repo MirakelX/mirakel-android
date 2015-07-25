@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -664,15 +665,17 @@ abstract class TaskBase extends ModelBase {
         if (o == null) {
             return false;
         }
-        if (((Object) this).getClass() != o.getClass()) {
+        if (!(o instanceof TaskBase)) {
             return false;
         }
         final TaskBase other = (TaskBase) o;
         if (this.additionalEntries == null) {
-            if (other.additionalEntries != null) {
-                return false;
-            }
-        } else if (!this.additionalEntries.equals(other.additionalEntries)) {
+            setAdditionalEntries(additionalEntriesString);
+        }
+        if (other.additionalEntries == null) {
+            setAdditionalEntries(other.additionalEntriesString);
+        }
+        if (!Objects.equal(this.additionalEntries, other.additionalEntries)) {
             return false;
         }
         if (!this.additionalEntriesString

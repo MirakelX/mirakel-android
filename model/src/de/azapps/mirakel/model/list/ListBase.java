@@ -301,7 +301,7 @@ abstract class ListBase extends ModelBase {
         if (this.syncState != other.syncState) {
             return false;
         }
-        if (this.iconPath != other.iconPath) {
+        if (!this.iconPath.equals(other.iconPath)) {
             return false;
         }
         return true;
