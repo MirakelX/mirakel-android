@@ -27,10 +27,10 @@ public abstract class AnalyticsWrapperBase {
     protected static AnalyticsWrapperBase singleton;
 
 
-
     public static AnalyticsWrapperBase getWrapper() {
         if (singleton == null) {
-            singleton = new AnalyticsWrapperBase() {};
+            singleton = new AnalyticsWrapperBase() {
+            };
         }
         return singleton;
     }
@@ -49,7 +49,7 @@ public abstract class AnalyticsWrapperBase {
     }
 
     public enum CATEGORY {
-        DUMB_USER, NORMAL_USER, ADVANCED_USER, POWER_USER
+        DUMB_USER, NORMAL_USER, ADVANCED_USER, POWER_USER, HANDLE_INTENT
     }
 
     public enum ACTION {
@@ -79,7 +79,12 @@ public abstract class AnalyticsWrapperBase {
     }
 
     public static void track(final ACTION action) {
-        getWrapper().track(action.getCategory(), action, null, null);
+        getWrapper().track(action.getCategory(), action.toString(), null, null);
+    }
+
+    public static void track(final CATEGORY category, final String label) {
+        getWrapper().track(category, label, null, null);
+
     }
 
     public static void setScreen(Object screen) {
@@ -90,7 +95,7 @@ public abstract class AnalyticsWrapperBase {
 
     }
 
-    public void track(@NonNull final CATEGORY category, @NonNull final ACTION action,
+    public void track(@NonNull final CATEGORY category, @NonNull final String action,
                       @Nullable final String label, @Nullable final Long value) {
 
     }
