@@ -238,10 +238,11 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             startIndex = 2;
         }
         if ((menu.findItem(R.id.menu_close_search) != null) && (menu.findItem(R.id.menu_search) != null)) {
-            menu.findItem(R.id.menu_search).setVisible(!(getTasksFragment().getList() instanceof
-                    SearchListMirakel));
-            menu.findItem(R.id.menu_close_search).setVisible((getTasksFragment().getList() instanceof
-                    SearchListMirakel));
+            // Somehow it is possible that the TasksFragment is getting null here
+            boolean showSearch = getTasksFragment() != null &&
+                                 getTasksFragment().getList() instanceof SearchListMirakel;
+            menu.findItem(R.id.menu_search).setVisible(!showSearch);
+            menu.findItem(R.id.menu_close_search).setVisible(showSearch);
         }
         if (menu.findItem(R.id.menu_sync_now) != null && !AccountMirakel.hasTaskWarriorAccount()) {
             menu.findItem(R.id.menu_sync_now).setVisible(false);
