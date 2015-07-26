@@ -280,8 +280,11 @@ public class ReminderAlarm extends BroadcastReceiver {
         }
 
         private void closeNotificationFor(final Task task) {
-            notificationManager.cancel(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId());
-            currentNotifications.remove(task.getId());
+            closeNotificationForTaskId(task.getId());
+        }
+        private void closeNotificationForTaskId(final long id) {
+            notificationManager.cancel(DefinitionsHelper.NOTIF_REMINDER + (int) id);
+            currentNotifications.remove(id);
         }
 
 
@@ -442,7 +445,7 @@ public class ReminderAlarm extends BroadcastReceiver {
                         sendNotificantion(task.get(), false);
                     }
                 } else {
-                    closeNotificationFor(task.get());
+                    closeNotificationForTaskId(e);
                 }
             }
         }
