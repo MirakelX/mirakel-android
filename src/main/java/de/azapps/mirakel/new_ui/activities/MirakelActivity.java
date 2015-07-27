@@ -35,7 +35,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,6 +56,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.azapps.changelog.Changelog;
 import de.azapps.ilovefs.ILoveFS;
+import de.azapps.material_elements.ActionBarActivity;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.ThemeManager;
@@ -98,7 +98,7 @@ import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
-public class MirakelActivity extends AppCompatActivity implements OnItemClickedListener<ModelBase>,
+public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase>,
     LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
@@ -149,8 +149,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        ThemeManager.setTheme(this);
-        Locale.setDefault(Helpers.getLocale(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         ButterKnife.inject(this);
@@ -164,6 +162,11 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
+    }
+
+    @Override
+    protected Locale getLocal() {
+        return Helpers.getLocale(this);
     }
 
 
