@@ -176,7 +176,6 @@ dependencies {
     compile project(':helper')
     compile project(':widget')
     compile project(':tw_sync')
-    compile project(':changelog')
     compile project(':settings')
     compile project(':ilovefs-android')
     compile project(':date-time-picker')

@@ -54,7 +54,7 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.azapps.changelog.Changelog;
+import de.azapps.mirakel.settings.custom_views.ChangelogDialog;
 import de.azapps.ilovefs.ILoveFS;
 import de.azapps.material_elements.ActionBarActivity;
 import de.azapps.material_elements.utils.AnimationHelper;
@@ -172,8 +172,10 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
 
     private void initThirdParty() {
         // Show ChangeLog
-        final Changelog cl = new Changelog(this);
-        cl.showChangelog();
+        if (!ChangelogDialog.isUpdated(this)) {
+            ChangelogDialog.show(this, DefinitionsHelper.APK_NAME);
+        }
+
         final ILoveFS ilfs = new ILoveFS(this, "mirakel@azapps.de",
                                          DefinitionsHelper.APK_NAME);
         if (ilfs.isILFSDay()) {
