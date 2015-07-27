@@ -31,6 +31,6 @@
   <string name="save_label">Erledigt</string>
   <string name="set_date">Datum</string>
   <string name="set_time">Zeit</string>
-  <string name="no_recurrence">Keine Wiederholung</string>
+  <string name="remove_reminder">Entfernen</string>
 </resources>
 

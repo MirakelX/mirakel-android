@@ -31,5 +31,6 @@
   <string name="save_label">Zrobione</string>
   <string name="set_date">Ustaw datę</string>
   <string name="set_time">Ustaw czas</string>
+  <string name="remove_reminder">Usuń</string>
 </resources>
 

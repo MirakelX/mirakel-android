@@ -31,6 +31,6 @@
   <string name="save_label">Terminada</string>
   <string name="set_date">Definir data</string>
   <string name="set_time">Definir hora</string>
-  <string name="no_recurrence">Sem recorrência</string>
+  <string name="remove_reminder">Remover</string>
 </resources>
 

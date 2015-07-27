@@ -31,6 +31,6 @@
   <string name="save_label">Hecho</string>
   <string name="set_date">Establecer fecha</string>
   <string name="set_time">Establecer hora</string>
-  <string name="no_recurrence">Ninguna repetición</string>
+  <string name="remove_reminder">Eliminar</string>
 </resources>
 
