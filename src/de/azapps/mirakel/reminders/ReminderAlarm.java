@@ -385,8 +385,11 @@ public class ReminderAlarm extends BroadcastReceiver {
         }
 
         public synchronized void clear() {
-            for (final Map.Entry<Long, Pair<Long, Task>> entry : activeReminders.entrySet()) {
-                removeReminderFor(entry.getValue().second);
+            final Set<Long> current = new HashSet<>(activeReminders.keySet());
+            for (final Long key : current) {
+                if (activeReminders.containsKey(key)) {
+                    removeReminderFor(activeReminders.get(key).second);
+                }
             }
         }
 
