@@ -87,7 +87,6 @@
   <string name="reminder_notification_list">Lijsten: %s</string>
   <string name="reminder_notification_due">Vervaldatum: %s</string>
   <string name="reminder_notification_done">Afgerond</string>
-  <string name="reminder_notification_later">Later</string>
   <string name="reminder_notification_done_confirm">De taak is \"afgerond\"</string>
   <string name="reminder_notification_later_confirm">Ik tip je in %d minuten</string>
   <string name="list_vanished">De taak is verdwenen. Het spijt me…</string>

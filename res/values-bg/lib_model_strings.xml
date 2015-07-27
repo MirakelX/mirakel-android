@@ -87,7 +87,6 @@
   <string name="reminder_notification_list">Списък: %s</string>
   <string name="reminder_notification_due">До периода: %s</string>
   <string name="reminder_notification_done">Свършено</string>
-  <string name="reminder_notification_later">По-късно</string>
   <string name="reminder_notification_done_confirm">Зададох задачата като \"завършена\"</string>
   <string name="reminder_notification_later_confirm">Ще ти напомня след %d минути</string>
   <string name="list_vanished">Опа, задачата е изчезнала. Съжалявам…</string>

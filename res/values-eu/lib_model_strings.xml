@@ -50,6 +50,7 @@
   <string name="recurrence_from">Noiztik</string>
   <string name="list_all">Zerrenda guztiak</string>
   <string name="list_today">Gaur</string>
+  <string name="list_week">Astea</string>
   <string name="list_overdue">Berandu</string>
   <string name="inbox">Sarrera ontzia</string>
   <string name="first_task">Lehen zeregina</string>
@@ -87,10 +88,11 @@
   <string name="reminder_notification_list">Zerrenda: %s</string>
   <string name="reminder_notification_due">Epemuga: %s</string>
   <string name="reminder_notification_done">Eginda</string>
-  <string name="reminder_notification_later">Beranduago</string>
   <string name="reminder_notification_done_confirm">Zeregina \"eginda\" bezala ezarri dut</string>
   <string name="reminder_notification_later_confirm">%d minututan oroituko dizut</string>
   <string name="list_vanished">Putxa! Zeregina desagertu da. Barkatu…</string>
+  <string name="no_date">Epemugarik ez</string>
+  <string name="due_date">Epemuga</string>
   <string name="task_sorting_title">Zereginak ordenatzeko irizpidea</string>
   <string name="share_using">Elkarbanatu honekin</string>
   <string name="share_task">Elkarbanatu zeregina</string>

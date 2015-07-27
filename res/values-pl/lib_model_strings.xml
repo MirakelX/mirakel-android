@@ -86,7 +86,6 @@
   <string name="reminder_notification_list">Lista: %s</string>
   <string name="reminder_notification_due">Do: %s</string>
   <string name="reminder_notification_done">Zrobione</string>
-  <string name="reminder_notification_later">Później</string>
   <string name="reminder_notification_done_confirm">Zaznaczyłem to zadanie jako \"zrobione\"</string>
   <string name="reminder_notification_later_confirm">Przypomnę Ci za %d min.</string>
   <string name="list_vanished">Ojej, zadanie zniknęło. Przepraszam…</string>

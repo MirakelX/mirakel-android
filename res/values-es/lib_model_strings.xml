@@ -87,7 +87,6 @@
   <string name="reminder_notification_list">Lista: %s</string>
   <string name="reminder_notification_due">Termina: %s</string>
   <string name="reminder_notification_done">Hecho</string>
-  <string name="reminder_notification_later">Más tarde</string>
   <string name="reminder_notification_done_confirm">He marcado la tarea como \"completada\"</string>
   <string name="reminder_notification_later_confirm">Te lo recordaré en %d minutos</string>
   <string name="list_vanished">Huy, la tarea se ha desvanecido. Lo siento…</string>

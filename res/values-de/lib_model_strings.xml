@@ -87,7 +87,6 @@
   <string name="reminder_notification_list">Liste: %s</string>
   <string name="reminder_notification_due">Termin: %s</string>
   <string name="reminder_notification_done">Erledigt</string>
-  <string name="reminder_notification_later">Später</string>
   <string name="reminder_notification_done_confirm">Ich habe die Aufgabe als erledigt markiert</string>
   <string name="reminder_notification_later_confirm">Ich erinnere dich in %d Minuten</string>
   <string name="list_vanished">Huch, die Aufgabe ist verschwunden. Es tut mir leid…</string>
