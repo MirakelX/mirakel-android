@@ -172,7 +172,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
 
     private void initThirdParty() {
         // Show ChangeLog
-        if (!ChangelogDialog.isUpdated(this)) {
+        if (ChangelogDialog.isUpdated(this)) {
             ChangelogDialog.show(this, DefinitionsHelper.APK_NAME);
         }
 
