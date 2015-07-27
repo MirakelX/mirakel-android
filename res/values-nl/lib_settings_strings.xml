@@ -74,8 +74,6 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="notifications_persistent">Herhalende meldingen</string>
   <string name="notifications_list">Lijst weergeven</string>
   <string name="notifications_list_summary">Toon \"%s\"</string>
-  <string name="notifications_list_open">Open lijst</string>
-  <string name="notifications_list_open_summary">Open \"%s\"</string>
   <string name="default_list">voorkeurslijst</string>
   <string name="reminder">Herinnnering</string>
   <string name="reminders_persistent">Aanhoudende herinnering</string>
@@ -99,6 +97,7 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="import_no_default_list_summary">Geen voorkeurslijst geselecteerd</string>
   <string name="import_default_list">Importeer voorkeurslijst</string>
   <string name="import_to">Importeren</string>
+  <string name="changelog">Logboekwijzigingen</string>
   <string name="changelog_click_summary">Bekijk het logboek</string>
   <string name="changelog_click">Logboekwijzigingen</string>
   <string name="settings_about">Over</string>

@@ -70,8 +70,6 @@
   <string name="notifications_persistent">Notifications permanentes</string>
   <string name="notifications_list">Afficher la liste</string>
   <string name="notifications_list_summary">Afficher \"%s\"</string>
-  <string name="notifications_list_open">Liste à ouvrir</string>
-  <string name="notifications_list_open_summary">Ouvrir \"%s\"</string>
   <string name="default_list">Liste par défaut</string>
   <string name="reminder">Rappel</string>
   <string name="reminders_persistent">Rappel permanent</string>
@@ -94,6 +92,7 @@
   <string name="import_no_default_list_summary">Pas de liste par défaut sélectionnée</string>
   <string name="import_default_list">Liste par défaut pour l\'importation</string>
   <string name="import_to">Importer dans</string>
+  <string name="changelog">Journal des modifications</string>
   <string name="changelog_click_summary">Voir le journal des modifications</string>
   <string name="changelog_click">Journal des modifications</string>
   <string name="settings_about">À propos</string>

@@ -74,8 +74,6 @@
   <string name="notifications_persistent">Постоянни известия</string>
   <string name="notifications_list">Покажи списъка</string>
   <string name="notifications_list_summary">Покажи \"%s\"</string>
-  <string name="notifications_list_open">Отвори списъка</string>
-  <string name="notifications_list_open_summary">Отвори \"%s\"</string>
   <string name="default_list">Списък по подразбиране</string>
   <string name="reminder">Напомняне</string>
   <string name="reminders_persistent">Постоянно напомняне</string>
@@ -99,6 +97,7 @@
   <string name="import_no_default_list_summary">Няма селектиран списък по подразбиране</string>
   <string name="import_default_list">Внасяне на списък по подразбиране</string>
   <string name="import_to">Внасяне до</string>
+  <string name="changelog">Списък на промените</string>
   <string name="changelog_click_summary">Покажи промените</string>
   <string name="changelog_click">Списък на промените</string>
   <string name="settings_about">Относно</string>

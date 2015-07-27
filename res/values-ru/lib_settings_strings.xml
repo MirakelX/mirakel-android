@@ -74,8 +74,6 @@
   <string name="notifications_persistent">Постоянные уведомления</string>
   <string name="notifications_list">Показать список</string>
   <string name="notifications_list_summary">Показать \"%s\"</string>
-  <string name="notifications_list_open">Открыть список</string>
-  <string name="notifications_list_open_summary">Открыть \"%s\"</string>
   <string name="default_list">Список по умолчанию</string>
   <string name="reminder">Напоминание</string>
   <string name="reminders_persistent">Постоянные напоминания</string>
@@ -99,6 +97,7 @@
   <string name="import_no_default_list_summary">Не выбран список по умолчанию</string>
   <string name="import_default_list">Список для импорта</string>
   <string name="import_to">Импортировать в</string>
+  <string name="changelog">Список изменений</string>
   <string name="changelog_click_summary">Просмотр изменений</string>
   <string name="changelog_click">Список изменений</string>
   <string name="settings_about">О нас</string>
@@ -266,12 +265,9 @@
   <string name="analytics_use_summary">Отчеты помогают нам улучшить Mirakel для вас</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">Mirakel имеет открытый исходный код, не стесняйтесь делать вклад через GitHub</string>
-  <string name="credits_dev">Разработано Анатолием Зелениным и Георгом Семмлером</string>
-  <string name="credits_design">Разработчик значка &amp; дизайна - Александр Касснер</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google+</string>
   <string name="credits_feedback">Отправить Отзыв</string>
-  <string name="credits_copyright">© 2013 - 2015 год. Анатолий Зеленин, Георг Семмлер\nЭто — свободное программное обеспечение, лицензированное под GPLv3</string>
   <string name="credits_translations">Локализация</string>
   <string name="credits_libraries">Библиотеки</string>
   <string name="credits_license_title">Условия использования</string>
