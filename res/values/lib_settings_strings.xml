@@ -114,6 +114,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="import_to">Import to</string>
 
     <!-- Changelog -->
+    <string name="changelog">Changelog</string>
+    <string name="rate">Rate</string>
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>

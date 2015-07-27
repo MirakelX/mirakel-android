@@ -56,11 +56,10 @@ dependencies {
     compile project(':model')
     compile project(':helper')
     compile project(':tw_sync')
-    compile project(':changelog')
     compile project(':donationslib')
-    //compile project(':drag-sort-listview')
     compile project(':colorpickerpreference')
     compile project(':colorpicker')
-    compile 'com.cocosw:undobar:1.4@aar'
+    compile "com.cocosw:undobar:$undoBarVersion"
+    compile "com.github.gabrielemariotti.changeloglib:changelog:$changelogVersion"
 }
 

@@ -29,16 +29,13 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import de.azapps.changelog.Changelog;
+import de.azapps.mirakel.settings.custom_views.ChangelogDialog;
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.settings.R;
@@ -70,9 +67,8 @@ public class AboutSettingsFragment extends MirakelPreferencesFragment<Settings> 
             @SuppressLint("NewApi")
             public boolean onPreferenceClick(
                 final Preference preference) {
-                final Changelog cl = new Changelog(
-                    getActivity());
-                cl.showChangelog(Changelog.NO_VERSION);
+
+                ChangelogDialog.show(getActivity(), DefinitionsHelper.APK_NAME);
                 return true;
             }
         });
