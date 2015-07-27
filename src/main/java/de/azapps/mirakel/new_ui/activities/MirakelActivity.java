@@ -165,7 +165,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
     }
 
     @Override
-    protected Locale getLocal() {
+    protected Locale getLocale() {
         return Helpers.getLocale(this);
     }
 
