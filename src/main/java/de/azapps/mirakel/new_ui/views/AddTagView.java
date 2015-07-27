@@ -147,7 +147,8 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
         clearFocus();
     }
 
-    public void setAllowToggleBackground(boolean allowToogle) {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void setAllowToggleBackground(final boolean allowToogle) {
         allowToogleBackground = allowToogle;
         if (!allowToogleBackground) {
             setBackground(background);
@@ -155,7 +156,7 @@ public class AddTagView extends AppCompatMultiAutoCompleteTextView implements  V
     }
 
 
-    public void setTagChangedListener(@Nullable TagChangedListener tagChangedListener) {
+    public void setTagChangedListener(@Nullable final TagChangedListener tagChangedListener) {
         this.tagChangedListener = tagChangedListener;
     }
 
