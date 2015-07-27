@@ -29,22 +29,22 @@ import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetail
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.tools.Log;
 
-public class MainWidgetSettingsActivity extends GenericModelDetailActivity<Settings> {
+public class MainWidgetSettingsActivity extends GenericModelDetailActivity {
     private static int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAppWidgetId = getIntent().getIntExtra(
-                MainWidgetProvider.EXTRA_WIDGET_ID, 0);
-        Intent i=getIntent();
-        i.putExtra(FRAGMENT,MainWidgetSettingsFragment.class);
+                           MainWidgetProvider.EXTRA_WIDGET_ID, 0);
+        Intent i = getIntent();
+        i.putExtra(FRAGMENT, MainWidgetSettingsFragment.class);
         i.putExtra(GenericModelDetailFragment.ARG_ITEM, (Parcelable) Settings.WIDGET);
         setIntent(i);
         super.onCreate(savedInstanceState);
-        if(getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-        if(!backstack.isEmpty()) {
+        if (!backstack.isEmpty()) {
             ((MainWidgetSettingsFragment)backstack.get(0)).setup(mAppWidgetId);
         }
 
