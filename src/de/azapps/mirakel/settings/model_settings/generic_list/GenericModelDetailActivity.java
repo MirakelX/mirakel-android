@@ -32,8 +32,11 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import de.azapps.material_elements.ActionBarActivity;
 import de.azapps.material_elements.utils.ThemeManager;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
@@ -49,8 +52,8 @@ import de.azapps.tools.Log;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link de.azapps.mirakel.settings.model_settings.special_list.SpecialListDetailFragment}.
  */
-public class GenericModelDetailActivity<T extends IGenericElementInterface> extends
-    AppCompatActivity {
+public class GenericModelDetailActivity extends
+    ActionBarActivity {
 
     public static final int NEED_UPDATE = 42;
     public static final int SWITCH_LAYOUT = 43;
@@ -72,7 +75,6 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
     @Override
     @SuppressWarnings("unchecked")
     protected void onCreate(final Bundle savedInstanceState) {
-        ThemeManager.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generic_model_detail);
         setUpActionbar();
@@ -108,6 +110,11 @@ public class GenericModelDetailActivity<T extends IGenericElementInterface> exte
             }
             setFragmentIntern(fragment);
         }
+    }
+
+    @Override
+    protected Locale getLocale() {
+        return Helpers.getLocale(this);
     }
 
     private void setFragmentIntern(final @NonNull Object fragment) {

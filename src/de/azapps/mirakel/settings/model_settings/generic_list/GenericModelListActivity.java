@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,10 +43,13 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import de.azapps.material_elements.ActionBarActivity;
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
+import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
@@ -57,7 +59,7 @@ import de.azapps.mirakel.settings.SettingsHelper;
 import static com.google.common.base.Optional.absent;
 
 public abstract class GenericModelListActivity<T extends IGenericElementInterface> extends
-    AppCompatActivity implements  GenericModelListFragment.Callbacks, OnItemClickedListener<T> {
+    ActionBarActivity implements  GenericModelListFragment.Callbacks, OnItemClickedListener<T> {
 
     private static final int RESULT_ITEM = 10;
 
@@ -124,7 +126,6 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        ThemeManager.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generic_model_twopane);
         setUpActionBar();
@@ -152,6 +153,11 @@ public abstract class GenericModelListActivity<T extends IGenericElementInterfac
             }
         }
         transaction.commit();
+    }
+
+    @Override
+    protected Locale getLocale() {
+        return Helpers.getLocale(this);
     }
 
 
