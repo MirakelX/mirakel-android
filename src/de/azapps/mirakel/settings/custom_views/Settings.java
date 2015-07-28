@@ -280,10 +280,6 @@ public enum  Settings implements IGenericElementInterface {
                 if (setting == DEV && !MirakelCommonPreferences.isEnabledDebugMenu()) {
                     continue;
                 }
-                if (setting == SYNC && !(MirakelCommonPreferences.isEnabledDebugMenu() ||
-                                         AccountMirakel.hasTaskWarriorAccount())) {
-                    continue;
-                }
                 cat.addItemFromInflater(setting.getPreference(onClick));
             }
         }
