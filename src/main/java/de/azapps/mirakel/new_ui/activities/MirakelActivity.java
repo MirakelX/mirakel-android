@@ -251,6 +251,7 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
         }
         MenuHelper.showMenuIcons(this, menu);
         MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey), startIndex);
+        MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextWhite), 0, startIndex);
         MenuHelper.setTextColor(menu, ThemeManager.getColor(R.attr.colorTextGrey));
 
         return true;
