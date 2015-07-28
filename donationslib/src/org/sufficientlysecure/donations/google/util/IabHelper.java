@@ -280,7 +280,8 @@ public class IabHelper {
         final Intent serviceIntent = new Intent(
             "com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
-        if (!this.mContext.getPackageManager()
+        if ((mContext.getPackageManager().queryIntentServices(serviceIntent, 0) != null) &&
+            !this.mContext.getPackageManager()
             .queryIntentServices(serviceIntent, 0).isEmpty()) {
             // service available to handle that Intent
             this.mContext.bindService(serviceIntent, this.mServiceConn,
