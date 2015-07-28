@@ -88,6 +88,7 @@
   <string name="reminder_notification_list">Zerrenda: %s</string>
   <string name="reminder_notification_due">Epemuga: %s</string>
   <string name="reminder_notification_done">Eginda</string>
+  <string name="reminder_notification_later">Atzeratu</string>
   <string name="reminder_notification_done_confirm">Zeregina \"eginda\" bezala ezarri dut</string>
   <string name="reminder_notification_later_confirm">%d minututan oroituko dizut</string>
   <string name="list_vanished">Putxa! Zeregina desagertu da. Barkatu…</string>
@@ -264,5 +265,6 @@
   <string name="accounts_all">Kontu guztiak</string>
   <string name="stub_list_name">Zerrenda berria</string>
   <string name="search_title">Bilatu: </string>
+  <string name="repeat_every">Maiztasuna:</string>
 </resources>
 
