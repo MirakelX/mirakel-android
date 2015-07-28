@@ -29,7 +29,7 @@ def String getProjectProperty(String propertyName) {
 
 
 gradle.projectsEvaluated {
-    def projects=["date-time-picker","widget","settings","colorpickerpreference","donationslib","new_ui"]
+    def projects=["date-time-picker","widget","settings","colorpickerpreference","donationslib","new_ui","model"]
     for(String proj:projects){
         def res_dir=rootDir.toString()+"/"+proj+"/res"
         def res_v14_dir=rootDir.toString()+"/"+proj+"/res-v14"
@@ -76,6 +76,8 @@ configure(allprojects) {
     ext.materialdesignVersion = "1.0"
     ext.acraVersion = "4.6.2"
     ext.materialDialogsVersion = "0.7.6.0"
+    ext.changelogVersion = "2.0.0"
+    ext.undoBarVersion = "1.4@aar"
 }
 
 allprojects {
