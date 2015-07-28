@@ -26,9 +26,6 @@ files:
     source: /widget/res/values/lib_widget_strings.xml
     translation: /widget/res/values-%two_letters_code%/%original_file_name%
   -
-    source: /changelog/res/values/lib_changelog_strings.xml
-    translation: /changelog/res/values-%two_letters_code%/%original_file_name%
-  -
     source: /donationslib/res/values/lib_donations_strings.xml
     translation: /donationslib/res/values-%two_letters_code%/%original_file_name%
   -

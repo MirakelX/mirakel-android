@@ -51,6 +51,8 @@ if [ -n "$WEBPAGE_GIT_DIR" ] && [ -n "$WEBPAGE_APK_NAME" ] && [ -n "$CHANGELOG" 
 	cp $CHANGELOG $WEBPAGE_GIT_DIR/changelog.xml
 	
 	xsltproc updateChangelog.xslt changelog.xml >changelog.md
+    sed -i "s/\[\/b\]/\*\*/g" changelog.md
+    sed -i "s/\[b\]/\*\*/g" changelog.md
 	
 	SHA1SUM=`sha1sum $APK_FILE | tr -s " " "\012" |head -n 1`
 	DATE=`date +%Y-%m-%d`
