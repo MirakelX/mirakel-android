@@ -492,7 +492,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                 @Override
                 public void onClick(final DialogInterface dialog,
                                     final int which) {
-                    new CursorWrapper(cursor).doWithCursor(new CursorWrapper.WithCursor() {
+                    ListMirakel.allCursor(of(accountMirakelOptional.get()),
+                    false).doWithCursor(new CursorWrapper.WithCursor() {
                         @Override
                         public void withOpenCursor(@NonNull CursorGetter getter) {
                             getter.moveToPosition(which);
@@ -511,6 +512,8 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                     if (mActionMode != null) {
                         mActionMode.finish();
                     }
+                    dialog.dismiss();
+                    cursor.close();
                 }
             }).setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override

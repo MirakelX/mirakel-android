@@ -35,7 +35,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,8 +54,9 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.azapps.changelog.Changelog;
+import de.azapps.mirakel.settings.custom_views.ChangelogDialog;
 import de.azapps.ilovefs.ILoveFS;
+import de.azapps.material_elements.ActionBarActivity;
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.MenuHelper;
 import de.azapps.material_elements.utils.ThemeManager;
@@ -98,7 +98,7 @@ import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 import static de.azapps.tools.OptionalUtils.withOptional;
 
-public class MirakelActivity extends AppCompatActivity implements OnItemClickedListener<ModelBase>,
+public class MirakelActivity extends ActionBarActivity implements OnItemClickedListener<ModelBase>,
     LockableDrawer {
 
     private static final String TAG = "MirakelActivity";
@@ -149,8 +149,6 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        ThemeManager.setTheme(this);
-        Locale.setDefault(Helpers.getLocale(this));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mirakel);
         ButterKnife.inject(this);
@@ -166,11 +164,18 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
         }
     }
 
+    @Override
+    protected Locale getLocale() {
+        return Helpers.getLocale(this);
+    }
+
 
     private void initThirdParty() {
         // Show ChangeLog
-        final Changelog cl = new Changelog(this);
-        cl.showChangelog();
+        if (ChangelogDialog.isUpdated(this)) {
+            ChangelogDialog.show(this, DefinitionsHelper.APK_NAME);
+        }
+
         final ILoveFS ilfs = new ILoveFS(this, "mirakel@azapps.de",
                                          DefinitionsHelper.APK_NAME);
         if (ilfs.isILFSDay()) {
@@ -237,17 +242,22 @@ public class MirakelActivity extends AppCompatActivity implements OnItemClickedL
             getMenuInflater().inflate(R.menu.tablet_menu, menu);
             startIndex = 2;
         }
+
         if ((menu.findItem(R.id.menu_close_search) != null) && (menu.findItem(R.id.menu_search) != null)) {
-            menu.findItem(R.id.menu_search).setVisible(!(getTasksFragment().getList() instanceof
-                    SearchListMirakel));
-            menu.findItem(R.id.menu_close_search).setVisible((getTasksFragment().getList() instanceof
-                    SearchListMirakel));
+            // Somehow it is possible that the TasksFragment is getting null here
+            boolean showSearch = getTasksFragment() != null &&
+                                 getTasksFragment().getList() instanceof SearchListMirakel;
+            menu.findItem(R.id.menu_search).setVisible(!showSearch);
+            menu.findItem(R.id.menu_close_search).setVisible(showSearch);
         }
-        if (menu.findItem(R.id.menu_sync_now) != null && !AccountMirakel.hasTaskWarriorAccount()) {
+        if ((menu.findItem(R.id.menu_sync_now) != null) && !AccountMirakel.hasTaskWarriorAccount()) {
             menu.findItem(R.id.menu_sync_now).setVisible(false);
         }
         MenuHelper.showMenuIcons(this, menu);
         MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey), startIndex);
+        MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextWhite), 0, startIndex);
+        MenuHelper.setTextColor(menu, ThemeManager.getColor(R.attr.colorTextGrey));
+
         return true;
     }
 
