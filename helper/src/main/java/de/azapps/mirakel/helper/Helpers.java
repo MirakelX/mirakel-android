@@ -58,6 +58,10 @@ public class Helpers {
 
     // Contact
     public static void contact(final Context context) {
+        contact(context, context.getString(R.string.contact_subject));
+    }
+
+    public static void contact(final Context context, final String title) {
         String mirakelVersion = "unknown";
         try {
             mirakelVersion = context.getPackageManager().getPackageInfo(
@@ -65,7 +69,7 @@ public class Helpers {
         } catch (final NameNotFoundException e) {
             Log.e(TAG, "could not get version name from manifest!", e);
         }
-        contact(context, context.getString(R.string.contact_subject),
+        contact(context, title,
                 context.getString(R.string.contact_text, mirakelVersion,
                                   android.os.Build.VERSION.SDK_INT,
                                   android.os.Build.DEVICE));
