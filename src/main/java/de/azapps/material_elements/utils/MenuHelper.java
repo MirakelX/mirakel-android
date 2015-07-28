@@ -24,6 +24,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v7.internal.view.menu.MenuBuilder;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,6 +67,17 @@ public class MenuHelper {
             if (icon != null) {
                 icon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
             }
+        }
+    }
+
+    public static void setTextColor(final Menu menu, final int color) {
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem mi = menu.getItem(i);
+            final String title = mi.getTitle().toString();
+            final Spannable newTitle = new SpannableString(title);
+            newTitle.setSpan(new ForegroundColorSpan(color), 0, newTitle.length(),
+                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mi.setTitle(newTitle);
         }
     }
 }
