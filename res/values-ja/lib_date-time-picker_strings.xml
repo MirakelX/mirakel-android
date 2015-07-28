@@ -32,5 +32,8 @@
   <string name="set_date">日付の設定</string>
   <string name="set_time">時間の設定</string>
   <string name="remove_reminder">削除</string>
+  <string name="recurrence_start_label">開始:</string>
+  <string name="recurrence_end_label">終了:</string>
+  <string name="never">なし</string>
 </resources>
 
