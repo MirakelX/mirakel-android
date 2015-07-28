@@ -74,8 +74,6 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="notifications_persistent">Trvalá oznámení</string>
   <string name="notifications_list">Zobrazit seznam</string>
   <string name="notifications_list_summary">Zobrazit  \"%s\"</string>
-  <string name="notifications_list_open">Seznam zobrazený z upozornění</string>
-  <string name="notifications_list_open_summary">Zobrazit \"%s\"</string>
   <string name="default_list">Výchozí seznam</string>
   <string name="reminder">Upozornění</string>
   <string name="reminders_persistent">Trvalé upozornění</string>
@@ -99,6 +97,7 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="import_no_default_list_summary">Nebyl vybrán žádný výchozí seznam</string>
   <string name="import_default_list">Importovat výchozí seznam</string>
   <string name="import_to">Importovat do</string>
+  <string name="changelog">Seznam změn</string>
   <string name="changelog_click_summary">Zobrazit seznam změn</string>
   <string name="changelog_click">Seznam změn</string>
   <string name="settings_about">O aplikaci</string>
@@ -266,12 +265,9 @@ Již brzy by měla být funkční podpora Mirakel i v oficiální verzi DAVdroid
   <string name="analytics_use_summary">Zprávy o použití aplikace nám pomáhají při jejím dalším vylepšování</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">Mirakel je open source, neváhejte přispět prostřednictvím GitHub</string>
-  <string name="credits_dev">Vývoj Anatolij Zelenin a Georg Semmler</string>
-  <string name="credits_design">Ikona a design rozhraní od Alexander Käßner</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google+</string>
   <string name="credits_feedback">Odeslat názor</string>
-  <string name="credits_copyright">© 2013-2015 Anatolije Zelenin, Georg Semmler\nToto je svobodný software šířený pod GPLv3</string>
   <string name="credits_translations">Překlady</string>
   <string name="credits_libraries">Knihovny</string>
   <string name="credits_license_title">Licence</string>

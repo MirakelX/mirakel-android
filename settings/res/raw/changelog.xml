@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<changelog bulletedList="true">
+    <changelogversion versionName="3.0" changeDate="2015-07-27" code="77">
+        <changelogtext>Welcome Mirakel 3.0! This is a whole redesign of the App. If you want faster releases, then help us developing Mirakel!</changelogtext>
+        <changelogtext>[b]Better![/b]</changelogtext>
+        <changelogtext>[b]Faster![/b]</changelogtext>
+        <changelogtext>[b]More beautiful![/b]</changelogtext>
+        <changelogtext><![CDATA[Due to our lack of time we wont have a lot of time to fix the [b]sync[/b]. If you are a developer please help us to fix it. Just write us an email to <a href="mailto:mirakel@azapps.de">mirakel@azapps.de</a>]]></changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.8.1" changeDate="2014-11-25" code="72">
+        <changelogtext>Bugfix release</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.8" changeDate="2014-11-16" code="71">
+        <changelogtext><![CDATA[You want to help us developing Mirakel? Just write us an email to <a href="mailto:mirakel@azapps.de">mirakel@azapps.de</a>]]></changelogtext>
+        <changelogtext>Many Bugfixes</changelogtext>
+        <changelogtext>New Meta list settings</changelogtext>
+        <changelogtext>Improved speed of Taskwarrior sync</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.8-beta2" changeDate="2014-11-03" code="70">
+        <changelogtext>Many bugfixes</changelogtext>
+     </changelogversion>
+    <changelogversion versionName="2.8-beta1" changeDate="2014-09-24" code="69">
+        <changelogtext>Bugfixes</changelogtext>
+        <changelogtext>New Meta list settings</changelogtext>
+        <changelogtext>Improved speed of Taskwarrior sync</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.7.1" changeDate="2014-08-25" code="68">
+        <changelogtext>Bugfixes</changelogtext>
+        <changelogtext>Performance improvements</changelogtext>
+        <changelogtext>Started cleaning up settings</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.7" changeDate="2014-08-23" code="67">
+        <changelogtext>CalDAV and Taskwarrior sync improvements</changelogtext>
+        <changelogtext>Please update your Mirakel-DAVdroid.</changelogtext>
+        <changelogtext><![CDATA[We are now using JIRA for issue tracking. Visit it <a href="https://mirakel.atlassian.net/issues/">here</a>!]]></changelogtext>
+        <changelogtext>Bugfixes</changelogtext>
+        <changelogtext>Please try out the new UI (experimental)</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.7-beta2" changeDate="2014-08-20" code="65">
+        <changelogtext><![CDATA[More bugfixes for you! We are now using JIRA for issue tracking. Visit it <a href="https://mirakel.atlassian.net/issues/">here</a>!]]></changelogtext>
+        <changelogtext>Bugfixes</changelogtext>
+        <changelogtext>Working on the new UI</changelogtext>
+        <changelogtext>Performance improvements</changelogtext>
+        <changelogtext>Please update DAVdroid and recreate your todo accounts if you are using CalDAV sync</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.7-beta1" changeDate="2014-08-05" code="64">
+        <changelogtext>If you use davdroid to sync your tasks, please install the latest version of our patched davdroid. Then please readd the account and resync.</changelogtext>
+        <changelogtext>Reimplemented CalDavSync</changelogtext>
+        <changelogtext>Preparing internal datamodel for new UI</changelogtext>
+        <changelogtext>Bugfixes</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.6.2" changeDate="2014-07-13" code="63">
+        <changelogtext>Bugfixes</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.6.1" changeDate="2014-07-06" code="62">
+        <changelogtext>Bugfixes</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.6" changeDate="2014-07-05" code="61">
+        <changelogtext>Recurrence sync for taskwarrior</changelogtext>
+        <changelogtext>Bugfixes</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.6-beta3" changeDate="2014-06-29" code="60">
+        <changelogtext>Please test the syncing of the recurrence!</changelogtext>
+        <changelogtext>More Bugfixes</changelogtext>
+        <changelogtext>Support to change all recurring child-tasks</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.6-beta2" code="59" changeDate="2014-06-26">
+        <changelogtext>Please test the syncing of the recurrence!</changelogtext>
+        <changelogtext>Some Bugfixes</changelogtext>
+    </changelogversion>
+    <changelogversion versionName="2.6-beta1" changeDate="2014-06-22" code="58">
+        <changelogtext>Please test the syncing of the recurrence!</changelogtext>
+        <changelogtext>Implemented Recurrence for Taskwarrior</changelogtext>
+        <changelogtext>More Bugfixes</changelogtext>
+    </changelogversion>
+   <changelogversion versionName="2.5.1-beta1" changeDate="2014-06-01" code="57">
+      <changelogtext>More Bugfixes</changelogtext>
+      <changelogtext>Begin to write tests</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.5" changeDate="2014-05-11" code="56">
+      <changelogtext>Many Bugfixes</changelogtext>
+      <changelogtext>Added tags</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.5-beta2" changeDate="2014-05-07" code="55">
+      <changelogtext>Bugfixes</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.5-beta1" changeDate="2014-05-02" code="54">
+      <changelogtext>Added tags!</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.4.2-beta1" changeDate="2014-04-27" code="53">
+      <changelogtext>Reimplement file handling to work with KitKat file framwork</changelogtext>
+      <changelogtext>some minor bugfixes</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.4.1" changeDate="2014-04-24" code="52">
+      <changelogtext>Even more bugfixes.</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.4.0R2" changeDate="2014-04-22" code="51">
+      <changelogtext>Fix some bugs that can prevent update under certain contitions</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.4.0" changeDate="2014-04-21" code="50">
+      <changelogtext>The new and shiny Mirakel release.</changelogtext>
+      <changelogtext>Please try out the beta releases if you want to have faster updates.</changelogtext>
+      <changelogtext>Mirakel should be much faster now</changelogtext>
+      <changelogtext>Many bugfixes</changelogtext>
+      <changelogtext>Small UI improvements</changelogtext>
+      <changelogtext>Sync improvements</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.3.2" changeDate="2014-03-02">
+    <changelogtext>More bugfixes</changelogtext>
+    <changelogtext>Backstage improvements </changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.3.1" changeDate="2014-02-20">
+    <changelogtext>Bugfixes for taskwarriorsync</changelogtext>
+    <changelogtext>common bugfixes</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.3.0" changeDate=" 2014-02-13">
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext>Updated translations</changelogtext>
+    <changelogtext>Added Bulgarian language</changelogtext>
+    <changelogtext>Fixed a lot of bugs (hopefully)</changelogtext>
+    <changelogtext>Updated translations</changelogtext>
+    <changelogtext>New debug settings ;)</changelogtext>
+    <changelogtext>Please try out the taskwarrior sync! It should be stable but make a backup before!</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.2.1" changeDate="2013-12-28">
+    <changelogtext>This is a bugfix release.</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.2.0" changeDate="2013-12-24">
+    <changelogtext>Our huge Christmas release. We've worked hard to give you an awesome new, bugfree release. We hope the waiting has been worth it.</changelogtext>
+    <changelogtext><![CDATA[<b>We wish you a Merry Christmas!</b>]]></changelogtext>
+    <changelogtext>Set the progress of your tasks</changelogtext>
+    <changelogtext>Google Now integration</changelogtext>
+    <changelogtext>New date and timepicker</changelogtext>
+    <changelogtext>Audio records</changelogtext>
+    <changelogtext>More task templates</changelogtext>
+    <changelogtext>Multi-Account handling</changelogtext>
+    <changelogtext>Caldav-Sync via davdroid</changelogtext>
+    <changelogtext>Auto backup</changelogtext>
+    <changelogtext>Added portuguese, dutch and arabic translation</changelogtext>
+    <changelogtext>Dynamic Task Fragment</changelogtext>
+    <changelogtext>And many more awesome stuff</changelogtext>
+    <changelogtext>This will be the last version of Mirakel which supports Android smaller 4.0. We'll provide of course bugfixes for your phone ;)</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.1.4" changeDate="2013-11-20">
+    <changelogtext>And some more Bugfixes…</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.1.3" changeDate="2013-11-18">
+    <changelogtext>Thank you for all the help. Here is the hopefully last small update before 2.2</changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext>Improved Any.Do import</changelogtext>
+    <changelogtext>Import from Wunderlist</changelogtext>
+    <changelogtext>We prepare Mirakel for the CalDAV sync…</changelogtext>
+    <changelogtext><![CDATA[We are working hard implementing the <b>CalDAV</b> sync the right way. We hope we can publish a working version next week. If you want to test it, please join our <a href="https://plus.google.com/communities/110640831388790835840">Google+</a> community or sent us just an email.]]></changelogtext>
+    <changelogtext><![CDATA[If you use it, you have to update the <b>Mirakel-Dashclock</b> app too.]]></changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.1.2" changeDate="2013-11-06">
+    <changelogtext>Sorry for the inconvenience but we wanted to fix the last bugs which let the app crash ;)</changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext><![CDATA[Some of you asked, we delivered: <a href="https://flattr.com/thing/2188714/Mirakel-easy-task-management-for-professionals">Flattr</a> us!]]></changelogtext>
+    <changelogtext><![CDATA[You are welcome to help us fixing some of our <a href="https://mirakel.atlassian.net/issues/">issues</a> ;)]]></changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.1.1" changeDate="2013-11-03">
+    <changelogtext>Bugfixes + Czech translation</changelogtext>
+    <changelogtext>Some urgent bug fixes.</changelogtext>
+    <changelogtext>Czech translation (thank you, sarimak)</changelogtext>
+    <changelogtext><![CDATA[You want to test our beta releases? Join our <a href="https://plus.google.com/communities/110640831388790835840">Google+-community</a>]]></changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.1" changeDate="2013-11-01">
+    <changelogtext>Some new features, improved UI, Bugfixes</changelogtext>
+    <changelogtext>New transparent widget! </changelogtext>
+    <changelogtext>Improved Task-detail view</changelogtext>
+    <changelogtext>Improved reccurence</changelogtext>
+    <changelogtext>Any.Do import</changelogtext>
+    <changelogtext>Many bugfixes</changelogtext>
+    <changelogtext>Updated Taskwarrior sync</changelogtext>
+    <changelogtext><![CDATA[Thank you for your support and your great feedback! Now we need <a href="http://mirakel.azapps.de/he changeDate="us.html">YOUR help</a>!]]></changelogtext>
+    <changelogtext>Spread Mirakel and rate it!</changelogtext>
+    <changelogtext><![CDATA[<b>@Taskwarrior-users:</b> Please update your taskwarrior-server! Contact us if you need help.]]></changelogtext>
+  </changelogversion>
+  <changelogversion versionName="2.0" changeDate="2013-10-13">
+    <changelogtext>Awesome new UI and many new and cool features!</changelogtext>
+    <changelogtext>New logo</changelogtext>
+    <changelogtext>New UI</changelogtext>
+    <changelogtext><![CDATA[<a href="http://mirakel.azapps.de/he changeDate="en.html#subtasks">Subtasks</a>]]></changelogtext>
+    <changelogtext>Add files to Tasks</changelogtext>
+    <changelogtext>Recurring Tasks</changelogtext>
+    <changelogtext><![CDATA[Configure your <a href="http://mirakel.azapps.de/he changeDate="en.html#semantic-new-tasks">Semantic new Tasks</a>]]></changelogtext>
+    <changelogtext>Redesign settings</changelogtext>
+    <changelogtext>New translations: Norwegian, Slovenian</changelogtext>
+    <changelogtext><![CDATA[Sync with <a href="http://mirakel.azapps.de/he changeDate="en.html#caldav-sync">CalDAV</a>]]></changelogtext>
+    <changelogtext><![CDATA[Improved <a href="http://mirakel.azapps.de/he changeDate="en.html#taskwarrior-sync">Taswkarrior</a>-sync]]></changelogtext>
+    <changelogtext><![CDATA[<a href="http://mirakel.azapps.de/he changeDate="en.html">Help</a>]]></changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext>Now Mirakel is the best todo list app on the market ;) If you don't think so, tell us, what we can improve!</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="1.1.1" changeDate="2013-09-22">
+    <changelogtext>We are back – and we brought some bugfixes with us ;)</changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext>Improved Configurations</changelogtext>
+    <changelogtext>Small UI-Improvements</changelogtext>
+    <changelogtext>French translation</changelogtext>
+    <changelogtext>New features coming soon ;)</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="1.1.0" changeDate="2013-08-26">
+    <changelogtext>You've waited a long time. Here is the new version</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="1.1.0" changeDate="2013-08-26">
+    <changelogtext>Many, many Bugfixes and new awesome features.</changelogtext>
+	<changelogtext>Bugfixes</changelogtext>
+	<changelogtext>Sync now with <a href="http://mirakel.azapps.de/taskwarrior.html">Taskwarrior</a> (preferred)</changelogtext>
+	<changelogtext>Check the settings for new features! (Opt in)</changelogtext>
+	<changelogtext>UI-Improvements</changelogtext>
+	<changelogtext>Dark widget</changelogtext>
+	<changelogtext>Spanish translation (thank you macebal)</changelogtext>
+	<changelogtext>We are the next few weeks on vacation – forgive us that we could not maintain Mirakel in this time. Afterwards we will give you more new and cool features.</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="1.0.1" changeDate="2013-07-30">
+    <changelogtext>Hey you, thank you for using this app! We have already more than 500 downloads. Thank you for your ideas and Bug-reports. Please send more!</changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext>Improved Tablet-UI</changelogtext>
+    <changelogtext>Dark theme</changelogtext>
+    <changelogtext>Close Button</changelogtext>
+    <changelogtext>Russian translation</changelogtext>
+    <changelogtext>ActionBar for Android 2.2</changelogtext>
+    <changelogtext>We are working hard, programming a new, easy to install server for Mirakel! </changelogtext>
+    <changelogtext>If you want to help us, get in touch with us!</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="1.0.0" changeDate="2013-07-21">
+    <changelogtext>Many Bugfixes</changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+    <changelogtext>Better help</changelogtext>
+    <changelogtext>Improved Backup/Import</changelogtext>
+    <changelogtext>Added Icon</changelogtext>
+    <changelogtext>UI improvements</changelogtext>
+    <changelogtext>Import Data from Astrid</changelogtext>
+    <changelogtext>Tablet-UI</changelogtext>
+    <changelogtext>Play Store-Release </changelogtext>
+  </changelogversion>
+  <changelogversion versionName="0.1.2" changeDate="2013-06-06">
+    <changelogtext>Feature Stop</changelogtext>
+    <changelogtext>Reminders</changelogtext>
+    <changelogtext>Search</changelogtext>
+    <changelogtext>Share Lists and Tasks</changelogtext>
+    <changelogtext>Better Where-Clause Input in Special-Lists-Settings</changelogtext>
+    <changelogtext>Experimental Support Android &gt;=2.2(API 8)</changelogtext>
+    <changelogtext>Bugfixes</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="0.1.1" changeDate="2013-05-29">
+    <changelogtext>Now with this nice Change Log!</changelogtext>
+    <changelogtext>We've implemented some cool new functions:</changelogtext>
+    <changelogtext>Reminders (on the other Branch)</changelogtext>
+    <changelogtext>Change Log</changelogtext>
+    <changelogtext>Only one big feature and many bugfixes till v1.0</changelogtext>
+  </changelogversion>
+  <changelogversion versionName="Pre 0.1.1" changeDate="2013-05-29">
+    <changelogtext>alpha, but working :D</changelogtext>
+  </changelogversion>
+</changelog>

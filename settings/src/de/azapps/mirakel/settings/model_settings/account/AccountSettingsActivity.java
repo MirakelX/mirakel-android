@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.Html;
@@ -35,12 +36,39 @@ import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.settings.R;
+import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelListActivity;
 import de.azapps.mirakel.sync.taskwarrior.TaskWarriorSetupActivity;
 
 import static com.google.common.base.Optional.of;
 
 public class AccountSettingsActivity extends GenericModelListActivity<AccountMirakel> {
+
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(this);
+        builder.setTitle(R.string.settings_dev_sync)
+        .setMessage(R.string.sync_message)
+        .setPositiveButton(R.string.sync_contact_us, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Helpers.contact(AccountSettingsActivity.this, getString(R.string.sync_help_dev));
+            }
+        })
+        .setNeutralButton(R.string.title_donations,
+        new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                final Intent intent = new Intent(AccountSettingsActivity.this,
+                                                 SettingsActivity.class);
+                intent.putExtra(SettingsActivity.SHOW_FRAGMENT,
+                                de.azapps.mirakel.settings.custom_views.Settings.DONATE.ordinal());
+                AccountSettingsActivity.this.startActivity(intent);
+                dialog.dismiss();
+            }
+        })
+        .setNegativeButton(R.string.sync_understand, null).show();
+    }
 
     // Helper stuff
     private void showAlert(final int titleId, final int messageId,

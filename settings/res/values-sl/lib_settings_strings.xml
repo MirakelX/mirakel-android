@@ -71,8 +71,6 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="notifications_persistent">Vztrajno prikazovanje obvestil</string>
   <string name="notifications_list">Pokaži seznam</string>
   <string name="notifications_list_summary">Pokaži \"%s\"</string>
-  <string name="notifications_list_open">Odpri seznam</string>
-  <string name="notifications_list_open_summary">Odpri \"%s\"</string>
   <string name="default_list">Privzeti seznam</string>
   <string name="reminder">Opomnik</string>
   <string name="reminders_persistent">Vztrajno prikazovanje opomnikov</string>
@@ -95,6 +93,7 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="import_no_default_list_summary">Ni izbranega privzetega seznama</string>
   <string name="import_default_list">Uvozi privzet seznam</string>
   <string name="import_to">Uvozi v</string>
+  <string name="changelog">Zadnje spremembe</string>
   <string name="changelog_click_summary">Pokaži spremembe</string>
   <string name="changelog_click">Zadnje spremembe</string>
   <string name="settings_about">O programu</string>

@@ -74,8 +74,6 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="notifications_persistent">Notificaciones persistentes</string>
   <string name="notifications_list">Mostrar lista</string>
   <string name="notifications_list_summary">Mostrar \"%s\"</string>
-  <string name="notifications_list_open">Abrir lista</string>
-  <string name="notifications_list_open_summary">Abrir \"%s\"</string>
   <string name="default_list">Lista predeterminada</string>
   <string name="reminder">Recordatorio</string>
   <string name="reminders_persistent">Recordatorios persistentes</string>
@@ -99,6 +97,7 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="import_no_default_list_summary">No hay ninguna lista seleccionada como predeterminada</string>
   <string name="import_default_list">Importar la lista predeterminada</string>
   <string name="import_to">Importar a</string>
+  <string name="changelog">Registro de cambios</string>
   <string name="changelog_click_summary">Ver el registro de cambios</string>
   <string name="changelog_click">Registro de cambios</string>
   <string name="settings_about">Acerca de</string>
@@ -266,12 +265,9 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="analytics_use_summary">Los informes nos ayudan a mejorar Mirakel para ti</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">Mirakel es código abierto, siéntete libre de contribuir vía GitHub</string>
-  <string name="credits_dev">Desarrollo por Anatolij Zelenin y Georg Semmler</string>
-  <string name="credits_design">Diseño de icono e interfaz por Alexander Käßner</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google +</string>
   <string name="credits_feedback">Enviar comentarios</string>
-  <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nEsto es Software Libre publicado bajo la GPLv3</string>
   <string name="credits_translations">Traducciones</string>
   <string name="credits_libraries">Bibliotecas</string>
   <string name="credits_license_title">Licencia</string>

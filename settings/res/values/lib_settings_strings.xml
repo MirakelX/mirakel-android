@@ -19,6 +19,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- Sync -->
+    <string name="sync_contact_us" translatable="false">Help us!</string>
+    <string name="sync_message"><![CDATA[Due to our lack of time we are not able to fix the remaining sync issues in a reasonable amount of time.
+
+    Please do not any bugs regarding the sync. If you are a developer please help us fixing these bugs.]]></string>
+    <string name="sync_help_dev">I wanna help!</string>
+    <string name="sync_understand">I understand</string>
     <string name="sync_add">Add account</string>
     <string name="account_title">Accounts</string>
     <string name="sync_new">New account</string>
@@ -114,6 +120,8 @@ Soon the official DAVdroid app will also support Mirakel and we are working toge
     <string name="import_to">Import to</string>
 
     <!-- Changelog -->
+    <string name="changelog">Changelog</string>
+    <string name="rate">Rate</string>
     <string name="changelog_click_summary">View the changelog</string>
     <string name="changelog_click">Changelog</string>
     <string name="settings_about">About</string>

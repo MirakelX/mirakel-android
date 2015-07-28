@@ -70,8 +70,6 @@
   <string name="notifications_persistent">إشعارات مستمرة</string>
   <string name="notifications_list">إظهار قائمة</string>
   <string name="notifications_list_summary">إظهار \"%s\"</string>
-  <string name="notifications_list_open">فتح القائمة</string>
-  <string name="notifications_list_open_summary">فتح \"%s\"</string>
   <string name="default_list">القائمة الافتراضية</string>
   <string name="reminder">تذكير</string>
   <string name="reminders_persistent">تذكير باستمرار</string>
@@ -94,6 +92,7 @@
   <string name="import_no_default_list_summary">لا توجد قائمة افتراضية محددة</string>
   <string name="import_default_list">استيراد القائمة الافتراضية</string>
   <string name="import_to">استيراد إلى</string>
+  <string name="changelog">سِجل التغييرات</string>
   <string name="changelog_click_summary">عرض سجل التغييرات</string>
   <string name="changelog_click">سِجل التغييرات</string>
   <string name="settings_about">حول</string>

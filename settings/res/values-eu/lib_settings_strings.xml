@@ -74,8 +74,6 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="notifications_persistent">Jakinarazpen iraunkorrak</string>
   <string name="notifications_list">Erakutsi zerrenda</string>
   <string name="notifications_list_summary">Erakutsi \"%s\"</string>
-  <string name="notifications_list_open">Ireki zerrenda</string>
-  <string name="notifications_list_open_summary">Ireki \"%s\"</string>
   <string name="default_list">Lehenetsitako zerrenda</string>
   <string name="reminder">Oroigarria</string>
   <string name="reminders_persistent">Oroigarri iraunkorra</string>
@@ -99,6 +97,8 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="import_no_default_list_summary">Ez da lehenetsitako zerrendarik aukeratu</string>
   <string name="import_default_list">Inportatu lehenetsitako zerrenda</string>
   <string name="import_to">Inportatu hona</string>
+  <string name="changelog">Aldaketa erregistroa</string>
+  <string name="rate">Baloratu</string>
   <string name="changelog_click_summary">Ikusi aldaketa egunkaria</string>
   <string name="changelog_click">Aldaketa erregistroa</string>
   <string name="settings_about">Honi buruz</string>
@@ -266,12 +266,12 @@ Laster DAVdroid aplikazio ofizialak Mirakel euskarria izango du eta beste batuek
   <string name="analytics_use_summary">Txotenek Mirakel zuretzat hobetzen laguntzen digute</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">Mirakel Software Libra da, parte hartu nahiez gero GitHub bidez</string>
-  <string name="credits_dev">Garapena: Anatolij Zelenin eta Georg Semmler</string>
-  <string name="credits_design">Ikono eta interfazearen diseinua: Alexander Käßner</string>
+  <string name="credits_dev">&lt;a href="mailto:anatolij@zelenin.de"&gt;Anatolij Zelenin&lt;/a&gt; eta &lt;a href="https://github.com/weiznich"&gt;Georg Semmler&lt;/a&gt;ek garatua</string>
+  <string name="credits_design">Ikono eta interfazearen diseinuak &lt;a href="http://alexkaessner.de/"&gt;Alexander Käßner&lt;/a&gt;renak dira</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google+</string>
   <string name="credits_feedback">Bidali iritzia</string>
-  <string name="credits_copyright">© 2013-2015 Anatolij Zelenin, Georg Semmler\nHau Software Librea da GPLv3 lizentziapean</string>
+  <string name="credits_copyright">© 2013–2015 Anatolij Zelenin, Georg Semmler\nHau Software Librea da GPLv3 lizentziapean</string>
   <string name="credits_translations">Itzulpenak</string>
   <string name="credits_libraries">Liburutegiak</string>
   <string name="credits_license_title">Lizentzia</string>

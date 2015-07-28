@@ -69,8 +69,6 @@
   <string name="notifications_persistent">Trwałe powiadomienia</string>
   <string name="notifications_list">Pokaż listę</string>
   <string name="notifications_list_summary">Pokaż \"%s\"</string>
-  <string name="notifications_list_open">Otwórz listę</string>
-  <string name="notifications_list_open_summary">Otwórz \"%s\"</string>
   <string name="default_list">Domyślna lista</string>
   <string name="reminder">Przypomnienie</string>
   <string name="reminders_persistent">Trwałe przypomnienia</string>
@@ -93,6 +91,7 @@
   <string name="import_no_default_list_summary">Nie wybrano domyślnej listy</string>
   <string name="import_default_list">Domyślna lista importu</string>
   <string name="import_to">Importuj do</string>
+  <string name="changelog">Dziennik zmian</string>
   <string name="changelog_click_summary">Pokaż dziennik zmian</string>
   <string name="changelog_click">Dziennik zmian</string>
   <string name="settings_about">O programie</string>
