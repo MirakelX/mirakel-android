@@ -31,5 +31,6 @@
   <string name="save_label">Fini</string>
   <string name="set_date">Définir la date</string>
   <string name="set_time">Définir l\'heure</string>
+  <string name="remove_reminder">Enlever</string>
 </resources>
 

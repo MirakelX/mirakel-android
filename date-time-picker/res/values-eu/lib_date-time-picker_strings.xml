@@ -31,6 +31,9 @@
   <string name="save_label">Eginda</string>
   <string name="set_date">Ezarri data</string>
   <string name="set_time">Ezarri ordua</string>
-  <string name="no_recurrence">Errepikatzerik ez</string>
+  <string name="remove_reminder">Kendu</string>
+  <string name="recurrence_start_label">Hasiera:</string>
+  <string name="recurrence_end_label">Amaiera:</string>
+  <string name="never">Inoiz ez</string>
 </resources>
 

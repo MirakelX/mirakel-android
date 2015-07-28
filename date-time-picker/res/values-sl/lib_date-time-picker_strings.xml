@@ -31,5 +31,6 @@
   <string name="save_label">Končano</string>
   <string name="set_date">Nastavi datum</string>
   <string name="set_time">Nastavi čas</string>
+  <string name="remove_reminder">Odstrani</string>
 </resources>
 

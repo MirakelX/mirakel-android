@@ -31,6 +31,6 @@
   <string name="save_label">Hotovo</string>
   <string name="set_date">Nastavit datum</string>
   <string name="set_time">Nastavit čas</string>
-  <string name="no_recurrence">Bez opakování</string>
+  <string name="remove_reminder">Odstranit</string>
 </resources>
 
