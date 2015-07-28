@@ -61,7 +61,12 @@ public class MenuHelper {
     }
 
     public static void colorizeMenuItems(final Menu menu, final int color, final int startIndex) {
-        for (int i = startIndex; i < menu.size(); i++) {
+        colorizeMenuItems(menu, color, startIndex, menu.size());
+    }
+
+    public static void colorizeMenuItems(final Menu menu, final int color, final int startIndex,
+                                         final int endIndex) {
+        for (int i = startIndex; (i < menu.size()) && (i < endIndex); i++) {
             final MenuItem menuItem = menu.getItem(i);
             final Drawable icon = menuItem.getIcon();
             if (icon != null) {
