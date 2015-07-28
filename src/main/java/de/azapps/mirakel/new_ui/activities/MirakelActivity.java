@@ -239,17 +239,20 @@ public class MirakelActivity extends ActionBarActivity implements OnItemClickedL
             getMenuInflater().inflate(R.menu.tablet_menu, menu);
             startIndex = 2;
         }
+
         if ((menu.findItem(R.id.menu_close_search) != null) && (menu.findItem(R.id.menu_search) != null)) {
             menu.findItem(R.id.menu_search).setVisible(!(getTasksFragment().getList() instanceof
                     SearchListMirakel));
             menu.findItem(R.id.menu_close_search).setVisible((getTasksFragment().getList() instanceof
                     SearchListMirakel));
         }
-        if (menu.findItem(R.id.menu_sync_now) != null && !AccountMirakel.hasTaskWarriorAccount()) {
+        if ((menu.findItem(R.id.menu_sync_now) != null) && !AccountMirakel.hasTaskWarriorAccount()) {
             menu.findItem(R.id.menu_sync_now).setVisible(false);
         }
         MenuHelper.showMenuIcons(this, menu);
         MenuHelper.colorizeMenuItems(menu, ThemeManager.getColor(R.attr.colorTextGrey), startIndex);
+        MenuHelper.setTextColor(menu, ThemeManager.getColor(R.attr.colorTextGrey));
+
         return true;
     }
 
