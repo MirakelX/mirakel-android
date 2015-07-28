@@ -98,6 +98,7 @@
   <string name="import_default_list">デフォルトのリストをインポート</string>
   <string name="import_to">にインポート</string>
   <string name="changelog">変更履歴</string>
+  <string name="rate">評価</string>
   <string name="changelog_click_summary">変更履歴を表示します</string>
   <string name="changelog_click">変更履歴</string>
   <string name="settings_about">アプリについて</string>
@@ -265,9 +266,12 @@
   <string name="analytics_use_summary">あなたの報告が Mirakel を向上させる手助けになります</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">Mirakel はオープン ソースです。GitHub で自由に貢献してください</string>
+  <string name="credits_dev">&lt;a href="mailto:anatolij@zelenin.de"&gt;Anatolij Zelenin&lt;/a&gt; と &lt;a href="https://github.com/weiznich"&gt;Georg Semmler&lt;/a&gt; が開発</string>
+  <string name="credits_design">アイコン &amp; インターフェース デザイン &lt;a href="http://alexkaessner.de/"&gt;Alexander Käßner&lt;/a&gt;</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google+</string>
   <string name="credits_feedback">フィードバックを送る</string>
+  <string name="credits_copyright">© 2013–2015 Anatolij Zelenin, Georg Semmler\nこれは GPLv3 でライセンスされるフリーソフトウェアです</string>
   <string name="credits_translations">翻訳</string>
   <string name="credits_libraries">ライブラリー</string>
   <string name="credits_license_title">ライセンス</string>
