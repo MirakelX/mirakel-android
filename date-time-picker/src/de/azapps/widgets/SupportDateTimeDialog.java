@@ -19,8 +19,10 @@
 
 package de.azapps.widgets;
 
+import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,10 +51,6 @@ public class SupportDateTimeDialog extends DialogFragment {
 
     protected static final String TAG = "DateTimeDialog";
 
-    public SupportDateTimeDialog() {
-        super();
-    }
-
     public static SupportDateTimeDialog newInstance(final OnDateTimeSetListener callback,
             final Optional<Calendar> dateTime) {
         final Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
@@ -79,6 +77,18 @@ public class SupportDateTimeDialog extends DialogFragment {
     private int mInitialDay;
     private int mInitialHour;
     private int mInitialMinute;
+
+    //dirty hack to get a reference to the
+    // originally created dialog if the screen was rotated
+    private static Dialog dialog;
+
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        dialog = super.onCreateDialog(savedInstanceState);
+        return dialog;
+    }
 
     private void init(final int year, final int month, final int dayOfMonth,
                       final int hourOfDay, final int minute) {
@@ -122,7 +132,7 @@ public class SupportDateTimeDialog extends DialogFragment {
                             .findViewById(R.id.datetime_picker_animator);
         this.dp = (DatePicker) v.findViewById(R.id.date_picker);
         this.tp = (TimePicker) v.findViewById(R.id.time_picker);
-        this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocal(getActivity())));
+        this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocale(getActivity())));
         this.tp.setTime(this.mInitialHour, this.mInitialMinute);
         this.tp.setOnKeyListener(this.tp.getNewKeyboardListner(getDialog()));
         this.tp.setOnTimeSetListener(new OnTimeSetListener() {
@@ -135,7 +145,7 @@ public class SupportDateTimeDialog extends DialogFragment {
                         SupportDateTimeDialog.this.dp.getMonth(),
                         SupportDateTimeDialog.this.dp.getDay(), hourOfDay, minute);
                 }
-                dismiss();
+                safeDismiss();
             }
 
             @Override
@@ -143,8 +153,9 @@ public class SupportDateTimeDialog extends DialogFragment {
                 if (SupportDateTimeDialog.this.mCallback != null) {
                     SupportDateTimeDialog.this.mCallback.onNoTimeSet();
                 }
-                dismiss();
+                safeDismiss();
             }
+
         });
         this.dp.setOnDateSetListener(new OnDateSetListener() {
             @Override
@@ -152,7 +163,7 @@ public class SupportDateTimeDialog extends DialogFragment {
                 if (SupportDateTimeDialog.this.mCallback != null) {
                     SupportDateTimeDialog.this.mCallback.onNoTimeSet();
                 }
-                dismiss();
+                safeDismiss();
             }
 
             @Override
@@ -163,7 +174,7 @@ public class SupportDateTimeDialog extends DialogFragment {
                             day, SupportDateTimeDialog.this.tp.getHour(),
                             SupportDateTimeDialog.this.tp.getMinute());
                 }
-                dismiss();
+                safeDismiss();
             }
         });
         switchToDate.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
@@ -219,6 +230,41 @@ public class SupportDateTimeDialog extends DialogFragment {
         }
         this.dp.onRestoreInstanceState(date);
         this.tp.onRestoreInstanceState(time);
+    }
+
+    private final static String CURRENT_VIEW = "current_view";
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(CURRENT_VIEW, isCurrentDatepicker);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+        isCurrentDatepicker = savedInstanceState.getBoolean(CURRENT_VIEW);
+        if (this.isCurrentDatepicker
+            && (this.viewSwitcher.getCurrentView().getId() != R.id.date_picker)) {
+            this.viewSwitcher.showPrevious();
+        } else if (!this.isCurrentDatepicker
+                   && (this.viewSwitcher.getCurrentView().getId() != R.id.time_picker)) {
+            this.viewSwitcher.showNext();
+        }
+    }
+
+    private void safeDismiss() {
+        try {
+            dismiss();
+        } catch (final NullPointerException ignored) {
+            // if the user rotates the screen the current dialog is gone
+            // so use this dirty hack to get it back
+            dialog.dismiss();
+
+        }
     }
 
 }

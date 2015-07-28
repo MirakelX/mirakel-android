@@ -18,25 +18,28 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:orientation="horizontal">
-    <TextView
+    android:layout_weight="1">
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="2dp"
+        android:src="@drawable/ic_calendar_white_18dp" />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="2dp"
-        android:drawablePadding="@dimen/padding_drawable"
-        android:drawableStart="@drawable/ic_calendar_white_18dp"
+        android:layout_gravity="top"
+        android:layout_toEndOf="@+id/image_view"
         android:text="@string/task_due_header"
         android:textAppearance="@style/TextAppearance.Regular.Small" />
 
-    <TextView
-        android:id="@+id/value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="In 2 Tagen"
-        android:textAppearance="@style/TextAppearance.Light.Small"/>
-</LinearLayout>
+</RelativeLayout>

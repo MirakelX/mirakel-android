@@ -24,6 +24,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
@@ -41,21 +43,20 @@ import de.azapps.material_elements.utils.WavUtil;
 public class FFTAudioView extends View {
 
     private static final String TAG = "FFTAudioView";
-    private final String path;
-    private final OnRecordFinished finishListener;
+    @Nullable
+    private String path;
+    @Nullable
+    private OnRecordFinished finishListener;
     private RealDoubleFFT transformer;
 
-    private RecordAudio recordTask;
     private Paint paint;
     private double[] mTransformed;
-    private int width;
-    private int hight;
     private boolean recording;
     private File tmpFile;
     private final float padding;
 
     public interface OnRecordFinished {
-        public void finishRecording(String path);
+        void finishRecording(String path);
     }
 
     public static class RecordingFailedException extends Exception {
@@ -64,34 +65,47 @@ public class FFTAudioView extends View {
         }
     }
 
-    public FFTAudioView(final Context ctx, final String outputPath,
-                        final OnRecordFinished finish) throws RecordingFailedException {
-        super(ctx);
+    public FFTAudioView(final Context context) {
+        this(context, null);
+    }
+
+    public FFTAudioView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public FFTAudioView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
 
         transformer = new RealDoubleFFT(WavUtil.getBufferSize() / 2);
         paint = new Paint();
         paint.setColor(ThemeManager.getPrimaryThemeColor());
         paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(ctx.getResources().getDimension(R.dimen.fft_line_width));
+        paint.setStrokeWidth(getResources().getDimension(R.dimen.fft_line_width));
+        padding = getResources().getDimension(R.dimen.fft_padding);
+    }
+
+    public void init(final String outputPath,
+                     final OnRecordFinished finish) throws RecordingFailedException {
         path = outputPath;
         finishListener = finish;
-        padding = ctx.getResources().getDimension(R.dimen.fft_padding);
         try {
-            tmpFile = File.createTempFile("prefix", "extension", ctx.getCacheDir());
+            tmpFile = File.createTempFile("prefix", "extension", getContext().getCacheDir());
         } catch (final IOException e) {
             Log.w(TAG, "Failed to create tmp file", e);
             throw new RecordingFailedException(e);
         }
+
     }
 
     public void startRecording() {
-        recordTask = new RecordAudio();
-        recordTask.execute();
+        new RecordAudio().execute();
     }
 
     public void stopRecording() {
         recording = false;
-        finishListener.finishRecording(path);
+        if (finishListener != null) {
+            finishListener.finishRecording(path);
+        }
     }
 
     public class RecordAudio extends AsyncTask<Void, double[], Void> {
@@ -138,6 +152,10 @@ public class FFTAudioView extends View {
 
         private void generateWavFile() {
             final File infile = tmpFile;
+            if (path == null) {
+                infile.delete();
+                return;
+            }
             final File outfile = new File(path);
             FileInputStream fis = null;
             FileOutputStream out = null;
@@ -192,24 +210,17 @@ public class FFTAudioView extends View {
         private short getShort(final byte argB1, final byte argB2) {
             return (short) (argB1 | (argB2 << 8));
         }
-
-
-    }
-
-    @Override
-    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        width = w;
-        hight = h;
     }
 
 
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+        final int width = getWidth();
+        final int height = getHeight();
         if (mTransformed != null) {
             final float factor =  ((width - 2 * padding) / (2 * (float)mTransformed.length));
-            final float upy = hight / 2;
+            final float upy = height / 2;
             int counter = (int) (padding / factor);
             for (int i = mTransformed.length - 1; i >= 0; i--) {
                 final float downy = (float) (upy - (mTransformed[i] * 5.0));

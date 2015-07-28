@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<resources>
+    <attr name="colorTextBlack" format="color"/>
+    <attr name="colorTextGrey" format="color"/>
+    <attr name="colorTextWhite" format="color"/>
+    <attr name="colorTextActionBar" format="color" />
+    <attr name="colorTextActionBarHighlight" format="color" />
+    <attr name="colorTaskCard" format="color" />
+    <attr name="colorSelectedRow" format="color" />
+    <attr name="colorCAB" format="color" />
+    <attr name="colorCABStatus" format="color" />
+    <attr name="colorBackground" format="color" />
+    <attr name="colorListsBackground" format="color" />
+    <attr name="colorProgress" format="color" />
+    <attr name="colorProgressBackground" format="color" />
+    <attr name="colorLightGrey" format="color" />
+    <attr name="colorDarkGrey" format="color" />
+    <attr name="colorPreviewBorder" format="color" />
+    <attr name="colorPopupBackground" format="color" />
+    <attr name="colorProgressCheckmark" format="color" />
+    <attr name="colorTextSettings" format="color" />
+    <attr name="colorTextSettingsGrey" format="color" />
+    <attr name="colorDropdownArrow" format="color" />
+    <attr name="colorTextSettingsCopyright" format="color" />
+
+    <!-- Due -->
+    <attr name="colorDueOverdue" format="color" />
+    <attr name="colorDueToday" format="color" />
+    <attr name="colorDueNext" format="color" />
+    <attr name="colorDueFuture" format="color" />
+
+    <!-- prio -->
+    <attr name="colorPrio_2" format="color" />
+    <attr name="colorPrio_1" format="color" />
+    <attr name="colorPrio0" format="color" />
+    <attr name="colorPrio1" format="color" />
+    <attr name="colorPrio2" format="color" />
+    <attr name="colorPriorityBackground" format="color" />
+
+
+    <attr name="colorDivider" format="color" />
+    <attr name="colorTaskFragmentBackground" format="color" />
+
+</resources>

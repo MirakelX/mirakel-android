@@ -19,18 +19,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <changelog>
-<<<<<<< HEAD
-    <version name="2.8.2" date="2015-05-25" code="74">
-        <text><![CDATA[Preparing the release of Mirakel 3.0 we would like to do a small survey to learn more about our users.
-        Mirakel 3.0 and therefore the new user interface will be released soon.]]></text>
-        <feature>Nothing new here</feature>
-=======
-    <version name="3.0-beta1" date="2015-06-02" code="75">
+    <version name="3.0" date="2015-06-19" code="77">
         <text><![CDATA[Welcome Mirakel 3.0! This is a whole redesign of the App. If you want faster releases, then help us developing Mirakel!]]></text>
         <feature>Better!</feature>
         <feature>Faster!</feature>
         <feature>More beautiful!</feature>
->>>>>>> 4f270578edcae45acb77a0615fdae2598bef69ff
     </version>
     <version name="2.8.1" date="2014-11-25" code="72">
         <feature>Bugfix release</feature>

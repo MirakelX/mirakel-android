@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
@@ -156,18 +157,24 @@ public class Semantic extends SemanticBase {
         }
     }
 
-    public static void applySemantics(@NonNull final Task task, @NonNull String taskName) {
+    public static boolean applySemantics(@NonNull final Task task, @NonNull String taskName) {
         final String lowername = taskName.toLowerCase(Locale.getDefault());
         final String[] words = SPLIT_BY_WHITESPACE.split(lowername);
+        boolean change = false;
         for (final String word : words) {
             final Semantic semantic = semantics.get(word);
             if (semantic == null) {
                 break;
             }
+            change = true;
             semantic.apply(task);
             taskName = taskName.substring(word.length()).trim();
         }
         task.setName(taskName);
+        if (change) {
+            AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.USED_SEMANTICS);
+        }
+        return change;
     }
 
     private static ListMirakel getDefaultList(final @NonNull Optional<AccountMirakel>

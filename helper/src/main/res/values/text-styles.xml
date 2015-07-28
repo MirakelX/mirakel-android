@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<resources>
+
+    <style name="TextAppearance.Base" parent="android:TextAppearance">
+        <item name="android:textSize">@dimen/text_size_regular</item>
+    </style>
+
+    <!-- Regular -->
+    <style name="TextAppearance.Regular.Small" parent="TextAppearance.Regular">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Regular.Large" parent="TextAppearance.Regular">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+
+    <!-- Bold -->
+    <style name="TextAppearance.Bold" parent="TextAppearance.Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Bold.Small" parent="TextAppearance.Bold">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Bold.Large" parent="TextAppearance.Bold">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+    <!-- Medium -->
+    <style name="TextAppearance.Medium.Small" parent="TextAppearance.Medium">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Medium.Large" parent="TextAppearance.Medium">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+    <!-- Light -->
+    <style name="TextAppearance.Light.Small" parent="TextAppearance.Light">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Light.Large" parent="TextAppearance.Light">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+    <!-- Italic -->
+    <style name="TextAppearance.Italic" parent="TextAppearance.Regular">
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="TextAppearance.Italic.Small" parent="TextAppearance.Italic">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextAppearance.Italic.Large" parent="TextAppearance.Italic">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+</resources>

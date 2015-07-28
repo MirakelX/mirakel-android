@@ -1,2 +1,4 @@
 #!/bin/bash/
-declare -a repos=('build' 'colorpicker' 'donationslib' 'ilovefs-android' 'model' 'settings' 'widget'  'colorpickerpreference' 'date-time-picker' 'helper' 'progresswheel' 'tw_sync' 'main/tests' 'dashclock' 'new_ui' 'material-elements')
+declare -a repos=('build' 'colorpicker' 'donationslib' 'ilovefs-android' 'model' 'settings' 'widget' 'colorpickerpreference' 'date-time-picker' 'helper' 'progresswheel' 'tw_sync' 'main/tests' 'dashclock' 'new_ui')
+
+declare -a extra_repos=('material-elements')

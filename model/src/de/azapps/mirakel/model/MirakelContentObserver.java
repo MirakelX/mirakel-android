@@ -92,7 +92,7 @@ public class MirakelContentObserver extends ContentObserver {
         if (uri.isHierarchical()) {
             try {
                 final long t = ContentUris.parseId(uri);
-                if (t != -1) {
+                if (t != -1L) {
                     id = Optional.of(t);
                 }
             } catch (final NumberFormatException e) {

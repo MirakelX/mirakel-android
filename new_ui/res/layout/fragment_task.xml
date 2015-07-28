@@ -18,217 +18,277 @@
   ~       You should have received a copy of the GNU General Public License
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:minWidth="@dimen/dialog_min_width"
-    android:layout_marginStart="0dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:descendantFocusability="beforeDescendants"
+    android:layout_marginStart="0dp"
     android:background="@drawable/background_fragment_task"
-    android:orientation="vertical">
+    android:descendantFocusability="beforeDescendants"
+    android:minWidth="@dimen/dialog_min_width"
+    android:orientation="vertical"
+    tools:ignore="NewApi">
 
     <LinearLayout
-        android:id="@+id/task_fragment_header"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:descendantFocusability="beforeDescendants"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingEnd="13dp"
+        android:paddingStart="11dp"
+        android:paddingTop="16dp">
+
+        <de.azapps.mirakel.new_ui.views.ProgressDoneView
+            android:id="@+id/task_progress_done"
+            android:layout_width="@dimen/priorityDoneSize"
+            android:layout_height="@dimen/priorityDoneSize"
+            android:layout_marginEnd="16dp"
+            custom:progress_background_color="?colorProgressBackground"
+            custom:progress_color="?colorProgress" />
+
+        <ViewSwitcher
+            android:id="@+id/task_name_view_switcher"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:orientation="horizontal">
+            android:layout_weight="1">
 
-            <de.azapps.mirakel.new_ui.views.ProgressDoneView
-                android:layout_width="@dimen/priorityDoneSize"
-                android:layout_height="@dimen/priorityDoneSize"
-                android:id="@+id/task_progress_done"
-                custom:progress_color="?colorProgress"
-                custom:progress_background_color="?colorProgressBackground" />
-
-            <ViewSwitcher
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/task_name_view_switcher">
+            <!-- The linearlayout fixes the cut of of the last line in the textview. Keep it and don't remove it! -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Bold.Large"
-                    android:textColor="?colorTextBlack"
                     android:id="@+id/task_name"
-                    android:text="Example task" />
-
-                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:imeOptions="actionDone"
-                    android:textAppearance="@style/TextAppearance.Regular.Large"
-                    android:textColor="?colorTextBlack"
-                    android:inputType="text"
-                    android:id="@+id/task_name_edit" />
-            </ViewSwitcher>
-            <de.azapps.mirakel.new_ui.views.PriorityChangeView
-                android:layout_width="wrap_content"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/priorityDoneSize"
+                    android:text="Example task"
+                    android:textAppearance="@style/TextAppearance.Medium.Large"
+                    android:textColor="?colorTextBlack" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/task_name_edit"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/priority"/>
-        </LinearLayout>
+                android:imeActionLabel="@string/save"
+                android:imeOptions="actionDone"
+                android:inputType="textCapSentences"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.Regular.Large"
+                android:textColor="?colorTextBlack" />
+        </ViewSwitcher>
+
+        <de.azapps.mirakel.new_ui.views.PriorityChangeView
+            android:id="@+id/priority"
+            android:layout_width="@dimen/clickable_item_size"
+            android:layout_height="40dp" />
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
-        android:layout_marginTop="@dimen/padding_default_half"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
         android:background="?colorDivider"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" />
 
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/task_fragment_scroll_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:descendantFocusability="beforeDescendants"
-        android:id="@+id/task_fragment_scroll_container">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:descendantFocusability="beforeDescendants"
-            android:layout_height="wrap_content">
+        android:descendantFocusability="beforeDescendants">
 
-            <LinearLayout
-                android:orientation="vertical"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingTop="8dp">
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
-                android:minWidth="@dimen/dialog_min_width"
-                tools:context="de.azapps.mirakel.new_ui.fragments.TaskFragment">
+                android:paddingBottom="3dp">
+            <de.azapps.mirakel.new_ui.views.DatesView
+                android:id="@+id/task_dates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                android:layout_marginStart="25dp"
+                android:orientation="vertical" />
 
-                <de.azapps.mirakel.new_ui.views.DatesView
+                <View
+                    android:id="@+id/divider_below_dates_view"
+                    android:layout_below="@id/task_dates"
                     android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider_height"
+                    android:layout_marginBottom="@dimen/padding_default"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="@dimen/padding_default_half"
+                    android:background="?colorDivider"
+                    android:orientation="vertical" />
+
+                <!-- Progress -->
+
+
+                <TextView
+                    android:id="@+id/progress_text"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/task_dates" />
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="25dp"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_track_changes_white_18dp"
+                    android:layout_below="@id/divider_below_dates_view"
+                    android:text="@string/progress_header"
+                    android:textAppearance="@style/TextAppearance.Regular.Small"
+                    android:textColor="?colorTextGrey" />
+
+                <de.azapps.material_elements.views.Slider
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="72dp"
+                    android:layout_marginTop="-48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/divider_below_dates_view"
+                    android:layout_toEndOf="@id/progress_text"
+                    android:layout_marginEnd="25dp"
+                    custom:widget_color="?colorPrimary" />
+            </RelativeLayout>
+
+            <!-- Tags -->
+            <LinearLayout
+                android:id="@+id/tag_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="vertical">
 
                 <include layout="@layout/task_divider" />
 
-                <!-- Progress -->
-                <de.azapps.mirakel.new_ui.views.ProgressView
+                <de.azapps.mirakel.new_ui.views.TagsView
+                    android:id="@+id/task_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginStart="25dp"
                     android:orientation="vertical"
-                    android:id="@+id/task_progress" />
-
-                <!-- Tags -->
-                <LinearLayout
-                    android:id="@+id/tag_wrapper"
-                    android:descendantFocusability="beforeDescendants"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <include layout="@layout/task_divider" />
-                    <de.azapps.mirakel.new_ui.views.TagsView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/task_tags" />
-                </LinearLayout>
-
-                <!-- Notes -->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:descendantFocusability="beforeDescendants"
-                    android:id="@+id/note_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <include layout="@layout/task_divider" />
-                    <de.azapps.mirakel.new_ui.views.NoteView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/task_note" />
-                </LinearLayout>
-
-
-                <!-- Subtasks -->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:descendantFocusability="beforeDescendants"
-                    android:id="@+id/subtask_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <include layout="@layout/task_divider" />
-                    <de.azapps.mirakel.new_ui.views.SubtasksView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/task_subtasks" />
-                </LinearLayout>
-
-                <!-- Files -->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:descendantFocusability="beforeDescendants"
-                    android:id="@+id/file_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <include layout="@layout/task_divider" />
-                    <de.azapps.mirakel.new_ui.views.FileView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/task_files" />
-                </LinearLayout>
-
-
+                    android:paddingBottom="-1dp"
+                    android:paddingTop="3dp" />
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+
+            <!-- Notes -->
+            <LinearLayout
+                android:id="@+id/note_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="vertical">
+
+                <include layout="@layout/task_divider"/>
+
+                <de.azapps.mirakel.new_ui.views.NoteView
+                    android:id="@+id/task_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginStart="25dp"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp" />
+            </LinearLayout>
+
+
+            <!-- Subtasks -->
+            <LinearLayout
+                android:id="@+id/subtask_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="vertical">
+
+                <include layout="@layout/task_divider" />
+
+                <de.azapps.mirakel.new_ui.views.SubtasksView
+                    android:id="@+id/task_subtasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginStart="25dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <!-- Files -->
+            <LinearLayout
+                android:id="@+id/file_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:orientation="vertical">
+
+                <include layout="@layout/task_divider" />
+
+                <de.azapps.mirakel.new_ui.views.FileView
+                    android:id="@+id/task_files"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginStart="25dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
         android:background="?colorDivider"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" />
 
     <LinearLayout
         android:id="@+id/ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_alignBottom="@+id/task_fragment_scroll_container"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/task_button_add_more"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:layout_weight="7"
-            android:drawableStart="@drawable/ic_plus_grey600_24dp"
-            android:paddingStart="@dimen/activity_vertical_margin"
-            android:textAlignment="textStart"
-            android:text="@string/task_add_more"
             android:background="?android:attr/selectableItemBackground"
-            android:id="@+id/task_button_add_more"
-            android:textColor="?colorTextGrey"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_plus_grey600_18dp"
+            android:paddingStart="20dp"
+            android:text="@string/task_add_more"
+            android:textAlignment="textStart"
             android:textAllCaps="true"
-            android:textAppearance="@style/TextAppearance.Light.Large"/>
+            android:textAppearance="@style/TextAppearance.Light"
+            android:textColor="?colorTextGrey" />
 
         <Button
+            android:id="@+id/task_button_done"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:text="@string/task_button_done"
             android:background="?android:attr/selectableItemBackground"
-            android:id="@+id/task_button_done"
-            android:textColor="?colorTextGrey"
+            android:text="@string/task_button_done"
             android:textAllCaps="true"
-            android:textAppearance="@style/TextAppearance.Regular.Large" />
+            android:textAppearance="@style/TextAppearance.Regular"
+            android:textColor="?colorTextGrey" />
     </LinearLayout>
 </LinearLayout>

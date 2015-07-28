@@ -19,20 +19,23 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <item
+        android:id="@+id/add_tags_menu"
+        android:icon="@drawable/ic_local_offer_white_18dp"
+        android:title="@string/add_tag_view_string"/>
 
     <item
         android:id="@+id/add_note_menu"
+        android:icon="@drawable/ic_format_text_white_18dp"
         android:title="@string/add_note_view_string"/>
 
     <item
         android:id="@+id/add_subtask_menu"
+        android:icon="@drawable/ic_check_white_18dp"
         android:title="@string/add_subtask_view_string"/>
-
-    <item
-        android:id="@+id/add_tags_menu"
-        android:title="@string/add_tag_view_string"/>
     <item
         android:id="@+id/add_file_menu"
+        android:icon="@drawable/ic_attachment_white_18dp"
         android:title="@string/add_files_view_string"/>
 
 </menu>

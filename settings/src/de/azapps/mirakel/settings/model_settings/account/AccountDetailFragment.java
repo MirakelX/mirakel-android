@@ -21,7 +21,6 @@ package de.azapps.mirakel.settings.model_settings.account;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -30,6 +29,8 @@ import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.widget.TimePicker;
+
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -170,7 +171,7 @@ public class AccountDetailFragment extends GenericModelDetailFragment<AccountMir
                 timePicker.setIs24HourView(true);
                 timePicker.setCurrentHour(hours);
                 timePicker.setCurrentMinute(minutes);
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity())
+                final AlertDialogWrapper.Builder dialog = new AlertDialogWrapper.Builder(getActivity())
                 .setTitle(R.string.sync_frequency)
                 .setView(timePicker)
                 .setPositiveButton(android.R.string.ok,

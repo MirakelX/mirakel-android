@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">Poslušaj to!</string>
+  <string name="file_default_title">Seznam izbranih datotek</string>
+  <string name="photo_default_title">Seznam izbranih fotografij</string>
+  <string name="today">Danes</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Stik z razvijalci in poročilo o hrošču za program Mirakel</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Različica programa: %1$s\n
+Različica SDK: %2$d\n
+Naprava: %3$s\n]]></string>
+  <string name="contact_chooser">Pošlji elektronsko sporočilo ...</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Opa! Naprava ne omogoča zajemanja fotografij.</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">Ni prostora za shranjevanje fotografije.</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Opa! Naprava ne podpira možnosti prevajanja govora v besedilo</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Podnaloga ne sme biti v zanki</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">Odpiranje te vrste datoteke ni podprto</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">Ni nameščenega odjemalca elektronske pošte</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Namestiti je treba upravljalnika datotek</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">Prišlo je do notranje napake med razčlenjevanjem imena datoteke</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">Datoteke ni mogoče najti</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">Prišlo je do napake med izvažanjem podatkovne zbirke</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">Prišlo je do napake med uvažanjem podatkovne zbirke</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">Sličica ni mogoče ustvariti. Datoteka je za velika</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">Naloge ni mogoče uskladiti, ker je brez seznamov</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">Ops! Seznam nalog je izginil! To je lahko napaka programa ...</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">To ni datoteka zbirke podatkov Mirakel!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Prišlo je do napake med uvažanjem nalog iz programa Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Datoteke Taskwarrior ni mogoče najti</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">Nastavitvene datoteke ni mogoče prejeti</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">Naslov URL ni pravilen. Ali je prebrana prava koda QR?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">Ni ustreznega dovoljenja za branje datoteke</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">Ops, seznam je izginil ...</string>
+  <string name="permission_read_lbl">Omogoči branje podatkov</string>
+  <string name="permission_read_desc">Dovoljenje za branje shranjenih podatkov v programu Mirakel</string>
+  <string name="permission_write_lbl">Omogoči zapisovanje podatkov</string>
+  <string name="permission_write_desc">Dovoljenje za zapisovanje in shranjevanje podatkov v programu Mirakel</string>
+  <string name="permission_read_write_lbl">Omogoči branje in zapisovanje podatkov</string>
+  <string name="title_settings">Nastavitve</string>
+  <string name="search_hint">Poišči naloge</string>
+  <string name="search">Poišči</string>
+  <string name="search_result_title">Poišči %s</string>
+  <string name="tasks_new_str">Nova naloga</string>
+  <string name="takePhoto">Fotografiraj</string>
+  <string name="speak">Govori</string>
+  <string name="delete_content">Ali ste prepričani, da želite izbrisati %s?</string>
+  <string name="dialog_move">Premakni nalogo</string>
+  <string name="list_title">Seznami</string>
+  <string name="menu_settings">Nastavitve</string>
+  <string name="menu_set_priority">Nastavi prednost</string>
+  <string name="menu_do_task">Nastavi nalogo kot končano</string>
+  <string name="action_undo">Razveljavi zadnjo spremembo</string>
+  <string name="action_sync_now">Uskladi takoj</string>
+  <string name="action_contact">Stik / Poročilo o hrošču</string>
+  <string name="kill_app">Zapri program</string>
+  <string name="action_settings">Nastavitve</string>
+  <string name="save">Shrani</string>
+  <string name="as_subtask">Dodaj k nalogi</string>
+  <string name="task_clone">Kloniraj nalogo</string>
+  <string name="task_menu_sorting">Razvrsti naloge</string>
+  <string name="list_menu_new_list">Nov seznam</string>
+  <string name="share_using">Souporaba z</string>
+  <string name="share_task">Souporabi</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">Seznam souporabe</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Souporaba s programom Mirakel\nOdprtokodni program za vodenje nalog in opomnikov za okolje Android in splet.\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">Spremeni barvo</string>
+  <string name="set_color">Nastavi barvo</string>
+  <string name="unset_color">Brez barve</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>Preimenuj</item>
+    <item>Izbriši</item>
+    <item>Objavi</item>
+  </string-array>
+  <string name="crash_toast_text">Ops! Program se je sesul! Treba ga je znova zagnati in poslati sporočilo razvijalcem</string>
+  <string name="crash_dialog_title">Program Mirakel se je sesul</string>
+  <string name="crash_dialog_text"><![CDATA[Prišlo je do nepričakovane napake, zato je program
+    vsiljeno končan. Pošljite poročilo o napaki in s tem pospešite pripravo,
+    popravkov. Vse, kar je treba storiti, je klikniti na gumb V redu.]]></string>
+  <string name="crash_dialog_ok_toast">Hvala!</string>
+  <string name="speak_lang_code">sl-SI</string>
+  <string-array name="audio_playback_options">
+    <item>Odpri datoteko</item>
+    <item>Predvajaj glasno</item>
+    <item>Predvajaj potiho</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>Uredi</item>
+    <item>Premakni</item>
+    <item>Izbriši</item>
+  </string-array>
+  <string name="edit">Uredi</string>
+  <string name="no_reminder">Nastavi opomnik</string>
+  <string name="add_files">Dodaj datoteko ...</string>
+  <string name="file_select">Izbor datoteke</string>
+  <string name="save_label">Končano</string>
+  <string name="audio_record_file">Zvočni posnetek</string>
+  <string name="image_file">Slika</string>
+  <string name="task_fragment_header">Glava</string>
+  <string name="task_fragment_file">Datoteke</string>
+  <string name="task_fragment_due">Zapadlost</string>
+  <string name="task_fragment_reminder">Opomnik</string>
+  <string name="task_fragment_content">Opombe</string>
+  <string name="task_fragment_subtask">Podrejena naloga</string>
+  <string name="task_fragment_progress">Napredek</string>
+  <string name="task_fragment_tags">Oznake</string>
+  <string name="audio_record_title">Zvočno snemanje ...</string>
+  <string name="audio_record_message">Snemanje ...</string>
+  <string name="audio_playback_title">Predvajanje posnetka ...</string>
+  <string name="audio_playback_select_title">Kaj želite storiti?</string>
+  <string name="audio_playback_pause">Premor</string>
+  <string name="audio_playback_play">Predvajaj</string>
+  <string name="audio_playback_stop">Zaustavi</string>
+  <string name="task_change_prio_title">Spremeni prednost</string>
+  <string name="remove_subtask">Odstrani podrejeno nalogo</string>
+  <string name="add_existing">Dodaj obstoječo nalogo</string>
+  <string name="subtask_add_options">Filter &gt;&gt;</string>
+  <string name="subtask_reminder">Ali želite dodati opomnik?</string>
+  <string name="new_task">Nova naloga</string>
+  <string name="add_subtasks">Dodaj podrejeno nalogo ...</string>
+  <string name="add">Dodaj</string>
+  <string name="add_subtask">Dodaj podrejeno nalogo</string>
+  <string name="file_no_activity">Odpiranje te vrste datoteke ni podprto</string>
+  <string name="remove_files">Odstrani datoteke iz naloge</string>
+</resources>
+

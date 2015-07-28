@@ -35,6 +35,8 @@ android {
     lintOptions {
         disable 'MissingTranslation'
         enable 'NewerVersionAvailable'
+        disable 'ImpliedQuantity'
+        disable 'MissingQuantity'
     }
     sourceSets {
         main {
@@ -48,7 +50,6 @@ android {
         }
     }
 }
-
 
 dependencies {
     compile project(':model')

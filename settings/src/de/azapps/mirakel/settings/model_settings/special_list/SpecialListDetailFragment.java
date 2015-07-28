@@ -47,6 +47,7 @@ import java.util.UUID;
 
 import de.azapps.material_elements.utils.AnimationHelper;
 import de.azapps.material_elements.utils.SnackBarEventListener;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -61,7 +62,6 @@ import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailFragment;
 import de.azapps.mirakel.settings.model_settings.special_list.dialogfragments.EditDialogFragment;
 
-import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.of;
 
 public class  SpecialListDetailFragment extends MirakelPreferencesFragment<SpecialList> implements
@@ -72,7 +72,6 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
     protected SpecialList mItem;
 
     private Context mContext = null;
-    private int initialTop;
 
 
     /**
@@ -152,6 +151,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
             // Load the dummy content
             mItem = SpecialList.firstSpecialSafe();
         }
+        AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.CREATED_META_LIST);
         super.onCreate(savedInstanceState);
     }
 
@@ -324,7 +324,7 @@ public class  SpecialListDetailFragment extends MirakelPreferencesFragment<Speci
         final Preference where = new Preference(mContext);
         where.setKey("special_lists_where");
         where.setTitle(R.string.special_list_where);
-        where.setSummary(mItem.getWhereQueryForTasks().select("*").getQuery(Task.URI));
+        where.setSummary(mItem.getWhereQueryForTasks().select("*").toString(Task.URI));
         where.setEnabled(false);
         return where;
     }

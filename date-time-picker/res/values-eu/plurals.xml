@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources>
+  <plurals name="selected_tasks">
+    <item quantity="one">Zeregin bat</item>
+    <item quantity="other">%d Zeregin</item>
+  </plurals>
+  <plurals name="selected_lists">
+    <item quantity="one">Zerrenda bat</item>
+    <item quantity="other">%d Zerrenda</item>
+  </plurals>
+  <plurals name="list_delete">
+    <item quantity="one">Zerrenda ezabatu?</item>
+    <item quantity="other">Zerrendak ezabatu?</item>
+  </plurals>
+  <plurals name="task_delete">
+    <item quantity="one">Zeregina ezabatu?</item>
+    <item quantity="other">Zereginak ezabatu?</item>
+  </plurals>
+  <plurals name="due_year">
+    <item quantity="one">Urte</item>
+    <item quantity="other">Urte</item>
+  </plurals>
+  <plurals name="due_day">
+    <item quantity="one">Egun</item>
+    <item quantity="other">Egun</item>
+  </plurals>
+  <plurals name="due_minute">
+    <item quantity="one">Minutu</item>
+    <item quantity="other">Minutu</item>
+  </plurals>
+  <plurals name="due_hour">
+    <item quantity="one">Ordu</item>
+    <item quantity="other">Ordu</item>
+  </plurals>
+  <plurals name="due_month">
+    <item quantity="one">Hilabete</item>
+    <item quantity="other">Hilabete</item>
+  </plurals>
+  <plurals name="months">
+    <item quantity="one">Hilabete</item>
+    <item quantity="other">Hilabete</item>
+  </plurals>
+  <plurals name="every_months">
+    <item quantity="one">Hilero</item>
+    <item quantity="other">%d hilero</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="one">Egun</item>
+    <item quantity="other">Egun</item>
+  </plurals>
+  <plurals name="every_days">
+    <item quantity="one">Egunero</item>
+    <item quantity="other">%d egunero</item>
+  </plurals>
+  <plurals name="years">
+    <item quantity="one">Urte</item>
+    <item quantity="other">Urte</item>
+  </plurals>
+  <plurals name="every_years">
+    <item quantity="one">Urtero</item>
+    <item quantity="other">%d urtero</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">Minutu</item>
+    <item quantity="other">Minutu</item>
+  </plurals>
+  <plurals name="every_minutes">
+    <item quantity="one">Minuturo</item>
+    <item quantity="other">%d minuturo</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">Ordu</item>
+    <item quantity="other">Ordu</item>
+  </plurals>
+  <plurals name="every_hours">
+    <item quantity="one">Orduro</item>
+    <item quantity="other">%d orduro</item>
+  </plurals>
+  <plurals name="subtasks">
+    <item quantity="one">Azpi-zeregin bat</item>
+    <item quantity="other">%d azpi-zeregin</item>
+  </plurals>
+  <plurals name="file">
+    <item quantity="one">Fitxategi bat</item>
+    <item quantity="other">%d fitxategi</item>
+  </plurals>
+  <plurals name="dev_toast">
+    <item quantity="one">urrats %1$d gehiago garatzaile ezarpenak %2$s egiteko.</item>
+    <item quantity="other">%1$d urrats gehiago garatzaile ezarpenak %2$s egiteko.</item>
+  </plurals>
+</resources>
+

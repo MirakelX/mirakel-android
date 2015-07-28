@@ -65,30 +65,18 @@ public class NotificationService extends Service {
         // Do nothing
     }
 
-    public static void stop(final Context ctx) {
-        final NotificationManager notificationManager = (NotificationManager) ctx
-                .getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(DefinitionsHelper.NOTIF_DEFAULT);
-    }
-
     /**
      * Updates the Notification
      */
     public void notifier() {
-        if (!MirakelCommonPreferences.useNotifications()
-            && !this.existsNotification) {
+        if (!MirakelCommonPreferences.useNotifications() && !this.existsNotification) {
             return;
         }
 
-        final Optional<ListMirakel> showList = ListMirakel.get(
-                MirakelCommonPreferences.getNotificationsListId());
-        Optional<ListMirakel> openList = ListMirakel.get(
-                                             MirakelCommonPreferences.getNotificationsListOpenId());
-        if (!showList.isPresent()) {
+        final ListMirakel showList = ListMirakel.get(
+                                         MirakelCommonPreferences.getNotificationsListId()).orNull();
+        if (showList == null) {
             return;
-        }
-        if (!openList.isPresent()) {
-            openList = showList;
         }
 
         // Set onClick Intent
@@ -98,13 +86,13 @@ public class NotificationService extends Service {
         }
         final Intent openIntent = new Intent(this, main.get());
         openIntent.setAction(DefinitionsHelper.SHOW_LIST);
-        openIntent.putExtra(DefinitionsHelper.EXTRA_LIST, openList.get());
+        openIntent.putExtra(DefinitionsHelper.EXTRA_LIST, showList);
         openIntent
         .setData(Uri.parse(openIntent.toUri(Intent.URI_INTENT_SCHEME)));
         final PendingIntent pOpenIntent = PendingIntent.getActivity(this, 0,
                                           openIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        final List<Task> todayTasks = showList.get().tasks(false);
+        final List<Task> todayTasks = showList.tasks(false);
         final String notificationTitle;
         final String notificationText;
         if (todayTasks.isEmpty()) {
@@ -114,11 +102,11 @@ public class NotificationService extends Service {
             if (todayTasks.size() == 1) {
                 notificationTitle = getString(
                                         R.string.notification_title_general_single,
-                                        showList.get().getName());
+                                        showList.getName());
             } else {
                 notificationTitle = String.format(
                                         getString(R.string.notification_title_general),
-                                        todayTasks.size(), showList.get().getName());
+                                        todayTasks.size(), showList.getName());
             }
             notificationText = todayTasks.get(0).getName();
         }

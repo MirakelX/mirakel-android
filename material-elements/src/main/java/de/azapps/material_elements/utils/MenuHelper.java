@@ -19,9 +19,14 @@
 
 package de.azapps.material_elements.utils;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v7.internal.view.menu.MenuBuilder;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import java.lang.reflect.Method;
 
@@ -31,8 +36,10 @@ public class MenuHelper {
     /**
      * Source: http://stackoverflow.com/questions/18374183/how-to-show-icons-in-overflow-menu-in-actionbar
      */
-    public static void showMenuIcons(final Menu menu) {
-        if (menu instanceof MenuBuilder) {
+    public static void showMenuIcons(final Context context, final Menu menu) {
+        // It seams that the setOptionalIconsVisible code is very old and does not support RTL layouts.
+        // Thus we hide the icons for the few RTL users instead of showing them in an ugly way
+        if (!ViewHelper.isRTL(context) && menu instanceof MenuBuilder) {
             try {
                 final Method m = menu.getClass().getDeclaredMethod(
                                      "setOptionalIconsVisible", Boolean.TYPE);
@@ -42,6 +49,20 @@ public class MenuHelper {
                 Log.e(TAG, "onMenuOpened", e);
             } catch (final Exception e) {
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void colorizeMenuItems(final Menu menu, final int color) {
+        colorizeMenuItems(menu, color, 0);
+    }
+
+    public static void colorizeMenuItems(final Menu menu, final int color, final int startIndex) {
+        for (int i = startIndex; i < menu.size(); i++) {
+            final MenuItem menuItem = menu.getItem(i);
+            final Drawable icon = menuItem.getIcon();
+            if (icon != null) {
+                icon.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
             }
         }
     }

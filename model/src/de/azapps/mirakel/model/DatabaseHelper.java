@@ -80,7 +80,7 @@ import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 53;
+    public static final int DATABASE_VERSION = 56;
 
     private static final String TAG = "DatabaseHelper";
     public static final String CREATED_AT = "created_at";
@@ -257,11 +257,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
                    + "(\""
                    + this.context.getString(R.string.today).toLowerCase(
-                       Helpers.getLocal(this.context))
+                       Helpers.getLocale(this.context))
                    + "\",0);"
                    + "INSERT INTO semantic_conditions (condition,due) VALUES (\""
                    + this.context.getString(R.string.tomorrow).toLowerCase(
-                       Helpers.getLocal(this.context)) + "\",1);");
+                       Helpers.getLocale(this.context)) + "\",1);");
         final String[] weekdays = this.context.getResources().getStringArray(
                                       R.array.weekdays);
         for (int i = 1; i < weekdays.length; i++) { // Ignore first element
@@ -505,11 +505,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES "
                        + "(\""
                        + this.context.getString(R.string.today).toLowerCase(
-                           Helpers.getLocal(this.context))
+                           Helpers.getLocale(this.context))
                        + "\",0);"
                        + "INSERT INTO semantic_conditions (condition,due) VALUES (\""
                        + this.context.getString(R.string.tomorrow).toLowerCase(
-                           Helpers.getLocal(this.context)) + "\",1);");
+                           Helpers.getLocale(this.context)) + "\",1);");
         case 15:// Add Color
             db.execSQL("Alter Table lists add column "
                        + "color INTEGER;");
@@ -921,8 +921,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 43:
             db.execSQL("DROP VIEW caldav_lists;");
             db.execSQL("DROP VIEW caldav_tasks;");
-            createCaldavListsTrigger(db);
-            createCaldavTasksTrigger(db);
+            createCaldavListsView(db);
+            createCaldavTasksView(db);
         case 44:
             createCaldavPropertyView(db);
         case 45:
@@ -972,6 +972,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("UPDATE special_lists SET icon_path" +
                        "='file:///android_asset/list_icons/all_tasks.png' WHERE name= '" +
                        context.getString(R.string.list_all) + "';");
+        case 53:
+            MirakelPreferences.init(context);
+            SharedPreferences.Editor e = MirakelPreferences.getEditor();
+            for (int i = 0; i < 100; i++) {
+                e = e.remove("OLD" + i);
+            }
+            e.commit();
+        case 54:
+            db.execSQL("DROP VIEW caldav_lists;");
+            db.execSQL("DROP VIEW caldav_tasks;");
+            createCaldavListsView(db);
+            createCaldavTasksView(db);
+        case 55:
+            db.execSQL("DROP VIEW caldav_tasks;");
+            createCaldavTasksView(db);
+
         default:
             break;
         }
@@ -1080,8 +1096,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    private static void createCaldavListsTrigger(final SQLiteDatabase db) {
-        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level, visible, "
+    private static void createCaldavListsView(final SQLiteDatabase db) {
+        db.execSQL("CREATE VIEW caldav_lists AS SELECT _sync_id, sync_version, CASE WHEN l.sync_state IN (-1,0) THEN 0 ELSE 1 END AS _dirty, sync1, sync2, sync3, sync4, sync5, sync6, sync7, sync8, a.name AS account_name, account_type, l._id, l.name AS list_name, l.color AS list_color, access_level as list_access_level, visible, "
                    +
                    "a.enabled AS sync_enabled, owner AS list_owner\n"
                    +
@@ -1097,14 +1113,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + "INSERT INTO lists (sync_state, name, color, account_id,lft,rgt) VALUES (0, new.list_name, new.list_color, (SELECT DISTINCT _id FROM account WHERE name = new.account_name),(SELECT MAX(lft) from lists)+2,(SELECT MAX(rgt) from lists)+2);"
                    + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
                    + "INSERT INTO caldav_lists_extra VALUES\n" +
-                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.list_owner);\n"
+                   "((SELECT last_insert_rowid() FROM lists),new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.list_access_level, new.visible, new.sync_enabled, new.list_owner);\n"
                    +
                    "END;");
         db.execSQL("CREATE TRIGGER caldav_lists_update_trigger INSTEAD OF UPDATE on caldav_lists\n" +
                    "BEGIN\n" +
                    "UPDATE lists SET sync_state=0, name = new.list_name, color = new.list_color WHERE _id = old._id;\n"
                    + "UPDATE account SET enabled=new.sync_enabled WHERE name = new.account_name;"
-                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.access_level, new.visible, new.sync_enabled, new.list_owner);\n"
+                   + "INSERT OR REPLACE INTO caldav_lists_extra VALUES (new._id, new._sync_id, new.sync_version, new.sync1, new.sync2, new.sync3, new.sync4, new.sync5, new.sync6, new.sync7, new.sync8, new.account_type , new.list_access_level, new.visible, new.sync_enabled, new.list_owner);\n"
                    +
                    "END;");
         db.execSQL("CREATE TRIGGER caldav_lists_delete_trigger INSTEAD OF DELETE on caldav_lists\n" +
@@ -1172,7 +1188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "visible INTEGER,\n" +
                    "sync_enabled INTEGER,\n" +
                    "owner TEXT);");
-        createCaldavListsTrigger(db);
+        createCaldavListsView(db);
     }
 
 
@@ -1213,10 +1229,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "parent_id INTEGER,\n" +
                    "sorting TEXT,\n" +
                    "has_alarms INTEGER);");
-        createCaldavTasksTrigger(db);
+        createCaldavTasksView(db);
     }
 
-    private static void createCaldavTasksTrigger(final SQLiteDatabase db) {
+    private static void createCaldavTasksView(final SQLiteDatabase db) {
         // View
         db.execSQL("CREATE VIEW caldav_tasks AS SELECT \n" +
                    "e._sync_id,\n" +
@@ -1252,7 +1268,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    +
                    "     ELSE 0\n" +
                    "END AS priority,\n" +
-                   "e.classification,\n" +
+                   "e.classification as class,\n" +
                    "CASE WHEN t.done=1 THEN t.updated_at ELSE null END AS completed,\n" +
                    "e.completed_is_allday,\n" +
                    "t.progress AS percent_complete,\n" +
@@ -1294,7 +1310,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "l.list_name,\n" +
                    "l.list_color,\n" +
                    "l.list_owner AS list_owner,\n" +
-                   "l.access_level AS list_access_level,\n" +
+                   "l.list_access_level,\n" +
                    "l.visible\n" +
                    "FROM\n" +
                    "tasks AS t\n" +
@@ -1309,7 +1325,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    new.list_id,\n" +
                    "    new.title,\n" +
                    "    new.description,\n" +
-                   "    new.percent_complete,\n" +
+                   "    CASE WHEN new.percent_complete IS NULL THEN 0 ELSE new.percent_complete END,\n" +
                    "    CASE WHEN new.status IN(2,3) THEN 1 ELSE 0 END,  \n" +
                    "    new.due / 1000,\n" +
                    "    CASE WHEN new.priority=0 THEN 0\n" +
@@ -1318,8 +1334,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "         WHEN new.priority <= 9 THEN -1 \n" +
                    "    ELSE 0\n" +
                    "    END,\n" +
-                   "    new.created / 1000,\n" +
-                   "    new.last_modified / 1000);\n" +
+                   "    CASE WHEN new.created IS NULL THEN strftime('%s','now') ELSE new.created / 1000 END,\n" +
+                   "    CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END);\n" +
                    "    INSERT INTO caldav_tasks_extra (task_id,_sync_id,location,geo,url,organizer,priority,classification, completed_is_allday,"
                    +
                    "    status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, "
@@ -1331,7 +1347,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    VALUES\n" +
                    "    ((SELECT last_insert_rowid() FROM tasks),new._sync_id, new.location, new.geo, new.url, new.organizer, "
                    +
-                   "    new.priority, new.classification, new.completed_is_allday, new.status, new.task_color, new.dtstart, new.is_allday, "
+                   "    new.priority, new.class, new.completed_is_allday, new.status, new.task_color, new.dtstart, new.is_allday, "
                    +
                    "    new.tz, new.duration, new.rdate, new.exdate, new.rrule, new.original_instance_sync_id, new.original_instance_id, "
                    +
@@ -1348,7 +1364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "list_id = new.list_id,\n" +
                    "name = new.title,\n" +
                    "content = new.description,\n" +
-                   "progress = new.percent_complete,\n" +
+                   "progress = CASE WHEN new.percent_complete IS NULL THEN 0 ELSE new.percent_complete END,\n" +
                    "done = CASE WHEN new.status IN(2,3) THEN 1 ELSE 0 END,    \n" +
                    "due = new.due / 1000,\n" +
                    "priority = CASE WHEN new.priority=0 THEN 0\n" +
@@ -1357,7 +1373,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "                WHEN new.priority <= 9 THEN -1 \n" +
                    "                ELSE 0\n" +
                    "END,\n" +
-                   "updated_at = new.last_modified / 1000\n" +
+                   "updated_at = CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END\n" +
                    "WHERE _id = old._id;\n" +
                    "INSERT OR REPLACE INTO caldav_tasks_extra VALUES (\n" +
                    "new._sync_id,\n" +
@@ -1377,7 +1393,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "new.url,\n" +
                    "new.organizer,\n" +
                    "new.priority,\n" +
-                   "new.classification,\n" +
+                   "new.class,\n" +
                    "new.completed_is_allday,\n" +
                    "new.status,\n" +
                    "new.task_color,\n" +

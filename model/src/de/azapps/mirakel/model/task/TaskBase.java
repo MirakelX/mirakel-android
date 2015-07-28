@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ abstract class TaskBase extends ModelBase {
     protected String uuid = "";
     @NonNull
     protected Optional<List<Tag>> tags = absent();
+    protected boolean isStub;
 
     TaskBase() {
         // nothing
@@ -614,6 +616,15 @@ abstract class TaskBase extends ModelBase {
     }
 
     @Override
+    public boolean isStub() {
+        return isStub || super.isStub();
+    }
+
+    public void setIsStub(boolean stub) {
+        this.isStub = stub;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -642,6 +653,7 @@ abstract class TaskBase extends ModelBase {
                  + (!this.tags.isPresent() ? 0 : this.tags.get().hashCode());
         result = prime * result + (this.updatedAt.hashCode());
         result = prime * result + (this.uuid.hashCode());
+        result = prime * result + (this.isStub ? 1249 : 1259);
         return result;
     }
 
@@ -653,15 +665,17 @@ abstract class TaskBase extends ModelBase {
         if (o == null) {
             return false;
         }
-        if (((Object) this).getClass() != o.getClass()) {
+        if (!(o instanceof TaskBase)) {
             return false;
         }
         final TaskBase other = (TaskBase) o;
         if (this.additionalEntries == null) {
-            if (other.additionalEntries != null) {
-                return false;
-            }
-        } else if (!this.additionalEntries.equals(other.additionalEntries)) {
+            setAdditionalEntries(additionalEntriesString);
+        }
+        if (other.additionalEntries == null) {
+            setAdditionalEntries(other.additionalEntriesString);
+        }
+        if (!Objects.equal(this.additionalEntries, other.additionalEntries)) {
             return false;
         }
         if (!this.additionalEntriesString

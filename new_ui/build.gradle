@@ -63,6 +63,8 @@ android {
     lintOptions {
         disable 'MissingTranslation','AppCompatResource'
         enable 'NewerVersionAvailable'
+        disable 'ImpliedQuantity'
+        disable 'MissingQuantity'
     }
     defaultConfig {
         testApplicationId "de.azapps.mirakelandroid.test"
@@ -70,10 +72,12 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
     }
+
+    def Properties localProps = new Properties()
+    localProps.load(new FileInputStream(file('./local.properties')))
+
     signingConfigs {
         release {
-            def Properties localProps = new Properties()
-            localProps.load(new FileInputStream(file('./local.properties')))
             def Properties keyProps = new Properties()
             assert localProps['keystore.props.file'];
             keyProps.load(new FileInputStream(file(localProps['keystore.props.file'])))
@@ -102,20 +106,17 @@ android {
     }
     productFlavors {
         google {
-            flavorDimension "stores"
+            dimension "stores"
+            assert localProps['analytics.trackingid'];
+            buildConfigField "String", "TRACKER_ID", localProps['analytics.trackingid']
         }
         fdroid {
-            flavorDimension "stores"
+            dimension "stores"
         }
     }
 
     sourceSets {
         main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
             res.srcDirs = ['merged-res']
             assets.srcDirs = ['assets']
         }
@@ -127,7 +128,6 @@ android {
         instrumentTest.setRoot('../tests/src')
 
         google {
-            manifest.srcFile  "res-google/AndroidManifest.xml"
             res.srcDirs = ['res-google']
         }
     }
@@ -160,6 +160,17 @@ androidUnitTest {
   }
 }*/
 
+
+ext {
+    flavor = ""
+}
+
+gradle.startParameter.getTaskNames().each { task ->
+    if(task.contains("Google") || task.contains("google")){
+        flavor = "google"
+    }
+}
+
 dependencies {
     compile project(':model')
     compile project(':helper')
@@ -177,6 +188,8 @@ dependencies {
     testCompile "junit:junit:4.11"
     testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.0-SNAPSHOT"
+
+    googleCompile 'com.google.android.gms:play-services-analytics:7.5.0'
 
 }
 

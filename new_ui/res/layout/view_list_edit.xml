@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/list_name" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+      android:paddingStart="@dimen/abc_dialog_padding_material"
+      android:paddingEnd="@dimen/abc_dialog_padding_material"
+      android:paddingTop="@dimen/abc_dialog_padding_top_material">
+    <!-- The 21dp is done this way to align the edittext exactly under the header -->
+
 
     <EditText
+        android:id="@+id/list_edit_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:id="@+id/list_edit_name" />
+        android:inputType="textCapSentences"
+        android:hint="@string/list_name"/>
 
     <TextView
+        android:id="@+id/list_edit_account_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/list_account"
-        android:id="@+id/list_edit_account_text" />
+        android:text="@string/list_account" />
 
     <Spinner
+        android:id="@+id/list_edit_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorPrimary="?colorTextBlack"
-        android:id="@+id/list_edit_account" />
+        android:textColorPrimary="?colorTextBlack" />
 
 </LinearLayout>

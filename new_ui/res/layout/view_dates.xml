@@ -64,11 +64,9 @@
             android:paddingBottom="@dimen/padding_default_half"
             android:paddingTop="@dimen/padding_default_half" />
 
-        <de.azapps.mirakel.new_ui.views.KeyValueView
-            android:id="@+id/dates_reminder_recurrence"
+        <View
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="@dimen/padding_default_half"
-            android:paddingTop="@dimen/padding_default_half" /></LinearLayout>
+            android:layout_weight="1" />
+    </LinearLayout>
 </merge>

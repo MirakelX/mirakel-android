@@ -3,8 +3,7 @@ package de.azapps.material_elements.utils;
 import android.animation.Animator;
 import android.content.Context;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import de.azapps.material_elements.R;
@@ -16,7 +15,7 @@ public class AnimationHelper {
         Object tag = view.getTag(IS_MOVED);
         if ((tag == null) || !(Boolean) tag) {
             view.animate()
-            .translationYBy(-height)
+            .translationY(-height)
             .setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration))
             .setListener(new AnimationEventListener() {
                 @Override
@@ -25,14 +24,14 @@ public class AnimationHelper {
                     view.setTag(IS_MOVED, true);
                 }
             })
-            .setInterpolator(new DecelerateInterpolator()).start();
+            .setInterpolator(new DecelerateInterpolator(1.5F)).start();
 
         }
 
     }
     public static void moveViewDown(final Context context, final View view, final int height) {
         view.animate()
-        .translationYBy(height)
+        .translationY(0)
         .setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration))
         .setListener(new AnimationEventListener() {
             @Override
@@ -41,34 +40,44 @@ public class AnimationHelper {
                 view.setTag(IS_MOVED, false);
             }
         })
-        .setInterpolator(new DecelerateInterpolator()).start();
+        .setInterpolator(new AccelerateInterpolator(1.5F)).start();
     }
 
     public static void slideIn(final Context context, final View view) {
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in);
-        animation.setInterpolator(context, R.interpolator.decelerate_cubic);
-        view.setVisibility(View.VISIBLE);
-        view.startAnimation(animation);
+        Object tag = view.getTag(IS_MOVED);
+        if ((tag == null) || !(Boolean) tag) {
+            view.setVisibility(View.VISIBLE);
+            view.animate()
+            .setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration))
+            .alpha(1)
+            .translationY(0)
+            .setListener(new AnimationEventListener() {
+                @Override
+                public void onAnimationEnd(final Animator animation) {
+                    super.onAnimationEnd(animation);
+                    view.setTag(IS_MOVED, true);
+                }
+            })
+            .setInterpolator(new DecelerateInterpolator(1.5F))
+            .start();
+        }
     }
 
     public static void slideOut(final Context context, final View view) {
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_out);
-        animation.setInterpolator(context, R.interpolator.accelerate_cubic);
-        view.startAnimation(animation);
-        animation.setAnimationListener(new Animation.AnimationListener() {
+        view.setVisibility(View.VISIBLE);
+        view.animate()
+        .setDuration(context.getResources().getInteger(R.integer.anim_snackbar_duration))
+        .alpha(0)
+        .translationY(view.getHeight())
+        .setListener(new AnimationEventListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(final Animator animation) {
+                super.onAnimationEnd(animation);
+                view.setTag(IS_MOVED, false);
                 view.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        })
+        .setInterpolator(new AccelerateInterpolator(1.5F))
+        .start();
     }
 }

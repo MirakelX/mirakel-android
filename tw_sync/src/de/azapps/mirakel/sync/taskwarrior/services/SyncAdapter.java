@@ -66,6 +66,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                                     .getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
+    public SyncAdapter(final Context context, final boolean autoInitialize,
+                       final boolean allowParallelSyncs) {
+        super(context, autoInitialize, allowParallelSyncs);
+        this.mContext = context;
+        this.mNotificationManager = (NotificationManager) this.mContext
+                                    .getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
     @Override
     public void onPerformSync(final Account account, final Bundle extras,
                               final String authority, final ContentProviderClient provider,
@@ -125,7 +133,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void showSyncNotification(final boolean showNotification) throws ClassNotFoundException {
         final Intent intent = new Intent(this.mContext,
-                                         Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+                                         Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
         intent.setAction(DefinitionsHelper.SHOW_LISTS);
         final PendingIntent p = PendingIntent.getService(this.mContext, 0,
                                 intent, 0);
@@ -215,7 +223,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             final String title = "Mirakel: "
                                  + this.mContext.getText(R.string.finish_sync);
             final Intent openIntent = new Intent(this.mContext,
-                                                 Class.forName(DefinitionsHelper.MAINACTIVITY_CLASS));
+                                                 Class.forName(DefinitionsHelper.MIRAKEL_ACTIVITY_CLASS));
             openIntent.setAction(DefinitionsHelper.SHOW_MESSAGE);
             openIntent.putExtra(Intent.EXTRA_SUBJECT, title);
             openIntent

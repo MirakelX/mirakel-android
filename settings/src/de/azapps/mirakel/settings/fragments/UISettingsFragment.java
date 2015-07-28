@@ -26,6 +26,8 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
@@ -33,6 +35,7 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.custom_views.Settings;
+import de.azapps.mirakel.settings.custom_views.SwitchCompatPreference;
 import de.azapps.mirakel.settings.model_settings.generic_list.GenericModelDetailActivity;
 
 public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
@@ -54,22 +57,6 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
             entries[i] = name;
             i++;
         }
-
-        final ListPreference isTablet = (ListPreference) findPreference("useTabletLayoutNew");
-        final String[] values = {"0", "1", "2", "3"};
-        final String[] e = getResources().getStringArray(
-                               R.array.tablet_options);
-        isTablet.setEntries(e);
-        isTablet.setEntryValues(values);
-        isTablet.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(final Preference preference,
-                                              final Object newValue) {
-                final int value = Integer.parseInt(newValue.toString());
-                isTablet.setSummary(e[value]);
-                return true;
-            }
-        });
 
         final ListPreference language = (ListPreference) findPreference("language");
         setLanguageSummary(language, MirakelCommonPreferences.getLanguage());
@@ -107,6 +94,29 @@ public class UISettingsFragment extends MirakelPreferencesFragment<Settings> {
                 }
             });
         }
+        final SwitchCompatPreference analytics = (SwitchCompatPreference) findPreference("useAnalytics");
+        if (analytics != null) {
+            if (DefinitionsHelper.isFdroid()) {
+                getPreferenceScreen().removePreference(analytics);
+            } else {
+                analytics.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        boolean doTrack = (boolean) newValue;
+                        if (!doTrack) {
+                            AnalyticsWrapperBase.getWrapper().doNotTrack();
+                        }
+                        return true;
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     private void setLanguageSummary(final ListPreference language,

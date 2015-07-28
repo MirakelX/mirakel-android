@@ -152,7 +152,7 @@ abstract public class ModelBase implements IGenericElementInterface {
         return ret;
     }
 
-    public final boolean isStub() {
+    public boolean isStub() {
         return getId() == INVALID_ID;
     }
 }

@@ -36,18 +36,6 @@ android {
         disable 'MissingTranslation'
         enable 'NewerVersionAvailable'
     }
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-
-    }
 }
 dependencies {
     compile "com.android.support:support-v4:$androidSupportVersion"
@@ -56,5 +44,7 @@ dependencies {
     compile "joda-time:joda-time:$jodaLibraryVersion"
     compile "com.google.guava:guava:$guavaVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
+    compile 'com.cocosw:bottomsheet:1.+@aar'
+    compile "com.afollestad:material-dialogs:$materialDialogsVersion"
     compile project(':material-elements')
 }

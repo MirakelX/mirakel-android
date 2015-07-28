@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">الاستماع إلى ذلك!</string>
+  <string name="file_default_title">تحقق من هذا الملف</string>
+  <string name="photo_default_title">تحقق من هذه الصورة</string>
+  <string name="today">اليوم</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Mirakel-نسخة: %1$s\n
+SDK-نسخة: %2$d\n
+جهاز: %3$s\n]]></string>
+  <string name="contact_chooser">جارٍ إرسال البريد الإلكتروني …</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">انتبه! جهازك لايدعم التقاط الصور</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources"> عذراً! لايوجد مكان يمكن حفظ الصورة فيه</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">انتبه! جهازك لا يدعم تحويل الكلام إلى نص</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">مهام فرعية لا يمكنها تشكيل حلقة</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">لا أعرف كيفية فتح هذا الملف – عذراً</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">لايوجد تطبيق بريد إلكتروني مثبت</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">الرجاء تثبيت مدير الملفات</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">حدث خطأ داخلي أثناء تحليل اسم الملف</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">حدث خطأ غير متوقع</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">لم يتم العثور على هذا الملف</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء تصدير قاعدة البيانات</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء استيراد قاعدة البيانات</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">لم أتمكن من إنشاء صورة مصغرة. الملف كبير جداً</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">يتعذر مزامنة هذه المهمة، نظراً لأنه لا قوائم لديك</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">اوو، لقد اختفت قائمة المهام. اسف…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">هذا ليس ملف قاعدة بيانات ميركل!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">حدث خطأ أثناء الاستيراد من Astrid!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">لم يتم العثور على ملف Taskwarrior</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">لا يمكن تحميل ملف التكوين</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">عنوان URL غير صحيح. هل مسحت الرمز الصحيح حقاً؟</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">لا يوجد إذن لقراءة الملف</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">عجباً لقد طارت القائمة…</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">لا نعرف كيفية إصلاح هذه العلة. تجري إعادة تشغيل ميركل.</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">يرجى تحديث DAVdroid</string>
+  <string name="permission_read_lbl">قراءة البيانات من Mirakel</string>
+  <string name="permission_read_desc">إذن قراءة البيانات من Mirakel</string>
+  <string name="permission_write_lbl">كتابة البيانات إلى Mirakel</string>
+  <string name="permission_write_desc">إذن لكتابة البيانات إلى Mirakel</string>
+  <string name="permission_read_write_lbl">القراءة/الكتابة Mirakel-البيانات</string>
+  <string name="title_settings">إعدادات</string>
+  <string name="search_hint">البحث في المهام</string>
+  <string name="search">بحث</string>
+  <string name="search_result_title">البحث عن %s</string>
+  <string name="tasks_new_str">مهمة جديدة</string>
+  <string name="takePhoto">التقاط صورة</string>
+  <string name="speak">تكلّم</string>
+  <string name="delete_content">هل أنت متأكد أنك تريد حذف %s؟</string>
+  <string name="dialog_move">نقل المهمة</string>
+  <string name="list_title">القوائم</string>
+  <string name="menu_settings">إعدادات</string>
+  <string name="menu_set_priority">تعيين الأولوية</string>
+  <string name="menu_do_task">تعيين المهمة منجزة</string>
+  <string name="action_undo">التراجع عن التغيير الأخير</string>
+  <string name="action_sync_now">مزامنة الآن</string>
+  <string name="action_contact">جهات الاتصال/تقرير الشوائب</string>
+  <string name="kill_app">إغلاق التطبيق</string>
+  <string name="action_settings">إعدادات</string>
+  <string name="save">حفظ</string>
+  <string name="as_subtask">إضافة إلى مهمة</string>
+  <string name="task_clone">استنساخ مهمة</string>
+  <string name="task_menu_sorting">فرز المهام</string>
+  <string name="list_menu_new_list">قائمة جديدة</string>
+  <string name="share_using">مشاركة مع</string>
+  <string name="share_task">مشاركة المهمة</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">مشاركة القائمة</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="list_change_color">تغيير اللون</string>
+  <string name="set_color">تحديد لون</string>
+  <string name="unset_color">لا لون</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>اعادة تسمية</item>
+    <item>حذف</item>
+    <item>مشاركة</item>
+  </string-array>
+  <string name="crash_dialog_ok_toast">شكرا!</string>
+  <string name="speak_lang_code">ar-AR</string>
+  <string-array name="audio_playback_options">
+    <item>فتح ملف</item>
+    <item>تشغيل بصوت عال</item>
+    <item>تشغيل بصمت</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>تحرير</item>
+    <item>نقل</item>
+    <item>حذف</item>
+  </string-array>
+  <string name="edit">تحرير</string>
+  <string name="no_reminder">تعيين تذكير</string>
+  <string name="add_files">إضافة ملف...</string>
+  <string name="file_select">حدد ملف</string>
+  <string name="save_label">منجز</string>
+  <string name="audio_record_file">تسجيل الصوت</string>
+  <string name="image_file">الصورة</string>
+  <string name="task_fragment_header">رأس</string>
+  <string name="task_fragment_file">الملفات</string>
+  <string name="task_fragment_due">الواجب</string>
+  <string name="task_fragment_reminder">تذكير</string>
+  <string name="task_fragment_content">الملاحظات</string>
+  <string name="task_fragment_subtask">المهام الفرعية</string>
+  <string name="task_fragment_progress">التقدم</string>
+  <string name="audio_record_title">تسجيل الصوت...</string>
+  <string name="audio_record_message">جاري التسجيل…</string>
+  <string name="audio_playback_select_title">ماذا تريد أن تفعل؟</string>
+  <string name="audio_playback_pause">توقف</string>
+  <string name="audio_playback_play">تشغيل</string>
+  <string name="audio_playback_stop">إيقاف</string>
+  <string name="task_change_prio_title">تغيير الأولوية</string>
+  <string name="remove_subtask">إزالة مهمة فرعية</string>
+  <string name="add_existing">إضافة المهمة الحالية</string>
+  <string name="subtask_add_options">تصفية &gt;&gt;</string>
+  <string name="subtask_reminder">مهمة مع تذكير؟</string>
+  <string name="new_task">مهمة جديدة</string>
+  <string name="add_subtasks">إضافة مهمة فرعية...</string>
+  <string name="add">إضافة</string>
+  <string name="add_subtask">إضافة مهمة فرعية</string>
+  <string name="file_no_activity">لا أعرف كيفية فتح هذا الملف – عذراً</string>
+  <string name="remove_files">إزالة الملفات من المهمة</string>
+</resources>
+

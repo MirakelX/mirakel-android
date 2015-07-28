@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Mirakel is an Android App for managing your ToDo-Lists
+  ~
+  ~   Copyright (c) 2013-2015 Anatolij Zelenin, Georg Semmler.
+  ~
+  ~       This program is free software: you can redistribute it and/or modify
+  ~       it under the terms of the GNU General Public License as published by
+  ~       the Free Software Foundation, either version 3 of the License, or
+  ~       any later version.
+  ~
+  ~       This program is distributed in the hope that it will be useful,
+  ~       but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~       GNU General Public License for more details.
+  ~
+  ~       You should have received a copy of the GNU General Public License
+  ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="audio_default_title">それを聞く!</string>
+  <string name="file_default_title">このファイルをチェック アウト</string>
+  <string name="photo_default_title">この写真をチェック アウト</string>
+  <string name="today">今日</string>
+  <string name="contact_email">mirakel@azapps.de</string>
+  <string name="contact_subject">Mirakel Bug-report/Contact request</string>
+  <string name="contact_text"><![CDATA[\n\n
+--\n
+Mirakel-version: %1$s\n
+SDK-version: %2$d\n
+Device: %3$s\n]]></string>
+  <string name="contact_chooser">メールを送信…</string>
+  <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">おっと! お使いのデバイスは写真の撮影をサポートしていません</string>
+  <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">写真を保存できる場所がありません。申し訳ありません!</string>
+  <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">おっと! お使いのデバイスは音声の読み上げをサポートしていません</string>
+  <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">サブタスクはループを形成できません</string>
+  <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">申し訳ありません - このファイルを開くことができません</string>
+  <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">メール クライアントがインストールされていません</string>
+  <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">ファイル マネージャーをインストールしてください</string>
+  <string name="error_FILE_URI_SYNTAX_ERROR" tools:ignore="UnusedResources">ファイル名を解析中に内部エラーが発生しました</string>
+  <string name="error_MAINACTIVITY_WRONG_POSITION" tools:ignore="UnusedResources">予期しないエラーが発生しました</string>
+  <string name="error_FILE_NOT_FOUND" tools:ignore="UnusedResources">このファイルは見つかりませんでした</string>
+  <string name="error_BACKUP_EXPORT_ERROR" tools:ignore="UnusedResources">データベースのエクスポート中にエラーが発生しました</string>
+  <string name="error_BACKUP_IMPORT_ERROR" tools:ignore="UnusedResources">データベースのインポート中にエラーが発生しました</string>
+  <string name="error_FILE_TO_LARGE_FOR_THUMBNAIL" tools:ignore="UnusedResources">サムネイルを生成できませんでした。ファイルが大きすぎます</string>
+  <string name="error_TASKS_NO_LIST" tools:ignore="UnusedResources">リストがないため、このタスクを同期できません</string>
+  <string name="error_TASK_VANISHED" tools:ignore="UnusedResources">申し訳ありません、タスクのリストは消滅しました…</string>
+  <string name="error_FILE_NOT_MIRAKEL_DB" tools:ignore="UnusedResources">これは Mirakel データベース ファイルではありません!</string>
+  <string name="error_ASTRID_ERROR" tools:ignore="UnusedResources">Astrid からインポート中にエラーが発生しました!</string>
+  <string name="error_TASKWARRIOR_FILE_NOT_FOUND" tools:ignore="UnusedResources">Taskwarrior ファイルが見つかりません</string>
+  <string name="error_TASKWARRIOR_COULD_NOT_DOWNLOAD" tools:ignore="UnusedResources">設定ファイルをダウンロードできませんでした</string>
+  <string name="error_TASKWARRIOR_URL_NOT_FOUND" tools:ignore="UnusedResources">URL が正しくありません。本当に正しいコードを読み取りましたか?</string>
+  <string name="error_FILE_NO_PERMISSION" tools:ignore="UnusedResources">ファイルを読み込むアクセス許可がありません</string>
+  <string name="error_LIST_VANISHED" tools:ignore="UnusedResources">リストが消滅しました…</string>
+  <string name="error_MAINACTVITY_CRAZY_ERROR" tools:ignore="UnusedResources">このバグを修正する方法がわかりません。Mirakel を再起動します。</string>
+  <string name="error_LIST_ALREADY_EXIST" tools:ignore="UnusedResources">リスト名は既に存在します。別の名前を選択してください。</string>
+  <string name="error_OLD_DAVDROID" tools:ignore="UnusedResources">DAVdroid を更新してください</string>
+  <string name="error_IMPORT_WUNDERLIST" tools:ignore="UnusedResources">Wunderlist のファイル形式が変更されました。Mirakel チームに報告してください。</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_PRIORIRTY" tools:ignore="UnusedResources">同期中に、標準以外の優先度のタスクがありました。</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_STATUS" tools:ignore="UnusedResources">同期中に、標準以外のステータスのタスクがありました。</string>
+  <string name="error_TASKWARRIOR_NON_STANDARD_DATE" tools:ignore="UnusedResources">同期中に、標準以外の日付のタスクがありました。</string>
+  <string name="error_SPECIAL_LIST_JSON_INVALID" tools:ignore="UnusedResources">メタリスト %s の条件の解析に失敗しました。何が発生したか報告してください。</string>
+  <string name="permission_read_lbl">Mirakel からデータを読み込む</string>
+  <string name="permission_read_desc">Mirakel からデータを読み込むためのアクセス許可</string>
+  <string name="permission_write_lbl">Mirakel へデータを書き込み</string>
+  <string name="permission_write_desc">Mirakel にデータを書き込むためのアクセス許可</string>
+  <string name="permission_read_write_lbl">Mirakel データの読み込み/書き込み</string>
+  <string name="title_settings">設定</string>
+  <string name="search_hint">タスクを検索</string>
+  <string name="search">検索</string>
+  <string name="search_result_title">%s の検索</string>
+  <string name="tasks_new_str">新しいタスク</string>
+  <string name="takePhoto">写真を撮る</string>
+  <string name="speak">話す</string>
+  <string name="delete_content">%s を削除してもよろしいですか?</string>
+  <string name="dialog_move">タスクを移動</string>
+  <string name="list_title">リスト</string>
+  <string name="menu_settings">設定</string>
+  <string name="menu_set_priority">優先度の設定</string>
+  <string name="menu_do_task">タスクを完了として設定</string>
+  <string name="action_undo">最後の変更を元に戻す</string>
+  <string name="action_sync_now">今すぐ同期</string>
+  <string name="action_contact">お問い合わせ/バグを報告</string>
+  <string name="kill_app">アプリを閉じる</string>
+  <string name="action_settings">設定</string>
+  <string name="save">保存</string>
+  <string name="as_subtask">タスクに追加</string>
+  <string name="task_clone">タスクを複製</string>
+  <string name="task_menu_sorting">タスクの並べ替え</string>
+  <string name="list_menu_new_list">新しいリスト</string>
+  <string name="share_using">と共有</string>
+  <string name="share_task">タスクを共有</string>
+  <string name="share_task_title_with_date">%1$s (%2$s)</string>
+  <string name="share_task_title">%s</string>
+  <string name="share_list">リストを共有</string>
+  <string name="share_list_title">%1$s (%2$d)</string>
+  <string name="share_footer">Mirakel　と共有しました\nフリーの (自由な) Android 用 ToDo リストツールと Web\nhttp://mirakel.azapps.de</string>
+  <string name="list_change_color">色の変更</string>
+  <string name="set_color">色の設定</string>
+  <string name="unset_color">色なし</string>
+  <string-array name="list_actions_items">
+    <item>Select color</item>
+    <item>名前の変更</item>
+    <item>削除</item>
+    <item>共有</item>
+  </string-array>
+  <string name="crash_toast_text">クラッシュしました! 開発者にメッセージを送信できるように、アプリをもう一度起動してください</string>
+  <string name="crash_dialog_title">Mirakel がクラッシュしました</string>
+  <string name="crash_dialog_text"><![CDATA[予期しないエラーによりアプリケーションが停止しました。
+問題解決のため、OKをクリックしてエラーデータの提供にご協力下さい。]]></string>
+  <string name="crash_dialog_ok_toast">ありがとうございます !</string>
+  <string name="speak_lang_code">en-US</string>
+  <string-array name="audio_playback_options">
+    <item>ファイルを開く</item>
+    <item>音量を大きく</item>
+    <item>音量を小さく</item>
+  </string-array>
+  <string-array name="task_actions_items">
+    <item>編集</item>
+    <item>移動</item>
+    <item>削除</item>
+  </string-array>
+  <string name="edit">編集</string>
+  <string name="no_reminder">アラームを設定</string>
+  <string name="add_files">ファイルの追加…</string>
+  <string name="file_select">ファイルを選択してください</string>
+  <string name="save_label">完了</string>
+  <string name="audio_record_file">オーディオ録音</string>
+  <string name="image_file">画像</string>
+  <string name="task_fragment_header">ヘッダー</string>
+  <string name="task_fragment_file">ファイル</string>
+  <string name="task_fragment_due">期限</string>
+  <string name="task_fragment_reminder">アラーム</string>
+  <string name="task_fragment_content">メモ</string>
+  <string name="task_fragment_subtask">サブタスク</string>
+  <string name="task_fragment_progress">処理状況</string>
+  <string name="task_fragment_tags">タグ</string>
+  <string name="audio_record_title">オーディオの録音…</string>
+  <string name="audio_record_message">録音中…</string>
+  <string name="audio_playback_title">オーディオの再生…</string>
+  <string name="audio_playback_select_title">何を行いますか?</string>
+  <string name="audio_playback_pause">一時停止</string>
+  <string name="audio_playback_play">再生</string>
+  <string name="audio_playback_stop">停止</string>
+  <string name="task_change_prio_title">優先度の変更</string>
+  <string name="remove_subtask">サブタスクを削除</string>
+  <string name="add_existing">既存のタスクを追加</string>
+  <string name="subtask_add_options">フィルター &gt;&gt;</string>
+  <string name="subtask_reminder">タスク はアラームありですか?</string>
+  <string name="new_task">新しいタスク</string>
+  <string name="add_subtasks">サブタスクを追加…</string>
+  <string name="add">追加</string>
+  <string name="add_subtask">サブタスクを追加</string>
+  <string name="file_no_activity">申し訳ありません - このファイルを開くことができません</string>
+  <string name="remove_files">タスクからファイルを削除</string>
+</resources>
+

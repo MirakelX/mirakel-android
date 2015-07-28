@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.settings.fragments;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,15 +26,14 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
-import android.widget.NumberPicker;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.material_elements.views.MaterialNumberPicker;
+import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
@@ -75,10 +73,10 @@ public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings>
                 final Preference preference,
                 final Object newValue) {
                 if ((Boolean) newValue) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(
+                    final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(
                         getActivity());
                     builder.setTitle(R.string.import_to);
-                    final List<CharSequence> items = new ArrayList<>();
+                    final List<String> items = new ArrayList<>();
                     final List<Long> list_ids = new ArrayList<>();
                     final int currentItem = 0;
                     for (final ListMirakel list : ListMirakel.all()) {
@@ -88,8 +86,7 @@ public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings>
                         }
                     }
                     builder.setSingleChoiceItems(
-                        items.toArray(new CharSequence[items
-                                                       .size()]), currentItem,
+                        items.toArray(new String[items.size()]), currentItem,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(
@@ -187,7 +184,7 @@ public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings>
             @Override
             public boolean onPreferenceClick(
                 final Preference preference) {
-                new AlertDialog.Builder(
+                new AlertDialogWrapper.Builder(
                     getActivity())
                 .setTitle(R.string.import_wunderlist_howto)
                 .setMessage(
@@ -209,47 +206,13 @@ public class BackupSettingsFragment extends MirakelPreferencesFragment<Settings>
             }
         });
 
-        final Preference autoBackupInterval = findPreference("autoBackupInterval");
-        autoBackupInterval.setSummary(getString(
-                                          R.string.auto_backup_interval_summary,
-                                          MirakelCommonPreferences.getAutoBackupInterval()));
-        autoBackupInterval
-        .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(
-                final Preference preference) {
-                final int old_val = MirakelCommonPreferences
-                                    .getAutoBackupInterval();
-                final int max = 31;
-                final int min = 0;
-                final NumberPicker numberPicker = new MaterialNumberPicker(getActivity());
-                numberPicker.setMaxValue(max);
-                numberPicker.setMinValue(min);
-                numberPicker.setWrapSelectorWheel(false);
-                numberPicker.setValue(old_val);
-                numberPicker.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-                new AlertDialog.Builder(
-                    getActivity())
-                .setTitle(R.string.auto_backup_interval)
-                .setView(numberPicker)
-                .setPositiveButton(
-                    android.R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(
-                        final DialogInterface dialog,
-                        final int whichButton) {
-                        int val = numberPicker.getValue();
-                        MirakelCommonPreferences.setAutoBackupInterval(val);
-                        autoBackupInterval.setSummary(getActivity()
-                                                      .getString(
-                                                          R.string.auto_backup_interval_summary,
-                                                          val));
-                    }
-                }).setNegativeButton(android.R.string.cancel, null).show();
-                return false;
-            }
-        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsWrapperBase.setScreen(this);
     }
 
     @NonNull

@@ -71,7 +71,7 @@ public class MirakelExtension extends DashClockExtension implements
     }
 
     public static void init(final Context ctx) {
-        DefinitionsHelper.init(ctx);
+        DefinitionsHelper.init(ctx, "");
         MirakelPreferences.init(ctx);
         ErrorReporter.init(ctx);
         ModelBase.init(ctx);

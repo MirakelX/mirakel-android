@@ -83,7 +83,6 @@ public class ColorPickerPref extends DialogPreference {
     @SuppressLint("NewApi")
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-        // super.onPrepareDialogBuilder(builder);
         final View v = ((LayoutInflater) this.ctx
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
                            R.layout.color_picker, null);

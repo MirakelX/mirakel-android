@@ -101,8 +101,8 @@ public class AmPmCirclesView extends View {
         }
         final Resources res = context.getResources();
         this.mUnselected = ThemeManager.getPrimaryThemeColor();
-        this.mAmPmTextColorUnselected = ThemeManager.getColor(R.attr.colorControlNormal);
-        this.mAmPmTextColorSelected = ThemeManager.getPrimaryDarkThemeColor();
+        this.mAmPmTextColorUnselected = ThemeManager.getPrimaryDarkThemeColor();
+        this.mAmPmTextColorSelected = ThemeManager.getColor(R.attr.colorControlNormal);
         this.mSelected = ThemeManager.getPrimaryThemeColor();
         final String typefaceFamily = res.getString(R.string.sans_serif);
         final Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
@@ -159,11 +159,11 @@ public class AmPmCirclesView extends View {
         int pmTextColor = this.mAmPmTextColorUnselected;
         if (this.mAmOrPm == AM) {
             amColor = this.mSelected;
-            amAlpha = SELECTED_ALPHA;
+            pmAlpha = SELECTED_ALPHA;
             amTextColor = this.mAmPmTextColorSelected;
         } else if (this.mAmOrPm == PM) {
             pmColor = this.mSelected;
-            pmAlpha = SELECTED_ALPHA;
+            amAlpha = SELECTED_ALPHA;
             pmTextColor = this.mAmPmTextColorSelected;
         }
         if (this.mAmOrPmPressed == AM) {

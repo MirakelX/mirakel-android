@@ -509,7 +509,7 @@ public class TaskWarriorSync {
 
     String getTime() {
         return new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss",
-                                    Helpers.getLocal(this.mContext)).format(new Date());
+                                    Helpers.getLocale(this.mContext)).format(new Date());
     }
 
     public void sync(final @NonNull TaskWarriorAccount taskWarriorAccount,

@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.settings.model_settings.account;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,6 +28,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.Html;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.helper.Helpers;
@@ -45,12 +45,12 @@ public class AccountSettingsActivity extends GenericModelListActivity<AccountMir
     // Helper stuff
     private void showAlert(final int titleId, final int messageId,
                            final android.content.DialogInterface.OnClickListener listener) {
-        new AlertDialog.Builder(this).setTitle(titleId).setMessage(messageId)
+        new AlertDialogWrapper.Builder(this).setTitle(titleId).setMessage(messageId)
         .setPositiveButton(android.R.string.ok, listener).show();
     }
 
     protected void handleCalDAV() {
-        new AlertDialog.Builder(this)
+        new AlertDialogWrapper.Builder(this)
         .setTitle(R.string.sync_caldav)
         .setMessage(
             Html.fromHtml(this
@@ -103,7 +103,7 @@ public class AccountSettingsActivity extends GenericModelListActivity<AccountMir
     protected void createItem(@NonNull Context ctx) {
         final CharSequence[] items = getResources().getTextArray(
                                          R.array.sync_types);
-        new AlertDialog.Builder(this).setTitle(R.string.sync_add)
+        new AlertDialogWrapper.Builder(this).setTitle(R.string.sync_add)
         .setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog,
