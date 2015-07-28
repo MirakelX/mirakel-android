@@ -46,7 +46,7 @@ abstract class ListBase extends ModelBase {
 
 
     @NonNull
-    protected SORT_BY sortBy;
+    protected SORT_BY sortBy = SORT_BY.OPT;
     @NonNull
     protected String createdAt;
     @NonNull
@@ -61,7 +61,7 @@ abstract class ListBase extends ModelBase {
     private AccountMirakel accountMirakel;
 
     @NonNull
-    protected Optional<Uri> iconPath;
+    protected Optional<Uri> iconPath = Optional.absent();
 
     private static final String TAG = "ListBase";
 

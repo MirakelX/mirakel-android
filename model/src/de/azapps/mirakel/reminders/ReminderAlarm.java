@@ -280,8 +280,11 @@ public class ReminderAlarm extends BroadcastReceiver {
         }
 
         private void closeNotificationFor(final Task task) {
-            notificationManager.cancel(DefinitionsHelper.NOTIF_REMINDER + (int) task.getId());
-            currentNotifications.remove(task.getId());
+            closeNotificationForTaskId(task.getId());
+        }
+        private void closeNotificationForTaskId(final long id) {
+            notificationManager.cancel(DefinitionsHelper.NOTIF_REMINDER + (int) id);
+            currentNotifications.remove(id);
         }
 
 
@@ -382,8 +385,11 @@ public class ReminderAlarm extends BroadcastReceiver {
         }
 
         public synchronized void clear() {
-            for (final Map.Entry<Long, Pair<Long, Task>> entry : activeReminders.entrySet()) {
-                removeReminderFor(entry.getValue().second);
+            final Set<Long> current = new HashSet<>(activeReminders.keySet());
+            for (final Long key : current) {
+                if (activeReminders.containsKey(key)) {
+                    removeReminderFor(activeReminders.get(key).second);
+                }
             }
         }
 
@@ -442,7 +448,7 @@ public class ReminderAlarm extends BroadcastReceiver {
                         sendNotificantion(task.get(), false);
                     }
                 } else {
-                    closeNotificationFor(task.get());
+                    closeNotificationForTaskId(e);
                 }
             }
         }

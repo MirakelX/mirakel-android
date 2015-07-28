@@ -87,7 +87,6 @@
   <string name="reminder_notification_list">Liste : %s</string>
   <string name="reminder_notification_due">Échéance : %s</string>
   <string name="reminder_notification_done">Fini</string>
-  <string name="reminder_notification_later">Plus tard</string>
   <string name="reminder_notification_done_confirm">J\'ai mis à la tâche comme \"fait\"</string>
   <string name="reminder_notification_later_confirm">Je vous le rappellerai dans %d minutes</string>
   <string name="list_vanished">Aïe, la tâche a disparu. Désolé…</string>

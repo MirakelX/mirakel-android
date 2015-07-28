@@ -50,6 +50,7 @@
   <string name="recurrence_from">Desde</string>
   <string name="list_all">Todas as listas</string>
   <string name="list_today">Hoje</string>
+  <string name="list_week">Semana</string>
   <string name="list_overdue">Data limite ultrapassada</string>
   <string name="inbox">Caixa de entrada</string>
   <string name="first_task">Primeira tarefa</string>
@@ -87,10 +88,11 @@
   <string name="reminder_notification_list">Lista: %s</string>
   <string name="reminder_notification_due">Data limite: %s</string>
   <string name="reminder_notification_done">Terminada</string>
-  <string name="reminder_notification_later">Mais tarde</string>
   <string name="reminder_notification_done_confirm">Eu defini a tarefa como terminada</string>
   <string name="reminder_notification_later_confirm">Lembrete dentro de %d minutos</string>
   <string name="list_vanished">A tarefa desapareceu. Desculpe...</string>
+  <string name="no_date">Sem data de vencimento</string>
+  <string name="due_date">Data de vencimento</string>
   <string name="task_sorting_title">Ordenar tarefas por</string>
   <string name="share_using">Partilhar com</string>
   <string name="share_task">Partilhar tarefa</string>

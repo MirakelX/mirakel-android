@@ -87,7 +87,6 @@
   <string name="reminder_notification_list">قائمة: %s</string>
   <string name="reminder_notification_due">المقرر: %s</string>
   <string name="reminder_notification_done">منجز</string>
-  <string name="reminder_notification_later">لاحقا</string>
   <string name="reminder_notification_done_confirm">لقد حددت المهمة أنها \"منجزة\"</string>
   <string name="reminder_notification_later_confirm">سوف أذكرك في %d دقيقة</string>
   <string name="list_vanished">اوو، لقد اختفت المهمة. آسف…</string>

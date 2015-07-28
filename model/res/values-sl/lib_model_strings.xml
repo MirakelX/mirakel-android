@@ -86,7 +86,6 @@
   <string name="reminder_notification_list">Seznam: %s</string>
   <string name="reminder_notification_due">Zapade: %s</string>
   <string name="reminder_notification_done">Končano</string>
-  <string name="reminder_notification_later">Kasneje</string>
   <string name="reminder_notification_done_confirm">Naloga je označena kot \"končana\".</string>
   <string name="reminder_notification_later_confirm">Opomnik bo prikazan čez %d minut</string>
   <string name="list_vanished">Ops! Nalog je izginila! To je lahko napaka programa ...</string>
