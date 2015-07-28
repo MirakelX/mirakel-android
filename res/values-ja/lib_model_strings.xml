@@ -88,6 +88,7 @@
   <string name="reminder_notification_list">リスト: %s</string>
   <string name="reminder_notification_due">期限: %s</string>
   <string name="reminder_notification_done">完了</string>
+  <string name="reminder_notification_later">スヌーズ</string>
   <string name="reminder_notification_done_confirm">「完了」としてタスクを設定しました</string>
   <string name="reminder_notification_later_confirm">%d 分後にアラームします</string>
   <string name="list_vanished">申し訳ありません、タスクは消滅しました…</string>
@@ -255,5 +256,6 @@
   <string name="accounts_all">すべてのアカウント</string>
   <string name="stub_list_name">新しいリスト</string>
   <string name="search_title">検索： </string>
+  <string name="repeat_every">繰り返し間隔:</string>
 </resources>
 
