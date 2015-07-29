@@ -30,6 +30,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.common.base.Optional;
 
@@ -145,6 +146,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return databaseHelperSingleton;
     }
 
+    @VisibleForTesting
+    public static void resetDB() {
+        synchronized (databaseHelperSingleton) {
+            if (databaseHelperSingleton != null) {
+                String path = databaseHelperSingleton.getWritableDatabase().getPath();
+                databaseHelperSingleton.close();
+                new File(path).delete();
+            }
+            databaseHelperSingleton = null;
+        }
+    }
+
     /**
      * Returns the database name depending if Mirakel is in demo mode or not.
      *
@@ -190,7 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + "due not null and done=0 and date("
                    + "due"
                    + ")<=date(\"now\",\"+7 day\",\"localtime\")',5,6,7)");
-        db.execSQL("INSERT INTO special_lists (name" +  ','
+        db.execSQL("INSERT INTO special_lists (name" + ','
                    + "active,whereQuery" + ','
                    + "lft, rgt" + ','
                    + "def_date) VALUES (" + '\''
@@ -1335,7 +1348,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    ELSE 0\n" +
                    "    END,\n" +
                    "    CASE WHEN new.created IS NULL THEN strftime('%s','now') ELSE new.created / 1000 END,\n" +
-                   "    CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END);\n" +
+                   "    CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END);\n"
+                   +
                    "    INSERT INTO caldav_tasks_extra (task_id,_sync_id,location,geo,url,organizer,priority,classification, completed_is_allday,"
                    +
                    "    status, task_color, dtstart, is_allday, tz, duration, rdate, exdate, rrule, original_instance_sync_id, "
@@ -1373,7 +1387,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "                WHEN new.priority <= 9 THEN -1 \n" +
                    "                ELSE 0\n" +
                    "END,\n" +
-                   "updated_at = CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END\n" +
+                   "updated_at = CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END\n"
+                   +
                    "WHERE _id = old._id;\n" +
                    "INSERT OR REPLACE INTO caldav_tasks_extra VALUES (\n" +
                    "new._sync_id,\n" +
@@ -1673,6 +1688,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return ret;
     }
+
+
 
 
     private static class SpecialListsConverter implements CursorWrapper.WithCursor {

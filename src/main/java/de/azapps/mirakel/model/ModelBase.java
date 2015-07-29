@@ -129,6 +129,7 @@ abstract public class ModelBase implements IGenericElementInterface {
     public void destroy() {
         delete(getUri(), ID + "=?", new String[] {String.valueOf(getId())});
     }
+
     public void save() {
         try {
             update(getUri(), getContentValues(), ID + "=?", new String[] {String.valueOf(getId())});

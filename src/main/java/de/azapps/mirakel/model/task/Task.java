@@ -926,7 +926,7 @@ public class Task extends TaskBase {
         dest.writeSerializable(this.createdAt);
         dest.writeByte(done ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.due.orNull());
-        dest.writeLong(this.list.getId());
+        dest.writeParcelable(this.list, 42);
         dest.writeInt(this.priority);
         dest.writeInt(this.progress);
         dest.writeLong(this.recurrence);
@@ -949,11 +949,7 @@ public class Task extends TaskBase {
         this.createdAt = (Calendar) in.readSerializable();
         this.done = in.readByte() != 0;
         this.due = fromNullable((Calendar) in.readSerializable());
-        final long listId = in.readLong();
-        final Optional<ListMirakel> listMirakelOptional = ListMirakel.get(listId);
-        if (listMirakelOptional.isPresent()) {
-            this.list = listMirakelOptional.get();
-        }
+        this.list = in.readParcelable(ListMirakel.class.getClassLoader());
         this.priority = in.readInt();
         this.progress = in.readInt();
         this.recurrence = in.readLong();
@@ -985,8 +981,6 @@ public class Task extends TaskBase {
             updatedAt = other.updatedAt;
             setId(other.getId());
             setName(other.getName());
-        } else if (!t.isPresent()) {
-            throw new TaskVanishedException();
         }
     }
 

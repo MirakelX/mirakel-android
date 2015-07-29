@@ -673,7 +673,7 @@ abstract class TaskBase extends ModelBase {
             setAdditionalEntries(additionalEntriesString);
         }
         if (other.additionalEntries == null) {
-            setAdditionalEntries(other.additionalEntriesString);
+            other.setAdditionalEntries(other.additionalEntriesString);
         }
         if (!Objects.equal(this.additionalEntries, other.additionalEntries)) {
             return false;
@@ -698,7 +698,7 @@ abstract class TaskBase extends ModelBase {
         if (this.isRecurringShown != other.isRecurringShown) {
             return false;
         }
-        if (!this.list.equals(other.list)) {
+        if (!Objects.equal(list, other.list)) {
             return false;
         }
         if (!getName().equals(other.getName())) {

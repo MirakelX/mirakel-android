@@ -32,7 +32,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -178,15 +180,22 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     private static final List<String> IGNORED = Arrays.asList(CALDAV_INSTANCE_PROPERTIES,
             CALDAV_INSTANCES);
 
-    private static DatabaseHelper dbHelper = null;
+    @Nullable
+    private static DatabaseHelper dbHelper;
+    @Nullable
     private static SQLiteDatabase database;
-    private static boolean isPreInit = true;
 
     private static SQLiteDatabase getReadableDatabase() {
         if (database == null && dbHelper != null) {
             return dbHelper.getReadableDatabase();
         }
         return database;
+    }
+
+    @VisibleForTesting
+    public static void reset() {
+        database = null;
+        dbHelper = null;
     }
 
     private static SQLiteDatabase getWritableDatabase() {
@@ -295,7 +304,6 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public boolean onCreate() {
         if (database == null) {
             dbHelper = DatabaseHelper.getDatabaseHelper(getContext());
-            isPreInit = false;
         }
         final ScheduledExecutorService worker = Executors
                                                 .newSingleThreadScheduledExecutor();
@@ -306,7 +314,9 @@ public class MirakelInternalContentProvider extends ContentProvider implements
                 Semantic.init(getContext());
             }
         }, 1, TimeUnit.MILLISECONDS);
-        AccountManager.get(getContext()).addOnAccountsUpdatedListener(this, null, true);
+        if (!"robolectric".equalsIgnoreCase(Build.FINGERPRINT)) {
+            AccountManager.get(getContext()).addOnAccountsUpdatedListener(this, null, true);
+        }
         return true;
     }
 

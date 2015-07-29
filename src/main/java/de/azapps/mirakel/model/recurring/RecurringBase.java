@@ -268,8 +268,8 @@ abstract class RecurringBase extends ModelBase {
         cv.put(YEARS, this.years);
         cv.put(FOR_DUE, this.forDue);
         cv.put(LABEL, getName());
-        cv.put(START_DATE, DateTimeHelper.formatDateTime(this.startDate));
-        cv.put(END_DATE, DateTimeHelper.formatDateTime(this.endDate));
+        cv.put(START_DATE, DateTimeHelper.getUTCTime(this.startDate));
+        cv.put(END_DATE, DateTimeHelper.getUTCTime(this.endDate));
         cv.put(TEMPORARY, this.temporary);
         cv.put(EXACT, this.isExact);
         cv.put(MONDAY, this.weekdays.get(Calendar.MONDAY, false));

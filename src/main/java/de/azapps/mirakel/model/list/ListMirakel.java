@@ -56,6 +56,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.tools.FileUtils;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 /**
@@ -742,6 +743,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         dest.writeLong(this.accountID);
         dest.writeLong(this.getId());
         dest.writeString(this.getName());
+        dest.writeParcelable(iconPath.orNull(), 3);
     }
 
     private ListMirakel(final Parcel in) {
@@ -757,6 +759,7 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
         this.accountID = in.readLong();
         this.setId(in.readLong());
         this.setName(in.readString());
+        iconPath = fromNullable(in.<Uri>readParcelable(Uri.class.getClassLoader()));
     }
 
     public static final Creator<ListMirakel> CREATOR = new Creator<ListMirakel>() {

@@ -25,6 +25,7 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
 import java.util.List;
@@ -86,7 +87,12 @@ public class SpecialList extends ListMirakel {
 
     @Override
     public long getId() {
-        return -1 * super.getId();
+        return -1L * super.getId();
+    }
+
+    @Override
+    protected void setId(final long newId) {
+        super.setId(Math.abs(newId));
     }
 
     public Optional<SpecialListsBaseProperty> getWhere() {
@@ -389,6 +395,29 @@ public class SpecialList extends ListMirakel {
         this.defaultDate = c.getOptional(DEFAULT_DUE, Integer.class);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof SpecialList)) {
+            return false;
+        }
+        SpecialList other = (SpecialList) obj;
+        if (other.active != this.active) {
+            return false;
+        }
+        if (!Objects.equal(other.whereString, this.whereString)) {
+            return false;
+        }
+        if (!Objects.equal(other.defaultDate, this.defaultDate)) {
+            return false;
+        }
+        if (!Objects.equal(other.defaultList, this.defaultList)) {
+            return false;
+        }
+        return true;
+    }
 
     // Parcelable stuff
 
