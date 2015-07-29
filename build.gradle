@@ -121,44 +121,12 @@ android {
             assets.srcDirs = ['assets']
         }
 
-        androidTest {
-            java.srcDirs = ['../tests/src']
-            resources.srcDirs = ['../tests/res','../tests/resources']
-        }
-        instrumentTest.setRoot('../tests/src')
 
         google {
             res.srcDirs = ['res-google']
         }
     }
 }
-
-/*apply plugin: "android-unit-test"
-
-androidUnitTest {
-  sourceSets { //Configures the test source sets.
-      testTasks { //Specifies which source set to modify.
-        java.srcDirs = ['../tests/src']
-        resources.srcDirs = ['../tests/res','../tests/resources']
-    }
-      test {
-          java.srcDirs = ['../tests/src']
-          resources.srcDirs = ['../tests/res','../tests/resources']
-      }
-      testCompile {
-          java.srcDirs = ['../tests/src']
-          resources.srcDirs = ['../tests/res','../tests/resources']
-      }
-  }
-  testTasks { //Configures the test tasks.
-    all { //Configures all the test tasks with the same values.
-      maxParallelForks = 1 //There are sql-errors with more than one thread
-      forkEvery =20 //Allow to group a number of tests for each thread to run.
-      minHeapSize = '515m' //Specifies the minHeapSize.
-      maxHeapSize = '2048m' //Specifies the maxHeapSize.
-    }
-  }
-}*/
 
 
 ext {
@@ -186,7 +154,7 @@ dependencies {
     //for tests
     testCompile "junit:junit:4.11"
     testCompile "org.assertj:assertj-core:1.7.0"
-    testCompile "org.robolectric:robolectric:3.0-SNAPSHOT"
+    testCompile "org.robolectric:robolectric:3.0"
 
     googleCompile 'com.google.android.gms:play-services-analytics:7.5.0'
 
