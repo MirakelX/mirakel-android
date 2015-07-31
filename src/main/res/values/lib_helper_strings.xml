@@ -46,7 +46,7 @@ Device: %3$s\n]]>
     <string name="error_PHOTO_NO_CAMERA" tools:ignore="UnusedResources">Opps! Your device doesn\'t support taking photos</string>
     <string name="error_PHOTO_NO_MEDIA_DIRECTORY" tools:ignore="UnusedResources">There is no place where I can save the photo to. Sorry!</string>
     <string name="error_NO_SPEACH_RECOGNITION" tools:ignore="UnusedResources">Opps! Your device doesn\'t support Speech to Text</string>
-    <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Subtasks cannot form a loop</string>
+    <string name="error_TASKS_CANNOT_FORM_LOOP" tools:ignore="UnusedResources">Subtasks cannot form loops (e.g. A->B->A)</string>
     <string name="error_FILE_NO_ACTIVITY" tools:ignore="UnusedResources">I don\'t know, how to open this file – sorry</string>
     <string name="error_CONTACT_NO_CLIENT" tools:ignore="UnusedResources">No e-mail client installed</string>
     <string name="error_NO_FILEMANAGER" tools:ignore="UnusedResources">Please install a file manager</string>
