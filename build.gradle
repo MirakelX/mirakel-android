@@ -78,6 +78,7 @@ configure(allprojects) {
     ext.materialDialogsVersion = "0.7.6.0"
     ext.changelogVersion = "2.0.0"
     ext.undoBarVersion = "1.4@aar"
+    ext.jacocoVersion = "0.7.5.201505241946"
 }
 
 allprojects {
@@ -90,8 +91,57 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
+    apply plugin: 'jacoco'
 
+    repositories {
+        jcenter()
+    }
+    task allDeps(type: DependencyReportTask) {}
 }
+
+    jacoco {
+        version = "0.7.5.201505241946"
+    }
+
+configure(allprojects - project(':dashclock')-project(':new_ui')-getProject()) {
+	apply plugin: 'com.android.library'
+	apply plugin: 'jacoco'
+
+	android {
+	    compileOptions {
+			sourceCompatibility JavaVersion.VERSION_1_7
+			targetCompatibility JavaVersion.VERSION_1_7
+		}
+		compileSdkVersion rootProject.ext.compileSdkVersion
+		buildToolsVersion rootProject.ext.buildToolsVersion
+		packagingOptions {
+			    exclude 'META-INF/LICENSE.txt'
+			    exclude 'META-INF/NOTICE.txt'
+		}
+		lintOptions{
+		    enable 'RtlHardcoded','RtlCompat', 'RtlEnabled'
+		}
+		defaultConfig {
+			testApplicationId "de.azapps.mirakelandroid.test"
+			testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+			minSdkVersion 14
+			targetSdkVersion 21
+		}
+		jacoco {
+			version = "$jacocoVersion"
+		}
+
+		buildTypes {
+			debug {
+				testCoverageEnabled = true
+			}
+			release {
+				testCoverageEnabled = true
+			}
+		}
+	}
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
 }
