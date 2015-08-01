@@ -22,12 +22,6 @@ apply plugin: 'com.android.library'
 
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    packagingOptions {
-            exclude 'META-INF/LICENSE.txt'
-            exclude 'META-INF/NOTICE.txt'
-    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
