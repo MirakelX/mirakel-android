@@ -91,17 +91,12 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
-    apply plugin: 'jacoco'
 
     repositories {
         jcenter()
     }
     task allDeps(type: DependencyReportTask) {}
 }
-
-    jacoco {
-        version = "0.7.5.201505241946"
-    }
 
 configure(allprojects - project(':dashclock')-project(':new_ui')-getProject()) {
 	apply plugin: 'com.android.library'
@@ -120,6 +115,7 @@ configure(allprojects - project(':dashclock')-project(':new_ui')-getProject()) {
 		}
 		lintOptions{
 		    enable 'RtlHardcoded','RtlCompat', 'RtlEnabled'
+                    disable 'InvalidPackage'
 		}
 		defaultConfig {
 			testApplicationId "de.azapps.mirakelandroid.test"
