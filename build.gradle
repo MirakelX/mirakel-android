@@ -36,6 +36,8 @@ buildscript {
 apply plugin: 'com.android.application'
 //apply plugin: 'hugo'
 
+
+
 def getVersionCode() {
     def manifestFile = file("AndroidManifest.xml")
     def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
@@ -44,6 +46,7 @@ def getVersionCode() {
     matcher.find()
     return Integer.parseInt(matcher.group(1))
 }
+
 
 android {
     compileOptions {
@@ -68,7 +71,7 @@ android {
     }
     defaultConfig {
         testApplicationId "de.azapps.mirakelandroid.test"
-        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         minSdkVersion 14
         targetSdkVersion 21
     }
@@ -93,6 +96,9 @@ android {
             keyPassword "android"
         }
     }
+    jacoco {
+        version = "$jacocoVersion"
+    }
     buildTypes {
         release {
             signingConfig signingConfigs.release
@@ -102,6 +108,8 @@ android {
         debug {
             minifyEnabled false
             signingConfig signingConfigs.debug
+            debuggable true
+            testCoverageEnabled = true
         }
     }
     productFlavors {
@@ -126,6 +134,100 @@ android {
             res.srcDirs = ['res-google']
         }
     }
+	testOptions {
+		unitTests.all {
+			forkEvery = 100
+			maxParallelForks 2
+			maxHeapSize "2048m"
+			testLogging {
+				events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+			}
+			scanForTestClasses = false
+			include '**/ModelTestSuite.class'
+		}
+	}
+}
+
+task disableTestFailures << {
+    tasks.withType(Test) {
+        // disable failing build if tests fails
+        ignoreFailures = true
+    }
+}
+
+
+
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "$jacocoVersion"
+}
+
+project.afterEvaluate {
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+
+    if (!productFlavors) productFlavors.add('')
+
+    productFlavors.each { productFlavorName ->
+        buildTypes.each { buildTypeName ->
+            def sourceName = "${buildTypeName}"
+            if (productFlavorName) {
+                sourceName = "${productFlavorName}${sourceName.capitalize()}"
+            }
+            def targetName = "${sourceName.capitalize()}"
+            def testTaskName = "test${sourceName.capitalize()}"
+            def coverageTaskName = "${testTaskName}Coverage"
+
+            task "$coverageTaskName" (type:JacocoReport, dependsOn: "$testTaskName") {
+                group = "Reporting"
+                description = "Generate Jacoco coverage reports on the ${targetName} build."
+
+                classDirectories = fileTree(
+                        dir: "${project.buildDir}/../../",
+                        includes: ['*/build/intermediates/classes/**/*.class'],
+                        excludes: ['**/R.class',
+                                   '**/R$*.class',
+                                   '**/*$ViewInjector*.*',
+                                   '**/BuildConfig.*',
+                                   '**/Manifest*.*',
+                                   '**/*Test*.*']
+                )
+
+                def coverageSourceDirs = [
+                        "src/main/java",
+                        "src/$productFlavorName/java",
+                        "src/$buildTypeName/java",
+                        "../model/src/main/java",
+                        "../colorpickerpreference/src",
+                        "../colorpicker/src",
+                        "../date-time-picker/src",
+                        "../donationslib/src",
+                        "../helper/src/main/java",
+                        "../ilovefs-android/src",
+                        "../material-elements/src/main/java",
+                        "../settings/src",
+                        "../tw_sync/src",
+                        "../widget/src"
+                ]
+                additionalSourceDirs = files(coverageSourceDirs)
+                sourceDirectories = files(coverageSourceDirs)
+                executionData = fileTree(dir: project.projectDir, includes: ['**/*.exec', '**/*.ec'])
+
+                reports {
+                    xml.enabled = true
+                    html.enabled = true
+                }
+                doLast {
+                    println "See report at: file://${project.buildDir.toURI().path}/reports/jacoco/${coverageTaskName}/html/index.html"
+                }
+            }
+        }
+    }
+}
+
+clean.doFirst {
+    delete "${project.buildDir}/../jacoco.exec"
 }
 
 
