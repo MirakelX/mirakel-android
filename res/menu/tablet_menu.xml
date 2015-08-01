@@ -46,7 +46,7 @@
         android:id="@+id/menu_sort"
         android:title="@string/menu_sort_lists"
         android:icon="@drawable/ic_sort_list_18dp"
-        android:showAsAction="never" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"

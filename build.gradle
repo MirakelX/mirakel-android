@@ -64,10 +64,8 @@ android {
     }
     flavorDimensions "stores"
     lintOptions {
-        disable 'MissingTranslation','AppCompatResource'
-        enable 'NewerVersionAvailable'
-        disable 'ImpliedQuantity'
-        disable 'MissingQuantity'
+        disable 'MissingTranslation','InvalidPackage','ImpliedQuantity','MissingQuantity','RtlHardcoded','RtlCompat', 'RtlEnabled'
+        enable 'NewerVersionAvailable', 'InvalidPackage'
     }
     defaultConfig {
         testApplicationId "de.azapps.mirakelandroid.test"
