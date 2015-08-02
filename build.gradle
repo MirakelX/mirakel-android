@@ -189,7 +189,9 @@ project.afterEvaluate {
                                    '**/*$ViewInjector*.*',
                                    '**/BuildConfig.*',
                                    '**/Manifest*.*',
-                                   '**/*Test*.*']
+                                   '**/*Test*.*',
+                                   '**/release/**',
+                                   '**/google/**']
                 )
 
                 def coverageSourceDirs = [
