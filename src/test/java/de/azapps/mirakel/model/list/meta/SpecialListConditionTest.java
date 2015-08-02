@@ -411,7 +411,7 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         assertTrue("Priorities not set correctly", TestHelper.listEquals(prios, prio.getContent()));
 
         final MirakelQueryBuilder qb = prio.getWhereQueryBuilder(RuntimeEnvironment.application);
-        String query = " priority IN (" + TextUtils.join(",", Collections2.transform(prios,
+        String query = "priority IN(" + TextUtils.join(",", Collections2.transform(prios,
         new Function<Integer, String>() {
             @Override
             public String apply(final Integer input) {
