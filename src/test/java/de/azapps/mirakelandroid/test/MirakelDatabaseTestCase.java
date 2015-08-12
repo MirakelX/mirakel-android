@@ -10,6 +10,9 @@ import de.azapps.mirakel.model.MirakelInternalContentProvider;
 
 public abstract class MirakelDatabaseTestCase extends MirakelTestCase {
 
+    public MirakelDatabaseTestCase() {
+        super();
+    }
 
     @Before
     public void setUp() throws Exception {

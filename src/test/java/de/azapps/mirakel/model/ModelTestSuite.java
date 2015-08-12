@@ -30,7 +30,7 @@ import de.azapps.mirakel.model.query_builder.QueryBuilderTest;
     QueryBuilderTest.class,
     SpecialListConditionTest.class,
     ModelBaseTestSuite.class,
-    ModelDatabaseTestCases.class
+    ModelDatabaseTestSuite.class
 })
 public class ModelTestSuite {
 }

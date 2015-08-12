@@ -1,4 +1,3 @@
-import java.util.regex.Pattern
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
@@ -18,28 +17,10 @@ import java.util.regex.Pattern
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    mavenLocal()
-    mavenCentral()
-}
-buildscript {
-    dependencies {
-        repositories {
-            mavenCentral()
-        }
-        classpath "com.android.tools.build:gradle:1.2.0"
-        //classpath "com.github.jcandksolutions.gradle:android-unit-test:2.1.1"
-    }
-}
-
-apply plugin: 'com.android.application'
-//apply plugin: 'hugo'
-
-
+import java.util.regex.Pattern
 
 def getVersionCode() {
-    def manifestFile = file("AndroidManifest.xml")
+    def manifestFile = file("src/main/AndroidManifest.xml")
     def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
     def manifestText = manifestFile.getText()
     def matcher = pattern.matcher(manifestText)
@@ -49,34 +30,38 @@ def getVersionCode() {
 
 
 android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    packagingOptions {
+  packagingOptions {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/MANIFEST.MF'
         exclude 'LICENSE.txt'
+        exclude 'about.html'
+        exclude 'META-INF/maven/org.jacoco/org.jacoco.agent.rt/pom.xml'
+        exclude 'META-INF/maven/org.jacoco/org.jacoco.agent.rt/pom.properties'
+        exclude 'META-INF/maven/org.jacoco/org.jacoco.core/pom.xml'
+        exclude 'META-INF/maven/org.jacoco/org.jacoco.core/pom.properties'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/core/jacoco.properties'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/attrs/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/commons/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/signature/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/tree/analysis/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/tree/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/util/package.html'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/xml/asm-xml.dtd'
+        exclude 'org/jacoco/agent/rt/internal_b0d6a23/asm/xml/package.html'
+        exclude '.readme'
+        exclude 'org/jacoco/agent/rt/RT.class'
     }
     flavorDimensions "stores"
     lintOptions {
-        disable 'MissingTranslation','InvalidPackage','ImpliedQuantity','MissingQuantity','RtlHardcoded','RtlCompat', 'RtlEnabled'
-        enable 'NewerVersionAvailable', 'InvalidPackage'
+        disable 'MissingTranslation','InvalidPackage','ImpliedQuantity','MissingQuantity'
+        enable 'NewerVersionAvailable','RtlHardcoded','RtlCompat', 'RtlEnabled'
     }
-    defaultConfig {
-        testApplicationId "de.azapps.mirakelandroid.test"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        minSdkVersion 14
-        targetSdkVersion 21
-    }
-
     def Properties localProps = new Properties()
     localProps.load(new FileInputStream(file('./local.properties')))
-
     signingConfigs {
         release {
             def Properties keyProps = new Properties()
@@ -94,14 +79,12 @@ android {
             keyPassword "android"
         }
     }
-    jacoco {
-        version = "$jacocoVersion"
-    }
     buildTypes {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),'proguard-mirakel.txt'
+            testCoverageEnabled = false
         }
         debug {
             minifyEnabled false
@@ -132,28 +115,29 @@ android {
             res.srcDirs = ['res-google']
         }
     }
-	testOptions {
-		unitTests.all {
-			forkEvery = 100
-			maxParallelForks 2
-			maxHeapSize "2048m"
-			testLogging {
-				events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-			}
-			scanForTestClasses = false
-			include '**/ModelTestSuite.class'
-		}
-	}
+    testOptions {
+      unitTests.all {
+        forkEvery = 100
+        // more forks will make the build unstable
+        maxParallelForks 1
+        maxHeapSize "1024m"
+        testLogging {
+          events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+        exclude '**/*Suite*.class'
+        include '**/*Test.class'
+      }
+  }
 }
 
-task disableTestFailures << {
-    tasks.withType(Test) {
-        // disable failing build if tests fails
-        ignoreFailures = true
-    }
+project.gradle.taskGraph.whenReady {
+   testFdroidDebugUnitTest {
+      ignoreFailures = gradle.getTaskGraph().hasTask(':new_ui:testFdroidDebugCoverage')
+   }
+   testGoogleDebugUnitTest {
+      ignoreFailures = gradle.getTaskGraph().hasTask(':new_ui:testGoogleDebugCoverage')
+   }
 }
-
-
 
 apply plugin: 'jacoco'
 
@@ -162,68 +146,67 @@ jacoco {
 }
 
 project.afterEvaluate {
-    def buildTypes = android.buildTypes.collect { type -> type.name }
-    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+  def buildTypes = android.buildTypes.collect { type -> type.name }
+  def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
 
-    if (!productFlavors) productFlavors.add('')
+  if (!productFlavors) productFlavors.add('')
 
-    productFlavors.each { productFlavorName ->
-        buildTypes.each { buildTypeName ->
-            def sourceName = "${buildTypeName}"
-            if (productFlavorName) {
-                sourceName = "${productFlavorName}${sourceName.capitalize()}"
-            }
-            def targetName = "${sourceName.capitalize()}"
-            def testTaskName = "test${sourceName.capitalize()}"
-            def coverageTaskName = "${testTaskName}Coverage"
+  productFlavors.each { productFlavorName ->
+    buildTypes.each { buildTypeName ->
+      def sourceName = "${buildTypeName}"
+      if (productFlavorName) {
+        sourceName = "${productFlavorName}${sourceName.capitalize()}"
+      }
+      if(!sourceName.toLowerCase().contains("release")){
+        def targetName = "${sourceName.capitalize()}"
+        def testTaskName = "test${sourceName.capitalize()}UnitTest"
+        def coverageTaskName = "test${sourceName.capitalize()}Coverage"
 
-            task "$coverageTaskName" (type:JacocoReport, dependsOn: "$testTaskName") {
-                group = "Reporting"
-                description = "Generate Jacoco coverage reports on the ${targetName} build."
+        task "$coverageTaskName" (type:JacocoReport, dependsOn: "$testTaskName") {
+          group = "Reporting"
+          description = "Generate Jacoco coverage reports on the ${targetName} build."
+          classDirectories = fileTree(
+            dir: "${project.buildDir}/../../",
+            includes: ['*/build/intermediates/classes/**/*.class'],
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*',
+                       '**/release/**',
+                       '**/google/**']
+          )
+          def coverageSourceDirs = [
+            "src/main/java",
+            "src/$productFlavorName/java",
+            "src/$buildTypeName/java",
+            "../model/src/main/java",
+            "../colorpickerpreference/src",
+            "../colorpicker/src",
+            "../date-time-picker/src",
+            "../donationslib/src",
+            "../helper/src/main/java",
+            "../ilovefs-android/src",
+            "../material-elements/src/main/java",
+            "../settings/src",
+            "../tw_sync/src",
+            "../widget/src"
+          ]
+          additionalSourceDirs = files(coverageSourceDirs)
+          sourceDirectories = files(coverageSourceDirs)
+          executionData = fileTree(dir: "${project.buildDir}/../../", includes: ['**/*.exec', '**/*.ec'])
 
-                classDirectories = fileTree(
-                        dir: "${project.buildDir}/../../",
-                        includes: ['*/build/intermediates/classes/**/*.class'],
-                        excludes: ['**/R.class',
-                                   '**/R$*.class',
-                                   '**/*$ViewInjector*.*',
-                                   '**/BuildConfig.*',
-                                   '**/Manifest*.*',
-                                   '**/*Test*.*',
-                                   '**/release/**',
-                                   '**/google/**']
-                )
-
-                def coverageSourceDirs = [
-                        "src/main/java",
-                        "src/$productFlavorName/java",
-                        "src/$buildTypeName/java",
-                        "../model/src/main/java",
-                        "../colorpickerpreference/src",
-                        "../colorpicker/src",
-                        "../date-time-picker/src",
-                        "../donationslib/src",
-                        "../helper/src/main/java",
-                        "../ilovefs-android/src",
-                        "../material-elements/src/main/java",
-                        "../settings/src",
-                        "../tw_sync/src",
-                        "../widget/src"
-                ]
-                additionalSourceDirs = files(coverageSourceDirs)
-                sourceDirectories = files(coverageSourceDirs)
-                executionData = fileTree(dir: project.projectDir, includes: ['**/*.exec', '**/*.ec'])
-
-                reports {
-                    xml.enabled = true
-                    html.enabled = true
-                }
-                doLast {
-                    println "See report at: file://${project.buildDir.toURI().path}/reports/jacoco/${coverageTaskName}/html/index.html"
-                }
-            }
+          reports {
+            xml.enabled = true
+            html.enabled = true
+          }
+          doLast {
+            println "See report at: file://${project.buildDir.toURI().path}/reports/jacoco/${coverageTaskName}/html/index.html"
+          }
         }
+      }
     }
+  }
 }
 
 clean.doFirst {
@@ -242,14 +225,23 @@ gradle.startParameter.getTaskNames().each { task ->
 }
 
 dependencies {
-    compile project(':model')
-    compile project(':helper')
-    compile project(':widget')
-    compile project(':tw_sync')
-    compile project(':settings')
-    compile project(':ilovefs-android')
-    compile project(':date-time-picker')
-    compile project(':colorpicker')
+    releaseCompile project(path: ':helper',configuration: 'release')
+    debugCompile project(path: ':helper',configuration: 'debug')
+    releaseCompile project(path: ':model',configuration: 'release')
+    debugCompile project(path: ':model',configuration: 'debug')
+    releaseCompile project(path: ':widget',configuration: 'release')
+    debugCompile project(path: ':widget',configuration: 'debug')
+    releaseCompile project(path: ':tw_sync',configuration: 'release')
+    debugCompile project(path: ':tw_sync',configuration: 'debug')
+    releaseCompile project(path: ':settings',configuration: 'release')
+    debugCompile project(path: ':settings',configuration: 'debug')
+    releaseCompile project(path: ':ilovefs-android',configuration: 'release')
+    debugCompile project(path: ':ilovefs-android',configuration: 'debug')
+    releaseCompile project(path: ':date-time-picker',configuration: 'release')
+    debugCompile project(path: ':date-time-picker',configuration: 'debug')
+    releaseCompile project(path: ':colorpicker',configuration: 'release')
+    debugCompile project(path: ':colorpicker',configuration: 'debug')
+
     compile "ch.acra:acra:$acraVersion"
     compile "com.jakewharton:butterknife:$butterknifeVersion"
 
@@ -274,8 +266,3 @@ task deploy(dependsOn: build) << {
 }
 
 apply plugin: 'idea'
-idea {
-    module {
-        testOutputDir = file('build/test-classes/debug')
-    }
-}

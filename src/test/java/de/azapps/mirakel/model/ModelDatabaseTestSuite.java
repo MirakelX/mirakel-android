@@ -39,5 +39,5 @@ import de.azapps.mirakel.model.task.TaskTest;
     TagTest.class,
     TaskTest.class
 })
-public class ModelDatabaseTestCases {
+public class ModelDatabaseTestSuite {
 }
