@@ -17,15 +17,7 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-apply plugin: 'com.android.application'
-
 android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
@@ -44,7 +36,7 @@ android {
             keyAlias keyProps["alias"]
             storePassword keyProps["storePass"]
             keyPassword keyProps["pass"]
-    	}
+        }
         debug {
             storeFile file("debug.keystore")
             storePassword "android"
@@ -58,7 +50,7 @@ android {
             minifyEnabled true
             proguardFile 'proguard-android.txt'
         }
-	    debug {
+        debug {
             signingConfig signingConfigs.debug
             minifyEnabled false
         }
@@ -79,6 +71,8 @@ android {
 dependencies {
     compile "com.google.android.apps.dashclock:dashclock-api:$dashclockVersion"
     compile "com.android.support:support-v4:$androidSupportVersion"
-    compile project(':model')
-    compile project(':helper')
+    debugCompile project(path: ':helper',configuration: 'debug')
+    releaseCompile project(path: ':helper',configuration: 'release')
+    debugCompile project(path: ':model',configuration: 'debug')
+    releaseCompile project(path: ':model',configuration: 'release')
 }
