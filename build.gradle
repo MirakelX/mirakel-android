@@ -4,19 +4,16 @@ buildscript {
         mavenLocal()
     }
       dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.3.0'
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
-//        classpath 'org.robolectric:robolectric-gradle-plugin:1.0.0-SNAPSHOT'
     }
 }
 dependencies {
       repositories {
         mavenCentral()
-
-        // NOTE: This is only needed when developing the plugin!
-        mavenLocal()
     }
 }
+
 def String getProjectProperty(String propertyName) {
         String propertyValue = "null"
         if (hasProperty(propertyName)) {
@@ -46,10 +43,11 @@ gradle.projectsEvaluated {
             from (res_v14_dir){
                 include '**/*.xml', '**/*.png'
             }
-            into (rootDir.toString()+"/"+proj+"/merged-res") 
+            into (rootDir.toString()+"/"+proj+"/merged-res")
         }
     }
 }
+
 ext {
     compileSdkVersion = 22
     buildToolsVersion = "22.0.1"
@@ -81,63 +79,64 @@ configure(allprojects) {
     ext.jacocoVersion = "0.7.5.201505241946"
 }
 
-allprojects {
-    repositories {                   
-        mavenCentral()
-            jcenter()
+subprojects {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+  gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        }
+  }
+
+  repositories {
+    jcenter()
+  }
+  task allDeps(type: DependencyReportTask) {}
+  if(project.equals(project(':new_ui'))||project.equals(project(':dashclock'))){
+    apply plugin: 'com.android.application'
+  }else{
+    apply plugin: 'com.android.library'
+  }
+  apply plugin: 'jacoco'
+  apply plugin: 'hugo'
+  android {
+    publishNonDefault true
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_7
+      targetCompatibility JavaVersion.VERSION_1_7
     }
-
-    repositories {
-        jcenter()
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    packagingOptions {
+          exclude 'META-INF/LICENSE.txt'
+          exclude 'META-INF/NOTICE.txt'
     }
-    task allDeps(type: DependencyReportTask) {}
-}
-
-configure(allprojects - project(':dashclock')-project(':new_ui')-getProject()) {
-	apply plugin: 'com.android.library'
-	apply plugin: 'jacoco'
-
-	android {
-	    compileOptions {
-			sourceCompatibility JavaVersion.VERSION_1_7
-			targetCompatibility JavaVersion.VERSION_1_7
-		}
-		compileSdkVersion rootProject.ext.compileSdkVersion
-		buildToolsVersion rootProject.ext.buildToolsVersion
-		packagingOptions {
-			    exclude 'META-INF/LICENSE.txt'
-			    exclude 'META-INF/NOTICE.txt'
-		}
-		lintOptions{
-		    enable 'RtlHardcoded','RtlCompat', 'RtlEnabled'
-                    disable 'InvalidPackage'
-		}
-		defaultConfig {
-			testApplicationId "de.azapps.mirakelandroid.test"
-			testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-			minSdkVersion 14
-			targetSdkVersion 21
-		}
-		jacoco {
-			version = "$jacocoVersion"
-		}
-
-		buildTypes {
-			debug {
-				testCoverageEnabled = true
-			}
-			release {
-				testCoverageEnabled = true
-			}
-		}
-	}
+    lintOptions{
+        enable 'RtlHardcoded','RtlCompat', 'RtlEnabled','NewerVersionAvailable'
+        disable 'InvalidPackage'
+    }
+    defaultConfig {
+      testApplicationId "de.azapps.mirakelandroid.test"
+      testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+      minSdkVersion 14
+      targetSdkVersion 21
+    }
+    jacoco {
+      version = "$jacocoVersion"
+    }
+    buildTypes {
+      debug {
+        testCoverageEnabled = true
+      }
+      release {
+        testCoverageEnabled = false
+      }
+    }
+  }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '2.5'
 }
