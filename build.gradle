@@ -1,4 +1,3 @@
-apply plugin: 'com.android.library'
 /*******************************************************************************
  * Mirakel is an Android App for managing your ToDo-Lists
  *
@@ -18,9 +17,6 @@ apply plugin: 'com.android.library'
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-//apply plugin: 'hugo'
-
-
 android {
     lintOptions {
         disable 'MissingTranslation'
@@ -39,7 +35,8 @@ android {
     }
 }
 dependencies {
-    compile project(':model')
-    compile project(':helper')
+    debugCompile project(path: ':helper',configuration: 'debug')
+    releaseCompile project(path: ':helper',configuration: 'release')
+    debugCompile project(path: ':model',configuration: 'debug')
+    releaseCompile project(path: ':model',configuration: 'release')
 }
-
