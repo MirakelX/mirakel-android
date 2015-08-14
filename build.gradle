@@ -10,6 +10,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.3.0'
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
         classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
+        classpath files('build/build_deps/gradle-witness.jar')
     }
 }
 dependencies {
@@ -107,6 +108,7 @@ subprojects {
   }
   apply plugin: 'jacoco'
   apply plugin: 'hugo'
+  apply plugin: 'witness'
   android {
     publishNonDefault true
     compileOptions {
@@ -151,6 +153,11 @@ subprojects {
               property "sonar.junit.reportsPath", "../new_ui/build/test-results/fdroidDebug/"
               property "sonar.jacoco.reportPath", "../new_ui/jacoco.exec"
      }
+  }
+  dependencyVerification {
+          verify = [
+                  'com.jakewharton.hugo:hugo-annotations:eee719367df475c50e302f962abde1446c1aa0ea5617b541df6412b630554990',
+          ]
   }
 }
 
