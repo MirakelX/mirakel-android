@@ -32,3 +32,9 @@ dependencies {
     releaseCompile project(path: ':helper',configuration: 'release')
     compile "com.google.code.gson:gson:$gsonVersion"
 }
+
+dependencyVerification {
+    verify = [
+        'com.google.code.gson:gson:c0328cd07ca9e363a5acd00c1cf4afe8cf554bd6d373834981ba05cebec687fb',
+    ]
+}
