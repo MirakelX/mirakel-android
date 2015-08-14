@@ -68,6 +68,7 @@ android {
 
     }
 }
+
 dependencies {
     compile "com.google.android.apps.dashclock:dashclock-api:$dashclockVersion"
     compile "com.android.support:support-v4:$androidSupportVersion"
@@ -75,4 +76,12 @@ dependencies {
     releaseCompile project(path: ':helper',configuration: 'release')
     debugCompile project(path: ':model',configuration: 'debug')
     releaseCompile project(path: ':model',configuration: 'release')
+}
+
+dependencyVerification {
+    verify = [
+        'com.google.android.apps.dashclock:dashclock-api:e48b72ce9470407bc1c1da23a67b14d3a140672fb8ed38e58afb9d2bf664809b',
+        'com.android.support:support-v4:7bb6e40a18774aa2595e4d8f9fe0ae14e61670f71a1279272fb0b79b8be71180',
+        'com.android.support:support-annotations:beac5cae60bdb597df9af9c916f785c2f71f8c8ae4be9a32d4298dea85496a42',
+    ]
 }
