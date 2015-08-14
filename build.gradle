@@ -52,3 +52,12 @@ dependencies {
     releaseCompile project(path: ':colorpicker',configuration: 'release')
     compile "com.github.gabrielemariotti.changeloglib:changelog:$changelogVersion"
 }
+
+dependencyVerification {
+    verify = [
+        'com.github.gabrielemariotti.changeloglib:changelog:df83c71bac90b5cbb2f63d0a4db983bef72db90c06baf09435d4c3700f8728ac',
+        'com.android.support:support-v4:7bb6e40a18774aa2595e4d8f9fe0ae14e61670f71a1279272fb0b79b8be71180',
+        'com.android.support:recyclerview-v7:3a8da14585fa1c81f06e7cef4d93a7641f0323d8f984ff9a7bd7a6e416b46888',
+        'com.android.support:support-annotations:beac5cae60bdb597df9af9c916f785c2f71f8c8ae4be9a32d4298dea85496a42',
+    ]
+}
