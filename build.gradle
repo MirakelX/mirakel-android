@@ -41,3 +41,9 @@ dependencies {
     releaseCompile project(path: ':model',configuration: 'release')
     compile "com.nineoldandroids:library:$nineoldandroisVersion"
 }
+
+dependencyVerification {
+    verify = [
+        'com.nineoldandroids:library:68025a14e3e7673d6ad2f95e4b46d78d7d068343aa99256b686fe59de1b3163a',
+    ]
+}
