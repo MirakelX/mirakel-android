@@ -35,3 +35,17 @@ dependencies {
     debugCompile project(path: ':material-elements',configuration: 'debug')
     releaseCompile project(path: ':material-elements',configuration: 'release')
 }
+
+dependencyVerification {
+    verify = [
+        'com.android.support:support-v4:7bb6e40a18774aa2595e4d8f9fe0ae14e61670f71a1279272fb0b79b8be71180',
+        'com.android.support:appcompat-v7:2d5867698410b41f75140c91d6c1e58da74ae0f97baf6e0bdd1f7cc1017ceb2c',
+        'com.android.support:cardview-v7:15b934f69f10d85f5adc12231ba1b708618a7daf6e5102af42addf2c67a85e2c',
+        'joda-time:joda-time:e5183ca131f7195bde5b27e4cd18deeb6d14f8bc5c483b1431421132927240af',
+        'com.google.guava:guava:8c36a80ea613d0b6b8040a17cf837c5bbe3677bc1b06a058a6c174fdb787ebbc',
+        'com.android.support:recyclerview-v7:3a8da14585fa1c81f06e7cef4d93a7641f0323d8f984ff9a7bd7a6e416b46888',
+        'com.cocosw:bottomsheet:871f5f4d6c10936569caf3528271efd77594a67aa5511765c96d7096c9b05f96',
+        'com.afollestad:material-dialogs:faa48751d32393fcdb20cbf4995d730ecfec7f2d8c7bd40645cad524f6293054',
+        'com.android.support:support-annotations:beac5cae60bdb597df9af9c916f785c2f71f8c8ae4be9a32d4298dea85496a42',
+    ]
+}
