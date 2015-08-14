@@ -249,10 +249,17 @@ dependencies {
     testCompile "junit:junit:4.11"
     testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.0"
-
     googleCompile 'com.google.android.gms:play-services-analytics:7.5.0'
 
 }
+
+dependencyVerification {
+    verify = [
+        'ch.acra:acra:6e2468ea1b75e349bca0d57ffc8aa8e031277c96a8572fc3d2fba182f0da362c',
+        'com.jakewharton:butterknife:f025eeeea1dce0a134be609af63866f4f56aaaeb8b87ba5481694bbaccec1da8',
+    ]
+}
+
 
 task deploy(dependsOn: build) << {
     println "Do you realy want to deploy Mirakel?"
