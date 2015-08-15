@@ -41,3 +41,14 @@ dependencies {
     compile "com.nispok:snackbar:2.10.6"
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
 }
+
+dependencyVerification {
+    verify = [
+        'com.android.support:design:41ff5f700d1bf8c190e1d3ac33582f92ad6e1f3b1080c8b8e2ac4f7b703be76a',
+        'com.nispok:snackbar:473d4ac972638d6db6562173871c469d6647b60c03538c3c75207ec3fff3bfcd',
+        'com.android.support:appcompat-v7:2d5867698410b41f75140c91d6c1e58da74ae0f97baf6e0bdd1f7cc1017ceb2c',
+        'com.android.support:support-v4:7bb6e40a18774aa2595e4d8f9fe0ae14e61670f71a1279272fb0b79b8be71180',
+        'com.android.support:recyclerview-v7:859ed80e3761f8fc3126901260b208505120b5678bcf36ad2cfe9c453958b9c7',
+        'com.android.support:support-annotations:beac5cae60bdb597df9af9c916f785c2f71f8c8ae4be9a32d4298dea85496a42',
+    ]
+}
