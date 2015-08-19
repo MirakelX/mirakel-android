@@ -34,10 +34,10 @@ import android.widget.TextView;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.generic.ModelBase;
+import de.azapps.mirakel.model.generic.ModelFactory;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter {
@@ -68,7 +68,7 @@ public class MultiSelectModelAdapter<T extends ModelBase> extends CursorAdapter 
     @Override
     public void bindView(final View view, final Context context, final Cursor cursor) {
         final ViewHolder<T> viewHolder = (ViewHolder<T>) view.getTag();
-        viewHolder.model = MirakelQueryBuilder.cursorToObject(CursorGetter.unsafeGetter(cursor), tClass);
+        viewHolder.model = ModelFactory.createModel(CursorGetter.unsafeGetter(cursor), tClass);
         viewHolder.name.setText(cursor.getString(cursor.getColumnIndex(ModelBase.NAME)));
         viewHolder.checkBox.setChecked(selectedItems.contains(viewHolder.model));
         viewHolder.checkBox.setTag(viewHolder.model);

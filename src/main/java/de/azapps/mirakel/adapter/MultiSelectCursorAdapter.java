@@ -31,7 +31,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
 
 /**
  * An Extension for the CursorAdapter to support selecting multiple items at once

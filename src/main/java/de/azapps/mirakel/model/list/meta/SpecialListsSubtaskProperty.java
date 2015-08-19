@@ -23,7 +23,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.task.Task;

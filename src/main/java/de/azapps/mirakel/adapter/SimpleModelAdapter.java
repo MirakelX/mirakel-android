@@ -29,10 +29,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.azapps.mirakel.model.IGenericElementInterface;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.ModelFactory;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
-import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 
 public class SimpleModelAdapter<T extends IGenericElementInterface> extends
     CursorAdapter<SimpleModelAdapter.ModelViewHolder> {
@@ -53,7 +53,7 @@ public class SimpleModelAdapter<T extends IGenericElementInterface> extends
     @Override
     public void onBindViewHolder(final SimpleModelAdapter.ModelViewHolder holder, final Cursor cursor,
                                  final int position) {
-        holder.model = MirakelQueryBuilder.cursorToObject(CursorGetter.unsafeGetter(cursor), tClass);
+        holder.model = ModelFactory.createModel(CursorGetter.unsafeGetter(cursor), tClass);
         holder.name.setText(holder.model.getName());
     }
 

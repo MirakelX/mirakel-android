@@ -17,7 +17,7 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.model;
+package de.azapps.mirakel.model.provider;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -50,6 +50,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.azapps.mirakel.DefinitionsHelper;
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -85,7 +87,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     private static Uri getUri(final String tableName) {
         EXISTING_TABLES.add(tableName);
         return Uri.parse("content://" + DefinitionsHelper.AUTHORITY_INTERNAL
-                         + "/" + tableName);
+                         + '/' + tableName);
     }
 
 
@@ -100,12 +102,11 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final String UPDATE_LIST_MOVE_DOWN = "list_move_down";
     public static final String UPDATE_LIST_MOVE_UP = "list_move_up";
     public static final String UPDATE_LIST_FIX_RGT = "list_fix_rgt";
+    public static final String LIST_WITH_COUNT = "list_with_count";
 
 
     public static final String CALDAV_INSTANCE_PROPERTIES = "caldav_instance_properties";
     public static final String CALDAV_INSTANCES = "caldav_instances";
-
-    public static final String LIST_WITH_SPECIAL = "lists_with_special";
 
     // Uris
     public static final Uri AUTOCOMPLETE_URI = getUri("autocomplete_helper");
@@ -115,7 +116,6 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri TASK_VIEW_TAG_JOIN_URI = getUri(TASK_VIEW_TAG_JOIN);
     public static final Uri TAG_URI = getUri(Tag.TABLE);
     public static final Uri LIST_URI = getUri(ListMirakel.TABLE);
-    public static final Uri LIST_WITH_SPECIAL_URI = getUri(LIST_WITH_SPECIAL);
     public static final Uri TAG_CONNECTION_URI = getUri(Tag.TAG_CONNECTION_TABLE);
     public static final Uri CALDAV_LISTS_URI = getUri("caldav_lists");
     public static final Uri CALDAV_TASKS_URI = getUri("caldav_tasks");
@@ -135,6 +135,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
     public static final Uri SEMANTIC_URI = getUri(Semantic.TABLE);
     public static final Uri SPECIAL_LISTS_URI = getUri(SpecialList.TABLE);
     public static final Uri LISTS_SORT_URI = getUri(LISTS_SORT_JOIN);
+    public static final Uri LIST_WITH_COUNT_URI = getUri(LIST_WITH_COUNT);
 
     public static final Uri UPDATE_LIST_ORDER_URI = getUri(UPDATE_LIST_ORDER_JOIN);
     public static final Uri UPDATE_LIST_MOVE_DOWN_URI = getUri(UPDATE_LIST_MOVE_DOWN);
@@ -161,19 +162,18 @@ public class MirakelInternalContentProvider extends ContentProvider implements
         notifyUris.put(UPDATE_LIST_FIX_RGT_URI, LIST_URI);
         notifyUris.put(TASK_URI, LIST_URI);
         notifyUris.put(CALDAV_LISTS_URI, LIST_URI);
-        notifyUris.put(LIST_URI, LIST_WITH_SPECIAL_URI);
-        notifyUris.put(SPECIAL_LISTS_URI, LIST_WITH_SPECIAL_URI);
+        notifyUris.put(LIST_WITH_COUNT_URI, LIST_URI);
     }
 
     private static final List<String> BLACKLISTED_FOR_MODIFICATIONS = Arrays
             .asList("", TASK_RECURRING_TW_CHILD_JOIN, TASK_RECURRING_TW_PARENT_JOIN, TASK_SUBTASK_JOIN,
                     TASK_TAG_JOIN, TASK_VIEW_TAG_JOIN,
-                    LISTS_SORT_JOIN, LIST_WITH_SPECIAL);
+                    LISTS_SORT_JOIN);
     private static final List<String> BLACKLISTED_FOR_DELETION = Arrays
             .asList("", TASK_RECURRING_TW_CHILD_JOIN, TASK_RECURRING_TW_PARENT_JOIN, TASK_SUBTASK_JOIN,
                     TASK_TAG_JOIN, TASK_VIEW_TAG_JOIN,
                     LISTS_SORT_JOIN, UPDATE_LIST_MOVE_DOWN, UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN,
-                    UPDATE_LIST_FIX_RGT, LIST_WITH_SPECIAL);
+                    UPDATE_LIST_FIX_RGT);
 
     private static final List<String> BLACKLISTED_FOR_QUERY = Arrays.asList(UPDATE_LIST_MOVE_DOWN,
             UPDATE_LIST_MOVE_UP, UPDATE_LIST_ORDER_JOIN, UPDATE_LIST_FIX_RGT);

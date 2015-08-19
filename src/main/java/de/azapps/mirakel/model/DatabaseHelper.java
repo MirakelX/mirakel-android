@@ -24,6 +24,7 @@ import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
@@ -31,11 +32,16 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.util.SparseIntArray;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,11 +67,14 @@ import de.azapps.mirakel.helper.export_import.ExportImport;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.list.SpecialListsWhereDeserializer;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList;
 import de.azapps.mirakel.model.list.meta.SpecialListsContentProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsListProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsNameProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.Cursor2List;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
@@ -81,7 +90,7 @@ import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 56;
+    public static final int DATABASE_VERSION = 57;
 
     private static final String TAG = "DatabaseHelper";
     public static final String CREATED_AT = "created_at";
@@ -94,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " TEXT NOT NULL, content TEXT, "
                    + "enabled INTEGER NOT NULL DEFAULT 0, "
                    + "type INTEGER NOT NULL DEFAULT "
-                   + ACCOUNT_TYPES.LOCAL.toInt() + ")");
+                   + ACCOUNT_TYPES.LOCAL.toInt() + ')');
     }
 
     protected static void createTasksTableOLD(final SQLiteDatabase db) {
@@ -1000,11 +1009,144 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         case 55:
             db.execSQL("DROP VIEW caldav_tasks;");
             createCaldavTasksView(db);
-
+        case 56:
+            mergeListsSpecialLists(db);
         default:
             break;
         }
     }
+
+    private void mergeListsSpecialLists(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE lists RENAME TO old_lists;");
+        db.execSQL("CREATE TABLE lists (_id"
+                   + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                   + " name TEXT NOT NULL,"
+                   + " sort_by INTEGER NOT NULL DEFAULT 0,"
+                   + " created_at INTEGER NOT NULL DEFAULT (strftime('%s','now')* 1000), "
+                   + " updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now')* 1000), "
+                   + " sync_state INTEGER DEFAULT 1,"
+                   + " lft INTEGER, "
+                   + " rgt INTEGER, "
+                   + " color INTEGER, "
+                   + " account_id INTEGER REFERENCES account(_id) ON DELETE CASCADE ON UPDATE CASCADE, "
+                   + " icon_path TEXT, "
+                   + " whereQuery TEXT, "
+                   + " def_list INTEGER, "
+                   + " def_date INTEGER, "
+                   + " active INTEGER NOT NULL DEFAULT 1, "
+                   + " is_special INTEGER NOT NULL DEFAULT 0 "
+                   + ')');
+        db.execSQL("INSERT INTO lists(_id,name,sort_by, created_at, updated_at, sync_state, lft, rgt, color, account_id, icon_path,is_special)"
+                   + "SELECT _id,name,sort_by, " +
+                   "strftime('%s',CASE WHEN (created_at LIKE \"%:%\") " +
+                   "THEN substr(created_at,0,11)||' '||substr(created_at,12,2)||':'||substr(created_at,15,2)||':'||substr(created_at,18,2) "
+                   +
+                   "ELSE substr(created_at,0,11)||' '||substr(created_at,12,2)||':'||substr(created_at,14,2)||':'||substr(created_at,16,2) END) * 1000, "
+                   +
+                   " strftime('%s',CASE WHEN (updated_at LIKE \"%:%\") " +
+                   "THEN substr(updated_at,0,11)||' '||substr(updated_at,12,2)||':'||substr(updated_at,15,2)||':'||substr(updated_at,18,2) "
+                   +
+                   "ELSE substr(updated_at,0,11)||' '||substr(updated_at,12,2)||':'||substr(updated_at,14,2)||':'||substr(updated_at,16,2) END) * 1000, "
+                   +
+                   " sync_state, lft, rgt, color, account_id, icon_path,0 from old_lists");
+        db.execSQL("INSERT INTO lists (name, sort_by, sync_state, lft, rgt, color, account_id, icon_path, whereQuery, def_list, def_date, active, is_special) "
+                   +
+                   "SELECT name, sort_by, sync_state, lft, rgt, color, 0, icon_path, whereQuery, def_list, def_date, active, 1 FROM special_lists;");
+        Cursor specialListsUpdate = db.query("special_lists", new String[] {"_id", "whereQuery"}, null,
+                                             null, null, null, null);
+        SparseIntArray idMapping = new SparseIntArray();
+        Map<Integer, SpecialListsBaseProperty> whereMapping = new HashMap<>();
+        if (specialListsUpdate.moveToFirst()) {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            long notificationsList = Integer.parseInt(settings.getString("notificationsList", "-1"));
+            long startupList = Integer.parseInt(settings.getString("startupList", "-1"));
+            SharedPreferences.Editor editor = settings.edit();
+
+            do {
+                String oldWhere = specialListsUpdate.getString(1);
+                Integer oldId = specialListsUpdate.getInt(0) * -1;
+                Cursor newSpecial = db.query("lists", new String[] {"_id"}, "whereQuery = ?", new String[] {oldWhere},
+                                             null, null, null);
+                Integer newId;
+                if (newSpecial.moveToFirst()) {
+                    newId = newSpecial.getInt(0);
+                    newSpecial.close();
+                } else {
+                    Log.wtf(TAG, "list not found in new lists");
+                    newSpecial.close();
+                    continue;
+                }
+                if (notificationsList == oldId) {
+                    editor.putString("notificationsList", String.valueOf(newId));
+                }
+                if (startupList == oldId) {
+                    editor.putString("startupList", String.valueOf(newId));
+                }
+                idMapping.put(oldId, newId);
+                if (oldWhere.contains("list_id")) {
+                    final Optional<SpecialListsBaseProperty> where = SpecialListsWhereDeserializer.deserializeWhere(
+                                oldWhere, "db update");
+                    if (where.isPresent()) {
+                        whereMapping.put(newId, where.get());
+                    }
+                }
+            } while (specialListsUpdate.moveToNext());
+            editor.apply();
+            // update widget preferences
+            try {
+                Class widget = Class.forName(DefinitionsHelper.MAINWIDGET_CLASS);
+                Method update = widget.getMethod("update", idMapping.getClass());
+                update.invoke(null, idMapping);
+            } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+                //eat it
+            } catch (InvocationTargetException ignored) {
+                //eat it
+            } catch (IllegalAccessException ignored) {
+                //eat it
+            }
+
+        }
+        specialListsUpdate.close();
+        for (final Entry<Integer, SpecialListsBaseProperty> list : whereMapping.entrySet()) {
+            transformWhere(list.getValue(), idMapping);
+            final ContentValues updateLists = new ContentValues();
+            updateLists.put("whereQuery", list.getValue().serialize());
+            db.update("lists", updateLists, "_id = ?", new String[] {String.valueOf(list.getKey())});
+        }
+
+
+        db.execSQL("CREATE VIEW list_with_count AS " +
+                   "SELECT lists._id AS _id, lists.name AS name, sort_by, " +
+                   "lists.created_at AS created_at, lists.updated_at updated_at, " +
+                   "lists.sync_state AS sync_state, lft, rgt,color, account_id, " +
+                   "icon_path, is_special,whereQuery,def_list,def_date,active, COUNT(tasks._id) AS task_count " +
+                   "FROM lists " +
+                   "LEFT JOIN tasks ON tasks.list_id = lists._id AND " +
+                   "tasks.sync_state != -1 AND tasks.is_shown_recurring = 1 " +
+                   "AND tasks.done = 0 GROUP BY lists._id  ORDER BY lft ASC;");
+
+        db.execSQL("DROP TABLE special_lists");
+        db.execSQL("DROP TABLE old_lists");
+        db.execSQL("DROP VIEW lists_with_special");
+    }
+
+    private void transformWhere(final SpecialListsBaseProperty where, final SparseIntArray idMapping) {
+        if (where instanceof SpecialListsListProperty) {
+            ((SpecialListsListProperty) where).setContent(new ArrayList<>(Collections2.transform(((
+                        SpecialListsListProperty) where).getContent(),
+            new Function<Integer, Integer>() {
+                @Override
+                public Integer apply(final Integer input) {
+                    return idMapping.get(input, input);
+                }
+            })));
+        } else if (where instanceof SpecialListsConjunctionList) {
+            for (final SpecialListsBaseProperty child : ((SpecialListsConjunctionList) where).getChilds()) {
+                transformWhere(child, idMapping);
+            }
+        }
+    }
+
 
     /**
      * We want to be able to mix normal and special lists. Therefore and because we had a
@@ -1688,7 +1830,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return ret;
     }
-
 
 
 

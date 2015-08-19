@@ -24,12 +24,15 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
+
+import org.joda.time.DateTime;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.account.AccountVanishedException;
 import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
@@ -43,14 +46,15 @@ abstract class ListBase extends ModelBase {
     public final static String SORT_BY_FIELD = "sort_by";
     public final static String ACCOUNT_ID = "account_id";
     public final static String ICON_PATH = "icon_path";
+    public static final String IS_SPECIAL = "is_special";
 
 
     @NonNull
     protected SORT_BY sortBy = SORT_BY.OPT;
     @NonNull
-    protected String createdAt;
+    protected DateTime createdAt;
     @NonNull
-    protected String updatedAt;
+    protected DateTime updatedAt;
     @NonNull
     protected SYNC_STATE syncState;
     protected int lft;
@@ -62,20 +66,22 @@ abstract class ListBase extends ModelBase {
 
     @NonNull
     protected Optional<Uri> iconPath = Optional.absent();
+    protected boolean isSpecial;
 
     private static final String TAG = "ListBase";
 
     ListBase() {
-        super(0, "");
+        super(0L, "");
     }
 
     ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
-             @NonNull final String createdAt, @NonNull final String updatedAt,
+             @NonNull final DateTime createdAt, @NonNull final DateTime updatedAt,
              @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-             final int color, @NonNull final AccountMirakel a, @NonNull final Optional<Uri> iconPath) {
+             final int color, @NonNull final AccountMirakel a, @NonNull final Optional<Uri> iconPath,
+             final boolean special) {
         super(id, name);
-        this.setCreatedAt(createdAt);
-        this.setUpdatedAt(updatedAt);
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.setSortBy(sortBy);
         this.setSyncState(syncState);
         this.setLft(lft);
@@ -83,15 +89,17 @@ abstract class ListBase extends ModelBase {
         this.setColor(color);
         this.setAccount(a);
         this.setIconPath(iconPath);
+        this.isSpecial = special;
     }
 
     protected ListBase(final long id, @NonNull final String name, @NonNull final SORT_BY sortBy,
-                       @NonNull final String createdAt, @NonNull final String updatedAt,
+                       @NonNull final DateTime createdAt, @NonNull final DateTime updatedAt,
                        @NonNull final SYNC_STATE syncState, final int lft, final int rgt,
-                       final int color, final int accountId, @NonNull final Optional<Uri> iconPath) {
+                       final int color, final int accountId, @NonNull final Optional<Uri> iconPath,
+                       final boolean isSpecial) {
         super(id, name);
-        this.setCreatedAt(createdAt);
-        this.setUpdatedAt(updatedAt);
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.setSortBy(sortBy);
         this.setSyncState(syncState);
         this.setLft(lft);
@@ -99,6 +107,7 @@ abstract class ListBase extends ModelBase {
         this.setColor(color);
         this.setAccount(accountId);
         this.setIconPath(iconPath);
+        this.isSpecial = isSpecial;
     }
 
     public void setListName(@NonNull final String name) throws ListMirakel.ListAlreadyExistsException {
@@ -111,20 +120,20 @@ abstract class ListBase extends ModelBase {
     }
 
     @NonNull
-    public String getCreatedAt() {
+    public DateTime getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(@NonNull final String createdAt) {
+    protected void setCreatedAt(@NonNull final DateTime createdAt) {
         this.createdAt = createdAt;
     }
 
     @NonNull
-    public String getUpdatedAt() {
+    public DateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
-    public void setUpdatedAt(@NonNull final String updatedAt) {
+    protected void setUpdatedAt(@NonNull final DateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -205,7 +214,7 @@ abstract class ListBase extends ModelBase {
     }
 
     public boolean isSpecial() {
-        return (this instanceof SpecialList) || (getId() < 0);
+        return isSpecial;
     }
 
 
@@ -218,18 +227,16 @@ abstract class ListBase extends ModelBase {
             Log.wtf(TAG, "dies could not happen", e);
             return new ContentValues();
         }
-        // If it's a special list we can't put this values into the database
-        if (getId() > 0) {
-            cv.put(ACCOUNT_ID, this.accountID);
-            cv.put(DatabaseHelper.CREATED_AT, this.createdAt);
-            cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt);
-        }
+        cv.put(ACCOUNT_ID, this.accountID);
+        cv.put(DatabaseHelper.CREATED_AT, this.createdAt.getMillis());
+        cv.put(DatabaseHelper.UPDATED_AT, this.updatedAt.getMillis());
         cv.put(SORT_BY_FIELD, this.sortBy.getShort());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(LFT, this.lft);
         cv.put(RGT, this.rgt);
         cv.put(COLOR, this.color);
         cv.put(ICON_PATH, getIconPathString());
+        cv.put(IS_SPECIAL, isSpecial);
         return cv;
     }
 
@@ -246,19 +253,20 @@ abstract class ListBase extends ModelBase {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) this.accountID;
-        result = prime * result + (this.getAccount()
-                                   .hashCode());
-        result = prime * result + this.color;
-        result = prime * result + (this.createdAt.hashCode());
-        result = prime * result + (int) getId();
-        result = prime * result + this.lft;
-        result = prime * result + (getName().hashCode());
-        result = prime * result + this.rgt;
-        result = prime * result + this.sortBy.getShort();
-        result = prime * result + (this.syncState.hashCode());
-        result = prime * result + (this.updatedAt.hashCode());
-        result = prime * result + (this.iconPath.hashCode());
+        result = (prime * result) + (int) this.accountID;
+        result = (prime * result) + (this.getAccount()
+                                     .hashCode());
+        result = (prime * result) + this.color;
+        result = (prime * result) + (this.createdAt.hashCode());
+        result = (prime * result) + (int) getId();
+        result = (prime * result) + this.lft;
+        result = (prime * result) + (getName().hashCode());
+        result = (prime * result) + this.rgt;
+        result = (prime * result) + this.sortBy.getShort();
+        result = (prime * result) + (this.syncState.hashCode());
+        result = (prime * result) + (this.updatedAt.hashCode());
+        result = (prime * result) + (this.iconPath.hashCode());
+        result = (prime * result) + (this.isSpecial ? 42 : 43);
         return result;
     }
 
@@ -280,7 +288,7 @@ abstract class ListBase extends ModelBase {
         if (this.color != other.color) {
             return false;
         }
-        if (!this.createdAt.equals(other.createdAt)) {
+        if (!Objects.equal(this.createdAt, other.createdAt)) {
             return false;
         }
         if (this.getId() != other.getId()) {
@@ -289,7 +297,7 @@ abstract class ListBase extends ModelBase {
         if (this.lft != other.lft) {
             return false;
         }
-        if (!this.getName().equals(other.getName())) {
+        if (!Objects.equal(this.getName(), other.getName())) {
             return false;
         }
         if (this.rgt != other.rgt) {
@@ -301,7 +309,10 @@ abstract class ListBase extends ModelBase {
         if (this.syncState != other.syncState) {
             return false;
         }
-        if (!this.iconPath.equals(other.iconPath)) {
+        if (!Objects.equal(this.iconPath, other.iconPath)) {
+            return false;
+        }
+        if (isSpecial != other.isSpecial) {
             return false;
         }
         return true;

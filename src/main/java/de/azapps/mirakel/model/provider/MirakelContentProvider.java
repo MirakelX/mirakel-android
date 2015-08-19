@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package de.azapps.mirakel.model;
+package de.azapps.mirakel.model.provider;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
@@ -57,6 +57,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.tags.Tag;

@@ -32,8 +32,8 @@ import com.google.common.base.Optional;
 
 import java.util.List;
 
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.Cursor2List;
 import de.azapps.mirakel.model.query_builder.CursorGetter;

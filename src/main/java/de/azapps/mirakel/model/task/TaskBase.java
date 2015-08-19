@@ -41,7 +41,7 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.recurring.Recurring;

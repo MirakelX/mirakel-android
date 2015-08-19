@@ -31,8 +31,8 @@ import com.google.common.collect.Collections2;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -71,25 +71,22 @@ public class SpecialListsListProperty extends SpecialListsSetProperty {
         if (content.isEmpty()) {
             return qb;
         }
-        final List<Integer> special = new ArrayList<>(content.size() / 2);
         final List<Integer> normal = new ArrayList<>(content.size() / 2);
+
         for (final int c : this.content) {
-            if (c > 0) {
-                normal.add(c);
-            } else if (c < 0) {
-                special.add(c);
-            }
-        }
-        qb.and(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, normal);
-        // TODO handle loops here
-        for (final int p : special) {
-            OptionalUtils.withOptional(SpecialList.getSpecial(p), new OptionalUtils.Procedure<SpecialList>() {
+            OptionalUtils.withOptional(ListMirakel.get(c), new OptionalUtils.Procedure<ListMirakel>() {
                 @Override
-                public void apply(final SpecialList input) {
-                    qb.or(input.getWhereQueryForTasks());
+                public void apply(final ListMirakel input) {
+                    if (input.isSpecial()) {
+                        //TODO handle loops
+                        qb.or(input.getWhereQueryForTasks());
+                    } else {
+                        normal.add(c);
+                    }
                 }
             });
         }
+        qb.or(Task.LIST_ID, MirakelQueryBuilder.Operation.IN, normal);
         if (isSet) {
             return new MirakelQueryBuilder(ctx).not(qb);
         } else {

@@ -167,7 +167,9 @@ public class ReminderAlarm extends BroadcastReceiver {
                                       AlarmManager.INTERVAL_DAY, pendingIntent);
             this.ctx = ctx;
             observer = of(new MirakelContentObserver(new Handler(ctx.getMainLooper()), ctx, Task.URI, this));
-            updateAlarms();
+            if (!DefinitionsHelper.freshInstall) {
+                updateAlarms();
+            }
         }
 
 

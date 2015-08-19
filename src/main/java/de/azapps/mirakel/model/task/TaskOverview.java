@@ -27,8 +27,8 @@ import com.google.common.base.Optional;
 
 import java.util.Calendar;
 
-import de.azapps.mirakel.model.IGenericElementInterface;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.CursorGetter;

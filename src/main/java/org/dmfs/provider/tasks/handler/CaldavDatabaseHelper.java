@@ -23,7 +23,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 
 /**
  * Created by az on 06.07.14.

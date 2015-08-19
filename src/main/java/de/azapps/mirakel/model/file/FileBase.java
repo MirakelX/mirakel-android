@@ -28,7 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakel.model.task.TaskVanishedException;
 import de.azapps.tools.FileUtils;

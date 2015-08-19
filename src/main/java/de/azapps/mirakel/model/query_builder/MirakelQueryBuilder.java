@@ -29,7 +29,6 @@ import android.text.TextUtils;
 
 import com.google.common.base.Optional;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -37,8 +36,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
+import de.azapps.mirakel.model.generic.ModelFactory;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
@@ -457,18 +457,6 @@ public class MirakelQueryBuilder {
         return this;
     }
 
-    public static <T> T cursorToObject(final CursorGetter c, final Class<T> clazz) {
-        try {
-            final Constructor<T> constructor = clazz.getConstructor(CursorGetter.class);
-            return constructor.newInstance(c);
-        } catch (final NoSuchMethodException e) {
-            throw new IllegalArgumentException("go and implement a the constructor " + clazz.getCanonicalName()
-                                               + "(CursorWrapper.CursorGetter)", e);
-        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            throw new IllegalArgumentException("go and make the constructor " + clazz.getCanonicalName() +
-                                               "(CursorWrapper.CursorGetter) accessible", e);
-        }
-    }
 
     public <T extends ModelBase> List<T> getList(final Class<T> clazz) {
         return query(setupQueryBuilder(clazz)).doWithCursor(new Cursor2List<T>(clazz));
@@ -487,7 +475,7 @@ public class MirakelQueryBuilder {
             @Override
             public Optional<T> convert(@NonNull final CursorGetter getter) {
                 if (getter.moveToFirst()) {
-                    return of(cursorToObject(getter, clazz));
+                    return of(ModelFactory.createModel(getter, clazz));
                 } else {
                     return absent();
                 }

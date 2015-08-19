@@ -24,7 +24,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.tools.Log;
 
 abstract class TagBase extends ModelBase {

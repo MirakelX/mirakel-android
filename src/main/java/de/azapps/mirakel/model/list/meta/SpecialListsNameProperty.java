@@ -23,7 +23,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
 
 public class SpecialListsNameProperty extends SpecialListsStringProperty {

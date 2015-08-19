@@ -30,8 +30,8 @@ import com.google.common.collect.Collections2;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.tags.Tag;

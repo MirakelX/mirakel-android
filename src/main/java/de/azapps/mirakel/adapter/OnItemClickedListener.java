@@ -21,7 +21,7 @@ package de.azapps.mirakel.adapter;
 
 import android.support.annotation.NonNull;
 
-import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
 
 
 public interface OnItemClickedListener<T extends IGenericElementInterface> {

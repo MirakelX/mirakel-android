@@ -28,7 +28,7 @@ import com.google.common.base.Optional;
 
 import java.util.Locale;
 
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.tools.OptionalUtils;
 

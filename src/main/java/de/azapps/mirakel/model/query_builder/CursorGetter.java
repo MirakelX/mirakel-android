@@ -24,10 +24,12 @@ import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.util.Calendar;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 
 import static com.google.common.base.Optional.absent;
 import static com.google.common.base.Optional.fromNullable;
@@ -128,4 +130,7 @@ public class CursorGetter {
     }
 
 
+    public DateTime getDateTime(final @NonNull String fieldName) {
+        return new DateTime(getLong(fieldName));
+    }
 }

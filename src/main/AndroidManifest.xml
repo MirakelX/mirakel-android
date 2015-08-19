@@ -29,14 +29,14 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <application>
         <provider
-            android:name="de.azapps.mirakel.model.MirakelContentProvider"
+            android:name=".provider.MirakelContentProvider"
             android:authorities="de.azapps.mirakel.provider"
             android:exported="true"
             android:permission="de.azapps.mirakel.provider.READ_WRITE_DATA"
             android:readPermission="de.azapps.mirakel.provider.READ_DATA"
             android:writePermission="de.azapps.mirakel.provider.WRITE_DATA" />
         <provider
-            android:name="de.azapps.mirakel.model.MirakelInternalContentProvider"
+            android:name=".provider.MirakelInternalContentProvider"
             android:authorities="de.azapps.mirakel.provider.internal"
             android:exported="true" />
         <receiver

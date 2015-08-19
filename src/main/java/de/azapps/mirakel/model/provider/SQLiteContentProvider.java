@@ -14,7 +14,7 @@
  * limitations under the License
  */
 
-package de.azapps.mirakel.model;
+package de.azapps.mirakel.model.provider;
 
 import java.util.ArrayList;
 import java.util.HashSet;

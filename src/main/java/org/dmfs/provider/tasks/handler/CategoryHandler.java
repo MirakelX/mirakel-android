@@ -30,8 +30,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import de.azapps.mirakel.model.MirakelContentProvider;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 

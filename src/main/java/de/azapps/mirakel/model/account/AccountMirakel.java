@@ -36,8 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.Cursor2List;

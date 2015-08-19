@@ -35,7 +35,7 @@ import java.util.List;
 
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.meta.DueDeserializer;
 import de.azapps.mirakel.model.list.meta.NegatedDeserializer;

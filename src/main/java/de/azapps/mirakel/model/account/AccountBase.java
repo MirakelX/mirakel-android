@@ -25,7 +25,7 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 import de.azapps.tools.Log;
 

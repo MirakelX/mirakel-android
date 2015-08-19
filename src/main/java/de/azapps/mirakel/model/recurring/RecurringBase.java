@@ -30,7 +30,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import static com.google.common.base.Optional.absent;
 
 abstract class RecurringBase extends ModelBase {

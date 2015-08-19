@@ -28,22 +28,23 @@ import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.account.AccountVanishedException;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
-import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Sorting;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.tools.FileUtils;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
@@ -60,7 +61,7 @@ public class SpecialList extends ListMirakel {
     private Optional<SpecialListsBaseProperty> where = absent();
     private String whereString;
 
-    public static final Uri URI = MirakelInternalContentProvider.SPECIAL_LISTS_URI;
+    public static final Uri URI = MirakelInternalContentProvider.LIST_URI;
 
     public boolean isActive() {
         return this.active;
@@ -74,26 +75,17 @@ public class SpecialList extends ListMirakel {
     @NonNull
     public MirakelQueryBuilder getWhereQueryForTasks() {
         final MirakelQueryBuilder mirakelQueryBuilder = packWhere(getWhere());
-        if (getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
-            mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, getAccount());
+        try {
+            if (getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL) {
+                mirakelQueryBuilder.and(ACCOUNT_ID, Operation.EQ, getAccount());
+            }
+        } catch (final AccountVanishedException ignored) {
+            //ignore this
         }
         return mirakelQueryBuilder;
     }
 
-    @Override
-    protected Uri getUri() {
-        return URI;
-    }
 
-    @Override
-    public long getId() {
-        return -1L * super.getId();
-    }
-
-    @Override
-    protected void setId(final long newId) {
-        super.setId(Math.abs(newId));
-    }
 
     public Optional<SpecialListsBaseProperty> getWhere() {
         if (!where.isPresent()) {
@@ -124,25 +116,24 @@ public class SpecialList extends ListMirakel {
         return defaultDate;
     }
 
-    public void setDefaultDate(@NonNull Optional<Integer> defaultDate) {
+    public void setDefaultDate(@NonNull final Optional<Integer> defaultDate) {
         this.defaultDate = defaultDate;
     }
 
     SpecialList(final long id, @NonNull final String name,
                 final @NonNull Optional<SpecialListsBaseProperty> whereQuery,
                 final boolean active, @NonNull final Optional<ListMirakel> defaultList,
-                final @NonNull Optional<Integer> defaultDate, final SORT_BY sort_by,
-                final SYNC_STATE sync_state, final int color, final int lft,
+                final @NonNull Optional<Integer> defaultDate, final SORT_BY sortBy,
+                final @NonNull DateTime createdAt, final @NonNull DateTime updatedAt,
+                final SYNC_STATE syncState, final int color, final int lft,
                 final int rgt, @NonNull final Optional<Uri> iconPath) {
-        super(-id, name, sort_by, "", "", sync_state, 0, 0, color,
-              AccountMirakel.getLocal(), iconPath);
+        super(id, name, sortBy, createdAt, updatedAt, syncState, lft, rgt, color,
+              AccountMirakel.getLocal(), iconPath, true);
         this.active = active;
         this.where = whereQuery;
         this.whereString = serializeWhere(whereQuery);
         this.defaultList = defaultList;
         this.defaultDate = defaultDate;
-        setLft(lft);
-        setRgt(rgt);
     }
 
     /**
@@ -174,57 +165,28 @@ public class SpecialList extends ListMirakel {
     }
 
     // Static Methods
-    public static final String TABLE = "special_lists";
     public static final String WHERE_QUERY = "whereQuery";
     public static final String ACTIVE = "active";
     public static final String DEFAULT_LIST = "def_list";
     public static final String DEFAULT_DUE = "def_date";
     public static final String[] allColumns = {ModelBase.ID,
-                                               ModelBase.NAME, WHERE_QUERY, ACTIVE, DEFAULT_LIST,
-                                               DEFAULT_DUE, SORT_BY_FIELD, DatabaseHelper.SYNC_STATE_FIELD, COLOR, LFT,
-                                               RGT, ICON_PATH
+                                               ModelBase.NAME, SORT_BY_FIELD, DatabaseHelper.CREATED_AT,
+                                               DatabaseHelper.UPDATED_AT, DatabaseHelper.SYNC_STATE_FIELD, LFT,
+                                               RGT, COLOR, ACCOUNT_ID, ICON_PATH, IS_SPECIAL, WHERE_QUERY, ACTIVE, DEFAULT_DUE, DEFAULT_LIST
                                               };
     private static final String TAG = "SpecialList";
 
-    private SpecialList create() {
-        final long listId = ListMirakel.safeFirst().getId();
-        MirakelInternalContentProvider.withTransaction(new
-        MirakelInternalContentProvider.DBTransaction() {
-            @Override
-            public void exec() {
-                final ContentValues values = new ContentValues();
-                values.put(ModelBase.NAME, getName());
-                values.put(WHERE_QUERY, serializeWhere(getWhere()));
-                values.put(ACTIVE, active);
-                values.put(DEFAULT_LIST, listId);
-                setId(insert(URI, values));
-                final CursorWrapper c = new MirakelQueryBuilder(context).select("MAX(" + RGT + ')').query(URI);
-                c.doWithCursor(new CursorWrapper.WithCursor() {
-                    @Override
-                    public void withOpenCursor(@NonNull final CursorGetter getter) {
-                        getter.moveToFirst();
-                        final int maxRGT = getter.getInt(0);
-                        final ContentValues cv = new ContentValues();
-                        cv.put(LFT, maxRGT + 1);
-                        cv.put(RGT, maxRGT + 2);
-                        update(URI, cv, ModelBase.ID + '=' + getId(), null);
-                    }
-                });
 
-            }
-        });
-        return getSpecial(getId()).get();
-    }
-
-
-    public static SpecialList newSpecialList(final String name,
-            final Optional<SpecialListsBaseProperty> whereQuery,
-            final boolean active) {
-        final SpecialList s = new SpecialList(0L, name, whereQuery, active, Optional.<ListMirakel>absent(),
-                                              null, SORT_BY.OPT,
-                                              SYNC_STATE.ADD, 0,
-                                              0, 0, Optional.<Uri>absent());
-        return s.create();
+    public static SpecialList newList(final String name,
+                                      final Optional<SpecialListsBaseProperty> whereQuery,
+                                      final boolean active) throws ListAlreadyExistsException {
+        final DateTime now = new DateTime();
+        final SpecialList meta = new SpecialList(ModelBase.INVALID_ID, name, whereQuery, active,
+                Optional.<ListMirakel>absent(),
+                Optional.<Integer>absent(), SORT_BY.OPT, now, now,
+                SYNC_STATE.ADD, 0,
+                0, 0, Optional.<Uri>absent());
+        return (SpecialList) meta.create();
     }
 
     public static String serializeWhere(
@@ -250,54 +212,11 @@ public class SpecialList extends ListMirakel {
         return Task.addBasicFiler(qb);
     }
 
-    @Override
-    public void save(final boolean log) {
-        save();
-    }
-
-    /**
-     * Update the List in the Database
-     */
-    @Override
-    public void save() {
-        setSyncState(((getSyncState() == SYNC_STATE.ADD) ||
-                      (getSyncState() == SYNC_STATE.IS_SYNCED)) ? getSyncState() : SYNC_STATE.NEED_SYNC);
-        update(URI, getContentValues(),
-               ModelBase.ID + " = " + Math.abs(getId()), null);
-    }
-
-    /**
-     * Delete a List from the Database
-     */
-    @Override
-    public void destroy() {
-        MirakelInternalContentProvider.withTransaction(new MirakelInternalContentProvider.DBTransaction() {
-            @Override
-            public void exec() {
-                final long id = Math.abs(getId());
-                if (getSyncState() != SYNC_STATE.ADD) {
-                    setSyncState(SYNC_STATE.DELETE);
-                    setActive(false);
-                    final ContentValues values = new ContentValues();
-                    values.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
-                    update(URI, values, ModelBase.ID + '=' + id, null);
-                } else {
-                    delete(URI, ModelBase.ID + '=' + id, null);
-                }
-                final ContentValues cv = new ContentValues();
-                cv.put("TABLE", TABLE);
-                update(MirakelInternalContentProvider.UPDATE_LIST_ORDER_URI, cv, LFT + '>' + getLft(), null);
-            }
-        });
-    }
 
     @NonNull
     @Override
     public ContentValues getContentValues() {
-        final ContentValues cv = new ContentValues();
-        cv.put(ModelBase.NAME, getName());
-        cv.put(SORT_BY_FIELD, getSortBy().getShort());
-        cv.put(DatabaseHelper.SYNC_STATE_FIELD, getSyncState().toInt());
+        final ContentValues cv = super.getContentValues();
         cv.put(ACTIVE, isActive() ? 1 : 0);
         cv.put(WHERE_QUERY, whereString);
         cv.put(DEFAULT_LIST, transformOrNull(this.defaultList, new Function<ListMirakel, Long>() {
@@ -307,9 +226,6 @@ public class SpecialList extends ListMirakel {
             }
         }));
         cv.put(DEFAULT_DUE, this.defaultDate.orNull());
-        cv.put(COLOR, getColor());
-        cv.put(LFT, getLft());
-        cv.put(RGT, getRgt());
         return cv;
     }
 
@@ -328,22 +244,17 @@ public class SpecialList extends ListMirakel {
      * @return
      */
     public static List<SpecialList> allSpecial(final boolean showAll) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(ACTIVE, Operation.EQ,
-                true).sort(LFT, Sorting.ASC);
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).sort(LFT, Sorting.ASC);
         if (!showAll) {
             qb.and(ACTIVE, Operation.EQ, true);
         }
         return qb.getList(SpecialList.class);
     }
 
-    /**
-     * Get a List by id
-     *
-     * @param listId List–ID
-     * @return List
-     */
-    public static Optional<SpecialList> getSpecial(final long listId) {
-        return new MirakelQueryBuilder(context).get(SpecialList.class, Math.abs(listId));
+    @NonNull
+    @Override
+    public MirakelQueryBuilder getTasksQueryBuilder() {
+        return addSortBy(getWhereQueryForTasks());
     }
 
     /**
@@ -353,29 +264,26 @@ public class SpecialList extends ListMirakel {
      */
     public static Optional<SpecialList> firstSpecial() {
         return new MirakelQueryBuilder(context).and(DatabaseHelper.SYNC_STATE_FIELD,
-                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).sort(LFT,
+                Operation.NOT_EQ, SYNC_STATE.DELETE.toInt()).and(IS_SPECIAL, Operation.EQ, true).sort(LFT,
                         Sorting.ASC).get(SpecialList.class);
     }
 
     public static SpecialList firstSpecialSafe() {
         Optional<SpecialList> s = SpecialList.firstSpecial();
         if (!s.isPresent()) {
-            s = fromNullable(SpecialList.newSpecialList(context.getString(R.string.list_all),
-                             Optional.<SpecialListsBaseProperty>absent(), true));
-            if (ListMirakel.count() == 0) {
+            try {
+                s = fromNullable(SpecialList.newList(context.getString(R.string.list_all),
+                                                     Optional.<SpecialListsBaseProperty>absent(), true));
+            } catch (final ListAlreadyExistsException e) {
+                //creating a new Special list if there is no special list should not fail
+                throw new RuntimeException(e);
+            }
+            if (ListMirakel.count() == 0L) {
                 ListMirakel.safeFirst();
             }
             s.get().save(false);
         }
         return s.get();
-    }
-
-    private static AccountMirakel getAccountFromCursor(final CursorGetter cursor) {
-        final int columnIndex = cursor.getColumnIndex(ACCOUNT_ID);
-        if (columnIndex >= 0) {
-            return AccountMirakel.get(cursor.getInt(columnIndex)).or(AccountMirakel.getLocal());
-        }
-        return AccountMirakel.getLocal();
     }
 
     /**
@@ -384,11 +292,7 @@ public class SpecialList extends ListMirakel {
      * @param c
      */
     public SpecialList(final @NonNull CursorGetter c) {
-        super(c.getLong(ID), c.getString(NAME),
-              SORT_BY.fromShort(c.getShort(SORT_BY_FIELD)), "", "",
-              SYNC_STATE.valueOf(c.getShort(DatabaseHelper.SYNC_STATE_FIELD)),
-              c.getInt(LFT), c.getInt(RGT), c.getInt(COLOR),
-              getAccountFromCursor(c), FileUtils.parsePath(c.getString(ICON_PATH)));
+        super(c);
         this.whereString = c.getString(WHERE_QUERY);
         this.active = c.getBoolean(ACTIVE);
         this.defaultList = ListMirakel.get(c.getLong(DEFAULT_LIST));
@@ -396,14 +300,14 @@ public class SpecialList extends ListMirakel {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!super.equals(obj)) {
             return false;
         }
         if (!(obj instanceof SpecialList)) {
             return false;
         }
-        SpecialList other = (SpecialList) obj;
+        final SpecialList other = (SpecialList) obj;
         if (other.active != this.active) {
             return false;
         }
@@ -429,24 +333,15 @@ public class SpecialList extends ListMirakel {
 
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeByte(active ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.defaultList.orNull(), 0);
         dest.writeInt(this.defaultDate.or(NULL_DATE_VALUE));
         dest.writeString(this.whereString);
-        dest.writeInt((this.sortBy == null) ? -1 : this.sortBy.ordinal());
-        dest.writeString(this.createdAt);
-        dest.writeString(this.updatedAt);
-        dest.writeInt((this.syncState == null) ? -1 : this.syncState.ordinal());
-        dest.writeInt(this.lft);
-        dest.writeInt(this.rgt);
-        dest.writeInt(this.color);
-        dest.writeLong(this.accountID);
-        dest.writeString(getIconPathString());
-        dest.writeLong(this.getId());
-        dest.writeString(this.getName());
     }
 
-    private SpecialList(Parcel in) {
+    private SpecialList(final Parcel in) {
+        super(in);
         this.active = in.readByte() != 0;
         this.defaultList = fromNullable((ListMirakel) in.readParcelable(
                                             ListMirakel.class.getClassLoader()));
@@ -454,19 +349,6 @@ public class SpecialList extends ListMirakel {
         this.defaultDate = (tmpDefaultDate == NULL_DATE_VALUE) ? Optional.<Integer>absent() : Optional.of(
                                tmpDefaultDate);
         this.whereString = in.readString();
-        final int tmpSortBy = in.readInt();
-        this.sortBy = (tmpSortBy == -1) ? null : SORT_BY.values()[tmpSortBy];
-        this.createdAt = in.readString();
-        this.updatedAt = in.readString();
-        final int tmpSyncState = in.readInt();
-        this.syncState = (tmpSyncState == -1) ? null : SYNC_STATE.values()[tmpSyncState];
-        this.lft = in.readInt();
-        this.rgt = in.readInt();
-        this.color = in.readInt();
-        this.accountID = in.readLong();
-        this.setIconPath(FileUtils.parsePath(in.readString()));
-        this.setId(in.readLong());
-        this.setName(in.readString());
     }
 
     public static final Creator<SpecialList> CREATOR = new Creator<SpecialList>() {

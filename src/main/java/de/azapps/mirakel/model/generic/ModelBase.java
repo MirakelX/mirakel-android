@@ -17,7 +17,7 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package de.azapps.mirakel.model;
+package de.azapps.mirakel.model.generic;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
