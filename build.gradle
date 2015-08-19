@@ -65,7 +65,7 @@ configure(allprojects) {
     ext.androidSupportVersion = "22.2.0"
     ext.androidPluginVersion ="0.14.0"
     ext.androidMinSDKVersion ="14"
-    ext.jodaLibraryVersion = "2.2"
+    ext.jodaLibraryVersion = "2.8.2"
     ext.nineoldandroisVersion="2.4.0"
     ext.robotiumVersion = "5.2.1"
     ext.gsonVersion = "2.2.+"
