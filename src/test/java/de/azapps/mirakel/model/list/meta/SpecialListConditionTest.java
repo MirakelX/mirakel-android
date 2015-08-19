@@ -360,7 +360,13 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             arguments.addAll(builder.getSelectionArguments());
         }
         String query = "";
+        if (!special.isEmpty()) {
+            query +=  specialWhere;
+        }
         if (!lists.isEmpty()) {
+            if (!query.isEmpty()) {
+                query += " OR ";
+            }
             query = "list_id IN(" + TextUtils.join(",", Collections2.transform(lists,
             new Function<Integer, String>() {
                 @Override
@@ -368,12 +374,6 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
                     return "?";
                 }
             })) + ')';
-        }
-        if (!special.isEmpty()) {
-            if (!query.isEmpty()) {
-                query += " OR ";
-            }
-            query +=  specialWhere;
         }
 
         if (negated && !query.trim().isEmpty()) {

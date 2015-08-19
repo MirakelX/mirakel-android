@@ -27,6 +27,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -277,5 +279,11 @@ public class RandomHelper {
             return absent();
         }
         return of(getRandomint());
+    }
+
+    public static DateTime getRandomDateTime() {
+        return new DateTime().plusSeconds(random.nextInt(60)).plusMinutes(random.nextInt(60)).plusHours(
+                   random.nextInt(24))
+               .plusDays(random.nextInt(30)).plusMonths(random.nextInt(12));
     }
 }

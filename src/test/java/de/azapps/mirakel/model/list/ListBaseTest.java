@@ -45,26 +45,6 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
 
 
 
-    // Test for getting and setting CreatedAt
-    @Test
-    public void testCreatedAt1() {
-        final List<ListMirakel> all = ListMirakel.all();
-        final ListMirakel obj = RandomHelper.getRandomElem(all);
-        final String t = RandomHelper.getRandomString();
-        obj.setCreatedAt(t);
-        assertEquals("Getting and setting CreatedAt does not match", t, obj.getCreatedAt());
-    }
-
-    // Test for getting and setting UpdatedAt
-    @Test
-    public void testUpdatedAt2() {
-        final List<ListMirakel> all = ListMirakel.all();
-        final ListMirakel obj = RandomHelper.getRandomElem(all);
-        final String t = RandomHelper.getRandomString();
-        obj.setUpdatedAt(t);
-        assertEquals("Getting and setting UpdatedAt does not match", t, obj.getUpdatedAt());
-    }
-
     // Test for getting and setting SortBy
     @Test
     public void testSortBy3() {

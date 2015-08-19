@@ -1,7 +1,6 @@
 package de.azapps.mirakel.model;
 
 import android.database.MatrixCursor;
-import android.net.Uri;
 import android.os.Parcel;
 
 import com.google.common.base.Optional;
@@ -13,6 +12,7 @@ import org.robolectric.annotation.Config;
 
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
@@ -20,9 +20,9 @@ import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.semantic.Semantic;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.BuildConfig;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,14 +32,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
 
     @Test
     public void testTaskParcelable() {
-        final ListMirakel list = new ListMirakel(RandomHelper.getRandomlong(),
-                RandomHelper.getRandomString(),
-                RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomString(), RandomHelper.getRandomString(),
-                RandomHelper.getRandomSYNC_STATE(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                RandomHelper.getRandomint(), new AccountMirakel(RandomHelper.getRandomint(),
-                        RandomHelper.getRandomString(),
-                        RandomHelper.getRandomACCOUNT_TYPES(), RandomHelper.getRandomboolean(), Optional.<String>absent()),
-                Optional.<Uri>absent());
+        final ListMirakel list = RandomHelper.getRandomListMirakel();
         final Task task = new Task(RandomHelper.getRandomString(), list, RandomHelper.getRandomString(),
                                    RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(),
                                    RandomHelper.getRandomPriority());
@@ -63,13 +56,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
 
     @Test
     public void testListParcelable() {
-        final ListMirakel list = new ListMirakel(RandomHelper.getRandomlong(),
-                RandomHelper.getRandomString(), RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomString(),
-                RandomHelper.getRandomString(), RandomHelper.getRandomSYNC_STATE(), RandomHelper.getRandomint(),
-                RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                new AccountMirakel(RandomHelper.getRandomint(), RandomHelper.getRandomString(),
-                                   RandomHelper.getRandomACCOUNT_TYPES(), RandomHelper.getRandomboolean(), Optional.<String>absent()),
-                Optional.<Uri>absent());
+        final ListMirakel list = RandomHelper.getRandomListMirakel();
         final Parcel parcel = Parcel.obtain();
         list.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
@@ -143,12 +130,13 @@ public class ParceableTest extends MirakelDatabaseTestCase {
                                           SpecialList.COLOR,
                                           SpecialList.LFT,
                                           SpecialList.RGT,
-                                          SpecialList.ICON_PATH
+                                          SpecialList.ICON_PATH ,
+                                          DatabaseHelper.CREATED_AT,
+                                          DatabaseHelper.UPDATED_AT,
+                                          ListMirakel.ACCOUNT_ID,
+                                          ListMirakel.IS_SPECIAL
                                                        });
-        int id = RandomHelper.getRandomint();
-        if (id < 0) {
-            id *= -1;
-        }
+        final int id = RandomHelper.getRandomint();
         c.addRow(new Object[] {id, //ModelBase.ID,
                                RandomHelper.getRandomString(),//ModelBase.NAME
                                " ",//SpecialList.WHERE_QUERY
@@ -160,8 +148,12 @@ public class ParceableTest extends MirakelDatabaseTestCase {
                                RandomHelper.getRandomint(),//SpecialList.COLOR,
                                RandomHelper.getRandomint(),//SpecialList.LFT,
                                RandomHelper.getRandomint(),//SpecialList.RGT,
-                               RandomHelper.getRandomOptional_Uri().orNull()
-                              });//SpecialList.ICON_PATH
+                               RandomHelper.getRandomOptional_Uri().orNull(),//SpecialList.ICON_PATH
+                               RandomHelper.getRandomDateTime().getMillis(),//CREATED_AT
+                               RandomHelper.getRandomDateTime().getMillis(),//UPDATED_AT
+                               RandomHelper.getRandomAccountMirakel().getId(),//ACCOUNT_ID
+                               1
+                              });
         c.moveToFirst();
         SpecialList special = new SpecialList(CursorGetter.unsafeGetter(c));
 

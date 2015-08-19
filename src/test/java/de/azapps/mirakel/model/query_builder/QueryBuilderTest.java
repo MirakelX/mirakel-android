@@ -33,7 +33,7 @@ import org.robolectric.annotation.Config;
 import java.util.Arrays;
 import java.util.List;
 
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -440,14 +440,15 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
     @Test
     public void testGetMetaList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        Optional<SpecialList> res_qb = qb.get(SpecialList.class);
+        qb.and(ListMirakel.IS_SPECIAL, Operation.EQ, true);
+        final Optional<SpecialList> res_qb = qb.get(SpecialList.class);
         if (!res_qb.isPresent()) {
             fail("Querybuilder returned empty result");
         }
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(SpecialList.URI,
-                   SpecialList.allColumns, null, null, null);
+                   SpecialList.allColumns, "_id=?", new String[] {String.valueOf(res_qb.get().getId())}, null);
         c.moveToFirst();
-        SpecialList res_raw = new SpecialList(CursorGetter.unsafeGetter(c));
+        final SpecialList res_raw = new SpecialList(CursorGetter.unsafeGetter(c));
         c.close();
         assertEquals(res_raw, res_qb.get());
     }

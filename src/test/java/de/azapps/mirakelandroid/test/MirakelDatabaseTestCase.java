@@ -6,7 +6,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowSQLiteConnection;
 
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 
 public abstract class MirakelDatabaseTestCase extends MirakelTestCase {
 

@@ -46,6 +46,7 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
+import de.azapps.mirakel.model.generic.ModelFactory;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakelandroid.R;
@@ -66,7 +67,7 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
     @NonNull
     @Override
     public ListMirakel fromCursor(@NonNull final Cursor cursor) {
-        return new ListMirakel(CursorGetter.unsafeGetter(cursor));
+        return (ListMirakel) ModelFactory.createModel(CursorGetter.unsafeGetter(cursor), ListMirakel.class);
     }
 
     @Override
@@ -90,11 +91,11 @@ public class ListAdapter extends MultiSelectCursorAdapter<ListAdapter.ListViewHo
 
             updateIcon(listMirakel, holder);
 
-            final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
-            if (count != -1L) {
-                holder.count.setText(String.valueOf(count));
-            } else {
+            if (listMirakel.isSpecial()) {
                 new UpdateTaskCountTask().execute(holder);
+            } else {
+                final long count = cursor.getLong(cursor.getColumnIndex("task_count"));
+                holder.count.setText(String.valueOf(count));
             }
 
             if (selectedItems.get(position)) {

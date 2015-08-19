@@ -141,29 +141,6 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
                      elem, newElem.orNull());
     }
 
-    @Test
-    public void testSetCreatedAt2() {
-        final List<ListMirakel>elems = ListMirakel.all(false);
-        final int randomItem = new Random().nextInt(elems.size());
-        final ListMirakel elem = elems.get(randomItem);
-        elem.setCreatedAt(RandomHelper.getRandomString());
-        elem.save();
-        final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setCreatedAt(RandomHelper.getRandomString())', 'name': 'SetCreatedAt', 'throw': None})",
-                     elem, newElem.orNull());
-    }
-
-    @Test
-    public void testSetUpdatedAt3() {
-        final List<ListMirakel>elems = ListMirakel.all(false);
-        final int randomItem = new Random().nextInt(elems.size());
-        final ListMirakel elem = elems.get(randomItem);
-        elem.setUpdatedAt(RandomHelper.getRandomString());
-        elem.save();
-        final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setUpdatedAt(RandomHelper.getRandomString())', 'name': 'SetUpdatedAt', 'throw': None})",
-                     elem, newElem.orNull());
-    }
 
     @Test
     public void testSetSortBy4() {
