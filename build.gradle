@@ -70,7 +70,7 @@ configure(allprojects) {
     ext.robotiumVersion = "5.2.1"
     ext.gsonVersion = "2.2.+"
     ext.junitVersion = "4.11"
-    ext.guavaVersion = "17.0"
+    ext.guavaVersion = "18.0"
     ext.butterknifeVersion = "6.1.0"
     ext.dashclockVersion = "2.0.0"
     ext.robolectricVersion= "2.3"
