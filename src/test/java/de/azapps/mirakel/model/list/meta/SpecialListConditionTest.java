@@ -43,11 +43,10 @@ import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.fail;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -58,18 +57,18 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final boolean isDone = RandomHelper.getRandomboolean();
 
         final SpecialListsDoneProperty done = new SpecialListsDoneProperty(isDone);
-        assertEquals("Done status not set correctly", isDone, done.isSet());
+        assertThat(done.isSet()).isEqualTo(isDone);
 
         final MirakelQueryBuilder qb = done.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match", "done = ?", qb.getSelection().trim());
-        assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
-        assertEquals("Argument does not match", isDone ? "1" : "0", qb.getSelectionArguments().get(0));
+        assertThat(qb.getSelection()).isEqualTo("done = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly(isDone ? "1" : "0");
 
         final Optional<SpecialListsBaseProperty> newDone = SpecialListsWhereDeserializer.deserializeWhere(
                     done.serialize(), "Test");
         if (newDone.isPresent() && (newDone.get() instanceof SpecialListsDoneProperty)) {
             final SpecialListsDoneProperty done2 = (SpecialListsDoneProperty)newDone.get();
-            assertEquals("Done state does not match after parsing", done.isSet(), done2.isSet());
+            assertThat(done2.isSet()).isEqualTo(done.isSet());
         } else {
             fail("Could not parse done property: " + done.serialize());
         }
@@ -80,18 +79,18 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final boolean hasReminder = RandomHelper.getRandomboolean();
 
         final SpecialListsReminderProperty reminder = new SpecialListsReminderProperty(hasReminder);
-        assertEquals("Reminder status not set correctly", hasReminder, reminder.isSet());
+        assertThat(reminder.isSet()).isEqualTo(hasReminder);
 
         final MirakelQueryBuilder qb = reminder.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match", hasReminder ? "reminder IS NOT NULL" : "reminder IS NULL",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
+        assertThat(qb.getSelection()).isEqualTo(hasReminder ? "reminder IS NOT NULL " :
+                                                "reminder IS NULL ");
+        assertThat(qb.getSelectionArguments()).isEmpty();
 
         final Optional<SpecialListsBaseProperty> newReminder =
             SpecialListsWhereDeserializer.deserializeWhere(reminder.serialize(), "Test");
         if (newReminder.isPresent() && (newReminder.get() instanceof SpecialListsReminderProperty)) {
             final SpecialListsReminderProperty reminder2 = (SpecialListsReminderProperty)newReminder.get();
-            assertEquals("Reminder state does not match after parsing", reminder.isSet(), reminder2.isSet());
+            assertThat(reminder2.isSet()).isEqualTo(reminder.isSet());
         } else {
             fail("Could not parse reminder property: " + reminder.serialize());
         }
@@ -102,18 +101,17 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final boolean hasFile = RandomHelper.getRandomboolean();
 
         final SpecialListsFileProperty file = new SpecialListsFileProperty(hasFile);
-        assertEquals("File status not set correctly", hasFile, file.isSet());
+        assertThat(file.isSet()).isEqualTo(hasFile);
 
         final MirakelQueryBuilder qb = file.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match", (hasFile ? "" : "NOT ") + "_id IN (SELECT task_id FROM files)",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
-
+        assertThat(qb.getSelection()).isEqualTo((hasFile ? "" : " NOT ") +
+                                                "_id IN (SELECT task_id FROM files)");
+        assertThat(qb.getSelectionArguments()).isEmpty();
         final Optional<SpecialListsBaseProperty> newFile = SpecialListsWhereDeserializer.deserializeWhere(
                     file.serialize(), "Test");
         if (newFile.isPresent() && (newFile.get() instanceof SpecialListsFileProperty)) {
             final SpecialListsFileProperty file2 = (SpecialListsFileProperty)newFile.get();
-            assertEquals("File state does not match after parsing", file.isSet(), file2.isSet());
+            assertThat(file2.isSet()).isEqualTo(file.isSet());
         } else {
             fail("Could not parse reminder property: " + file.serialize());
         }
@@ -124,18 +122,17 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final boolean hasDue = RandomHelper.getRandomboolean();
 
         final SpecialListsDueExistsProperty due = new SpecialListsDueExistsProperty(hasDue);
-        assertEquals("Due status not set correctly", hasDue, due.isSet());
+        assertThat(due.isSet()).isEqualTo(hasDue);
 
         final MirakelQueryBuilder qb = due.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match", hasDue ? "due IS NULL" : "due IS NOT NULL",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
+        assertThat(qb.getSelection()).isEqualTo(hasDue ? "due IS NULL " : "due IS NOT NULL ");
+        assertThat(qb.getSelectionArguments()).isEmpty();
 
         final Optional<SpecialListsBaseProperty> newDue = SpecialListsWhereDeserializer.deserializeWhere(
                     due.serialize(), "Test");
         if (newDue.isPresent() && (newDue.get() instanceof SpecialListsDueExistsProperty)) {
             final SpecialListsDueExistsProperty due2 = (SpecialListsDueExistsProperty)newDue.get();
-            assertEquals("Due state does not match after parsing", due.isSet(), due2.isSet());
+            assertThat(due2.isSet()).isEqualTo(due.isSet());
         } else {
             fail("Could not parse due exists property: " + due.serialize());
         }
@@ -149,24 +146,22 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
 
         final SpecialListsContentProperty content = new SpecialListsContentProperty(negated, searchString,
                 type);
-        assertEquals("Search string not set correctly", searchString, content.getSearchString());
-        assertEquals("Search type not set correctly", type, content.getType());
-        assertEquals("Search negated  not set correctly", negated, content.isSet());
+        assertThat(content.getSearchString()).isEqualTo(searchString);
+        assertThat(content.getType()).isEqualTo(type);
+        assertThat(content.isSet()).isEqualTo(negated);
 
         final MirakelQueryBuilder qb = content.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match", (negated ? "NOT " : "") + "content LIKE ?",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
+        assertThat(qb.getSelection()).isEqualTo((negated ? "NOT " : "") + "content LIKE ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
         switch (type) {
         case BEGIN:
-            assertEquals("Argument does not match", searchString + '%', qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly(searchString + '%');
             break;
         case END:
-            assertEquals("Argument does not match", '%' + searchString, qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly('%' + searchString);
             break;
         case CONTAINS:
-            assertEquals("Argument does not match", '%' + searchString + '%',
-                         qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly('%' + searchString + '%');
             break;
         }
 
@@ -174,10 +169,9 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             SpecialListsWhereDeserializer.deserializeWhere(content.serialize(), "Test");
         if (newContent.isPresent() && (newContent.get() instanceof SpecialListsContentProperty)) {
             final SpecialListsContentProperty content2 = (SpecialListsContentProperty)newContent.get();
-            assertEquals("Search string does not match after parsing", content.getSearchString(),
-                         content2.getSearchString());
-            assertEquals("Search type does not match after parsing", content.getType(), content2.getType());
-            assertEquals("Search negated does not match after parsing", content.isSet(), content2.isSet());
+            assertThat(content2.getSearchString()).isEqualTo(content.getSearchString());
+            assertThat(content2.getType()).isEqualTo(content.getType());
+            assertThat(content2.isSet()).isEqualTo(content.isSet());
         } else {
             fail("Could not parse content property: " + content.serialize());
         }
@@ -190,24 +184,22 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final SpecialListsStringProperty.Type type = RandomHelper.getRandomStringPropertyType();
 
         final SpecialListsNameProperty name = new SpecialListsNameProperty(negated, searchString, type);
-        assertEquals("Search string not set correctly", searchString, name.getSearchString());
-        assertEquals("Search type not set correctly", type, name.getType());
-        assertEquals("Search negated  not set correctly", negated, name.isSet());
+        assertThat(name.getSearchString()).isEqualTo(searchString);
+        assertThat(name.getType()).isEqualTo(type);
+        assertThat(name.isSet()).isEqualTo(negated);
 
         final MirakelQueryBuilder qb = name.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match", (negated ? "NOT " : "") + "name LIKE ?",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
+        assertThat(qb.getSelection()).isEqualTo((negated ? "NOT " : "") + "name LIKE ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
         switch (type) {
         case BEGIN:
-            assertEquals("Argument does not match", searchString + '%', qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly(searchString + '%');
             break;
         case END:
-            assertEquals("Argument does not match", '%' + searchString, qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly('%' + searchString);
             break;
         case CONTAINS:
-            assertEquals("Argument does not match", '%' + searchString + '%',
-                         qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly('%' + searchString + '%');
             break;
         }
 
@@ -215,10 +207,9 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
                     name.serialize(), "Test");
         if (newName.isPresent() && (newName.get() instanceof SpecialListsNameProperty)) {
             final SpecialListsNameProperty name2 = (SpecialListsNameProperty)newName.get();
-            assertEquals("Search string does not match after parsing", name.getSearchString(),
-                         name2.getSearchString());
-            assertEquals("Search type does not match after parsing", name.getType(), name2.getType());
-            assertEquals("Search negated does not match after parsing", name.isSet(), name2.isSet());
+            assertThat(name2.getSearchString()).isEqualTo(name.getSearchString());
+            assertThat(name2.getType()).isEqualTo(name.getType());
+            assertThat(name2.isSet()).isEqualTo(name.isSet());
         } else {
             fail("Could not parse name property: " + name.serialize());
         }
@@ -232,25 +223,23 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
 
         final SpecialListsListNameProperty listName = new SpecialListsListNameProperty(negated,
                 searchString, type);
-        assertEquals("Search string not set correctly", searchString, listName.getSearchString());
-        assertEquals("Search type not set correctly", type, listName.getType());
-        assertEquals("Search negated  not set correctly", negated, listName.isSet());
+        assertThat(listName.getSearchString()).isEqualTo(searchString);
+        assertThat(listName.getType()).isEqualTo(type);
+        assertThat(listName.isSet()).isEqualTo(negated);
 
         final MirakelQueryBuilder qb = listName.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match",
-                     "list_id IN (SELECT _id FROM lists WHERE " + (negated ? "NOT " : "") + "lists.name LIKE ?)",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
+        assertThat(qb.getSelection()).isEqualTo("list_id IN (SELECT _id FROM lists WHERE " +
+                                                (negated ? "NOT " : "") + "lists.name LIKE ?)");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
         switch (type) {
         case BEGIN:
-            assertEquals("Argument does not match", searchString + '%', qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly(searchString + '%');
             break;
         case END:
-            assertEquals("Argument does not match", '%' + searchString, qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly('%' + searchString);
             break;
         case CONTAINS:
-            assertEquals("Argument does not match", '%' + searchString + '%',
-                         qb.getSelectionArguments().get(0));
+            assertThat(qb.getSelectionArguments()).containsExactly('%' + searchString + '%');
             break;
         }
 
@@ -258,10 +247,9 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             SpecialListsWhereDeserializer.deserializeWhere(listName.serialize(), "Test");
         if (newListName.isPresent() && (newListName.get() instanceof SpecialListsListNameProperty)) {
             final SpecialListsListNameProperty listName2 = (SpecialListsListNameProperty)newListName.get();
-            assertEquals("Search string does not match after parsing", listName.getSearchString(),
-                         listName2.getSearchString());
-            assertEquals("Search type does not match after parsing", listName.getType(), listName2.getType());
-            assertEquals("Search negated does not match after parsing", listName.isSet(), listName2.isSet());
+            assertThat(listName2.getSearchString()).isEqualTo(listName.getSearchString());
+            assertThat(listName2.getType()).isEqualTo(listName.getType());
+            assertThat(listName2.isSet()).isEqualTo(listName.isSet());
         } else {
             fail("Could not parse list name property: " + listName.serialize());
         }
@@ -274,9 +262,9 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final int length = Math.abs(RandomHelper.getRandomint());
 
         final SpecialListsDueProperty due = new SpecialListsDueProperty(unit, length, negated);
-        assertEquals("Unit not set correctly", unit, due.getUnit());
-        assertEquals("Negated not set correctly", negated, due.isSet());
-        assertEquals("Length not set correctly", length, due.getLength());
+        assertThat(due.getUnit()).isEqualTo(unit);
+        assertThat(due.isSet()).isEqualTo(negated);
+        assertThat(due.getLength()).isEqualTo(length);
 
         final MirakelQueryBuilder qb = due.getWhereQueryBuilder(RuntimeEnvironment.application);
         final Calendar date = new GregorianCalendar();
@@ -295,19 +283,17 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             date.add(Calendar.YEAR, length);
             break;
         }
-        assertEquals("Query does not match", "due IS NOT NULL  AND due " + (negated ? '>' : '<') + " ?",
-                     qb.getSelection().trim());
-        assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
-        assertEquals("Argument does not match", String.valueOf(date.getTimeInMillis() / 1000L),
-                     qb.getSelectionArguments().get(0));
-
+        assertThat(qb.getSelection()).isEqualTo("due IS NOT NULL  AND due " + (negated ? '>' : '<') + " ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly(String.valueOf(
+                    date.getTimeInMillis() / 1000L));
         final Optional<SpecialListsBaseProperty> newDue = SpecialListsWhereDeserializer.deserializeWhere(
                     due.serialize(), "Test");
         if (newDue.isPresent() && (newDue.get() instanceof SpecialListsDueProperty)) {
             final SpecialListsDueProperty due2 = (SpecialListsDueProperty)newDue.get();
-            assertEquals("Unit does not match", due.getUnit(), due2.getUnit());
-            assertEquals("Negated does not match", due.isSet(), due2.isSet());
-            assertEquals("Length does not match", due.getLength(), due2.getLength());
+            assertThat(due2.getUnit()).isEqualTo(due.getUnit());
+            assertThat(due2.isSet()).isEqualTo(due.isSet());
+            assertThat(due2.getLength()).isEqualTo(due.getLength());
         } else {
             fail("Could not parse due property: " + due.serialize());
         }
@@ -328,8 +314,8 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         }));
 
         final SpecialListsListProperty list = new SpecialListsListProperty(negated, allIds);
-        assertEquals("Negation not set correctly", negated, list.isSet());
-        assertTrue("List ids not set correctly", TestHelper.listEquals(allIds, list.getContent()));
+        assertThat(list.isSet()).isEqualTo(negated);
+        assertThat(list.getContent()).containsExactlyElementsIn(allIds);
 
         final MirakelQueryBuilder qb = list.getWhereQueryBuilder(RuntimeEnvironment.application);
 
@@ -367,7 +353,7 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             if (!query.isEmpty()) {
                 query += " OR ";
             }
-            query = "list_id IN(" + TextUtils.join(",", Collections2.transform(lists,
+            query += "list_id IN(" + TextUtils.join(",", Collections2.transform(lists,
             new Function<Integer, String>() {
                 @Override
                 public String apply(final Integer input) {
@@ -379,18 +365,16 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         if (negated && !query.trim().isEmpty()) {
             query = " NOT (" + query + ')';
         }
-
-        assertEquals("Query does not match", query, qb.getSelection());
-        assertEquals("Argument count does not match", arguments.size(), qb.getSelectionArguments().size());
-        assertTrue("Argument list does not match: <" + qb.getSelectionArguments() + "> expected <" +
-                   arguments + '>', TestHelper.listEquals(arguments, qb.getSelectionArguments()));
+        assertThat(qb.getSelection()).isEqualTo(query);
+        assertThat(qb.getSelectionArguments()).hasSize(arguments.size());
+        assertThat(qb.getSelectionArguments()).containsExactlyElementsIn(arguments);
 
         final Optional<SpecialListsBaseProperty> newList = SpecialListsWhereDeserializer.deserializeWhere(
                     list.serialize(), "Test");
         if (newList.isPresent() && (newList.get() instanceof SpecialListsListProperty)) {
             final SpecialListsListProperty list2 = (SpecialListsListProperty)newList.get();
-            assertEquals("Negation does not match", list.isSet(), list2.isSet());
-            assertTrue("List ids does not match", TestHelper.listEquals(list.getContent(), list2.getContent()));
+            assertThat(list2.isSet()).isEqualTo(list.isSet());
+            assertThat(list2.getContent()).containsExactlyElementsIn(list.getContent());
         } else {
             fail("Could not parse list property: " + list.serialize());
         }
@@ -407,8 +391,8 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         }
 
         final SpecialListsPriorityProperty prio = new SpecialListsPriorityProperty(negated, prios);
-        assertEquals("Negation not set correctly", negated, prio.isSet());
-        assertTrue("Priorities not set correctly", TestHelper.listEquals(prios, prio.getContent()));
+        assertThat(prio.isSet()).isEqualTo(negated);
+        assertThat(prio.getContent()).containsExactlyElementsIn(prios);
 
         final MirakelQueryBuilder qb = prio.getWhereQueryBuilder(RuntimeEnvironment.application);
         String query = "priority IN(" + TextUtils.join(",", Collections2.transform(prios,
@@ -421,24 +405,22 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         if (negated) {
             query = "NOT " + query;
         }
-        assertEquals("Query does not match", query, qb.getSelection());
-        assertEquals("Argument count does not match", prios.size(), qb.getSelectionArguments().size());
-        assertTrue("Argument list does not match: <" + qb.getSelectionArguments() + "> expected <" + prios +
-                   '>', TestHelper.listEquals(new ArrayList<String>(Collections2.transform(prios,
+        assertThat(qb.getSelection()).isEqualTo(query);
+        assertThat(qb.getSelectionArguments()).hasSize(prios.size());
+        assertThat(qb.getSelectionArguments()).containsExactlyElementsIn(Collections2.transform(prios,
         new Function<Integer, String>() {
             @Override
             public String apply(final Integer input) {
                 return String.valueOf(input);
             }
-        })), qb.getSelectionArguments()));
+        }));
 
         final Optional<SpecialListsBaseProperty> newPrio = SpecialListsWhereDeserializer.deserializeWhere(
                     prio.serialize(), "Test");
         if (newPrio.isPresent() && (newPrio.get() instanceof SpecialListsPriorityProperty)) {
             final SpecialListsPriorityProperty prio2 = (SpecialListsPriorityProperty)newPrio.get();
-            assertEquals("Negation does not match", prio.isSet(), prio2.isSet());
-            assertTrue("Priorities does not match", TestHelper.listEquals(prio.getContent(),
-                       prio2.getContent()));
+            assertThat(prio2.isSet()).isEqualTo(prio.isSet());
+            assertThat(prio2.getContent()).containsExactlyElementsIn(prio.getContent());
         } else {
             fail("Could not parse priority property: " + prio.serialize());
         }
@@ -450,8 +432,8 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final SpecialListsProgressProperty.OPERATION op = RandomHelper.getRandomOperation();
 
         final SpecialListsProgressProperty progress = new SpecialListsProgressProperty(value, op);
-        assertEquals("Value not set correctly", value, progress.getValue());
-        assertEquals("Operation not set correctly", op, progress.getOperation());
+        assertThat(progress.getValue()).isEqualTo(value);
+        assertThat(progress.getOperation()).isEqualTo(op);
 
         final MirakelQueryBuilder qb = progress.getWhereQueryBuilder(RuntimeEnvironment.application);
         String operation;
@@ -469,17 +451,16 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             fail("Someone add a new operation without updating the test");
             return;
         }
-        assertEquals("Query does not match", "progress " + operation + " ?", qb.getSelection().trim());
-        assertEquals("Argument count does not match", 1L, qb.getSelectionArguments().size());
-        assertEquals("Argument does not match", String.valueOf(value), qb.getSelectionArguments().get(0));
+        assertThat(qb.getSelection()).isEqualTo("progress " + operation + " ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly(String.valueOf(value));
 
         final Optional<SpecialListsBaseProperty> newProgress =
             SpecialListsWhereDeserializer.deserializeWhere(progress.serialize(), "Test");
         if (newProgress.isPresent() && (newProgress.get() instanceof SpecialListsProgressProperty)) {
             final SpecialListsProgressProperty progress2 = (SpecialListsProgressProperty)newProgress.get();
-            assertEquals("Value does not match after parsing", progress.getValue(), progress2.getValue());
-            assertEquals("Operation does not match after parsing", progress.getOperation(),
-                         progress2.getOperation());
+            assertThat(progress2.getValue()).isEqualTo(progress.getValue());
+            assertThat(progress2.getOperation()).isEqualTo(progress.getOperation());
         } else {
             fail("Could not parse progress property: " + progress.serialize());
         }
@@ -491,21 +472,21 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final boolean isParent = RandomHelper.getRandomboolean();
 
         final SpecialListsSubtaskProperty subtask = new SpecialListsSubtaskProperty(negated, isParent);
-        assertEquals("Negated not set correctly", negated, subtask.isSet());
-        assertEquals("Parent not set correctly", isParent, subtask.isParent());
+        assertThat(subtask.isSet()).isEqualTo(negated);
+        assertThat(subtask.isParent()).isEqualTo(isParent);
 
         final MirakelQueryBuilder qb = subtask.getWhereQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("Query does not match",
-                     (negated ? "NOT " : "") + "_id IN (SELECT DISTINCT " + (isParent ? "parent_id" : "child_id") +
-                     " FROM subtasks)" , qb.getSelection().trim());
-        assertEquals("Argument count does not match", 0L, qb.getSelectionArguments().size());
+        assertThat(qb.getSelection()).isEqualTo((negated ? " NOT " : "") + "_id IN (SELECT DISTINCT " +
+                                                (isParent ? "parent_id" : "child_id") +
+                                                " FROM subtasks)");
+        assertThat(qb.getSelectionArguments()).isEmpty();
 
         final Optional<SpecialListsBaseProperty> newSubtask =
             SpecialListsWhereDeserializer.deserializeWhere(subtask.serialize(), "Test");
         if (newSubtask.isPresent() && (newSubtask.get() instanceof SpecialListsSubtaskProperty)) {
             final SpecialListsSubtaskProperty subtask2 = (SpecialListsSubtaskProperty)newSubtask.get();
-            assertEquals("Negated does not match after parsing", subtask.isSet(), subtask2.isSet());
-            assertEquals("Parent does not match after parsing", subtask.isParent(), subtask2.isParent());
+            assertThat(subtask2.isSet()).isEqualTo(subtask.isSet());
+            assertThat(subtask2.isParent()).isEqualTo(subtask2.isParent());
         } else {
             fail("Could not parse due exists property: " + subtask.serialize());
         }
@@ -524,8 +505,8 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final boolean negated = RandomHelper.getRandomboolean();
 
         final SpecialListsTagProperty tag = new SpecialListsTagProperty(negated, tagIds);
-        assertEquals("Negated not set correctly", negated, tag.isSet());
-        assertTrue("Tagids not set correctly", TestHelper.listEquals(tagIds, tag.getContent()));
+        assertThat(tag.isSet()).isEqualTo(negated);
+        assertThat(tag.getContent()).containsExactlyElementsIn(tagIds);
 
         final MirakelQueryBuilder qb = tag.getWhereQueryBuilder(RuntimeEnvironment.application);
         String query = "";
@@ -540,24 +521,22 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
             }));
             query += "))";
         }
-        assertEquals("Query does not match", query, qb.getSelection().trim());
-        assertEquals("Argument count does not match", tagCount, qb.getSelectionArguments().size());
-        assertTrue("Arguments does not match",
-                   TestHelper.listEquals(new ArrayList<String>(Collections2.transform(tagIds,
+        assertThat(qb.getSelection()).isEqualTo(query);
+        assertThat(qb.getSelectionArguments()).hasSize(tagIds.size());
+        assertThat(qb.getSelectionArguments()).containsExactlyElementsIn(Collections2.transform(tagIds,
         new Function<Integer, String>() {
             @Override
             public String apply(final Integer input) {
                 return String.valueOf(input);
             }
-        })), qb.getSelectionArguments()));
+        }));
 
         final Optional<SpecialListsBaseProperty> newTag = SpecialListsWhereDeserializer.deserializeWhere(
                     tag.serialize(), "Test");
         if (newTag.isPresent() && (newTag.get() instanceof SpecialListsTagProperty)) {
             final SpecialListsTagProperty tag2 = (SpecialListsTagProperty)newTag.get();
-            assertEquals("Negated does not match after parsing", tag.isSet(), tag2.isSet());
-            assertTrue("Tagids does not match after parsing", TestHelper.listEquals(tag.getContent(),
-                       tag2.getContent()));
+            assertThat(tag2.isSet()).isEqualTo(tag.isSet());
+            assertThat(tag2.getContent()).containsExactlyElementsIn(tag.getContent());
         } else {
             fail("Could not parse tag property: " + tag.serialize());
         }
@@ -579,84 +558,65 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         conjunctionLeaf.addChild(dummyChild);
         conjunctionChild.addChild(conjunctionLeaf);
         conjunctionRoot.addChild(conjunctionChild);
-
-        assertEquals("Conjunction root operation not set correctly", CONJUNCTION.AND,
-                     conjunctionRoot.getOperation());
-        assertEquals("Conjunction child operation not set correctly", CONJUNCTION.OR,
-                     conjunctionChild.getOperation());
-        assertEquals("Conjunction leaf operation not set correctly", CONJUNCTION.AND,
-                     conjunctionLeaf.getOperation());
+        assertThat(conjunctionRoot.getOperation()).isEqualTo(CONJUNCTION.AND);
+        assertThat(conjunctionChild.getOperation()).isEqualTo(CONJUNCTION.OR);
+        assertThat(conjunctionLeaf.getOperation()).isEqualTo(CONJUNCTION.AND);
 
 
-        assertEquals("Conjunction root childcount does not match", 2L, conjunctionRoot.getChilds().size());
-        assertTrue("First root child is no done property",
-                   conjunctionRoot.getChilds().get(0) instanceof SpecialListsDoneProperty);
-        assertEquals("First dummychild does not match in root", negated,
-                     ((SpecialListsDoneProperty) conjunctionRoot.getChilds().get(0)).isSet());
-        assertTrue("Second root child is no conjunction property",
-                   conjunctionRoot.getChilds().get(1) instanceof SpecialListsConjunctionList);
+        assertThat(conjunctionRoot.getChilds()).hasSize(2);
+        assertThat(conjunctionRoot.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) conjunctionRoot.getChilds().get(0)).isSet()).isEqualTo(
+            negated);
+        assertThat(conjunctionRoot.getChilds().get(1)).isInstanceOf(SpecialListsConjunctionList.class);
 
         final SpecialListsConjunctionList child = (SpecialListsConjunctionList)
                 conjunctionRoot.getChilds().get(1);
-        assertEquals("Conjunction child childcount does not match (from root)", 2L,
-                     child.getChilds().size());
-        assertEquals("Conjunction child operation not set correctly (from root)", CONJUNCTION.OR,
-                     child.getOperation());
-        assertTrue("First child child is no done property (from root)",
-                   child.getChilds().get(0) instanceof SpecialListsDoneProperty);
-        assertEquals("First dummychild does not match in child (from root)", negated,
-                     ((SpecialListsDoneProperty) child.getChilds().get(0)).isSet());
-        assertTrue("Second child child is no conjunction property (from root)",
-                   child.getChilds().get(1) instanceof SpecialListsConjunctionList);
+        assertThat(child.getChilds()).hasSize(2);
+        assertThat(child.getOperation()).isEqualTo(CONJUNCTION.OR);
+
+        assertThat(child.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) child.getChilds().get(0)).isSet()).isEqualTo(negated);
+        assertThat(child.getChilds().get(1)).isInstanceOf(SpecialListsConjunctionList.class);
 
         final SpecialListsConjunctionList leaf = (SpecialListsConjunctionList) child.getChilds().get(1);
-        assertEquals("Conjunction leaf childcount does not match (from root)", 2L, leaf.getChilds().size());
-        assertEquals("Conjunction leaf operation not set correctly (from root)", CONJUNCTION.AND,
-                     leaf.getOperation());
-        assertTrue("First leaf child is no done property (from root)",
-                   leaf.getChilds().get(0) instanceof SpecialListsDoneProperty);
-        assertEquals("First dummychild does not match in leaf (from root)", negated,
-                     ((SpecialListsDoneProperty)leaf.getChilds().get(0)).isSet());
-        assertTrue("Second leaf child is no done property (from root)",
-                   leaf.getChilds().get(1) instanceof SpecialListsDoneProperty);
-        assertEquals("Second dummychild does not match in leaf (from root)", negated,
-                     ((SpecialListsDoneProperty)leaf.getChilds().get(1)).isSet());
+        assertThat(leaf.getChilds()).hasSize(2);
+        assertThat(leaf.getOperation()).isEqualTo(CONJUNCTION.AND);
+
+        assertThat(leaf.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) leaf.getChilds().get(0)).isSet()).isEqualTo(negated);
+        assertThat(leaf.getChilds().get(1)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) leaf.getChilds().get(1)).isSet()).isEqualTo(negated);
 
 
-        assertEquals("Conjunction child childcount does not match", 2L,
-                     conjunctionChild.getChilds().size());
-        assertTrue("First child child is no done property",
-                   conjunctionChild.getChilds().get(0) instanceof SpecialListsDoneProperty);
-        assertEquals("First dummychild does not match in child", negated,
-                     ((SpecialListsDoneProperty) conjunctionChild.getChilds().get(0)).isSet());
-        assertTrue("Second child child is no conjunction property",
-                   conjunctionChild.getChilds().get(1) instanceof SpecialListsConjunctionList);
+
+        assertThat(conjunctionChild.getChilds()).hasSize(2);
+        assertThat(conjunctionChild.getOperation()).isEqualTo(CONJUNCTION.OR);
+
+        assertThat(conjunctionChild.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) conjunctionChild.getChilds().get(0)).isSet()).isEqualTo(
+            negated);
+        assertThat(conjunctionChild.getChilds().get(1)).isInstanceOf(SpecialListsConjunctionList.class);
 
         SpecialListsConjunctionList childLeaf = (SpecialListsConjunctionList)
                                                 conjunctionChild.getChilds().get(1);
-        assertEquals("Conjunction leaf operation not set correctly (from child)", CONJUNCTION.AND,
-                     childLeaf.getOperation());
-        assertEquals("Conjunction leaf childcount does not match (from child)", 2L,
-                     childLeaf.getChilds().size());
-        assertTrue("First leaf child is no done property (from child)",
-                   childLeaf.getChilds().get(0) instanceof SpecialListsDoneProperty);
-        assertEquals("First dummychild does not match in leaf (from child)", negated,
-                     ((SpecialListsDoneProperty)childLeaf.getChilds().get(0)).isSet());
-        assertTrue("Second leaf child is no done property (from child)",
-                   childLeaf.getChilds().get(1) instanceof SpecialListsDoneProperty);
-        assertEquals("Second dummychild does not match in leaf (from child)", negated,
-                     ((SpecialListsDoneProperty)childLeaf.getChilds().get(1)).isSet());
+        assertThat(childLeaf.getChilds()).hasSize(2);
+        assertThat(childLeaf.getOperation()).isEqualTo(CONJUNCTION.AND);
 
+        assertThat(childLeaf.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) childLeaf.getChilds().get(0)).isSet()).isEqualTo(negated);
+        assertThat(childLeaf.getChilds().get(1)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) childLeaf.getChilds().get(1)).isSet()).isEqualTo(negated);
 
-        assertEquals("Conjunction leaf childcount does not match", 2L, conjunctionLeaf.getChilds().size());
-        assertTrue("First leaf child is no done property",
-                   conjunctionLeaf.getChilds().get(0) instanceof SpecialListsDoneProperty);
-        assertEquals("First dummychild does not match in leaf", negated,
-                     ((SpecialListsDoneProperty) conjunctionLeaf.getChilds().get(0)).isSet());
-        assertTrue("Second leaf child is no done property",
-                   conjunctionLeaf.getChilds().get(1) instanceof SpecialListsDoneProperty);
-        assertEquals("Second dummychild does not match in leaf", negated,
-                     ((SpecialListsDoneProperty) conjunctionLeaf.getChilds().get(1)).isSet());
+        assertThat(conjunctionLeaf.getChilds()).hasSize(2);
+        assertThat(conjunctionLeaf.getOperation()).isEqualTo(CONJUNCTION.AND);
+
+        assertThat(conjunctionLeaf.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) conjunctionLeaf.getChilds().get(0)).isSet()).isEqualTo(
+            negated);
+        assertThat(conjunctionLeaf.getChilds().get(1)).isInstanceOf(SpecialListsDoneProperty.class);
+        assertThat(((SpecialListsDoneProperty) conjunctionLeaf.getChilds().get(1)).isSet()).isEqualTo(
+            negated);
+
 
 
         final MirakelQueryBuilder qb = conjunctionRoot.getWhereQueryBuilder(RuntimeEnvironment.application);
@@ -665,54 +625,49 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
                             ')';
         final String query = dummyQuery + " AND (" + dummyQuery + " OR (" + dummyQuery + " AND " +
                              dummyQuery + "))";
-        assertEquals("Query does not match", query, qb.getSelection().trim());
-        assertEquals("Argument count does not match", 4L, qb.getSelectionArguments().size());
-        for (String arg : qb.getSelectionArguments()) {
-            assertEquals("Argument does not match", negated ? "1" : "0", arg);
-        }
+        assertThat(qb.getSelection()).isEqualTo(query);
+        assertThat(qb.getSelectionArguments()).hasSize(4);
+        assertThat(qb.getSelectionArguments()).containsExactly(negated ? "1" : "0", negated ? "1" : "0",
+                negated ? "1" : "0", negated ? "1" : "0");
 
         final Optional<SpecialListsBaseProperty> newRoot = SpecialListsWhereDeserializer.deserializeWhere(
                     conjunctionRoot.serialize(), "Test");
         if (newRoot.isPresent() && (newRoot.get() instanceof SpecialListsConjunctionList)) {
             final SpecialListsConjunctionList root2 = (SpecialListsConjunctionList)newRoot.get();
-            assertEquals("Conjunction root childcount does not match", conjunctionRoot.getChilds().size(),
-                         root2.getChilds().size());
-            assertTrue("First root child is no done property",
-                       root2.getChilds().get(0) instanceof SpecialListsDoneProperty);
-            assertEquals("First dummychild does not match in root",
-                         ((SpecialListsDoneProperty) conjunctionRoot.getChilds().get(0)).isSet(),
-                         ((SpecialListsDoneProperty) root2.getChilds().get(0)).isSet());
-            assertTrue("Second root child is no conjunction property",
-                       root2.getChilds().get(1) instanceof SpecialListsConjunctionList);
+            assertThat(conjunctionRoot.getOperation()).isEqualTo(CONJUNCTION.AND);
+
+            assertThat(root2.getChilds()).hasSize(2);
+            assertThat(root2.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+            assertThat(((SpecialListsDoneProperty) root2.getChilds().get(0)).isSet()).isEqualTo(negated);
+            assertThat(root2.getChilds().get(1)).isInstanceOf(SpecialListsConjunctionList.class);
+
 
             final SpecialListsConjunctionList child1 = (SpecialListsConjunctionList) root2.getChilds().get(1);
-            assertEquals("Conjunction child childcount does not match (from root)", child.getChilds().size(),
-                         child1.getChilds().size());
-            assertEquals("Conjunction child operation not set correctly (from root)", child.getOperation(),
-                         child1.getOperation());
-            assertTrue("First child child is no done property (from root)",
-                       child1.getChilds().get(0) instanceof SpecialListsDoneProperty);
-            assertEquals("First dummychild does not match in child (from root)",
-                         ((SpecialListsDoneProperty) child.getChilds().get(0)).isSet(),
-                         ((SpecialListsDoneProperty) child1.getChilds().get(0)).isSet());
-            assertTrue("Second child child is no conjunction property (from root)",
-                       child1.getChilds().get(1) instanceof SpecialListsConjunctionList);
+            assertThat(child1.getOperation()).isEqualTo(CONJUNCTION.OR);
+
+            assertThat(child1.getChilds()).hasSize(2);
+            assertThat(child1.getOperation()).isEqualTo(CONJUNCTION.OR);
+
+            assertThat(child1.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+            assertThat(((SpecialListsDoneProperty) child1.getChilds().get(0)).isSet()).isEqualTo(negated);
+            assertThat(child1.getChilds().get(1)).isInstanceOf(SpecialListsConjunctionList.class);
 
             final SpecialListsConjunctionList leaf1 = (SpecialListsConjunctionList) child1.getChilds().get(1);
-            assertEquals("Conjunction leaf childcount does not match (from root)", leaf.getChilds().size(),
-                         leaf1.getChilds().size());
-            assertEquals("Conjunction leaf operation not set correctly (from root)", leaf.getOperation(),
-                         leaf1.getOperation());
-            assertTrue("First leaf child is no done property (from root)",
-                       leaf1.getChilds().get(0) instanceof SpecialListsDoneProperty);
-            assertEquals("First dummychild does not match in leaf (from root)",
-                         ((SpecialListsDoneProperty)leaf.getChilds().get(0)).isSet(),
-                         ((SpecialListsDoneProperty)leaf1.getChilds().get(0)).isSet());
-            assertTrue("Second leaf child is no done property (from root)",
-                       leaf1.getChilds().get(1) instanceof SpecialListsDoneProperty);
-            assertEquals("Second dummychild does not match in leaf (from root)",
-                         ((SpecialListsDoneProperty)leaf.getChilds().get(1)).isSet(),
-                         ((SpecialListsDoneProperty)leaf1.getChilds().get(1)).isSet());
+            assertThat(leaf1.getOperation()).isEqualTo(CONJUNCTION.AND);
+
+            assertThat(leaf1.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+            assertThat(((SpecialListsDoneProperty) leaf1.getChilds().get(0)).isSet()).isEqualTo(negated);
+            assertThat(leaf1.getChilds().get(1)).isInstanceOf(SpecialListsDoneProperty.class);
+            assertThat(((SpecialListsDoneProperty) leaf1.getChilds().get(1)).isSet()).isEqualTo(negated);
+
+            assertThat(leaf1.getChilds()).hasSize(2);
+            assertThat(leaf1.getOperation()).isEqualTo(CONJUNCTION.AND);
+
+            assertThat(leaf1.getChilds().get(0)).isInstanceOf(SpecialListsDoneProperty.class);
+            assertThat(((SpecialListsDoneProperty) leaf1.getChilds().get(0)).isSet()).isEqualTo(negated);
+            assertThat(leaf1.getChilds().get(1)).isInstanceOf(SpecialListsDoneProperty.class);
+            assertThat(((SpecialListsDoneProperty) leaf1.getChilds().get(1)).isSet()).isEqualTo(negated);
+
 
         } else {
             fail("Could not parse tag property: " + conjunctionRoot.serialize());

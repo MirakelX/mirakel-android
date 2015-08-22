@@ -22,7 +22,9 @@ package de.azapps.mirakel.model.query_builder;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,9 +35,9 @@ import org.robolectric.annotation.Config;
 import java.util.Arrays;
 import java.util.List;
 
-import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
@@ -46,8 +48,8 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static com.google.common.truth.Truth.assertThat;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -56,27 +58,25 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
     @Test
     public void testBasicQuery() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        assertEquals("", qb.getSelection());
+        assertThat(qb.getSelection()).isEqualTo("");
     }
 
     @Test
     public void testSingleAndArgument() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.EQ, 1);
-        assertEquals(ModelBase.ID + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     @Test
     public void testSingleOrArgument() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.or(ModelBase.ID, Operation.EQ, 1);
-        assertEquals(ModelBase.ID + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     @Test
@@ -119,19 +119,17 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
     public void testIn() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.IN, 1);
-        assertEquals(ModelBase.ID + " IN(?)", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " IN(?)");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     private static void checkOperation(final MirakelQueryBuilder qb,
                                        final Operation op, final String o) {
         qb.and(ModelBase.ID, op, 1);
-        assertEquals(ModelBase.ID + " " + o + " ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + ' ' + o + " ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     @Test
@@ -174,19 +172,17 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
     public void testNotIn() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.NOT_IN, 1);
-        assertEquals("NOT " + ModelBase.ID + " IN(?)", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo("NOT " + ModelBase.ID + " IN(?)");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     private static void checkNotOperation(final MirakelQueryBuilder qb,
                                           final Operation op, final String o) {
         qb.and(ModelBase.ID, op, 1);
-        assertEquals("NOT " + ModelBase.ID + " " + o + " ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo("NOT " + ModelBase.ID + ' ' + o + " ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     @Test
@@ -194,12 +190,9 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.EQ, 1).and(ModelBase.NAME, Operation.EQ,
                 "foo");
-        assertEquals(ModelBase.ID + " = ? AND " + ModelBase.NAME + " = ?",
-                     qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(2, args.size());
-        assertEquals("1", args.get(0));
-        assertEquals("foo", args.get(1));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " = ? AND " + ModelBase.NAME + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(2);
+        assertThat(qb.getSelectionArguments()).containsExactly("1", "foo");
     }
 
     @Test
@@ -207,12 +200,9 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.EQ, 1).or(ModelBase.NAME, Operation.EQ,
                 "foo");
-        assertEquals(ModelBase.ID + " = ? OR " + ModelBase.NAME + " = ?",
-                     qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(2, args.size());
-        assertEquals("1", args.get(0));
-        assertEquals("foo", args.get(1));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " = ? OR " + ModelBase.NAME + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(2);
+        assertThat(qb.getSelectionArguments()).containsExactly("1", "foo");
     }
 
     @Test
@@ -223,13 +213,10 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
                 Operation.EQ, "foo");
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(Task.DONE, Operation.EQ, false).and(qbInner);
-        assertEquals(Task.DONE + " = ? AND (" + ModelBase.ID + " = ? OR "
-                     + ModelBase.NAME + " = ?)", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(3, args.size());
-        assertEquals("0", args.get(0));
-        assertEquals("1", args.get(1));
-        assertEquals("foo", args.get(2));
+        assertThat(qb.getSelection()).isEqualTo(Task.DONE + " = ? AND (" + ModelBase.ID + " = ? OR "
+                                                + ModelBase.NAME + " = ?)");
+        assertThat(qb.getSelectionArguments()).hasSize(3);
+        assertThat(qb.getSelectionArguments()).containsExactly("0", "1", "foo");
     }
 
     @Test
@@ -240,13 +227,10 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
                 Operation.EQ, "foo");
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.or(Task.DONE, Operation.EQ, false).or(qbInner);
-        assertEquals(Task.DONE + " = ? OR (" + ModelBase.ID + " = ? OR "
-                     + ModelBase.NAME + " = ?)", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(3, args.size());
-        assertEquals("0", args.get(0));
-        assertEquals("1", args.get(1));
-        assertEquals("foo", args.get(2));
+        assertThat(qb.getSelection()).isEqualTo(Task.DONE + " = ? OR (" + ModelBase.ID + " = ? OR "
+                                                + ModelBase.NAME + " = ?)");
+        assertThat(qb.getSelectionArguments()).hasSize(3);
+        assertThat(qb.getSelectionArguments()).containsExactly("0", "1", "foo");
     }
 
     @Test
@@ -255,60 +239,54 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         final MirakelQueryBuilder qbInner = new MirakelQueryBuilder(
             RuntimeEnvironment.application).select(ModelBase.ID);
         qb.and(ModelBase.ID, Operation.IN, qbInner, Task.URI);
-        assertEquals(ModelBase.ID + " IN (SELECT " + ModelBase.ID + " FROM "
-                     + Task.TABLE + ")", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(0, args.size());
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " IN (SELECT " + ModelBase.ID + " FROM "
+                                                + Task.TABLE + ')');
+        assertThat(qb.getSelectionArguments()).isEmpty();
     }
 
     @Test
     public void testBooleanFilterTrue() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(Task.DONE, Operation.EQ, true);
-        assertEquals(Task.DONE + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(Task.DONE + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     @Test
     public void testBooleanFilterFalse() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(Task.DONE, Operation.EQ, false);
-        assertEquals(Task.DONE + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("0", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(Task.DONE + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("0");
     }
 
     @Test
     public void testIntFilter() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.EQ, 1);
-        assertEquals(ModelBase.ID + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1");
     }
 
     @Test
     public void testDoubleFilter() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(Task.PROGRESS, Operation.EQ, 1.0);
-        assertEquals(Task.PROGRESS + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("1.0", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(Task.PROGRESS + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("1.0");
     }
 
     @Test
     public void testStringFilter() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.NAME, Operation.EQ, "foo");
-        assertEquals(ModelBase.NAME + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals("foo", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.NAME + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly("foo");
     }
 
     @Test
@@ -316,155 +294,134 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         final Task t = RandomHelper.getRandomTask();
         qb.and(ModelBase.ID, Operation.EQ, t);
-        assertEquals(ModelBase.ID + " = ?", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(1, args.size());
-        assertEquals(t.getId() + "", args.get(0));
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " = ?");
+        assertThat(qb.getSelectionArguments()).hasSize(1);
+        assertThat(qb.getSelectionArguments()).containsExactly(String.valueOf(t.getId()));
     }
 
     @Test
     public void testListIntegerFilter() {
         final List<Integer> filter = Arrays
-                                     .asList(new Integer[] { 1, 2, 3, 42 });
+                                     .asList(1, 2, 3, 42);
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.ID, Operation.IN, filter);
-        assertEquals(ModelBase.ID + " IN(?,?,?,?)", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(filter.size(), args.size());
-        for (int i = 0; i < filter.size(); i++) {
-            assertEquals(filter.get(i) + "", args.get(i));
-        }
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.ID + " IN(?,?,?,?)");
+        assertThat(qb.getSelectionArguments()).hasSize(filter.size());
+        assertThat(qb.getSelectionArguments())
+        .containsExactlyElementsIn(Collections2.transform(filter, new Function<Integer, String>() {
+            @Override
+            public String apply(final Integer input) {
+                return String.valueOf(input);
+            }
+        }));
     }
 
     @Test
     public void testListStringFilter() {
-        final List<String> filter = Arrays.asList(new String[] { "foo", "bar",
-                                    "don't do this"
-                                                               });
+        final List<String> filter = Arrays.asList("foo", "bar",
+                                    "don't do this");
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ModelBase.NAME, Operation.IN, filter);
-        assertEquals(ModelBase.NAME + " IN(?,?,?)", qb.getSelection());
-        final List<String> args = qb.getSelectionArguments();
-        assertEquals(filter.size(), args.size());
-        for (int i = 0; i < filter.size(); i++) {
-            assertEquals(filter.get(i), args.get(i));
-        }
+        assertThat(qb.getSelection()).isEqualTo(ModelBase.NAME + " IN(?,?,?)");
+        assertThat(qb.getSelectionArguments()).hasSize(filter.size());
+        assertThat(qb.getSelectionArguments()).containsExactlyElementsIn(filter);
     }
 
     //test get
     @Test
     public void testGetTask() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        Optional<Task> res_qb = qb.get(Task.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
-        Cursor c = RuntimeEnvironment.application.getContentResolver().query(Task.URI, Task.allColumns,
-                   null,
-                   null, null);
-        c.moveToFirst();
+        final Optional<Task> res_qb = qb.get(Task.class);
+        assertThat(res_qb).isPresent();
+        final Cursor c = RuntimeEnvironment.application.getContentResolver().query(Task.URI,
+                         Task.allColumns,
+                         null,
+                         null, null);
+        assertThat(c.moveToFirst()).isTrue();
         Task res_raw = new Task(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
     @Test
     public void testGetAccount() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         Optional<AccountMirakel> res_qb = qb.get(AccountMirakel.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
+        assertThat(res_qb).isPresent();
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(
                        AccountMirakel.URI, AccountMirakel.allColumns, null, null, null);
-        c.moveToFirst();
+        assertThat(c.moveToFirst()).isTrue();
         AccountMirakel res_raw = new AccountMirakel(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
     @Test
     public void testGetFile() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         Optional<FileMirakel> res_qb = qb.get(FileMirakel.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
+        assertThat(res_qb).isPresent();
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(FileMirakel.URI,
                    FileMirakel.allColumns, null, null, null);
-        c.moveToFirst();
+        assertThat(c.moveToFirst()).isTrue();
         FileMirakel res_raw = new FileMirakel(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
     @Test
     public void testGetRecurring() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         Optional<Recurring> res_qb = qb.get(Recurring.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
+        assertThat(res_qb).isPresent();
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(Recurring.URI,
                    Recurring.allColumns, null, null, null);
-        c.moveToFirst();
+        assertThat(c.moveToFirst()).isTrue();
         Recurring res_raw = new Recurring(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
     @Test
     public void testGetSemantic() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         Optional<Semantic> res_qb = qb.get(Semantic.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
+        assertThat(res_qb).isPresent();
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(Semantic.URI,
                    Semantic.allColumns, null, null, null);
-        c.moveToFirst();
+        assertThat(c.moveToFirst()).isTrue();
         Semantic res_raw = new Semantic(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
     @Test
     public void testGetList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         Optional<ListMirakel> res_qb = qb.get(ListMirakel.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
+        assertThat(res_qb).isPresent();
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(ListMirakel.URI,
                    ListMirakel.allColumns, null, null, null);
-        c.moveToFirst();
+        assertThat(c.moveToFirst()).isTrue();
         ListMirakel res_raw = new ListMirakel(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
     @Test
     public void testGetMetaList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
         qb.and(ListMirakel.IS_SPECIAL, Operation.EQ, true);
         final Optional<SpecialList> res_qb = qb.get(SpecialList.class);
-        if (!res_qb.isPresent()) {
-            fail("Querybuilder returned empty result");
-        }
+        assertThat(res_qb).isPresent();
         Cursor c = RuntimeEnvironment.application.getContentResolver().query(SpecialList.URI,
                    SpecialList.allColumns, "_id=?", new String[] {String.valueOf(res_qb.get().getId())}, null);
-        c.moveToFirst();
+        assertThat(c.moveToFirst()).isTrue();
         final SpecialList res_raw = new SpecialList(CursorGetter.unsafeGetter(c));
         c.close();
-        assertEquals(res_raw, res_qb.get());
+        assertThat(res_qb.get()).isEqualTo(res_raw);
     }
 
-    //test getList
-    private void compareLists(List res_qb, List res_raw) {
-        assertEquals(res_raw.size(), res_qb.size());
-        for (int i = 0; i < res_raw.size(); i++) {
-            assertEquals(res_raw.get(i), res_qb.get(i));
-        }
-    }
+
     @Test
     public void testGetTaskList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(Task.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<Task>() {
+        List<Task> res_qb = qb.getList(Task.class);
+        List<Task> res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<Task>() {
             @Override
             public Task convert(@NonNull CursorGetter getter) {
                 return new Task(getter);
@@ -472,7 +429,8 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 Task.URI,
                 Task.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
 
 
@@ -480,8 +438,9 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
     @Test
     public void testGetAccountList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(AccountMirakel.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<AccountMirakel>() {
+        final List<AccountMirakel> res_qb = qb.getList(AccountMirakel.class);
+        final List<AccountMirakel> res_raw = new Cursor2List<>(new
+        CursorWrapper.CursorConverter<AccountMirakel>() {
             @Override
             public AccountMirakel convert(@NonNull CursorGetter getter) {
                 return new AccountMirakel(getter);
@@ -489,13 +448,14 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 AccountMirakel.URI,
                 AccountMirakel.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
     @Test
     public void testGetFileList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(FileMirakel.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<FileMirakel>() {
+        List<FileMirakel> res_qb = qb.getList(FileMirakel.class);
+        List<FileMirakel> res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<FileMirakel>() {
             @Override
             public FileMirakel convert(@NonNull CursorGetter getter) {
                 return new FileMirakel(getter);
@@ -503,13 +463,14 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 FileMirakel.URI,
                 FileMirakel.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
     @Test
     public void testGetRecurringList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(Recurring.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<Recurring>() {
+        List<Recurring> res_qb = qb.getList(Recurring.class);
+        List<Recurring> res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<Recurring>() {
             @Override
             public Recurring convert(@NonNull CursorGetter getter) {
                 return new Recurring(getter);
@@ -517,13 +478,14 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 Recurring.URI,
                 Recurring.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
     @Test
     public void testGetSemanticList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(Semantic.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<Semantic>() {
+        List<Semantic> res_qb = qb.getList(Semantic.class);
+        List<Semantic> res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<Semantic>() {
             @Override
             public Semantic convert(@NonNull CursorGetter getter) {
                 return new Semantic(getter);
@@ -531,13 +493,14 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 Semantic.URI,
                 Semantic.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
     @Test
     public void testGetListList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(ListMirakel.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<ListMirakel>() {
+        List<ListMirakel> res_qb = qb.getList(ListMirakel.class);
+        List<ListMirakel> res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<ListMirakel>() {
             @Override
             public ListMirakel convert(@NonNull CursorGetter getter) {
                 return new ListMirakel(getter);
@@ -545,13 +508,14 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 ListMirakel.URI,
                 ListMirakel.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
     @Test
     public void testGetMetaListList() {
         final MirakelQueryBuilder qb = new MirakelQueryBuilder(RuntimeEnvironment.application);
-        List res_qb = qb.getList(SpecialList.class);
-        List res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<SpecialList>() {
+        List<SpecialList> res_qb = qb.getList(SpecialList.class);
+        List<SpecialList> res_raw = new Cursor2List<>(new CursorWrapper.CursorConverter<SpecialList>() {
             @Override
             public SpecialList convert(@NonNull CursorGetter getter) {
                 return new SpecialList(getter);
@@ -559,7 +523,8 @@ public class QueryBuilderTest extends MirakelDatabaseTestCase {
         }).convert(CursorGetter.unsafeGetter(RuntimeEnvironment.application.getContentResolver().query(
                 SpecialList.URI,
                 SpecialList.allColumns, null, null, null)));
-        compareLists(res_qb, res_raw);
+        assertThat(res_qb).hasSize(res_raw.size());
+        assertThat(res_qb).containsExactlyElementsIn(res_raw);
     }
 
 }

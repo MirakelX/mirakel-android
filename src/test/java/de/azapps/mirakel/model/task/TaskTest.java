@@ -38,12 +38,9 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -78,8 +75,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final int countBefore = countElems();
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel());
         final int countAfter = countElems();
-        assertEquals("Insert Task don't change the number of elements in database {'function': 'Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel())', 'name': 'NewTask', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -88,18 +84,17 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel());
         elems.add(elem);
         final List<Task>newElems = Task.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel())', 'name': 'NewTask', 'throw': None}",
-                   result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
     public void testNewEqualsNewTask1() {
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel());
-        assertNotNull("Create new Task failed", elem);
+        assertThat(elem).isNotNull();
         final long id = elem.getId();
         final Optional<Task> newElem = Task.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -108,8 +103,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                      RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
         final int countAfter = countElems();
-        assertEquals("Insert Task don't change the number of elements in database {'function': 'Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority())', 'name': 'NewTask', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -119,19 +113,18 @@ public class TaskTest extends MirakelDatabaseTestCase {
                                        RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
         elems.add(elem);
         final List<Task>newElems = Task.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority())', 'name': 'NewTask', 'throw': None}",
-                   result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
     public void testNewEqualsNewTask2() {
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                                        RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
-        assertNotNull("Create new Task failed", elem);
+        assertThat(elem).isNotNull();
         final long id = elem.getId();
         final Optional<Task> newElem = Task.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -141,8 +134,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
                      RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
                      RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
         final int countAfter = countElems();
-        assertEquals("Insert Task don't change the number of elements in database {'function': 'Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(), RandomHelper.getRandomString(), RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority())', 'name': 'NewTask', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -153,9 +145,8 @@ public class TaskTest extends MirakelDatabaseTestCase {
                                        RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
         elems.add(elem);
         final List<Task>newElems = Task.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(), RandomHelper.getRandomString(), RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority())', 'name': 'NewTask', 'throw': None}",
-                   result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
@@ -163,10 +154,9 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                                        RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
                                        RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
-        assertNotNull("Create new Task failed", elem);
-        final long id = elem.getId();
-        final Optional<Task> newElem = Task.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(elem).isNotNull();
+        final Optional<Task> newElem = Task.get(elem.getId());
+        assertThat(newElem).hasValue(elem);
     }
 
     // If nothing was changed the database should not be updated
@@ -177,8 +167,8 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final Task elem = elems.get(randomItem);
         elem.save();
         final List<Task>newElems = Task.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 
@@ -190,8 +180,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setContent(RandomHelper.getRandomString());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setContent(RandomHelper.getRandomString())', 'name': 'SetContent', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -202,8 +191,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setCreatedAt(RandomHelper.getRandomCalendar());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setCreatedAt(RandomHelper.getRandomCalendar())', 'name': 'SetCreatedAt', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -214,8 +202,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setDue(RandomHelper.getRandomOptional_Calendar());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setDue(RandomHelper.getRandomOptional_Calendar())', 'name': 'SetDue', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -226,8 +213,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setList(RandomHelper.getRandomListMirakel());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setList(RandomHelper.getRandomListMirakel())', 'name': 'SetList', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -238,8 +224,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setName(RandomHelper.getRandomString());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setName(RandomHelper.getRandomString())', 'name': 'SetName', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -250,8 +235,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setPriority(RandomHelper.getRandomPriority());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setPriority(RandomHelper.getRandomPriority())', 'name': 'SetPriority', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -262,8 +246,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setProgress(RandomHelper.getRandomint());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setProgress(RandomHelper.getRandomint())', 'name': 'SetProgress', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -274,8 +257,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setRecurrence(RandomHelper.getRandomOptional_Recurring());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setRecurrence(RandomHelper.getRandomOptional_Recurring())', 'name': 'SetRecurrence', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -286,8 +268,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setRecurringReminder(RandomHelper.getRandomlong());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setRecurringReminder(RandomHelper.getRandomlong())', 'name': 'SetRecurringReminder', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -298,8 +279,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setRecurringReminder(RandomHelper.getRandomOptional_Recurring());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setRecurringReminder(RandomHelper.getRandomOptional_Recurring())', 'name': 'SetRecurringReminder', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -310,8 +290,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setReminder(RandomHelper.getRandomOptional_Calendar());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setReminder(RandomHelper.getRandomOptional_Calendar())', 'name': 'SetReminder', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -322,8 +301,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setReminder(RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomboolean());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setReminder(RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomboolean())', 'name': 'SetReminder', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -334,8 +312,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setSyncState(RandomHelper.getRandomSYNC_STATE());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setSyncState(RandomHelper.getRandomSYNC_STATE())', 'name': 'SetSyncState', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -346,8 +323,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setUpdatedAt(RandomHelper.getRandomCalendar());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setUpdatedAt(RandomHelper.getRandomCalendar())', 'name': 'SetUpdatedAt', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -358,8 +334,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setUUID(RandomHelper.getRandomString());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setUUID(RandomHelper.getRandomString())', 'name': 'SetUUID', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -370,8 +345,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         elem.setIsStub(RandomHelper.getRandomboolean());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setIsStub(RandomHelper.getRandomboolean())', 'name': 'SetIsStub', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -381,15 +355,15 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final Task elem = elems.get(randomItem);
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", Task.get(id).isPresent());
+        assertThat(Task.get(id)).isAbsent();
         final List<Task>newElems = Task.all();
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
             elems.set(i, Task.get(elems.get(i).getId()).orNull());
         }
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 }

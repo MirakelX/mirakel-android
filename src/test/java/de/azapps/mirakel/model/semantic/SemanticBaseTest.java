@@ -33,7 +33,7 @@ import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.base.Optional.of;
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -49,7 +49,7 @@ public class SemanticBaseTest extends MirakelDatabaseTestCase {
         final Semantic obj = RandomHelper.getRandomElem(all);
         final String t = RandomHelper.getRandomString();
         obj.setCondition(t);
-        assertEquals("Getting and setting Condition does not match", t, obj.getCondition());
+        assertThat(obj.getCondition()).isEqualTo(t);
     }
 
     // Test for getting and setting Priority
@@ -60,7 +60,7 @@ public class SemanticBaseTest extends MirakelDatabaseTestCase {
         final Optional<Integer> t = RandomHelper.getRandomint(10) > 7 ? Optional.<Integer>absent() : of(
                                         RandomHelper.getRandomPriority());
         obj.setPriority(t);
-        assertEquals("Getting and setting Priority does not match", t, obj.getPriority());
+        assertThat(obj.getPriority()).isEqualTo(t);
     }
 
     // Test for getting and setting Due
@@ -70,7 +70,7 @@ public class SemanticBaseTest extends MirakelDatabaseTestCase {
         final Semantic obj = RandomHelper.getRandomElem(all);
         final Optional<Integer> t = RandomHelper.getRandomOptional_Integer();
         obj.setDue(t);
-        assertEquals("Getting and setting Due does not match", t, obj.getDue());
+        assertThat(obj.getDue()).isEqualTo(t);
     }
 
     // Test for getting and setting List
@@ -80,7 +80,7 @@ public class SemanticBaseTest extends MirakelDatabaseTestCase {
         final Semantic obj = RandomHelper.getRandomElem(all);
         final Optional<ListMirakel> t = RandomHelper.getRandomOptional_ListMirakel();
         obj.setList(t);
-        assertEquals("Getting and setting List does not match", t, obj.getList());
+        assertThat(obj.getList()).isEqualTo(t);
     }
 
     // Test for getting and setting Weekday
@@ -90,7 +90,7 @@ public class SemanticBaseTest extends MirakelDatabaseTestCase {
         final Semantic obj = RandomHelper.getRandomElem(all);
         final Optional<Integer> t = RandomHelper.getRandomOptional_Integer();
         obj.setWeekday(t);
-        assertEquals("Getting and setting Weekday does not match", t, obj.getWeekday());
+        assertThat(obj.getWeekday()).isEqualTo(t);
     }
 
 }

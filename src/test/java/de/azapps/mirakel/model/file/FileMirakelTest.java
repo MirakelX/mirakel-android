@@ -38,12 +38,9 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -73,8 +70,7 @@ public class FileMirakelTest extends MirakelDatabaseTestCase {
         FileMirakel.newFile(RandomHelper.getRandomTask(), RandomHelper.getRandomString(),
                             RandomHelper.getRandomUri());
         final int countAfter = countElems();
-        assertEquals("Insert FileMirakel don't change the number of elements in database {'function': 'FileMirakel.newFile(RandomHelper.getRandomTask(), RandomHelper.getRandomString(), RandomHelper.getRandomUri())', 'name': 'NewFile', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -84,19 +80,16 @@ public class FileMirakelTest extends MirakelDatabaseTestCase {
                                  RandomHelper.getRandomString(), RandomHelper.getRandomUri());
         elems.add(elem);
         final List<FileMirakel>newElems = FileMirakel.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'FileMirakel.newFile(RandomHelper.getRandomTask(), RandomHelper.getRandomString(), RandomHelper.getRandomUri())', 'name': 'NewFile', 'throw': None}",
-                   result);
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
     public void testNewEqualsNewFile1() {
         final FileMirakel elem = FileMirakel.newFile(RandomHelper.getRandomTask(),
                                  RandomHelper.getRandomString(), RandomHelper.getRandomUri());
-        assertNotNull("Create new FileMirakel failed", elem);
-        final long id = elem.getId();
-        final Optional<FileMirakel> newElem = FileMirakel.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(elem).isNotNull();
+        final Optional<FileMirakel> newElem = FileMirakel.get(elem.getId());
+        assertThat(newElem).hasValue(elem);
     }
 
     // If nothing was changed the database should not be updated
@@ -107,8 +100,7 @@ public class FileMirakelTest extends MirakelDatabaseTestCase {
         final FileMirakel elem = elems.get(randomItem);
         elem.save();
         final List<FileMirakel>newElems = FileMirakel.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 
@@ -120,8 +112,7 @@ public class FileMirakelTest extends MirakelDatabaseTestCase {
         elem.setTask(RandomHelper.getRandomTask());
         elem.save();
         final Optional<FileMirakel> newElem = FileMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setTask(RandomHelper.getRandomTask())', 'name': 'SetTask', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -132,8 +123,7 @@ public class FileMirakelTest extends MirakelDatabaseTestCase {
         elem.setFileUri(RandomHelper.getRandomUri());
         elem.save();
         final Optional<FileMirakel> newElem = FileMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setFileUri(RandomHelper.getRandomUri())', 'name': 'SetFileUri', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -143,15 +133,15 @@ public class FileMirakelTest extends MirakelDatabaseTestCase {
         final FileMirakel elem = elems.get(randomItem);
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", FileMirakel.get(id).isPresent());
+        assertThat(FileMirakel.get(id)).isAbsent();
         final List<FileMirakel>newElems = FileMirakel.all();
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
             elems.set(i, FileMirakel.get(elems.get(i).getId()).orNull());
         }
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        assertThat(newElems).containsExactlyElementsIn(elems);
+        assertThat(newElems).doesNotContain(elem);
     }
 
 }

@@ -34,9 +34,9 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
+import static com.google.common.truth.Truth.assertThat;
 import static de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import static de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
-import static org.junit.Assert.assertEquals;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -52,7 +52,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final SORT_BY t = RandomHelper.getRandomSORT_BY();
         obj.setSortBy(t);
-        assertEquals("Getting and setting SortBy does not match", t, obj.getSortBy());
+        assertThat(obj.getSortBy()).isEqualTo(t);
     }
 
     // Test for getting and setting Lft
@@ -62,7 +62,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setLft(t);
-        assertEquals("Getting and setting Lft does not match", t, obj.getLft());
+        assertThat(obj.getLft()).isEqualTo(t);
     }
 
     // Test for getting and setting Rgt
@@ -72,7 +72,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setRgt(t);
-        assertEquals("Getting and setting Rgt does not match", t, obj.getRgt());
+        assertThat(obj.getRgt()).isEqualTo(t);
     }
 
     // Test for getting and setting Color
@@ -82,7 +82,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setColor(t);
-        assertEquals("Getting and setting Color does not match", t, obj.getColor());
+        assertThat(obj.getColor()).isEqualTo(t);
     }
 
     // Test for getting and setting IconPath
@@ -92,7 +92,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final Optional<Uri> t = RandomHelper.getRandomOptional_Uri();
         obj.setIconPath(t);
-        assertEquals("Getting and setting IconPath does not match", t, obj.getIconPath());
+        assertThat(obj.getIconPath()).isEqualTo(t);
     }
 
     // Test for getting and setting Account
@@ -102,7 +102,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final AccountMirakel t = RandomHelper.getRandomAccountMirakel();
         obj.setAccount(t);
-        assertEquals("Getting and setting Account does not match", t, obj.getAccount());
+        assertThat(obj.getAccount()).isEqualTo(t);
     }
 
     // Test for getting and setting SyncState
@@ -112,7 +112,7 @@ public class ListBaseTest extends MirakelDatabaseTestCase {
         final ListMirakel obj = RandomHelper.getRandomElem(all);
         final SYNC_STATE t = RandomHelper.getRandomSYNC_STATE();
         obj.setSyncState(t);
-        assertEquals("Getting and setting SyncState does not match", t, obj.getSyncState());
+        assertThat(obj.getSyncState()).isEqualTo(t);
     }
 
 }

@@ -29,7 +29,7 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -45,7 +45,7 @@ public class TagBaseTest extends MirakelDatabaseTestCase {
         final Tag obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setBackgroundColor(t);
-        assertEquals("Getting and setting BackgroundColor does not match", t, obj.getBackgroundColor());
+        assertThat(obj.getBackgroundColor()).isEqualTo(t);
     }
 
 }

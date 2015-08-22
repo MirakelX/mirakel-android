@@ -38,13 +38,9 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
 import static com.google.common.base.Optional.of;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -76,8 +72,7 @@ public class SemanticTest extends MirakelDatabaseTestCase {
                              RandomHelper.getRandomInteger(), RandomHelper.getRandomOptional_ListMirakel(),
                              RandomHelper.getRandomInteger());
         final int countAfter = countElems();
-        assertEquals("Insert Semantic don't change the number of elements in database {'function': 'Semantic.newSemantic(RandomHelper.getRandomString(), RandomHelper.getRandomPriority(), RandomHelper.getRandomInteger(), RandomHelper.getRandomOptional_ListMirakel(), RandomHelper.getRandomInteger())', 'name': 'NewSemantic', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -88,9 +83,8 @@ public class SemanticTest extends MirakelDatabaseTestCase {
                               RandomHelper.getRandomOptional_ListMirakel(), RandomHelper.getRandomInteger());
         elems.add(elem);
         final List<Semantic>newElems = Semantic.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Semantic.newSemantic(RandomHelper.getRandomString(), RandomHelper.getRandomPriority(), RandomHelper.getRandomInteger(), RandomHelper.getRandomOptional_ListMirakel(), RandomHelper.getRandomInteger())', 'name': 'NewSemantic', 'throw': None}",
-                   result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
@@ -98,10 +92,10 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         final Semantic elem = Semantic.newSemantic(RandomHelper.getRandomString(),
                               RandomHelper.getRandomPriority(), RandomHelper.getRandomInteger(),
                               RandomHelper.getRandomOptional_ListMirakel(), RandomHelper.getRandomInteger());
-        assertNotNull("Create new Semantic failed", elem);
+        assertThat(elem).isNotNull();
         final long id = elem.getId();
         final Optional<Semantic> newElem = Semantic.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(newElem).hasValue(elem);
     }
 
     // If nothing was changed the database should not be updated
@@ -112,8 +106,8 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         final Semantic elem = elems.get(randomItem);
         elem.save();
         final List<Semantic>newElems = Semantic.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(newElems);
     }
 
 
@@ -125,8 +119,7 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         elem.setCondition(RandomHelper.getRandomString());
         elem.save();
         final Optional<Semantic> newElem = Semantic.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setCondition(RandomHelper.getRandomString())', 'name': 'SetCondition', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -138,8 +131,7 @@ public class SemanticTest extends MirakelDatabaseTestCase {
                              RandomHelper.getRandomPriority()));
         elem.save();
         final Optional<Semantic> newElem = Semantic.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setPriority(RandomHelper.getRandomPriority())', 'name': 'SetPriority', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -150,8 +142,7 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         elem.setDue(RandomHelper.getRandomOptional_Integer());
         elem.save();
         final Optional<Semantic> newElem = Semantic.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setDue(RandomHelper.getRandomOptional_Integer())', 'name': 'SetDue', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -162,8 +153,7 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         elem.setList(RandomHelper.getRandomOptional_ListMirakel());
         elem.save();
         final Optional<Semantic> newElem = Semantic.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setList(RandomHelper.getRandomOptional_ListMirakel())', 'name': 'SetList', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -174,8 +164,7 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         elem.setWeekday(RandomHelper.getRandomOptional_Integer());
         elem.save();
         final Optional<Semantic> newElem = Semantic.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setWeekday(RandomHelper.getRandomOptional_Integer())', 'name': 'SetWeekday', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -185,15 +174,15 @@ public class SemanticTest extends MirakelDatabaseTestCase {
         final Semantic elem = elems.get(randomItem);
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", Semantic.get(id).isPresent());
+        assertThat(Semantic.get(id)).isAbsent();
         final List<Semantic>newElems = Semantic.all();
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
             elems.set(i, Semantic.get(elems.get(i).getId()).orNull());
         }
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 }

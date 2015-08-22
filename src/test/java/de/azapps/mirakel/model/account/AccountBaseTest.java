@@ -31,8 +31,8 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
+import static com.google.common.truth.Truth.assertThat;
 import static de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
-import static org.junit.Assert.assertEquals;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -48,7 +48,7 @@ public class AccountBaseTest extends MirakelDatabaseTestCase {
         final AccountMirakel obj = RandomHelper.getRandomElem(all);
         final ACCOUNT_TYPES t = RandomHelper.getRandomACCOUNT_TYPES();
         obj.setType(t);
-        assertEquals("Getting and setting Type does not match", t, obj.getType());
+        assertThat(obj.getType()).isEqualTo(t);
     }
 
     // Test for getting and setting Enabled
@@ -58,7 +58,7 @@ public class AccountBaseTest extends MirakelDatabaseTestCase {
         final AccountMirakel obj = RandomHelper.getRandomElem(all);
         final boolean t = RandomHelper.getRandomboolean();
         obj.setEnabled(t);
-        assertEquals("Getting and setting Enabled does not match", t, obj.isEnabled());
+        assertThat(obj.isEnabled()).isEqualTo(t);
     }
 
     // Test for getting and setting SyncKey
@@ -68,7 +68,7 @@ public class AccountBaseTest extends MirakelDatabaseTestCase {
         final AccountMirakel obj = RandomHelper.getRandomElem(all);
         final Optional<String> t = RandomHelper.getRandomOptional_String();
         obj.setSyncKey(t);
-        assertEquals("Getting and setting SyncKey does not match", t, obj.getSyncKey());
+        assertThat(obj.getSyncKey()).isEqualTo(t);
     }
 
 }

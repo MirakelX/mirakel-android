@@ -38,12 +38,9 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -81,8 +78,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
         final int countAfter = countElems();
-        assertEquals("Insert Recurring don't change the number of elements in database {'function': 'Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(), RandomHelper.getRandomSparseBooleanArray())', 'name': 'NewRecurring', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -95,10 +91,9 @@ public class RecurringTest extends MirakelDatabaseTestCase {
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
         elems.add(elem);
-        final List<Recurring>newElems = Recurring.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(), RandomHelper.getRandomSparseBooleanArray())', 'name': 'NewRecurring', 'throw': None}",
-                   result);
+        final List<Recurring> newElems = Recurring.all();
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
@@ -109,10 +104,9 @@ public class RecurringTest extends MirakelDatabaseTestCase {
                                RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(),
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
-        assertNotNull("Create new Recurring failed", elem);
-        final long id = elem.getId();
-        final Optional<Recurring> newElem = Recurring.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(elem).isNotNull();
+        final Optional<Recurring> newElem = Recurring.get(elem.getId());
+        assertThat(newElem).hasValue(elem);
     }
 
     // If nothing was changed the database should not be updated
@@ -123,8 +117,8 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         final Recurring elem = elems.get(randomItem);
         elem.save();
         final List<Recurring>newElems = Recurring.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 
@@ -136,8 +130,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setLabel(RandomHelper.getRandomString());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setLabel(RandomHelper.getRandomString())', 'name': 'SetLabel', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -148,8 +141,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setYears(RandomHelper.getRandomint());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setYears(RandomHelper.getRandomint())', 'name': 'SetYears', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -160,8 +152,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setForDue(RandomHelper.getRandomboolean());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setForDue(RandomHelper.getRandomboolean())', 'name': 'SetForDue', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -172,8 +163,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setMonths(RandomHelper.getRandomint());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setMonths(RandomHelper.getRandomint())', 'name': 'SetMonths', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -184,8 +174,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setDays(RandomHelper.getRandomint());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setDays(RandomHelper.getRandomint())', 'name': 'SetDays', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -196,8 +185,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setHours(RandomHelper.getRandomint());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setHours(RandomHelper.getRandomint())', 'name': 'SetHours', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -208,8 +196,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setMinutes(RandomHelper.getRandomint());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setMinutes(RandomHelper.getRandomint())', 'name': 'SetMinutes', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -220,8 +207,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setStartDate(RandomHelper.getRandomOptional_Calendar());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setStartDate(RandomHelper.getRandomOptional_Calendar())', 'name': 'SetStartDate', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -232,8 +218,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setEndDate(RandomHelper.getRandomOptional_Calendar());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setEndDate(RandomHelper.getRandomOptional_Calendar())', 'name': 'SetEndDate', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -244,8 +229,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setTemporary(RandomHelper.getRandomboolean());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setTemporary(RandomHelper.getRandomboolean())', 'name': 'SetTemporary', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -256,8 +240,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setWeekdays(RandomHelper.getRandomSparseBooleanArray());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setWeekdays(RandomHelper.getRandomSparseBooleanArray())', 'name': 'SetWeekdays', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -268,8 +251,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setDerivedFrom(RandomHelper.getRandomOptional_Long());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setDerivedFrom(RandomHelper.getRandomOptional_Long())', 'name': 'SetDerivedFrom', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -280,8 +262,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         elem.setExact(RandomHelper.getRandomboolean());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setExact(RandomHelper.getRandomboolean())', 'name': 'SetExact', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -291,15 +272,15 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         final Recurring elem = elems.get(randomItem);
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", Recurring.get(id).isPresent());
+        assertThat(Recurring.get(id)).isAbsent();
         final List<Recurring>newElems = Recurring.all();
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
             elems.set(i, Recurring.get(elems.get(i).getId()).orNull());
         }
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 }

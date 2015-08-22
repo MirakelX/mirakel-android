@@ -34,9 +34,7 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -52,7 +50,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final String t = RandomHelper.getRandomString();
         obj.setLabel(t);
-        assertEquals("Getting and setting Label does not match", t, obj.getLabel());
+        assertThat(obj.getLabel()).isEqualTo(t);
     }
 
     // Test for getting and setting Years
@@ -62,7 +60,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setYears(t);
-        assertEquals("Getting and setting Years does not match", t, obj.getYears());
+        assertThat(obj.getYears()).isEqualTo(t);
     }
 
     // Test for getting and setting ForDue
@@ -72,7 +70,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final boolean t = RandomHelper.getRandomboolean();
         obj.setForDue(t);
-        assertEquals("Getting and setting ForDue does not match", t, obj.isForDue());
+        assertThat(obj.isForDue()).isEqualTo(t);
     }
 
     // Test for getting and setting Months
@@ -82,7 +80,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setMonths(t);
-        assertEquals("Getting and setting Months does not match", t, obj.getMonths());
+        assertThat(obj.getMonths()).isEqualTo(t);
     }
 
     // Test for getting and setting Days
@@ -92,7 +90,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setDays(t);
-        assertEquals("Getting and setting Days does not match", t, obj.getDays());
+        assertThat(obj.getDays()).isEqualTo(t);
     }
 
     // Test for getting and setting Hours
@@ -102,7 +100,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setHours(t);
-        assertEquals("Getting and setting Hours does not match", t, obj.getHours());
+        assertThat(obj.getHours()).isEqualTo(t);
     }
 
     // Test for getting and setting Minutes
@@ -112,7 +110,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setMinutes(t);
-        assertEquals("Getting and setting Minutes does not match", t, obj.getMinutes());
+        assertThat(obj.getMinutes()).isEqualTo(t);
     }
 
     // Test for getting and setting StartDate
@@ -122,7 +120,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
         obj.setStartDate(t);
-        assertEquals("Getting and setting StartDate does not match", t, obj.getStartDate());
+        assertThat(obj.getStartDate()).isEqualTo(t);
     }
 
     // Test for getting and setting EndDate
@@ -132,7 +130,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
         obj.setEndDate(t);
-        assertEquals("Getting and setting EndDate does not match", t, obj.getEndDate());
+        assertThat(obj.getEndDate()).isEqualTo(t);
     }
 
     // Test for getting and setting Temporary
@@ -142,7 +140,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final boolean t = RandomHelper.getRandomboolean();
         obj.setTemporary(t);
-        assertEquals("Getting and setting Temporary does not match", t, obj.isTemporary());
+        assertThat(obj.isTemporary()).isEqualTo(t);
     }
 
     // Test for getting and setting Weekdays
@@ -155,9 +153,9 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         List<Integer> days = obj.getWeekdays();
         for (int i = 0; i < t.size(); i++) {
             if (t.get(i)) {
-                assertTrue(days.contains(i));
+                assertThat(days.contains(i)).isTrue();
             } else {
-                assertFalse(days.contains(i));
+                assertThat(days.contains(i)).isFalse();
             }
         }
     }
@@ -169,7 +167,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final Optional<Long> t = RandomHelper.getRandomOptional_Long();
         obj.setDerivedFrom(t);
-        assertEquals("Getting and setting DerivedFrom does not match", t, obj.getDerivedFrom());
+        assertThat(obj.getDerivedFrom()).isEqualTo(t);
     }
 
     // Test for getting and setting Exact
@@ -179,7 +177,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         final Recurring obj = RandomHelper.getRandomElem(all);
         final boolean t = RandomHelper.getRandomboolean();
         obj.setExact(t);
-        assertEquals("Getting and setting Exact does not match", t, obj.isExact());
+        assertThat(obj.isExact()).isEqualTo(t);
     }
 
 }

@@ -38,12 +38,9 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -74,8 +71,7 @@ public class TagTest extends MirakelDatabaseTestCase {
         final int countBefore = countElems();
         Tag.newTag(RandomHelper.getRandomString());
         final int countAfter = countElems();
-        assertEquals("Insert Tag don't change the number of elements in database {'function': 'Tag.newTag(RandomHelper.getRandomString())', 'name': 'NewTag', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -84,18 +80,16 @@ public class TagTest extends MirakelDatabaseTestCase {
         final Tag elem = Tag.newTag(RandomHelper.getRandomString());
         elems.add(elem);
         final List<Tag>newElems = Tag.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Tag.newTag(RandomHelper.getRandomString())', 'name': 'NewTag', 'throw': None}",
-                   result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
     public void testNewEqualsNewTag1() {
         final Tag elem = Tag.newTag(RandomHelper.getRandomString());
-        assertNotNull("Create new Tag failed", elem);
-        final long id = elem.getId();
-        final Optional<Tag> newElem = Tag.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(elem).isNotNull();
+        final Optional<Tag> newElem = Tag.get(elem.getId());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -104,8 +98,7 @@ public class TagTest extends MirakelDatabaseTestCase {
         Tag.newTag(RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
                    RandomHelper.getRandomint());
         final int countAfter = countElems();
-        assertEquals("Insert Tag don't change the number of elements in database {'function': 'Tag.newTag(RandomHelper.getRandomString(), RandomHelper.getRandomboolean(), RandomHelper.getRandomint())', 'name': 'NewTag', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
 
     @Test
@@ -115,19 +108,17 @@ public class TagTest extends MirakelDatabaseTestCase {
                                     RandomHelper.getRandomint());
         elems.add(elem);
         final List<Tag>newElems = Tag.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'Tag.newTag(RandomHelper.getRandomString(), RandomHelper.getRandomboolean(), RandomHelper.getRandomint())', 'name': 'NewTag', 'throw': None}",
-                   result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
     @Test
     public void testNewEqualsNewTag2() {
         final Tag elem = Tag.newTag(RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
                                     RandomHelper.getRandomint());
-        assertNotNull("Create new Tag failed", elem);
-        final long id = elem.getId();
-        final Optional<Tag> newElem = Tag.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(elem).isNotNull();
+        final Optional<Tag> newElem = Tag.get(elem.getId());
+        assertThat(newElem).hasValue(elem);
     }
 
     // If nothing was changed the database should not be updated
@@ -138,8 +129,8 @@ public class TagTest extends MirakelDatabaseTestCase {
         final Tag elem = elems.get(randomItem);
         elem.save();
         final List<Tag>newElems = Tag.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 
@@ -151,8 +142,7 @@ public class TagTest extends MirakelDatabaseTestCase {
         elem.setBackgroundColor(RandomHelper.getRandomint());
         elem.save();
         final Optional<Tag> newElem = Tag.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setBackgroundColor(RandomHelper.getRandomint())', 'name': 'SetBackgroundColor', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -162,15 +152,15 @@ public class TagTest extends MirakelDatabaseTestCase {
         final Tag elem = elems.get(randomItem);
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", Tag.get(id).isPresent());
+        assertThat(Tag.get(id).isPresent()).isFalse();
         final List<Tag>newElems = Tag.all();
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
             elems.set(i, Tag.get(elems.get(i).getId()).orNull());
         }
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        assertThat(newElems).hasSize(elems.size());
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 }

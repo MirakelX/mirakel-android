@@ -38,12 +38,8 @@ import de.azapps.mirakel.model.DatabaseHelper;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -73,8 +69,7 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
         AccountMirakel.newAccount(RandomHelper.getRandomString(), RandomHelper.getRandomACCOUNT_TYPES(),
                                   RandomHelper.getRandomboolean());
         final int countAfter = countElems();
-        assertEquals("Insert AccountMirakel don't change the number of elements in database {'function': 'AccountMirakel.newAccount(RandomHelper.getRandomString(), RandomHelper.getRandomACCOUNT_TYPES(), RandomHelper.getRandomboolean())', 'name': 'NewAccount', 'throw': None}",
-                     countBefore + 1, countAfter);
+        assertThat(countBefore + 1).isEqualTo( countAfter);
     }
 
     @Test
@@ -84,19 +79,16 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
                                     RandomHelper.getRandomACCOUNT_TYPES(), RandomHelper.getRandomboolean());
         elems.add(elem);
         final List<AccountMirakel>newElems = AccountMirakel.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Something changed while adding a new element to the database {'function': 'AccountMirakel.newAccount(RandomHelper.getRandomString(), RandomHelper.getRandomACCOUNT_TYPES(), RandomHelper.getRandomboolean())', 'name': 'NewAccount', 'throw': None}",
-                   result);
+        assertThat(newElems).containsExactlyElementsIn(newElems);
     }
 
     @Test
     public void testNewEqualsNewAccount1() {
         final AccountMirakel elem = AccountMirakel.newAccount(RandomHelper.getRandomString(),
                                     RandomHelper.getRandomACCOUNT_TYPES(), RandomHelper.getRandomboolean());
-        assertNotNull("Create new AccountMirakel failed", elem);
-        final long id = elem.getId();
-        final Optional<AccountMirakel> newElem = AccountMirakel.get(id);
-        assertEquals("get(id)!=insert()", newElem.orNull(), elem);
+        assertThat(elem).isNotNull();
+        final Optional<AccountMirakel> newElem = AccountMirakel.get(elem.getId());
+        assertThat(newElem).hasValue(elem);
     }
 
     // If nothing was changed the database should not be updated
@@ -107,8 +99,7 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
         final AccountMirakel elem = elems.get(randomItem);
         elem.save();
         final List<AccountMirakel>newElems = AccountMirakel.all();
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 
@@ -120,8 +111,7 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
         elem.setType(RandomHelper.getRandomACCOUNT_TYPES());
         elem.save();
         final Optional<AccountMirakel> newElem = AccountMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setType(RandomHelper.getRandomACCOUNT_TYPES())', 'name': 'SetType', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -132,8 +122,7 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
         elem.setEnabled(RandomHelper.getRandomboolean());
         elem.save();
         final Optional<AccountMirakel> newElem = AccountMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setEnabled(RandomHelper.getRandomboolean())', 'name': 'SetEnabled', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -144,22 +133,21 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
         elem.setSyncKey(RandomHelper.getRandomOptional_String());
         elem.save();
         final Optional<AccountMirakel> newElem = AccountMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setSyncKey(RandomHelper.getRandomOptional_String())', 'name': 'SetSyncKey', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
     public void testDestroy() {
         final List<AccountMirakel>elems = AccountMirakel.all();
         final int randomItem = new Random().nextInt(elems.size());
-        final AccountMirakel elem = elems.get(1);//
+        final AccountMirakel elem = elems.get(randomItem);//
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", AccountMirakel.get(id).isPresent());
+        assertThat(AccountMirakel.get(id)).isAbsent();
         final List<AccountMirakel> newElems = AccountMirakel.all();
-        elems.remove(randomItem);
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        elems.remove(elem);
+        assertThat(newElems).containsExactlyElementsIn(elems);
+        assertThat(newElems).doesNotContain(elem);
     }
 
 }

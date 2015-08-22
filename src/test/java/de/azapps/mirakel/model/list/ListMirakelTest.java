@@ -34,17 +34,14 @@ import org.robolectric.annotation.Config;
 import java.util.List;
 import java.util.Random;
 
-import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakel.model.DatabaseHelper;
+import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
-import de.azapps.mirakelandroid.test.TestHelper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -78,9 +75,10 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
             fail("Exception thrown: " + e.getMessage());
         }
         final int countAfter = countElems();
-        assertEquals("Insert ListMirakel don't change the number of elements in database {'function': 'ListMirakel.newList(RandomHelper.getRandomString(), RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomAccountMirakel())', 'name': 'NewList', 'throw': 'ListAlreadyExistsException'}",
-                     countBefore + 1, countAfter);
+        assertThat(countAfter).isEqualTo(countBefore + 1);
     }
+
+
 
     @Test
     public void testNewInsertedNewList1() {
@@ -89,10 +87,8 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
             final ListMirakel elem = ListMirakel.newList(RandomHelper.getRandomString(),
                                      RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomAccountMirakel());
             elems.add(elem);
-            final List<ListMirakel>newElems = ListMirakel.all(false);
-            final boolean result = TestHelper.listEquals(elems, newElems);
-            assertTrue("Something changed while adding a new element to the database {'function': 'ListMirakel.newList(RandomHelper.getRandomString(), RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomAccountMirakel())', 'name': 'NewList', 'throw': 'ListAlreadyExistsException'}",
-                       result);
+            final List<ListMirakel> newElems = ListMirakel.all(false);
+            assertThat(newElems).containsExactlyElementsIn(elems);
         } catch (ListMirakel.ListAlreadyExistsException e) {
             fail("Exception thrown: " + e.getMessage());
         }
@@ -103,11 +99,11 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         try {
             final ListMirakel elem = ListMirakel.newList(RandomHelper.getRandomString(),
                                      RandomHelper.getRandomSORT_BY(), RandomHelper.getRandomAccountMirakel());
-            assertNotNull("Create new ListMirakel failed", elem);
+            assertThat(elem).isNotNull();
             final long id = elem.getId();
             final Optional<ListMirakel> newElem = ListMirakel.get(id);
-            assertEquals("get(id)!=insert()", newElem.orNull(), elem);
-        } catch (ListMirakel.ListAlreadyExistsException e) {
+            assertThat(newElem).hasValue(elem);
+        } catch (final ListMirakel.ListAlreadyExistsException e) {
             fail("Exception thrown: " + e.getMessage());
         }
     }
@@ -120,8 +116,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         final ListMirakel elem = elems.get(randomItem);
         elem.save();
         final List<ListMirakel>newElems = ListMirakel.all(false);
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("If nothing was changed the database should not be update", result);
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 
@@ -137,8 +132,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         }
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setListName(RandomHelper.getRandomString())', 'name': 'SetListName', 'throw': 'ListMirakel.ListAlreadyExistsException'})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
 
@@ -150,8 +144,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setSortBy(RandomHelper.getRandomSORT_BY());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setSortBy(RandomHelper.getRandomSORT_BY())', 'name': 'SetSortBy', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -162,8 +155,6 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setLft(RandomHelper.getRandomint());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setLft(RandomHelper.getRandomint())', 'name': 'SetLft', 'throw': None})",
-                     elem, newElem.orNull());
     }
 
     @Test
@@ -174,8 +165,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setRgt(RandomHelper.getRandomint());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setRgt(RandomHelper.getRandomint())', 'name': 'SetRgt', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -186,8 +176,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setColor(RandomHelper.getRandomint());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setColor(RandomHelper.getRandomint())', 'name': 'SetColor', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -198,8 +187,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setIconPath(RandomHelper.getRandomOptional_Uri());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setIconPath(RandomHelper.getRandomOptional_Uri())', 'name': 'SetIconPath', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -210,8 +198,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setAccount(RandomHelper.getRandomAccountMirakel());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setAccount(RandomHelper.getRandomAccountMirakel())', 'name': 'SetAccount', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -222,8 +209,7 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         elem.setSyncState(RandomHelper.getRandomSYNC_STATE());
         elem.save();
         final Optional<ListMirakel> newElem = ListMirakel.get(elem.getId());
-        assertEquals("After update the elems are not equal ({'function': 'setSyncState(RandomHelper.getRandomSYNC_STATE())', 'name': 'SetSyncState', 'throw': None})",
-                     elem, newElem.orNull());
+        assertThat(newElem).hasValue(elem);
     }
 
     @Test
@@ -233,15 +219,14 @@ public class ListMirakelTest extends MirakelDatabaseTestCase {
         final ListMirakel elem = elems.get(randomItem);
         final long id = elem.getId();
         elem.destroy();
-        assertFalse("Elem was not deleted", ListMirakel.get(id).isPresent());
+        assertThat(ListMirakel.get(id)).isAbsent();
         final List<ListMirakel>newElems = ListMirakel.all(false);
         elems.remove(randomItem);
         // Now we have to iterate over the array and update each element
         for (int i = 0; i < elems.size(); i++) {
             elems.set(i, ListMirakel.get(elems.get(i).getId()).orNull());
         }
-        final boolean result = TestHelper.listEquals(elems, newElems);
-        assertTrue("Deleted more than needed", result);
+        assertThat(newElems).containsExactlyElementsIn(elems);
     }
 
 }

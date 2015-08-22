@@ -247,8 +247,9 @@ dependencies {
 
     //for tests
     testCompile "junit:junit:4.11"
-    testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.0"
+    testCompile 'com.google.truth:truth:0.27'
+
     googleCompile 'com.google.android.gms:play-services-analytics:7.5.0'
 
 }

@@ -32,7 +32,7 @@ import de.azapps.mirakel.model.task.Task;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -48,7 +48,7 @@ public class FileBaseTest extends MirakelDatabaseTestCase {
         final FileMirakel obj = RandomHelper.getRandomElem(all);
         final Task t = RandomHelper.getRandomTask();
         obj.setTask(t);
-        assertEquals("Getting and setting Task does not match", t, obj.getTask());
+        assertThat(obj.getTask()).isEqualTo(t);
     }
 
     // Test for getting and setting FileUri
@@ -58,7 +58,7 @@ public class FileBaseTest extends MirakelDatabaseTestCase {
         final FileMirakel obj = RandomHelper.getRandomElem(all);
         final Uri t = RandomHelper.getRandomUri();
         obj.setFileUri(t);
-        assertEquals("Getting and setting FileUri does not match", t, obj.getFileUri());
+        assertThat(obj.getFileUri()).isEqualTo(t);
     }
 
 }

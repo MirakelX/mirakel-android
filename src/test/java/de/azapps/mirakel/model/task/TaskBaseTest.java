@@ -34,8 +34,8 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
+import static com.google.common.truth.Truth.assertThat;
 import static de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import static org.junit.Assert.assertEquals;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -51,7 +51,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final String t = RandomHelper.getRandomString();
         obj.setContent(t);
-        assertEquals("Getting and setting Content does not match", t, obj.getContent());
+        assertThat(obj.getContent()).isEqualTo(t);
     }
 
     // Test for getting and setting CreatedAt
@@ -61,7 +61,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Calendar t = RandomHelper.getRandomCalendar();
         obj.setCreatedAt(t);
-        assertEquals("Getting and setting CreatedAt does not match", t, obj.getCreatedAt());
+        assertThat(obj.getCreatedAt()).isEqualTo(t);
     }
 
     // Test for getting and setting Due
@@ -71,7 +71,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
         obj.setDue(t);
-        assertEquals("Getting and setting Due does not match", t, obj.getDue());
+        assertThat(obj.getDue()).isEqualTo(t);
     }
 
     // Test for getting and setting List
@@ -81,7 +81,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final ListMirakel t = RandomHelper.getRandomListMirakel();
         obj.setList(t);
-        assertEquals("Getting and setting List does not match", t, obj.getList());
+        assertThat(obj.getList()).isEqualTo(t);
     }
 
     // Test for getting and setting Name
@@ -91,7 +91,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final String t = RandomHelper.getRandomString();
         obj.setName(t);
-        assertEquals("Getting and setting Name does not match", t, obj.getName());
+        assertThat(obj.getName()).isEqualTo(t);
     }
 
     // Test for getting and setting Priority
@@ -101,7 +101,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomPriority();
         obj.setPriority(t);
-        assertEquals("Getting and setting Priority does not match", t, obj.getPriority());
+        assertThat(obj.getPriority()).isEqualTo(t);
     }
 
     // Test for getting and setting Progress
@@ -111,7 +111,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final int t = RandomHelper.getRandomint();
         obj.setProgress(t);
-        assertEquals("Getting and setting Progress does not match", t, obj.getProgress());
+        assertThat(obj.getProgress()).isEqualTo(t);
     }
 
     // Test for getting and setting Recurrence
@@ -121,7 +121,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Optional<Recurring> t = RandomHelper.getRandomOptional_Recurring();
         obj.setRecurrence(t);
-        assertEquals("Getting and setting Recurrence does not match", t, obj.getRecurrence());
+        assertThat(obj.getRecurrence()).isEqualTo(t);
     }
 
     // Test for getting and setting RecurringReminder
@@ -130,10 +130,13 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final List<Task> all = Task.all();
         final Task obj = RandomHelper.getRandomElem(all);
         Optional<Recurring> r = RandomHelper.getRandomOptional_Recurring();
-        long id = r.isPresent() ? r.get().getId() : -1;
+        long id = r.isPresent() ? r.get().getId() : -1L;
         obj.setRecurringReminder(id);
-        assertEquals("Getting and setting RecurringReminder does not match", id,
-                     obj.getRecurringReminder().isPresent() ? obj.getRecurringReminder().get().getId() : -1L);
+        if (r.isPresent()) {
+            assertThat(r.get().getId()).isEqualTo(id);
+        } else {
+            assertThat(-1L).isEqualTo(id);
+        }
     }
 
     // Test for getting and setting RecurringReminder
@@ -143,7 +146,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Optional<Recurring> t = RandomHelper.getRandomOptional_Recurring();
         obj.setRecurringReminder(t);
-        assertEquals("Getting and setting RecurringReminder does not match", t, obj.getRecurringReminder());
+        assertThat(obj.getRecurringReminder()).isEqualTo(t);
     }
 
     // Test for getting and setting Reminder
@@ -153,7 +156,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
         obj.setReminder(t);
-        assertEquals("Getting and setting Reminder does not match", t, obj.getReminder());
+        assertThat(obj.getReminder()).isEqualTo(t);
     }
 
     // Test for getting and setting Reminder
@@ -163,7 +166,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
         obj.setReminder(t);
-        assertEquals("Getting and setting Reminder does not match", t, obj.getReminder());
+        assertThat(obj.getReminder()).isEqualTo(t);
     }
 
     // Test for getting and setting SyncState
@@ -173,7 +176,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final SYNC_STATE t = RandomHelper.getRandomSYNC_STATE();
         obj.setSyncState(t);
-        assertEquals("Getting and setting SyncState does not match", t, obj.getSyncState());
+        assertThat(obj.getSyncState()).isEqualTo(t);
     }
 
     // Test for getting and setting UpdatedAt
@@ -183,7 +186,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final Calendar t = RandomHelper.getRandomCalendar();
         obj.setUpdatedAt(t);
-        assertEquals("Getting and setting UpdatedAt does not match", t, obj.getUpdatedAt());
+        assertThat(obj.getUpdatedAt()).isEqualTo(t);
     }
 
     // Test for getting and setting UUID
@@ -193,7 +196,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final String t = RandomHelper.getRandomString();
         obj.setUUID(t);
-        assertEquals("Getting and setting UUID does not match", t, obj.getUUID());
+        assertThat(obj.getUUID()).isEqualTo(t);
     }
 
     // Test for getting and setting IsStub
@@ -203,7 +206,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         final Task obj = RandomHelper.getRandomElem(all);
         final boolean t = RandomHelper.getRandomboolean();
         obj.setIsStub(t);
-        assertEquals("Getting and setting IsStub does not match", t, obj.isStub());
+        assertThat(obj.isStub()).isEqualTo(t);
     }
 
 }

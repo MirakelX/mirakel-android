@@ -24,7 +24,8 @@ import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
+
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -40,7 +41,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         task.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         Task parceledTask = Task.CREATOR.createFromParcel(parcel);
-        assertEquals(task, parceledTask);
+        assertThat(task).isEqualTo(parceledTask);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         tag.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final Tag parceledTag = Tag.CREATOR.createFromParcel(parcel);
-        assertEquals(tag, parceledTag);
+        assertThat(tag).isEqualTo(parceledTag);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         list.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final ListMirakel parceledList = ListMirakel.CREATOR.createFromParcel(parcel);
-        assertEquals(list, parceledList);
+        assertThat(list).isEqualTo(parceledList);
     }
     @Test
     public void testSemanticParcelable() {
@@ -72,7 +73,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         semantic.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final Semantic parceledSemantic = Semantic.CREATOR.createFromParcel(parcel);
-        assertEquals(semantic, parceledSemantic);
+        assertThat(semantic).isEqualTo(parceledSemantic);
     }
 
     @Test
@@ -88,7 +89,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         recurring.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final Recurring parceledRecurring = Recurring.CREATOR.createFromParcel(parcel);
-        assertEquals(recurring, parceledRecurring);
+        assertThat(recurring).isEqualTo(parceledRecurring);
     }
 
     @Test
@@ -102,7 +103,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         fileMirakel.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final FileMirakel parceledFile = FileMirakel.CREATOR.createFromParcel(parcel);
-        assertEquals(fileMirakel, parceledFile);
+        assertThat(fileMirakel).isEqualTo(parceledFile);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         account.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final AccountMirakel parceledAccount = AccountMirakel.CREATOR.createFromParcel(parcel);
-        assertEquals(account, parceledAccount);
+        assertThat(account).isEqualTo(parceledAccount);
     }
 
     @Test
@@ -161,7 +162,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
         special.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         final SpecialList parceledSpecial = SpecialList.CREATOR.createFromParcel(parcel);
-        assertEquals(special, parceledSpecial);
+        assertThat(special).isEqualTo(parceledSpecial);
     }
 
 }
