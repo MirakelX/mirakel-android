@@ -74,6 +74,10 @@
   public *;
 }
 
+-keep public class de.azapps.mirakel.widget.MainWidgetProvider {
+    public static void update(*);
+}
+
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
     native <methods>;
