@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.SparseIntArray;
 import android.widget.RemoteViews;
 
 import com.google.common.base.Optional;
@@ -196,5 +197,14 @@ public class WidgetHelper {
     public static boolean gethasGradient(final Context context,
                                          final int widgetId) {
         return getBoolean(context, widgetId, "widgetUseGradient", true);
+    }
+
+    public static void updateListIDs(final Context context, final SparseIntArray listMapping,
+                                     final int[] appWidgetIds) {
+        for (final int widgetId : appWidgetIds) {
+            final int listId = getSettings(context).getInt(
+                                   getKey(widgetId, "list_id"), 0);
+            setList(context, widgetId, listMapping.get(listId, listId));
+        }
     }
 }

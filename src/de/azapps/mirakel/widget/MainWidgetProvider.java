@@ -34,8 +34,10 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.widget.RemoteViews;
 
 import com.google.common.base.Optional;
@@ -54,11 +56,21 @@ public class MainWidgetProvider extends AppWidgetProvider {
                                EXTRA_WIDGET_ID = "de.azapps.mirakel.EXTRA_WIDGET_ID";
 
     public static final int NORMAL_WIDGET = 0;
+    @Nullable
+    private static SparseIntArray listMapping = null;
+
+    public static void update(final SparseIntArray idMapping) {
+        listMapping = idMapping;
+    }
 
     @Override
     @SuppressLint("NewApi")
     public void onUpdate(final Context context,
                          final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
+        if (listMapping != null) {
+            WidgetHelper.updateListIDs(context, listMapping, appWidgetIds);
+            listMapping = null;
+        }
         for (final int widgetId : appWidgetIds) {
             Log.v(TAG, "update Widget: " + widgetId);
             final boolean isDark = WidgetHelper.isDark(context, widgetId);
