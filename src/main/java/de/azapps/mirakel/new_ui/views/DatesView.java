@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 
 import com.google.common.base.Optional;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -63,9 +63,9 @@ public class DatesView extends LinearLayout {
     @InjectView(R.id.dates_list)
     KeyValueView listView;
 
-    private Optional<Calendar> due = absent();
+    private Optional<DateTime> due = absent();
     private String listMirakel;
-    private Optional<Calendar> reminder = absent();
+    private Optional<DateTime> reminder = absent();
     private boolean isDone;
     private Optional<Recurring> dueRecurrence;
 

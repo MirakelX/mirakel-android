@@ -67,6 +67,9 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -531,15 +534,15 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(
         new DatePicker.OnDateSetListener() {
             @Override
-            public void onDateSet(final DatePicker dp, final int year,
-                                  final int month, final int day) {
-                final Calendar due = new GregorianCalendar(year, month,
-                        day);
+            public void onDateSet(@NonNull DatePicker picker, @NonNull Optional<LocalDate> newDate) {
+                super.onDateSet(picker, newDate);
+                final Optional<DateTime> due = newDate.isPresent() ? of(newDate.get().toDateTimeAtStartOfDay()) :
+                                               Optional.<DateTime>absent();
                 for (final TaskOverview taskOverview : tasks) {
                     taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
                         @Override
-                        public void apply(Task task) {
-                            task.setDue(of(due));
+                        public void apply(final Task task) {
+                            task.setDue(due);
                             task.save();
                         }
                     });
@@ -548,25 +551,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
                     mActionMode.finish();
                 }
             }
-
-            @Override
-            public void onNoDateSet() {
-                for (final TaskOverview taskOverview : tasks) {
-
-                    taskOverview.withTask(new OptionalUtils.Procedure<Task>() {
-                        @Override
-                        public void apply(Task task) {
-                            task.setDue(Optional.<Calendar>absent());
-                            task.save();
-                        }
-                    });
-                }
-                if (mActionMode != null) {
-                    mActionMode.finish();
-                }
-            }
-        }, dueLocal.get(Calendar.YEAR), dueLocal.get(Calendar.MONTH),
-        dueLocal.get(Calendar.DAY_OF_MONTH));
+        }, new LocalDate());
         datePickerDialog.show(getActivity().getSupportFragmentManager(), "datepicker");
     }
 
@@ -590,7 +575,7 @@ public class TasksFragment extends Fragment implements LoaderManager.LoaderCallb
         final View wrapper = li.inflate(R.layout.add_tags_dialog, null);
         final AddTagView addTagView = (AddTagView) wrapper.findViewById(R.id.add_tags_dialog);
         if (mAdapter.getSelectedItemCount() == 1) {
-            Optional<Task> task = mAdapter.getSelectedItems().get(0).getTask();
+            final Optional<Task> task = mAdapter.getSelectedItems().get(0).getTask();
             if (task.isPresent()) {
                 addTagView.setTags(task.get().getTags());
             } else {

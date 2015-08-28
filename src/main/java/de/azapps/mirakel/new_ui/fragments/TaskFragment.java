@@ -55,8 +55,9 @@ import com.fourmob.datetimepicker.date.DatePicker;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -87,9 +88,9 @@ import de.azapps.mirakel.new_ui.views.ProgressDoneView;
 import de.azapps.mirakel.new_ui.views.SubtasksView;
 import de.azapps.mirakel.new_ui.views.TagsView;
 import de.azapps.mirakelandroid.R;
+import de.azapps.widgets.OnDateTimeSetListener;
 import de.azapps.widgets.SupportDateTimeDialog;
 
-import static com.google.common.base.Optional.of;
 import static de.azapps.tools.OptionalUtils.Procedure;
 
 public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKeyboardChanged,
@@ -623,18 +624,17 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
             final SupportDatePickerDialog datePickerDialog = SupportDatePickerDialog.newInstance(new
             DatePicker.OnDateSetListener() {
                 @Override
-                public void onDateSet(final DatePicker datePickerDialog, final int year, final int month,
-                                      final int day) {
-                    task.setDue(of((Calendar) new GregorianCalendar(year, month, day)));
+                public void onDateSet(final DatePicker datePickerDialog,
+                                      final @NonNull Optional<LocalDate> newDate) {
+                    if (newDate.isPresent()) {
+                        task.setDue(newDate.get().toDateTimeAtStartOfDay());
+                    } else {
+                        task.setDue(Optional.<DateTime>absent());
+                    }
                     task.save();
                     AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_DUE);
                 }
 
-                @Override
-                public void onNoDateSet() {
-                    task.setDue(Optional.<Calendar>absent());
-                    task.save();
-                }
             }, task.getDue());
             datePickerDialog.show(getFragmentManager(), "dueDialog");
         }
@@ -667,18 +667,11 @@ public class TaskFragment extends DialogFragment implements SoftKeyboard.SoftKey
         @Override
         public void onClick(final View v) {
             final SupportDateTimeDialog dateTimeDialog = SupportDateTimeDialog.newInstance(
-            new SupportDateTimeDialog.OnDateTimeSetListener() {
+            new OnDateTimeSetListener() {
                 @Override
-                public void onDateTimeSet(final int year, final int month, final int dayOfMonth,
-                                          final int hourOfDay, final int minute) {
+                public void onDateTimeSet(final @NonNull Optional<DateTime> newDate) {
                     AnalyticsWrapperBase.track(AnalyticsWrapperBase.ACTION.SET_REMINDER);
-                    task.setReminder(of((Calendar) new GregorianCalendar(year, month, dayOfMonth, hourOfDay, minute)));
-                    task.save();
-                }
-
-                @Override
-                public void onNoTimeSet() {
-                    task.setReminder(Optional.<Calendar>absent());
+                    task.setReminder(newDate);
                     task.save();
                 }
             }, task.getReminder());
