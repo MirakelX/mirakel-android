@@ -56,11 +56,11 @@ public class TaskTest extends MirakelDatabaseTestCase {
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel());
 
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
-                     RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                     RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
 
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                      RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
-                     RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                     RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
     }
 
     private static int countElems() {
@@ -101,7 +101,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
     public void testNewCountNewTask2() {
         final int countBefore = countElems();
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
-                     RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                     RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         final int countAfter = countElems();
         assertThat(countAfter).isEqualTo(countBefore + 1);
     }
@@ -110,7 +110,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
     public void testNewInsertedNewTask2() {
         final List<Task>elems = Task.all();
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
-                                       RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                                       RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         elems.add(elem);
         final List<Task>newElems = Task.all();
         assertThat(newElems).hasSize(elems.size());
@@ -120,7 +120,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
     @Test
     public void testNewEqualsNewTask2() {
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
-                                       RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                                       RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         assertThat(elem).isNotNull();
         final long id = elem.getId();
         final Optional<Task> newElem = Task.get(id);
@@ -132,7 +132,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final int countBefore = countElems();
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                      RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
-                     RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                     RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         final int countAfter = countElems();
         assertThat(countAfter).isEqualTo(countBefore + 1);
     }
@@ -142,7 +142,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final List<Task>elems = Task.all();
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                                        RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
-                                       RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                                       RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         elems.add(elem);
         final List<Task>newElems = Task.all();
         assertThat(newElems).hasSize(elems.size());
@@ -153,7 +153,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
     public void testNewEqualsNewTask3() {
         final Task elem = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                                        RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
-                                       RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                                       RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         assertThat(elem).isNotNull();
         final Optional<Task> newElem = Task.get(elem.getId());
         assertThat(newElem).hasValue(elem);
@@ -183,23 +183,13 @@ public class TaskTest extends MirakelDatabaseTestCase {
         assertThat(newElem).hasValue(elem);
     }
 
-    @Test
-    public void testSetCreatedAt2() {
-        final List<Task>elems = Task.all();
-        final int randomItem = new Random().nextInt(elems.size());
-        final Task elem = elems.get(randomItem);
-        elem.setCreatedAt(RandomHelper.getRandomCalendar());
-        elem.save();
-        final Optional<Task> newElem = Task.get(elem.getId());
-        assertThat(newElem).hasValue(elem);
-    }
 
     @Test
     public void testSetDue3() {
         final List<Task>elems = Task.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Task elem = elems.get(randomItem);
-        elem.setDue(RandomHelper.getRandomOptional_Calendar());
+        elem.setDue(RandomHelper.getRandomOptional_DateTime());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
         assertThat(newElem).hasValue(elem);
@@ -287,7 +277,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final List<Task>elems = Task.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Task elem = elems.get(randomItem);
-        elem.setReminder(RandomHelper.getRandomOptional_Calendar());
+        elem.setReminder(RandomHelper.getRandomOptional_DateTime());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
         assertThat(newElem).hasValue(elem);
@@ -298,7 +288,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final List<Task>elems = Task.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Task elem = elems.get(randomItem);
-        elem.setReminder(RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomboolean());
+        elem.setReminder(RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomboolean());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
         assertThat(newElem).hasValue(elem);
@@ -320,7 +310,7 @@ public class TaskTest extends MirakelDatabaseTestCase {
         final List<Task>elems = Task.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Task elem = elems.get(randomItem);
-        elem.setUpdatedAt(RandomHelper.getRandomCalendar());
+        elem.setUpdatedAt(RandomHelper.getRandomDateTime());
         elem.save();
         final Optional<Task> newElem = Task.get(elem.getId());
         assertThat(newElem).hasValue(elem);

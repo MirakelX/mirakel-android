@@ -53,10 +53,9 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         database = DatabaseHelper.getDatabaseHelper(RuntimeEnvironment.application).getWritableDatabase();
         // Create at least one item to have something to test with
 
-        Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomboolean(),
-                               RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(),
+        Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomPeriod(),
+                               RandomHelper.getRandomboolean(),
+                               RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomOptional_DateTime(),
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
     }
@@ -71,10 +70,9 @@ public class RecurringTest extends MirakelDatabaseTestCase {
     @Test
     public void testNewCountNewRecurring1() {
         final int countBefore = countElems();
-        Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomboolean(),
-                               RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(),
+        Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomPeriod(),
+                               RandomHelper.getRandomboolean(),
+                               RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomOptional_DateTime(),
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
         final int countAfter = countElems();
@@ -85,9 +83,8 @@ public class RecurringTest extends MirakelDatabaseTestCase {
     public void testNewInsertedNewRecurring1() {
         final List<Recurring>elems = Recurring.all();
         final Recurring elem = Recurring.newRecurring(RandomHelper.getRandomString(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomboolean(),
-                               RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(),
+                               RandomHelper.getRandomPeriod(), RandomHelper.getRandomboolean(),
+                               RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomOptional_DateTime(),
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
         elems.add(elem);
@@ -99,9 +96,8 @@ public class RecurringTest extends MirakelDatabaseTestCase {
     @Test
     public void testNewEqualsNewRecurring1() {
         final Recurring elem = Recurring.newRecurring(RandomHelper.getRandomString(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomboolean(),
-                               RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(),
+                               RandomHelper.getRandomPeriod(), RandomHelper.getRandomboolean(),
+                               RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomOptional_DateTime(),
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
         assertThat(elem).isNotNull();
@@ -133,16 +129,6 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         assertThat(newElem).hasValue(elem);
     }
 
-    @Test
-    public void testSetYears2() {
-        final List<Recurring>elems = Recurring.all();
-        final int randomItem = new Random().nextInt(elems.size());
-        final Recurring elem = elems.get(randomItem);
-        elem.setYears(RandomHelper.getRandomint());
-        elem.save();
-        final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertThat(newElem).hasValue(elem);
-    }
 
     @Test
     public void testSetForDue3() {
@@ -155,45 +141,13 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         assertThat(newElem).hasValue(elem);
     }
 
-    @Test
-    public void testSetMonths4() {
-        final List<Recurring>elems = Recurring.all();
-        final int randomItem = new Random().nextInt(elems.size());
-        final Recurring elem = elems.get(randomItem);
-        elem.setMonths(RandomHelper.getRandomint());
-        elem.save();
-        final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertThat(newElem).hasValue(elem);
-    }
 
     @Test
-    public void testSetDays5() {
+    public void testSetInterval7() {
         final List<Recurring>elems = Recurring.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Recurring elem = elems.get(randomItem);
-        elem.setDays(RandomHelper.getRandomint());
-        elem.save();
-        final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertThat(newElem).hasValue(elem);
-    }
-
-    @Test
-    public void testSetHours6() {
-        final List<Recurring>elems = Recurring.all();
-        final int randomItem = new Random().nextInt(elems.size());
-        final Recurring elem = elems.get(randomItem);
-        elem.setHours(RandomHelper.getRandomint());
-        elem.save();
-        final Optional<Recurring> newElem = Recurring.get(elem.getId());
-        assertThat(newElem).hasValue(elem);
-    }
-
-    @Test
-    public void testSetMinutes7() {
-        final List<Recurring>elems = Recurring.all();
-        final int randomItem = new Random().nextInt(elems.size());
-        final Recurring elem = elems.get(randomItem);
-        elem.setMinutes(RandomHelper.getRandomint());
+        elem.setInterval(RandomHelper.getRandomPeriod());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
         assertThat(newElem).hasValue(elem);
@@ -204,7 +158,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         final List<Recurring> elems = Recurring.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Recurring elem = elems.get(randomItem);
-        elem.setStartDate(RandomHelper.getRandomOptional_Calendar());
+        elem.setStartDate(RandomHelper.getRandomOptional_DateTime());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
         assertThat(newElem).hasValue(elem);
@@ -215,7 +169,7 @@ public class RecurringTest extends MirakelDatabaseTestCase {
         final List<Recurring>elems = Recurring.all();
         final int randomItem = new Random().nextInt(elems.size());
         final Recurring elem = elems.get(randomItem);
-        elem.setEndDate(RandomHelper.getRandomOptional_Calendar());
+        elem.setEndDate(RandomHelper.getRandomOptional_DateTime());
         elem.save();
         final Optional<Recurring> newElem = Recurring.get(elem.getId());
         assertThat(newElem).hasValue(elem);

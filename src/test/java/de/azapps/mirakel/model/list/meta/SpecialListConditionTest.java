@@ -24,6 +24,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -31,10 +33,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.SpecialListsWhereDeserializer;
@@ -259,7 +258,7 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
     public void testDueCondition() {
         final boolean negated = RandomHelper.getRandomboolean();
         final SpecialListsDueProperty.Unit unit = RandomHelper.getRandomUnit();
-        final int length = Math.abs(RandomHelper.getRandomint());
+        final int length = Math.abs(RandomHelper.getRandomint(10));
 
         final SpecialListsDueProperty due = new SpecialListsDueProperty(unit, length, negated);
         assertThat(due.getUnit()).isEqualTo(unit);
@@ -267,26 +266,22 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         assertThat(due.getLength()).isEqualTo(length);
 
         final MirakelQueryBuilder qb = due.getWhereQueryBuilder(RuntimeEnvironment.application);
-        final Calendar date = new GregorianCalendar();
-        date.setTimeZone(TimeZone.getTimeZone(TimeZone.getAvailableIDs(0)[0]));
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.HOUR, 0);
+        DateTime date = new LocalDate().toDateTimeAtStartOfDay().plusDays(1).minusSeconds(10);
         switch (unit) {
         case DAY:
-            date.add(Calendar.DAY_OF_MONTH, length);
+            date = date.plusDays(length);
             break;
         case MONTH:
-            date.add(Calendar.MONTH, length);
+            date = date.plusMonths(length);
             break;
         case YEAR:
-            date.add(Calendar.YEAR, length);
+            date = date.plusYears(length);
             break;
         }
         assertThat(qb.getSelection()).isEqualTo("due IS NOT NULL  AND due " + (negated ? '>' : '<') + " ?");
         assertThat(qb.getSelectionArguments()).hasSize(1);
         assertThat(qb.getSelectionArguments()).containsExactly(String.valueOf(
-                    date.getTimeInMillis() / 1000L));
+                    date.getMillis()));
         final Optional<SpecialListsBaseProperty> newDue = SpecialListsWhereDeserializer.deserializeWhere(
                     due.serialize(), "Test");
         if (newDue.isPresent() && (newDue.get() instanceof SpecialListsDueProperty)) {
@@ -395,15 +390,20 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         assertThat(prio.getContent()).containsExactlyElementsIn(prios);
 
         final MirakelQueryBuilder qb = prio.getWhereQueryBuilder(RuntimeEnvironment.application);
-        String query = "priority IN(" + TextUtils.join(",", Collections2.transform(prios,
-        new Function<Integer, String>() {
-            @Override
-            public String apply(final Integer input) {
-                return "?";
+        String query;
+        if (prios.isEmpty()) {
+            query = "";
+        } else {
+            query = "priority IN(" + TextUtils.join(",", Collections2.transform(prios,
+            new Function<Integer, String>() {
+                @Override
+                public String apply(final Integer input) {
+                    return "?";
+                }
+            })) + ')';
+            if (negated) {
+                query = "NOT " + query;
             }
-        })) + ')';
-        if (negated) {
-            query = "NOT " + query;
         }
         assertThat(qb.getSelection()).isEqualTo(query);
         assertThat(qb.getSelectionArguments()).hasSize(prios.size());
@@ -511,7 +511,7 @@ public class SpecialListConditionTest extends MirakelDatabaseTestCase {
         final MirakelQueryBuilder qb = tag.getWhereQueryBuilder(RuntimeEnvironment.application);
         String query = "";
         if (!tagIds.isEmpty()) {
-            query = (negated ? "NOT " : "") +
+            query = (negated ? " NOT " : "") +
                     "_id IN (SELECT DISTINCT task_id FROM task_tag WHERE tag_id IN(";
             query += TextUtils.join(",", Collections2.transform(tagIds, new Function<Integer, String>() {
                 @Override

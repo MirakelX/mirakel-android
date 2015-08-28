@@ -20,12 +20,12 @@ package de.azapps.mirakel.model.task;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Calendar;
 import java.util.List;
 
 import de.azapps.mirakel.model.list.ListMirakel;
@@ -54,22 +54,13 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
         assertThat(obj.getContent()).isEqualTo(t);
     }
 
-    // Test for getting and setting CreatedAt
-    @Test
-    public void testCreatedAt2() {
-        final List<Task> all = Task.all();
-        final Task obj = RandomHelper.getRandomElem(all);
-        final Calendar t = RandomHelper.getRandomCalendar();
-        obj.setCreatedAt(t);
-        assertThat(obj.getCreatedAt()).isEqualTo(t);
-    }
 
     // Test for getting and setting Due
     @Test
     public void testDue3() {
         final List<Task> all = Task.all();
         final Task obj = RandomHelper.getRandomElem(all);
-        final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
+        final Optional<DateTime> t = RandomHelper.getRandomOptional_DateTime();
         obj.setDue(t);
         assertThat(obj.getDue()).isEqualTo(t);
     }
@@ -154,7 +145,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
     public void testReminder11() {
         final List<Task> all = Task.all();
         final Task obj = RandomHelper.getRandomElem(all);
-        final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
+        final Optional<DateTime> t = RandomHelper.getRandomOptional_DateTime();
         obj.setReminder(t);
         assertThat(obj.getReminder()).isEqualTo(t);
     }
@@ -164,7 +155,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
     public void testReminder12() {
         final List<Task> all = Task.all();
         final Task obj = RandomHelper.getRandomElem(all);
-        final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
+        final Optional<DateTime> t = RandomHelper.getRandomOptional_DateTime();
         obj.setReminder(t);
         assertThat(obj.getReminder()).isEqualTo(t);
     }
@@ -184,7 +175,7 @@ public class TaskBaseTest extends MirakelDatabaseTestCase {
     public void testUpdatedAt14() {
         final List<Task> all = Task.all();
         final Task obj = RandomHelper.getRandomElem(all);
-        final Calendar t = RandomHelper.getRandomCalendar();
+        final DateTime t = RandomHelper.getRandomDateTime();
         obj.setUpdatedAt(t);
         assertThat(obj.getUpdatedAt()).isEqualTo(t);
     }

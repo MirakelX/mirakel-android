@@ -28,6 +28,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -124,8 +125,12 @@ public class RandomHelper {
     }
 
     public static ACCOUNT_TYPES getRandomACCOUNT_TYPES() {
-        return ACCOUNT_TYPES.values()[random
-                                      .nextInt(ACCOUNT_TYPES.values().length)];
+        ACCOUNT_TYPES type;
+        do {
+            type = ACCOUNT_TYPES.values()[random
+                                          .nextInt(ACCOUNT_TYPES.values().length)];
+        } while (ACCOUNT_TYPES.LOCAL.equals(type));
+        return type;
     }
 
     public static <T> T getRandomElem(final List<T> elems) {
@@ -285,5 +290,17 @@ public class RandomHelper {
         return new DateTime().plusSeconds(random.nextInt(60)).plusMinutes(random.nextInt(60)).plusHours(
                    random.nextInt(24))
                .plusDays(random.nextInt(30)).plusMonths(random.nextInt(12));
+    }
+
+    public static Optional<DateTime> getRandomOptional_DateTime() {
+        if (getRandomint(10) > 7) {
+            return absent();
+        }
+        return of(getRandomDateTime());
+    }
+
+    public static Period getRandomPeriod() {
+        return new Period(getRandomint(2), getRandomint(12), getRandomint(10), getRandomint(5),
+                          getRandomint(5), getRandomint(5), 0, 0);
     }
 }

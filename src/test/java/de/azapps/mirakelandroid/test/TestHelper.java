@@ -21,11 +21,7 @@ package de.azapps.mirakelandroid.test;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.annotation.Nullable;
 
-import com.google.common.base.Objects;
-
-import java.util.List;
 import java.util.Locale;
 
 import de.azapps.material_elements.utils.ThemeManager;
@@ -33,9 +29,9 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -66,17 +62,16 @@ public class TestHelper {
         }
         final Task t = Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel());
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
-                     RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                     RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
         Task.newTask(RandomHelper.getRandomString(), RandomHelper.getRandomListMirakel(),
                      RandomHelper.getRandomString(), RandomHelper.getRandomboolean(),
-                     RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomPriority());
+                     RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomPriority());
 
         Tag.newTag(RandomHelper.getRandomString());
         FileMirakel.newFile(ctx, t, RandomHelper.getRandomUri());
-        Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                               RandomHelper.getRandomint(), RandomHelper.getRandomboolean(),
-                               RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomOptional_Calendar(),
+        Recurring.newRecurring(RandomHelper.getRandomString(), RandomHelper.getRandomPeriod(),
+                               RandomHelper.getRandomboolean(),
+                               RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomOptional_DateTime(),
                                RandomHelper.getRandomboolean(), RandomHelper.getRandomboolean(),
                                RandomHelper.getRandomSparseBooleanArray());
         Semantic.newSemantic(RandomHelper.getRandomString(), RandomHelper.getRandomint(),
@@ -87,25 +82,4 @@ public class TestHelper {
     public static void terminate() {
     }
 
-    /**
-     * 'cause Java is to dumb to do the simplest things…
-     * @param a
-     * @param b
-     * @param <T>
-     * @return
-     */
-    public static <T> boolean listEquals(final @Nullable List<T> a, final @Nullable List<T> b) {
-        if (!Objects.equal(a, b)) {
-            return true;
-        } else if ((a == null) || (b == null) || (a.size() != b.size())) {
-            return false;
-        } else {
-            for (int i = 0; i < a.size(); i++) {
-                if (!Objects.equal(a.get(i), b.get(i))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 }

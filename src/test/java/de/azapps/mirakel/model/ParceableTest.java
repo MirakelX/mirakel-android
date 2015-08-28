@@ -35,7 +35,7 @@ public class ParceableTest extends MirakelDatabaseTestCase {
     public void testTaskParcelable() {
         final ListMirakel list = RandomHelper.getRandomListMirakel();
         final Task task = new Task(RandomHelper.getRandomString(), list, RandomHelper.getRandomString(),
-                                   RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(),
+                                   RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_DateTime(),
                                    RandomHelper.getRandomPriority());
         final Parcel parcel = Parcel.obtain();
         task.writeToParcel(parcel, 0);
@@ -79,10 +79,9 @@ public class ParceableTest extends MirakelDatabaseTestCase {
     @Test
     public void testRecurringParcelable() {
         final Recurring recurring = new Recurring(RandomHelper.getRandomlong(),
-                RandomHelper.getRandomString(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                RandomHelper.getRandomint(), RandomHelper.getRandomint(), RandomHelper.getRandomint(),
-                RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_Calendar(),
-                RandomHelper.getRandomOptional_Calendar(), RandomHelper.getRandomboolean(),
+                RandomHelper.getRandomString(), RandomHelper.getRandomPeriod(),
+                RandomHelper.getRandomboolean(), RandomHelper.getRandomOptional_DateTime(),
+                RandomHelper.getRandomOptional_DateTime(), RandomHelper.getRandomboolean(),
                 RandomHelper.getRandomboolean(), RandomHelper.getRandomSparseBooleanArray(),
                 RandomHelper.getRandomOptional_Long());
         final Parcel parcel = Parcel.obtain();

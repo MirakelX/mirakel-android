@@ -22,12 +22,13 @@ import android.util.SparseBooleanArray;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Calendar;
 import java.util.List;
 
 import de.azapps.mirakelandroid.BuildConfig;
@@ -53,15 +54,6 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         assertThat(obj.getLabel()).isEqualTo(t);
     }
 
-    // Test for getting and setting Years
-    @Test
-    public void testYears2() {
-        final List<Recurring> all = Recurring.all();
-        final Recurring obj = RandomHelper.getRandomElem(all);
-        final int t = RandomHelper.getRandomint();
-        obj.setYears(t);
-        assertThat(obj.getYears()).isEqualTo(t);
-    }
 
     // Test for getting and setting ForDue
     @Test
@@ -73,44 +65,15 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
         assertThat(obj.isForDue()).isEqualTo(t);
     }
 
-    // Test for getting and setting Months
-    @Test
-    public void testMonths4() {
-        final List<Recurring> all = Recurring.all();
-        final Recurring obj = RandomHelper.getRandomElem(all);
-        final int t = RandomHelper.getRandomint();
-        obj.setMonths(t);
-        assertThat(obj.getMonths()).isEqualTo(t);
-    }
-
-    // Test for getting and setting Days
-    @Test
-    public void testDays5() {
-        final List<Recurring> all = Recurring.all();
-        final Recurring obj = RandomHelper.getRandomElem(all);
-        final int t = RandomHelper.getRandomint();
-        obj.setDays(t);
-        assertThat(obj.getDays()).isEqualTo(t);
-    }
-
-    // Test for getting and setting Hours
-    @Test
-    public void testHours6() {
-        final List<Recurring> all = Recurring.all();
-        final Recurring obj = RandomHelper.getRandomElem(all);
-        final int t = RandomHelper.getRandomint();
-        obj.setHours(t);
-        assertThat(obj.getHours()).isEqualTo(t);
-    }
 
     // Test for getting and setting Minutes
     @Test
-    public void testMinutes7() {
+    public void testInterval() {
         final List<Recurring> all = Recurring.all();
         final Recurring obj = RandomHelper.getRandomElem(all);
-        final int t = RandomHelper.getRandomint();
-        obj.setMinutes(t);
-        assertThat(obj.getMinutes()).isEqualTo(t);
+        final Period t = RandomHelper.getRandomPeriod();
+        obj.setInterval(t);
+        assertThat(obj.getInterval()).isEqualTo(t);
     }
 
     // Test for getting and setting StartDate
@@ -118,7 +81,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
     public void testStartDate8() {
         final List<Recurring> all = Recurring.all();
         final Recurring obj = RandomHelper.getRandomElem(all);
-        final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
+        final Optional<DateTime> t = RandomHelper.getRandomOptional_DateTime();
         obj.setStartDate(t);
         assertThat(obj.getStartDate()).isEqualTo(t);
     }
@@ -128,7 +91,7 @@ public class RecurringBaseTest extends MirakelDatabaseTestCase {
     public void testEndDate9() {
         final List<Recurring> all = Recurring.all();
         final Recurring obj = RandomHelper.getRandomElem(all);
-        final Optional<Calendar> t = RandomHelper.getRandomOptional_Calendar();
+        final Optional<DateTime> t = RandomHelper.getRandomOptional_DateTime();
         obj.setEndDate(t);
         assertThat(obj.getEndDate()).isEqualTo(t);
     }

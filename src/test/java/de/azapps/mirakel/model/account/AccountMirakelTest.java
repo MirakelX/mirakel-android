@@ -40,6 +40,7 @@ import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -139,8 +140,13 @@ public class AccountMirakelTest extends MirakelDatabaseTestCase {
     @Test
     public void testDestroy() {
         final List<AccountMirakel>elems = AccountMirakel.all();
-        final int randomItem = new Random().nextInt(elems.size());
-        final AccountMirakel elem = elems.get(randomItem);//
+        if (elems.size() < 2) {
+            fail("Only local account, cannot run this test");
+        }
+        AccountMirakel elem;
+        do {
+            elem = elems.get(RandomHelper.getRandomint(elems.size()));
+        } while (elem.equals(AccountMirakel.getLocal()));
         final long id = elem.getId();
         elem.destroy();
         assertThat(AccountMirakel.get(id)).isAbsent();
