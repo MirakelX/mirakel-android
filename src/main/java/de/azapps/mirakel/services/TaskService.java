@@ -26,8 +26,7 @@ import android.widget.Toast;
 
 import com.google.common.base.Optional;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import org.joda.time.DateTime;
 
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.TaskHelper;
@@ -66,9 +65,9 @@ public class TaskService extends Service {
                            Toast.LENGTH_LONG).show();
             break;
         case TASK_LATER:
-            final Calendar reminder = new GregorianCalendar();
+            final DateTime reminder = new DateTime();
             final int addMinutes = MirakelCommonPreferences.getAlarmLater();
-            reminder.add(Calendar.MINUTE, addMinutes);
+            reminder.plusMinutes(addMinutes);
             task.setReminder(Optional.of(reminder));
             task.save();
             Toast.makeText(

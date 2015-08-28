@@ -23,6 +23,9 @@ import android.util.SparseBooleanArray;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -184,6 +187,11 @@ public class CompatibilityHelper {
                                                 .contains("not"));
     }
 
+    private static Period getInterval(final int years, final int months, final int days,
+                                      final int hours, final int minutes) {
+        return new Period(years, months, 0, days, hours, minutes, 0, 0);
+    }
+
     public static Recurring parseTaskWarriorRecurrence(final String recur) {
         final Scanner in = new Scanner(recur);
         in.useDelimiter("[^0-9]+");
@@ -195,7 +203,7 @@ public class CompatibilityHelper {
         // remove number and possible sign(recurrence should be positive but who
         // knows)
         final Recurring r;
-        switch (recur.replace("" + number, "").replace("-", "")) {
+        switch (recur.replace(String.valueOf(number), "").replace("-", "")) {
         case "yearly":
         case "annual":
             number = 1;
@@ -205,30 +213,30 @@ public class CompatibilityHelper {
         case "yrs":
         case "yr":
         case "y":
-            r = new Recurring(0, recur, 0, 0, 0, 0, number, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
+            r = new Recurring(0, recur, getInterval(number, 0, 0, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(),
                               true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "semiannual":
-            r = new Recurring(0, recur, 0, 0, 0, 6, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
+            r = new Recurring(0, recur, getInterval(0, 6, 0, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(), true,
                               false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "biannual":
         case "biyearly":
-            r = new Recurring(0, recur, 0, 0, 0, 0, 2, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
+            r = new Recurring(0, recur, getInterval(2, 0, 0, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(), true,
                               false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "bimonthly":
-            r = new Recurring(0, recur, 0, 0, 0, 2, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
+            r = new Recurring(0, recur, getInterval(0, 2, 0, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(), true,
                               true, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "biweekly":
         case "fortnight":
-            r = new Recurring(0, recur, 0, 0, 14, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
+            r = new Recurring(0, recur, getInterval(0, 0, 14, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(), true,
                               false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "daily":
@@ -237,8 +245,8 @@ public class CompatibilityHelper {
         case "days":
         case "day":
         case "d":
-            r = new Recurring(0, recur, 0, 0, number, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
+            r = new Recurring(0, recur, getInterval(0, 0, number, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(),
                               true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "hours":
@@ -246,15 +254,15 @@ public class CompatibilityHelper {
         case "hrs":
         case "hr":
         case "h":
-            r = new Recurring(0, recur, 0, number, 0, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
+            r = new Recurring(0, recur, getInterval(0, 0, 0, number, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(),
                               true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "minutes":
         case "mins":
         case "min":
-            r = new Recurring(0, recur, number, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
+            r = new Recurring(0, recur, getInterval(0, 0, 0, 0, number), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(),
                               true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "monthly":
@@ -267,8 +275,8 @@ public class CompatibilityHelper {
         case "mth":
         case "mos":
         case "mo":
-            r = new Recurring(0, recur, 0, 0, 0, number, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
+            r = new Recurring(0, recur, getInterval(0, number, 0, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(),
                               true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         case "quarterly":
@@ -279,8 +287,8 @@ public class CompatibilityHelper {
         case "qtrs":
         case "qtr":
         case "q":
-            r = new Recurring(0, recur, 0, 0, 0, 3 * number, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(),
+            r = new Recurring(0, recur, getInterval(0, 3 * number, 0, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(),
                               true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         default:
@@ -296,8 +304,8 @@ public class CompatibilityHelper {
             for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
                 weekdays.put(i, i != Calendar.SATURDAY && i != Calendar.SUNDAY);
             }
-            r = new Recurring(0, recur, 0, 0, 0, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true,
+            r = new Recurring(0, recur, new Period(), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(), true,
                               false, weekdays, Optional.<Long>absent());
             break;
         case "sennight":
@@ -309,8 +317,8 @@ public class CompatibilityHelper {
         case "wks":
         case "wk":
         case "w":
-            r = new Recurring(0, recur, 0, 0, 7 * number, 0, 0, true, Optional.<Calendar>absent(),
-                              Optional.<Calendar>absent(), true, false, new SparseBooleanArray(), Optional.<Long>absent());
+            r = new Recurring(0, recur, getInterval(0, 0, 7 * number, 0, 0), true, Optional.<DateTime>absent(),
+                              Optional.<DateTime>absent(), true, false, new SparseBooleanArray(), Optional.<Long>absent());
             break;
         }
         return r.create();

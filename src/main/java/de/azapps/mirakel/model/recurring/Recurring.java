@@ -28,8 +28,11 @@ import android.util.SparseBooleanArray;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
+
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,9 +42,9 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
+import de.azapps.mirakel.model.generic.ModelBase;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.Cursor2List;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
@@ -75,59 +78,45 @@ public class Recurring extends RecurringBase {
 
     public static final Uri URI = MirakelInternalContentProvider.RECURRING_URI;
 
-    public Recurring(final long _id, final String label, final int minutes,
-                     final int hours, final int days, final int months, final int years,
-                     final boolean forDue, @NonNull final Optional<Calendar> startDate,
-                     @NonNull final Optional<Calendar> endDate, final boolean temporary,
+    public Recurring(final long id, final String label, final @NonNull Period interval,
+                     final boolean forDue, @NonNull final Optional<DateTime> startDate,
+                     @NonNull final Optional<DateTime> endDate, final boolean temporary,
                      final boolean isExact, @NonNull final SparseBooleanArray weekdays,
                      @NonNull final Optional<Long> derivedFrom) {
-        super(_id, label, minutes, hours, days, months, years, forDue,
+        super(id, label, interval, forDue,
               startDate, endDate, temporary, isExact, weekdays, derivedFrom);
     }
 
     public Recurring(final @NonNull CursorGetter c) {
         super(c.getLong(ID), c.getString(LABEL));
         final SparseBooleanArray weekdays = new SparseBooleanArray();
-        weekdays.put(Calendar.MONDAY, c.getBoolean(MONDAY));
-        weekdays.put(Calendar.TUESDAY, c.getBoolean(TUESDAY));
-        weekdays.put(Calendar.WEDNESDAY, c.getBoolean(WEDNESDAY));
-        weekdays.put(Calendar.THURSDAY, c.getBoolean(THURSDAY));
-        weekdays.put(Calendar.FRIDAY, c.getBoolean(FRIDAY));
-        weekdays.put(Calendar.SATURDAY, c.getBoolean(SATURDAY));
-        weekdays.put(Calendar.SUNDAY, c.getBoolean(SUNDAY));
-        setMinutes(c.getInt(MINUTES));
-        setHours(c.getInt(HOURS));
-        setDays(c.getInt(DAYS));
-        setMonths(c.getInt(MONTHS));
-        setYears(c.getInt(YEARS));
+        weekdays.put(DateTimeConstants.MONDAY, c.getBoolean(MONDAY));
+        weekdays.put(DateTimeConstants.TUESDAY, c.getBoolean(TUESDAY));
+        weekdays.put(DateTimeConstants.WEDNESDAY, c.getBoolean(WEDNESDAY));
+        weekdays.put(DateTimeConstants.THURSDAY, c.getBoolean(THURSDAY));
+        weekdays.put(DateTimeConstants.FRIDAY, c.getBoolean(FRIDAY));
+        weekdays.put(DateTimeConstants.SATURDAY, c.getBoolean(SATURDAY));
+        weekdays.put(DateTimeConstants.SUNDAY, c.getBoolean(SUNDAY));
+        setInterval(new Period(c.getInt(YEARS), c.getInt(MONTHS), 0, c.getInt(DAYS), c.getInt(HOURS),
+                               c.getInt(MINUTES), 0, 0));
         setForDue(c.getBoolean(FOR_DUE));
-        setStartDate(c.getOptional(START_DATE, Calendar.class));
-        setEndDate(c.getOptional(END_DATE, Calendar.class));
+        setStartDate(c.getOptional(START_DATE, DateTime.class));
+        setEndDate(c.getOptional(END_DATE, DateTime.class));
         setTemporary(c.getBoolean(TEMPORARY));
         setExact(c.getBoolean(EXACT));
         setWeekdays(weekdays);
         setDerivedFrom(c.getOptional(DERIVED, Long.class));
     }
 
-    // Static
+
 
     @NonNull
-    public static Recurring createTemporaryCopy(final Recurring r) {
-        final Recurring newR = new Recurring(0, r.getLabel(), r.getMinutes(),
-                                             r.getHours(), r.getDays(), r.getMonths(), r.getYears(),
-                                             r.isForDue(), r.getStartDate(), r.getEndDate(), true,
-                                             r.isExact(), r.getWeekdaysRaw(), Optional.of(r.getId()));
-        return newR.create();
-    }
-
-    @NonNull
-    public static Recurring newRecurring(final String label, final int minutes,
-                                         final int hours, final int days, final int months, final int years,
-                                         final boolean forDue, final Optional<Calendar> startDate,
-                                         final Optional<Calendar> endDate, final boolean temporary,
+    public static Recurring newRecurring(final String label, final @NonNull Period interval,
+                                         final boolean forDue, final Optional<DateTime> startDate,
+                                         final Optional<DateTime> endDate, final boolean temporary,
                                          final boolean isExact, final SparseBooleanArray weekdays) {
-        final Recurring r = new Recurring(0, label, minutes, hours, days,
-                                          months, years, forDue, startDate, endDate, temporary, isExact,
+        final Recurring r = new Recurring(INVALID_ID, label, interval, forDue, startDate, endDate,
+                                          temporary, isExact,
                                           weekdays, Optional.<Long>absent());
         return r.create();
     }
@@ -210,7 +199,7 @@ public class Recurring extends RecurringBase {
         if (!t.getDue().isPresent()) {
             return t;
         }
-        final Calendar newDue = addRecurring( of((Calendar)t.getDue().get().clone()), true).get();
+        final DateTime newDue = addRecurring(of(new DateTime(t.getDue().get())), true).get();
         if (newDue.compareTo(t.getDue().get()) == 0) {
             return t;
         }
@@ -227,7 +216,7 @@ public class Recurring extends RecurringBase {
                     offset = getter.getLong(OFFSET);
                     offsetCount = getter.getLong(OFFSET_COUNT);
                 }
-                offset += newDue.getTimeInMillis() - t.getDue().get().getTimeInMillis();
+                offset += newDue.getMillis() - t.getDue().get().getMillis();
                 ++offsetCount;
                 Optional<Task> child = new MirakelQueryBuilder(context).select(CHILD).and(PARENT, Operation.EQ,
                         masterID).and(OFFSET_COUNT, Operation.EQ,
@@ -271,45 +260,39 @@ public class Recurring extends RecurringBase {
     }
 
     @NonNull
-    public Optional<Calendar> addRecurring(final @NonNull Optional<Calendar> c) {
+    public Optional<DateTime> addRecurring(final @NonNull Optional<DateTime> c) {
         return addRecurring(c, false);
     }
 
     @NonNull
-    private Optional<Calendar> addRecurring(@NonNull final Optional<Calendar> cal,
+    private Optional<DateTime> addRecurring(@NonNull final Optional<DateTime> cal,
                                             final boolean onlyOnce) {
         if (!cal.isPresent()) {
             return absent();
         }
-        Calendar c = cal.get();
-        final Calendar now = new GregorianCalendar();
+        DateTime c = cal.get();
+        final DateTime now = new DateTime();
         if (isExact()) {
             c = now;
         }
-        now.set(Calendar.SECOND, 0);
-        now.add(Calendar.MINUTE, -1);
+        now.withSecondOfMinute(0);
+        now.withMinuteOfHour(0);
         final List<Integer> weekdays = getWeekdays();
         if (weekdays.isEmpty()) {
-            if ((!getStartDate().isPresent() || now.after(getStartDate().get()))
-                && (!getEndDate().isPresent() || now.before(getEndDate().get()))) {
+            if ((!getStartDate().isPresent() || now.isAfter(getStartDate().get()))
+                && (!getEndDate().isPresent() || now.isBefore(getEndDate().get()))) {
                 do {
-                    c.add(Calendar.DAY_OF_MONTH, getDays());
-                    c.add(Calendar.MONTH, getMonths());
-                    c.add(Calendar.YEAR, getYears());
-                    if (!isForDue()) {
-                        c.add(Calendar.MINUTE, getMinutes());
-                        c.add(Calendar.HOUR, getHours());
-                    }
-                } while (c.before(now) && !onlyOnce);
+                    c = c.plus(recurringInterval);
+                } while (c.isBefore(now) && !onlyOnce);
             }
         } else {
             int diff = 8;
-            if (c.compareTo(now) < 0) {
+            if (c.isBefore(now)) {
                 c = now;
             }
-            c.add(Calendar.DAY_OF_MONTH, 1);
+            c = c.plusDays(1);
             for (final Integer day : weekdays) {
-                int local_diff = day - c.get(Calendar.DAY_OF_WEEK);
+                int local_diff = day - c.getDayOfWeek();
                 if (local_diff < 0) {
                     local_diff += 7;
                 }
@@ -317,7 +300,7 @@ public class Recurring extends RecurringBase {
                     diff = local_diff;
                 }
             }
-            c.add(Calendar.DAY_OF_MONTH, diff);
+            c = c.plusDays(diff);
         }
         return of(c);
     }
@@ -346,11 +329,7 @@ public class Recurring extends RecurringBase {
 
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
-        dest.writeInt(this.minutes);
-        dest.writeInt(this.hours);
-        dest.writeInt(this.days);
-        dest.writeInt(this.months);
-        dest.writeInt(this.years);
+        dest.writeSerializable(recurringInterval);
         dest.writeByte(forDue ? (byte) 1 : (byte) 0);
         dest.writeSerializable(this.startDate);
         dest.writeSerializable(this.endDate);
@@ -365,14 +344,10 @@ public class Recurring extends RecurringBase {
     @SuppressWarnings("unchecked") // Unchecked cast
     private Recurring(final Parcel in) {
         super();
-        this.minutes = in.readInt();
-        this.hours = in.readInt();
-        this.days = in.readInt();
-        this.months = in.readInt();
-        this.years = in.readInt();
+        this.recurringInterval = (Period) in.readSerializable();
         this.forDue = in.readByte() != 0;
-        this.startDate = (Optional<Calendar>) in.readSerializable();
-        this.endDate = (Optional<Calendar>) in.readSerializable();
+        this.startDate = (Optional<DateTime>) in.readSerializable();
+        this.endDate = (Optional<DateTime>) in.readSerializable();
         this.temporary = in.readByte() != 0;
         this.isExact = in.readByte() != 0;
         this.weekdays = in.readSparseBooleanArray();
@@ -392,16 +367,6 @@ public class Recurring extends RecurringBase {
         }
     };
 
-    public static Recurring getSafeFirst() {
-        final List<Recurring> all = all();
-        if (all.isEmpty()) {
-            return Recurring.newRecurring(context.getString(R.string.new_recurring), 0, 0,
-                                          0, 0, 1, true, Optional.<Calendar>absent(), Optional.<Calendar>absent(), false, false,
-                                          new SparseBooleanArray());
-        } else {
-            return all.get(0);
-        }
-    }
 
     public String generateDescription() {
         final StringBuilder ret = new StringBuilder();
@@ -418,61 +383,63 @@ public class Recurring extends RecurringBase {
                 text.append(", ");
             }
             switch (day) {
-            case Calendar.MONDAY:
+            case DateTimeConstants.MONDAY:
                 text.append(context.getString(R.string.monday));
                 break;
-            case Calendar.TUESDAY:
+            case DateTimeConstants.TUESDAY:
                 text.append(context.getString(R.string.tuesday));
                 break;
-            case Calendar.WEDNESDAY:
+            case DateTimeConstants.WEDNESDAY:
                 text.append(context.getString(R.string.wednesday));
                 break;
-            case Calendar.THURSDAY:
+            case DateTimeConstants.THURSDAY:
                 text.append(context.getString(R.string.thursday));
                 break;
-            case Calendar.FRIDAY:
+            case DateTimeConstants.FRIDAY:
                 text.append(context.getString(R.string.friday));
                 break;
-            case Calendar.SATURDAY:
+            case DateTimeConstants.SATURDAY:
                 text.append(context.getString(R.string.saturday));
                 break;
-            case Calendar.SUNDAY:
+            case DateTimeConstants.SUNDAY:
                 text.append(context.getString(R.string.sunday));
                 break;
             }
         }
         if (text.length() == 0) {
-            if (years > 0) {
-                text.append(context.getResources().getQuantityString(R.plurals.repeat_year, years, years));
+            if (recurringInterval.getYears() > 0) {
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_year,
+                            recurringInterval.getYears(), recurringInterval.getYears()));
             }
-            if (months > 0) {
+            if (recurringInterval.getMonths() > 0) {
                 if (text.length() > 0) {
                     text.append(", ");
                 }
-                text.append(context.getResources().getQuantityString(R.plurals.repeat_month, months, months));
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_month,
+                            recurringInterval.getMonths(), recurringInterval.getMonths()));
             }
-            if (this.days > 0) {
+
+            if (recurringInterval.getWeeks() > 0) {
                 if (text.length() > 0) {
                     text.append(", ");
                 }
-                if ((this.days % 7) == 0) {
-                    text.append(context.getResources().getQuantityString(R.plurals.repeat_week, this.days / 7,
-                                this.days / 7));
-                } else {
-                    text.append(context.getResources().getQuantityString(R.plurals.repeat_day, this.days, this.days));
-                }
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_week,
+                            recurringInterval.getWeeks(),
+                            recurringInterval.getWeeks()));
             }
-            if (hours > 0) {
+            if (recurringInterval.getHours() > 0) {
                 if (text.length() > 0) {
                     text.append(", ");
                 }
-                text.append(context.getResources().getQuantityString(R.plurals.repeat_hour, hours, hours));
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_hour,
+                            recurringInterval.getHours(), recurringInterval.getHours()));
             }
-            if (minutes > 0) {
+            if (recurringInterval.getMinutes() > 0) {
                 if (text.length() > 0) {
                     text.append(", ");
                 }
-                text.append(context.getResources().getQuantityString(R.plurals.repeat_minute, minutes, minutes));
+                text.append(context.getResources().getQuantityString(R.plurals.repeat_minute,
+                            recurringInterval.getMinutes(), recurringInterval.getMinutes()));
             }
 
         }

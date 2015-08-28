@@ -32,13 +32,14 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -141,9 +142,9 @@ public class WunderlistImport {
                 if (reminder.isJsonObject()) {
                     final int taskID = reminder.getAsJsonObject().get("task_id").getAsInt();
                     final String time = reminder.getAsJsonObject().get("date").getAsString();
-                    final Calendar reminderDate = new GregorianCalendar();
+                    final DateTime reminderDate;
                     try {
-                        reminderDate.setTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.Sz").parse(time));
+                        reminderDate = new DateTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.Sz").parse(time));
                     } catch (final ParseException e1) {
                         Log.wtf(TAG, "invalid timeformat", e1);
                         continue;
@@ -233,8 +234,8 @@ public class WunderlistImport {
         taskMapping.put(jsonTask.get("id").getAsInt(), t);
         if (jsonTask.has("due_date")) {
             try {
-                final Calendar due = DateTimeHelper.parseDate(jsonTask.get(
-                                         "due_date").getAsString());
+                final DateTime due = new DateTime(DateTimeHelper.parseDate(jsonTask.get(
+                                                      "due_date").getAsString()));
                 t.setDue(of(due));
             } catch (final ParseException e) {
                 Log.e(TAG, "cannot parse date", e);
@@ -245,13 +246,6 @@ public class WunderlistImport {
         }
         if (jsonTask.has("completed_at")) {
             t.setDone(true);
-            try {
-                final Calendar completed = DateTimeHelper.parseDate(jsonTask
-                                           .get("completed_at").getAsString());
-                t.setUpdatedAt(completed);
-            } catch (final ParseException e) {
-                Log.e(TAG, "cannot parse date", e);
-            }
         }
         if (jsonTask.has("starred") && jsonTask.get("starred").getAsBoolean()) {
             t.setPriority(2);
@@ -266,20 +260,23 @@ public class WunderlistImport {
             final String type = jsonTask.get("recurrence_type").getAsString();
             switch (type) {
             case "year":
-                r = Recurring.newRecurring(type, 0, 0, 0, 0, rec_count, true, Optional.<Calendar>absent(),
-                                           Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                r = Recurring.newRecurring(type, new Period(rec_count, 0, 0, 0, 0, 0, 0, 0), true,
+                                           Optional.<DateTime>absent(),
+                                           Optional.<DateTime>absent(), true, true, new SparseBooleanArray());
                 break;
             case "month":
-                r = Recurring.newRecurring(type, 0, 0, 0, rec_count, 0, true, Optional.<Calendar>absent(),
-                                           Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                r = Recurring.newRecurring(type, new Period(0, rec_count, 0, 0, 0, 0, 0, 0), true,
+                                           Optional.<DateTime>absent(),
+                                           Optional.<DateTime>absent(), true, true, new SparseBooleanArray());
                 break;
             case "week":
-                r = Recurring.newRecurring(type, 0, 0, rec_count * 7, 0, rec_count, true,
-                                           Optional.<Calendar>absent(), Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                r = Recurring.newRecurring(type, new Period(0, 0, rec_count, 0, 0, 0, 0, 0), true,
+                                           Optional.<DateTime>absent(), Optional.<DateTime>absent(), true, true, new SparseBooleanArray());
                 break;
             case "day":
-                r = Recurring.newRecurring(type, 0, 0, rec_count, 0, 0, true, Optional.<Calendar>absent(),
-                                           Optional.<Calendar>absent(), true, true, new SparseBooleanArray());
+                r = Recurring.newRecurring(type, new Period(0, 0, 0, rec_count, 0, 0, 0, 0), true,
+                                           Optional.<DateTime>absent(),
+                                           Optional.<DateTime>absent(), true, true, new SparseBooleanArray());
                 break;
             default:
                 throw new JsonParseException("Unknown recurring " + type);

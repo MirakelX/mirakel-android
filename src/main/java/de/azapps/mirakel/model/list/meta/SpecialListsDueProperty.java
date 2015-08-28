@@ -23,9 +23,8 @@ import android.content.Context;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -96,25 +95,24 @@ public class SpecialListsDueProperty extends SpecialListsBooleanProperty {
     @NonNull
     @Override
     public MirakelQueryBuilder getWhereQueryBuilder(@NonNull final Context ctx) {
-        final MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(ctx).and(Task.DUE,
                 MirakelQueryBuilder.Operation.NOT_EQ, (String)null);
-        final Calendar date = new GregorianCalendar();
-        date.setTimeZone(TimeZone.getTimeZone(TimeZone.getAvailableIDs(0)[0]));
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.HOUR, 0);
-        switch (this.unit) {
+        DateTime date = new LocalDate().toDateTimeAtStartOfDay().plusDays(1).minusSeconds(10);
+        Log.w(TAG, String.valueOf(date.getMillis()));
+        switch (unit) {
         case DAY:
-            date.add(Calendar.DAY_OF_MONTH, length);
+            date = date.plusDays(length);
             break;
         case MONTH:
-            date.add(Calendar.MONTH, length);
+            date = date.plusMonths(length);
             break;
         case YEAR:
-            date.add(Calendar.YEAR, length);
+            date = date.plusYears(length);
             break;
         }
-        return qb.and(Task.DUE, isSet ? Operation.GT : Operation.LT, date.getTimeInMillis() / 1000L);
+        qb = qb.and(Task.DUE, isSet ? Operation.GT : Operation.LT, date.getMillis());
+        Log.w(TAG, qb.toString(Task.URI));
+        return qb;
     }
 
     @NonNull

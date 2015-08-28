@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -41,9 +42,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -194,25 +193,11 @@ public class ExportImport {
                     final long due = Long.parseLong(m.getNamedItem("dueDate")
                                                     .getTextContent());
                     if (due > 0L) {
-                        final Calendar d = new GregorianCalendar();
-                        d.setTimeInMillis(due);
+                        final DateTime d = new DateTime(due);
                         t.setDue(of(d));
                     } else {
-                        t.setDue(Optional.<Calendar>absent());
+                        t.setDue(Optional.<DateTime>absent());
                     }
-
-                    // Created At
-                    final long created = Long.parseLong(m.getNamedItem(
-                                                            "created").getTextContent());
-                    final GregorianCalendar c = new GregorianCalendar();
-                    c.setTimeInMillis(created);
-                    t.setCreatedAt(c);
-                    // Update At
-                    final long update = Long.parseLong(m.getNamedItem(
-                                                           "modified").getTextContent());
-                    final Calendar u = new GregorianCalendar();
-                    u.setTimeInMillis(update);
-                    t.setUpdatedAt(u);
                     // Done
                     final String done = m.getNamedItem("completed")
                                         .getTextContent();
@@ -274,9 +259,9 @@ public class ExportImport {
                 final String listName = row[7];
                 final int priority = Integer.valueOf(row[5]) - 1;
                 // Due
-                Calendar due = new GregorianCalendar();
+                DateTime due;
                 try {
-                    due.setTime(astridFormat.parse(row[4]));
+                    due = new DateTime(astridFormat.parse(row[4]));
                 } catch (final ParseException e) {
                     due = null;
                 }

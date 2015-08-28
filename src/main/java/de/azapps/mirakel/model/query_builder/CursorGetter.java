@@ -26,13 +26,9 @@ import com.google.common.base.Optional;
 
 import org.joda.time.DateTime;
 
-import java.util.Calendar;
-
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.generic.ModelBase;
 
 import static com.google.common.base.Optional.absent;
-import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 public class CursorGetter {
@@ -88,12 +84,11 @@ public class CursorGetter {
             return (Optional<T>) of(cursor.getShort(index));
         } else if (itemClass.equals(String.class)) {
             return (Optional<T>) of(cursor.getString(index));
-        } else if (Calendar.class.isAssignableFrom(itemClass)) {
-            return (Optional<T>) fromNullable(DateTimeHelper.createLocalCalendar(
-                                                  cursor.getLong(index), true));
         } else if (ModelBase.class.isAssignableFrom(itemClass)) {
             return (Optional<T>) new MirakelQueryBuilder(ctx).get((Class<ModelBase>)itemClass,
                     cursor.getLong(index));
+        } else  if (DateTime.class.isAssignableFrom(itemClass)) {
+            return (Optional<T>) of(new DateTime(cursor.getLong(index)));
         }
         throw new IllegalStateException("Implement getOptional for " + itemClass.getCanonicalName());
     }

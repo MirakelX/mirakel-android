@@ -28,9 +28,10 @@ import android.support.annotation.NonNull;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,17 +40,16 @@ import java.util.regex.Pattern;
 
 import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.account.AccountMirakel;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
 import de.azapps.mirakel.model.list.meta.SpecialListsPriorityProperty;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
@@ -121,13 +121,8 @@ public class Semantic extends SemanticBase {
         }
     }
 
-    private static Calendar getNormalizedCalendar() {
-        final Calendar due = new GregorianCalendar();
-        due.set(Calendar.HOUR_OF_DAY, 0);
-        due.set(Calendar.MINUTE, 0);
-        due.set(Calendar.SECOND, 0);
-        due.add(Calendar.SECOND, DateTimeHelper.getTimeZoneOffset(false, due));
-        return due;
+    private static DateTime getNormalizedCalendar() {
+        return new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
     }
 
     public void apply(@NonNull final Task task) {
@@ -135,25 +130,26 @@ public class Semantic extends SemanticBase {
             task.setPriority(getPriority().get());
         }
         if (getDue().isPresent()) {
-            final Calendar due = getNormalizedCalendar();
-            due.add(Calendar.DAY_OF_MONTH, getDue().get());
+            final DateTime due = getNormalizedCalendar();
+            due.plusDays(getDue().get());
             task.setDue(of(due));
         }
         if (getList().isPresent()) {
             task.setList(getList().get());
         }
         if (getWeekday().isPresent()) {
-            final Calendar due = getNormalizedCalendar();
+            final DateTime due = getNormalizedCalendar();
             int nextWeekday = getWeekday().get() + 1;
             // Because there are some dudes which means, sunday is the
             // first day of the week… That's obviously wrong!
+            final Calendar cal = due.toGregorianCalendar();
             if (nextWeekday == 8) {
                 nextWeekday = 1;
             }
             do {
-                due.add(Calendar.DAY_OF_YEAR, 1);
-            } while (due.get(Calendar.DAY_OF_WEEK) != nextWeekday);
-            task.setDue(of(due));
+                cal.add(Calendar.DAY_OF_YEAR, 1);
+            } while (cal.get(Calendar.DAY_OF_WEEK) != nextWeekday);
+            task.setDue(of(new DateTime(cal)));
         }
     }
 
@@ -190,14 +186,13 @@ public class Semantic extends SemanticBase {
     public static Task createStubTask(final @NonNull String taskName,
                                       @NonNull Optional<ListMirakel> currentList,
                                       final boolean useSemantic) {
-        Optional<Calendar> due = absent();
+        Optional<DateTime> due = absent();
         if (currentList.isPresent() && currentList.get().isSpecial()) {
             try {
                 final SpecialList slist = currentList.get().toSpecial().get();
                 currentList = Optional.fromNullable(slist.getDefaultList());
                 if (slist.getDefaultDate().isPresent()) {
-                    due = of((Calendar)new GregorianCalendar());
-                    due.get().add(Calendar.DAY_OF_MONTH, slist.getDefaultDate().get());
+                    due = of(new DateTime().withDayOfMonth(slist.getDefaultDate().get()));
                 }
                 // calculate Priority
                 if (slist.getWhere().isPresent() &&

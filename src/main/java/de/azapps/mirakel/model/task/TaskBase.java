@@ -26,9 +26,10 @@ import android.support.annotation.Nullable;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.tools.Log;
 
 import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.fromNullable;
 import static com.google.common.base.Optional.of;
 
 abstract class TaskBase extends ModelBase {
@@ -72,10 +74,12 @@ abstract class TaskBase extends ModelBase {
     @NonNull
     protected String content = "";
     @NonNull
-    protected Calendar createdAt = new GregorianCalendar();
+    protected DateTime createdAt = new DateTime();
+    @NonNull
+    protected DateTime updatedAt = new DateTime();
     protected boolean done;
     @NonNull
-    protected Optional<Calendar> due = absent();
+    protected Optional<DateTime> due = absent();
     @NonNull
     protected final Map<String, Boolean> edited = new HashMap<>();
     protected ListMirakel list;
@@ -85,11 +89,9 @@ abstract class TaskBase extends ModelBase {
     protected long recurringReminder;
     protected boolean isRecurringShown;
     @NonNull
-    protected Optional<Calendar> reminder = absent();
+    protected Optional<DateTime> reminder = absent();
     @NonNull
     protected SYNC_STATE syncState = SYNC_STATE.NOTHING;
-    @NonNull
-    protected Calendar updatedAt = new GregorianCalendar();
     @NonNull
     protected String uuid = "";
     @NonNull
@@ -103,9 +105,9 @@ abstract class TaskBase extends ModelBase {
 
     TaskBase(final long newId, @NonNull final String newUuid, @NonNull final ListMirakel newList,
              @NonNull final String newName, @NonNull final String newContent,
-             final boolean newDone, final @NonNull Optional<Calendar> newDue,
-             final @NonNull Optional<Calendar> newReminder, final int newPriority,
-             @NonNull final Calendar newCreatedAt, @NonNull final Calendar newUpdatedAt,
+             final boolean newDone, final @NonNull Optional<DateTime> newDue,
+             final @NonNull Optional<DateTime> newReminder, final int newPriority,
+             @NonNull final DateTime newCreatedAt, @NonNull final DateTime newUpdatedAt,
              @NonNull final SYNC_STATE newSyncState,
              @NonNull final String newAdditionalEntriesString, final int recurring,
              final int newRecurringReminder, final int newProgress,
@@ -137,11 +139,11 @@ abstract class TaskBase extends ModelBase {
         setList(list, false);
         setContent("");
         setDone(false);
-        setDue(Optional.<Calendar>absent());
-        setReminder(Optional.<Calendar>absent());
+        setDue(Optional.<DateTime>absent());
+        setReminder(Optional.<DateTime>absent());
         this.priority = 0;
-        this.createdAt = new GregorianCalendar();
-        this.updatedAt = new GregorianCalendar();
+        this.createdAt = new DateTime();
+        this.updatedAt = createdAt;
         syncState = SYNC_STATE.NOTHING;
         this.recurrence = -1L;
         this.recurringReminder = -1L;
@@ -248,22 +250,20 @@ abstract class TaskBase extends ModelBase {
         cv.put(TaskBase.CONTENT, this.content);
         cv.put(TaskBase.DONE, this.done);
         if (this.due.isPresent()) {
-            if ((this.due.get().get(Calendar.HOUR) == 0)
-                && (this.due.get().get(Calendar.MINUTE) == 0)
-                && (this.due.get().get(Calendar.SECOND) == 0)) {
-                cv.put(TaskBase.DUE, this.due.get().getTimeInMillis() / 1000L);
-            } else {
-                cv.put(TaskBase.DUE, DateTimeHelper.getUTCTime(this.due));
-            }
+            cv.put(DUE, due.get().getMillis());
         } else {
-            cv.put(TaskBase.DUE, (Integer) null);
+            cv.put(TaskBase.DUE, (Long) null);
         }
-        cv.put(TaskBase.REMINDER, DateTimeHelper.getUTCTime(this.reminder));
+        if (this.reminder.isPresent()) {
+            cv.put(TaskBase.REMINDER, reminder.get().getMillis());
+        } else {
+            cv.put(REMINDER, (Long)null);
+        }
         cv.put(TaskBase.PRIORITY, this.priority);
         cv.put(DatabaseHelper.CREATED_AT,
-               this.createdAt.getTimeInMillis() / 1000L);
+               this.createdAt.getMillis());
         cv.put(DatabaseHelper.UPDATED_AT,
-               this.updatedAt.getTimeInMillis() / 1000L);
+               this.updatedAt.getMillis());
         cv.put(DatabaseHelper.SYNC_STATE_FIELD, this.syncState.toInt());
         cv.put(TaskBase.RECURRING, this.recurrence);
         cv.put(TaskBase.RECURRING_REMINDER, this.recurringReminder);
@@ -274,12 +274,12 @@ abstract class TaskBase extends ModelBase {
     }
 
     @NonNull
-    public Calendar getCreatedAt() {
+    public DateTime getCreatedAt() {
         return this.createdAt;
     }
 
     @NonNull
-    public Optional<Calendar> getDue() {
+    public Optional<DateTime> getDue() {
         return this.due;
     }
 
@@ -318,7 +318,7 @@ abstract class TaskBase extends ModelBase {
     }
 
     @NonNull
-    public Optional<Calendar> getReminder() {
+    public Optional<DateTime> getReminder() {
         return this.reminder;
     }
 
@@ -328,7 +328,7 @@ abstract class TaskBase extends ModelBase {
     }
 
     @NonNull
-    public Calendar getUpdatedAt() {
+    public DateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
@@ -403,10 +403,6 @@ abstract class TaskBase extends ModelBase {
         this.edited.put(TaskBase.CONTENT, true);
     }
 
-    public void setCreatedAt(@NonNull final Calendar created_at) {
-        this.createdAt = created_at;
-    }
-
 
     /**
      * @param newDone is the task marked as done?
@@ -441,7 +437,7 @@ abstract class TaskBase extends ModelBase {
         return absent();
     }
 
-    public void setDue(final @NonNull Optional<Calendar> newDue) {
+    public void setDue(final @NonNull Optional<DateTime> newDue) {
         if (DateTimeHelper.equalsCalendar(this.due, newDue)) {
             return;
         }
@@ -555,12 +551,12 @@ abstract class TaskBase extends ModelBase {
         }
     }
 
-    public void setReminder(final @NonNull Optional<Calendar> newReminder) {
+    public void setReminder(final @NonNull Optional<DateTime> newReminder) {
         setReminder(newReminder, false);
     }
 
-    public void setReminder(final @NonNull Optional<Calendar> newReminder, final boolean force) {
-        if (this.reminder.or(new GregorianCalendar()).equals(newReminder.or(new GregorianCalendar()))
+    public void setReminder(final @NonNull Optional<DateTime> newReminder, final boolean force) {
+        if (this.reminder.or(new DateTime()).equals(newReminder.or(new DateTime()))
             && !force) {
             return;
         }
@@ -573,10 +569,6 @@ abstract class TaskBase extends ModelBase {
 
     public void setSyncState(@NonNull final SYNC_STATE sync_state) {
         this.syncState = sync_state;
-    }
-
-    public void setUpdatedAt(@NonNull final Calendar updated_at) {
-        this.updatedAt = updated_at;
     }
 
 
@@ -742,4 +734,11 @@ abstract class TaskBase extends ModelBase {
         return true;
     }
 
+    public void setUpdatedAt(@NonNull DateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setDue(final @Nullable DateTime dateTime) {
+        setDue(fromNullable(dateTime));
+    }
 }

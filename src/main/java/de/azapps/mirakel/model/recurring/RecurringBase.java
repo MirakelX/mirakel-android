@@ -23,14 +23,19 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.model.generic.ModelBase;
+
 import static com.google.common.base.Optional.absent;
 
 abstract class RecurringBase extends ModelBase {
@@ -59,16 +64,12 @@ abstract class RecurringBase extends ModelBase {
     public final static String OFFSET = "offset";
     public final static String OFFSET_COUNT = "offsetCount";
 
-    protected int minutes;
-    protected int hours;
-    protected int days;
-    protected int months;
-    protected int years;
+    protected Period recurringInterval;
     protected boolean forDue;
     @NonNull
-    protected Optional<Calendar> startDate = absent();
+    protected Optional<DateTime> startDate = absent();
     @NonNull
-    protected Optional<Calendar> endDate = absent();
+    protected Optional<DateTime> endDate = absent();
     protected boolean temporary;
     protected boolean isExact;
     @NonNull
@@ -76,19 +77,14 @@ abstract class RecurringBase extends ModelBase {
     @NonNull
     protected Optional<Long> derivedFrom = absent();
 
-    public RecurringBase(final long id, @NonNull final String label, final int minutes,
-                         final int hours, final int days, final int months, final int years,
-                         final boolean forDue, @NonNull final Optional<Calendar> startDate,
-                         @NonNull final Optional<Calendar> endDate, final boolean temporary,
+    public RecurringBase(final long id, @NonNull final String label, final @NonNull Period interval,
+                         final boolean forDue, @NonNull final Optional<DateTime> startDate,
+                         @NonNull final Optional<DateTime> endDate, final boolean temporary,
                          final boolean isExact, final SparseBooleanArray weekdays,
                          @NonNull final Optional<Long> derivedFrom) {
         super(id, label);
-        this.days = days;
         this.forDue = forDue;
-        this.hours = hours;
-        this.minutes = minutes;
-        this.months = months;
-        this.years = years;
+        this.recurringInterval = interval;
         this.setId(id);
         this.setStartDate(startDate);
         this.setEndDate(endDate);
@@ -113,14 +109,6 @@ abstract class RecurringBase extends ModelBase {
         setName(label);
     }
 
-    public int getYears() {
-        return this.years;
-    }
-
-    public void setYears(final int years) {
-        this.years = years;
-    }
-
     public boolean isForDue() {
         return this.forDue;
     }
@@ -129,53 +117,38 @@ abstract class RecurringBase extends ModelBase {
         this.forDue = forDue;
     }
 
-    public int getMonths() {
-        return this.months;
-    }
-
-    public void setMonths(final int months) {
-        this.months = months;
-    }
-
-    public int getDays() {
-        return this.days;
-    }
-
-    public void setDays(final int days) {
-        this.days = days;
-    }
-
-    public int getHours() {
-        return this.hours;
-    }
-
-    public void setHours(final int hours) {
-        this.hours = hours;
-    }
-
-    public int getMinutes() {
-        return this.minutes;
-    }
-
-    public void setMinutes(final int minutes) {
-        this.minutes = minutes;
+    public void setInterval(final @NonNull Period interval) {
+        recurringInterval = interval.normalizedStandard();
     }
 
     @NonNull
-    public Optional<Calendar> getStartDate() {
+    public Period getInterval() {
+        return recurringInterval;
+    }
+
+    public long getIntervalMs() {
+        return getIntervalMs(new DateTime());
+    }
+
+    private long getIntervalMs(final @NonNull DateTime date) {
+        return recurringInterval.toDurationFrom(date).getMillis();
+    }
+
+    @NonNull
+    public Optional<DateTime> getStartDate() {
         return this.startDate;
     }
 
-    public void setStartDate(@NonNull final Optional<Calendar> startDate) {
+    public void setStartDate(@NonNull final Optional<DateTime> startDate) {
         this.startDate = startDate;
     }
 
     @NonNull
-    public Optional<Calendar> getEndDate() {
+    public Optional<DateTime> getEndDate() {
         return this.endDate;
     }
 
-    public void setEndDate(@NonNull final Optional<Calendar> endDate) {
+    public void setEndDate(@NonNull final Optional<DateTime> endDate) {
         this.endDate = endDate;
     }
 
@@ -192,33 +165,29 @@ abstract class RecurringBase extends ModelBase {
     }
 
     public List<Integer> getWeekdays() {
-        final List<Integer> ret = new ArrayList<Integer>();
-        if (this.weekdays.get(Calendar.SUNDAY, false)) {
-            ret.add(Calendar.SUNDAY);
+        final List<Integer> ret = new ArrayList<>();
+        if (this.weekdays.get(DateTimeConstants.SUNDAY, false)) {
+            ret.add(DateTimeConstants.SUNDAY);
         }
-        if (this.weekdays.get(Calendar.MONDAY, false)) {
-            ret.add(Calendar.MONDAY);
+        if (this.weekdays.get(DateTimeConstants.MONDAY, false)) {
+            ret.add(DateTimeConstants.MONDAY);
         }
-        if (this.weekdays.get(Calendar.TUESDAY, false)) {
-            ret.add(Calendar.TUESDAY);
+        if (this.weekdays.get(DateTimeConstants.TUESDAY, false)) {
+            ret.add(DateTimeConstants.TUESDAY);
         }
-        if (this.weekdays.get(Calendar.WEDNESDAY, false)) {
-            ret.add(Calendar.WEDNESDAY);
+        if (this.weekdays.get(DateTimeConstants.WEDNESDAY, false)) {
+            ret.add(DateTimeConstants.WEDNESDAY);
         }
-        if (this.weekdays.get(Calendar.THURSDAY, false)) {
-            ret.add(Calendar.THURSDAY);
+        if (this.weekdays.get(DateTimeConstants.THURSDAY, false)) {
+            ret.add(DateTimeConstants.THURSDAY);
         }
-        if (this.weekdays.get(Calendar.FRIDAY, false)) {
-            ret.add(Calendar.FRIDAY);
+        if (this.weekdays.get(DateTimeConstants.FRIDAY, false)) {
+            ret.add(DateTimeConstants.FRIDAY);
         }
-        if (this.weekdays.get(Calendar.SATURDAY, false)) {
-            ret.add(Calendar.SATURDAY);
+        if (this.weekdays.get(DateTimeConstants.SATURDAY, false)) {
+            ret.add(DateTimeConstants.SATURDAY);
         }
         return ret;
-    }
-
-    protected SparseBooleanArray getWeekdaysRaw() {
-        return this.weekdays;
     }
 
     public void setWeekdays(final SparseBooleanArray weekdays) {
@@ -229,11 +198,12 @@ abstract class RecurringBase extends ModelBase {
         }
     }
 
+    @NonNull
     public Optional<Long> getDerivedFrom() {
         return this.derivedFrom;
     }
 
-    public void setDerivedFrom(final Optional<Long> derivedFrom) {
+    public void setDerivedFrom(@NonNull final Optional<Long> derivedFrom) {
         this.derivedFrom = derivedFrom;
     }
 
@@ -241,44 +211,38 @@ abstract class RecurringBase extends ModelBase {
         this.isExact = isExact;
     }
 
-    /**
-     * Returns the interval for a recurrence in ms
-     *
-     * @return
-     */
-    public long getInterval() {
-        final long minute = 60L;
-        final long hour = 3600L;
-        final long day = 86400L;
-        final long month = 2592000L; // That's not right, but who cares?
-        final long year = 31536000L; // nobody need this…
-        return ((this.minutes * minute) + (this.hours * hour) + (this.days * day)
-                + (this.months * month) + (this.years * year)) * 1000L;
-    }
 
     @NonNull
     @Override
     public ContentValues getContentValues() {
         final ContentValues cv = new ContentValues();
         cv.put(ModelBase.ID, getId());
-        cv.put(MINUTES, this.minutes);
-        cv.put(HOURS, this.hours);
-        cv.put(DAYS, this.days);
-        cv.put(MONTHS, this.months);
-        cv.put(YEARS, this.years);
+        cv.put(MINUTES, this.recurringInterval.getMinutes());
+        cv.put(HOURS, this.recurringInterval.getHours());
+        cv.put(DAYS, this.recurringInterval.getDays() + (7 * this.recurringInterval.getWeeks()));
+        cv.put(MONTHS, this.recurringInterval.getMonths());
+        cv.put(YEARS, this.recurringInterval.getYears());
         cv.put(FOR_DUE, this.forDue);
         cv.put(LABEL, getName());
-        cv.put(START_DATE, DateTimeHelper.getUTCTime(this.startDate));
-        cv.put(END_DATE, DateTimeHelper.getUTCTime(this.endDate));
+        if (startDate.isPresent()) {
+            cv.put(START_DATE, startDate.get().getMillis());
+        } else {
+            cv.put(START_DATE, (Long)null);
+        }
+        if (endDate.isPresent()) {
+            cv.put(END_DATE, endDate.get().getMillis());
+        } else {
+            cv.put(END_DATE, (Long)null);
+        }
         cv.put(TEMPORARY, this.temporary);
         cv.put(EXACT, this.isExact);
-        cv.put(MONDAY, this.weekdays.get(Calendar.MONDAY, false));
-        cv.put(TUESDAY, this.weekdays.get(Calendar.TUESDAY, false));
-        cv.put(WEDNESDAY, this.weekdays.get(Calendar.WEDNESDAY, false));
-        cv.put(THURSDAY, this.weekdays.get(Calendar.THURSDAY, false));
-        cv.put(FRIDAY, this.weekdays.get(Calendar.FRIDAY, false));
-        cv.put(SATURDAY, this.weekdays.get(Calendar.SATURDAY, false));
-        cv.put(SUNDAY, this.weekdays.get(Calendar.SUNDAY, false));
+        cv.put(MONDAY, this.weekdays.get(DateTimeConstants.MONDAY, false));
+        cv.put(TUESDAY, this.weekdays.get(DateTimeConstants.TUESDAY, false));
+        cv.put(WEDNESDAY, this.weekdays.get(DateTimeConstants.WEDNESDAY, false));
+        cv.put(THURSDAY, this.weekdays.get(DateTimeConstants.THURSDAY, false));
+        cv.put(FRIDAY, this.weekdays.get(DateTimeConstants.FRIDAY, false));
+        cv.put(SATURDAY, this.weekdays.get(DateTimeConstants.SATURDAY, false));
+        cv.put(SUNDAY, this.weekdays.get(DateTimeConstants.SUNDAY, false));
         cv.put(DERIVED, this.derivedFrom.orNull());
         return cv;
     }
@@ -298,7 +262,7 @@ abstract class RecurringBase extends ModelBase {
         if (this.getId() != other.getId()) {
             return false;
         }
-        if (this.days != other.days) {
+        if (!Objects.equal(recurringInterval, other.recurringInterval)) {
             return false;
         }
         if ((!this.derivedFrom.isPresent() && other.derivedFrom.isPresent()) ||
@@ -311,28 +275,16 @@ abstract class RecurringBase extends ModelBase {
         if (this.forDue != other.forDue) {
             return false;
         }
-        if (this.hours != other.hours) {
-            return false;
-        }
         if (this.isExact != other.isExact) {
             return false;
         }
         if (!this.getName().equals(other.getName())) {
             return false;
         }
-        if (this.minutes != other.minutes) {
-            return false;
-        }
-        if (this.months != other.months) {
-            return false;
-        }
         if (!DateTimeHelper.equalsCalendar(this.startDate, other.startDate)) {
             return false;
         }
         if (this.temporary != other.temporary) {
-            return false;
-        }
-        if (this.years != other.years) {
             return false;
         }
         return true;
@@ -343,22 +295,18 @@ abstract class RecurringBase extends ModelBase {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int)this.getId();
-        result = prime * result + this.days;
+        result = prime * result + getInterval().hashCode();
         result = prime * result
                  + (!this.derivedFrom.isPresent() ? 0 : this.derivedFrom.get().hashCode());
         result = prime * result
                  + (!this.endDate.isPresent() ? 0 : this.endDate.get().hashCode());
         result = prime * result + (this.forDue ? 1231 : 1237);
-        result = prime * result + this.hours;
         result = prime * result + (this.isExact ? 1231 : 1237);
         result = prime * result
                  + (this.getName() == null ? 0 : this.getName().hashCode());
-        result = prime * result + this.minutes;
-        result = prime * result + this.months;
         result = prime * result
                  + (!this.startDate.isPresent() ? 0 : this.startDate.get().hashCode());
         result = prime * result + (this.temporary ? 1231 : 1237);
-        result = prime * result + this.years;
         return result;
     }
 

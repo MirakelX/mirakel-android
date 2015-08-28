@@ -27,13 +27,14 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.util.Pair;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -41,13 +42,13 @@ import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
-import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.R;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.file.FileMirakel;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.ListMirakel.SORT_BY;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.Cursor2List;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
@@ -108,29 +109,29 @@ public class Task extends TaskBase {
     }
 
     public Task(@NonNull final String name, @NonNull final ListMirakel list,
-                final @NonNull Optional<Calendar> due, final int priority) {
+                final @NonNull Optional<DateTime> due, final int priority) {
         this(name, list, "", false, due, priority);
     }
 
     public Task(@NonNull final String name, @NonNull final ListMirakel list,
                 @NonNull final String content, final boolean done,
-                final @NonNull Optional<Calendar> due, final int priority) {
+                final @NonNull Optional<DateTime> due, final int priority) {
         this(INVALID_ID, java.util.UUID.randomUUID().toString(),
-             list, name, content, done, due, Optional.<Calendar>absent(), priority, new GregorianCalendar(),
-             new GregorianCalendar(),
+             list, name, content, done, due, Optional.<DateTime>absent(), priority, new DateTime(),
+             new DateTime(),
              SYNC_STATE.ADD, "", -1, -1, 0, true);
     }
 
     public Task(final long id, @NonNull final String uuid, @NonNull final ListMirakel list,
                 @NonNull final String name, @NonNull final String content, final boolean done,
-                final @NonNull Optional<Calendar> due, final @NonNull Optional<Calendar> reminder,
+                final @NonNull Optional<DateTime> due, final @NonNull Optional<DateTime> reminder,
                 final int priority,
-                @NonNull final Calendar created_at, @NonNull final Calendar updated_at,
+                @NonNull final DateTime createdAt, @NonNull final DateTime updatedAt,
                 @NonNull final SYNC_STATE sync_state, @NonNull final String additionalEntriesString,
                 final int recurring, final int recurring_reminder,
                 final int progress, final boolean shown) {
         super(id, uuid, list, name, content, done, due, reminder, priority,
-              created_at, updated_at, sync_state, additionalEntriesString,
+              createdAt, updatedAt, sync_state, additionalEntriesString,
               recurring, recurring_reminder, progress, shown);
     }
 
@@ -138,12 +139,10 @@ public class Task extends TaskBase {
         if (cursor.isAfterLast()) {
             throw new IllegalArgumentException("cursor out of bounds");
         }
-        setDue(cursor.getOptional(DUE, Calendar.class));
-        setReminder(cursor.getOptional(REMINDER, Calendar.class));
-        setCreatedAt(cursor.getOptional(DatabaseHelper.CREATED_AT,
-                                        Calendar.class).or(new GregorianCalendar()));
-        setUpdatedAt(cursor.getOptional(DatabaseHelper.UPDATED_AT,
-                                        Calendar.class).or(new GregorianCalendar()));
+        setDue(cursor.getOptional(DUE, DateTime.class));
+        setReminder(cursor.getOptional(REMINDER, DateTime.class));
+        createdAt = cursor.getDateTime(DatabaseHelper.CREATED_AT);
+        updatedAt = cursor.getDateTime(DatabaseHelper.UPDATED_AT);
         setId(cursor.getLong(ID));
         setUUID(cursor.getString(UUID));
         this.list = ListMirakel.get(cursor.getLong(LIST_ID)).get();
@@ -169,9 +168,9 @@ public class Task extends TaskBase {
     // Factory methods
 
     @NonNull
+    @VisibleForTesting
     public static List<Task> all() {
-        return addBasicFiler(new MirakelQueryBuilder(context)).and(DONE,
-                Operation.EQ, false).getList(Task.class);
+        return addBasicFiler(new MirakelQueryBuilder(context)).getList(Task.class);
     }
 
     @NonNull
@@ -355,11 +354,11 @@ public class Task extends TaskBase {
     }
 
     public static Task newTask(final String name, final ListMirakel list) {
-        return newTask(name, list, "", false, Optional.<Calendar>absent(), 0);
+        return newTask(name, list, "", false, Optional.<DateTime>absent(), 0);
     }
 
     public static Task newTask(final String name, final ListMirakel list,
-                               final @NonNull Optional<Calendar> due, final int priority) {
+                               final @NonNull Optional<DateTime> due, final int priority) {
         return newTask(name, list, "", false, due, priority);
     }
 
@@ -377,10 +376,10 @@ public class Task extends TaskBase {
 
     public static Task newTask(final String name, final ListMirakel list,
                                final String content, final boolean done,
-                               final Optional<Calendar> due, final int priority) {
+                               final Optional<DateTime> due, final int priority) {
         final Task t = new Task(0L, java.util.UUID.randomUUID().toString(),
-                                list, name, content, done, due, Optional.<Calendar>absent(), priority, new GregorianCalendar(),
-                                new GregorianCalendar(),
+                                list, name, content, done, due, Optional.<DateTime>absent(), priority, new DateTime(),
+                                new DateTime(),
                                 SYNC_STATE.ADD, "", -1, -1, 0, true);
         try {
             return t.create();
@@ -392,15 +391,6 @@ public class Task extends TaskBase {
     }
 
     public Task create() throws NoSuchListException {
-        return create(true);
-    }
-
-    public Task create(final boolean addFlag) throws NoSuchListException {
-        return create(addFlag, false);
-    }
-
-    public Task create(final boolean addFlag, final boolean calledFromSync)
-    throws NoSuchListException {
         final ContentValues values = getContentValues();
         values.remove(Task.ID);
         setId(insert(URI, values));
@@ -648,7 +638,7 @@ public class Task extends TaskBase {
         setSyncState(((getSyncState() == SYNC_STATE.ADD)
                       || (getSyncState() == SYNC_STATE.IS_SYNCED)) ? getSyncState() : SYNC_STATE.NEED_SYNC);
         if (updateUpdatedAt && (Task.context != null)) {
-            setUpdatedAt(new GregorianCalendar());
+            updatedAt = new DateTime();
         }
         final ContentValues values = getContentValues();
         final List<Tag> tags = getTags();
@@ -946,19 +936,19 @@ public class Task extends TaskBase {
         this.dependencies = in.createStringArray();
         this.additionalEntriesString = in.readString();
         this.content = in.readString();
-        this.createdAt = (Calendar) in.readSerializable();
+        this.createdAt = (DateTime) in.readSerializable();
         this.done = in.readByte() != 0;
-        this.due = fromNullable((Calendar) in.readSerializable());
+        this.due = fromNullable((DateTime) in.readSerializable());
         this.list = in.readParcelable(ListMirakel.class.getClassLoader());
         this.priority = in.readInt();
         this.progress = in.readInt();
         this.recurrence = in.readLong();
         this.recurringReminder = in.readLong();
         this.isRecurringShown = in.readByte() != 0;
-        this.reminder = fromNullable((Calendar) in.readSerializable());
+        this.reminder = fromNullable((DateTime) in.readSerializable());
         final int tmpSyncState = in.readInt();
         this.syncState = (tmpSyncState == -1) ? SYNC_STATE.NOTHING : SYNC_STATE.values()[tmpSyncState];
-        this.updatedAt = (Calendar) in.readSerializable();
+        this.updatedAt = (DateTime) in.readSerializable();
         this.uuid = in.readString();
         in.readTypedList(getTags(), Tag.CREATOR);
         this.setId(in.readLong());

@@ -38,6 +38,9 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -90,7 +93,7 @@ import static com.google.common.base.Optional.of;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 57;
+    public static final int DATABASE_VERSION = 58;
 
     private static final String TAG = "DatabaseHelper";
     public static final String CREATED_AT = "created_at";
@@ -335,14 +338,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             final String[] task_lists = { lists[1], lists[1], lists[1],
                                           lists[0], lists[2], lists[2]
                                         };
-            final Calendar[] dues = new Calendar[6];
-            dues[0] = new GregorianCalendar();
+            final DateTime[] dues = new DateTime[6];
+            dues[0] = new DateTime();
             dues[1] = null;
-            dues[2] = new GregorianCalendar();
-            while (dues[2].get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                dues[2].add(Calendar.DAY_OF_MONTH, 1);
-            }
-            dues[3] = new GregorianCalendar();
+            dues[2] = new DateTime().withDayOfWeek(DateTimeConstants.MONDAY);
+            dues[3] = new DateTime();
             dues[4] = null;
             dues[5] = null;
             final int[] priorities = { 2, -1, 1, 2, 0, 0 };
@@ -867,7 +867,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cv.put("offsetCount", counter);
                     final Optional<Recurring> recurringOptional = t.getRecurrence();
                     if (recurringOptional.isPresent()) {
-                        cv.put("offset", counter * recurringOptional.get().getInterval());
+                        cv.put("offset", counter * recurringOptional.get().getIntervalMs());
                     } else {
                         continue;
                     }
@@ -1011,6 +1011,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             createCaldavTasksView(db);
         case 56:
             mergeListsSpecialLists(db);
+        case 57:
+            db.execSQL("UPDATE tasks SET due = due * 1000 WHERE due is not null;");
+            db.execSQL("UPDATE tasks SET created_at=created_at*1000, updated_at=updated_at*1000;");
+            db.execSQL("UPDATE tasks SET reminder=reminder * 1000 WHERE reminder is not null;");
+            db.execSQL("DROP VIEW caldav_tasks;");
+            createCaldavTasksView(db);
+
+            db.execSQL("UPDATE recurring SET start_date=start_date*1000 WHERE start_date is not null");
+            db.execSQL("UPDATE recurring SET end_date=end_date*1000 WHERE end_date is not null;");
+
         default:
             break;
         }
@@ -1445,10 +1455,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "task_color,\n" +
                    "e.dtstart,\n" +
                    "e.is_allday,\n" +
-                   "t.created_at * 1000 AS created,\n" +
-                   "t.updated_at * 1000 AS last_modified,\n" +
+                   "t.created_at AS created,\n" +
+                   "t.updated_at AS last_modified,\n" +
                    "e.tz,\n" +
-                   "t.due * 1000 AS due,\n" +
+                   "t.due AS due,\n" +
                    "e.duration,\n" +
                    "e.rdate,\n" +
                    "e.exdate,\n" +
@@ -1482,15 +1492,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "    new.description,\n" +
                    "    CASE WHEN new.percent_complete IS NULL THEN 0 ELSE new.percent_complete END,\n" +
                    "    CASE WHEN new.status IN(2,3) THEN 1 ELSE 0 END,  \n" +
-                   "    new.due / 1000,\n" +
+                   "    new.due,\n" +
                    "    CASE WHEN new.priority=0 THEN 0\n" +
                    "         WHEN new.priority < 4 THEN 2 \n" +
                    "         WHEN new.priority < 7 THEN 1 \n" +
                    "         WHEN new.priority <= 9 THEN -1 \n" +
                    "    ELSE 0\n" +
                    "    END,\n" +
-                   "    CASE WHEN new.created IS NULL THEN strftime('%s','now') ELSE new.created / 1000 END,\n" +
-                   "    CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END);\n"
+                   "    CASE WHEN new.created IS NULL THEN strftime('%s','now')*1000 ELSE new.created  END,\n" +
+                   "    CASE WHEN new.last_modified IS NULL THEN strftime('%s','now')*1000 ELSE new.last_modified END);\n"
                    +
                    "    INSERT INTO caldav_tasks_extra (task_id,_sync_id,location,geo,url,organizer,priority,classification, completed_is_allday,"
                    +
@@ -1522,14 +1532,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    "content = new.description,\n" +
                    "progress = CASE WHEN new.percent_complete IS NULL THEN 0 ELSE new.percent_complete END,\n" +
                    "done = CASE WHEN new.status IN(2,3) THEN 1 ELSE 0 END,    \n" +
-                   "due = new.due / 1000,\n" +
+                   "due = new.due ,\n" +
                    "priority = CASE WHEN new.priority=0 THEN 0\n" +
                    "                WHEN new.priority < 4 THEN 2 \n" +
                    "                WHEN new.priority < 7 THEN 1 \n" +
                    "                WHEN new.priority <= 9 THEN -1 \n" +
                    "                ELSE 0\n" +
                    "END,\n" +
-                   "updated_at = CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') ELSE new.last_modified / 1000 END\n"
+                   "updated_at = CASE WHEN new.last_modified IS NULL THEN strftime('%s','now') * 1000 ELSE new.last_modified END\n"
                    +
                    "WHERE _id = old._id;\n" +
                    "INSERT OR REPLACE INTO caldav_tasks_extra VALUES (\n" +

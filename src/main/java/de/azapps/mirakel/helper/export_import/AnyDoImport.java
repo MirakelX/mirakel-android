@@ -20,7 +20,6 @@
 package de.azapps.mirakel.helper.export_import;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -36,13 +35,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -230,11 +230,9 @@ public class AnyDoImport {
         final Task t = Task.newTask(name, listMirakel.get());
         taskMapping.put(jsonTask.get("id").getAsInt(), (int) t.getId());
         if (jsonTask.has("dueDate")) {
-            final Calendar due = new GregorianCalendar();
             final long dueMs = jsonTask.get("dueDate").getAsLong();
-            if (dueMs > 0) {
-                due.setTimeInMillis(dueMs);
-                t.setDue(of(due));
+            if (dueMs > 0L) {
+                t.setDue(of(new DateTime(dueMs)));
             }
         }
         if (jsonTask.has("priority")) {
@@ -263,8 +261,8 @@ public class AnyDoImport {
                     recurringOptional = Recurring.get(1, 0, 0);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
-                                                   ctx.getString(R.string.daily), 0, 0, 1, 0, 0,
-                                                   true, null, null, false, false,
+                                                   ctx.getString(R.string.daily), new Period(0, 0, 0, 1, 0, 0, 0, 0),
+                                                   true, Optional.<DateTime>absent(), Optional.<DateTime>absent(), false, false,
                                                    new SparseBooleanArray()));
                     }
                     break;
@@ -272,8 +270,8 @@ public class AnyDoImport {
                     recurringOptional = Recurring.get(7, 0, 0);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
-                                                   ctx.getString(R.string.weekly), 0, 0, 7, 0, 0,
-                                                   true, null, null, false, false,
+                                                   ctx.getString(R.string.weekly), new Period(0, 0, 1, 0, 0, 0, 0, 0),
+                                                   true, Optional.<DateTime>absent(), Optional.<DateTime>absent(), false, false,
                                                    new SparseBooleanArray()));
                     }
                     break;
@@ -281,8 +279,8 @@ public class AnyDoImport {
                     recurringOptional = Recurring.get(0, 1, 0);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
-                                                   ctx.getString(R.string.monthly), 0, 0, 0, 1, 0,
-                                                   true, null, null, false, false,
+                                                   ctx.getString(R.string.monthly), new Period(0, 1, 0, 0, 0, 0, 0, 0),
+                                                   true, Optional.<DateTime>absent(), Optional.<DateTime>absent(), false, false,
                                                    new SparseBooleanArray()));
                     }
                     break;
@@ -290,8 +288,8 @@ public class AnyDoImport {
                     recurringOptional = Recurring.get(0, 0, 1);
                     if (!recurringOptional.isPresent()) {
                         recurringOptional = of(Recurring.newRecurring(
-                                                   ctx.getString(R.string.yearly), 0, 0, 0, 0, 1,
-                                                   true, null, null, false, false,
+                                                   ctx.getString(R.string.yearly), new Period(1, 0, 0, 0, 0, 0, 0, 0),
+                                                   true, Optional.<DateTime>absent(), Optional.<DateTime>absent(), false, false,
                                                    new SparseBooleanArray()));
                     }
                     break;

@@ -26,9 +26,8 @@ import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-
-import java.util.Calendar;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.DefinitionsHelper;
@@ -81,27 +80,26 @@ public final class TaskHelper {
     /**
      * Returns the ID of the Color–Resource for a Due–Date
      *
-     * @param origDue The Due–Date
+     * @param due The Due–Date
      * @param isDone  Is the Task done?
      * @return ID of the Color–Resource
      */
-    public static int getTaskDueColor(final Optional<Calendar> origDue,
+    public static int getTaskDueColor(final Optional<DateTime> due,
                                       final boolean isDone) {
         final int colorResource;
-        if (!origDue.isPresent()) {
+        if (!due.isPresent()) {
             colorResource = R.attr.colorTextGrey;
         } else {
-            final LocalDate today = new LocalDate();
-            final LocalDate nextWeek = new LocalDate().plusDays(7);
-            final LocalDate due = new LocalDate(origDue.get());
-            final int cmpr = today.compareTo(due);
+            final DateTime today = new LocalDate().toDateTimeAtStartOfDay();
+            final DateTime tomorrow = today.plusDays(1);
+            final DateTime nextWeek = today.plusDays(7);
             if (isDone) {
                 colorResource = R.attr.colorTextGrey;
-            } else if (cmpr > 0) {
+            } else if (today.isAfter(due.get())) {
                 colorResource = R.attr.colorDueOverdue;
-            } else if (cmpr == 0) {
+            } else if (tomorrow.isAfter(due.get())) {
                 colorResource = R.attr.colorDueToday;
-            } else if (nextWeek.compareTo(due) >= 0) {
+            } else if (nextWeek.isAfter(due.get())) {
                 colorResource = R.attr.colorDueNext;
             } else {
                 colorResource = R.attr.colorDueFuture;

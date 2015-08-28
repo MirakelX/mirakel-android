@@ -38,6 +38,8 @@ import android.util.Pair;
 
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -145,7 +147,7 @@ public class ReminderAlarm extends BroadcastReceiver {
         @NonNull
         private final Map<Long, Pair<Long, Task>> activeReminders = new HashMap<>();
         @Nullable
-        private Calendar now;
+        private DateTime now;
 
 
         ReminderHandler(final @NonNull Context ctx) {
@@ -337,14 +339,14 @@ public class ReminderAlarm extends BroadcastReceiver {
                        ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
-        private long getTriggerAtMillis(final Calendar reminder) {
+        private long getTriggerAtMillis(final DateTime reminder) {
             if (now == null) {
                 updateNow();
             }
-            if (reminder.before(now)) {
-                return DateTimeHelper.getUTCCalendar(now).getTimeInMillis();
+            if (reminder.isBefore(now)) {
+                return now.getMillis();
             } else {
-                return reminder.getTimeInMillis();
+                return reminder.getMillis();
             }
         }
 
@@ -428,8 +430,8 @@ public class ReminderAlarm extends BroadcastReceiver {
         }
 
         private void updateNow() {
-            now = new GregorianCalendar();
-            now.add(Calendar.SECOND, -10);
+            now = new DateTime();
+            now.minusSeconds(10);
         }
 
         public void destroy() {
@@ -446,7 +448,7 @@ public class ReminderAlarm extends BroadcastReceiver {
                 if (task.isPresent()) {
                     if (!task.get().isDone() &&
                         task.get().getReminder().isPresent()
-                        && task.get().getReminder().get().before(new GregorianCalendar())) {
+                        && task.get().getReminder().get().isBefore(new DateTime())) {
                         sendNotificantion(task.get(), false);
                     }
                 } else {

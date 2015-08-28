@@ -25,11 +25,11 @@ import android.support.annotation.NonNull;
 
 import com.google.common.base.Optional;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
 
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.generic.IGenericElementInterface;
 import de.azapps.mirakel.model.generic.ModelBase;
-import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.tools.OptionalUtils;
@@ -48,7 +48,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
     private int priority;
     private int progress;
     @NonNull
-    protected Optional<Calendar> due = absent();
+    protected Optional<DateTime> due = absent();
     private long listId;
     @NonNull
     private Optional<ListMirakel> listMirakelOptional = absent();
@@ -72,7 +72,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
         setName(cursor.getString(ModelBase.NAME));
         done = cursor.getBoolean(Task.DONE);
         progress = cursor.getInt(Task.PROGRESS);
-        due = cursor.getOptional(Task.DUE, Calendar.class);
+        due = cursor.getOptional(Task.DUE, DateTime.class);
         listId = cursor.getLong(Task.LIST_ID);
         listName = cursor.getString("list_name");
         accountId = cursor.getLong("account_id");
@@ -88,7 +88,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
     }
 
     @NonNull
-    public Optional<Calendar> getDue() {
+    public Optional<DateTime> getDue() {
         return due;
     }
 
@@ -161,7 +161,7 @@ public class TaskOverview extends ModelBase implements IGenericElementInterface,
         this.done = in.readByte() != 0;
         this.priority = in.readInt();
         this.progress = in.readInt();
-        this.due = (Optional<Calendar>) in.readSerializable();
+        this.due = (Optional<DateTime>) in.readSerializable();
         this.listId = in.readLong();
         this.listName = in.readString();
         this.accountId = in.readLong();
