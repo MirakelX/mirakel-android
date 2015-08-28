@@ -20,10 +20,12 @@
 package de.azapps.widgets;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,14 +40,17 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePicker;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
 import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.tools.Log;
+
+import static com.google.common.base.Optional.of;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DateTimeDialog extends DialogFragment {
@@ -57,40 +62,22 @@ public class DateTimeDialog extends DialogFragment {
     }
 
     public static DateTimeDialog newInstance(final OnDateTimeSetListener callback,
-            final Optional<Calendar> dateTime, final boolean dark) {
-        final Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
-        final int year = notNullDateTime.get(Calendar.YEAR);
-        final int month = notNullDateTime.get(Calendar.MONTH);
-        final int day = notNullDateTime.get(Calendar.DAY_OF_MONTH);
-        final int hour = notNullDateTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = notNullDateTime.get(Calendar.MINUTE);
-        return newInstance(callback, year, month, day, hour, minute, true, dark);
+            final Optional<DateTime> dateTime) {
+
+        return newInstance(callback, dateTime.or(new DateTime()));
     }
 
     public static DateTimeDialog newInstance(
-        final OnDateTimeSetListener callback, final int year,
-        final int month, final int dayOfMonth, final int hourOfDay,
-        final int minute, final boolean vibrate, final boolean dark) {
+        final OnDateTimeSetListener callback, final @NonNull DateTime initDate) {
         final DateTimeDialog dt = new DateTimeDialog();
-        dt.init(year, month, dayOfMonth, hourOfDay, minute);
+        dt.mInitialDate = initDate;
         dt.mCallback = callback;
         return dt;
     }
 
-    private int mInitialYear;
-    private int mInitialMonth;
-    private int mInitialDay;
-    private int mInitialHour;
-    private int mInitialMinute;
+    private DateTime mInitialDate;
 
-    private void init(final int year, final int month, final int dayOfMonth,
-                      final int hourOfDay, final int minute) {
-        this.mInitialYear = year;
-        this.mInitialMonth = month;
-        this.mInitialDay = dayOfMonth;
-        this.mInitialHour = hourOfDay;
-        this.mInitialMinute = minute;
-    }
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -126,47 +113,34 @@ public class DateTimeDialog extends DialogFragment {
         this.dp = (DatePicker) v.findViewById(R.id.date_picker);
         this.tp = (TimePicker) v.findViewById(R.id.time_picker);
         this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocale(getActivity())));
-        this.tp.setTime(this.mInitialHour, this.mInitialMinute);
+        this.tp.setTime(mInitialDate.toLocalTime());
         this.tp.setOnKeyListener(this.tp.getNewKeyboardListner(getDialog()));
         this.tp.setOnTimeSetListener(new OnTimeSetListener() {
             @Override
-            public void onTimeSet(final RadialPickerLayout view,
-                                  final int hourOfDay, final int minute) {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onDateTimeSet(
-                        DateTimeDialog.this.dp.getYear(),
-                        DateTimeDialog.this.dp.getMonth(),
-                        DateTimeDialog.this.dp.getDay(), hourOfDay, minute);
+            public void onTimeSet(final RadialPickerLayout view, final @NonNull Optional<LocalTime> newTime) {
+                if (mCallback != null) {
+                    if (newTime.isPresent()) {
+                        mCallback.onDateTimeSet(of(dp.getDate().toDateTime(newTime.get())));
+                    } else {
+                        mCallback.onDateTimeSet(Optional.<DateTime>absent());
+                    }
                 }
-                dismiss();
+                safeDismiss();
             }
 
-            @Override
-            public void onNoTimeSet() {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onNoTimeSet();
-                }
-                dismiss();
-            }
         });
         this.dp.setOnDateSetListener(new OnDateSetListener() {
             @Override
-            public void onNoDateSet() {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onNoTimeSet();
-                }
-                dismiss();
-            }
-
-            @Override
             public void onDateSet(final DatePicker datePickerDialog,
-                                  final int year, final int month, final int day) {
-                if (DateTimeDialog.this.mCallback != null) {
-                    DateTimeDialog.this.mCallback.onDateTimeSet(year, month,
-                            day, DateTimeDialog.this.tp.getHour(),
-                            DateTimeDialog.this.tp.getMinute());
+                                  final @NonNull Optional<LocalDate> newDate) {
+                if (mCallback != null) {
+                    if (newDate.isPresent()) {
+                        mCallback.onDateTimeSet(of(newDate.get().toDateTime(tp.getTime())));
+                    } else {
+                        mCallback.onDateTimeSet(Optional.<DateTime>absent());
+                    }
                 }
-                dismiss();
+                safeDismiss();
             }
         });
         switchToDate.setTextColor(ThemeManager.getColor(R.attr.colorTextGrey));
@@ -189,20 +163,31 @@ public class DateTimeDialog extends DialogFragment {
                 }
             }
         });
-        this.dp.setYear(this.mInitialYear);
-        this.dp.setMonth(this.mInitialMonth);
-        this.dp.setDay(this.mInitialDay);
-        this.tp.setHour(this.mInitialHour, false);
-        this.tp.setMinute(this.mInitialMinute);
+        this.dp.setDate(mInitialDate.toLocalDate());
         return v;
     }
 
-    public interface OnDateTimeSetListener {
+    //dirty hack to get a reference to the
+    // originally created dialog if the screen was rotated
+    private static Dialog dialog;
 
-        void onDateTimeSet(final int year, final int month,
-                           final int dayOfMonth, final int hourOfDay, final int minute);
 
-        void onNoTimeSet();
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        dialog = super.onCreateDialog(savedInstanceState);
+        return dialog;
+    }
+
+    private void safeDismiss() {
+        try {
+            dismiss();
+        } catch (final NullPointerException ignored) {
+            // if the user rotates the screen the current dialog is gone
+            // so use this dirty hack to get it back
+            dialog.dismiss();
+
+        }
     }
 
     @Override

@@ -24,17 +24,18 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.fourmob.datetimepicker.Utils;
 
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
 import java.security.InvalidParameterException;
-import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
@@ -55,18 +56,13 @@ public class SimpleMonthView extends View {
     protected static int MONTH_DAY_LABEL_TEXT_SIZE;
     protected static int MONTH_HEADER_SIZE;
     protected static int MONTH_LABEL_TEXT_SIZE;
-    protected static float mScale = 0.0F;
     private final int mBackground;
-    private final Calendar mCalendar;
-    private final DateFormatSymbols mDateFormatSymbols = new DateFormatSymbols();
-    private final Calendar mDayLabelCalendar;
+    private LocalDate mCalendar;
+    private LocalDate mDayLabelCalendar;
     private int mDayOfWeekStart = 0;
     private final String mDayOfWeekTypeface;
     protected int mDayTextColor;
-    protected int mFirstJulianDay = -1;
-    protected int mFirstMonth = -1;
     protected boolean mHasToday = false;
-    protected int mLastMonth = -1;
     protected int mMonth;
     protected Paint mMonthDayLabelPaint;
     protected Paint mMonthNumPaint;
@@ -82,8 +78,6 @@ public class SimpleMonthView extends View {
     protected int mRowHeight = DEFAULT_HEIGHT;
     protected Paint mSelectedCirclePaint;
     protected int mSelectedDay = -1;
-    protected int mSelectedLeft = -1;
-    protected int mSelectedRight = -1;
     private final StringBuilder mStringBuilder;
     protected int mToday = -1;
     protected int mTodayNumberColor;
@@ -94,8 +88,8 @@ public class SimpleMonthView extends View {
 
     public SimpleMonthView(final Context context) {
         super(context);
-        this.mDayLabelCalendar = Calendar.getInstance();
-        this.mCalendar = Calendar.getInstance();
+        this.mDayLabelCalendar = new LocalDate();
+        this.mCalendar = mDayLabelCalendar;
         this.mDayOfWeekTypeface = getResources()
                                   .getString(R.string.day_of_week_label_typeface);
         this.mMonthTitleTypeface = getResources().getString(R.string.sans_serif);
@@ -136,14 +130,16 @@ public class SimpleMonthView extends View {
         final int space = (this.mWidth - 2 * this.mPadding)
                           / (2 * SimpleMonthView.mNumDays);
         for (int day = 0; day < SimpleMonthView.mNumDays; day++) {
-            final int dayOfWeek = (day + this.mWeekStart)
-                                  % SimpleMonthView.mNumDays;
+            int dayOfWeek = (day + this.mWeekStart);
+            if (dayOfWeek > DateTimeConstants.SUNDAY) {
+                dayOfWeek -= DateTimeConstants.SUNDAY;
+            }
             final int x = space * (1 + day * 2) + this.mPadding;
-            this.mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-            canvas.drawText(
-                this.mDateFormatSymbols.getShortWeekdays()[this.mDayLabelCalendar
-                        .get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale
-                                .getDefault()), x, y, this.mMonthDayLabelPaint);
+            mDayLabelCalendar = mDayLabelCalendar.withDayOfWeek(dayOfWeek);
+            canvas.drawText(new DateTimeFormatterBuilder()
+                            .appendDayOfWeekShortText()
+                            .toFormatter()
+                            .print(mDayLabelCalendar), x, y, this.mMonthDayLabelPaint);
         }
     }
 
@@ -213,7 +209,7 @@ public class SimpleMonthView extends View {
 
     private String getMonthAndYearString() {
         this.mStringBuilder.setLength(0);
-        final long dateInMillis = this.mCalendar.getTimeInMillis();
+        final long dateInMillis = this.mCalendar.toDateTimeAtStartOfDay().getMillis();
         return DateUtils.formatDateRange(getContext(), dateInMillis,
                                          dateInMillis, 52).toString();
     }
@@ -302,10 +298,6 @@ public class SimpleMonthView extends View {
         requestLayout();
     }
 
-    private boolean sameDay(final int monthDay, final Time time) {
-        return this.mYear == time.year && this.mMonth == time.month
-               && monthDay == time.monthDay;
-    }
 
     public void setMonthParams(final HashMap<String, Integer> monthParams) {
         if (!monthParams.containsKey("month")
@@ -325,24 +317,20 @@ public class SimpleMonthView extends View {
         }
         this.mMonth = monthParams.get("month").intValue();
         this.mYear = monthParams.get("year").intValue();
-        final Time time = new Time(Time.getCurrentTimezone());
-        time.setToNow();
         this.mHasToday = false;
         this.mToday = -1;
-        this.mCalendar.set(Calendar.MONTH, this.mMonth);
-        this.mCalendar.set(Calendar.YEAR, this.mYear);
-        this.mCalendar.set(Calendar.DAY_OF_MONTH, 1);
-        this.mCalendar.setFirstDayOfWeek(Calendar.getInstance(
-                                             Helpers.getLocale(getContext())).getFirstDayOfWeek());
-        this.mDayOfWeekStart = this.mCalendar.get(Calendar.DAY_OF_WEEK);
-        this.mWeekStart = Calendar.getInstance(Helpers.getLocale(getContext()))
-                          .getFirstDayOfWeek();
+        mCalendar = mCalendar.withYear(mYear).withMonthOfYear(mMonth).withDayOfMonth(1);
+        this.mDayOfWeekStart = this.mCalendar.getDayOfWeek();
+        this.mWeekStart = ((Calendar.getInstance(Helpers.getLocale(getContext())).getFirstDayOfWeek() + 5) %
+                           SimpleMonthView.mNumDays) + 1;
         this.mNumCells = Utils.getDaysInMonth(this.mMonth, this.mYear);
-        for (int day = 0; day < this.mNumCells; day++) {
-            final int monthDay = day + 1;
-            if (sameDay(monthDay, time)) {
-                this.mHasToday = true;
-                this.mToday = monthDay;
+        final LocalDate now = new LocalDate();
+        if (mMonth == now.getMonthOfYear()) {
+            for (int day = 0; day < this.mNumCells; day++) {
+                if (now.getDayOfMonth() == day + 1) {
+                    this.mHasToday = true;
+                    this.mToday = now.getDayOfMonth();
+                }
             }
         }
         this.mNumRows = calculateNumRows();

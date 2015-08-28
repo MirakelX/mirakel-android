@@ -25,6 +25,7 @@ import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
+import com.google.common.base.Optional;
+
+import org.joda.time.LocalDate;
 
 import de.azapps.mirakel.date_time.R;
 
@@ -41,9 +45,7 @@ public class DatePickerDialog extends DialogFragment {
 
     protected DatePicker mDatePicker;
     private OnDateSetListener mCallback;
-    protected int mInitYear;
-    protected int mInitMonth;
-    protected int mInitDay;
+    protected LocalDate mInitDate;
     private boolean mHasNoDate;
 
     public DatePickerDialog() {
@@ -52,28 +54,19 @@ public class DatePickerDialog extends DialogFragment {
 
 
     public void initialize(final OnDateSetListener onDateSetListener,
-                           final int year, final int month, final int day, final boolean hasNoDate) {
+                           final @NonNull LocalDate initDate, final boolean hasNoDate) {
         this.mCallback = new OnDateSetListener() {
-            @Override
-            public void onNoDateSet() {
-                if (onDateSetListener != null) {
-                    onDateSetListener.onNoDateSet();
-                }
-                dismiss();
-            }
+
             @Override
             public void onDateSet(final DatePicker datePickerDialog,
-                                  final int year, final int month, final int day) {
+                                  final @NonNull Optional<LocalDate> newDate) {
                 if (onDateSetListener != null) {
-                    onDateSetListener.onDateSet(datePickerDialog, year, month,
-                                                day);
+                    onDateSetListener.onDateSet(datePickerDialog, newDate);
                 }
                 dismiss();
             }
         };
-        this.mInitYear = year;
-        this.mInitMonth = month;
-        this.mInitDay = day;
+        this.mInitDate = initDate;
         this.mHasNoDate = hasNoDate;
     }
 
@@ -117,12 +110,7 @@ public class DatePickerDialog extends DialogFragment {
         this.mDatePicker.postDelayed(new Runnable() {
             @Override
             public void run() {
-                DatePickerDialog.this.mDatePicker
-                .setYear(DatePickerDialog.this.mInitYear);
-                DatePickerDialog.this.mDatePicker
-                .setMonth(DatePickerDialog.this.mInitMonth);
-                DatePickerDialog.this.mDatePicker
-                .setDay(DatePickerDialog.this.mInitDay);
+                DatePickerDialog.this.mDatePicker.setDate(mInitDate);
             }
         }, 0L);
         if (!this.mHasNoDate) {

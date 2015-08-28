@@ -16,23 +16,15 @@
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package de.azapps.widgets;
 
-package com.fourmob.datetimepicker.date;
 
-abstract interface DatePickerController {
-    public abstract int getFirstDayOfWeek();
+import android.support.annotation.NonNull;
 
-    public abstract int getMaxYear();
+import com.google.common.base.Optional;
 
-    public abstract int getMinYear();
+import org.joda.time.DateTime;
 
-    public abstract SimpleMonthAdapter.CalendarDay getSelectedDay();
-
-    public abstract void onDayOfMonthSelected(final int year, final int month,
-            final int day);
-
-    public abstract void onYearSelected(final int year);
-
-    public abstract void registerOnDateChangedListener(
-        final DatePicker.OnDateChangedListener onDateChangedListener);
+public interface OnDateTimeSetListener {
+    void onDateTimeSet(final @NonNull Optional<DateTime> newDate);
 }
