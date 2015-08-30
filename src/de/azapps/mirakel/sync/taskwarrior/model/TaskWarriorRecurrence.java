@@ -25,8 +25,9 @@ import android.util.SparseBooleanArray;
 import com.google.common.base.Optional;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
 
-import java.util.Calendar;
 import java.util.Scanner;
 
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -66,21 +67,21 @@ public class TaskWarriorRecurrence extends Recurring {
         case "yrs":
         case "yr":
         case "y":
-            recurringInterval = recurringInterval.withYears(number);
+            recurringInterval = new Period().withYears(number);
             break;
         case "semiannual":
-            recurringInterval = recurringInterval.withMonths(6);
+            recurringInterval = new Period().withMonths(6);
             break;
         case "biannual":
         case "biyearly":
-            recurringInterval = recurringInterval.withYears(2);
+            recurringInterval = new Period().withYears(2);
             break;
         case "bimonthly":
-            recurringInterval = recurringInterval.withMonths(2);
+            recurringInterval = new Period().withMonths(2);
             break;
         case "biweekly":
         case "fortnight":
-            recurringInterval = recurringInterval.withWeeks(2);
+            recurringInterval = new Period().withWeeks(2);
             break;
         case "daily":
             number = 1;
@@ -88,19 +89,19 @@ public class TaskWarriorRecurrence extends Recurring {
         case "days":
         case "day":
         case "d":
-            recurringInterval = recurringInterval.withDays(number);
+            recurringInterval = new Period().withDays(number);
             break;
         case "hours":
         case "hour":
         case "hrs":
         case "hr":
         case "h":
-            recurringInterval = recurringInterval.withHours(number);
+            recurringInterval = new Period().withHours(number);
             break;
         case "minutes":
         case "mins":
         case "min":
-            recurringInterval = recurringInterval.withMinutes(number);
+            recurringInterval = new Period().withMinutes(number);
             break;
         case "monthly":
             number = 1;
@@ -112,7 +113,7 @@ public class TaskWarriorRecurrence extends Recurring {
         case "mth":
         case "mos":
         case "mo":
-            recurringInterval = recurringInterval.withMonths(number);
+            recurringInterval = new Period().withMonths(number);
             break;
         case "quarterly":
             number = 1;
@@ -122,7 +123,7 @@ public class TaskWarriorRecurrence extends Recurring {
         case "qtrs":
         case "qtr":
         case "q":
-            recurringInterval = recurringInterval.withMonths(3 * number);
+            recurringInterval = new Period().withMonths(3 * number);
             break;
         case "sennight":
         case "weekly":
@@ -133,14 +134,15 @@ public class TaskWarriorRecurrence extends Recurring {
         case "wks":
         case "wk":
         case "w":
-            recurringInterval = recurringInterval.withWeeks(number);
+            recurringInterval = new Period().withWeeks(number);
             break;
         case "weekdays":
             final SparseBooleanArray weekdays = new SparseBooleanArray(7);
-            for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
-                weekdays.put(i, (i != Calendar.SATURDAY) && (i != Calendar.SUNDAY));
+            for (int i = DateTimeConstants.MONDAY; i <= DateTimeConstants.SUNDAY; i++) {
+                weekdays.put(i, (i != DateTimeConstants.SATURDAY) && (i != DateTimeConstants.SUNDAY));
             }
             setWeekdays(weekdays);
+            break;
         case "seconds":
         case "secs":
         case "sec":
@@ -155,5 +157,9 @@ public class TaskWarriorRecurrence extends Recurring {
         setExact(false);
         setName(recur);
         setTemporary(true);
+        if (recurringInterval == null) {
+            recurringInterval = new Period();
+        }
+        recurringInterval = recurringInterval.normalizedStandard();
     }
 }
