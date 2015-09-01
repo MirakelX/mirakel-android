@@ -16,21 +16,7 @@
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
-apply plugin: 'com.android.library'
-
 android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSDKVersion
-        targetSdkVersion rootProject.ext.compileSdkVersion
-    }
-    
     lintOptions {
         disable 'MissingTranslation'
     }
