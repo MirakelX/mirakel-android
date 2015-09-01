@@ -30,22 +30,21 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
-import de.azapps.mirakel.helper.DateTimeHelper;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder.Operation;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakel.model.tags.Tag;
 import de.azapps.mirakel.model.task.Task;
-import de.azapps.mirakel.sync.R;
 import de.azapps.tools.Log;
 
 public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
@@ -57,13 +56,11 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         this.mContext = ctx;
     }
 
-    private String formatCal(final Calendar calendar) {
-        final SimpleDateFormat df = new SimpleDateFormat(
-            this.mContext.getString(R.string.TWDateFormat));
-        if (calendar.getTimeInMillis() < 0L) {
-            calendar.setTimeInMillis(10L);
+    private String formatCal(final DateTime calendar) {
+        if (calendar.isBefore(0L)) {
+            return ISODateTimeFormat.basicDateTimeNoMillis().print(10L);
         }
-        return df.format(calendar.getTime());
+        return ISODateTimeFormat.basicDateTimeNoMillis().print(calendar);
     }
 
 
@@ -117,10 +114,10 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         }
         json.addProperty("uuid", uuid);
         json.addProperty("status", status);
-        json.addProperty("entry", formatCalUTC(src.getCreatedAt()));
+        json.addProperty("entry", formatCal(src.getCreatedAt()));
         json.addProperty("description", src.getName());
         if (src.getDue().isPresent()) {
-            json.addProperty("due", formatCalUTC(src.getDue().get()));
+            json.addProperty("due", formatCal(src.getDue().get()));
         }
         if (!src.containsAdditional(Task.NO_PROJECT)) {
             json.addProperty("project", src.getList().getName());
@@ -131,9 +128,9 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                 json.addProperty("priorityNumber", src.getPriority());
             }
         }
-        json.addProperty("modified", formatCalUTC(src.getUpdatedAt()));
+        json.addProperty("modified", formatCal(src.getUpdatedAt()));
         if (src.getReminder().isPresent()) {
-            json.addProperty("reminder", formatCalUTC(src.getReminder().get()));
+            json.addProperty("reminder", formatCal(src.getReminder().get()));
         }
         if (end != null) {
             json.addProperty("end", end);
@@ -158,13 +155,13 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
              * An annotation in taskd is a line of content in Mirakel!
              */
             final String annotationsList[] = src.getContent().split("\n");
-            final Calendar updatedAt = src.getUpdatedAt();
+            DateTime updatedAt = src.getUpdatedAt();
             for (final String a : annotationsList) {
                 final JsonObject line = new JsonObject();
-                line.addProperty("entry", formatCalUTC(src.getUpdatedAt()));
+                line.addProperty("entry", formatCal(updatedAt));
                 line.addProperty("description", a.replace("\n", ""));
                 annotations.add(line);
-                updatedAt.add(Calendar.SECOND, 1);
+                updatedAt = updatedAt.plusSeconds(1);
             }
             json.add("annotations", annotations);
         }
@@ -307,21 +304,18 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                 return;
             }
         }
-        long interval = r.getInterval() / (1000L * 60L);
+        final long interval = r.getIntervalMs() / (1000L * 60L);
         if (interval > 0L) {
-            if (r.getMinutes() > 0) {
-                json.addProperty("recur", interval + "mins");
-            } else if (r.getHours() > 0) {
-                interval /= 60L;
-                json.addProperty("recur", interval + "hours");
-            } else if (r.getDays() > 0) {
-                interval /= 60L * 24L;
-                json.addProperty("recur", interval + "days");
-            } else if (r.getMonths() > 0) {
-                interval /= 60L * 24L * 30L;
-                json.addProperty("recur", interval + "months");
+            if (r.getInterval().getMinutes() > 0) {
+                json.addProperty("recur", r.getInterval().getMinutes() + "mins");
+            } else if (r.getInterval().getHours() > 0) {
+                json.addProperty("recur", r.getInterval().getHours() + "hours");
+            } else if (r.getInterval().getDays() > 0) {
+                json.addProperty("recur", r.getInterval().getDays() + "days");
+            } else if (r.getInterval().getMonths() > 0) {
+                json.addProperty("recur", r.getInterval().getMonths() + "months");
             } else {
-                json.addProperty("recur", r.getYears() + "years");
+                json.addProperty("recur", r.getInterval().getYears() + "years");
             }
         }
     }
@@ -329,9 +323,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
     private Pair<String, String> getStatus(final Task task,
                                            final boolean isMaster) {
 
-        final Calendar now = new GregorianCalendar();
-        now.setTimeInMillis(now.getTimeInMillis()
-                            - DateTimeHelper.getTimeZoneOffset(true, now));
+        final DateTime now = new DateTime();
         String end = null;
         String status = "pending";
         if (task.getSyncState() == SYNC_STATE.DELETE) {
@@ -352,7 +344,4 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         return new Pair<>(end, status);
     }
 
-    private String formatCalUTC(final Calendar calendar) {
-        return formatCal(DateTimeHelper.getUTCCalendar(calendar));
-    }
 }

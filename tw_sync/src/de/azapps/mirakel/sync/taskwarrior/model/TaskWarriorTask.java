@@ -29,6 +29,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -38,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 import de.azapps.mirakel.DefinitionsHelper;
-import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.DatabaseHelper;
@@ -479,15 +480,13 @@ public class TaskWarriorTask {
     public Optional<TaskWarriorRecurrence> getRecurrence() throws
         TaskWarriorRecurrence.NotSupportedRecurrenceException {
         if (recur.isPresent()) {
-            final Optional<Calendar> until = OptionalUtils.withOptional(this.until,
-            new Function<Long, Optional<Calendar>>() {
+            final Optional<DateTime> until = OptionalUtils.withOptional(this.until,
+            new Function<Long, Optional<DateTime>>() {
                 @Override
-                public Optional<Calendar> apply(final Long input) {
-                    final Calendar calendar = new GregorianCalendar();
-                    calendar.setTimeInMillis(input);
-                    return of(calendar);
+                public Optional<DateTime> apply(final Long input) {
+                    return of(new DateTime((long)input));
                 }
-            }, Optional.<Calendar>absent());
+            }, Optional.<DateTime>absent());
             return of(new TaskWarriorRecurrence(recur.get(), until));
         }
         return absent();
@@ -500,7 +499,6 @@ public class TaskWarriorTask {
     public void setToTask(@NonNull final Task task) {
 
         task.setName(description);
-        task.setCreatedAt(DateTimeHelper.createLocalCalendar(entry));
         task.setUUID(UUID);
         switch (status) {
         case PENDING:
@@ -558,21 +556,21 @@ public class TaskWarriorTask {
             task.setList(ListMirakel.getInboxList(AccountMirakel.getLocal()));
         }
         if (due.isPresent()) {
-            task.setDue(of(DateTimeHelper.createLocalCalendar(due.get())));
+            task.setDue(of(new DateTime((long) due.get())));
         } else {
-            task.setDue(Optional.<Calendar>absent());
+            task.setDue(Optional.<DateTime>absent());
         }
 
         if (reminder.isPresent()) {
-            task.setReminder(of(DateTimeHelper.createLocalCalendar(reminder.get())));
+            task.setReminder(of(new DateTime((long)reminder.get())));
         } else {
-            task.setReminder(Optional.<Calendar>absent());
+            task.setReminder(Optional.<DateTime>absent());
         }
 
         if (modified.isPresent()) {
-            task.setUpdatedAt(DateTimeHelper.createLocalCalendar(modified.get()));
+            task.setUpdatedAt(new DateTime((long) modified.get()));
         } else {
-            task.setUpdatedAt(new GregorianCalendar());
+            task.setUpdatedAt(new DateTime());
         }
 
         if (!tags.isEmpty()) {

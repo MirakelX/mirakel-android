@@ -24,7 +24,10 @@ import android.util.SparseBooleanArray;
 
 import com.google.common.base.Optional;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
+
 import java.util.Scanner;
 
 import de.azapps.mirakel.model.recurring.Recurring;
@@ -44,7 +47,7 @@ public class TaskWarriorRecurrence extends Recurring {
     }
 
     public TaskWarriorRecurrence(final @NonNull String recur,
-                                 final @NonNull Optional<Calendar> end) throws NotSupportedRecurrenceException {
+                                 final @NonNull Optional<DateTime> end) throws NotSupportedRecurrenceException {
         super();
         final Scanner in = new Scanner(recur);
         in.useDelimiter("[^0-9]+");
@@ -64,21 +67,21 @@ public class TaskWarriorRecurrence extends Recurring {
         case "yrs":
         case "yr":
         case "y":
-            setYears(number);
+            recurringInterval = new Period().withYears(number);
             break;
         case "semiannual":
-            setMonths(6);
+            recurringInterval = new Period().withMonths(6);
             break;
         case "biannual":
         case "biyearly":
-            setYears(2);
+            recurringInterval = new Period().withYears(2);
             break;
         case "bimonthly":
-            setMonths(2);
+            recurringInterval = new Period().withMonths(2);
             break;
         case "biweekly":
         case "fortnight":
-            setDays(14);
+            recurringInterval = new Period().withWeeks(2);
             break;
         case "daily":
             number = 1;
@@ -86,19 +89,19 @@ public class TaskWarriorRecurrence extends Recurring {
         case "days":
         case "day":
         case "d":
-            setDays(number);
+            recurringInterval = new Period().withDays(number);
             break;
         case "hours":
         case "hour":
         case "hrs":
         case "hr":
         case "h":
-            setHours(number);
+            recurringInterval = new Period().withHours(number);
             break;
         case "minutes":
         case "mins":
         case "min":
-            setMinutes(number);
+            recurringInterval = new Period().withMinutes(number);
             break;
         case "monthly":
             number = 1;
@@ -110,7 +113,7 @@ public class TaskWarriorRecurrence extends Recurring {
         case "mth":
         case "mos":
         case "mo":
-            setMonths(number);
+            recurringInterval = new Period().withMonths(number);
             break;
         case "quarterly":
             number = 1;
@@ -120,21 +123,7 @@ public class TaskWarriorRecurrence extends Recurring {
         case "qtrs":
         case "qtr":
         case "q":
-            setMonths(3 * number);
-            break;
-        default: // Was genau soll das sein? Default hat doch hier nichts verloren…
-        case "seconds":
-        case "secs":
-        case "sec":
-        case "s":
-            Log.w(TAG, "mirakel des not support " + recur);
-            throw new NotSupportedRecurrenceException("mirakel des not support " + recur);
-        case "weekdays":
-            final SparseBooleanArray weekdays = new SparseBooleanArray(7);
-            for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
-                weekdays.put(i, (i != Calendar.SATURDAY) && (i != Calendar.SUNDAY));
-            }
-            setWeekdays(weekdays);
+            recurringInterval = new Period().withMonths(3 * number);
             break;
         case "sennight":
         case "weekly":
@@ -145,13 +134,32 @@ public class TaskWarriorRecurrence extends Recurring {
         case "wks":
         case "wk":
         case "w":
-            setDays(7 * number);
+            recurringInterval = new Period().withWeeks(number);
             break;
+        case "weekdays":
+            final SparseBooleanArray weekdays = new SparseBooleanArray(7);
+            for (int i = DateTimeConstants.MONDAY; i <= DateTimeConstants.SUNDAY; i++) {
+                weekdays.put(i, (i != DateTimeConstants.SATURDAY) && (i != DateTimeConstants.SUNDAY));
+            }
+            setWeekdays(weekdays);
+            break;
+        case "seconds":
+        case "secs":
+        case "sec":
+        case "s":
+        default:
+            Log.w(TAG, "mirakel des not support " + recur);
+            throw new NotSupportedRecurrenceException("mirakel des not support " + recur);
+
         }
         setForDue(true);
         setEndDate(end);
         setExact(false);
         setName(recur);
         setTemporary(true);
+        if (recurringInterval == null) {
+            recurringInterval = new Period();
+        }
+        recurringInterval = recurringInterval.normalizedStandard();
     }
 }
