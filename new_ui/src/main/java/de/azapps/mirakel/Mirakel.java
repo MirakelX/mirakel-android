@@ -26,6 +26,8 @@ import android.content.res.Configuration;
 import android.os.Looper;
 import android.os.StrictMode;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -41,7 +43,7 @@ import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.model.DatabaseHelper;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.new_ui.helper.AcraLog;
 import de.azapps.mirakel.reminders.ReminderAlarm;
@@ -96,7 +98,6 @@ public class Mirakel extends Application {
         ACRA.setLog(new AcraLog());
         // do this as soon as possible
         AnalyticsWrapperBase.init(new AnalyticsWrapper(Mirakel.this));
-
         // Stuff we can do in another thread
         final Mirakel that = this;
         new Thread (new Runnable () {
@@ -130,6 +131,7 @@ public class Mirakel extends Application {
     }
 
     public static void init (final Context ctx) {
+        JodaTimeAndroid.init(ctx);
         // This we have to initialize as early as possible
         DefinitionsHelper.init(ctx, BuildConfig.FLAVOR);
         MirakelPreferences.init(ctx);

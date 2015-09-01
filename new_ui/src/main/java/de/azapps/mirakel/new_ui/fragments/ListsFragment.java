@@ -63,7 +63,7 @@ import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.adapter.MultiSelectCursorAdapter;
 import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.helper.MirakelModelPreferences;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
@@ -189,7 +189,7 @@ public class ListsFragment extends Fragment implements LoaderManager.LoaderCallb
                 }));
                 return ListMirakel.allWithSpecialMQB(accountMirakelOptional).and(ListMirakel.ID,
                         MirakelQueryBuilder.Operation.NOT_IN,
-                        ids).toSupportCursorLoader(MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
+                        ids).toSupportCursorLoader(MirakelInternalContentProvider.LIST_WITH_COUNT_URI);
             }
 
         }
