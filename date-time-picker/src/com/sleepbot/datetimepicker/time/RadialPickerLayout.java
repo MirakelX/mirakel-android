@@ -24,8 +24,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -41,6 +41,8 @@ import android.widget.FrameLayout;
 import com.fourmob.datetimepicker.Utils;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import org.joda.time.LocalTime;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
@@ -61,14 +63,11 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private static final int AM = TimePicker.AM;
     private static final int PM = TimePicker.PM;
 
-    private final Vibrator mVibrator;
-    private long mLastVibrate;
     private int mLastValueSelected;
 
     private OnValueSelectedListener mListener;
     private boolean mTimeInitialized;
-    private int mCurrentHoursOfDay;
-    private int mCurrentMinutes;
+    private LocalTime mCurrentTime;
     private boolean mIs24HourMode;
     private boolean mHideAmPm;
     private int mCurrentItemShowing;
@@ -93,6 +92,10 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
 
     private AnimatorSet mTransition;
     private final Handler mHandler = new Handler();
+
+    public LocalTime getTime() {
+        return mCurrentTime;
+    }
 
     public interface OnValueSelectedListener {
         void onValueSelected(final int pickerIndex, final int newValue,
@@ -120,9 +123,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         addView(this.mMinuteRadialSelectorView);
         // Prepare mapping to snap touchable degrees to selectable degrees.
         preparePrefer30sMap();
-        this.mVibrator = (Vibrator) context
-                         .getSystemService(Context.VIBRATOR_SERVICE);
-        this.mLastVibrate = 0;
         this.mLastValueSelected = -1;
         this.mInputEnabled = true;
         this.mGrayBox = new View(context);
@@ -162,16 +162,16 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * Initialize the Layout with starting values.
      *
      * @param context
-     * @param initialHoursOfDay
-     * @param initialMinutes
+     * @param initialTime
      * @param is24HourMode
      */
-    public void initialize(final Context context, final int initialHoursOfDay,
-                           final int initialMinutes, final boolean is24HourMode) {
+    public void initialize(final Context context, final @NonNull LocalTime mInitialTime,
+                           final boolean is24HourMode) {
         if (this.mTimeInitialized) {
             Log.e(TAG, "Time has already been initialized.");
             return;
         }
+        mCurrentTime = mInitialTime;
         this.mIs24HourMode = is24HourMode;
         this.mHideAmPm = Utils
                          .isTouchExplorationEnabled(this.mAccessibilityManager) || this.mIs24HourMode;
@@ -179,7 +179,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         this.mCircleView.initialize(context, this.mHideAmPm);
         this.mCircleView.invalidate();
         if (!this.mHideAmPm) {
-            this.mAmPmCirclesView.initialize(context, (initialHoursOfDay < 12) ? AM : PM);
+            this.mAmPmCirclesView.initialize(context, (mInitialTime.getHourOfDay() < 12) ? AM : PM);
             this.mAmPmCirclesView.invalidate();
         }
         // Initialize the hours and minutes numbers.
@@ -203,24 +203,25 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                                                this.mHideAmPm, false);
         this.mMinuteRadialTextsView.invalidate();
         // Initialize the currently-selected hour and minute.
-        setValueForItem(HOUR_INDEX, initialHoursOfDay);
-        setValueForItem(MINUTE_INDEX, initialMinutes);
-        final int hourDegrees = (initialHoursOfDay % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
+        setValueForItem(HOUR_INDEX, mInitialTime.getHourOfDay());
+        setValueForItem(MINUTE_INDEX, mInitialTime.getMinuteOfHour());
+        final int hourDegrees = (mInitialTime.getHourOfDay() % 12) * HOUR_VALUE_TO_DEGREES_STEP_SIZE;
         this.mHourRadialSelectorView.initialize(context, this.mHideAmPm,
                                                 is24HourMode, true, hourDegrees,
-                                                isHourInnerCircle(initialHoursOfDay));
-        final int minuteDegrees = initialMinutes
+                                                isHourInnerCircle(mInitialTime.getHourOfDay()));
+        final int minuteDegrees = mInitialTime.getMinuteOfHour()
                                   * MINUTE_VALUE_TO_DEGREES_STEP_SIZE;
         this.mMinuteRadialSelectorView.initialize(context, this.mHideAmPm,
                 false, false, minuteDegrees, false);
         this.mTimeInitialized = true;
     }
 
-    public void setTime(final int hours, final int minutes) {
-        setItem(HOUR_INDEX, hours);
-        setItem(MINUTE_INDEX, minutes);
+    public void setTime(final @NonNull LocalTime time) {
+        setItem(HOUR_INDEX, time.getHourOfDay());
+        setItem(MINUTE_INDEX, time.getMinuteOfHour());
+        mCurrentTime = time;
         if (!mIs24HourMode) {
-            mAmPmCirclesView.setAmOrPm(((hours / 12) > 0) ? PM : AM);
+            mAmPmCirclesView.setAmOrPm(((time.getHourOfDay() / 12) > 0) ? PM : AM);
         }
     }
 
@@ -255,13 +256,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         return this.mIs24HourMode && (hourOfDay <= 12) && (hourOfDay != 0);
     }
 
-    public int getHours() {
-        return this.mCurrentHoursOfDay;
-    }
-
-    public int getMinutes() {
-        return this.mCurrentMinutes;
-    }
 
     /**
      * If the hours are showing, return the current hour. If the minutes are
@@ -270,18 +264,18 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
     private int getCurrentlyShowingValue() {
         final int currentIndex = getCurrentItemShowing();
         if (currentIndex == HOUR_INDEX) {
-            return this.mCurrentHoursOfDay;
+            return this.mCurrentTime.getHourOfDay();
         } else if (currentIndex == MINUTE_INDEX) {
-            return this.mCurrentMinutes;
+            return this.mCurrentTime.getMinuteOfHour();
         } else {
             return -1;
         }
     }
 
     public int getIsCurrentlyAmOrPm() {
-        if (this.mCurrentHoursOfDay < 12) {
+        if (this.mCurrentTime.getHourOfDay() < 12) {
             return AM;
-        } else if (this.mCurrentHoursOfDay < 24) {
+        } else if (this.mCurrentTime.getHourOfDay() < 24) {
             return PM;
         }
         return -1;
@@ -291,15 +285,18 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
      * Set the internal value for the hour, minute, or AM/PM.
      */
     private void setValueForItem(final int index, final int value) {
+        if (mCurrentTime == null) {
+            return;
+        }
         if (index == HOUR_INDEX) {
-            this.mCurrentHoursOfDay = value;
+            this.mCurrentTime = mCurrentTime.withHourOfDay(value);
         } else if (index == MINUTE_INDEX) {
-            this.mCurrentMinutes = value;
+            this.mCurrentTime = mCurrentTime.withMinuteOfHour(value);
         } else if (index == AMPM_INDEX) {
             if (value == AM) {
-                this.mCurrentHoursOfDay = this.mCurrentHoursOfDay % 12;
+                this.mCurrentTime = mCurrentTime.withHourOfDay(mCurrentTime.getHourOfDay() % 12);
             } else if (value == PM) {
-                this.mCurrentHoursOfDay = this.mCurrentHoursOfDay % 12 + 12;
+                this.mCurrentTime = mCurrentTime.withHourOfDay(mCurrentTime.getHourOfDay() % 12 + 12);
             }
         }
     }
@@ -586,16 +583,16 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             this.mTransition.start();
         } else {
             if (Build.VERSION.SDK_INT >= 11) {
-                final int hourAlpha = index == HOUR_INDEX ? 255 : 0;
-                final int minuteAlpha = index == MINUTE_INDEX ? 255 : 0;
+                final float hourAlpha = (index == HOUR_INDEX) ? 1.0F : 0.0F;
+                final float minuteAlpha = (index == MINUTE_INDEX) ? 1.0F : 0.0F;
                 this.mHourRadialTextsView.setAlpha(hourAlpha);
                 this.mHourRadialSelectorView.setAlpha(hourAlpha);
                 this.mMinuteRadialTextsView.setAlpha(minuteAlpha);
                 this.mMinuteRadialSelectorView.setAlpha(minuteAlpha);
             } else {
-                final int hourVisibility = index == HOUR_INDEX ? View.VISIBLE
+                final int hourVisibility = (index == HOUR_INDEX) ? View.VISIBLE
                                            : View.INVISIBLE;
-                final int minuteVisibility = index == MINUTE_INDEX ? View.VISIBLE
+                final int minuteVisibility = (index == MINUTE_INDEX) ? View.VISIBLE
                                              : View.INVISIBLE;
                 this.mHourRadialTextsView.setVisibility(hourVisibility);
                 this.mHourRadialSelectorView.setVisibility(hourVisibility);
@@ -635,7 +632,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                 // If the touch is on AM or PM, set it as "touched" after the
                 // TAP_TIMEOUT
                 // in case the user moves their finger quickly.
-                tryVibrate();
                 this.mDownDegrees = -1;
                 this.mHandler.postDelayed(new Runnable() {
                     @Override
@@ -658,7 +654,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
                     // If it's a legal touch, set that number as "selected"
                     // after the
                     // TAP_TIMEOUT in case the user moves their finger quickly.
-                    tryVibrate();
                     this.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -716,7 +711,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             if (degrees != -1) {
                 value = reselectSelector(degrees, isInnerCircle[0], false, true);
                 if (value != this.mLastValueSelected) {
-                    tryVibrate();
                     this.mLastValueSelected = value;
                     this.mListener.onValueSelected(getCurrentItemShowing(),
                                                    value, false);
@@ -781,20 +775,6 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         return false;
     }
 
-    /**
-     * Try to vibrate. To prevent this becoming a single continuous vibration,
-     * nothing will happen if we have vibrated very recently.
-     */
-    public void tryVibrate() {
-        if (this.mVibrator != null) {
-            final long now = SystemClock.uptimeMillis();
-            // We want to try to vibrate each individual tick discretely.
-            if (now - this.mLastVibrate >= 125) {
-                this.mVibrator.vibrate(5);
-                this.mLastVibrate = now;
-            }
-        }
-    }
 
     /**
      * Set touch input as enabled or disabled, for use with keyboard mode.
@@ -837,10 +817,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
             // Clear the event's current text so that only the current time will
             // be spoken.
             event.getText().clear();
-            final Time time = new Time();
-            time.hour = getHours();
-            time.minute = getMinutes();
-            final long millis = time.normalize(true);
+            final long millis = mCurrentTime.getMillisOfDay();
             int flags = DateUtils.FORMAT_SHOW_TIME;
             if (this.mIs24HourMode) {
                 flags |= DateUtils.FORMAT_24HOUR;

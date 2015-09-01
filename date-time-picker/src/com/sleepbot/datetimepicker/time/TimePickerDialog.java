@@ -17,16 +17,19 @@ package com.sleepbot.datetimepicker.time;
  */
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.google.common.base.Optional;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
+
+import org.joda.time.LocalTime;
 
 import de.azapps.mirakel.date_time.R;
 
@@ -40,9 +43,7 @@ public class TimePickerDialog extends DialogFragment {
 
     private OnTimeSetListener mCallback;
 
-    private int mInitialHour;
-
-    private int mInitialMinute;
+    private LocalTime mInitialTime;
 
     /**
      * The callback interface used to indicate the user is done filling in the
@@ -53,38 +54,16 @@ public class TimePickerDialog extends DialogFragment {
         // Empty constructor required for dialog fragment.
     }
 
-    public TimePickerDialog(final Context context, final int theme,
-                            final OnTimeSetListener callback, final int hourOfDay,
-                            final int minute, final boolean is24HourMode, final boolean dark) {
-        // Empty constructor required for dialog fragment.
-    }
 
-    public static TimePickerDialog newInstance(
-        final OnTimeSetListener callback, final int hourOfDay,
-        final int minute, final boolean is24HourMode, final boolean dark) {
-        final TimePickerDialog ret = new TimePickerDialog();
-        ret.initialize(callback, hourOfDay, minute, is24HourMode, dark);
-        return ret;
-    }
 
     public void initialize(final OnTimeSetListener callback,
-                           final int hourOfDay, final int minute, final boolean is24HourMode,
-                           final boolean dark) {
-        this.mInitialHour = hourOfDay;
-        this.mInitialMinute = minute;
+                           final @NonNull LocalTime initTime) {
+        this.mInitialTime = initTime;
         this.mCallback = new OnTimeSetListener() {
             @Override
-            public void onTimeSet(final RadialPickerLayout view,
-                                  final int hourOfDay, final int minute) {
+            public void onTimeSet(final RadialPickerLayout view, final @NonNull Optional<LocalTime> newTime) {
                 if (callback != null) {
-                    callback.onTimeSet(view, hourOfDay, minute);
-                }
-                dismiss();
-            }
-            @Override
-            public void onNoTimeSet() {
-                if (callback != null) {
-                    callback.onNoTimeSet();
+                    callback.onTimeSet(view, newTime);
                 }
                 dismiss();
             }
@@ -130,7 +109,7 @@ public class TimePickerDialog extends DialogFragment {
         this.mTimePicker.setOnTimeSetListener(this.mCallback);
         this.mTimePicker.setOnKeyListener(this.mTimePicker
                                           .getNewKeyboardListner(getDialog()));
-        this.mTimePicker.setTime(this.mInitialHour, this.mInitialMinute);
+        this.mTimePicker.setTime(this.mInitialTime);
         return view;
     }
 

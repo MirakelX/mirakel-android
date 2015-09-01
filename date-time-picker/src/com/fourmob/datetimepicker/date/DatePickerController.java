@@ -35,6 +35,4 @@ abstract interface DatePickerController {
 
     public abstract void registerOnDateChangedListener(
         final DatePicker.OnDateChangedListener onDateChangedListener);
-
-    public abstract void tryVibrate();
 }

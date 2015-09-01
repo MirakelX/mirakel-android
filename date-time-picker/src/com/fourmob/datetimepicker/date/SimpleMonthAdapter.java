@@ -19,9 +19,6 @@
 
 package com.fourmob.datetimepicker.date;
 
-import java.util.Calendar;
-import java.util.HashMap;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +26,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
+import org.joda.time.LocalDate;
+
+import java.util.HashMap;
+
 public class SimpleMonthAdapter extends BaseAdapter implements
     SimpleMonthView.OnDayClickListener {
-    protected static int WEEK_7_OVERHANG_HEIGHT = 7;
     private final Context mContext;
     private final DatePickerController mController;
     private CalendarDay mSelectedDay;
@@ -84,10 +84,10 @@ public class SimpleMonthAdapter extends BaseAdapter implements
         HashMap<String, Integer> monthParams = (HashMap<String, Integer>) simpleMonthView
                                                .getTag();
         if (monthParams == null) {
-            monthParams = new HashMap<String, Integer>();
+            monthParams = new HashMap<>();
         }
         monthParams.clear();
-        final int month = position % 12;
+        final int month = position % 12 + 1;
         final int year = position / 12 + this.mController.getMinYear();
         int selectedDay = -1;
         if (isSelectedDayInMonth(year, month)) {
@@ -117,7 +117,6 @@ public class SimpleMonthAdapter extends BaseAdapter implements
     }
 
     protected void onDayTapped(final CalendarDay calendarDay) {
-        this.mController.tryVibrate();
         this.mController.onDayOfMonthSelected(calendarDay.year,
                                               calendarDay.month, calendarDay.day);
         setSelectedDay(calendarDay);
@@ -129,37 +128,39 @@ public class SimpleMonthAdapter extends BaseAdapter implements
     }
 
     public static class CalendarDay {
-        private Calendar calendar;
+        private LocalDate calendar;
         int day;
         int month;
         int year;
 
         public CalendarDay() {
-            setTime(System.currentTimeMillis());
+            calendar = new LocalDate();
+            init();
         }
 
         public CalendarDay(final int year, final int month, final int day) {
             setDay(year, month, day);
+            calendar = new LocalDate(year, month, day);
         }
 
         public CalendarDay(final long timeInMillis) {
             setTime(timeInMillis);
         }
 
-        public CalendarDay(final Calendar calendar) {
-            this.year = calendar.get(Calendar.YEAR);
-            this.month = calendar.get(Calendar.MONTH);
-            this.day = calendar.get(Calendar.DAY_OF_MONTH);
+        public CalendarDay(final LocalDate calendar) {
+            this.calendar = calendar;
+            init();
+        }
+
+        private void init() {
+            this.year = calendar.getYear();
+            this.month = calendar.getMonthOfYear();
+            this.day = calendar.getDayOfMonth();
         }
 
         private void setTime(final long timeInMillis) {
-            if (this.calendar == null) {
-                this.calendar = Calendar.getInstance();
-            }
-            this.calendar.setTimeInMillis(timeInMillis);
-            this.month = this.calendar.get(Calendar.MONTH);
-            this.year = this.calendar.get(Calendar.YEAR);
-            this.day = this.calendar.get(Calendar.DAY_OF_MONTH);
+            calendar = new LocalDate(timeInMillis);
+            init();
         }
 
         public void set(final CalendarDay calendarDay) {

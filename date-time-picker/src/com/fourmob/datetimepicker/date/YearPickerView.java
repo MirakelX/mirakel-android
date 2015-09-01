@@ -140,7 +140,6 @@ public class YearPickerView extends ListView implements
     @Override
     public void onItemClick(final AdapterView<?> parent, final View view,
                             final int position, final long id) {
-        this.mController.tryVibrate();
         final TextViewWithCircularIndicator textViewWithCircularIndicator = (TextViewWithCircularIndicator)
                 view;
         if (textViewWithCircularIndicator != null) {

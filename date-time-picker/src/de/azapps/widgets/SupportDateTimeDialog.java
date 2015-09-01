@@ -38,8 +38,9 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePicker;
 import com.sleepbot.datetimepicker.time.TimePicker.OnTimeSetListener;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.date_time.R;
@@ -47,36 +48,26 @@ import de.azapps.mirakel.helper.DateTimeHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.tools.Log;
 
+import static com.google.common.base.Optional.of;
+
 public class SupportDateTimeDialog extends DialogFragment {
 
     protected static final String TAG = "DateTimeDialog";
+    private DateTime mStartDate;
 
     public static SupportDateTimeDialog newInstance(final OnDateTimeSetListener callback,
-            final Optional<Calendar> dateTime) {
-        final Calendar notNullDateTime = dateTime.or(new GregorianCalendar());
-        final int year = notNullDateTime.get(Calendar.YEAR);
-        final int month = notNullDateTime.get(Calendar.MONTH);
-        final int day = notNullDateTime.get(Calendar.DAY_OF_MONTH);
-        final int hour = notNullDateTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = notNullDateTime.get(Calendar.MINUTE);
-        return newInstance(callback, year, month, day, hour, minute);
+            final Optional<DateTime> dateTime) {
+        return newInstance(callback, dateTime.or(new DateTime()));
     }
 
     public static SupportDateTimeDialog newInstance(
-        final OnDateTimeSetListener callback, final int year,
-        final int month, final int dayOfMonth, final int hourOfDay,
-        final int minute) {
+        final OnDateTimeSetListener callback, final @NonNull DateTime startDate) {
         final SupportDateTimeDialog dt = new SupportDateTimeDialog();
-        dt.init(year, month, dayOfMonth, hourOfDay, minute);
+        dt.mStartDate = startDate;
         dt.mCallback = callback;
         return dt;
     }
 
-    private int mInitialYear;
-    private int mInitialMonth;
-    private int mInitialDay;
-    private int mInitialHour;
-    private int mInitialMinute;
 
     //dirty hack to get a reference to the
     // originally created dialog if the screen was rotated
@@ -88,15 +79,6 @@ public class SupportDateTimeDialog extends DialogFragment {
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         dialog = super.onCreateDialog(savedInstanceState);
         return dialog;
-    }
-
-    private void init(final int year, final int month, final int dayOfMonth,
-                      final int hourOfDay, final int minute) {
-        this.mInitialYear = year;
-        this.mInitialMonth = month;
-        this.mInitialDay = dayOfMonth;
-        this.mInitialHour = hourOfDay;
-        this.mInitialMinute = minute;
     }
 
     @Override
@@ -133,25 +115,17 @@ public class SupportDateTimeDialog extends DialogFragment {
         this.dp = (DatePicker) v.findViewById(R.id.date_picker);
         this.tp = (TimePicker) v.findViewById(R.id.time_picker);
         this.tp.set24HourMode(DateTimeHelper.is24HourLocale(Helpers.getLocale(getActivity())));
-        this.tp.setTime(this.mInitialHour, this.mInitialMinute);
+        this.tp.setTime(mStartDate.toLocalTime());
         this.tp.setOnKeyListener(this.tp.getNewKeyboardListner(getDialog()));
         this.tp.setOnTimeSetListener(new OnTimeSetListener() {
             @Override
-            public void onTimeSet(final RadialPickerLayout view,
-                                  final int hourOfDay, final int minute) {
+            public void onTimeSet(final RadialPickerLayout view, final @NonNull Optional<LocalTime> newTime) {
                 if (SupportDateTimeDialog.this.mCallback != null) {
-                    SupportDateTimeDialog.this.mCallback.onDateTimeSet(
-                        SupportDateTimeDialog.this.dp.getYear(),
-                        SupportDateTimeDialog.this.dp.getMonth(),
-                        SupportDateTimeDialog.this.dp.getDay(), hourOfDay, minute);
-                }
-                safeDismiss();
-            }
-
-            @Override
-            public void onNoTimeSet() {
-                if (SupportDateTimeDialog.this.mCallback != null) {
-                    SupportDateTimeDialog.this.mCallback.onNoTimeSet();
+                    if (newTime.isPresent()) {
+                        SupportDateTimeDialog.this.mCallback.onDateTimeSet(of(dp.getDate().toDateTime(newTime.get())));
+                    } else {
+                        SupportDateTimeDialog.this.mCallback.onDateTimeSet(Optional.<DateTime>absent());
+                    }
                 }
                 safeDismiss();
             }
@@ -159,20 +133,14 @@ public class SupportDateTimeDialog extends DialogFragment {
         });
         this.dp.setOnDateSetListener(new OnDateSetListener() {
             @Override
-            public void onNoDateSet() {
-                if (SupportDateTimeDialog.this.mCallback != null) {
-                    SupportDateTimeDialog.this.mCallback.onNoTimeSet();
-                }
-                safeDismiss();
-            }
-
-            @Override
             public void onDateSet(final DatePicker datePickerDialog,
-                                  final int year, final int month, final int day) {
+                                  final @NonNull Optional<LocalDate> newDate) {
                 if (SupportDateTimeDialog.this.mCallback != null) {
-                    SupportDateTimeDialog.this.mCallback.onDateTimeSet(year, month,
-                            day, SupportDateTimeDialog.this.tp.getHour(),
-                            SupportDateTimeDialog.this.tp.getMinute());
+                    if (newDate.isPresent()) {
+                        SupportDateTimeDialog.this.mCallback.onDateTimeSet(of(newDate.get().toDateTime(tp.getTime())));
+                    } else {
+                        SupportDateTimeDialog.this.mCallback.onDateTimeSet(Optional.<DateTime>absent());
+                    }
                 }
                 safeDismiss();
             }
@@ -197,21 +165,11 @@ public class SupportDateTimeDialog extends DialogFragment {
                 }
             }
         });
-        this.dp.setYear(this.mInitialYear);
-        this.dp.setMonth(this.mInitialMonth);
-        this.dp.setDay(this.mInitialDay);
-        this.tp.setHour(this.mInitialHour, false);
-        this.tp.setMinute(this.mInitialMinute);
+        this.dp.setDate(mStartDate.toLocalDate());
+        this.tp.setTime(mStartDate.toLocalTime());
         return v;
     }
 
-    public interface OnDateTimeSetListener {
-
-        void onDateTimeSet(final int year, final int month,
-                           final int dayOfMonth, final int hourOfDay, final int minute);
-
-        void onNoTimeSet();
-    }
 
     @Override
     public void onConfigurationChanged(final Configuration newConfig) {

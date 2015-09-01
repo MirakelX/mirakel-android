@@ -28,27 +28,30 @@ import com.nineoldandroids.animation.Keyframe;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.animation.PropertyValuesHolder;
 
+import org.joda.time.DateTimeConstants;
+
 public class Utils {
 
     public static int getDaysInMonth(final int month, final int year) {
+
         switch (month) {
         default:
             throw new IllegalArgumentException("Invalid Month");
-        case 0:
-        case 2:
-        case 4:
-        case 6:
-        case 7:
-        case 9:
-        case 11:
+        case DateTimeConstants.JANUARY:
+        case DateTimeConstants.MARCH:
+        case DateTimeConstants.MAY:
+        case DateTimeConstants.JULY:
+        case DateTimeConstants.AUGUST:
+        case DateTimeConstants.OCTOBER:
+        case DateTimeConstants.DECEMBER:
             return 31;
-        case 3:
-        case 5:
-        case 8:
-        case 10:
+        case DateTimeConstants.APRIL:
+        case DateTimeConstants.JUNE:
+        case DateTimeConstants.SEPTEMBER:
+        case DateTimeConstants.NOVEMBER:
             return 30;
-        case 1:
-            if (year % 4 == 0) {
+        case DateTimeConstants.FEBRUARY:
+            if ((year % 4) == 0) {
                 return 29;
             }
             return 28;
@@ -75,10 +78,6 @@ public class Utils {
                                             });
         animator.setDuration(544L);
         return animator;
-    }
-
-    public static boolean isJellybeanOrLater() {
-        return Build.VERSION.SDK_INT >= 16;
     }
 
     public static void tryAccessibilityAnnounce(final Object obj,

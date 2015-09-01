@@ -31,22 +31,18 @@ import android.widget.ListView;
 public class DayPickerView extends ListView implements
     AbsListView.OnScrollListener, DatePicker.OnDateChangedListener {
     private static final String TAG = "DayPickerView";
-    public static int LIST_TOP_OFFSET = -1;
     protected SimpleMonthAdapter mAdapter;
     protected Context mContext;
     private final DatePickerController mController;
     protected int mCurrentMonthDisplayed;
     protected int mCurrentScrollState = 0;
-    protected int mDaysPerWeek = 7;
     protected float mFriction = 1.0F;
     protected Handler mHandler = new Handler();
-    protected int mNumWeeks = 6;
     private boolean mPerformingScroll;
     protected long mPreviousScrollPosition;
     protected int mPreviousScrollState = 0;
     protected ScrollStateRunnable mScrollStateChangedRunnable = new ScrollStateRunnable();
     protected SimpleMonthAdapter.CalendarDay mSelectedDay = new SimpleMonthAdapter.CalendarDay();
-    protected boolean mShowWeekNumber = false;
     protected SimpleMonthAdapter.CalendarDay mTempDay = new SimpleMonthAdapter.CalendarDay();
 
     public DayPickerView(final Context context,
@@ -69,7 +65,7 @@ public class DayPickerView extends ListView implements
         int mostVisiblePosition = 0;
         int childIndex = 0;
         int bottom = 0;
-        View childView = null;
+        View childView;
         while ((childView = getChildAt(childIndex)) != null) {
             if (bottom < height) {
                 bottom = childView.getBottom();
@@ -87,16 +83,14 @@ public class DayPickerView extends ListView implements
         return firstVisiblePosition + mostVisiblePosition;
     }
 
-    public boolean goTo(final SimpleMonthAdapter.CalendarDay calendarDay,
-                        final boolean scrollToTop, final boolean selectDay,
-                        final boolean displayMonth) {
+    public boolean goTo(final SimpleMonthAdapter.CalendarDay calendarDay, final boolean selectDay) {
         if (selectDay) {
             this.mSelectedDay.set(calendarDay);
         }
         this.mTempDay.set(calendarDay);
         final int monthIndex = 12
                                * (calendarDay.year - this.mController.getMinYear())
-                               + calendarDay.month;
+                               + calendarDay.month - 1;
         postSetSelection(monthIndex);
         // TODO improve
         return true;
@@ -124,7 +118,7 @@ public class DayPickerView extends ListView implements
 
     @Override
     public void onDateChanged() {
-        goTo(this.mController.getSelectedDay(), false, true, true);
+        goTo(this.mController.getSelectedDay(), true);
     }
 
     @Override

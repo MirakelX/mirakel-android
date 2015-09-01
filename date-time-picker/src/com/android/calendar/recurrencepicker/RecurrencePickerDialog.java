@@ -57,10 +57,13 @@ import com.fourmob.datetimepicker.date.DatePicker.OnDateSetListener;
 import com.fourmob.datetimepicker.date.SupportDatePickerDialog;
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.azapps.material_elements.utils.ThemeManager;
@@ -122,12 +125,12 @@ public class RecurrencePickerDialog extends DialogFragment {
     private RadioGroup mRadioGroup;
     private TextView mEndButton;
     @NonNull
-    protected Optional<Calendar> mEndDate = absent();
+    protected Optional<DateTime> mEndDate = absent();
     protected CheckBox mUseExact;
     private boolean mInitialExact;
     private TextView mStartButton;
     @NonNull
-    protected Optional<Calendar> mStartDate = absent();
+    protected Optional<DateTime> mStartDate = absent();
     private Context ctx;
 
     public int pxToDp(final int px) {
@@ -302,45 +305,39 @@ public class RecurrencePickerDialog extends DialogFragment {
             if (!recurringRaw.getWeekdays().isEmpty()) {
                 this.mIntervalType.setSelection(this.mForDue ? 0 : 2);
                 this.mIntervalCount.setVisibility(View.VISIBLE);
-            } else if (recurringRaw.getMinutes() != 0) {
+            } else if (recurringRaw.getInterval().getMinutes() != 0) {
                 this.mIntervalType.setSelection(0);
-                this.mIntervalCount.setText(String.valueOf(recurringRaw.getMinutes()));
-                this.mIntervalValue = recurringRaw.getMinutes();
-            } else if (recurringRaw.getHours() != 0) {
+                this.mIntervalCount.setText(String.valueOf(recurringRaw.getInterval().getMinutes()));
+                this.mIntervalValue = recurringRaw.getInterval().getMinutes();
+            } else if (recurringRaw.getInterval().getHours() != 0) {
                 this.mIntervalType.setSelection(1);
-                this.mIntervalCount.setText(String.valueOf(recurringRaw.getHours()));
-                this.mIntervalValue = recurringRaw.getHours();
-            } else if (recurringRaw.getDays() != 0) {
+                this.mIntervalCount.setText(String.valueOf(recurringRaw.getInterval().getHours()));
+                this.mIntervalValue = recurringRaw.getInterval().getHours();
+            } else if (recurringRaw.getInterval().getDays() != 0) {
                 this.mIntervalType.setSelection(this.mForDue ? 1 : 3);
-                this.mIntervalCount.setText(String.valueOf(recurringRaw.getDays()));
-                this.mIntervalValue = recurringRaw.getDays();
-            } else if (recurringRaw.getMonths() != 0) {
+                this.mIntervalCount.setText(String.valueOf(recurringRaw.getInterval().getDays()));
+                this.mIntervalValue = recurringRaw.getInterval().getDays();
+            } else if (recurringRaw.getInterval().getMonths() != 0) {
                 this.mIntervalType.setSelection(this.mForDue ? 2 : 4);
-                this.mIntervalCount.setText(String.valueOf(recurringRaw.getMonths()));
-                this.mIntervalValue = recurringRaw.getMonths();
-            } else if (recurringRaw.getYears() != 0) {
+                this.mIntervalCount.setText(String.valueOf(recurringRaw.getInterval().getMonths()));
+                this.mIntervalValue = recurringRaw.getInterval().getMonths();
+            } else if (recurringRaw.getInterval().getYears() != 0) {
                 this.mIntervalType.setSelection(this.mForDue ? 3 : 5);
-                this.mIntervalCount.setText(String.valueOf(recurringRaw.getYears()));
-                this.mIntervalValue = recurringRaw.getYears();
+                this.mIntervalCount.setText(String.valueOf(recurringRaw.getInterval().getYears()));
+                this.mIntervalValue = recurringRaw.getInterval().getYears();
             }
             this.mStartDate = recurringRaw.getStartDate();
             this.mEndDate = recurringRaw.getEndDate();
         }
-        mStartButton.setText(getDateText(mStartDate.or(new GregorianCalendar())));
-        if (this.mEndDate.isPresent()) {
-            mEndButton.setText(getDateText(mEndDate.get()));
-        } else {
-            mEndButton.setText(getDateText());
-        }
+        mStartButton.setText(getDateText(mStartDate));
+        mEndButton.setText(getDateText(mEndDate));
         return view;
     }
 
-    private CharSequence getDateText(final @Nullable Calendar c) {
-        return DateTimeHelper.formatDate(ctx, c);
-    }
-
-
-    private CharSequence getDateText() {
+    private CharSequence getDateText(final @Nullable Optional<DateTime> c) {
+        if (c.isPresent()) {
+            return DateTimeHelper.formatDate(ctx, c);
+        }
         return ctx.getText(R.string.never);
     }
 
@@ -387,26 +384,18 @@ public class RecurrencePickerDialog extends DialogFragment {
             final SupportDatePickerDialog dp = SupportDatePickerDialog.newInstance(
             new OnDateSetListener() {
                 @Override
-                public void onNoDateSet() {
-                    mStartDate = absent();
-                    mStartButton.setText(getDateText(new GregorianCalendar()));
-                }
-
-                @Override
                 public void onDateSet(
-                    final DatePicker datePickerDialog,
-                    final int year, final int month,
-                    final int day) {
-                    final Calendar startDate = mStartDate.or(new GregorianCalendar());
-                    startDate.set(Calendar.YEAR, year);
-                    startDate.set(Calendar.MONTH, month);
-                    startDate.set(Calendar.DAY_OF_MONTH, day);
-                    mStartButton.setText(getDateText(startDate));
-                    mStartDate = of(startDate);
-                    if (mEndDate.isPresent() && mEndDate.get().before(startDate)) {
-                        mEndDate = absent();
-                        mEndButton.setText(getDateText());
+                    final DatePicker datePickerDialog, final @NonNull Optional<LocalDate> newDate) {
+                    if (newDate.isPresent()) {
+                        mStartDate = of(newDate.get().toDateTimeAtStartOfDay());
+                        if (mEndDate.isPresent() && mEndDate.get().isBefore(mStartDate.get())) {
+                            mEndDate = absent();
+                            mEndButton.setText(getDateText(mEndDate));
+                        }
+                    } else {
+                        mStartDate = absent();
                     }
+                    mStartButton.setText(getDateText(mStartDate));
                 }
             }, mStartDate);
             dp.show(getFragmentManager(), "startDate");
@@ -444,26 +433,19 @@ public class RecurrencePickerDialog extends DialogFragment {
         public void onClick(View v) {
             final SupportDatePickerDialog dp = SupportDatePickerDialog.newInstance(
             new OnDateSetListener() {
-                @Override
-                public void onNoDateSet() {
-                    mEndDate = absent();
-                    mEndButton.setText(getDateText());
-                }
 
                 @Override
                 public void onDateSet(
-                    final DatePicker datePickerDialog,
-                    final int year, final int month,
-                    final int day) {
-                    Calendar endDate = mEndDate.or(new GregorianCalendar());
-                    endDate.set(Calendar.YEAR, year);
-                    endDate.set(Calendar.MONTH, month);
-                    endDate.set(Calendar.DAY_OF_MONTH, day);
-                    if (!mStartDate.or(new GregorianCalendar()).before(endDate)) {
-                        endDate = mStartDate.or(new GregorianCalendar());
+                    final DatePicker datePickerDialog, final @NonNull Optional<LocalDate> newDate) {
+                    if (mEndDate.isPresent()) {
+                        mEndDate = of(newDate.get().toDateTimeAtCurrentTime());
+                        if (!mStartDate.or(new DateTime()).isBefore(mEndDate.get())) {
+                            mEndDate = mStartDate;
+                        }
+                    } else {
+                        mEndDate = absent();
                     }
-                    mEndButton.setText(getDateText(endDate));
-                    mEndDate = of(endDate);
+                    mEndButton.setText(getDateText(mEndDate));
                 }
             }, mEndDate);
             dp.show(getFragmentManager(), "startDate");
@@ -522,7 +504,8 @@ public class RecurrencePickerDialog extends DialogFragment {
         default:
             throw new IllegalStateException("Implement another case of intervall type");
         }
-        return Recurring.newRecurring("", intervalMinutes, intervalHours, intervalDays,
-                                      intervalMonths, intervalYears, mForDue, mStartDate, mEndDate, true, mUseExact.isChecked(), checked);
+        return Recurring.newRecurring("", new Period(intervalYears, intervalMonths, 0, intervalDays,
+                                      intervalHours, intervalMinutes, 0, 0)
+                                      , mForDue, mStartDate, mEndDate, true, mUseExact.isChecked(), checked);
     }
 }

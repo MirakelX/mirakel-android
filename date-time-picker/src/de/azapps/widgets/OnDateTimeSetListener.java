@@ -16,34 +16,15 @@
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+package de.azapps.widgets;
 
-android {
-    lintOptions {
-        disable 'MissingTranslation', 'ImpliedQuantity', 'MissingQuantity'
-    }
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['merged-res']
-            assets.srcDirs = ['assets']
-        }
-    }
-}
 
-dependencies {
-    debugCompile project(path: ':helper',configuration: 'debug')
-    releaseCompile project(path: ':helper',configuration: 'release')
-    debugCompile project(path: ':model',configuration: 'debug')
-    releaseCompile project(path: ':model',configuration: 'release')
-    compile "com.nineoldandroids:library:$nineoldandroisVersion"
-}
+import android.support.annotation.NonNull;
 
-dependencyVerification {
-    verify = [
-        'com.nineoldandroids:library:68025a14e3e7673d6ad2f95e4b46d78d7d068343aa99256b686fe59de1b3163a',
-    ]
+import com.google.common.base.Optional;
+
+import org.joda.time.DateTime;
+
+public interface OnDateTimeSetListener {
+    void onDateTimeSet(final @NonNull Optional<DateTime> newDate);
 }
