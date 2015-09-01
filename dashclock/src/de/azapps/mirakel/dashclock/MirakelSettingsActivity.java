@@ -32,7 +32,7 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Optional;
 
 import de.azapps.mirakel.adapter.SimpleModelListAdapter;
-import de.azapps.mirakel.model.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -69,7 +69,7 @@ public class MirakelSettingsActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 final CursorWrapper cursor = new MirakelQueryBuilder(MirakelSettingsActivity.this).query(
-                    MirakelInternalContentProvider.LIST_WITH_SPECIAL_URI);
+                    MirakelInternalContentProvider.LIST_URI);
                 final SimpleModelListAdapter<ListMirakel> adapter = new SimpleModelListAdapter<>
                 (MirakelSettingsActivity.this, cursor.getRawCursor(), 0, ListMirakel.class);
                 final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(

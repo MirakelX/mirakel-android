@@ -24,7 +24,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,8 +37,9 @@ import com.google.android.apps.dashclock.api.DashClockExtension;
 import com.google.android.apps.dashclock.api.ExtensionData;
 import com.google.common.base.Optional;
 
+import org.joda.time.DateTime;
+
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -48,7 +48,7 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.MirakelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.model.MirakelContentObserver;
-import de.azapps.mirakel.model.ModelBase;
+import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
@@ -135,10 +135,10 @@ public class MirakelExtension extends DashClockExtension implements
                     int i = 0;
                     while (getter.moveToNext() && (i < maxTasks)) {
                         final Task task = new Task(getter);
-                        final Optional<Calendar> dueOptional = task.getDue();
+                        final Optional<DateTime> dueOptional = task.getDue();
                         final StringBuilder taskRow = new StringBuilder();
                         if (dueOptional.isPresent() && showDue) {
-                            taskRow.append(dateFormat.format(dueOptional.get().getTime())).append(": ");
+                            taskRow.append(dateFormat.format(dueOptional.get().toDate())).append(": ");
                         }
                         taskRow.append(task.getName());
                         tasks[i] = taskRow.toString();
