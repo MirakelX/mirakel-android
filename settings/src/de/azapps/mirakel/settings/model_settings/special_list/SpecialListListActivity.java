@@ -75,8 +75,12 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
 
     @Override
     protected void createItem(final @NonNull Context ctx) {
-        onItemSelected(SpecialList.newSpecialList(ctx.getString(R.string.special_lists_new),
-                       Optional.<SpecialListsBaseProperty>absent(), true));
+        try {
+            onItemSelected(SpecialList.newList(ctx.getString(R.string.special_lists_new),
+                                               Optional.<SpecialListsBaseProperty>absent(), true));
+        } catch (final ListMirakel.ListAlreadyExistsException e) {
+            //eat it
+        }
     }
 
     @Override
@@ -94,8 +98,9 @@ public class SpecialListListActivity extends GenericModelListActivity<SpecialLis
     protected Cursor getQuery() {
         return new MirakelQueryBuilder(this).and(DatabaseHelper.SYNC_STATE_FIELD,
                 MirakelQueryBuilder.Operation.NOT_EQ,
-                DefinitionsHelper.SYNC_STATE.DELETE.toInt()).sort(ListMirakel.LFT,
-                        MirakelQueryBuilder.Sorting.ASC).query(SpecialList.URI).getRawCursor();
+                DefinitionsHelper.SYNC_STATE.DELETE.toInt())
+               .and(ListMirakel.IS_SPECIAL, MirakelQueryBuilder.Operation.EQ, true).sort(ListMirakel.LFT,
+                       MirakelQueryBuilder.Sorting.ASC).query(ListMirakel.URI).getRawCursor();
     }
 
 }

@@ -63,6 +63,7 @@ public class ExpandablePreference extends PreferenceGroup implements View.OnClic
 
     @Override
     protected View onCreateView(final ViewGroup parent) {
+        super.onCreateView(parent);
         globalWrapper = new LinearLayout(getContext());
         globalWrapper.setOrientation(LinearLayout.VERTICAL);
         globalWrapper.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

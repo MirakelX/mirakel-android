@@ -19,8 +19,6 @@
 
 package de.azapps.mirakel.settings.fragments;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -38,10 +36,9 @@ import android.view.ViewGroup;
 
 import android.support.design.widget.FloatingActionButton;
 
-import de.azapps.material_elements.utils.ThemeManager;
 import de.azapps.mirakel.helper.AnalyticsWrapperBase;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.adapter.SettingsGroupAdapter;
 import de.azapps.mirakel.settings.custom_views.SwipeLinearLayout;

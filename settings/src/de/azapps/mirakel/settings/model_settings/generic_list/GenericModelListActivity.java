@@ -51,7 +51,7 @@ import de.azapps.mirakel.adapter.OnItemClickedListener;
 import de.azapps.mirakel.adapter.SimpleModelAdapter;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
 import de.azapps.mirakel.settings.R;
 import de.azapps.mirakel.settings.SettingsActivity;
 import de.azapps.mirakel.settings.SettingsHelper;

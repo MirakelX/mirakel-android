@@ -21,7 +21,7 @@ package de.azapps.mirakel.settings.model_settings.generic_list;
 
 import android.support.annotation.NonNull;
 
-import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
 
 
 public interface IDetailFragment<T extends IGenericElementInterface> {

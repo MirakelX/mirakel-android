@@ -24,7 +24,7 @@ import android.preference.Preference;
 import android.support.annotation.NonNull;
 
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
-import de.azapps.mirakel.model.IGenericElementInterface;
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
 import de.azapps.mirakel.settings.fragments.MirakelPreferencesFragment;
 
 public abstract class GenericModelDetailFragment<T extends IGenericElementInterface> extends
