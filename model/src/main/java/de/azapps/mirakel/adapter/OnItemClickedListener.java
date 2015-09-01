@@ -17,24 +17,13 @@
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-android {
-    lintOptions {
-        disable 'MissingTranslation', 'ImpliedQuantity', 'MissingQuantity'
-    }
-    sourceSets {
-        main {
-            res.srcDirs = ['merged-res']
-        }
-    }
-}
-dependencies {
-    debugCompile project(path: ':helper',configuration: 'debug')
-    releaseCompile project(path: ':helper',configuration: 'release')
-    compile "com.google.code.gson:gson:$gsonVersion"
-}
+package de.azapps.mirakel.adapter;
 
-dependencyVerification {
-    verify = [
-        'com.google.code.gson:gson:c0328cd07ca9e363a5acd00c1cf4afe8cf554bd6d373834981ba05cebec687fb',
-    ]
+import android.support.annotation.NonNull;
+
+import de.azapps.mirakel.model.generic.IGenericElementInterface;
+
+
+public interface OnItemClickedListener<T extends IGenericElementInterface> {
+    public abstract void onItemSelected(final @NonNull T item);
 }
