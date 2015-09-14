@@ -94,23 +94,23 @@ public class Mirakel extends Application {
         super.onCreate();
 
         init(this);
-        ACRA.init(this);
-        ACRA.setLog(new AcraLog());
         // do this as soon as possible
         AnalyticsWrapperBase.init(new AnalyticsWrapper(Mirakel.this));
         // Stuff we can do in another thread
-        final Mirakel that = this;
         new Thread (new Runnable () {
             @Override
             public void run () {
                 Looper.prepare();
+                // File access should not happen on the main thread
+                ACRA.init(Mirakel.this);
+                ACRA.setLog(new AcraLog());
 
                 NotificationService.updateServices(Mirakel.this);
                 DatabaseHelper.getDatabaseHelper(Mirakel.this);
                 ReminderAlarm.init(Mirakel.this);
                 // Notifications
                 if (!MirakelCommonPreferences.useNotifications()
-                    && (startService(new Intent(that,
+                    && (startService(new Intent(Mirakel.this,
                                                 NotificationService.class)) != null)) {
                     stopService (new Intent (Mirakel.this,
                                              NotificationService.class));
