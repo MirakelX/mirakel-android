@@ -47,7 +47,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -1046,12 +1045,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                    + " active INTEGER NOT NULL DEFAULT 1, "
                    + " is_special INTEGER NOT NULL DEFAULT 0 "
                    + ')');
-        db.execSQL("INSERT INTO lists(_id,name,sort_by, created_at, updated_at, sync_state, lft, rgt, color, account_id, icon_path,is_special)"
+        db.execSQL("INSERT INTO lists(_id, name, sort_by, created_at, updated_at, sync_state, lft, rgt, color, account_id, icon_path, is_special) "
                    + "SELECT _id,name,sort_by, " +
-                   "strftime('%s',CASE WHEN (created_at LIKE \"%:%\") " +
-                   "THEN substr(created_at,0,11)||' '||substr(created_at,12,2)||':'||substr(created_at,15,2)||':'||substr(created_at,18,2) "
+                   "strftime('%s',CASE "
                    +
-                   "ELSE substr(created_at,0,11)||' '||substr(created_at,12,2)||':'||substr(created_at,14,2)||':'||substr(created_at,16,2) END) * 1000, "
+                   "WHEN (created_at LIKE \"%:%\") THEN substr(created_at,0,11)||' '||substr(created_at,12,2)||':'||substr(created_at,15,2)||':'||substr(created_at,18,2) "
+                   +
+                   "WHEN (created_at LIKE \"%Z\") THEN substr(created_at,0,11)||' '||substr(created_at,12,2)||':'||substr(created_at,14,2)||':'||substr(created_at,16,2)"
+                   +
+                   "ELSE datetime()"
+                   +
+                   " END) * 1000, "
                    +
                    " strftime('%s',CASE WHEN (updated_at LIKE \"%:%\") " +
                    "THEN substr(updated_at,0,11)||' '||substr(updated_at,12,2)||':'||substr(updated_at,15,2)||':'||substr(updated_at,18,2) "
