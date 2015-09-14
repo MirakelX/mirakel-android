@@ -311,7 +311,7 @@ public class MirakelInternalContentProvider extends ContentProvider implements
             @Override
             public void run() {
                 ModelBase.init(getContext());
-                Semantic.init(getContext());
+                Semantic.init();
             }
         }, 1, TimeUnit.MILLISECONDS);
         if (!"robolectric".equalsIgnoreCase(Build.FINGERPRINT)) {
