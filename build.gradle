@@ -30,7 +30,7 @@ dependencies {
     compile "net.danlew:android.joda:$jodaLibraryVersion"
     compile "com.google.guava:guava:$guavaVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
-    compile 'com.cocosw:bottomsheet:1.+@aar'
+    compile 'com.cocosw:bottomsheet:1.2.0'
     compile "com.afollestad:material-dialogs:$materialDialogsVersion"
     debugCompile project(path: ':material-elements',configuration: 'debug')
     releaseCompile project(path: ':material-elements',configuration: 'release')
@@ -44,7 +44,7 @@ dependencyVerification {
         'net.danlew:android.joda:66656ec525c6e65d2cb8199975c0d9b960660e041bce37b650ea815c8c17176b',
         'com.google.guava:guava:d664fbfc03d2e5ce9cab2a44fb01f1d0bf9dfebeccc1a473b1f9ea31f79f6f99',
         'com.android.support:recyclerview-v7:3a8da14585fa1c81f06e7cef4d93a7641f0323d8f984ff9a7bd7a6e416b46888',
-        'com.cocosw:bottomsheet:871f5f4d6c10936569caf3528271efd77594a67aa5511765c96d7096c9b05f96',
+        'com.cocosw:bottomsheet:40d2187c9cdaf224acbf876abc138cd9d4a293ef89091982ecf2492c8fcd186b',
         'com.afollestad:material-dialogs:faa48751d32393fcdb20cbf4995d730ecfec7f2d8c7bd40645cad524f6293054',
         'com.android.support:support-annotations:beac5cae60bdb597df9af9c916f785c2f71f8c8ae4be9a32d4298dea85496a42',
         'joda-time:joda-time:508b154dc112ca54d51f757e2e0865a23937366f1b2f659ddc09ebdec11f134e',
