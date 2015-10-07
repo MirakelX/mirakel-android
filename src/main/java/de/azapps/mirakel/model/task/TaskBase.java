@@ -22,6 +22,7 @@ package de.azapps.mirakel.model.task;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
@@ -29,7 +30,6 @@ import com.google.common.base.Optional;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -740,5 +740,10 @@ abstract class TaskBase extends ModelBase {
 
     public void setDue(final @Nullable DateTime dateTime) {
         setDue(fromNullable(dateTime));
+    }
+
+    @VisibleForTesting
+    public void setCreatedAt(final @NonNull DateTime created) {
+        createdAt = created;
     }
 }
