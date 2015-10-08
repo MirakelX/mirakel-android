@@ -54,15 +54,15 @@ gradle.projectsEvaluated {
 }
 
 ext {
-    compileSdkVersion = 22
-    buildToolsVersion = "22.0.1"
-    minSDKVersion = 11
+    compileSdkVersion = 23
+    buildToolsVersion = "23.0.1"
+    minSDKVersion = 14
 }
 
 configure(allprojects) {
-    ext.androidSDKVersion = "22"
-    ext.androidBuildToolsVersion = "22.0.1"
-    ext.androidSupportVersion = "22.2.0"
+    ext.androidSDKVersion = "23"
+    ext.androidBuildToolsVersion = "23.0.1"
+    ext.androidSupportVersion = "23.0.1"
     ext.androidPluginVersion ="0.14.0"
     ext.androidMinSDKVersion ="14"
     ext.jodaLibraryVersion = "2.8.2"
@@ -129,7 +129,7 @@ subprojects {
       testApplicationId "de.azapps.mirakelandroid.test"
       testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
       minSdkVersion 14
-      targetSdkVersion 21
+      targetSdkVersion 23
     }
     jacoco {
       version = "$jacocoVersion"
