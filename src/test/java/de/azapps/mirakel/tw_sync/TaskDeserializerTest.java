@@ -47,6 +47,7 @@ import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskDeserializer;
 import de.azapps.mirakel.sync.taskwarrior.model.TaskWarriorTaskSerializer;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
+import de.azapps.mirakelandroid.test.MultiApiRobolectricTestRunner;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.base.Optional.of;
@@ -60,7 +61,7 @@ import static org.junit.Assert.fail;
  * @author az
  *
  */
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(MultiApiRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class TaskDeserializerTest extends MirakelDatabaseTestCase {
 

@@ -30,7 +30,6 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -49,12 +48,13 @@ import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorAccount;
 import de.azapps.mirakel.sync.taskwarrior.utilities.TaskWarriorSyncFailedException;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
+import de.azapps.mirakelandroid.test.MultiApiRobolectricTestRunner;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(MultiApiRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class TaskwarriorSyncTest extends MirakelDatabaseTestCase {
 

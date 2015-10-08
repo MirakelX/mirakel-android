@@ -28,7 +28,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -41,15 +40,24 @@ import de.azapps.mirakel.model.list.meta.SpecialListsConjunctionList.CONJUNCTION
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
+import de.azapps.mirakelandroid.test.MultiApiRobolectricTestRunner;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
 
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(MultiApiRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class SpecialListConditionTest extends MirakelDatabaseTestCase {
+
+    @Test
+    public void testGetAllSpecial() {
+        List<SpecialList> all = SpecialList.allSpecial();
+        for (SpecialList l : all) {
+            assertThat(l.isSpecial()).isTrue();
+        }
+    }
 
     @Test
     public void testDoneCondition() {
