@@ -97,7 +97,7 @@ public final class SpecialListsWhereDeserializer {
     @NonNull
     public static Optional<SpecialListsBaseProperty> deserializeWhere(final @NonNull String
             whereQuery, final String name) throws IllegalArgumentException {
-        if (TextUtils.isEmpty(whereQuery.trim())) {
+        if ((whereQuery == null) || TextUtils.isEmpty(whereQuery.trim())) {
             return absent();
         }
         try {
