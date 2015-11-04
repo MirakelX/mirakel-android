@@ -16,37 +16,41 @@
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
 android {
     lintOptions {
         disable 'MissingTranslation'
         enable 'NewerVersionAvailable'
     }
 }
+
 dependencies {
+    // other dependencies here
+    compile("com.github.afollestad.material-dialogs:core:$materialDialogsVersion"){
+            transitive = true
+    }
     compile "com.android.support:support-v4:$androidSupportVersion"
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
     compile "com.android.support:cardview-v7:$androidSupportVersion"
     compile "net.danlew:android.joda:$jodaLibraryVersion"
     compile "com.google.guava:guava:$guavaVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
-    compile 'com.cocosw:bottomsheet:1.2.0'
-    compile "com.afollestad:material-dialogs:$materialDialogsVersion"
+    compile "com.cocosw:bottomsheet:$bottomsheetVersion"
+
     debugCompile project(path: ':material-elements',configuration: 'debug')
     releaseCompile project(path: ':material-elements',configuration: 'release')
 }
 
 dependencyVerification {
     verify = [
-        'com.android.support:support-v4:5ddf1feda096c164d0dd299cc6786fde18a845ce47dbfe484ff27cce27e19638',
-        'com.android.support:appcompat-v7:db48e76616882b00e407b19027aae4e92d129456a65b9bb4e4bc5262e3ad9b76',
-        'com.android.support:cardview-v7:88716dd4251cfeea3fd5f8d2d86f8a04e24d02557b80cde275f5d11790577313',
-        'com.android.support:recyclerview-v7:9621f5790e47010e14196c3ecee168cc68659316d19b2ef6b5a843f35a81c3db',
-        'com.android.support:support-annotations:45da07a087cf9cc8c78edac2383c9b98ab9f1924a89b88e2037bf2481a35d031',
+        'com.android.support:support-v4:a0309e9c188afd25ad5dd38e484ad13610bc5f2ebfeafa40d2a07eea414896d5',
+        'com.android.support:appcompat-v7:b5783b390d1440769c9b8a7b42290523a4ff058ef2d3fb90c983973934ca115b',
+        'com.android.support:cardview-v7:7b44941673bb60566421781be0ed16b536ecf4b630b380fe9b8f48b376df33b7',
+        'com.android.support:recyclerview-v7:464ec6e5004400a4fe0310f35343da9e5a2912386a3606db3585f7cf987c444a',
+        'com.android.support:support-annotations:d50996a4cbca17178989fef38635f2cc570c5d3a77870aaa57f4f7e4fc6de9dc',
         'net.danlew:android.joda:66656ec525c6e65d2cb8199975c0d9b960660e041bce37b650ea815c8c17176b',
         'com.google.guava:guava:d664fbfc03d2e5ce9cab2a44fb01f1d0bf9dfebeccc1a473b1f9ea31f79f6f99',
         'com.cocosw:bottomsheet:40d2187c9cdaf224acbf876abc138cd9d4a293ef89091982ecf2492c8fcd186b',
-        'com.afollestad:material-dialogs:faa48751d32393fcdb20cbf4995d730ecfec7f2d8c7bd40645cad524f6293054',
+        'com.github.afollestad.material-dialogs:core:0d89fe43a03400537597557cc4be03947a97603909b582fc2a9218201c8906ec',
         'joda-time:joda-time:508b154dc112ca54d51f757e2e0865a23937366f1b2f659ddc09ebdec11f134e',
     ]
 }
