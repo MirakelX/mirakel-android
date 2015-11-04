@@ -18,6 +18,11 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="sync_message"><![CDATA[Debido a la falta de tiempo no hemos podido arreglar las incidencias de sincronización que nos quedan en un tiempo razonable.
+
+     Por favor no crees más incidencias de fallos de sincronización. Si eres un desarrollador ayúdanos a arreglar esos fallos.]]></string>
+  <string name="sync_help_dev">¡Quiero ayudar!</string>
+  <string name="sync_understand">Entendido</string>
   <string name="sync_add">Agregar cuenta</string>
   <string name="account_title">Cuentas</string>
   <string name="sync_new">Nueva cuenta</string>
@@ -33,13 +38,13 @@
   <string name="sync_server_summary">Sincronizar con %s</string>
   <string name="sync_frequency">Frecuencia</string>
   <string name="sync_frequency_summary">Sincronizar cada %s minutos</string>
-  <string name="sync_frequency_summary_man">Sincronizar solo manualmente</string>
+  <string name="sync_frequency_summary_man">Sincronizar sólo manualmente</string>
   <string name="account_informations">Información</string>
   <string-array name="sync_types">
-    <item>Sincronización CalDAV</item>
+    <item>Sincronización con CalDAV</item>
     <item>Sincronización de Taskwarrior</item>
   </string-array>
-  <string name="sync_caldav">Sincronización CalDAV</string>
+  <string name="sync_caldav">Sincronización con CalDAV</string>
   <string name="sync_caldav_howto"><![CDATA[Tienes que instalar una aplicación de sincronización por CalDAV que sea compatible con Mirakel. Por ahora, es necesario instalar la versión modificada de DAVdroid de nuestra página.<br /><br />
 Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a trabajar junto con otros para que sea posible sincronizar con Mirakel.]]></string>
   <string name="download">Descargar</string>
@@ -51,7 +56,7 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="sync_taskwarrior_own_server">o simplemente usa tu propio servidor</string>
   <string name="sync_taskwarrior_url_error">La URL no es correcta. ¿Has escaneado el código correcto?</string>
   <string name="sync_taskwarrior_configuring">Configurando la sincronización…</string>
-  <string name="sync_taskwarrior_about">si ya tienes una cuenta de Taskwarrior:</string>
+  <string name="sync_taskwarrior_about">Si ya tienes una cuenta de Taskwarrior:</string>
   <string name="sync_taskwarrior_register">Si no, puedes registrar una cuenta nueva en nuestro servidor:</string>
   <string name="sync_taskwarrior_register_button">Registrar</string>
   <string name="sync_taskwarrior_setup_success">La configuración de la cuenta ha sido un éxito</string>
@@ -98,6 +103,7 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="import_default_list">Importar la lista predeterminada</string>
   <string name="import_to">Importar a</string>
   <string name="changelog">Registro de cambios</string>
+  <string name="rate">Calificar</string>
   <string name="changelog_click_summary">Ver el registro de cambios</string>
   <string name="changelog_click">Registro de cambios</string>
   <string name="settings_about">Acerca de</string>
@@ -265,9 +271,12 @@ Pronto la aplicación oficial de DAVdroid también soportará Mirakel y vamos a 
   <string name="analytics_use_summary">Los informes nos ayudan a mejorar Mirakel para ti</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">Mirakel es código abierto, siéntete libre de contribuir vía GitHub</string>
+  <string name="credits_dev">Desarrollado por &lt;a href="mailto:anatolij@zelenin.de"&gt;Anatolij Zelenin&lt;/a&gt; y &lt;a href="https://github.com/weiznich"&gt;Georg Semmler&lt;/a&gt;</string>
+  <string name="credits_design">Diseños del icono y la interfaz por &lt;a href="http://alexkaessner.de/"&gt;Alexander Käßner&lt;/a&gt;</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google +</string>
   <string name="credits_feedback">Enviar comentarios</string>
+  <string name="credits_copyright">© 2013–2015 Anatolij Zelenin, Georg Semmler\nEsto está bajo la licencia de software libre GPLv3</string>
   <string name="credits_translations">Traducciones</string>
   <string name="credits_libraries">Bibliotecas</string>
   <string name="credits_license_title">Licencia</string>

@@ -18,6 +18,11 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="sync_message"><![CDATA[私たちの時間不足のため、適度な時間で残りの同期の問題を解決することができません。
+
+同期に関するバグを気にしないでください。あなたが開発者の場合、これらのバグを修正する支援をお願いします。]]></string>
+  <string name="sync_help_dev">私は支援したいと思う!</string>
+  <string name="sync_understand">理解しました</string>
   <string name="sync_add">アカウントを追加</string>
   <string name="account_title">アカウント</string>
   <string name="sync_new">新しいアカウント</string>
