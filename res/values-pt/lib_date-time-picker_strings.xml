@@ -32,5 +32,8 @@
   <string name="set_date">Definir data</string>
   <string name="set_time">Definir hora</string>
   <string name="remove_reminder">Remover</string>
+  <string name="recurrence_start_label">Inicia:</string>
+  <string name="recurrence_end_label">Termina:</string>
+  <string name="never">Nunca</string>
 </resources>
 
