@@ -37,18 +37,18 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:design:23.0.1'
+    compile "com.android.support:design:$androidSupportVersion"
     compile "com.nispok:snackbar:2.10.6"
     compile "com.android.support:appcompat-v7:$androidSupportVersion"
 }
 
 dependencyVerification {
     verify = [
-        'com.android.support:design:5fd1ab39f286109fdc620875af59f86600d10865fc4b025eea8384cc5d19270e',
-        'com.android.support:appcompat-v7:db48e76616882b00e407b19027aae4e92d129456a65b9bb4e4bc5262e3ad9b76',
-        'com.android.support:support-v4:5ddf1feda096c164d0dd299cc6786fde18a845ce47dbfe484ff27cce27e19638',
-        'com.android.support:recyclerview-v7:859ed80e3761f8fc3126901260b208505120b5678bcf36ad2cfe9c453958b9c7',
-        'com.android.support:support-annotations:45da07a087cf9cc8c78edac2383c9b98ab9f1924a89b88e2037bf2481a35d031',
+        'com.android.support:design:ff53a30489cf77c5ed83805e59709f712b8dae1727524422c0d4fafd9b6bafe5',
+        'com.android.support:appcompat-v7:b5783b390d1440769c9b8a7b42290523a4ff058ef2d3fb90c983973934ca115b',
+        'com.android.support:recyclerview-v7:464ec6e5004400a4fe0310f35343da9e5a2912386a3606db3585f7cf987c444a',
+        'com.android.support:support-v4:a0309e9c188afd25ad5dd38e484ad13610bc5f2ebfeafa40d2a07eea414896d5',
+        'com.android.support:support-annotations:d50996a4cbca17178989fef38635f2cc570c5d3a77870aaa57f4f7e4fc6de9dc',
         'com.nispok:snackbar:473d4ac972638d6db6562173871c469d6647b60c03538c3c75207ec3fff3bfcd',
     ]
 }
