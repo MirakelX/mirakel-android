@@ -81,7 +81,7 @@ dependencies {
 dependencyVerification {
     verify = [
         'com.google.android.apps.dashclock:dashclock-api:e48b72ce9470407bc1c1da23a67b14d3a140672fb8ed38e58afb9d2bf664809b',
-        'com.android.support:support-v4:5ddf1feda096c164d0dd299cc6786fde18a845ce47dbfe484ff27cce27e19638',
-        'com.android.support:support-annotations:45da07a087cf9cc8c78edac2383c9b98ab9f1924a89b88e2037bf2481a35d031',
+        'com.android.support:support-v4:a0309e9c188afd25ad5dd38e484ad13610bc5f2ebfeafa40d2a07eea414896d5',
+        'com.android.support:support-annotations:d50996a4cbca17178989fef38635f2cc570c5d3a77870aaa57f4f7e4fc6de9dc',
        ]
 }
