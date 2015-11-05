@@ -32,5 +32,8 @@
   <string name="set_date">Définir la date</string>
   <string name="set_time">Définir l\'heure</string>
   <string name="remove_reminder">Enlever</string>
+  <string name="recurrence_start_label">Début:</string>
+  <string name="recurrence_end_label">Fin:</string>
+  <string name="never">Jamais</string>
 </resources>
 
