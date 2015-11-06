@@ -44,7 +44,6 @@ import de.azapps.mirakel.helper.MirakelModelPreferences;
 import de.azapps.mirakel.helper.error.ErrorReporter;
 import de.azapps.mirakel.helper.error.ErrorType;
 import de.azapps.mirakel.model.account.AccountMirakel;
-import de.azapps.mirakel.model.generic.ModelBase;
 import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.list.SpecialList;
 import de.azapps.mirakel.model.list.meta.SpecialListsBaseProperty;
@@ -254,8 +253,7 @@ public class Semantic extends SemanticBase {
      * @param context
      *            The Application-Context
      */
-    public static void init(final Context context) {
-        ModelBase.init(context);
+    public static void init() {
         initAll();
     }
 

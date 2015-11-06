@@ -19,7 +19,6 @@
 
 package de.azapps.mirakel.model.task;
 
-import android.accounts.Account;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.MatrixCursor;
@@ -34,7 +33,6 @@ import com.google.common.base.Optional;
 
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.azapps.mirakel.DefinitionsHelper.NoSuchListException;
@@ -104,7 +102,8 @@ public class Task extends TaskBase {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructors
 
-    Task() {
+    @VisibleForTesting
+    public Task() {
         super();
     }
 
@@ -332,19 +331,13 @@ public class Task extends TaskBase {
     // Static Methods
 
     @NonNull
-    public static List<Task> getTasksToSync(final Account account) {
-        final Optional<AccountMirakel> accountMirakelOptional = AccountMirakel
-                .get(account);
-        if (!accountMirakelOptional.isPresent()) {
-            return new ArrayList<>(0);
-        } else {
-            return new MirakelQueryBuilder(context)
-                   .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
-                        SYNC_STATE.NOTHING.toInt())
-                   .and(LIST_ID,
-                        Operation.IN,
-                        ListMirakel.getListsForAccount(accountMirakelOptional.get())).getList(Task.class);
-        }
+    public static List<Task> getTasksToSync(final AccountMirakel account) {
+        return new MirakelQueryBuilder(context)
+               .and(DatabaseHelper.SYNC_STATE_FIELD, Operation.NOT_EQ,
+                    SYNC_STATE.NOTHING.toInt())
+               .and(LIST_ID,
+                    Operation.IN,
+                    ListMirakel.getListsForAccount(account)).getList(Task.class);
     }
 
     public static List<Task> getTasksWithReminders() {

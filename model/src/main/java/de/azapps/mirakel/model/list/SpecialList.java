@@ -244,7 +244,8 @@ public class SpecialList extends ListMirakel {
      * @return
      */
     public static List<SpecialList> allSpecial(final boolean showAll) {
-        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).sort(LFT, Sorting.ASC);
+        MirakelQueryBuilder qb = new MirakelQueryBuilder(context).and(ListMirakel.IS_SPECIAL, Operation.EQ,
+                true).sort(LFT, Sorting.ASC);
         if (!showAll) {
             qb.and(ACTIVE, Operation.EQ, true);
         }

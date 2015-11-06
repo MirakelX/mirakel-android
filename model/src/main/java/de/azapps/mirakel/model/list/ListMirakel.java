@@ -132,16 +132,15 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
 
     @NonNull
     public MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb) {
-        return addSortBy(qb, getSortBy(), getId() < 0);
+        return addSortBy(qb, getSortBy(), isSpecial());
     }
 
     @NonNull
     public static MirakelQueryBuilder addSortBy(final MirakelQueryBuilder qb, final SORT_BY sorting,
             final boolean isSpecial) {
         final String dueSort = "CASE WHEN (" + Task.DUE
-                               + " IS NULL) THEN datetime('now','+50 years') ELSE datetime("
-                               + Task.DUE
-                               + ",'unixepoch','localtime','start of day') END ";
+                               + " IS NULL) THEN strftime('%s','now','+50 years')*1000 ELSE "
+                               + Task.DUE + " END ";
         switch (sorting) {
         case PRIO:
             qb.sort(Task.PRIORITY, Sorting.DESC);
