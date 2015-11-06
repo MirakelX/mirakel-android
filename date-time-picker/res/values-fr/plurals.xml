@@ -22,9 +22,85 @@
     <item quantity="one">Une tâche</item>
     <item quantity="other">%d tâches</item>
   </plurals>
+  <plurals name="selected_lists">
+    <item quantity="one">Une liste</item>
+    <item quantity="other">%d listes</item>
+  </plurals>
+  <plurals name="list_delete">
+    <item quantity="one">Supprimer la liste ?</item>
+    <item quantity="other">Supprimer les listes ?</item>
+  </plurals>
+  <plurals name="task_delete">
+    <item quantity="one">Supprimer la tâche ?</item>
+    <item quantity="other">Supprimer les tâches ?</item>
+  </plurals>
   <plurals name="due_year">
     <item quantity="one">Année</item>
     <item quantity="other">Années</item>
+  </plurals>
+  <plurals name="due_day">
+    <item quantity="one">Jour</item>
+    <item quantity="other">Jours</item>
+  </plurals>
+  <plurals name="due_minute">
+    <item quantity="one">Minute</item>
+    <item quantity="other">Minutes</item>
+  </plurals>
+  <plurals name="due_hour">
+    <item quantity="one">Heure</item>
+    <item quantity="other">Heures</item>
+  </plurals>
+  <plurals name="due_month">
+    <item quantity="one">Mois</item>
+    <item quantity="other">Mois</item>
+  </plurals>
+  <plurals name="months">
+    <item quantity="one">Mois</item>
+    <item quantity="other">Mois</item>
+  </plurals>
+  <plurals name="every_months">
+    <item quantity="one">Tous les mois</item>
+    <item quantity="other">Tous les %d mois</item>
+  </plurals>
+  <plurals name="days">
+    <item quantity="one">Jour</item>
+    <item quantity="other">Jours</item>
+  </plurals>
+  <plurals name="every_days">
+    <item quantity="one">Tous les jours</item>
+    <item quantity="other">Tous les %d jours</item>
+  </plurals>
+  <plurals name="years">
+    <item quantity="one">Année</item>
+    <item quantity="other">Années</item>
+  </plurals>
+  <plurals name="every_years">
+    <item quantity="one">Tous les ans</item>
+    <item quantity="other">Tous les %d ans</item>
+  </plurals>
+  <plurals name="minutes">
+    <item quantity="one">Minute</item>
+    <item quantity="other">Minutes</item>
+  </plurals>
+  <plurals name="every_minutes">
+    <item quantity="one">Toutes les minutes</item>
+    <item quantity="other">Toutes les %d minutes</item>
+  </plurals>
+  <plurals name="hours">
+    <item quantity="one">Heure</item>
+    <item quantity="other">Heures</item>
+  </plurals>
+  <plurals name="every_hours">
+    <item quantity="one">Toutes les heures</item>
+    <item quantity="other">Toutes les %d heures</item>
+  </plurals>
+  <plurals name="subtasks">
+    <item quantity="one">Une sous-tâche</item>
+    <item quantity="other">%d sous-tâches</item>
+  </plurals>
+  <plurals name="file">
+    <item quantity="one">Un fichier</item>
+    <item quantity="other">%d fichiers</item>
   </plurals>
 </resources>
 
