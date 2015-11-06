@@ -25,6 +25,7 @@ import android.content.OperationApplicationException;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 
 import com.google.common.base.Optional;
@@ -54,8 +55,9 @@ import de.azapps.mirakel.DefinitionsHelper;
 import de.azapps.mirakel.helper.Helpers;
 import de.azapps.mirakel.helper.MirakelCommonPreferences;
 import de.azapps.mirakel.helper.export_import.ExportImport;
-import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
+import de.azapps.mirakel.model.account.AccountMirakel;
 import de.azapps.mirakel.model.list.ListMirakel;
+import de.azapps.mirakel.model.provider.MirakelInternalContentProvider;
 import de.azapps.mirakel.model.query_builder.CursorGetter;
 import de.azapps.mirakel.model.query_builder.CursorWrapper;
 import de.azapps.mirakel.model.query_builder.MirakelQueryBuilder;
@@ -83,7 +85,8 @@ import static com.google.common.base.Optional.of;
 
 public class TaskWarriorSync {
 
-    private static final String TW_PROTOCOL_VERSION = "v1";
+    @VisibleForTesting
+    public static final String TW_PROTOCOL_VERSION = "v1";
 
     private int clientSyncKeyFailResyncCount = 0;
 
@@ -107,55 +110,15 @@ public class TaskWarriorSync {
         final TLSClient client = setupConnection(taskWarriorAccount);
         final Msg remotes = queryServer(syncMessage, client);
 
-        final int code = Integer.parseInt(remotes.getHeader("code").or("400"));
-        final TW_ERRORS error = TW_ERRORS.getError(code);
-        if (error != TW_ERRORS.NO_ERROR) {
-            client.close();
-            final Optional<String> status = remotes.getHeader("status");
-            if (status.isPresent()) {
-                if (status.get().contains("Could not find common ancestor")) {
-                    // Ok, lets backup, reset the sync key and sync with empty message
-
-                    // backup
-                    Looper.prepare();
-                    ExportImport.exportDB(mContext);
-
-                    // reset sync key
-                    taskWarriorAccount.setSyncKey(Optional.<String>absent());
-
-                    // sync
-                    sync(taskWarriorAccount, true);
-                    throw new TaskWarriorSyncFailedException(
-                        TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
-                        "sync() throwed error");
-                } else if (status.get().contains("Access denied")) {
-                    throw new TaskWarriorSyncFailedException(TW_ERRORS.ACCESS_DENIED, "Access denied");
-                }
-            }
-            throw new TaskWarriorSyncFailedException(error);
-        }
-        if ("Client sync key not found.".equals(remotes.getHeader("status").or(""))) {
-            Log.d(TAG, "reset sync-key");
-            clientSyncKeyFailResyncCount++;
-            // How this could happen? Nobody knows but one user was able to do this…
-            if (clientSyncKeyFailResyncCount > 2) {
-                throw new TaskWarriorSyncFailedException(
-                    TW_ERRORS.CLIENT_SYNC_KEY_NOT_FOUND,
-                    "sync() throwed error");
-            }
-            taskWarriorAccount.setSyncKey(Optional.<String>absent());
-            try {
-                sync(taskWarriorAccount, false);
-            } catch (final TaskWarriorSyncFailedException e) {
-                if (e.getError() != TW_ERRORS.NOT_ENABLED) {
-                    client.close();
-                    throw new TaskWarriorSyncFailedException(e.getError(), e);
-                }
-            } finally {
-                clientSyncKeyFailResyncCount = 0;
-            }
-        }
+        checkError(taskWarriorAccount, client, remotes);
         // parse tasks
+        parseTasks(taskWarriorAccount, remotes);
+        client.close();
+    }
+
+    @VisibleForTesting
+    public void parseTasks(TaskWarriorAccount taskWarriorAccount,
+                           Msg remotes) throws TaskWarriorSyncFailedException {
         if ((remotes.getPayload() == null) || remotes.getPayload().isEmpty()) {
             Log.i(TAG, "there is no Payload");
         } else {
@@ -224,7 +187,58 @@ public class TaskWarriorSync {
         if (message.isPresent() && !message.get().isEmpty()) {
             Log.v(TAG, "Message from Server: " + message.get());
         }
-        client.close();
+    }
+
+    private void checkError(TaskWarriorAccount taskWarriorAccount, TLSClient client,
+                            Msg remotes) throws TaskWarriorSyncFailedException {
+        final int code = Integer.parseInt(remotes.getHeader("code").or("400"));
+        final TW_ERRORS error = TW_ERRORS.getError(code);
+        if (error != TW_ERRORS.NO_ERROR) {
+            client.close();
+            final Optional<String> status = remotes.getHeader("status");
+            if (status.isPresent()) {
+                if (status.get().contains("Could not find common ancestor")) {
+                    // Ok, lets backup, reset the sync key and sync with empty message
+
+                    // backup
+                    Looper.prepare();
+                    ExportImport.exportDB(mContext);
+
+                    // reset sync key
+                    taskWarriorAccount.setSyncKey(Optional.<String>absent());
+
+                    // sync
+                    sync(taskWarriorAccount, true);
+                    throw new TaskWarriorSyncFailedException(
+                        TW_ERRORS.COULD_NOT_FIND_COMMON_ANCESTOR,
+                        "sync() throwed error");
+                } else if (status.get().contains("Access denied")) {
+                    throw new TaskWarriorSyncFailedException(TW_ERRORS.ACCESS_DENIED, "Access denied");
+                }
+            }
+            throw new TaskWarriorSyncFailedException(error);
+        }
+        if ("Client sync key not found.".equals(remotes.getHeader("status").or(""))) {
+            Log.d(TAG, "reset sync-key");
+            clientSyncKeyFailResyncCount++;
+            // How this could happen? Nobody knows but one user was able to do this…
+            if (clientSyncKeyFailResyncCount > 2) {
+                throw new TaskWarriorSyncFailedException(
+                    TW_ERRORS.CLIENT_SYNC_KEY_NOT_FOUND,
+                    "sync() throwed error");
+            }
+            taskWarriorAccount.setSyncKey(Optional.<String>absent());
+            try {
+                sync(taskWarriorAccount, false);
+            } catch (final TaskWarriorSyncFailedException e) {
+                if (e.getError() != TW_ERRORS.NOT_ENABLED) {
+                    client.close();
+                    throw new TaskWarriorSyncFailedException(e.getError(), e);
+                }
+            } finally {
+                clientSyncKeyFailResyncCount = 0;
+            }
+        }
     }
 
     @NonNull
@@ -479,29 +493,29 @@ public class TaskWarriorSync {
     }
 
     private Map<String, Long> createTags(final @NonNull Map<String, TaskWarriorTask> remoteTasks) {
-        final Set<String> tagList = new HashSet<>(0);
-        for (final TaskWarriorTask t : remoteTasks.values()) {
-            for (final String tag : t.getTags()) {
-                tagList.add(tag.replace("_", " "));
-            }
+        final Set<String> tags = new HashSet<>();
+        for (TaskWarriorTask t : remoteTasks.values()) {
+            tags.addAll(t.getTags());
         }
 
-        final Map<String, Long> tagMapping = new HashMap<>(tagList.size());
+
+        final Map<String, Long> tagMapping = new HashMap<>(remoteTasks.size());
         new MirakelQueryBuilder(mContext).and(ListMirakel.NAME, Operation.IN,
-                                              new ArrayList<>(tagList)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI)
+                                              new ArrayList<>(tags)).select(Arrays.asList(new String[] {Tag.ID, Tag.NAME})).query(Tag.URI)
         .doWithCursor(new CursorWrapper.WithCursor() {
             @Override
-            public void withOpenCursor(@NonNull CursorGetter getter) {
+            public void withOpenCursor(@NonNull final CursorGetter getter) {
                 while (getter.moveToNext()) {
                     final String name = getter.getString(Tag.NAME);
-                    tagMapping.put(name.replace(" ", "_"), getter.getLong(Tag.ID));
-                    tagList.remove(name);
+                    if (remoteTasks.containsKey(name)) {
+                        remoteTasks.remove(name);
+                    }
                 }
             }
         });
-        for (final String tag : tagList) {
+        for (final String tag : tags) {
             final Tag t = Tag.newTag(tag);
-            tagMapping.put(t.getName().replace(" ", "_"), t.getId());
+            tagMapping.put(t.getName(), t.getId());
         }
         return tagMapping;
     }
@@ -514,6 +528,33 @@ public class TaskWarriorSync {
 
     public void sync(final @NonNull TaskWarriorAccount taskWarriorAccount,
                      final boolean couldNotFindCommonAncestorWorkaround) throws TaskWarriorSyncFailedException {
+        final List<Task> localTasks;
+        if (couldNotFindCommonAncestorWorkaround) {
+            localTasks = new ArrayList<>(0);
+        } else {
+            Optional<AccountMirakel> a = AccountMirakel.get(taskWarriorAccount.getAndroidAccount());
+            if (a.isPresent()) {
+                localTasks = Task.getTasksToSync(a.get());
+            } else {
+                localTasks = new ArrayList<>(0);
+            }
+
+        }
+        final Msg sync = getMsg(taskWarriorAccount, localTasks);
+        try {
+            doSync(taskWarriorAccount, sync);
+        } catch (final TaskWarriorSyncFailedException e) {
+            //setDependencies();
+            throw new TaskWarriorSyncFailedException(e.getError(), e);
+        }
+        Log.w(TAG, "clear sync state");
+        Task.resetSyncState(localTasks);
+    }
+
+    @NonNull
+    @VisibleForTesting
+    public Msg getMsg(@NonNull TaskWarriorAccount taskWarriorAccount,
+                      List<Task> localTasks) throws TaskWarriorSyncFailedException {
         final Msg sync = new Msg();
         sync.set("protocol", TW_PROTOCOL_VERSION);
         sync.set("type", "sync");
@@ -527,16 +568,10 @@ public class TaskWarriorSync {
                 payload.append(input).append('\n');
             }
         });
-        final List<Task> localTasks;
-        if (couldNotFindCommonAncestorWorkaround) {
-            localTasks = new ArrayList<>(0);
-        } else {
-            localTasks = Task.getTasksToSync(taskWarriorAccount.getAndroidAccount());
-            for (final Task task : localTasks) {
-                payload.append(taskToJson(task)).append('\n');
-            }
-        }
 
+        for (final Task task : localTasks) {
+            payload.append(taskToJson(task)).append('\n');
+        }
         // Build sync-request
         sync.setPayload(payload.toString());
         if (MirakelCommonPreferences.isDumpTw()) {
@@ -550,14 +585,7 @@ public class TaskWarriorSync {
                 // eat it
             }
         }
-        try {
-            doSync(taskWarriorAccount, sync);
-        } catch (final TaskWarriorSyncFailedException e) {
-            //setDependencies();
-            throw new TaskWarriorSyncFailedException(e.getError(), e);
-        }
-        Log.w(TAG, "clear sync state");
-        Task.resetSyncState(localTasks);
+        return sync;
     }
 
     /**

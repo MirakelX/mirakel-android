@@ -31,10 +31,11 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
+import org.joda.time.Period;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.lang.reflect.Type;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         if (calendar.isBefore(0L)) {
             return ISODateTimeFormat.basicDateTimeNoMillis().print(10L);
         }
-        return ISODateTimeFormat.basicDateTimeNoMillis().print(calendar);
+        return ISODateTimeFormat.basicDateTimeNoMillis().withZoneUTC().print(calendar);
     }
 
 
@@ -291,7 +292,7 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
                 return;
             case 5:
                 final List<Integer> weekdays = r.getWeekdays();
-                for (Integer i = Calendar.MONDAY; i <= Calendar.FRIDAY; i++) {
+                for (Integer i = DateTimeConstants.MONDAY; i <= DateTimeConstants.FRIDAY; i++) {
                     if (!weekdays.contains(i)) {
                         Log.w(TAG, "unsupported recurrence");
                         return;
@@ -306,16 +307,19 @@ public class TaskWarriorTaskSerializer implements JsonSerializer<Task> {
         }
         final long interval = r.getIntervalMs() / (1000L * 60L);
         if (interval > 0L) {
+            Period p = r.getInterval();
             if (r.getInterval().getMinutes() > 0) {
-                json.addProperty("recur", r.getInterval().getMinutes() + "mins");
+                json.addProperty("recur", p.toStandardMinutes().getMinutes() + "mins");
             } else if (r.getInterval().getHours() > 0) {
-                json.addProperty("recur", r.getInterval().getHours() + "hours");
+                json.addProperty("recur", p.toStandardHours().getHours() + "hours");
             } else if (r.getInterval().getDays() > 0) {
-                json.addProperty("recur", r.getInterval().getDays() + "days");
+                json.addProperty("recur", p.toStandardDays().getDays() + "days");
+            } else if (r.getInterval().getWeeks() > 0) {
+                json.addProperty("recur", p.toStandardWeeks().getWeeks() + "weeks");
             } else if (r.getInterval().getMonths() > 0) {
-                json.addProperty("recur", r.getInterval().getMonths() + "months");
+                json.addProperty("recur", p.getMonths() + (12 * p.getYears()) + "months");
             } else {
-                json.addProperty("recur", r.getInterval().getYears() + "years");
+                json.addProperty("recur", p.getYears() + "years");
             }
         }
     }

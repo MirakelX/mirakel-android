@@ -39,6 +39,7 @@
     <item>Taskwarrior sync</item>
   </string-array>
   <string name="sync_caldav">CalDAV sync</string>
+  <string name="sync_caldav_howto_"><![CDATA[Vous devez configurer une application de synchronisation CalDAV compatible avec Mirakel. Actuellement vous devez installer notre version modifiée de DAVdroid depuis notre page.<br /><br />Bientôt l\'application DAVdroid officielle supportera Mirakel et nous travaillons ensemble avec d\'autres pour rendre possible la synchronisation avec Mirakel.]]></string>
   <string name="download">Télécharger</string>
   <string name="sync_add_account">Ajouter un compte</string>
   <string name="sync_taskwarrior_configure">Configurer Taskwarrior</string>
@@ -76,5 +77,7 @@
   <string name="message_parse_message">Impossible d\'analyser vos tâches – veuillez-nous contacter pour décrire comment cet état est-il survenu.</string>
   <string name="message_message_error">Réponse inconnue du serveur. Merci de nous contacter pour nous expliquer comment l\'erreur est survenue</string>
   <string name="finish_sync">La synchronisation est terminée</string>
+  <string name="account_vanished">Le compte a disparu. Cela ne devrait absolument jamais se produire</string>
+  <string name="create_account">Créer un compte</string>
 </resources>
 

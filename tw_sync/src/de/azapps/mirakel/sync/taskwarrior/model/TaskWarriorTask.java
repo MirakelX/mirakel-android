@@ -23,6 +23,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 
 import com.google.common.base.Function;
@@ -33,8 +34,6 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,9 +109,10 @@ public class TaskWarriorTask {
     private static class Annotation {
         @NonNull
         public String description;
-        public long entry;
+        @NonNull
+        public DateTime entry;
 
-        public  Annotation(@NonNull final String description, final long entry) {
+        public  Annotation(@NonNull final String description, final DateTime entry) {
             this.description = description;
             this.entry = entry;
         }
@@ -124,7 +124,8 @@ public class TaskWarriorTask {
     @NonNull
     private Status status = Status.PENDING;
 
-    private final long entry;
+    @NonNull
+    private final DateTime entry;
     @NonNull
     private final String description;
 
@@ -140,19 +141,19 @@ public class TaskWarriorTask {
     @NonNull
     private final List<String> depends = new ArrayList<>();
     @NonNull
-    private Optional<Long> due = absent();
+    private Optional<DateTime> due = absent();
     @NonNull
-    private Optional<Long> start = absent();
+    private Optional<DateTime> start = absent();
     @NonNull
-    private Optional<Long> end = absent();
+    private Optional<DateTime> end = absent();
     @NonNull
-    private Optional<Long> until = absent();
+    private Optional<DateTime> until = absent();
     @NonNull
-    private Optional<Long> wait = absent();
+    private Optional<DateTime> wait = absent();
     @NonNull
-    private Optional<Long> scheduled = absent();
+    private Optional<DateTime> scheduled = absent();
     @NonNull
-    private Optional<Long> modified = absent();
+    private Optional<DateTime> modified = absent();
     @NonNull
     private final List<Annotation> annotations = new ArrayList<>();
 
@@ -170,7 +171,7 @@ public class TaskWarriorTask {
     @NonNull
     private Optional<Integer> priorityNumber = absent();
     @NonNull
-    private Optional<Long> reminder = absent();
+    private Optional<DateTime> reminder = absent();
     @NonNull
     private Optional<Integer> progress = absent();
 
@@ -179,11 +180,11 @@ public class TaskWarriorTask {
     private final Map<String, String> uda = new HashMap<>();
 
     public TaskWarriorTask(@NonNull final String uuid, @NonNull final String status,
-                           final @NonNull Calendar entry,
+                           final @NonNull DateTime entry,
                            @NonNull final String description) {
         this.UUID = uuid;
         this.status = Status.fromString(status);
-        this.entry = entry.getTimeInMillis() / 1000L;
+        this.entry = entry;
         this.description = description;
     }
 
@@ -203,32 +204,32 @@ public class TaskWarriorTask {
         this.depends.add(depends);
     }
 
-    public void setDue(@NonNull final Calendar due) {
-        this.due = of(due.getTimeInMillis() / 1000L);
+    public void setDue(@NonNull final DateTime due) {
+        this.due = of(due);
     }
 
-    public void setStart(@NonNull final Calendar start) {
-        this.start = of(start.getTimeInMillis() / 1000L);
+    public void setStart(@NonNull final DateTime start) {
+        this.start = of(start);
     }
 
-    public void setEnd(@NonNull final Calendar end) {
-        this.end = of(end.getTimeInMillis() / 1000L);
+    public void setEnd(@NonNull final DateTime end) {
+        this.end = of(end);
     }
 
-    public void setUntil(@NonNull final Calendar until) {
-        this.until = of(until.getTimeInMillis() / 1000L);
+    public void setUntil(@NonNull final DateTime until) {
+        this.until = of(until);
     }
 
-    public void setWait(@NonNull final Calendar wait) {
-        this.wait = of(wait.getTimeInMillis() / 1000L);
+    public void setWait(@NonNull final DateTime wait) {
+        this.wait = of(wait);
     }
 
-    public void setScheduled(@NonNull final Calendar scheduled) {
-        this.scheduled = of(scheduled.getTimeInMillis() / 1000L);
+    public void setScheduled(@NonNull final DateTime scheduled) {
+        this.scheduled = of(scheduled);
     }
 
-    public void setModified(@NonNull final Calendar modified) {
-        this.modified = of(modified.getTimeInMillis() / 1000L);
+    public void setModified(@NonNull final DateTime modified) {
+        this.modified = of(modified);
     }
 
     public void setMask(@NonNull final String mask) {
@@ -255,12 +256,12 @@ public class TaskWarriorTask {
         this.priorityNumber = of(priority);
     }
 
-    public void setReminder(@NonNull final Calendar reminder) {
-        this.reminder = of(reminder.getTimeInMillis() / 1000L);
+    public void setReminder(@NonNull final DateTime reminder) {
+        this.reminder = of(reminder);
     }
 
-    public void addAnnotation(@NonNull final String description, @NonNull final Calendar entry) {
-        annotations.add(new Annotation(description, entry.getTimeInMillis() / 1000L));
+    public void addAnnotation(@NonNull final String description, @NonNull final DateTime entry) {
+        annotations.add(new Annotation(description, entry));
     }
 
     public void setProgress(final int progress) {
@@ -309,7 +310,7 @@ public class TaskWarriorTask {
 
         final ContentValues cv = new ContentValues();
         cv.put(Task.NAME, description);
-        cv.put(DatabaseHelper.CREATED_AT, entry);
+        cv.put(DatabaseHelper.CREATED_AT, entry.getMillis());
         cv.put(Task.UUID, UUID);
         switch (status) {
         case PENDING:
@@ -354,13 +355,13 @@ public class TaskWarriorTask {
             cv.put(Task.LIST_ID, inboxID);
         }
         if (due.isPresent()) {
-            cv.put(Task.DUE, due.get());
+            cv.put(Task.DUE, due.get().getMillis());
         } else {
             cv.put(Task.DUE, (Integer)null);
         }
 
         if (reminder.isPresent()) {
-            cv.put(Task.REMINDER, reminder.get());
+            cv.put(Task.REMINDER, reminder.get().getMillis());
         } else {
             cv.put(Task.REMINDER, (Integer)null);
         }
@@ -371,11 +372,7 @@ public class TaskWarriorTask {
             cv.put(Task.PROGRESS, 0);
         }
 
-        if (modified.isPresent()) {
-            cv.put(DatabaseHelper.UPDATED_AT, modified.get());
-        } else {
-            cv.put(DatabaseHelper.UPDATED_AT, new GregorianCalendar().getTimeInMillis() / 1000L);
-        }
+        cv.put(DatabaseHelper.UPDATED_AT, modified.or(new DateTime()).getMillis());
 
         cv.put(Task.CONTENT, TextUtils.join("\n", Collections2.transform(annotations,
         new Function<Annotation, String>() {
@@ -480,13 +477,6 @@ public class TaskWarriorTask {
     public Optional<TaskWarriorRecurrence> getRecurrence() throws
         TaskWarriorRecurrence.NotSupportedRecurrenceException {
         if (recur.isPresent()) {
-            final Optional<DateTime> until = OptionalUtils.withOptional(this.until,
-            new Function<Long, Optional<DateTime>>() {
-                @Override
-                public Optional<DateTime> apply(final Long input) {
-                    return of(new DateTime((long)input));
-                }
-            }, Optional.<DateTime>absent());
             return of(new TaskWarriorRecurrence(recur.get(), until));
         }
         return absent();
@@ -496,6 +486,7 @@ public class TaskWarriorTask {
      * Use this only for testing
      * @param task
      */
+    @VisibleForTesting
     public void setToTask(@NonNull final Task task) {
 
         task.setName(description);
@@ -555,23 +546,11 @@ public class TaskWarriorTask {
             task.addAdditionalEntry(Task.NO_PROJECT, "true");
             task.setList(ListMirakel.getInboxList(AccountMirakel.getLocal()));
         }
-        if (due.isPresent()) {
-            task.setDue(of(new DateTime((long) due.get())));
-        } else {
-            task.setDue(Optional.<DateTime>absent());
-        }
+        task.setDue(due);
+        task.setReminder(reminder);
 
-        if (reminder.isPresent()) {
-            task.setReminder(of(new DateTime((long)reminder.get())));
-        } else {
-            task.setReminder(Optional.<DateTime>absent());
-        }
-
-        if (modified.isPresent()) {
-            task.setUpdatedAt(new DateTime((long) modified.get()));
-        } else {
-            task.setUpdatedAt(new DateTime());
-        }
+        task.setUpdatedAt(modified.or(new DateTime()));
+        task.setCreatedAt(entry);
 
         if (!tags.isEmpty()) {
             task.getTags().addAll(Collections2.transform(tags, new Function<String, Tag>() {

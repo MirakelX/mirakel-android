@@ -28,24 +28,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map.Entry;
-import java.util.TimeZone;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
-import de.azapps.mirakel.helper.error.ErrorReporter;
-import de.azapps.mirakel.helper.error.ErrorType;
-import de.azapps.tools.Log;
+import java.lang.reflect.Type;
+import java.util.Map.Entry;
 
 public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarriorTask> {
 
     private static final String TAG = "TaskWarriorTaskDeserializer";
-    private static final String TW_DATE_FORMAT = "yyyyMMdd'T'HHmmss'Z'" ;
-    public static final SimpleDateFormat TW_PARSER = new SimpleDateFormat(TW_DATE_FORMAT);
-    public static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
     @Override
     public TaskWarriorTask deserialize(final JsonElement json, final Type type,
@@ -212,16 +203,8 @@ public class TaskWarriorTaskDeserializer implements JsonDeserializer<TaskWarrior
     }
 
     @NonNull
-    private static Calendar parseDate(final String date) {
-        final GregorianCalendar temp = new GregorianCalendar(UTC);
-        try {
-            TW_PARSER.setTimeZone(UTC);
-            temp.setTime(TW_PARSER.parse(date));
-        } catch (final ParseException ignored) {
-            Log.w(TAG, "invalid date format: " + date);
-            ErrorReporter.report(ErrorType.TASKWARRIOR_NON_STANDARD_DATE);
-        }
-        return temp;
+    private static DateTime parseDate(final String date) {
+        return ISODateTimeFormat.basicDateTimeNoMillis().parseDateTime(date);
     }
 
 }
