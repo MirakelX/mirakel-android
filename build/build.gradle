@@ -1,10 +1,8 @@
 buildscript {
     repositories {
-        mavenCentral()
-        mavenLocal()
-        maven {
-              url "https://plugins.gradle.org/m2/"
-        }
+      // That's because gradle is not able to use SNI – sorry for HTTP (That's why we verify the SHA1 keys ;))
+      maven { url "http://maven.azapps.de/artifactory/mirakel/" }
+      maven { url "https://plugins.gradle.org/m2/" }
     }
       dependencies {
         classpath 'com.android.tools.build:gradle:1.3.1'
@@ -15,7 +13,7 @@ buildscript {
 }
 dependencies {
       repositories {
-        mavenCentral()
+        maven { url "http://maven.azapps.de/artifactory/mirakel/" }
     }
 }
 
@@ -89,9 +87,7 @@ apply plugin: 'org.sonarqube'
 
 subprojects {
   repositories {
-    mavenCentral()
-    jcenter()
-    maven { url "https://jitpack.io" }
+    maven { url "http://maven.azapps.de/artifactory/mirakel/" }
   }
   gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
