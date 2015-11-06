@@ -18,6 +18,11 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="sync_message"><![CDATA[Por falta de tempo, não estamos a conseguir corrigir todos os erros relacionados com a sincronização.
+
+Por favor, não reporte erros relacionados com a sincronização. Se é um programador, ajude-nos a corrigir os erros existentes.]]></string>
+  <string name="sync_help_dev">Eu quero ajudar!</string>
+  <string name="sync_understand">Eu percebo</string>
   <string name="sync_add">Adicionar conta</string>
   <string name="account_title">Contas</string>
   <string name="sync_new">Nova conta</string>
@@ -98,6 +103,7 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="import_default_list">Importar lista pré-definida</string>
   <string name="import_to">Importar para</string>
   <string name="changelog">Registo de alterações</string>
+  <string name="rate">Avaliar</string>
   <string name="changelog_click_summary">Ver registo de alterações</string>
   <string name="changelog_click">Registo de alterações</string>
   <string name="settings_about">Sobre</string>
@@ -265,9 +271,12 @@ Brevemente poderá utilizar a versão original da aplicação DAVdroid e, além 
   <string name="analytics_use_summary">Estes relatórios ajudam-nos a melhorar o Mirakel</string>
   <string name="credits_title">Mirakel</string>
   <string name="credits_subtitle">O Mirakel é um programa de código aberto, junte-se a nós no GitHub</string>
+  <string name="credits_dev">Desenvolvido por &lt;a href="mailto:anatolij@zelenin.de"&gt;Anatolij Zelenin&lt;/a&gt; e &lt;a href="https://github.com/weiznich"&gt;Georg Semmler&lt;/a&gt;</string>
+  <string name="credits_design">Ícones e interface por &lt;a href="http://alexkaessner.de/"&gt;Alexander Käßner&lt;/a&gt;</string>
   <string name="credits_github">GitHub</string>
   <string name="credits_gplus">Google+</string>
   <string name="credits_feedback">Enviar opinião</string>
+  <string name="credits_copyright">© 2013–2015 Anatolij Zelenin, Georg Semmler\nEsta aplicação é Free Software nos termos da GPLv3</string>
   <string name="credits_translations">Traduções</string>
   <string name="credits_libraries">Bibliotecas</string>
   <string name="credits_license_title">Licença</string>

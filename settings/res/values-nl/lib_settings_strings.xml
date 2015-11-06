@@ -18,6 +18,9 @@
   ~       along with this program.  If not, see <http://www.gnu.org/licenses/>.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="sync_message">Door een gebrek aan tijd zijn we niet in staat om de resterende problemen met synchronisatie op te lossen.      Doe aub geen bug verzoeken met betrekking tot de synchronisatie. Iedere ontwikkelaar is welkom te helpen deze bugs op te lossen.</string>
+  <string name="sync_help_dev">Ik wil helpen!</string>
+  <string name="sync_understand">Ik begrijp het</string>
   <string name="sync_add">Account toevoegen</string>
   <string name="account_title">Lidmaatschap</string>
   <string name="sync_new">Nieuwe account</string>
@@ -98,10 +101,13 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="import_default_list">Importeer voorkeurslijst</string>
   <string name="import_to">Importeren</string>
   <string name="changelog">Logboekwijzigingen</string>
+  <string name="rate">Waardeer</string>
   <string name="changelog_click_summary">Bekijk het logboek</string>
   <string name="changelog_click">Logboekwijzigingen</string>
   <string name="settings_about">Over</string>
   <string name="settings_help">Help</string>
+  <string name="get_dashclock">Mirakel-Dashclock verkrijgen</string>
+  <string name="get_dashclock_summary">De extensie Mirakel voor Dashclock verkrijgen</string>
   <string name="import_astrid_click">Astrid importeren</string>
   <string name="astrid_success">Alle gegevens zijn geïmporteerd!</string>
   <string name="importing">Importeren</string>
@@ -124,12 +130,13 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="semantic_new_task">Nieuwe taak sjabloon</string>
   <string name="semantic_new_task_config_summary">Condities van nieuwe taken instellen</string>
   <string name="semantic_new_task_config">Taak sjablonen instellen</string>
+  <string name="useTabletLayout">Tablet weergave gebruiken</string>
   <string name="general">Algemeen</string>
   <string-array name="tablet_options">
     <item>nooit</item>
     <item>horizontaal</item>
     <item>portret</item>
-    <item>portrait and landscape</item>
+    <item>portret en landschap</item>
   </string-array>
   <string name="delete_done">Verwijder afgeronde taken</string>
   <string name="delete_done_summary">Verwijder alle afgeronde taken</string>
@@ -195,11 +202,14 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="settings_tasks_title">Taken</string>
   <string name="settings_dev">Ontwikkel instellingen</string>
   <string name="settings_dev_sync">Synchronisatie</string>
+  <string name="settings_dev_dump_tw_summary">Opslaan van de ontvangen tekst in /sdcard/mirakel/</string>
+  <string name="settings_dev_dump_tw">Ontvangen gesynchroniseerde berichten opslaan</string>
   <string name="enable">Aan het inschakelen</string>
   <string name="disable">Aan het uitschakelen</string>
   <string name="enabled">Ingeschakeld</string>
   <string name="disabled">Uitgeschakeld</string>
   <string name="change_dev_mode">U heeft de ontwikkelingsinstellingen %s!</string>
+  <string name="enableDebugLog">Machtig debug Logcat?</string>
   <string name="action_contact">Contact opnemen/ fouten melden</string>
   <string name="action_contact_summary">Schrijf ons een e-mail!</string>
   <string name="title_donations">Doneer</string>
@@ -209,7 +219,9 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="demo_mode">Demonstratie modus</string>
   <string name="demo_drop_db">Start met oorpsronkelijke demo database</string>
   <string name="write_logs_to_file">Schrijf logs weg in een bestand</string>
+  <string name="alert_caldav">De CalDAV sync is niet stabiel en wij hebben niet de tijd om dit te ondersteunen. Maak een reservekopie van de gegevens voordat u verdergaat.</string>
   <string name="alert_caldav_title">Informatie voor CalDAV</string>
+  <string name="alert_taskwarrior">De Taskwarrior sync is niet stabiel en wij hebben niet de tijd om dit te ondersteunen. Maak een reservekopie van uw gegevens voordat u verdergaat.</string>
   <string name="alert_taskwarrior_title">Informatie voor Taskwarrior</string>
   <string name="special_list_where_subtask_title_text">Subtaken</string>
   <string name="special_list_where_tag_title_text">Tags</string>
@@ -251,8 +263,22 @@ Binnenkort zal Mirakel de officiële DAVdroid app ondersteunen. Verder werken we
   <string name="delete_condition">Voorwaarde verwijderen</string>
   <string name="delete_semantic">Taak sjabloon verwijderen</string>
   <string name="delete_special_lists">Meta lijst verwijderen</string>
+  <string name="settings_widget_title">Widget voorkeuren</string>
+  <string name="version_string">Versie: %1$s bouwen op %2$s</string>
+  <string name="analytics_use">Statistieken anoniem raporteren</string>
+  <string name="analytics_use_summary">De verslagen helpen ons Mirakel voor u te verbeteren</string>
   <string name="credits_title">Mirakel</string>
+  <string name="credits_subtitle">Mirakel is open source, voel je vrij om bij te dragen via GitHub</string>
+  <string name="credits_dev">Ontwikkeling door &lt;a href="mailto:anatolij@zelenin.de"&gt;Anatoli Zelenin&lt;/a&gt; en &lt;a href="https://github.com/weiznich"&gt;Georg Semmler&lt;/a&gt;</string>
+  <string name="credits_design">Pictogram &amp; Interface ontwerp door &lt;a href="http://alexkaessner.de/"&gt;Alexander Käßner&lt;/a&gt;</string>
+  <string name="credits_github">GitHub</string>
+  <string name="credits_gplus">Google+</string>
+  <string name="credits_feedback">Feedback verzenden</string>
+  <string name="credits_copyright">© 2013 – 2015 Anatolij Zelenin, Georg Semmler\nDit is Vrije Software beschikbaar onder de GPLv3</string>
   <string name="credits_translations">Vertalingen</string>
+  <string name="credits_libraries">Bibliotheken</string>
   <string name="credits_license_title">Licentie</string>
+  <string name="credits_license"><![CDATA[<p>Dit programma is vrije software:  U kan de software distribueren en/of bewerken onder de voorwaarden van  de <a href="https://www.gnu.org/licenses/gpl.html">GNU Algemene Publieke Licentie</a> zoals gepubliceerd door de Free Software Foundation, ofwel versie 3 van de Licentie, of (naar eigen keuze) een latere versie.</p>
+<p>Dit programma is gedistribueerd in de hoop dat het nuttig is, maar komt ZONDER ENIGE GARANTIE; zonder zelfs de impliciete garantie van VERKOOPBAARHEID of geschiktheid voor EEN SPECIFIEK DOEL. Bekijk de GNU Algemene Publieke Licentie voor meer details.</p>]]></string>
 </resources>
 
