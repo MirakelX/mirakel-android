@@ -63,7 +63,7 @@ Pričakovati je, da bo tudi uradna različica DAVdroid kmalu podpirala delovanje
   <string name="menu_edit_listaccount">Račun</string>
   <string name="change_account">Spremeni račun</string>
   <string name="wrong_config">Kaže, da je izbrana napačna nastavitvena datoteka</string>
-  <string name="cert_not_found"><![CDATA[Potrdilo je izginilo. Ponovno je treba ustvariti račun.]]></string>
+  <string name="cert_not_found">Potrdilo je izginilo. Ponovno je treba ustvariti račun.</string>
   <string name="config_error_empty">Ni vnosa %s v nastavitveni datoteki</string>
   <string name="load_config">Izberite nastavitveno datoteko za Taskwarrior</string>
   <string name="select_config">Izbor nastavitvene datoteke za strežnik Taskwarrior</string>
