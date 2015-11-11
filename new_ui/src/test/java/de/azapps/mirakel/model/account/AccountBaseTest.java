@@ -22,20 +22,20 @@ import com.google.common.base.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
 
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
+import de.azapps.mirakelandroid.test.MultiApiRobolectricTestRunner;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.truth.Truth.assertThat;
 import static de.azapps.mirakel.model.account.AccountMirakel.ACCOUNT_TYPES;
 
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(MultiApiRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class AccountBaseTest extends MirakelDatabaseTestCase {
 

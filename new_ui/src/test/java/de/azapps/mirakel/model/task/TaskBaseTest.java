@@ -23,7 +23,6 @@ import com.google.common.base.Optional;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.List;
@@ -32,13 +31,14 @@ import de.azapps.mirakel.model.list.ListMirakel;
 import de.azapps.mirakel.model.recurring.Recurring;
 import de.azapps.mirakelandroid.BuildConfig;
 import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
+import de.azapps.mirakelandroid.test.MultiApiRobolectricTestRunner;
 import de.azapps.mirakelandroid.test.RandomHelper;
 
 import static com.google.common.truth.Truth.assertThat;
 import static de.azapps.mirakel.DefinitionsHelper.SYNC_STATE;
 
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(MultiApiRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
 public class TaskBaseTest extends MirakelDatabaseTestCase {
 

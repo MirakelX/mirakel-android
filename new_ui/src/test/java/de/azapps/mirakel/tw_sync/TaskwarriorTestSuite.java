@@ -16,36 +16,16 @@
  *       You should have received a copy of the GNU General Public License
  *       along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package de.azapps.mirakel.model.tags;
+package de.azapps.mirakel.tw_sync;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
+import org.junit.runners.Suite;
 
-import java.util.List;
-
-import de.azapps.mirakelandroid.BuildConfig;
-import de.azapps.mirakelandroid.test.MirakelDatabaseTestCase;
-import de.azapps.mirakelandroid.test.MultiApiRobolectricTestRunner;
-import de.azapps.mirakelandroid.test.RandomHelper;
-
-import static com.google.common.truth.Truth.assertThat;
-
-
-@RunWith(MultiApiRobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
-public class TagBaseTest extends MirakelDatabaseTestCase {
-
-
-
-    // Test for getting and setting BackgroundColor
-    @Test
-    public void testBackgroundColor1() {
-        final List<Tag> all = Tag.all();
-        final Tag obj = RandomHelper.getRandomElem(all);
-        final int t = RandomHelper.getRandomint();
-        obj.setBackgroundColor(t);
-        assertThat(obj.getBackgroundColor()).isEqualTo(t);
-    }
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    RecurrenceTest.class,
+    TaskDeserializerTest.class,
+    TaskwarriorSyncTest.class
+})
+public class TaskwarriorTestSuite {
 }
