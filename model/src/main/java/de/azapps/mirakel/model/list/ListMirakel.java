@@ -600,17 +600,11 @@ public class ListMirakel extends ListBase implements ListMirakelInterface {
     }
 
     public Optional<SpecialList> toSpecial() {
-        final Optional<ListMirakel> listOptional = SpecialList.get(getId());
-        final Optional<SpecialList> specialListOptional;
-        if (listOptional.isPresent() && (listOptional.get() instanceof SpecialList) &&
-            (accountID != ALL_ACCOUNTS_ID) &&
-            (getAccount().getType() != AccountMirakel.ACCOUNT_TYPES.ALL)) {
-            specialListOptional = of((SpecialList)listOptional.get());
-            specialListOptional.get().setAccount(getAccount());
-        } else {
-            specialListOptional = absent();
+        if(isSpecial()){
+            return of((SpecialList)this);
+        }else {
+            return absent();
         }
-        return specialListOptional;
     }
 
     @NonNull
