@@ -5,10 +5,11 @@ buildscript {
       maven { url "https://plugins.gradle.org/m2/" }
     }
       dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-alpha1'
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha2'
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
         classpath "org.sonarqube.gradle:gradle-sonarqube-plugin:1.0"
         classpath files('build/build_deps/gradle-witness.jar')
+        classpath "org.jacoco:org.jacoco.core:0.7.5.201505241946"
     }
 }
 dependencies {
@@ -59,8 +60,8 @@ ext {
 
 configure(allprojects) {
     ext.androidSDKVersion = "23"
-    ext.androidBuildToolsVersion = "23.0.1"
-    ext.androidSupportVersion = "23.1.0"
+    ext.androidBuildToolsVersion = "23.0.2"
+    ext.androidSupportVersion = "23.1.1"
     ext.androidPluginVersion ="0.14.0"
     ext.androidMinSDKVersion ="14"
     ext.jodaLibraryVersion = "2.8.2"
@@ -125,9 +126,6 @@ subprojects {
       testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
       minSdkVersion 14
       targetSdkVersion 23
-    }
-    jacoco {
-      version = "$jacocoVersion"
     }
     buildTypes {
       debug {

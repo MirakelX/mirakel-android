@@ -44,11 +44,11 @@ dependencies {
 
 dependencyVerification {
     verify = [
-        'com.android.support:design:ff53a30489cf77c5ed83805e59709f712b8dae1727524422c0d4fafd9b6bafe5',
-        'com.android.support:appcompat-v7:b5783b390d1440769c9b8a7b42290523a4ff058ef2d3fb90c983973934ca115b',
-        'com.android.support:recyclerview-v7:464ec6e5004400a4fe0310f35343da9e5a2912386a3606db3585f7cf987c444a',
-        'com.android.support:support-v4:a0309e9c188afd25ad5dd38e484ad13610bc5f2ebfeafa40d2a07eea414896d5',
-        'com.android.support:support-annotations:d50996a4cbca17178989fef38635f2cc570c5d3a77870aaa57f4f7e4fc6de9dc',
+        'com.android.support:design:41a9cd75ca78f25df5f573db7cedf8bb66beae00c330943923ba9f3e2051736d',
+        'com.android.support:appcompat-v7:0a8762214382b7e8d4b989b4ac10b5c846b957d767ccb7bccbc6be5afa885a82',
+        'com.android.support:recyclerview-v7:7606373da0931a1e62588335465a0e390cd676c98117edab29220317495faefd',
+        'com.android.support:support-v4:5c7dceb6c824089fe80f502e5206264048ef8bffa4e8ddeab180b81723e79b7f',
+        'com.android.support:support-annotations:f347a35b9748a4103b39a6714a77e2100f488d623fd6268e259c177b200e9d82',
         'com.nispok:snackbar:473d4ac972638d6db6562173871c469d6647b60c03538c3c75207ec3fff3bfcd',
     ]
 }

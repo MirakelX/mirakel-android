@@ -141,9 +141,6 @@ project.gradle.taskGraph.whenReady {
 
 apply plugin: 'jacoco'
 
-jacoco {
-    toolVersion = "$jacocoVersion"
-}
 
 project.afterEvaluate {
   def buildTypes = android.buildTypes.collect { type -> type.name }

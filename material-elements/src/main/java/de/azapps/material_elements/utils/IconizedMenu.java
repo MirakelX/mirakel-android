@@ -20,11 +20,11 @@ package de.azapps.material_elements.utils;
 
 
 import android.content.Context;
-import android.support.v7.internal.view.SupportMenuInflater;
-import android.support.v7.internal.view.menu.MenuBuilder;
-import android.support.v7.internal.view.menu.MenuPopupHelper;
-import android.support.v7.internal.view.menu.MenuPresenter;
-import android.support.v7.internal.view.menu.SubMenuBuilder;
+import android.support.v7.view.SupportMenuInflater;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.view.menu.MenuPresenter;
+import android.support.v7.view.menu.SubMenuBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
