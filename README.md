@@ -1,5 +1,12 @@
 # Mirakel – Efficient Simple Task Management for the best Devs of the universe
 
+It was a great journey to build Mirakel and experience such great support from our community (YOU!), but we are not able to continue the development any further 
+
+**We do not see any way to support Mirakel any further and am searching for a new maintainer. We would be more than happy if Mirakel could be reborn and of course we would also provide help and guidance for new maintainers if needed. If you are interested, send us an e-mail to mirakel@azapps.de**
+
+Best,
+Georg and Anatoly
+
 [![Join the chat at https://gitter.im/MirakelX/mirakel-android](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MirakelX/mirakel-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/MirakelX/mirakel-android.png)](https://travis-ci.org/MirakelX/mirakel-android)
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/mirakel/localized.png)](https://crowdin.com/project/mirakel)
