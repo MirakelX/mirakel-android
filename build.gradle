@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem;
+
 buildscript {
     repositories {
       // That's because gradle is not able to use SNI – sorry for HTTP (That's why we verify the SHA1 keys ;))
@@ -34,9 +36,11 @@ gradle.projectsEvaluated {
     for(String proj:projects){
         def res_dir=rootDir.toString()+"/"+proj+"/res"
         def res_v14_dir=rootDir.toString()+"/"+proj+"/res-v14"
-        def script = (rootDir.toString()+"/build/scripts/generate_v14_compatible_resources.py --res-dir "+res_dir+" --res-v14-compatibility-dir "+res_v14_dir+"").execute()
-        script.err.eachLine {line -> println "ERROR: " + line}
-        script.waitFor()
+        if (OperatingSystem.current().isLinux()) {
+          def script = (rootDir.toString()+"/build/scripts/generate_v14_compatible_resources.py --res-dir "+res_dir+" --res-v14-compatibility-dir "+res_v14_dir+"").execute()
+          script.err.eachLine {line -> println "ERROR: " + line}
+          script.waitFor()
+        }
         def res = fileTree(dir: res_dir)
         def res_v14 =fileTree(dir: res_v14_dir)
         delete proj+"/merged-res";
@@ -55,7 +59,16 @@ gradle.projectsEvaluated {
 ext {
     compileSdkVersion = 23
     buildToolsVersion = "23.0.1"
-    minSDKVersion = 14
+}
+
+if (OperatingSystem.current().isLinux()) {
+  configure(allprojects) {
+    ext.minSdkVersion = "14"
+  }
+} else {
+  configure(allprojects) {
+    ext.minSdkVersion = "17"
+  }
 }
 
 configure(allprojects) {
@@ -63,7 +76,6 @@ configure(allprojects) {
     ext.androidBuildToolsVersion = "23.0.2"
     ext.androidSupportVersion = "23.1.1"
     ext.androidPluginVersion ="0.14.0"
-    ext.androidMinSDKVersion ="14"
     ext.jodaLibraryVersion = "2.8.2"
     ext.nineoldandroisVersion="2.4.0"
     ext.robotiumVersion = "5.2.1"
@@ -105,6 +117,19 @@ subprojects {
   apply plugin: 'jacoco'
   apply plugin: 'hugo'
   apply plugin: 'witness'
+  if (OperatingSystem.current().isLinux()) {
+    android {
+      defaultConfig {
+        minSdkVersion 14
+      }
+    }
+  } else {
+    android {
+      defaultConfig {
+        minSdkVersion 17
+      }
+    }
+  }
   android {
     publishNonDefault true
     compileOptions {
@@ -124,7 +149,6 @@ subprojects {
     defaultConfig {
       testApplicationId "de.azapps.mirakelandroid.test"
       testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-      minSdkVersion 14
       targetSdkVersion 23
     }
     buildTypes {
