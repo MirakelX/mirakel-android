@@ -26,6 +26,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.BufferedOutputStream;
 import java.io.StringBufferInputStream;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
@@ -345,7 +346,7 @@ public class TLSClient {
 
     // //////////////////////////////////////////////////////////////////////////////
     public void send(final String data) {
-        final DataOutputStream dos = new DataOutputStream(out);
+        final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(out));
         if (!this._socket.isConnected()) {
             Log.e(TAG, "socket not connected");
             return;
