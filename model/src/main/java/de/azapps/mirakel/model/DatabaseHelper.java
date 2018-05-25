@@ -527,8 +527,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        + "(\""
                        + this.context.getString(R.string.today).toLowerCase(
                            Helpers.getLocale(this.context))
-                       + "\",0);"
-                       + "INSERT INTO semantic_conditions (condition,due) VALUES (\""
+                       + "\",0);");
+            db.execSQL("INSERT INTO semantic_conditions (condition,due) VALUES (\""
                        + this.context.getString(R.string.tomorrow).toLowerCase(
                            Helpers.getLocale(this.context)) + "\",1);");
         case 15:// Add Color
