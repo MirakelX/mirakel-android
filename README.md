@@ -1,4 +1,4 @@
-# Mirakel – Efficient Simple Task Management for the best Devs of the universe
+# Mirakel – Task Management for the universe
 
 It was a great journey to build Mirakel and experience such great support from our community (YOU!), but we are not able to continue the development any further 
 
