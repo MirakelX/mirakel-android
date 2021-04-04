@@ -356,7 +356,6 @@ public class TLSClient {
         }
         try {
             dos.flush();
-            dos.close();
             this.out.flush();
         } catch (final IOException e) {
             Log.e(TAG, "cannot flush data to outputstream", e);
