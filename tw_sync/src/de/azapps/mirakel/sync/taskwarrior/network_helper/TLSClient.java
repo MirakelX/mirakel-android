@@ -37,7 +37,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
@@ -101,12 +100,9 @@ public class TLSClient {
         final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         final KeyFactory factory;
         try {
-            factory = KeyFactory.getInstance("RSA", "BC");
+            factory = KeyFactory.getInstance("RSA");
         } catch (final NoSuchAlgorithmException e) {
             Log.e(TAG, "RSA-Algorithm not found", e);
-            return null;
-        } catch (final NoSuchProviderException e) {
-            Log.e(TAG, "BC not found", e);
             return null;
         }
         try {
